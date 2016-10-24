@@ -20,7 +20,76 @@ shinyUI(
       ),
       tags$div(
         class="container",
-        actionButton("primaryButton", "Upload Count Matrix", class="btn btn-primary btn-lg")
+        fileInput('countsfile', 'Choose file to upload',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values',
+                    'text/tab-separated-values',
+                    'text/plain',
+                    '.csv',
+                    '.tsv'
+                  )
+        )
+      ),
+      includeHTML('www/footer.html')
+    ),
+    tabPanel(
+      "Data Summary",
+      tags$div(
+        class="container",
+        h1("Data Summary"),
+        fluidPage(
+          fluidRow(
+            column(8, tableOutput('summarycontents')),
+            column(
+              4,
+              wellPanel(
+                numericInput('minDetectGenect', label = 'Minimum Detected Genes per Sample.', value=1700, min = 1, max = 100000),
+                numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
+                actionButton("filterData", "Filter Data"),
+                actionButton("filterData", "Reset")
+              )
+            )
+          ),
+          fluidRow(
+            dataTableOutput('contents')
+          )
+        )
+      ),
+      includeHTML('www/footer.html')
+    ),
+    tabPanel(
+      "Clustering",
+      tags$div(
+        class="container",
+        h1("Clustering"),
+        fluidPage(
+          fluidRow(
+            column(4,
+                   wellPanel(
+                     selectInput("selectCustering","Clustering Algorithm",c("PCA","tSNE")),
+                     actionButton("clusterData", "Cluster Data")
+                   )),
+            column(8,
+                   plotOutput("clusterPlot"))
+          )
+        )
+      ),
+      includeHTML('www/footer.html')
+    ),
+    tabPanel(
+      "Batch Correction",
+      tags$div(
+        class="container",
+        h1("Batch Correction")
+      ),
+      includeHTML('www/footer.html')
+    ),
+    tabPanel(
+      "Pathway",
+      tags$div(
+        class="container",
+        h1("Pathway Profiling")
       ),
       includeHTML('www/footer.html')
     ),
@@ -64,26 +133,6 @@ shinyUI(
           )
         )
       ),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
-      "Data Summary",
-      h1("Data Summary"),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
-      "Clustering",
-      h1("Clustering"),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
-      "Batch Correction",
-      h1("Batch Correction"),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
-      "Pathway",
-      h1("Pathway Profiling"),
       includeHTML('www/footer.html')
     ),
     navbarMenu(
