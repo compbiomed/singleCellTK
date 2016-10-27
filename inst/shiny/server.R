@@ -18,11 +18,12 @@ shinyServer(function(input, output) {
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
   })
 
-  data <- reactive({
-    inFile <- input$countsfile
-    if (is.null(inFile))
-      return(NULL)
-    read.table(inFile$datapath, header = TRUE, sep = "\t")
+  vals <- reactiveValues(
+    counts = NULL
+  )
+
+  observeEvent(input$countsfile, {
+    vals$counts <- read.table(input$countsfile$datapath, header = TRUE, sep = "\t")
   })
 
   summarizeTable <- function(indata){
@@ -33,23 +34,20 @@ shinyServer(function(input, output) {
   }
 
   output$contents <- renderDataTable({
-    data()
+    vals$counts
   }, options = list(scrollX = TRUE))
 
   output$summarycontents <- renderTable({
-    summarizeTable(data())
-    #number samples
-    #number rows
-    #samples with <1700 detected genes
+    summarizeTable(vals$counts)
   })
 
   observeEvent(input$filterData, {
-    data <- data()[1:100,]
+    vals$counts <- vals$counts[1:100,]
   })
 
   #we need to filter 0s
   clusterDataframe <- eventReactive(input$clusterData, {
-    prcomp(t(data()[,2:ncol(data())]), center=T, scale. = T)
+    prcomp(t(vals$counts[,2:ncol(vals$counts)]), center=T, scale. = T)
   })
 
   output$clusterPlot <- renderPlot({
