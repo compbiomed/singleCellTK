@@ -1,19 +1,14 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Build and Reload Package:  'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
-
-singleCellTK <- function() {
+#' Run the single cell analysis app
+#'
+#' Use this function to run the single cell analysis app.
+#'
+#' @param inputData The input SCESet class object
+#'
+#' @return The shiny app will open
+#'
+#' @export singleCellTK
+singleCellTK <- function(inputData) {
   appDir <- system.file("shiny", package = "singleCellTK")
+  options(batchqc.shinyInput = inputData)
   shiny::runApp(appDir, display.mode = "normal")
 }

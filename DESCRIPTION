@@ -9,3 +9,4 @@ License: What license is it under?
 LazyData: TRUE
 Imports:
     shiny
+RoxygenNote: 5.0.1
