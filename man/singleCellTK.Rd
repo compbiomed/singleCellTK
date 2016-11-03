@@ -4,7 +4,7 @@
 \alias{singleCellTK}
 \title{Run the single cell analysis app}
 \usage{
-singleCellTK(inputData)
+singleCellTK(inputData = NULL)
 }
 \arguments{
 \item{inputData}{The input SCESet class object}
