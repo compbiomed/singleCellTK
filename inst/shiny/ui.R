@@ -20,7 +20,7 @@ shinyUI(
       ),
       tags$div(
         class="container",
-        fileInput('countsfile', 'Choose file to upload',
+        fileInput('countsfile', 'Upload a matrix of counts here',
                   accept = c(
                     'text/csv',
                     'text/comma-separated-values',
@@ -29,7 +29,18 @@ shinyUI(
                     '.csv',
                     '.tsv'
                   )
-        )
+        ),
+        fileInput('annotfile', 'Upload a matrix of annotations here',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values',
+                    'text/tab-separated-values',
+                    'text/plain',
+                    '.csv',
+                    '.tsv'
+                  )
+        ),
+        actionButton("uploadData", "Upload")
       ),
       includeHTML('www/footer.html')
     ),
