@@ -1,5 +1,10 @@
 library(shiny)
 
+clusterChoice <- ''
+if(!is.null(getShinyOption("inputSCEset"))){
+  clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
+}
+
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
@@ -79,6 +84,7 @@ shinyUI(
             column(4,
                    wellPanel(
                      selectInput("selectCustering","Clustering Algorithm",c("PCA","tSNE")),
+                     selectInput("colorClusters","Color Clusters By",clusterChoice),
                      actionButton("clusterData", "Cluster Data")
                    )),
             column(8,

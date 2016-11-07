@@ -25,7 +25,7 @@ createSCESet <- function(countfile, annotfile){
 }
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset")
@@ -33,6 +33,7 @@ shinyServer(function(input, output) {
 
   observeEvent(input$uploadData, {
     vals$counts <- createSCESet(input$countsfile$datapath, input$annotfile$datapath)
+    updateSelectInput(session, "colorClusters", choices = colnames(pData(vals$counts)))
   })
 
   output$contents <- renderDataTable({
@@ -47,10 +48,15 @@ shinyServer(function(input, output) {
     vals$counts <- vals$counts[1:100,]
   })
 
-  #we need to filter 0s
   clusterDataframe <- observeEvent(input$clusterData, {
-    output$clusterPlot <- renderPlot({
-      plotPCA(vals$counts, colour_by="level1class")
-    })
+    if(input$selectCustering == "PCA"){
+      output$clusterPlot <- renderPlot({
+        plotPCA(vals$counts, colour_by=input$colorClusters)
+      })
+    } else if(input$selectCustering == "tSNE"){
+      output$clusterPlot <- renderPlot({
+        plotTSNE(vals$counts, colour_by=input$colorClusters)
+      })
+    }
   })
 })

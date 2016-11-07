@@ -9,6 +9,6 @@
 #' @export singleCellTK
 singleCellTK <- function(inputData=NULL) {
   appDir <- system.file("shiny", package = "singleCellTK")
-  shinyOptions(inputSCEset = inputData)
+  shiny::shinyOptions(inputSCEset = inputData)
   shiny::runApp(appDir, display.mode = "normal")
 }
