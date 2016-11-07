@@ -1,8 +1,10 @@
 library(shiny)
 
 clusterChoice <- ''
+alertText <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
+  alertText <- HTML("<div class='alert alert-success'>Successfully Uploaded from Command Line!</div>")
 }
 
 # Define UI for application that draws a histogram
@@ -25,6 +27,8 @@ shinyUI(
       ),
       tags$div(
         class="container",
+        #http://shiny.rstudio.com/articles/html-tags.html
+        tags$div(id="uploadAlert", alertText),
         fileInput('countsfile', 'Upload a matrix of counts here',
                   accept = c(
                     'text/csv',
@@ -99,6 +103,14 @@ shinyUI(
       tags$div(
         class="container",
         h1("Batch Correction")
+      ),
+      includeHTML('www/footer.html')
+    ),
+    tabPanel(
+      "Differential Expression",
+      tags$div(
+        class="container",
+        h1("Differential Expression")
       ),
       includeHTML('www/footer.html')
     ),

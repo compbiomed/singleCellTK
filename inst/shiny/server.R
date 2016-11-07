@@ -34,6 +34,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     vals$counts <- createSCESet(input$countsfile$datapath, input$annotfile$datapath)
     updateSelectInput(session, "colorClusters", choices = colnames(pData(vals$counts)))
+    insertUI(
+      selector = '#uploadAlert',
+      ## wrap element in a div with id for ease of removal
+      ui = tags$div(class="alert alert-success", "Successfully Uploaded!")
+      )
   })
 
   output$contents <- renderDataTable({
