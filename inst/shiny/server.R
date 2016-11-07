@@ -37,11 +37,15 @@ shinyServer(function(input, output, session) {
   })
 
   output$contents <- renderDataTable({
-    exprs(vals$counts)
+    if(!(is.null(vals$counts))){
+      exprs(vals$counts)
+    }
   }, options = list(scrollX = TRUE))
 
   output$summarycontents <- renderTable({
-    summarizeTable(exprs(vals$counts))
+    if(!(is.null(vals$counts))){
+      summarizeTable(exprs(vals$counts))
+    }
   })
 
   observeEvent(input$filterData, {
