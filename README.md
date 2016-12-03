@@ -17,7 +17,7 @@ __Note__: singleCellTK is developed to eventually be added to bioconductor. The 
 version of bioconductor works best with R >= 3.3.1 
 
 1. Fork the repo using the "Fork" button above.
-2. Download a local copy of your forked repository "git clone https://github.com/\<username\>/singleCellTK.git"
+2. Download a local copy of your forked repository "git clone https://github.com/{username}/singleCellTK.git"
 3. Open Rstudio
 4. Go to "File" -> "New Project" -> "Existing Directory" and select your git repository directory
 
