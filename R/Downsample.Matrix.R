@@ -51,7 +51,7 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000,10000000), byBatch=FALS
   return(outmat)
 }
 
-
+require(multtest)
 multiple.t.test <- function(class.labels, dataset, test.type="t.equalvar") {
   tval <- multtest::mt.teststat(dataset, classlabel=class.labels, test=test.type, nonpara="n")
   df <- (ncol(dataset) - 2)
@@ -78,17 +78,21 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
   condition <- as.factor(conditions)
   if (genelist == FALSE){
     if (method == "tpm.t"){
-      scaledMatrix <- apply(datamatrix,2,function(x){x/sum(x)})
+      shrunkDown <- datamatrix[apply(datamatrix,1,sum) > 10, ]
+      genenames <- rownames(datamatrix[apply(datamatrix,1,sum) > 10, ])
+      scaledMatrix <- apply(shrunkDown,2,function(x){x/sum(x)})
       t.result <- multiple.t.test(condition, scaledMatrix)
-      genelist <- rownames(datamatrix)[which(t.result < significance)]
+      genelist <- genenames[which(t.result <= significance)]
     }
     else{
-      countData <- newCountDataSet( datamatrix, condition )
+      shrunkDown <- datamatrix[apply(datamatrix,1,sum) > 10, ]
+      genenames <- rownames(datamatrix[apply(datamatrix,1,sum) > 10, ])
+      countData <- newCountDataSet( shrunkDown, condition )
       countData <- estimateSizeFactors( countData )
       countData <- estimateDispersions( countData, method="pooled", fitType="local" )
       diff.results <- nbinomTest( countData, levels(condition)[1], levels(condition)[2] )
       top.results <- p.adjust( diff.results$pval, method="fdr" )
-      genelist <- rownames(datamatrix)[which(top.results <= significance)]
+      genelist <- genenames[which(top.results <= significance)]
     }
   }
   #Create an empty matrix to keep track of how often significant genes are rediscovered after downsampling
