@@ -8,6 +8,8 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + LICENSE
 LazyData: TRUE
 Imports:
+    DESeq,
     shiny,
-    scater
+    scater,
+    ComplexHeatmap
 RoxygenNote: 5.0.1

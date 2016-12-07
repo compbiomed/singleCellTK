@@ -32,8 +32,10 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$uploadData, {
-    vals$counts <- createSCESet(input$countsfile$datapath, input$annotfile$datapath)
-    updateSelectInput(session, "colorClusters", choices = colnames(pData(vals$counts)))
+    vals$counts <- createSCESet(input$countsfile$datapath,
+                                input$annotfile$datapath)
+    updateSelectInput(session, "colorClusters",
+                      choices = colnames(pData(vals$counts)))
     insertUI(
       selector = '#uploadAlert',
       ## wrap element in a div with id for ease of removal
@@ -60,12 +62,19 @@ shinyServer(function(input, output, session) {
   clusterDataframe <- observeEvent(input$clusterData, {
     if(input$selectCustering == "PCA"){
       output$clusterPlot <- renderPlot({
-        plotPCA(vals$counts, colour_by=input$colorClusters)
+        scater::plotPCA(vals$counts, colour_by=input$colorClusters)
       })
     } else if(input$selectCustering == "tSNE"){
       output$clusterPlot <- renderPlot({
-        plotTSNE(vals$counts, colour_by=input$colorClusters)
+        scater::plotTSNE(vals$counts, colour_by=input$colorClusters)
       })
     }
+  })
+  
+  diffexDataframe <- observeEvent(input$runDiffex, {
+    output$diffPlot <- renderPlot({
+      scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
+               input$selectNGenes, input$applyCutoff)
+    }, height=1000)
   })
 })
