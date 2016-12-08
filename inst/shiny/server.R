@@ -32,9 +32,14 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$uploadData, {
-    vals$counts <- createSCESet(input$countsfile$datapath, input$annotfile$datapath)
-    updateSelectInput(session, "colorClusters", choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "subCovariate", choices = colnames(pData(vals$counts)))
+    vals$counts <- createSCESet(input$countsfile$datapath,
+                                input$annotfile$datapath)
+    updateSelectInput(session, "colorClusters",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "selectDiffex_condition",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "subCovariate",
+                      choices = colnames(pData(vals$counts)))
     insertUI(
       selector = '#uploadAlert',
       ## wrap element in a div with id for ease of removal
@@ -61,15 +66,22 @@ shinyServer(function(input, output, session) {
   clusterDataframe <- observeEvent(input$clusterData, {
     if(input$selectCustering == "PCA"){
       output$clusterPlot <- renderPlot({
-        plotPCA(vals$counts, colour_by=input$colorClusters)
+        scater::plotPCA(vals$counts, colour_by=input$colorClusters)
       })
     } else if(input$selectCustering == "tSNE"){
       output$clusterPlot <- renderPlot({
-        plotTSNE(vals$counts, colour_by=input$colorClusters)
+        scater::plotTSNE(vals$counts, colour_by=input$colorClusters)
       })
     }
   })
   
+  diffexDataframe <- observeEvent(input$runDiffex, {
+    output$diffPlot <- renderPlot({
+      scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
+               input$selectNGenes, input$applyCutoff)
+    }, height=600)
+  })
+    
   runDownsampler <- observeEvent(input$runSubsample, {
     subData <- reactiveValues(
       counts=Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)

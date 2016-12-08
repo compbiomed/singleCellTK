@@ -110,7 +110,23 @@ shinyUI(
       "Differential Expression",
       tags$div(
         class="container",
-        h1("Differential Expression")
+        h1("Differential Expression"),
+        fluidPage(
+          fluidRow(
+            column(4,
+                   wellPanel(
+                     selectInput("selectDiffex","Differential Expression",c("DESeq")),
+                     selectInput("selectDiffex_condition","Select Condition",clusterChoice),
+                     sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
+                     checkboxInput("applyCutoff", "Apply p-value Cutoff"),
+                     sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
+                     selectInput("selectCorrection","Correction Type",c("FDR")),
+                     actionButton("runDiffex", "Run Differential Expression")
+                   )),
+            column(8,
+                   plotOutput("diffPlot"))
+          )
+        )
       ),
       includeHTML('www/footer.html')
     ),

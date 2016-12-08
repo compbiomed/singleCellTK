@@ -5,9 +5,15 @@ Version: 0.1.0
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Description: Run common single cell analysis directly through your browser
-License: MIT + LICENSE
+    including differential expression, downsampling analysis, and clustering.
+License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
+    DESeq,
+    S4Vectors,
     shiny,
-    scater
+    scater,
+    multtest,
+    locfit,
+    ComplexHeatmap
 RoxygenNote: 5.0.1

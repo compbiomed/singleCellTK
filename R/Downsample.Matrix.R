@@ -1,3 +1,13 @@
+#' Downsample Data
+#'
+#' @param datamatrix 
+#' @param newcounts 
+#' @param byBatch 
+#' @param batch 
+#' @param iterations 
+#'
+#' @return Downsampled matrix
+#' @export Downsample
 Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144),
                               byBatch = FALSE, batch = NULL, iterations = 10) {
   if (byBatch == FALSE) {
@@ -71,9 +81,7 @@ require(DESeq)
 #' @param method Which method should be used for differential expression. Default is simple tpm-based t-test for speed.
 #'
 #' @return A matrix of recapitulation - rows are genes that were differentially expressed in the original set (or passed as 'genelist'), columns are simulated depths.
-#' @export
-#'
-#' @examples
+#' @export differentialPower
 differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE, significance=0.05, method="tpm.t") {
   condition <- as.factor(conditions)
   if (genelist == FALSE){
