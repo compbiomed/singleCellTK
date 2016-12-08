@@ -4,7 +4,8 @@
 \alias{scDiffEx}
 \title{Perform differential expression on a SCESet object using DESeq}
 \usage{
-scDiffEx(inSCESet, condition, significance, ntop, usesig)
+scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
+  usesig = TRUE)
 }
 \arguments{
 \item{inSCESet}{Input SCESet object. Required}

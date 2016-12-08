@@ -38,6 +38,8 @@ shinyServer(function(input, output, session) {
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "selectDiffex_condition",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "subCovariate",
+                      choices = colnames(pData(vals$counts)))
     insertUI(
       selector = '#uploadAlert',
       ## wrap element in a div with id for ease of removal
@@ -78,5 +80,29 @@ shinyServer(function(input, output, session) {
       scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
                input$selectNGenes, input$applyCutoff)
     }, height=600)
+  })
+    
+  runDownsampler <- observeEvent(input$runSubsample, {
+    subData <- reactiveValues(
+      counts=Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
+    )
+    output$downDone <- renderPlot({
+      heatmap(as.matrix(subData$counts[order(apply(subData$counts[,,10,1],1,sum),decreasing=TRUE)[1:20],,10,1]))
+    })
+  })
+  
+  runDiffPower <- observeEvent(input$runDifferentialPower, {
+#    if(exists('subData$counts')){
+      output$powerBoxPlot <- renderPlot({
+        subData <- Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
+        diffPower <- differentialPower(datamatrix=counts(vals$counts), downmatrix=subData, conditions=phenoData(vals$counts)[[input$subCovariate]], method=input$selectDiffMethod)
+        boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
+      })
+#    }
+#    else{
+#      output$powerBoxPlot <- renderPlot({
+#        plot(c(0,1),c(0,1),main="You need to run the subsampler first.")
+#      })
+#    }
   })
 })

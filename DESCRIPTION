@@ -13,5 +13,7 @@ Imports:
     S4Vectors,
     shiny,
     scater,
+    multtest,
+    locfit,
     ComplexHeatmap
 RoxygenNote: 5.0.1
