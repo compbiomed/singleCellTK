@@ -10,10 +10,17 @@ scDiffEx(inSCESet, condition, significance, ntop, usesig)
 \item{inSCESet}{Input SCESet object. Required}
 
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from pData that contains two labels.}
+expression. Must be a name of a column from pData that contains two labels.
+Required}
 
 \item{significance}{FDR corrected significance cutoff for differentially
-expressed genes}
+expressed genes. Required}
+
+\item{ntop}{Number of top differentially expressed genes to display in the
+heatmap. Required}
+
+\item{usesig}{If TRUE, only display genes that meet the significance cutoff,
+up to ntop genes. Required}
 }
 \value{
 A list of differentially expressed genes.
@@ -22,7 +29,9 @@ A list of differentially expressed genes.
 Perform differential expression on a SCESet object using DESeq
 }
 \examples{
-
+\dontrun{
 scDiffEx(newsceset_david, "age", "0.1")
+}
+
 }
 

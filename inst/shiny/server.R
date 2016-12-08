@@ -36,6 +36,8 @@ shinyServer(function(input, output, session) {
                                 input$annotfile$datapath)
     updateSelectInput(session, "colorClusters",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "selectDiffex_condition",
+                      choices = colnames(pData(vals$counts)))
     insertUI(
       selector = '#uploadAlert',
       ## wrap element in a div with id for ease of removal
@@ -75,6 +77,6 @@ shinyServer(function(input, output, session) {
     output$diffPlot <- renderPlot({
       scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
                input$selectNGenes, input$applyCutoff)
-    }, height=1000)
+    }, height=600)
   })
 })
