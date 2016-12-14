@@ -2,5 +2,6 @@
 
 export(Downsample)
 export(differentialPower)
+export(plotHeatmap)
 export(scDiffEx)
 export(singleCellTK)

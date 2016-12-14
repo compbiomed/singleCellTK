@@ -15,5 +15,9 @@ Imports:
     scater,
     multtest,
     locfit,
-    ComplexHeatmap
+    ComplexHeatmap,
+    limma,
+    d3heatmap,
+    plotly,
+    ggplot2
 RoxygenNote: 5.0.1

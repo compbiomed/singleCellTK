@@ -1,4 +1,6 @@
 library(shiny)
+library(plotly)
+library(d3heatmap)
 
 clusterChoice <- ''
 alertText <- ''
@@ -92,7 +94,8 @@ shinyUI(
                      actionButton("clusterData", "Cluster Data")
                    )),
             column(8,
-                   plotOutput("clusterPlot"))
+                   #plotOutput("clusterPlot")),
+                   plotlyOutput("clusterPlot"))
           )
         )
       ),
@@ -159,6 +162,24 @@ shinyUI(
     ),
     navbarMenu(
       "More",
+      tabPanel(
+        "DE Heatmap",
+        class="container",
+        h1("DE Heatmap"),
+        fluidPage(
+          fluidRow(
+            column(4,
+                   wellPanel(
+                     selectInput("selectHeatmap","Select Heatmap",c("Standard","Complex","Interactive")),
+                     actionButton("makeHeatmap", "Generate Heatmap")
+                   )),
+            column(8,
+                   wellPanel(
+                     d3heatmapOutput("heatmapPlot"))
+                   )
+            )
+          )
+      ),
       tabPanel(
         "Sub-Component A",
         includeHTML('www/footer.html')),

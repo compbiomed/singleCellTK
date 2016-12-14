@@ -1,5 +1,12 @@
 library(shiny)
 library(scater)
+library(ComplexHeatmap)
+library(biomaRt)
+library(circlize)
+library(limma)
+library(d3heatmap)
+library(ggplot2)
+library(plotly)
 library(DESeq)
 
 #1GB max upload size
@@ -66,13 +73,32 @@ shinyServer(function(input, output, session) {
 
   clusterDataframe <- observeEvent(input$clusterData, {
     if(input$selectCustering == "PCA"){
-      output$clusterPlot <- renderPlot({
-        scater::plotPCA(vals$counts, colour_by=input$colorClusters)
+      pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
+      g <- reducedDimension(pca)
+      l <- data.frame(g)
+      w <- input$colorClusters
+      l$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
+      g <- ggplot(l, aes(PC1, PC2, color=Treatment))+geom_point()
+      output$clusterPlot <- renderPlotly({
+        ggplotly(g)
+        #plotPCA(vals$counts, colour_by=input$colorClusters)
       })
     } else if(input$selectCustering == "tSNE"){
       output$clusterPlot <- renderPlot({
         scater::plotTSNE(vals$counts, colour_by=input$colorClusters)
       })
+    }
+  })
+  
+  deHeatmapDataframe <- observeEvent(input$makeHeatmap, {
+    if(input$selectHeatmap == "Standard") {
+      output$heatmapPlot <- renderPlot({
+        heatmap(counts(vals$counts)[1:50,], labCol = FALSE, labRow = FALSE)})
+    } else if(input$selectHeatmap == "Complex") {
+      # Do Something
+    } else if(input$selectHeatmap == "Interactive") {
+      output$heatmapPlot <- renderD3heatmap({
+        plotHeatmap(vals$counts)})
     }
   })
   
