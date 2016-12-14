@@ -20,11 +20,11 @@
 #' }
 #' 
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500, usesig=TRUE){
-  in.condition <- as.factor(scater::pData(inSCESet)[,condition])
+  in.condition <- as.factor(pData(inSCESet)[,condition])
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
          length(levels(in.condition)), " labels")
-  countData <- DESeq::newCountDataSet(scater::counts(inSCESet), in.condition)
+  countData <- DESeq::newCountDataSet(counts(inSCESet), in.condition)
   countData <- DESeq::estimateSizeFactors(countData)
   countData <- DESeq::estimateDispersions(countData, method="pooled",
                                           fitType="local")
@@ -34,17 +34,17 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500, usesig=TR
   
   if(usesig){
     if(length(which(top.results <= significance)) < ntop){
-      newgenes <- rownames(scater::fData(inSCESet))[which(top.results <= significance)]
+      newgenes <- rownames(fData(inSCESet))[which(top.results <= significance)]
     }
     else{
-      newgenes <- rownames(scater::fData(inSCESet))[order(top.results)[1:ntop]]
+      newgenes <- rownames(fData(inSCESet))[order(top.results)[1:ntop]]
     }
   }
   else{
-    newgenes <- rownames(scater::fData(inSCESet))[order(top.results)[1:ntop]]
+    newgenes <- rownames(fData(inSCESet))[order(top.results)[1:ntop]]
   }
   
-  diffex.annotation <- data.frame(scater::pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
@@ -62,7 +62,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500, usesig=TR
 }
 
 scDiffEx_deseq2 <- function(inSCESet, condition){
-  cnts <- scater::counts(inSCESet)
+  cnts <- counts(inSCESet)
   dds <- DESeqDataSetFromMatrix(cnts, S4Vectors::DataFrame(condition), ~ condition)
   dds <- DESeq(dds)
   res <- results(dds)
