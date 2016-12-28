@@ -10,6 +10,7 @@ License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
     DESeq,
+    DESeq2,
     S4Vectors,
     shiny,
     scater,
