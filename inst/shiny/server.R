@@ -16,7 +16,8 @@ options(shiny.maxRequestSize=1000*1024^2)
 shinyServer(function(input, output, session) {
 
   vals <- reactiveValues(
-    counts = getShinyOption("inputSCEset")
+    counts = getShinyOption("inputSCEset"),
+    original = getShinyOption("inputSCEset")
   )
 
   observeEvent(input$uploadData, {
@@ -33,6 +34,7 @@ shinyServer(function(input, output, session) {
       ## wrap element in a div with id for ease of removal
       ui = tags$div(class="alert alert-success", "Successfully Uploaded!")
       )
+    vals$original <- vals$counts
   })
 
   output$contents <- renderDataTable({
@@ -48,7 +50,13 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterData, {
-    vals$counts <- vals$counts[1:100,]
+    nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
+    tokeep <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
+    vals$counts <- vals$counts[tokeep,]
+  })
+  
+  observeEvent(input$resetData, {
+    vals$counts <- vals$original
   })
 
   clusterDataframe <- observeEvent(input$clusterData, {
