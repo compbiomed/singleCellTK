@@ -39,20 +39,23 @@ shinyServer(function(input, output, session) {
 
   output$contents <- renderDataTable({
     if(!(is.null(vals$counts))){
-      exprs(vals$counts)
+      temptable <- cbind(rownames(fData(vals$counts)),exprs(vals$counts))
+      colnames(temptable)[1] <- "Gene"
+      temptable
     }
   }, options = list(scrollX = TRUE))
 
   output$summarycontents <- renderTable({
     if(!(is.null(vals$counts))){
-      summarizeTable(exprs(vals$counts))
+      summarizeTable(vals$counts)
     }
   })
 
   observeEvent(input$filterData, {
     nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
-    tokeep <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
-    vals$counts <- vals$counts[tokeep,]
+    tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
+    tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
+    vals$counts <- vals$counts[tokeeprow,tokeepcol]
   })
   
   observeEvent(input$resetData, {

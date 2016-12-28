@@ -11,7 +11,7 @@ summarizeTable <- function(indata){
                                "Samples with <1700 detected genes"),
                     "Value"=c(ncol(indata),
                               nrow(indata),
-                              sum(apply(indata, 2, function(x) sum(as.numeric(x)==0)) < 1700))))
+                              sum(apply(counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700))))
 }
 
 #' Create a SCESet object
