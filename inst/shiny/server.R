@@ -52,6 +52,9 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterData, {
+    if (input$removeNoexpress){
+      vals$counts <- vals$counts[rowSums(counts(vals$counts)) != 0,]
+    }
     nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
     tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
     tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
@@ -96,7 +99,7 @@ shinyServer(function(input, output, session) {
   diffexDataframe <- observeEvent(input$runDiffex, {
     output$diffPlot <- renderPlot({
       scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
-               input$selectNGenes, input$applyCutoff)
+               input$selectNGenes, input$applyCutoff, diffexmethod=input$selectDiffex)
     }, height=600)
   })
     

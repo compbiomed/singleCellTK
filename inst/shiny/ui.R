@@ -12,7 +12,7 @@ if(!is.null(getShinyOption("inputSCEset"))){
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Single Cell Toolkit (alpha)",
+    "Single Cell Toolkit",
     #bootstrap theme
     theme = "bootstrap.min.css",
     
@@ -68,6 +68,7 @@ shinyUI(
               wellPanel(
                 numericInput('minDetectGenect', label = 'Minimum Detected Genes per Sample.', value=1700, min = 1, max = 100000),
                 numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
+                checkboxInput("removeNoexpress", "Remove all genes with no gene expression (Recommended)", value=TRUE),
                 actionButton("filterData", "Filter Data"),
                 actionButton("resetData", "Reset")
               )
@@ -118,10 +119,12 @@ shinyUI(
           fluidRow(
             column(4,
                    wellPanel(
-                     selectInput("selectDiffex","Differential Expression",c("DESeq")),
+                     selectInput("selectDiffex","Differential Expression",c("DESeq", "DESeq2", "limma")),
                      selectInput("selectDiffex_condition","Select Condition",clusterChoice),
                      sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
                      checkboxInput("applyCutoff", "Apply p-value Cutoff"),
+                     checkboxInput("clusterRows", "Cluster Heatmap Rows", value=TRUE),
+                     checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
                      actionButton("runDiffex", "Run Differential Expression")
