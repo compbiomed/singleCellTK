@@ -57,7 +57,7 @@ shinyUI(
       includeHTML('www/footer.html')
     ),
     tabPanel(
-      "Data Summary",
+      "Data Summary and Filtering",
       tags$div(
         class="container",
         h1("Data Summary"),
@@ -105,14 +105,6 @@ shinyUI(
                    plotlyOutput("clusterPlot"))
           )
         )
-      ),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
-      "Batch Correction",
-      tags$div(
-        class="container",
-        h1("Batch Correction")
       ),
       includeHTML('www/footer.html')
     ),
@@ -191,11 +183,21 @@ shinyUI(
           )
       ),
       tabPanel(
-        "Sub-Component A",
-        includeHTML('www/footer.html')),
+        "Batch Correction",
+        tags$div(
+          class="container",
+          h1("Batch Correction")
+        ),
+        includeHTML('www/footer.html')
+      ),      
       tabPanel(
-        "Sub-Component B",
-        includeHTML('www/footer.html'))
+        "Pathway Activity Analysis",
+        tags$div(
+          class="container",
+          h1("Pathway Activity Analysis")
+        ),
+        includeHTML('www/footer.html')
+      )
     )
   )
 )
