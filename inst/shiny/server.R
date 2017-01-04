@@ -34,7 +34,10 @@ shinyServer(function(input, output, session) {
     insertUI(
       selector = '#uploadAlert',
       ## wrap element in a div with id for ease of removal
-      ui = tags$div(class="alert alert-success", "Successfully Uploaded!")
+      ui = tags$div(class="alert alert-success alert-dismissible", HTML("<span \
+                    class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
+                    Successfully Uploaded! <button type='button' class='close' \
+                    data-dismiss='alert'>&times;</button>"))
       )
     vals$original <- vals$counts
   })

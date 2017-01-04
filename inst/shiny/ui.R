@@ -3,11 +3,16 @@ library(plotly)
 library(d3heatmap)
 
 clusterChoice <- ''
+sampleChoice <- ''
 alertText <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
-  alertText <- HTML("<div class='alert alert-success'>Successfully Uploaded from Command Line!</div>")
+  alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
+                    <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
+                    </span> Successfully Uploaded from Command Line! <button \
+                    type='button' class='close' data-dismiss='alert'>&times;\
+                    </button></div>")
 }
 
 # Define UI for application that draws a histogram
