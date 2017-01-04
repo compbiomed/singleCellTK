@@ -25,6 +25,8 @@ shinyServer(function(input, output, session) {
                                 input$annotfile$datapath)
     updateSelectInput(session, "colorClusters",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "deletesamplelist",
+                      choices = rownames(pData(vals$counts)))
     updateSelectInput(session, "selectDiffex_condition",
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "subCovariate",
@@ -61,8 +63,16 @@ shinyServer(function(input, output, session) {
     vals$counts <- vals$counts[tokeeprow,tokeepcol]
   })
   
+  observeEvent(input$deleteSelectedSamples, {
+    vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
+    updateSelectInput(session, "deletesamplelist",
+                      choices = rownames(pData(vals$counts)))
+  })
+  
   observeEvent(input$resetData, {
     vals$counts <- vals$original
+    updateSelectInput(session, "deletesamplelist",
+                      choices = rownames(pData(vals$counts)))
   })
 
   clusterDataframe <- observeEvent(input$clusterData, {
@@ -97,11 +107,29 @@ shinyServer(function(input, output, session) {
   })
   
   diffexDataframe <- observeEvent(input$runDiffex, {
+    #run diffex to get gene list and pvalues
+    vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
+                        input$selectPval, input$selectNGenes, input$applyCutoff,
+                        diffexmethod=input$selectDiffex,
+                        clusterRow=input$clusterRows,
+                        clusterCol=input$clusterColumns)
+    
     output$diffPlot <- renderPlot({
-      scDiffEx(vals$counts, input$selectDiffex_condition, input$selectPval,
-               input$selectNGenes, input$applyCutoff, diffexmethod=input$selectDiffex)
+      plot_DiffEx(vals$counts, input$selectDiffex_condition, vals$diffexgenelist,
+               clusterRow=input$clusterRows, clusterCol=input$clusterColumns)
     }, height=600)
   })
+  
+  # Need to modify the scDiffEx function to return gene list initially and then
+  # returns
+  output$downloadGeneList <- downloadHandler(
+    filename = function() {
+      paste("genelist-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(data.frame(genes=vals$diffexgenelist), file)
+    }
+  )
     
   runDownsampler <- observeEvent(input$runSubsample, {
     subData <- reactiveValues(

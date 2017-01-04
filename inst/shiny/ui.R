@@ -6,6 +6,7 @@ clusterChoice <- ''
 alertText <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
+  sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success'>Successfully Uploaded from Command Line!</div>")
 }
 
@@ -70,7 +71,12 @@ shinyUI(
                 numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
                 checkboxInput("removeNoexpress", "Remove all genes with no gene expression (Recommended)", value=TRUE),
                 actionButton("filterData", "Filter Data"),
-                actionButton("resetData", "Reset")
+                actionButton("resetData", "Reset"),
+                h2("Delete Outliers"),
+                selectInput("deletesamplelist","Select Samples:",
+                            sampleChoice,
+                            multiple = TRUE),
+                actionButton("deleteSelectedSamples", "Delete Samples")
               )
             )
           ),
@@ -127,7 +133,8 @@ shinyUI(
                      checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
-                     actionButton("runDiffex", "Run Differential Expression")
+                     actionButton("runDiffex", "Run Differential Expression"),
+                     downloadButton("downloadGeneList","Download Gene List")
                    )),
             column(8,
                    plotOutput("diffPlot"))

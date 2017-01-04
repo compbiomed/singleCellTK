@@ -22,7 +22,8 @@
 #' }
 #' 
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
-                     usesig=TRUE, diffexmethod){
+                     usesig=TRUE, diffexmethod, clusterRow=TRUE,
+                     clusterCol=TRUE){
   in.condition <- as.factor(pData(inSCESet)[,condition])
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
@@ -52,20 +53,33 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
   
+  return(newgenes)
+}
+
+#' Plot Differential Expression
+#'
+#' @param inSCESet 
+#' @param condition 
+#' @param geneList 
+#' @param clusterRow 
+#' @param clusterCol 
+#'
+#' @return
+#' @export plot_DiffEx
+#'
+plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
+                     clusterCol=TRUE){
   diffex.annotation <- data.frame(pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
   
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(exprs(inSCESet)[newgenes,]))),
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
                                      name="Expression",
                                      column_title = "Differential Expression",
-                                     cluster_rows = TRUE,
-                                     cluster_columns = TRUE,
+                                     cluster_rows = clusterRow,
+                                     cluster_columns = clusterCol,
                                      top_annotation = topha)
-  if(FALSE){
-    scDiffEx_deseq2(inSCESet, in.condition)
-  }
   return(heatmap)
 }
 
