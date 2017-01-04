@@ -129,6 +129,7 @@ shinyUI(
                      downloadButton("downloadGeneList","Download Gene List")
                    )),
             column(8,
+                   #d3heatmapOutput("diffPlot"))
                    plotOutput("diffPlot"))
           )
         )

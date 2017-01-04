@@ -122,6 +122,10 @@ shinyServer(function(input, output, session) {
       plot_DiffEx(vals$counts, input$selectDiffex_condition, vals$diffexgenelist,
                clusterRow=input$clusterRows, clusterCol=input$clusterColumns)
     }, height=600)
+    # output$diffPlot <- renderD3heatmap({
+    #   plot_d3DiffEx(vals$counts, input$selectDiffex_condition, vals$diffexgenelist,
+    #            clusterRow=input$clusterRows, clusterCol=input$clusterColumns)
+    # })
   })
   
   # Need to modify the scDiffEx function to return gene list initially and then

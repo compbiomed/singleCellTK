@@ -83,6 +83,29 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   return(heatmap)
 }
 
+#' Plot Interactive Differential Expression
+#'
+#' @param inSCESet 
+#' @param condition 
+#' @param geneList 
+#' @param clusterRow 
+#' @param clusterCol 
+#'
+#' @return
+#' @export plot_d3DiffEx
+#'
+plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
+                          clusterCol=TRUE){
+  diffex.annotation <- data.frame(pData(inSCESet)[,condition])
+  colnames(diffex.annotation) <- condition
+  topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
+                                             height = unit(0.333, "cm"))
+
+  d3heatmap::d3heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
+                       Rowv=clusterRow,
+                       Colv=clusterCol)
+}
+
 #' Perform differential expression analysis with DESeq2
 #' 
 #' Returns a data frame of gene names and adjusted p-values
