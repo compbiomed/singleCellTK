@@ -82,16 +82,20 @@ shinyServer(function(input, output, session) {
       l <- data.frame(g)
       w <- input$colorClusters
       l$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-      g <- ggplot(l, aes(PC1, PC2, color=Treatment))+geom_point()
-      output$clusterPlot <- renderPlotly({
-        ggplotly(g)
-        #plotPCA(vals$counts, colour_by=input$colorClusters)
-      })
+      l$Sample <- rownames(pData(vals$counts))
+      g <- ggplot(l, aes(PC1, PC2, label=Sample, color=Treatment))+geom_point()
     } else if(input$selectCustering == "tSNE"){
-      output$clusterPlot <- renderPlot({
-        scater::plotTSNE(vals$counts, colour_by=input$colorClusters)
-      })
+      tsne <- scater::plotTSNE(vals$counts, return_SCESet=TRUE)
+      g <- reducedDimension(tsne)
+      l <- data.frame(g)
+      w <- input$colorClusters
+      l$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
+      l$Sample <- rownames(pData(vals$counts))
+      g <- ggplot(l, aes(X1, X2, label=Sample, color=Treatment))+geom_point()
     }
+    output$clusterPlot <- renderPlotly({
+      ggplotly(g)
+    })
   })
   
   deHeatmapDataframe <- observeEvent(input$makeHeatmap, {
