@@ -72,16 +72,15 @@ shinyUI(
             column(
               4,
               wellPanel(
+                checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value=TRUE),
                 numericInput('minDetectGenect', label = 'Minimum Detected Genes per Sample.', value=1700, min = 1, max = 100000),
                 numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
-                checkboxInput("removeNoexpress", "Remove all genes with no gene expression (Recommended)", value=TRUE),
-                actionButton("filterData", "Filter Data"),
-                actionButton("resetData", "Reset"),
                 h2("Delete Outliers"),
                 selectInput("deletesamplelist","Select Samples:",
                             sampleChoice,
                             multiple = TRUE),
-                actionButton("deleteSelectedSamples", "Delete Samples")
+                actionButton("filterData", "Filter Data"),
+                actionButton("resetData", "Reset")
               )
             )
           ),
@@ -131,11 +130,15 @@ shinyUI(
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
                      actionButton("runDiffex", "Run Differential Expression"),
-                     downloadButton("downloadGeneList","Download Gene List")
+                     downloadButton("downloadGeneList","Download Results")
                    )),
             column(8,
-                   #d3heatmapOutput("diffPlot"))
-                   plotOutput("diffPlot"))
+                   tabsetPanel(
+                     id = 'dataset',
+                     tabPanel('Heatmap', plotOutput("diffPlot")), #d3heatmapOutput("diffPlot"))
+                     tabPanel('Results Table', dataTableOutput('diffextable'))
+                   )
+                   )
           )
         )
       ),

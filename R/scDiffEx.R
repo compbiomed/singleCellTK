@@ -53,7 +53,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
   
-  return(newgenes)
+  return(diffex.results[newgenes,])
 }
 
 #' Plot Differential Expression
@@ -127,7 +127,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
                                         design = ~ condition)
   dds <- DESeq2::DESeq(dds)
   res <- DESeq2::results(dds)
-  return(data.frame(res[,"padj",drop=F]))
+  return(data.frame(res))
 }
 
 #' Perform differential expression analysis with DESeq
@@ -149,7 +149,10 @@ scDiffEx_deseq <- function(inSCESet, condition){
   diff.results <- DESeq::nbinomTest( countData, levels(condition)[1],
                                      levels(condition)[2])
   top.results <- stats::p.adjust( diff.results$pval, method="fdr" )
-  return(data.frame(row.names = diff.results$id, padj=top.results))
+  diff.results$padj <- top.results
+  rownames(diff.results) <- diff.results$id
+  diff.results$id <- NULL
+  return(diff.results)
 }
 
 #' Perform differential expression analysis with limma
@@ -169,7 +172,6 @@ scDiffEx_limma <- function(inSCESet, condition){
   fit <- lmFit(exprs(inSCESet), design)
   ebayes <- eBayes(fit)
   topGenes <- topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
-  topGenes <- topGenes[,"adj.P.Val", drop=F]
-  colnames(topGenes) <- "padj"
+  colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }

@@ -57,6 +57,8 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterData, {
+    vals$counts <- vals$original
+    vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
     if (input$removeNoexpress){
       vals$counts <- vals$counts[rowSums(counts(vals$counts)) != 0,]
     }
@@ -64,12 +66,6 @@ shinyServer(function(input, output, session) {
     tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
     tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
     vals$counts <- vals$counts[tokeeprow,tokeepcol]
-  })
-  
-  observeEvent(input$deleteSelectedSamples, {
-    vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
-    updateSelectInput(session, "deletesamplelist",
-                      choices = rownames(pData(vals$counts)))
   })
   
   observeEvent(input$resetData, {
@@ -122,13 +118,21 @@ shinyServer(function(input, output, session) {
                         clusterCol=input$clusterColumns)
     
     output$diffPlot <- renderPlot({
-      plot_DiffEx(vals$counts, input$selectDiffex_condition, vals$diffexgenelist,
+      plot_DiffEx(vals$counts, input$selectDiffex_condition, rownames(vals$diffexgenelist),
                clusterRow=input$clusterRows, clusterCol=input$clusterColumns)
     }, height=600)
     # output$diffPlot <- renderD3heatmap({
     #   plot_d3DiffEx(vals$counts, input$selectDiffex_condition, vals$diffexgenelist,
     #            clusterRow=input$clusterRows, clusterCol=input$clusterColumns)
     # })
+  })
+  
+  output$diffextable <- renderDataTable({
+    if(!is.null(vals$diffexgenelist)){
+      temptable <- cbind(rownames(vals$diffexgenelist),data.frame(vals$diffexgenelist))
+      colnames(temptable)[1] <- "Gene"
+      temptable
+    }
   })
   
   # Need to modify the scDiffEx function to return gene list initially and then
@@ -138,7 +142,7 @@ shinyServer(function(input, output, session) {
       paste("genelist-", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.csv(data.frame(genes=vals$diffexgenelist), file)
+      write.csv(vals$diffexgenelist, file)
     }
   )
     
