@@ -103,7 +103,8 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 
   d3heatmap::d3heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
-                       Colv=clusterCol)
+                       Colv=clusterCol,
+                       ColSideColors=RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[,1]))])
 }
 
 #' Perform differential expression analysis with DESeq2

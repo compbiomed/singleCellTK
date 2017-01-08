@@ -135,8 +135,9 @@ shinyUI(
             column(8,
                    tabsetPanel(
                      id = 'dataset',
-                     tabPanel('Heatmap', plotOutput("diffPlot")), #d3heatmapOutput("diffPlot"))
-                     tabPanel('Results Table', dataTableOutput('diffextable'))
+                     tabPanel('Heatmap', plotOutput("diffPlot")),
+                     tabPanel('Results Table', dataTableOutput('diffextable')),
+                     tabPanel('Interactive Heatmap', d3heatmapOutput("interactivediffPlot"))
                    )
                    )
           )
