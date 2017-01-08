@@ -7,11 +7,14 @@
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
 summarizeTable <- function(indata){
-  return(data.frame("Metric"=c("Number of Samples","Number of Genes",
-                               "Samples with <1700 detected genes"),
+  return(data.frame("Metric"=c("Number of Samples",
+                               "Number of Genes",
+                               "Samples with <1700 detected genes",
+                               "Genes with no expression across all samples"),
                     "Value"=c(ncol(indata),
                               nrow(indata),
-                              sum(apply(counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700))))
+                              sum(apply(counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700),
+                              sum(rowSums(counts(indata)) == 0))))
 }
 
 #' Create a SCESet object
