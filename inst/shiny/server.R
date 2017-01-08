@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$contents <- renderDataTable({
-    if(!(is.null(vals$counts))){
+    if(!(is.null(vals$counts)) && nrow(pData(vals$counts)) < 50){
       temptable <- cbind(rownames(fData(vals$counts)),exprs(vals$counts))
       colnames(temptable)[1] <- "Gene"
       temptable
