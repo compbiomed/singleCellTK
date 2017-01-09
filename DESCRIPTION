@@ -20,5 +20,6 @@ Imports:
     limma,
     d3heatmap,
     plotly,
-    ggplot2
+    ggplot2,
+    Rtsne
 RoxygenNote: 5.0.1
