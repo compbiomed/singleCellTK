@@ -24,7 +24,7 @@
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE){
-  in.condition <- as.factor(pData(inSCESet)[,condition])
+  in.condition <- droplevels(as.factor(pData(inSCESet)[,condition]))
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
          length(levels(in.condition)), " labels")
