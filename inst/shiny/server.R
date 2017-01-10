@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(scater)
 library(ComplexHeatmap)
 library(biomaRt)
@@ -21,25 +22,27 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$uploadData, {
-    vals$counts <- createSCESet(input$countsfile$datapath,
-                                input$annotfile$datapath)
-    updateSelectInput(session, "colorClusters",
-                      choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "deletesamplelist",
-                      choices = rownames(pData(vals$counts)))
-    updateSelectInput(session, "selectDiffex_condition",
-                      choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "subCovariate",
-                      choices = colnames(pData(vals$counts)))
-    insertUI(
-      selector = '#uploadAlert',
-      ## wrap element in a div with id for ease of removal
-      ui = tags$div(class="alert alert-success alert-dismissible", HTML("<span \
-                    class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
-                    Successfully Uploaded! <button type='button' class='close' \
-                    data-dismiss='alert'>&times;</button>"))
-      )
-    vals$original <- vals$counts
+    withBusyIndicatorServer("uploadData", {
+      vals$counts <- createSCESet(input$countsfile$datapath,
+                                  input$annotfile$datapath)
+      updateSelectInput(session, "colorClusters",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "deletesamplelist",
+                        choices = rownames(pData(vals$counts)))
+      updateSelectInput(session, "selectDiffex_condition",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "subCovariate",
+                        choices = colnames(pData(vals$counts)))
+      insertUI(
+        selector = '#uploadAlert',
+        ## wrap element in a div with id for ease of removal
+        ui = tags$div(class="alert alert-success alert-dismissible", HTML("<span \
+                      class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
+                      Successfully Uploaded! <button type='button' class='close' \
+                      data-dismiss='alert'>&times;</button>"))
+        )
+      vals$original <- vals$counts
+    })
   })
 
   output$contents <- renderDataTable({
@@ -110,24 +113,26 @@ shinyServer(function(input, output, session) {
   })
   
   diffexDataframe <- observeEvent(input$runDiffex, {
-    #run diffex to get gene list and pvalues
-    vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
-                        input$selectPval, input$selectNGenes, input$applyCutoff,
-                        diffexmethod=input$selectDiffex,
-                        clusterRow=input$clusterRows,
-                        clusterCol=input$clusterColumns)
-    
-    output$diffPlot <- renderPlot({
-      plot_DiffEx(vals$counts, input$selectDiffex_condition,
+    withBusyIndicatorServer("runDiffex", {
+      #run diffex to get gene list and pvalues
+      vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
+                          input$selectPval, input$selectNGenes, input$applyCutoff,
+                          diffexmethod=input$selectDiffex,
+                          clusterRow=input$clusterRows,
+                          clusterCol=input$clusterColumns)
+    })
+  })
+  
+  output$diffPlot <- renderPlot({
+    plot_DiffEx(vals$counts, input$selectDiffex_condition,
+                rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
+                clusterCol=input$clusterColumns)
+  }, height=600)
+  
+  output$interactivediffPlot <- renderD3heatmap({
+    plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
                   clusterCol=input$clusterColumns)
-    }, height=600)
-    
-    output$interactivediffPlot <- renderD3heatmap({
-      plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
-                    rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
-                    clusterCol=input$clusterColumns)
-    })
   })
   
   output$diffextable <- renderDataTable({

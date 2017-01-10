@@ -21,5 +21,6 @@ Imports:
     d3heatmap,
     plotly,
     ggplot2,
-    Rtsne
+    Rtsne,
+    shinyjs
 RoxygenNote: 5.0.1
