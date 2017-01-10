@@ -124,15 +124,19 @@ shinyServer(function(input, output, session) {
   })
   
   output$diffPlot <- renderPlot({
-    draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
-                rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
-                clusterCol=input$clusterColumns))
+    if(!is.null(vals$diffexgenelist)){
+      draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
+                  rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
+                  clusterCol=input$clusterColumns))
+    }
   }, height=600)
   
   output$interactivediffPlot <- renderD3heatmap({
-    plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
-                  rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
-                  clusterCol=input$clusterColumns)
+    if(!is.null(vals$diffexgenelist)){
+      plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
+                    rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
+                    clusterCol=input$clusterColumns)
+    }
   })
   
   output$diffextable <- renderDataTable({
