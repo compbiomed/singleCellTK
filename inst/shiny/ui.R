@@ -1,6 +1,9 @@
 library(shiny)
+library(shinyjs)
 library(plotly)
 library(d3heatmap)
+
+source("helpers.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
@@ -21,10 +24,11 @@ shinyUI(
     "Single Cell Toolkit",
     #bootstrap theme
     theme = "bootstrap.min.css",
-    
     #Upload Tab
     tabPanel(
       "Upload",
+      useShinyjs(),
+      tags$style(appCSS),
       tags$div(
         class="jumbotron",
         tags$div(
@@ -57,7 +61,9 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        actionButton("uploadData", "Upload")
+        withBusyIndicatorUI(
+          actionButton("uploadData", "Upload")
+        )
       ),
       includeHTML('www/footer.html')
     ),
@@ -129,7 +135,7 @@ shinyUI(
                      checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
-                     actionButton("runDiffex", "Run Differential Expression"),
+                     withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
                      downloadButton("downloadGeneList","Download Results")
                    )),
             column(8,
