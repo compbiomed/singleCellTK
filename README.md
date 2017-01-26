@@ -29,4 +29,6 @@ Information about building shiny packages is available here: http://shiny.rstudi
 When you are ready to upload your changes, commit them locally, push them to your
 forked repo, and make a pull request to the compbiomed repository.
 
+Report bugs and request features on our [GitHub issue tracker](https://github.com/compbiomed/singleCellTK/issues).
+
 Join us on [slack](https://compbiomed.slack.com/)!
