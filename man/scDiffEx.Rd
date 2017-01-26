@@ -2,10 +2,10 @@
 % Please edit documentation in R/scDiffEx.R
 \name{scDiffEx}
 \alias{scDiffEx}
-\title{Perform differential expression on a SCESet object using DESeq}
+\title{Create a heatmap for differential expression analysis}
 \usage{
 scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
-  usesig = TRUE)
+  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE)
 }
 \arguments{
 \item{inSCESet}{Input SCESet object. Required}
@@ -22,12 +22,15 @@ heatmap. Required}
 
 \item{usesig}{If TRUE, only display genes that meet the significance cutoff,
 up to ntop genes. Required}
+
+\item{diffexmethod}{The method for performing differential expression
+analyis. Available options are DESeq, DESeq2, and limma. Required}
 }
 \value{
 A list of differentially expressed genes.
 }
 \description{
-Perform differential expression on a SCESet object using DESeq
+Create a heatmap for differential expression analysis
 }
 \examples{
 \dontrun{
