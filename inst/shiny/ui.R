@@ -1,24 +1,34 @@
 library(shiny)
+library(shinyjs)
 library(plotly)
 library(d3heatmap)
 
+source("helpers.R")
+
 clusterChoice <- ''
+sampleChoice <- ''
 alertText <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
-  alertText <- HTML("<div class='alert alert-success'>Successfully Uploaded from Command Line!</div>")
+  sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
+  alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
+                    <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
+                    </span> Successfully Uploaded from Command Line! <button \
+                    type='button' class='close' data-dismiss='alert'>&times;\
+                    </button></div>")
 }
 
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Single Cell Toolkit (alpha)",
+    "Single Cell Toolkit",
     #bootstrap theme
     theme = "bootstrap.min.css",
-    
     #Upload Tab
     tabPanel(
       "Upload",
+      useShinyjs(),
+      tags$style(appCSS),
       tags$div(
         class="jumbotron",
         tags$div(
@@ -51,12 +61,14 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        actionButton("uploadData", "Upload")
+        withBusyIndicatorUI(
+          actionButton("uploadData", "Upload")
+        )
       ),
       includeHTML('www/footer.html')
     ),
     tabPanel(
-      "Data Summary",
+      "Data Summary and Filtering",
       tags$div(
         class="container",
         h1("Data Summary"),
@@ -66,8 +78,13 @@ shinyUI(
             column(
               4,
               wellPanel(
+                checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value=TRUE),
                 numericInput('minDetectGenect', label = 'Minimum Detected Genes per Sample.', value=1700, min = 1, max = 100000),
                 numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
+                h2("Delete Outliers"),
+                selectInput("deletesamplelist","Select Samples:",
+                            sampleChoice,
+                            multiple = TRUE),
                 actionButton("filterData", "Filter Data"),
                 actionButton("resetData", "Reset")
               )
@@ -102,14 +119,6 @@ shinyUI(
       includeHTML('www/footer.html')
     ),
     tabPanel(
-      "Batch Correction",
-      tags$div(
-        class="container",
-        h1("Batch Correction")
-      ),
-      includeHTML('www/footer.html')
-    ),
-    tabPanel(
       "Differential Expression",
       tags$div(
         class="container",
@@ -118,16 +127,25 @@ shinyUI(
           fluidRow(
             column(4,
                    wellPanel(
-                     selectInput("selectDiffex","Differential Expression",c("DESeq")),
+                     selectInput("selectDiffex","Differential Expression",c("DESeq", "DESeq2", "limma")),
                      selectInput("selectDiffex_condition","Select Condition",clusterChoice),
                      sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
                      checkboxInput("applyCutoff", "Apply p-value Cutoff"),
+                     checkboxInput("clusterRows", "Cluster Heatmap Rows", value=TRUE),
+                     checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
-                     actionButton("runDiffex", "Run Differential Expression")
+                     withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
+                     downloadButton("downloadGeneList","Download Results")
                    )),
             column(8,
-                   plotOutput("diffPlot"))
+                   tabsetPanel(
+                     id = 'dataset',
+                     tabPanel('Heatmap', plotOutput("diffPlot")),
+                     tabPanel('Results Table', dataTableOutput('diffextable')),
+                     tabPanel('Interactive Heatmap', d3heatmapOutput("interactivediffPlot"))
+                   )
+                   )
           )
         )
       ),
@@ -181,11 +199,21 @@ shinyUI(
           )
       ),
       tabPanel(
-        "Sub-Component A",
-        includeHTML('www/footer.html')),
+        "Batch Correction",
+        tags$div(
+          class="container",
+          h1("Batch Correction")
+        ),
+        includeHTML('www/footer.html')
+      ),      
       tabPanel(
-        "Sub-Component B",
-        includeHTML('www/footer.html'))
+        "Pathway Activity Analysis",
+        tags$div(
+          class="container",
+          h1("Pathway Activity Analysis")
+        ),
+        includeHTML('www/footer.html')
+      )
     )
   )
 )
