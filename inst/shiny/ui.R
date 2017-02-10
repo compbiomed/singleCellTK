@@ -21,7 +21,7 @@ if(!is.null(getShinyOption("inputSCEset"))){
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Single Cell Toolkit",
+    paste("Single Cell Toolkit v.",packageVersion("singleCellTK"), sep=""),
     #bootstrap theme
     theme = "bootstrap.min.css",
     #Upload Tab
