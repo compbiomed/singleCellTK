@@ -12,6 +12,8 @@
 #' up to ntop genes. Required
 #' @param diffexmethod The method for performing differential expression
 #' analyis. Available options are DESeq, DESeq2, and limma. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -58,11 +60,12 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 
 #' Plot Differential Expression
 #'
-#' @param inSCESet 
-#' @param condition 
-#' @param geneList 
-#' @param clusterRow 
-#' @param clusterCol 
+#' @param inSCESet Input data object that contains the data to be plotted.
+#' Required
+#' @param condition The condition used for plotting the heatmap. Required
+#' @param geneList The list of genes to put in the heatmap. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
 #' @return
 #' @export plot_DiffEx
@@ -85,11 +88,12 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 
 #' Plot Interactive Differential Expression
 #'
-#' @param inSCESet 
-#' @param condition 
-#' @param geneList 
-#' @param clusterRow 
-#' @param clusterCol 
+#' @param inSCESet Input data object that contains the data to be plotted.
+#' Required
+#' @param condition The condition used for plotting the heatmap. Required
+#' @param geneList The list of genes to put in the heatmap. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
 #' @return
 #' @export plot_d3DiffEx
