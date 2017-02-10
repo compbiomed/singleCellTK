@@ -13,8 +13,8 @@ summarizeTable <- function(indata){
                                "Genes with no expression across all samples"),
                     "Value"=c(ncol(indata),
                               nrow(indata),
-                              sum(apply(counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700),
-                              sum(rowSums(counts(indata)) == 0))))
+                              sum(apply(scater::counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700),
+                              sum(rowSums(scater::counts(indata)) == 0))))
 }
 
 #' Create a SCESet object
@@ -31,13 +31,13 @@ summarizeTable <- function(indata){
 #' @return a SCESet object
 #' @export createSCESet
 createSCESet <- function(countfile, annotfile){
-  countsin <- read.table(countfile, sep="\t", header=T, row.names=1)
-  annotin <- read.table(annotfile, sep="\t", header=T, row.names=1)
-  pd <- new("AnnotatedDataFrame", data = annotin)
+  countsin <- utils::read.table(countfile, sep="\t", header=T, row.names=1)
+  annotin <- utils::read.table(annotfile, sep="\t", header=T, row.names=1)
+  pd <- methods::new("AnnotatedDataFrame", data = annotin)
   
   gene_df <- data.frame(Gene = rownames(countsin))
   rownames(gene_df) <- gene_df$Gene
-  fd <- new("AnnotatedDataFrame", data = gene_df)
-  return(newSCESet(countData = countsin, phenoData = pd,
-                   featureData = fd))
+  fd <- methods::new("AnnotatedDataFrame", data = gene_df)
+  return(scater::newSCESet(countData = countsin, phenoData = pd,
+                           featureData = fd))
 }
