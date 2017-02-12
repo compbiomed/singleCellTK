@@ -19,6 +19,9 @@ Required}
 
 \item{clusterCol}{Cluster the columns. The default is TRUE}
 }
+\value{
+A d3heatmap object is plotted
+}
 \description{
 Plot Interactive Differential Expression
 }
