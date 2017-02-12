@@ -24,5 +24,6 @@ Imports:
     Rtsne,
     shinyjs,
     RColorBrewer,
-    methods
+    methods,
+    Biobase
 RoxygenNote: 5.0.1

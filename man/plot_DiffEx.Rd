@@ -19,6 +19,10 @@ Required}
 
 \item{clusterCol}{Cluster the columns. The default is TRUE}
 }
+\value{
+ComplexHeatmap object for the provided geneList annotated with the
+condition.
+}
 \description{
 Plot Differential Expression
 }
