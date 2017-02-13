@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/compbiomed/singleCellTK.svg?branch=master)](https://travis-ci.org/compbiomed/singleCellTK)
+
 # Single Cell TK (name will change)
 
 ## Installation
