@@ -39,7 +39,6 @@ shinyUI(
       ),
       tags$div(
         class="container",
-        #http://shiny.rstudio.com/articles/html-tags.html
         tags$div(id="uploadAlert", alertText),
         fileInput('countsfile', 'Upload a matrix of counts here',
                   accept = c(
@@ -51,7 +50,17 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        fileInput('annotfile', 'Upload a matrix of annotations here',
+        fileInput('annotfile', 'Optional: Upload a matrix of annotations here',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values',
+                    'text/tab-separated-values',
+                    'text/plain',
+                    '.csv',
+                    '.tsv'
+                  )
+        ),
+        fileInput('featurefile', 'Optional: Upload a matrix of feature annotations here',
                   accept = c(
                     'text/csv',
                     'text/comma-separated-values',
