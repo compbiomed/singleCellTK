@@ -25,6 +25,10 @@ up to ntop genes. Required}
 
 \item{diffexmethod}{The method for performing differential expression
 analyis. Available options are DESeq, DESeq2, and limma. Required}
+
+\item{clusterRow}{Cluster the rows. The default is TRUE}
+
+\item{clusterCol}{Cluster the columns. The default is TRUE}
 }
 \value{
 A list of differentially expressed genes.
