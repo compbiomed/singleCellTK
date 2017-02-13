@@ -23,8 +23,9 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
-      vals$counts <- createSCESet(input$countsfile$datapath,
-                                  input$annotfile$datapath)
+      vals$counts <- createSCESet(countfile = input$countsfile$datapath,
+                                  annotfile = input$annotfile$datapath,
+                                  featurefile = input$featurefile$datapath)
       updateSelectInput(session, "colorClusters",
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "deletesamplelist",
