@@ -1,3 +1,4 @@
+library(singleCellTK)
 library(shiny)
 library(shinyjs)
 library(plotly)

@@ -5,3 +5,6 @@ sudo: required
 warnings_are_errors: true
 
 bioc_required: true
+
+before_install:
+  - Rscript -e 'update.packages(ask = FALSE)'

@@ -36,6 +36,12 @@ summarizeTable <- function(indata){
 #'
 #' @return a SCESet object
 #' @export createSCESet
+#' @examples 
+#' library(scater)
+#' data("GSE60361_subset")
+#' GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
+#'                                 annotfile = GSE60361_subset$annot,
+#'                                 inputdataframes = TRUE)
 createSCESet <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
                          inputdataframes=FALSE){
   if(is.null(countfile)){
