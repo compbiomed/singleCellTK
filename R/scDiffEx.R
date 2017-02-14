@@ -26,7 +26,7 @@
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE){
-  in.condition <- droplevels(as.factor(scater::pData(inSCESet)[,condition]))
+  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
          length(levels(in.condition)), " labels")
@@ -73,7 +73,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                      clusterCol=TRUE){
-  diffex.annotation <- data.frame(scater::pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
@@ -101,7 +101,7 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                           clusterCol=TRUE){
-  diffex.annotation <- data.frame(scater::pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
@@ -126,7 +126,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 scDiffEx_deseq2 <- function(inSCESet, condition){
   cnts <- scater::counts(inSCESet)
-  annot_data <- scater::pData(inSCESet)[,condition,drop=F]
+  annot_data <- Biobase::pData(inSCESet)[,condition,drop=F]
   colnames(annot_data) <- "condition"
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
                                         colData = annot_data,
@@ -174,7 +174,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #' @export scDiffEx_limma
 #'
 scDiffEx_limma <- function(inSCESet, condition){
-  design <- stats::model.matrix(~factor(scater::pData(inSCESet)[,condition]))
+  design <- stats::model.matrix(~factor(Biobase::pData(inSCESet)[,condition]))
   fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
   ebayes <- limma::eBayes(fit)
   topGenes <- limma::topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
