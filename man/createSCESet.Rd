@@ -30,4 +30,11 @@ a SCESet object
 From a file of counts and a file of annotation information, create a SCESet
 object.
 }
+\examples{
+library(scater)
+data("GSE60361_subset")
+GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
+                                annotfile = GSE60361_subset$annot,
+                                inputdataframes = TRUE)
+}
 
