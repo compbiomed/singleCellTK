@@ -21,4 +21,3 @@ plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
 \description{
 Plot Differential Expression
 }
-

@@ -21,4 +21,3 @@ a SCESet object
 From a file of counts and a file of annotation information, create a SCESet
 object.
 }
-

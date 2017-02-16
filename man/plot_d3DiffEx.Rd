@@ -21,4 +21,3 @@ plot_d3DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
 \description{
 Plot Interactive Differential Expression
 }
-
