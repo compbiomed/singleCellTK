@@ -15,4 +15,3 @@ A data.frame object of summary metrics.
 \description{
 Creates a table of summary metrics from an input SCESet.
 }
-
