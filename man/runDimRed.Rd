@@ -11,13 +11,13 @@ runDimRed(method, count_data, colorClusters, pc1, pc2)
 \arguments{
 \item{method}{Either PCA or tSNE}
 
+\item{count_data}{A SCE object}
+
 \item{colorClusters}{The variable to color clusters by}
 
 \item{pc1}{User choice for the first principal component}
 
 \item{pc2}{User choice for the second prinicipal component}
-
-\item{vals}{A SCE object}
 }
 \value{
 A reduced dimension object

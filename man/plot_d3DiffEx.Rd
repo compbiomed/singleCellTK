@@ -8,15 +8,19 @@ plot_d3DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
   clusterCol = TRUE)
 }
 \arguments{
-\item{inSCESet}{}
+\item{inSCESet}{Input data object that contains the data to be plotted.
+Required}
 
-\item{condition}{}
+\item{condition}{The condition used for plotting the heatmap. Required}
 
-\item{geneList}{}
+\item{geneList}{The list of genes to put in the heatmap. Required}
 
-\item{clusterRow}{}
+\item{clusterRow}{Cluster the rows. The default is TRUE}
 
-\item{clusterCol}{}
+\item{clusterCol}{Cluster the columns. The default is TRUE}
+}
+\value{
+A d3heatmap object is plotted
 }
 \description{
 Plot Interactive Differential Expression

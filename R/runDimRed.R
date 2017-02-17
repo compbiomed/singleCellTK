@@ -3,7 +3,7 @@
 #' Use this function to run limma differential expression and load an interactive D3 heatmap
 #'
 #' @param method Either PCA or tSNE
-#' @param vals A SCE object
+#' @param count_data A SCE object
 #' @param colorClusters The variable to color clusters by
 #' @param pc1 User choice for the first principal component
 #' @param pc2 User choice for the second prinicipal component

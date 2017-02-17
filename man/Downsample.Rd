@@ -8,15 +8,15 @@ Downsample(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 16384, 65536,
   262144), byBatch = FALSE, batch = NULL, iterations = 10)
 }
 \arguments{
-\item{datamatrix}{}
+\item{datamatrix}{TODO:document}
 
-\item{newcounts}{}
+\item{newcounts}{TODO:document}
 
-\item{byBatch}{}
+\item{byBatch}{TODO:document}
 
-\item{batch}{}
+\item{batch}{TODO:document}
 
-\item{iterations}{}
+\item{iterations}{TODO:document}
 }
 \value{
 Downsampled matrix
