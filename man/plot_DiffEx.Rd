@@ -18,6 +18,18 @@ Required}
 \item{clusterRow}{Cluster the rows. The default is TRUE}
 
 \item{clusterCol}{Cluster the columns. The default is TRUE}
+
+\item{displayRowLabels}{Display the row labels on the heatmap. The default
+is TRUE.}
+
+\item{displayColumnLabels}{Display the column labels on the heatmap. The
+default is TRUE}
+
+\item{displayRowDendrograms}{Display the row dendrograms on the heatmap. The
+default is TRUE}
+
+\item{displayColumnDendrograms}{Display the column dendrograms on the
+heatmap. The default is TRUE.}
 }
 \value{
 ComplexHeatmap object for the provided geneList annotated with the
