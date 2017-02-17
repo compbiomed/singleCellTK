@@ -8,17 +8,8 @@ plot_d3DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
   clusterCol = TRUE)
 }
 \arguments{
-\item{inSCESet}{}
-
-\item{condition}{}
-
-\item{geneList}{}
-
-\item{clusterRow}{}
-
 \item{clusterCol}{}
 }
 \description{
 Plot Interactive Differential Expression
 }
-

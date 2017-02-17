@@ -24,4 +24,3 @@ Downsampled matrix
 \description{
 Downsample Data
 }
-

@@ -20,10 +20,10 @@
 #' \dontrun{
 #' scDiffEx(newsceset_david, "age", "0.1")
 #' }
-#' 
+#'
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
-                     clusterCol=TRUE){
+                     clusterCol=TRUE, displayRowLabels=TRUE){
   in.condition <- droplevels(as.factor(pData(inSCESet)[,condition]))
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
@@ -40,7 +40,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-  
+
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -52,44 +52,53 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-  
+
   return(diffex.results[newgenes,])
 }
 
 #' Plot Differential Expression
 #'
-#' @param inSCESet 
-#' @param condition 
-#' @param geneList 
-#' @param clusterRow 
-#' @param clusterCol 
+#' @param inSCESet
+#' @param condition
+#' @param geneList
+#' @param clusterRow
+#' @param clusterCol
+#' @param displayRowLabels
+#' @param displayColumnLabels
+#' @param displayRowDendrograms
+#' @param displayColumnDendrograms
 #'
 #' @return
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                     clusterCol=TRUE){
+                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE){
   diffex.annotation <- data.frame(pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-  
+
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
                                      name="Expression",
                                      column_title = "Differential Expression",
                                      cluster_rows = clusterRow,
                                      cluster_columns = clusterCol,
-                                     top_annotation = topha)
+                                     top_annotation = topha,
+                                     show_row_names = displayRowLabels,
+                                     show_column_names = displayColumnLabels,
+                                     show_row_dend = displayRowDendrograms,
+                                     show_column_dend = displayColumnDendrograms)
   return(heatmap)
 }
 
 #' Plot Interactive Differential Expression
 #'
-#' @param inSCESet 
-#' @param condition 
-#' @param geneList 
-#' @param clusterRow 
-#' @param clusterCol 
+#' @param inSCESet
+#' @param condition
+#' @param geneList
+#' @param clusterRow
+#' @param clusterCol
 #'
 #' @return
 #' @export plot_d3DiffEx
@@ -108,7 +117,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 }
 
 #' Perform differential expression analysis with DESeq2
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -132,7 +141,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with DESeq
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -157,7 +166,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with limma
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
