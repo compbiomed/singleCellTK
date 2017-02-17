@@ -1,3 +1,4 @@
+library(singleCellTK)
 library(shiny)
 library(shinyjs)
 library(plotly)
@@ -21,7 +22,7 @@ if(!is.null(getShinyOption("inputSCEset"))){
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Single Cell Toolkit",
+    paste("Single Cell Toolkit v",packageVersion("singleCellTK"), sep=""),
     #bootstrap theme
     theme = "bootstrap.min.css",
     #Upload Tab
@@ -39,7 +40,6 @@ shinyUI(
       ),
       tags$div(
         class="container",
-        #http://shiny.rstudio.com/articles/html-tags.html
         tags$div(id="uploadAlert", alertText),
         fileInput('countsfile', 'Upload a matrix of counts here',
                   accept = c(
@@ -51,7 +51,17 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        fileInput('annotfile', 'Upload a matrix of annotations here',
+        fileInput('annotfile', 'Optional: Upload a matrix of annotations here',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values',
+                    'text/tab-separated-values',
+                    'text/plain',
+                    '.csv',
+                    '.tsv'
+                  )
+        ),
+        fileInput('featurefile', 'Optional: Upload a matrix of feature annotations here',
                   accept = c(
                     'text/csv',
                     'text/comma-separated-values',
@@ -97,27 +107,87 @@ shinyUI(
       ),
       includeHTML('www/footer.html')
     ),
+    # tabPanel(
+    #   "DR & Clustering",
+    #   tags$div(
+    #     class="container",
+    #     h1("Dimensionality Reduction & Clustering"),
+    #     fluidPage(
+    #       fluidRow(
+    #         column(4,
+    #                wellPanel(
+    #                  selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
+    #                  selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+    #                  selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+    #                  selectInput("colorClusters","Color Clusters By",clusterChoice),
+    #                  actionButton("plotData", "Plot Data")
+    #                )),
+    #         column(8,
+    #                plotlyOutput("dimredPlot"))
+    #         
+    #       ),
+    #       fluidRow(
+    #         column(4,
+    #                wellPanel(
+    #                  selectInput("selectCluster", "Algorithm", c("K-Means")),
+    #                  selectInput("selectK", "Cluster Centers", c(1, 2, 3, 4, 5)),
+    #                  selectInput("selectDimRedC", "Algorithm", c("PCA", "tSNE")),
+    #                  selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+    #                  selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+    #                  selectInput("colorClusters2","Color Clusters By",c("Tissue")),
+    #                  actionButton("plotClusters", "Plot Clusters")
+    #                )
+    #         ),
+    #         column(8,
+    #                plotlyOutput("clusterPlot"))
+    #       )
+    #     )
+    #   ),
+    #   includeHTML('www/footer.html')
+    # ),
+    
     tabPanel(
-      "Clustering",
-      tags$div(
-        class="container",
-        h1("Clustering"),
-        fluidPage(
-          fluidRow(
-            column(4,
-                   wellPanel(
-                     selectInput("selectCustering","Clustering Algorithm",c("PCA","tSNE")),
-                     selectInput("colorClusters","Color Clusters By",clusterChoice),
-                     actionButton("clusterData", "Cluster Data")
-                   )),
-            column(8,
-                   #plotOutput("clusterPlot")),
-                   plotlyOutput("clusterPlot"))
-          )
-        )
-      ),
-      includeHTML('www/footer.html')
-    ),
+      "DR & Clustering",
+      tabsetPanel(
+        tabPanel("Dimensionality Reduction", 
+                 fluidRow(
+                   column(4,
+                          wellPanel(
+                          selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
+                          selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+                          selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+                          selectInput("colorClusters","Color Clusters By",clusterChoice),
+                          actionButton("plotData", "Plot Data")
+                          )),
+                   column(8,
+                          plotlyOutput("dimredPlot"))
+  
+                 )),
+        tabPanel("Clustering",
+                 fluidRow(
+                   column(4,
+                          wellPanel("Select Clustering Parameters",
+                            selectInput("selectCluster", "Algorithm", c("K-Means")),
+                            selectInput("selectK", "Cluster Centers", c(1, 2, 3, 4, 5)),
+                            selectInput("selectDataC", "Data", c("Raw Data", "PCA Components", "tSNE Components"))
+                          )
+                   ),
+                   column(8,
+                          plotlyOutput("clusterPlot"))
+                 ),
+                 fluidRow(
+                   column(4, 
+                          wellPanel("Visualize Clusters",
+                            selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+                            selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+                            selectInput("colorClusters2","Color Clusters By",c("Tissue")),
+                            actionButton("plotClusters", "Plot Clusters")
+                          )
+                 )
+                 )
+      )
+    )),
+    
     tabPanel(
       "Differential Expression",
       tags$div(
@@ -158,7 +228,7 @@ shinyUI(
                      tabPanel('Results Table', dataTableOutput('diffextable')),
                      tabPanel('Interactive Heatmap', d3heatmapOutput("interactivediffPlot"))
                    )
-                   )
+            )
           )
         )
       ),
@@ -207,9 +277,9 @@ shinyUI(
             column(8,
                    wellPanel(
                      d3heatmapOutput("heatmapPlot"))
-                   )
             )
           )
+        )
       ),
       tabPanel(
         "Batch Correction",

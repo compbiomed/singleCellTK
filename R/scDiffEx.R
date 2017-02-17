@@ -12,6 +12,8 @@
 #' up to ntop genes. Required
 #' @param diffexmethod The method for performing differential expression
 #' analyis. Available options are DESeq, DESeq2, and limma. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -24,7 +26,7 @@
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE){
-  in.condition <- droplevels(as.factor(pData(inSCESet)[,condition]))
+  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
          length(levels(in.condition)), " labels")
@@ -67,19 +69,26 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' @param displayColumnLabels
 #' @param displayRowDendrograms
 #' @param displayColumnDendrograms
+#' @param inSCESet Input data object that contains the data to be plotted.
+#' Required
+#' @param condition The condition used for plotting the heatmap. Required
+#' @param geneList The list of genes to put in the heatmap. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
-#' @return
+#' @return ComplexHeatmap object for the provided geneList annotated with the
+#' condition.
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
                      displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE){
-  diffex.annotation <- data.frame(pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
+  
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
                                      column_title = "Differential Expression",
                                      cluster_rows = clusterRow,
@@ -94,23 +103,24 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 
 #' Plot Interactive Differential Expression
 #'
-#' @param inSCESet
-#' @param condition
-#' @param geneList
-#' @param clusterRow
-#' @param clusterCol
+#' @param inSCESet Input data object that contains the data to be plotted.
+#' Required
+#' @param condition The condition used for plotting the heatmap. Required
+#' @param geneList The list of genes to put in the heatmap. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
 #'
-#' @return
+#' @return A d3heatmap object is plotted
 #' @export plot_d3DiffEx
 #'
 plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                           clusterCol=TRUE){
-  diffex.annotation <- data.frame(pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
 
-  d3heatmap::d3heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
+  d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,
                        ColSideColors=RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[,1]))])
@@ -129,8 +139,8 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #' @export scDiffEx_deseq2
 #'
 scDiffEx_deseq2 <- function(inSCESet, condition){
-  cnts <- counts(inSCESet)
-  annot_data <- pData(inSCESet)[,condition,drop=F]
+  cnts <- scater::counts(inSCESet)
+  annot_data <- Biobase::pData(inSCESet)[,condition,drop=F]
   colnames(annot_data) <- "condition"
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
                                         colData = annot_data,
@@ -152,7 +162,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #' @export scDiffEx_deseq
 #'
 scDiffEx_deseq <- function(inSCESet, condition){
-  countData <- DESeq::newCountDataSet(counts(inSCESet), condition)
+  countData <- DESeq::newCountDataSet(scater::counts(inSCESet), condition)
   countData <- DESeq::estimateSizeFactors(countData)
   countData <- DESeq::estimateDispersions(countData, method="pooled",
                                           fitType="local")
@@ -178,10 +188,10 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #' @export scDiffEx_limma
 #'
 scDiffEx_limma <- function(inSCESet, condition){
-  design <- model.matrix(~factor(pData(inSCESet)[,condition]))
-  fit <- lmFit(exprs(inSCESet), design)
-  ebayes <- eBayes(fit)
-  topGenes <- topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
+  design <- stats::model.matrix(~factor(Biobase::pData(inSCESet)[,condition]))
+  fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
+  ebayes <- limma::eBayes(fit)
+  topGenes <- limma::topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }

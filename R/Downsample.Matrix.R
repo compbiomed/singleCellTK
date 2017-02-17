@@ -1,10 +1,10 @@
 #' Downsample Data
 #'
-#' @param datamatrix 
-#' @param newcounts 
-#' @param byBatch 
-#' @param batch 
-#' @param iterations 
+#' @param datamatrix TODO:document
+#' @param newcounts TODO:document
+#' @param byBatch TODO:document
+#' @param batch TODO:document
+#' @param iterations TODO:document
 #'
 #' @return Downsampled matrix
 #' @export Downsample
@@ -15,7 +15,7 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
     for (j in 1:dim(datamatrix)[2]) {
       probs <- datamatrix[, j] / sum(datamatrix[, j])
       for (k in 1:length(newcounts)) {
-        samps <- rmultinom(iterations, newcounts[k], probs)
+        samps <- stats::rmultinom(iterations, newcounts[k], probs)
         for (l in 1:iterations) {
           outmat[,j,k,l] <- samps[,l]
         }
@@ -27,7 +27,7 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
     for (j in 1:nlevels(batch)) {
       probs <- datamatrix[,which(batch == levels(batch)[j])] / sum(datamatrix[,which(batch == levels(batch)[j])])
       for (k in 1:length(newcounts)) {
-        samps <- rmultinom(iterations, newcounts[k], as.vector(probs))
+        samps <- stats::rmultinom(iterations, newcounts[k], as.vector(probs))
         for (l in 1:iterations) {
           outmat[,which(batch == levels(batch)[j]),k,l] <- as.matrix(samps[,l], nrow = dim(datamatrix)[1])
         }
