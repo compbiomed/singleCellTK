@@ -159,7 +159,7 @@ shinyUI(
                           selectInput("pcX", "X axis:", pcComponents),
                           selectInput("pcY", "Y axis:", pcComponents, selected = "PC2"),
                           selectInput("colorClusters","Color Clusters By",clusterChoice),
-                          actionButton("plotData", "Plot Data")
+                          withBusyIndicatorUI(actionButton("plotData", "Plot Data"))
                           )),
                    column(8,
                           plotlyOutput("dimredPlot"))
