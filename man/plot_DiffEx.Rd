@@ -9,7 +9,20 @@ plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
   displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE)
 }
 \arguments{
-\item{displayColumnDendrograms}{}
+\item{inSCESet}{Input data object that contains the data to be plotted.
+Required}
+
+\item{condition}{The condition used for plotting the heatmap. Required}
+
+\item{geneList}{The list of genes to put in the heatmap. Required}
+
+\item{clusterRow}{Cluster the rows. The default is TRUE}
+
+\item{clusterCol}{Cluster the columns. The default is TRUE}
+}
+\value{
+ComplexHeatmap object for the provided geneList annotated with the
+condition.
 }
 \description{
 Plot Differential Expression
