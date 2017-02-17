@@ -19,4 +19,3 @@ Plot an interactive (D3) Heatmap
   
 Use this function to run limma differential expression and load an interactive D3 heatmap
 }
-

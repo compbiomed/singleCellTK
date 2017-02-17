@@ -25,4 +25,3 @@ A d3heatmap object is plotted
 \description{
 Plot Interactive Differential Expression
 }
-
