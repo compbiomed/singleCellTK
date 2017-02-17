@@ -14,6 +14,8 @@
 #' analyis. Available options are DESeq, DESeq2, and limma. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+#' @param displayRowLabels Display the row labels on the heatmap. The default
+#' is TRUE.
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -66,6 +68,14 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+#' @param displayRowLabels Display the row labels on the heatmap. The default
+#' is TRUE.
+#' @param displayColumnLabels Display the column labels on the heatmap. The
+#' default is TRUE
+#' @param displayRowDendrograms Display the row dendrograms on the heatmap. The
+#' default is TRUE
+#' @param displayColumnDendrograms Display the column dendrograms on the
+#' heatmap. The default is TRUE.
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
