@@ -22,6 +22,7 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$uploadData, {
+
     withBusyIndicatorServer("uploadData", {
       vals$counts <- createSCESet(countfile = input$countsfile$datapath,
                                   annotfile = input$annotfile$datapath,
@@ -34,6 +35,8 @@ shinyServer(function(input, output, session) {
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "subCovariate",
                         choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "pcComponents",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""))
       insertUI(
         selector = '#uploadAlert',
         ## wrap element in a div with id for ease of removal
@@ -87,6 +90,7 @@ shinyServer(function(input, output, session) {
                         choices = rownames(pData(vals$counts)))
     }
   })
+
 
   drDataframe <- observeEvent(input$plotData, {
     if(is.null(vals$counts)){
