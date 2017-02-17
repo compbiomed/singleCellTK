@@ -19,16 +19,16 @@ runDimRed <- function(method, count_data, colorClusters, pc1, pc2){
     l <- data.frame(reducedDimension(count_data))
     w <- colorClusters
     d <- c("Treatment")
-    l$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-    l$Sample <- rownames(pData(vals$counts))
+    l$Treatment <- eval(parse(text = paste("pData(count_data)$",w,sep="")))
+    l$Sample <- rownames(pData(count_data))
     g <- ggplot(l, aes_string(pc1, pc2, color=d))+geom_point()+labs(x = paste(pc1,toString(round(variances[strtoi(strsplit(pc1,"PC")[[1]][-1])]*100,2)),"%"),y = paste(pc2,toString(round(variances[strtoi(strsplit(pc2,"PC")[[1]][-1])]*100,2)),"%"))
   } else if(method == "tSNE"){
     tsne <- scater::plotTSNE(count_data, return_SCESet=TRUE)
     g <- reducedDimension(tsne)
     l <- data.frame(g)
     w <- colorClusters
-    l$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-    l$Sample <- rownames(pData(vals$counts))
+    l$Treatment <- eval(parse(text = paste("pData(count_data)$",w,sep="")))
+    l$Sample <- rownames(pData(count_data))
     g <- ggplot(l, aes(X1, X2, label=Sample, color=Treatment))+geom_point()
   }
 }
