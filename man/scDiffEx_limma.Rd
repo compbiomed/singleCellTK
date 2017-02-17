@@ -19,4 +19,3 @@ A data frame of gene names and adjusted p-values
 \description{
 Returns a data frame of gene names and adjusted p-values
 }
-

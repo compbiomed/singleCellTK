@@ -37,4 +37,3 @@ GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
                                 annotfile = GSE60361_subset$annot,
                                 inputdataframes = TRUE)
 }
-

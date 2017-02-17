@@ -15,4 +15,3 @@ The shiny app will open
 \description{
 Use this function to run the single cell analysis app.
 }
-

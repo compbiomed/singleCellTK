@@ -27,4 +27,3 @@ GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
                                 inputdataframes = TRUE)
 }
 \keyword{datasets}
-
