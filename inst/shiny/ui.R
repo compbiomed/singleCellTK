@@ -9,9 +9,11 @@ source("helpers.R")
 clusterChoice <- ''
 sampleChoice <- ''
 alertText <- ''
+pcComponents <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
+  pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep="")
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
@@ -154,8 +156,8 @@ shinyUI(
                    column(4,
                           wellPanel(
                           selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
-                          selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-                          selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
+                          selectInput("pcX", "X axis:", pcComponents),
+                          selectInput("pcY", "Y axis:", pcComponents, selected = "PC2"),
                           selectInput("colorClusters","Color Clusters By",clusterChoice),
                           actionButton("plotData", "Plot Data")
                           )),
@@ -187,7 +189,6 @@ shinyUI(
                  )
       )
     )),
-    
     tabPanel(
       "Differential Expression",
       tags$div(
