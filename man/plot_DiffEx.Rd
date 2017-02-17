@@ -5,20 +5,12 @@
 \title{Plot Differential Expression}
 \usage{
 plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
-  clusterCol = TRUE)
+  clusterCol = TRUE, displayRowLabels = TRUE, displayColumnLabels = TRUE,
+  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE)
 }
 \arguments{
-\item{inSCESet}{}
-
-\item{condition}{}
-
-\item{geneList}{}
-
-\item{clusterRow}{}
-
-\item{clusterCol}{}
+\item{displayColumnDendrograms}{}
 }
 \description{
 Plot Differential Expression
 }
-

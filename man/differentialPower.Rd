@@ -26,4 +26,3 @@ A matrix of recapitulation - rows are genes that were differentially expressed i
 \description{
 Calculate power to discover differentially expressed genes upon subsampling
 }
-

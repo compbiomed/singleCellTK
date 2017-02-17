@@ -5,7 +5,8 @@
 \title{Create a heatmap for differential expression analysis}
 \usage{
 scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
-  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE)
+  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE,
+  displayRowLabels = TRUE)
 }
 \arguments{
 \item{inSCESet}{Input SCESet object. Required}
@@ -38,4 +39,3 @@ scDiffEx(newsceset_david, "age", "0.1")
 }
 
 }
-
