@@ -26,4 +26,3 @@ condition.
 \description{
 Plot Differential Expression
 }
-
