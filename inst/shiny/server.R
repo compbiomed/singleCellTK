@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(scater)
 library(ComplexHeatmap)
 library(biomaRt)
@@ -21,25 +22,28 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$uploadData, {
-    vals$counts <- createSCESet(input$countsfile$datapath,
-                                input$annotfile$datapath)
-    updateSelectInput(session, "colorClusters",
-                      choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "deletesamplelist",
-                      choices = rownames(pData(vals$counts)))
-    updateSelectInput(session, "selectDiffex_condition",
-                      choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "subCovariate",
-                      choices = colnames(pData(vals$counts)))
-    insertUI(
-      selector = '#uploadAlert',
-      ## wrap element in a div with id for ease of removal
-      ui = tags$div(class="alert alert-success alert-dismissible", HTML("<span \
-                                                                        class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
-                                                                        Successfully Uploaded! <button type='button' class='close' \
-                                                                        data-dismiss='alert'>&times;</button>"))
-      )
-    vals$original <- vals$counts
+    withBusyIndicatorServer("uploadData", {
+      vals$counts <- createSCESet(countfile = input$countsfile$datapath,
+                                  annotfile = input$annotfile$datapath,
+                                  featurefile = input$featurefile$datapath)
+      updateSelectInput(session, "colorClusters",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "deletesamplelist",
+                        choices = rownames(pData(vals$counts)))
+      updateSelectInput(session, "selectDiffex_condition",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "subCovariate",
+                        choices = colnames(pData(vals$counts)))
+      insertUI(
+        selector = '#uploadAlert',
+        ## wrap element in a div with id for ease of removal
+        ui = tags$div(class="alert alert-success alert-dismissible", HTML("<span \
+                      class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
+                      Successfully Uploaded! <button type='button' class='close' \
+                      data-dismiss='alert'>&times;</button>"))
+        )
+      vals$original <- vals$counts
+    })
   })
   
   output$contents <- renderDataTable({
@@ -57,28 +61,43 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$filterData, {
-    vals$counts <- vals$original
-    vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
-    if (input$removeNoexpress){
-      vals$counts <- vals$counts[rowSums(counts(vals$counts)) != 0,]
+    if(is.null(vals$original)){
+      alert("Warning: Upload data first!")
     }
-    nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
-    tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
-    tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
-    vals$counts <- vals$counts[tokeeprow,tokeepcol]
+    else{
+      vals$counts <- vals$original
+      vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
+      if (input$removeNoexpress){
+        vals$counts <- vals$counts[rowSums(counts(vals$counts)) != 0,]
+      }
+      nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
+      tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
+      tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
+      vals$counts <- vals$counts[tokeeprow,tokeepcol]
+    }
   })
   
   observeEvent(input$resetData, {
-    vals$counts <- vals$original
-    updateSelectInput(session, "deletesamplelist",
-                      choices = rownames(pData(vals$counts)))
+    if(is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      vals$counts <- vals$original
+      updateSelectInput(session, "deletesamplelist",
+                        choices = rownames(pData(vals$counts)))
+    }
   })
-  
+
   drDataframe <- observeEvent(input$plotData, {
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
     g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
     output$dimredPlot <- renderPlotly({
       ggplotly(g)
     })
+  }
   })
   
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
@@ -130,6 +149,7 @@ shinyServer(function(input, output, session) {
     output$clusterPlot <- renderPlotly({
       ggplotly(g)
     })
+
   })
   # END Emma's Note
   
@@ -146,24 +166,36 @@ shinyServer(function(input, output, session) {
   })
   
   diffexDataframe <- observeEvent(input$runDiffex, {
-    #run diffex to get gene list and pvalues
-    vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
-                                    input$selectPval, input$selectNGenes, input$applyCutoff,
-                                    diffexmethod=input$selectDiffex,
-                                    clusterRow=input$clusterRows,
-                                    clusterCol=input$clusterColumns)
-    
-    output$diffPlot <- renderPlot({
-      plot_DiffEx(vals$counts, input$selectDiffex_condition,
+
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runDiffex", {
+        #run diffex to get gene list and pvalues
+        vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
+                                        input$selectPval, input$selectNGenes, input$applyCutoff,
+                                        diffexmethod=input$selectDiffex,
+                                        clusterRow=input$clusterRows,
+                                        clusterCol=input$clusterColumns)
+      })
+    }
+  })
+  
+  output$diffPlot <- renderPlot({
+    if(!is.null(vals$diffexgenelist)){
+      draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
-                  clusterCol=input$clusterColumns)
-    }, height=600)
-    
-    output$interactivediffPlot <- renderD3heatmap({
+                  clusterCol=input$clusterColumns))
+    }
+  }, height=600)
+  
+  output$interactivediffPlot <- renderD3heatmap({
+    if(!is.null(vals$diffexgenelist)){
       plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
                     rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
                     clusterCol=input$clusterColumns)
-    })
+    }
   })
   
   output$diffextable <- renderDataTable({
@@ -186,26 +218,37 @@ shinyServer(function(input, output, session) {
   )
   
   runDownsampler <- observeEvent(input$runSubsample, {
-    subData <- reactiveValues(
-      counts=Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
-    )
-    output$downDone <- renderPlot({
-      heatmap(as.matrix(subData$counts[order(apply(subData$counts[,,10,1],1,sum),decreasing=TRUE)[1:20],,10,1]))
-    })
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      subData <- reactiveValues(
+        counts=Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
+      )
+      output$downDone <- renderPlot({
+        heatmap(as.matrix(subData$counts[order(apply(subData$counts[,,10,1],1,sum),decreasing=TRUE)[1:20],,10,1]))
+      })
+    }
   })
   
   runDiffPower <- observeEvent(input$runDifferentialPower, {
-    #    if(exists('subData$counts')){
-    output$powerBoxPlot <- renderPlot({
-      subData <- Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
-      diffPower <- differentialPower(datamatrix=counts(vals$counts), downmatrix=subData, conditions=phenoData(vals$counts)[[input$subCovariate]], method=input$selectDiffMethod)
-      boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
-    })
-    #    }
-    #    else{
-    #      output$powerBoxPlot <- renderPlot({
-    #        plot(c(0,1),c(0,1),main="You need to run the subsampler first.")
-    #      })
-    #    }
+
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      #    if(exists('subData$counts')){
+      output$powerBoxPlot <- renderPlot({
+        subData <- Downsample(counts(vals$counts), newcounts=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)), iterations=input$iterations)
+        diffPower <- differentialPower(datamatrix=counts(vals$counts), downmatrix=subData, conditions=phenoData(vals$counts)[[input$subCovariate]], method=input$selectDiffMethod)
+        boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
+      })
+      #    }
+      #    else{
+      #      output$powerBoxPlot <- renderPlot({
+      #        plot(c(0,1),c(0,1),main="You need to run the subsampler first.")
+      #      })
+      #    }
+    }
   })
 })

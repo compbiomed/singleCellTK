@@ -1,6 +1,10 @@
+library(singleCellTK)
 library(shiny)
+library(shinyjs)
 library(plotly)
 library(d3heatmap)
+
+source("helpers.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
@@ -18,13 +22,14 @@ if(!is.null(getShinyOption("inputSCEset"))){
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    "Single Cell Toolkit",
+    paste("Single Cell Toolkit v",packageVersion("singleCellTK"), sep=""),
     #bootstrap theme
     theme = "bootstrap.min.css",
-    
     #Upload Tab
     tabPanel(
       "Upload",
+      useShinyjs(),
+      tags$style(appCSS),
       tags$div(
         class="jumbotron",
         tags$div(
@@ -35,7 +40,6 @@ shinyUI(
       ),
       tags$div(
         class="container",
-        #http://shiny.rstudio.com/articles/html-tags.html
         tags$div(id="uploadAlert", alertText),
         fileInput('countsfile', 'Upload a matrix of counts here',
                   accept = c(
@@ -47,7 +51,7 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        fileInput('annotfile', 'Upload a matrix of annotations here',
+        fileInput('annotfile', 'Optional: Upload a matrix of annotations here',
                   accept = c(
                     'text/csv',
                     'text/comma-separated-values',
@@ -57,7 +61,19 @@ shinyUI(
                     '.tsv'
                   )
         ),
-        actionButton("uploadData", "Upload")
+        fileInput('featurefile', 'Optional: Upload a matrix of feature annotations here',
+                  accept = c(
+                    'text/csv',
+                    'text/comma-separated-values',
+                    'text/tab-separated-values',
+                    'text/plain',
+                    '.csv',
+                    '.tsv'
+                  )
+        ),
+        withBusyIndicatorUI(
+          actionButton("uploadData", "Upload")
+        )
       ),
       includeHTML('www/footer.html')
     ),
@@ -189,7 +205,7 @@ shinyUI(
                      checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
                      sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
                      selectInput("selectCorrection","Correction Type",c("FDR")),
-                     actionButton("runDiffex", "Run Differential Expression"),
+                     withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
                      downloadButton("downloadGeneList","Download Results")
                    )),
             column(8,
