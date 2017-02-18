@@ -22,6 +22,7 @@ shinyServer(function(input, output, session) {
   )
   
   observeEvent(input$uploadData, {
+
     withBusyIndicatorServer("uploadData", {
       vals$counts <- createSCESet(countfile = input$countsfile$datapath,
                                   annotfile = input$annotfile$datapath,
@@ -34,6 +35,12 @@ shinyServer(function(input, output, session) {
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "subCovariate",
                         choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "pcX",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC1")
+      updateSelectInput(session, "pcY",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC2")
       insertUI(
         selector = '#uploadAlert',
         ## wrap element in a div with id for ease of removal
@@ -88,16 +95,19 @@ shinyServer(function(input, output, session) {
     }
   })
 
+
   drDataframe <- observeEvent(input$plotData, {
-    if(is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-    g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
-    output$dimredPlot <- renderPlotly({
-      ggplotly(g)
+    withBusyIndicatorServer("plotData", {
+      if(is.null(vals$counts)){
+        alert("Warning: Upload data first!")
+      }
+      else{
+        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
+        output$dimredPlot <- renderPlotly({
+          ggplotly(g)
+        })
+      }
     })
-  }
   })
   
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
