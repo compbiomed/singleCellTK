@@ -109,44 +109,6 @@ shinyUI(
       ),
       includeHTML('www/footer.html')
     ),
-    # tabPanel(
-    #   "DR & Clustering",
-    #   tags$div(
-    #     class="container",
-    #     h1("Dimensionality Reduction & Clustering"),
-    #     fluidPage(
-    #       fluidRow(
-    #         column(4,
-    #                wellPanel(
-    #                  selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
-    #                  selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-    #                  selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-    #                  selectInput("colorClusters","Color Clusters By",clusterChoice),
-    #                  actionButton("plotData", "Plot Data")
-    #                )),
-    #         column(8,
-    #                plotlyOutput("dimredPlot"))
-    #         
-    #       ),
-    #       fluidRow(
-    #         column(4,
-    #                wellPanel(
-    #                  selectInput("selectCluster", "Algorithm", c("K-Means")),
-    #                  selectInput("selectK", "Cluster Centers", c(1, 2, 3, 4, 5)),
-    #                  selectInput("selectDimRedC", "Algorithm", c("PCA", "tSNE")),
-    #                  selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-    #                  selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-    #                  selectInput("colorClusters2","Color Clusters By",c("Tissue")),
-    #                  actionButton("plotClusters", "Plot Clusters")
-    #                )
-    #         ),
-    #         column(8,
-    #                plotlyOutput("clusterPlot"))
-    #       )
-    #     )
-    #   ),
-    #   includeHTML('www/footer.html')
-    # ),
     
     tabPanel(
       "DR & Clustering",
@@ -168,26 +130,35 @@ shinyUI(
         tabPanel("Clustering",
                  fluidRow(
                    column(4,
-                          wellPanel("Select Clustering Parameters",
+                          wellPanel("Select clustering algorithm:",
                             selectInput("selectCluster", "Algorithm", c("K-Means")),
                             selectInput("selectK", "Cluster Centers", c(1, 2, 3, 4, 5)),
-                            selectInput("selectDataC", "Data", c("Raw Data", "PCA Components", "tSNE Components"))
-                          )
-                   ),
-                   column(8,
-                          plotlyOutput("clusterPlot"))
-                 ),
-                 fluidRow(
-                   column(4, 
-                          wellPanel("Visualize Clusters",
+                            p("Select data to cluster:"),
+                            selectInput("selectDataC", "Data", c("Raw Data", "PCA Components", "tSNE Components")),
                             selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
                             selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
                             selectInput("colorClusters2","Color Clusters By",c("Tissue")),
                             actionButton("plotClusters", "Plot Clusters")
                           )
-                 )
+                   ),
+                   column(8,
+                          plotlyOutput("clusterPlot"))
                  )
       )
+    ),
+    mainPanel(
+              h1("Instructions"),
+              p(""), strong("Dimensionality Reduction:"), 
+              p("1. Choose algorithm (PCA or tSNE)"),
+              p("2. Choose which components to use for the x and y axes"),
+              p("3. Choose feature to color data by"),
+              p("4. Visualize your data"),
+              p(""), strong("Clustering:"),
+              p("1. Choose clustering algorithm (K-Means, ...)"),
+              p("2. Choose which data to use (raw data, principal component values, tSNE values)"), 
+              p("3. Choose which components to use for the x and y axes"),
+              p("4. Choose feature to color data by"),
+              p("5. Visualize your data and clusters")
     )),
     tabPanel(
       "Differential Expression",
