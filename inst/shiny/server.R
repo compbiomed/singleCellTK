@@ -110,6 +110,9 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  #demo PCA by Lloyd
+
+  
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
   clusterDataFrame <- observeEvent(input$plotClusters, {
     if(input$selectCluster == "K-Means" && input$selectDataC == "PCA Components") {
