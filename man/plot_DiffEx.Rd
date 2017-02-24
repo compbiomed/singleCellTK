@@ -5,7 +5,8 @@
 \title{Plot Differential Expression}
 \usage{
 plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
-  clusterCol = TRUE)
+  clusterCol = TRUE, displayRowLabels = TRUE, displayColumnLabels = TRUE,
+  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE)
 }
 \arguments{
 \item{inSCESet}{Input data object that contains the data to be plotted.

@@ -215,7 +215,11 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$diffexgenelist)){
       draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
-                  clusterCol=input$clusterColumns))
+                  clusterCol=input$clusterColumns,
+                  displayRowLabels=input$displayHeatmapRowLabels,
+                  displayColumnLabels=input$displayHeatmapColumnLabels,
+                  displayRowDendrograms=input$displayHeatmapRowDendrograms,
+                  displayColumnDendrograms=input$displayHeatmapColumnDendrograms))
     }
   }, height=600)
   
