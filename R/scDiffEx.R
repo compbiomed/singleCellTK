@@ -22,11 +22,16 @@
 #' \dontrun{
 #' scDiffEx(newsceset_david, "age", "0.1")
 #' }
-#' 
+#'
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
+<<<<<<< HEAD
                      clusterCol=TRUE){
   in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
+=======
+                     clusterCol=TRUE, displayRowLabels=TRUE){
+  in.condition <- droplevels(as.factor(pData(inSCESet)[,condition]))
+>>>>>>> Added some customization options for the heatmap in the differential expression tab.
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
          length(levels(in.condition)), " labels")
@@ -42,7 +47,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-  
+
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -54,24 +59,37 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-  
+
   return(diffex.results[newgenes,])
 }
 
 #' Plot Differential Expression
 #'
+<<<<<<< HEAD
 #' @param inSCESet Input data object that contains the data to be plotted.
 #' Required
 #' @param condition The condition used for plotting the heatmap. Required
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+=======
+#' @param inSCESet
+#' @param condition
+#' @param geneList
+#' @param clusterRow
+#' @param clusterCol
+#' @param displayRowLabels
+#' @param displayColumnLabels
+#' @param displayRowDendrograms
+#' @param displayColumnDendrograms
+>>>>>>> Added some customization options for the heatmap in the differential expression tab.
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
+<<<<<<< HEAD
                      clusterCol=TRUE){
   diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
@@ -79,22 +97,44 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                                              height = unit(0.333, "cm"))
   
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
+=======
+                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE){
+  diffex.annotation <- data.frame(pData(inSCESet)[,condition])
+  colnames(diffex.annotation) <- condition
+  topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
+                                             height = unit(0.333, "cm"))
+
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(exprs(inSCESet)[geneList,]))),
+>>>>>>> Added some customization options for the heatmap in the differential expression tab.
                                      name="Expression",
                                      column_title = "Differential Expression",
                                      cluster_rows = clusterRow,
                                      cluster_columns = clusterCol,
-                                     top_annotation = topha)
+                                     top_annotation = topha,
+                                     show_row_names = displayRowLabels,
+                                     show_column_names = displayColumnLabels,
+                                     show_row_dend = displayRowDendrograms,
+                                     show_column_dend = displayColumnDendrograms)
   return(heatmap)
 }
 
 #' Plot Interactive Differential Expression
 #'
+<<<<<<< HEAD
 #' @param inSCESet Input data object that contains the data to be plotted.
 #' Required
 #' @param condition The condition used for plotting the heatmap. Required
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+=======
+#' @param inSCESet
+#' @param condition
+#' @param geneList
+#' @param clusterRow
+#' @param clusterCol
+>>>>>>> Added some customization options for the heatmap in the differential expression tab.
 #'
 #' @return A d3heatmap object is plotted
 #' @export plot_d3DiffEx
@@ -113,7 +153,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 }
 
 #' Perform differential expression analysis with DESeq2
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -137,7 +177,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with DESeq
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -162,7 +202,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with limma
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required

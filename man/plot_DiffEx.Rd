@@ -5,9 +5,11 @@
 \title{Plot Differential Expression}
 \usage{
 plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
-  clusterCol = TRUE)
+  clusterCol = TRUE, displayRowLabels = TRUE, displayColumnLabels = TRUE,
+  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE)
 }
 \arguments{
+<<<<<<< HEAD
 \item{inSCESet}{Input data object that contains the data to be plotted.
 Required}
 
@@ -22,6 +24,9 @@ Required}
 \value{
 ComplexHeatmap object for the provided geneList annotated with the
 condition.
+=======
+\item{displayColumnDendrograms}{}
+>>>>>>> Added some customization options for the heatmap in the differential expression tab.
 }
 \description{
 Plot Differential Expression
