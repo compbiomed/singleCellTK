@@ -124,9 +124,12 @@ shinyUI(
               4,
               wellPanel(
                 selectInput("pcaAlgorithm","Algorithm",c("regular PCA","PCA with Box-Cox transfermation","randomized PCA","robust PCA","RR PCA")),
-                checkboxGroupInput("CheckboxId",label = "Involving variables", choices = c("PC1","PC2","PC3","mRNA","tissue","etc"),selected = c("PC1","PC2","PC3")),
+                checkboxGroupInput("CheckboxId",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
+                selectInput("selectDiffex_condition","Additional variables:",
+                            clusterChoice,
+                            multiple = TRUE),
                 selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
-                selectInput("colorClustersPCA","Color Clusters By","clusterChoice"),
+                selectInput("colorClusters","Color Clusters By",clusterChoice),
                 withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
               )#wellPanel
             ),
@@ -179,7 +182,7 @@ shinyUI(
                             selectInput("selectDataC", "Data", c("Raw Data", "PCA Components", "tSNE Components")),
                             selectInput("pcX", "X axis:", c("1"="PC1","2"="PC2","3"="PC3")),
                             selectInput("pcY", "Y axis:", c("1"="PC1","2"="PC2","3"="PC3")),
-                            selectInput("colorClusters2","Color Clusters By",c("Tissue")),
+                            selectInput("colorClusters","Color Clusters By",c("Tissue")),
                             actionButton("plotClusters", "Plot Clusters")
                           )
                    ),
