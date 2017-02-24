@@ -9,6 +9,8 @@ library(d3heatmap)
 library(ggplot2)
 library(plotly)
 library(DESeq)
+library(GGally)
+library(data.table)
 
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
@@ -111,6 +113,20 @@ shinyServer(function(input, output, session) {
   })
   
   #demo PCA by Lloyd
+  #singlCellTK::runDimRed may want to change
+  demoPcaDataFrame <- observeEvent(input$plotPCA, {
+   withBusyIndicatorServer("plotPCA", {
+     if(is.null(vals$counts)){
+       alert("Warning: Upload data first!")
+     }
+     else{
+       output$demoplot <- renderPlot({
+         ggplot(data = data.frame(x=1:100,y=1:100)) + geom_point(aes(x=x,y=y))
+       })
+     }
+   }) 
+  })
+  #end Lloyd's Code
 
   
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
