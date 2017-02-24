@@ -132,7 +132,7 @@ shinyUI(
             ),
             column(
               8,
-              plotlyOutput("dimredPlot_")
+              plotOutput("demoplot")
             )
           ),#fluidRow
           mainPanel(
