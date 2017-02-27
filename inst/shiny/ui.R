@@ -1,5 +1,3 @@
-#########
-#########
 library(singleCellTK)
 library(shiny)
 library(shinyjs)
