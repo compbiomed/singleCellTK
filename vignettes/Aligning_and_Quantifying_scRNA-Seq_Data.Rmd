@@ -1,0 +1,87 @@
+---
+title: "Aligning and Quantifying scRNA-Seq Data"
+author: "David Jenkins"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aligning and Quantifying scRNA-Seq Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+__This vignette is under construction__
+
+In this vignette we will suggest a workflow for processing single cell RNA-Seq
+data to produce a ESetSC object that can be used in the single cell toolkit.
+
+## Suggested Software
+
+Some of the steps in this workflow are performed outside of R and are optional,
+but they produce useful metrics that can be explored using the single cell
+toolkit.
+
+* FastQC - Command line or GUI program for performing quality control on
+sequencing files
+* MultiQC - Command line tool that creates a combined report from FastQC results
+run on individual files
+* Rsubread - R package for alignment of fastq files to a reference genome
+
+## FASTQ Quality Control
+
+Quality control performed on the FASTQ files can identify low quality or failed
+samples that you may want to exclude from downstream analysis. FastQC is the
+standard tool used for quality control of fastq files. Run FastQC on the command
+line on each individual file:
+
+```bash
+ls
+echo "hello"
+fastqc input_read_1.fastq.gz
+```
+
+## Alignment
+
+Alignment takes the individual read files and places them on a reference genome.
+Rsubread is an accurate and user friendly alignment tool that can be run from
+within R on Linux or Mac.
+
+### Genome Index
+
+To align reads to a reference genome, you must first create an index that the
+aligner will use internally to align the reads.
+
+## Feature Counting
+
+Feature counting takes aligned reads and identifies the number of reads that
+align to each gene in your annotation file. If you run the
+```alignSingleCellData``` function using fastq files as input, the function will
+automatically perform feature counting after alignment is finished. It is also
+possible to run the ```alignSingleCellData``` function using bam alignment
+files.
+
+### Gene Annotation File
+
+A gene annotation file describes the coordinates for the genes in the reference
+genome. The gene annotation file used must match the reference genome index used
+for alignment.
+
+## Parallelization
+
+To save time, you may want to perform alignment and feature counting on each
+file in a parellel computing environment, and combine the samples to create a
+ESetSC object. The ```alignSingleCellData``` function can be run on an
+individual file. Once individual sample ESetSC objects have been created,
+combine them using the ```mergeESetQC``` function.
+
+## Manually Creating a ESetQC object
+
+At the core of an ESetQC object is a matrix of counts with samples as columns
+and genes (or features) and rows. If you wish to perform alignment and feature
+counting using another workflow or set of tools, create a count matrix, an
+optional matrix of sample annotations, and an optional matrix of feature
+annotations and create a ESetQC object using the ```createSCESet``` function.
+
+## Other tutorials
+
+There are many other resources that contain information about aligning and
+processing RNA-Seq data. Here are some other tutorials that may be useful:
