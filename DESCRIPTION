@@ -27,5 +27,7 @@ Imports:
     shinyjs,
     RColorBrewer,
     methods,
-    Biobase
+    Biobase,
+    GGally,
+    data.table
 RoxygenNote: 6.0.1
