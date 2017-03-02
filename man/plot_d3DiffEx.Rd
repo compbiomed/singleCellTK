@@ -8,7 +8,6 @@ plot_d3DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
   clusterCol = TRUE)
 }
 \arguments{
-<<<<<<< HEAD
 \item{inSCESet}{Input data object that contains the data to be plotted.
 Required}
 
@@ -22,9 +21,6 @@ Required}
 }
 \value{
 A d3heatmap object is plotted
-=======
-\item{clusterCol}{}
->>>>>>> Added some customization options for the heatmap in the differential expression tab.
 }
 \description{
 Plot Interactive Differential Expression
