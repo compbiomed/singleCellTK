@@ -11,21 +11,23 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
+    Biobase,
+    biomaRt,
+    circlize,
+    ComplexHeatmap,
+    d3heatmap,
     DESeq,
     DESeq2,
-    S4Vectors,
-    shiny,
-    scater,
-    multtest,
-    locfit,
-    ComplexHeatmap,
-    limma,
-    d3heatmap,
-    plotly,
     ggplot2,
-    Rtsne,
-    shinyjs,
-    RColorBrewer,
+    limma,
+    locfit,
     methods,
-    Biobase
+    multtest,
+    plotly,
+    RColorBrewer,
+    Rtsne,
+    S4Vectors,
+    scater,
+    shiny,
+    shinyjs
 RoxygenNote: 6.0.1
