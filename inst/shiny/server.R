@@ -218,7 +218,7 @@ shinyServer(function(input, output, session) {
   # returns
   output$downloadGeneList <- downloadHandler(
     filename = function() {
-      paste("genelist-", Sys.Date(), ".csv", sep="")
+      paste("diffex_results-", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
       write.csv(vals$diffexgenelist, file)
