@@ -20,9 +20,8 @@ shinyServer(function(input, output, session) {
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset")
   )
-  
-  observeEvent(input$uploadData, {
 
+  observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       vals$counts <- createSCESet(countfile = input$countsfile$datapath,
                                   annotfile = input$annotfile$datapath,
@@ -52,7 +51,7 @@ shinyServer(function(input, output, session) {
       vals$original <- vals$counts
     })
   })
-  
+
   output$contents <- renderDataTable({
     if(!(is.null(vals$counts)) && nrow(pData(vals$counts)) < 50){
       temptable <- cbind(rownames(fData(vals$counts)),exprs(vals$counts))
@@ -60,30 +59,27 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, options = list(scrollX = TRUE))
-  
+
   output$summarycontents <- renderTable({
     if(!(is.null(vals$counts))){
       summarizeTable(vals$counts)
     }
   })
-  
+
   observeEvent(input$filterData, {
     if(is.null(vals$original)){
       alert("Warning: Upload data first!")
     }
     else{
       vals$counts <- vals$original
-      vals$counts <- vals$counts[, !(colnames(vals$counts) %in% input$deletesamplelist)]
-      if (input$removeNoexpress){
-        vals$counts <- vals$counts[rowSums(counts(vals$counts)) != 0,]
-      }
-      nkeeprows <- ceiling((1-(0.01 * input$LowExpression)) * as.numeric(nrow(vals$counts)))
-      tokeeprow <- order(rowSums(counts(vals$counts)), decreasing = TRUE)[1:nkeeprows]
-      tokeepcol <- apply(counts(vals$counts), 2, function(x) sum(as.numeric(x)==0)) >= input$minDetectGenect
-      vals$counts <- vals$counts[tokeeprow,tokeepcol]
+      vals$counts <- filterSCData(vals$counts,
+                                  deletesamples=input$deletesamplelist,
+                                  remove_noexpress=input$removeNoexpress,
+                                  remove_bottom=0.01 * input$LowExpression,
+                                  minimum_detect_genes=input$minDetectGenect)
     }
   })
-  
+
   observeEvent(input$resetData, {
     if(is.null(vals$original)){
       alert("Warning: Upload data first!")
@@ -94,7 +90,6 @@ shinyServer(function(input, output, session) {
                         choices = rownames(pData(vals$counts)))
     }
   })
-
 
   drDataframe <- observeEvent(input$plotData, {
     withBusyIndicatorServer("plotData", {
@@ -109,7 +104,7 @@ shinyServer(function(input, output, session) {
       }
     })
   })
-  
+
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
   clusterDataFrame <- observeEvent(input$plotClusters, {
     if(input$selectCluster == "K-Means" && input$selectDataC == "PCA Components") {
@@ -162,7 +157,7 @@ shinyServer(function(input, output, session) {
 
   })
   # END Emma's Note
-  
+
   deHeatmapDataframe <- observeEvent(input$makeHeatmap, {
     if(input$selectHeatmap == "Standard") {
       output$heatmapPlot <- renderPlot({
@@ -174,9 +169,8 @@ shinyServer(function(input, output, session) {
         plotHeatmap(vals$counts)})
     }
   })
-  
-  diffexDataframe <- observeEvent(input$runDiffex, {
 
+  diffexDataframe <- observeEvent(input$runDiffex, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
@@ -191,7 +185,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
       draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
@@ -203,7 +197,7 @@ shinyServer(function(input, output, session) {
                   displayColumnDendrograms=input$displayHeatmapColumnDendrograms))
     }
   }, height=600)
-  
+
   output$interactivediffPlot <- renderD3heatmap({
     if(!is.null(vals$diffexgenelist)){
       plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
@@ -211,7 +205,7 @@ shinyServer(function(input, output, session) {
                     clusterCol=input$clusterColumns)
     }
   })
-  
+
   output$diffextable <- renderDataTable({
     if(!is.null(vals$diffexgenelist)){
       temptable <- cbind(rownames(vals$diffexgenelist),data.frame(vals$diffexgenelist))
@@ -219,7 +213,7 @@ shinyServer(function(input, output, session) {
       temptable
     }
   })
-  
+
   # Need to modify the scDiffEx function to return gene list initially and then
   # returns
   output$downloadGeneList <- downloadHandler(
@@ -230,7 +224,7 @@ shinyServer(function(input, output, session) {
       write.csv(vals$diffexgenelist, file)
     }
   )
-  
+
   runDownsampler <- observeEvent(input$runSubsample, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
@@ -244,7 +238,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   runDiffPower <- observeEvent(input$runDifferentialPower, {
 
     if(is.null(vals$counts)){
