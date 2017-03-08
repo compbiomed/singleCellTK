@@ -3,6 +3,7 @@
 export(Downsample)
 export(createSCESet)
 export(differentialPower)
+export(filterSCData)
 export(plotHeatmap)
 export(plot_DiffEx)
 export(plot_d3DiffEx)

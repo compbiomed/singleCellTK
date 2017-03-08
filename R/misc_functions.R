@@ -73,3 +73,38 @@ createSCESet <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
   return(scater::newSCESet(countData = countsin, phenoData = pd,
                            featureData = fd))
 }
+
+#' Filter Genes and Samples from a Single Cell Object
+#'
+#' @param insceset Input single cell object, required
+#' @param deletesamples List of samples to delete from the object.
+#' @param remove_noexpress Remove genes that have no expression across all
+#' samples. The default is true
+#' @param remove_bottom Fraction of low expression genes to remove from the
+#' single cell object. This occurs after remove_noexpress. The default is 0.50.
+#' @param minimum_detect_genes Minimum number of genes with at least 1
+#' count to include a sample in the single cell object. The default is 1700.
+#'
+#' @return The filtered single cell object.
+#' @export filterSCData
+#'
+#' @examples
+#' library(scater)
+#' data("GSE60361_subset")
+#' GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
+#'                                 annotfile = GSE60361_subset$annot,
+#'                                 inputdataframes = TRUE)
+#' GSE60361_SCESet_filtered <- filterSCData(GSE60361_SCESet,
+#'                                          deletesamples="X1772063061_G11")
+filterSCData <- function(insceset, deletesamples=NULL, remove_noexpress=TRUE,
+                         remove_bottom=0.5, minimum_detect_genes=1700){
+  insceset <- insceset[, !(colnames(insceset) %in% deletesamples)]
+  if (remove_noexpress){
+    insceset <- insceset[rowSums(counts(insceset)) != 0,]
+  }
+  nkeeprows <- ceiling((1-remove_bottom) * as.numeric(nrow(insceset)))
+  tokeeprow <- order(rowSums(counts(insceset)), decreasing = TRUE)[1:nkeeprows]
+  tokeepcol <- apply(counts(insceset), 2, function(x) sum(as.numeric(x)==0)) >= minimum_detect_genes
+  insceset <- insceset[tokeeprow,tokeepcol]
+  return(insceset)
+}
