@@ -9,24 +9,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-__This vignette is under construction__
-
-In this vignette we will suggest a workflow for processing single cell RNA-Seq
-data to produce a ESetSC object that can be used in the single cell toolkit.
+In this vignette, we will suggest a workflow for processing single cell RNA-Seq
+data to produce an ESetSC object that can be used in the single cell toolkit.
 
 ## Suggested Software
 
 Some of the steps in this workflow are performed outside of R and are optional,
 but they produce useful metrics that can be explored using the single cell
-toolkit.
+toolkit. Please see the individual tool websites for installation instructions.
 
-* FastQC - Command line or GUI program for performing quality control on
-sequencing files
-* MultiQC - Command line tool that creates a combined report from FastQC results
-run on individual files
-* Rsubread - R package for alignment of fastq files to a reference genome
+* [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) - Command
+line or GUI program for performing quality control on sequencing files
+* [MultiQC](http://multiqc.info/) - Command line tool that creates a combined
+report from FastQC results run on individual files.
+* [Rsubread](https://www.bioconductor.org/packages/release/bioc/html/Rsubread.html) - R
+package for alignment of fastq files to a reference genome
 
-## FASTQ Quality Control
+## Tutorial, Single Cell RNA-Seq Reads to Single Cell Object
+
+### Step 1: FastQC Quality Control
 
 Quality control performed on the FASTQ files can identify low quality or failed
 samples that you may want to exclude from downstream analysis. FastQC is the
@@ -34,54 +35,79 @@ standard tool used for quality control of fastq files. Run FastQC on the command
 line on each individual file:
 
 ```bash
-ls
-echo "hello"
 fastqc input_read_1.fastq.gz
 ```
 
-## Alignment
+This command will create a fastqc HTML report and a zip file of fastqc result
+files. To combine individual sample reports into a single report, use multiqc:
 
-Alignment takes the individual read files and places them on a reference genome.
-Rsubread is an accurate and user friendly alignment tool that can be run from
-within R on Linux or Mac.
+```bash
+multiqc .
+```
 
-### Genome Index
+### Step 2: Gather sample annotations and feature annotations
 
-To align reads to a reference genome, you must first create an index that the
-aligner will use internally to align the reads.
+The single cell object contains raw read counts, normalized expression data,
+sample annotations, and feature annotations along with downstream analysis.
+While you can make a single cell object with just a count matrix, to take
+advantage of some of the analyses available in the single cell toolkit, sample
+annotation information and feature information may be helpful.
 
-## Feature Counting
+#### Sample Annotation Data Frame
 
-Feature counting takes aligned reads and identifies the number of reads that
-align to each gene in your annotation file. If you run the
-```alignSingleCellData``` function using fastq files as input, the function will
-automatically perform feature counting after alignment is finished. It is also
-possible to run the ```alignSingleCellData``` function using bam alignment
-files.
+The sample annotation data frame should contain columns of annotation
+information and row names that match the sample names in the count matrix. The
+output table ```multiqc_fastqc.txt``` can be used as a sample annotation data
+frame.
 
-### Gene Annotation File
+#### Feature Annotation Data Frame
 
-A gene annotation file describes the coordinates for the genes in the reference
-genome. The gene annotation file used must match the reference genome index used
-for alignment.
+The feature annotation data frame should contain columns of annotation
+information and row names that match the row names in the count matrix.
 
-## Parallelization
+### Step 3: Align the data with alignSingleCellData()
 
-To save time, you may want to perform alignment and feature counting on each
-file in a parellel computing environment, and combine the samples to create a
-ESetSC object. The ```alignSingleCellData``` function can be run on an
-individual file. Once individual sample ESetSC objects have been created,
-combine them using the ```mergeESetQC``` function.
+For basic alignment and feature counting you can use the
+```alignSingleCellData()``` function in the single cell toolkit to align fastq
+data to a reference genome, count the number of reads per gene, and create a
+single cell object that contains annotation information. After running the
+```alignSingleCellData()``` function you can take the single cell object
+directly into the shiny app for downstream analysis. Detailed information about
+the options available in the ```alignSingleCellData()``` function can be found
+in the function help, but here is an example command:
 
-## Manually Creating a ESetQC object
+```{r, eval=FALSE}
+singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
+                    inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
+                    index_path = "/path/to/genome/index",
+                    gtf_annotation = "/path/to/gene/annotations.gtf",
+                    sample_annotations = sample.annotation.df,
+                    threads=4)
+```
 
-At the core of an ESetQC object is a matrix of counts with samples as columns
-and genes (or features) and rows. If you wish to perform alignment and feature
-counting using another workflow or set of tools, create a count matrix, an
-optional matrix of sample annotations, and an optional matrix of feature
-annotations and create a ESetQC object using the ```createSCESet``` function.
+#### Parallelization
 
-## Other tutorials
+While setting the number of threads in the ```alignSingleCellData()``` function
+will increase the speed of each individual alignment, the function will align
+each sample sequentially. To save time, you may want to perform alignment and
+feature counting on each file in a parallel computing environment and combine
+the samples to create an ESetSC object. The ```alignSingleCellData()``` function
+can be run on an individual file. Once individual sample objects have been
+created, combine them using the ```mergeSCESet()``` function.
 
-There are many other resources that contain information about aligning and
-processing RNA-Seq data. Here are some other tutorials that may be useful:
+## Creating a Single Cell Object from aligned BAM reads
+
+If your data requires additional processing steps (UMI normalization, etc), you
+can use the ```alignSingleCellData()``` function to perform feature counting
+and create a single cell object without the alignment step if '.bam' files are
+provided in the ```inputfile1``` parameter. Note that if your read data was
+sequenced using paired-end reads, set the ```isPairedEnd``` parameter
+```TRUE```.
+
+## Manually Creating a Single Cell Object with createSCESet()
+
+If you choose to align and quantify your data using alternative tools, you can
+use the ```createSCESet()``` function to create a single cell object that can
+be used in the single cell toolkit by providing a count data frame and
+optionally providing sample and feature annotations. See the
+```createSCESet()``` function help page for details.
