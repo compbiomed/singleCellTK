@@ -76,6 +76,10 @@ directly into the shiny app for downstream analysis. Detailed information about
 the options available in the ```alignSingleCellData()``` function can be found
 in the function help, but here is an example command:
 
+>>> __NOTE__: Alignment to large genomes (the human genome) can take more than
+>>> 8GB of memory. Make sure to run the ```alignSingleCellData()``` function
+>>> from a computer with sufficient memory.
+
 ```{r, eval=FALSE}
 singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
                     inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
