@@ -77,21 +77,30 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
   }
   
   countframe <- NULL
+  rsubread_stats <- NULL
 
   #align all of the fastq files temp or outfile, get alignment metrics
   #make feature count files temp or outfile
   for(i in 1:length(inputfile1)){
+    sample_name <- gsub("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$|\\.bam$",
+                        "",
+                        basename(inputfile1[i]))
+    message("Processing: ", sample_name)
+    rsub_log_file <- NULL
+    feature_log_file <- NULL
+    
     if(is.null(inputfile2)){
       readfile2=NULL
     } else{
       readfile2=inputfile2[i]
     }
     bam_file_path <- paste(output_dir,
-                           paste(gsub("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$|\\.bam$",
-                                      "",
-                                      basename(inputfile1[i])),
+                           paste(sample_name,
                                  "bam", sep="."), sep="/")
     if(grepl("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$", inputfile1[i])){
+      rsub_log_file <- tempfile()
+      rsub_log <- file(rsub_log_file, open="wt")
+      sink(rsub_log, type="output")
       Rsubread::align(index=index_path,
                       readfile1=inputfile1[i],
                       readfile2=readfile2,
@@ -100,32 +109,59 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                       input_format="gzFASTQ",
                       unique=TRUE,
                       indels=5)
+      sink()
+      close(rsub_log)
+      
+      
+      feature_log_file <- tempfile()
+      feature_log <- file(feature_log_file, open="wt")
+      sink(feature_log, type="output")
       fCountsList <- Rsubread::featureCounts(bam_file_path,
                                              annot.ext=gtf_annotation,
                                              isGTFAnnotationFile=TRUE,
                                              nthreads=threads,
                                              isPairedEnd=!is.null(inputfile2))
+      sink()
+      close(feature_log)
+      
+      
     } else if(grepl("\\.bam$", inputfile1[i])){
+      feature_log_file <- tempfile()
+      feature_log <- file(feature_log_file, open="wt")
+      sink(feature_log, type="output")
       fCountsList <- Rsubread::featureCounts(inputfile1[i],
                                              annot.ext=gtf_annotation,
                                              isGTFAnnotationFile=TRUE,
                                              nthreads=threads,
                                              isPairedEnd=isPairedEnd)
+      sink()
+      close(feature_log)
     } else{
       stop("Input file type error. Make all files are of the supported type.")
     }
-
+    
+    rsubread_stats_line <- parse_rsubread_logs(rsub_log_file,
+                                               feature_log_file,
+                                               sample_name)
+    unlink(rsub_log_file)
+    unlink(feature_log_file)
+    
+    #add the feature counts to the countframe
     if(is.null(countframe)){
       countframe <- data.frame(fCountsList$counts, row.names = fCountsList$annotation[,1])
-      colnames(countframe)[i] <- gsub("_1\\.fastq\\.gz|\\.fastq\\.gz|_1\\.fastq|\\.fastq|\\.bam",
-                                      "",
-                                      basename(inputfile1[i]))
+      colnames(countframe)[i] <- sample_name
     } else {
       countframe <- cbind(countframe, data.frame(fCountsList$counts))
-      colnames(countframe)[i] <- gsub("_1\\.fastq\\.gz|\\.fastq\\.gz|_1\\.fastq|\\.fastq|\\.bam",
-                                      "",
-                                      basename(inputfile1[i]))
+      colnames(countframe)[i] <- sample_name
     }
+    
+    #add reads_mapped to rsubread_stats
+    if(is.null(rsubread_stats)){
+      rsubread_stats <- rsubread_stats_line
+    } else {
+      rsubread_stats <- rbind(rsubread_stats, rsubread_stats_line)
+    }
+    
     if(!save_bam){
       unlink(bam_file_path)
       unlink(paste(bam_file_path, "indel", sep="."))
@@ -134,9 +170,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
       savecounts <- cbind(fCountsList$annotation[,1], fCountsList$counts)
       write.table(savecounts,
                   paste(output_dir,
-                        paste(gsub("_1\\.fastq\\.gz|\\.fastq\\.gz|_1\\.fastq|\\.fastq|\\.bam",
-                                   "",
-                                   basename(inputfile1[i])),
+                        paste(sample_name,
                               "featureCounts",
                               sep="."),
                         sep="/"),
@@ -156,9 +190,14 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
   if(!is.null(sample_annotations)){
     if(!(all(rownames(sample_annotations) == colnames(countframe)))){
       warning("Sample annotation sample names do not match the countframe names. Sample annotations will not be added.")
-      sample_annotations <- NULL
+      sample_annotations <- rsubread_stats
+    } else{
+      sample_annotations <- cbind(sample_annotations, rsubread_stats)
     }
+  } else {
+    sample_annotations <- rsubread_stats
   }
+  
   
   if(!is.null(feature_annotations)){
     if(!(all(rownames(feature_annotations) == rownames(countframe)))){
@@ -174,4 +213,48 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                            inputdataframes = TRUE)
 
   return(scobject)
+}
+
+
+#' Parse Rsubread Logs for Mapping and Feature Count Statistics
+#'
+#' @param align_log Path to a log file created by the Rsubread align function
+#' @param featurecount_log Path to a log file created by the Rsubread feature
+#' count function
+#' @param sample_name Sample name corresponding to the two log files
+#'
+#' @return A single line of a data frame with alignment and feature count
+#' information
+#' @export
+#'
+parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_name=NULL){
+  #process feature count log num reads and log num featured
+  f_fh <- file(featurecount_log, open='r')
+  features <- readLines(f_fh)
+  close(f_fh)
+  total_line <- unlist(strsplit(features[grep("Total reads ", features)], " +", perl=T))
+  feature_line <- unlist(strsplit(features[grep("Successfully assigned reads", features)], " +", perl=T))
+  total_reads <- as.numeric(gsub(",","",total_line[grep("reads",total_line)+2]))
+  feature_reads <- as.numeric(gsub(",","",feature_line[grep("reads",feature_line)+2]))
+  #if not null align log
+  if(!is.null(align_log)){
+    #process align log
+    a_fh <- file(align_log, open='r')
+    align <- readLines(a_fh)
+    close(a_fh)
+    map_line <- unlist(strsplit(align[grep("Mapped", align)], " +", perl=T))
+    mapped_reads <- as.numeric(gsub(",","",map_line[grep("reads",map_line)-1]))
+    return(data.frame(total_reads=total_reads,
+                      reads_mapped=mapped_reads,
+                      pct_mapped=mapped_reads/total_reads,
+                      reads_assigned_to_features=feature_reads,
+                      pct_features=feature_reads/total_reads,
+                      row.names = sample_name))
+  } else{
+    #return just feature stats
+    return(data.frame(total_reads=total_reads,
+                      reads_assigned_to_features=feature_reads,
+                      pct_features=feature_reads/total_reads,
+                      row.names = sample_name))
+  }
 }
