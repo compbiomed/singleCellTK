@@ -29,5 +29,6 @@ Imports:
     methods,
     Biobase,
     GGally,
-    data.table
+    data.table,
+    MAST	
 RoxygenNote: 6.0.1

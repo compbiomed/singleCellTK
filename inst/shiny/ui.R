@@ -118,7 +118,7 @@ shinyUI(
       "DR & Clustering",
       tabsetPanel(
         tabPanel(
-          "PCA(Demo)",
+          "PCA",
           fluidRow(
             column(
               4,
@@ -133,8 +133,7 @@ shinyUI(
             ),
             column(
               8,
-#              plotOutput("pcaPlot")
-              textOutput("pcatext")
+              plotOutput("pcaPlot")
             )
           ),#fluidRow
           mainPanel(
