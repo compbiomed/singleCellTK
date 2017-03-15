@@ -123,11 +123,9 @@ shinyUI(
             column(
               4,
               wellPanel(
-                selectInput("pcaAlgorithm","Algorithm",c("regular PCA","PCA with Box-Cox transfermation","randomized PCA","robust PCA","RR PCA")),
-                checkboxGroupInput("CheckboxId",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
-                selectInput("selectDiffex_condition","Additional variables:",
-                            clusterChoice,
-                            multiple = TRUE),
+                selectInput(inputId ="pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
+                checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
+                selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
                 selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
                 selectInput("colorClusters","Color Clusters By",clusterChoice),
                 withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
@@ -135,7 +133,8 @@ shinyUI(
             ),
             column(
               8,
-              plotOutput("demoplot")
+#              plotOutput("pcaPlot")
+              textOutput("pcatext")
             )
           ),#fluidRow
           mainPanel(

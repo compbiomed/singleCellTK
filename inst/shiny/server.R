@@ -15,6 +15,36 @@ library(data.table)
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
 
+#temporary put function here
+
+dr0col  = function(M) M[, colSums(abs(M)) != 0]
+
+runPCA = function(plot.type, method, countm,annotm,featurem, involving.variables, additional.variables, colorClusters){
+  scaRAW = FromMatrix(exprsArray = as.matrix(countm), cData = annotm, fData = featurem)
+  if(plot.type == "Single Plot"){
+    variables = c(involving.variables, additional.variables)
+    variables = variables[1:2]
+    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
+    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=2)$x}
+    #else if(method = "robust PCA"){}
+    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
+    text.tmp = paste("ggplot(pca) + geom_point(aes(x=",variables[1],",y=",variables[2],",color=as.factor(",colorClusters,")))",sep = "")
+  }
+  else {#plot.type == "Paired Plot"
+    variables = c(involving.variables, additional.variables)
+    variables = variables[1:7]
+    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
+    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=3)$x}
+    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
+    text.tmp = paste("ggpairs(pca, columns=variables,mapping=aes(color=",colorClusters,"), upper=list(continuous='blank'))",sep = "")
+  }
+  g = eval(parse(text = text.tmp))
+  return(g)
+}
+
+
+
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
@@ -36,6 +66,8 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "selectDiffex_condition",
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "subCovariate",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "selectAdditionalVariables",
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
@@ -120,9 +152,16 @@ shinyServer(function(input, output, session) {
        alert("Warning: Upload data first!")
      }
      else{
-       output$demoplot <- renderPlot({
-         ggplot(data = data.frame(x=1:100,y=1:100)) + geom_point(aes(x=x,y=y))
-       })
+       output$pcatext <- renderText(c(input$plotTypeId,class(input$plotTypeId),"Paired Plot"))
+#       g = runPCA(plot.type = input$plotTypeId,
+#                  method = input$pcaAlgorithm,
+#                  countm = vals$counts,annotm = vals$annot,featurem = vals$feature,
+#                  involving.variables = input$pcaCheckbox,
+#                  additional.variables = input$selectAdditionalVariables,
+#                  colorClusters = input$colorClusters)
+#       output$pcaPlot <- renderPlot({
+#         g
+#       })
      }
    }) 
   })
