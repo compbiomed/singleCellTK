@@ -11,39 +11,12 @@ library(plotly)
 library(DESeq)
 library(GGally)
 library(data.table)
+library(MAST)
+library(rsvd)
+library(pcaMethods)
 
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
-
-#temporary put function here
-
-dr0col  = function(M) M[, colSums(abs(M)) != 0]
-
-runPCA = function(plot.type, method, countm,annotm,featurem, involving.variables, additional.variables, colorClusters){
-  scaRAW = FromMatrix(exprsArray = as.matrix(countm), cData = annotm, fData = featurem)
-  if(plot.type == "Single Plot"){
-    variables = c(involving.variables, additional.variables)
-    variables = variables[1:2]
-    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
-    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=2)$x}
-    #else if(method = "robust PCA"){}
-    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
-    text.tmp = paste("ggplot(pca) + geom_point(aes(x=",variables[1],",y=",variables[2],",color=as.factor(",colorClusters,")))",sep = "")
-  }
-  else {#plot.type == "Paired Plot"
-    variables = c(involving.variables, additional.variables)
-    variables = variables[1:7]
-    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
-    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=3)$x}
-    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
-    text.tmp = paste("ggpairs(pca, columns=variables,mapping=aes(color=",colorClusters,"), upper=list(continuous='blank'))",sep = "")
-  }
-  g = eval(parse(text = text.tmp))
-  return(g)
-}
-
-
-
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -138,7 +111,7 @@ shinyServer(function(input, output, session) {
       else{
         g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
-          ggplotly(g)
+          g
         })
       }
     })
@@ -146,22 +119,23 @@ shinyServer(function(input, output, session) {
   
   #demo PCA by Lloyd
   #singlCellTK::runDimRed may want to change
-  demoPcaDataFrame <- observeEvent(input$plotPCA, {
+  multipcaDataFrame <- observeEvent(input$plotPCA, {
    withBusyIndicatorServer("plotPCA", {
      if(is.null(vals$counts)){
        alert("Warning: Upload data first!")
      }
      else{
-       output$pcatext <- renderText(c(input$plotTypeId,class(input$plotTypeId),"Paired Plot"))
-#       g = runPCA(plot.type = input$plotTypeId,
-#                  method = input$pcaAlgorithm,
-#                  countm = vals$counts,annotm = vals$annot,featurem = vals$feature,
-#                  involving.variables = input$pcaCheckbox,
-#                  additional.variables = input$selectAdditionalVariables,
-#                  colorClusters = input$colorClusters)
-#       output$pcaPlot <- renderPlot({
-#         g
-#       })
+       g = runPCA(plot.type = input$plotTypeId,
+                  method = input$pcaAlgorithm,
+                  countm = exprs(vals$counts),
+                  annotm = pData(vals$counts),
+                  featurem = fData(vals$counts),
+                  involving.variables = input$pcaCheckbox,
+                  additional.variables = input$selectAdditionalVariables,
+                  colorClusters = input$colorClusters)
+       output$pcaPlot <- renderPlot({
+         g
+       })
      }
    }) 
   })
