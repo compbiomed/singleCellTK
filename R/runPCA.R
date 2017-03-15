@@ -15,9 +15,8 @@
 #' @export runPCA
 #'
 
-dr0col  = function(M) M[, colSums(abs(M)) != 0]
-
 runPCA = function(plot.type, method, countm,annotm,featurem, involving.variables, additional.variables, colorClusters){
+  dr0col  = function(M) M[, colSums(abs(M)) != 0]
   scaRAW = FromMatrix(exprsArray = as.matrix(countm), cData = annotm, fData = featurem)
   if(plot.type == "Single Plot"){
     variables = c(involving.variables, additional.variables)
