@@ -14,6 +14,7 @@ library(data.table)
 library(MAST)
 library(rsvd)
 library(pcaMethods)
+library(colourpicker)
 
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
@@ -226,15 +227,57 @@ shinyServer(function(input, output, session) {
   
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
+      if (input$displayHeatmapColorBar){
+        names = names(input)
+        conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
+        condNames = paste0("hmColorBar_", conditions)
+        names = names[names %in% condNames]
+        if (length(names)==0){
+          colors = sapply(1:length(conditions), function (i) palette()[(i %% length(palette()))+1])
+          names(colors) = conditions
+        } else {
+          colors = rep("", length(names))
+          names(colors) = names
+          for (i in 1:length(colors)){
+            n = names[i]
+            colors[i]<-input[[as.character(n)]]
+            names(colors)[i] = gsub("hmColorBar_", "", n)
+          }
+        }
+      } else {
+        colors=NULL
+      }
       draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
                   clusterCol=input$clusterColumns,
                   displayRowLabels=input$displayHeatmapRowLabels,
                   displayColumnLabels=input$displayHeatmapColumnLabels,
                   displayRowDendrograms=input$displayHeatmapRowDendrograms,
-                  displayColumnDendrograms=input$displayHeatmapColumnDendrograms))
+                  displayColumnDendrograms=input$displayHeatmapColumnDendrograms,
+                  annotationColors=colors,
+                  columnTitle=input$heatmapColumnsTitle))
     }
   }, height=600)
+  
+  output$colorBarOptions <- renderUI({
+    if (!is.null(vals$counts)){
+      conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
+      L = vector("list", length(conditions))
+      for (i in 1:length(L)){
+        id=paste0("hmColorBar_", conditions[i])
+        if (is.null(input[[id]])){
+          color = palette()[(i %% length(palette()))+1]
+        } else {
+          color = input[[id]]
+        }
+        L[[i]] = list(colourInput(
+          id, 
+          conditions[i], 
+          color))
+      }
+      return(L)  
+    }
+  })
   
   output$interactivediffPlot <- renderD3heatmap({
     if(!is.null(vals$diffexgenelist)){

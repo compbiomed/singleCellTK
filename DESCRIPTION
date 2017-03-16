@@ -35,4 +35,5 @@ Imports:
     pcaMethods,
     biomaRt,
     circlize	
+    colourpicker
 RoxygenNote: 6.0.1
