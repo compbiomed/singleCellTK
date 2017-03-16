@@ -34,6 +34,8 @@ shinyServer(function(input, output, session) {
                                   featurefile = input$featurefile$datapath)
       updateSelectInput(session, "colorClusters",
                         choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "colorClusters_MAST",
+                        choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
       updateSelectInput(session, "selectDiffex_condition",
@@ -128,7 +130,7 @@ shinyServer(function(input, output, session) {
                   featurem = fData(vals$counts),
                   involving.variables = input$pcaCheckbox,
                   additional.variables = input$selectAdditionalVariables,
-                  colorClusters = input$colorClusters)
+                  colorClusters = input$colorClusters_MAST)
        output$pcaPlot <- renderPlot({
          g
        })
