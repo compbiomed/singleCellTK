@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.1.3
+Version: 0.1.5
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
@@ -11,29 +11,33 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
+    Biobase,
+    biomaRt,
+    circlize,
+    colourpicker,
+    ComplexHeatmap,
+    d3heatmap,
+    data.table,
     DESeq,
     DESeq2,
-    S4Vectors,
-    shiny,
-    scater,
-    multtest,
-    locfit,
-    ComplexHeatmap,
-    limma,
-    d3heatmap,
-    plotly,
-    ggplot2,
-    Rtsne,
-    shinyjs,
-    RColorBrewer,
-    methods,
-    Biobase,
     GGally,
-    data.table,
+    ggplot2,
+    limma,
+    locfit,
     MAST,
-    rsvd,
+    methods,
+    multtest,
     pcaMethods,
-    biomaRt,
-    circlize	
-    colourpicker
+    plotly,
+    RColorBrewer,
+    rsvd,
+    Rtsne,
+    S4Vectors,
+    scater,
+    shiny,
+    shinyjs
 RoxygenNote: 6.0.1
+Suggests: Rsubread,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
