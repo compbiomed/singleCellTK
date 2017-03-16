@@ -183,20 +183,27 @@ shinyUI(
             column(8,
                    tabsetPanel(
                      id = 'dataset',
-                     tabPanel('Heatmap', 
+                     tabPanel('Heatmap', plotOutput("diffPlot")),
+                     tabPanel('Heatmap Options', 
                               fluidPage(
-                                #fluidRow(
+                                fluidRow(
                                   column(4,
-                                      wellPanel(
-                                        checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
-                                        checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value=TRUE),
-                                        checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value=TRUE),
-                                        checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value=TRUE)
-                                      )),
-                                  column(8,
-                                         plotOutput("diffPlot") )
-                                #)
-                              )),
+                                         wellPanel("General Options",
+                                            checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
+                                            checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value=TRUE),
+                                            checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value=TRUE),
+                                            checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value=TRUE),
+                                            textInput("heatmapColumnsTitle", "Columns Title", value = "Differential Expression"))
+                                         ),
+                                  column(4,
+                                         wellPanel("Colorbar Options",
+                                            checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
+                                            uiOutput("colorBarOptions")
+                                                   )
+                                         )
+                                )
+                              )
+                           ),
                      tabPanel('Results Table', dataTableOutput('diffextable')),
                      tabPanel('Interactive Heatmap', d3heatmapOutput("interactivediffPlot"))
                    )

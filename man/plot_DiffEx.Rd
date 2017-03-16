@@ -6,7 +6,8 @@
 \usage{
 plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
   clusterCol = TRUE, displayRowLabels = TRUE, displayColumnLabels = TRUE,
-  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE)
+  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE,
+  annotationColors = NULL, columnTitle = "Differential Expression")
 }
 \arguments{
 \item{inSCESet}{Input data object that contains the data to be plotted.
@@ -31,6 +32,11 @@ default is TRUE}
 
 \item{displayColumnDendrograms}{Display the column dendrograms on the
 heatmap. The default is TRUE.}
+
+\item{annotationColors}{Set of annotation colors for color bar. If null,
+no color bar is shown. default is NULL.}
+
+\item{columnTitle}{Title to be displayed at top of heatmap.}
 }
 \value{
 ComplexHeatmap object for the provided geneList annotated with the
