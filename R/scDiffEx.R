@@ -44,7 +44,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-
+  
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -56,7 +56,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-
+  
   return(diffex.results[newgenes,])
 }
 
@@ -85,9 +85,9 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
-                     annotationColors=NULL, columnTitle="Differential Expression"){
+                        clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                        displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                        annotationColors=NULL, columnTitle="Differential Expression"){
   diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
   if (is.null(annotationColors)){
@@ -98,7 +98,6 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                                                height = unit(0.333, "cm"))
     
   }
-
   
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
@@ -131,7 +130,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-
+  
   d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,
