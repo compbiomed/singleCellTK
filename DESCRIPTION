@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.1.4
+Version: 0.1.5
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
@@ -14,6 +14,7 @@ Imports:
     Biobase,
     biomaRt,
     circlize,
+    colourpicker,
     ComplexHeatmap,
     d3heatmap,
     DESeq,
