@@ -118,7 +118,7 @@ shinyUI(
       "DR & Clustering",
       tabsetPanel(
         tabPanel(
-          "PCA",
+          "PCA (MAST example)",
           fluidRow(
             column(
               4,
@@ -127,7 +127,7 @@ shinyUI(
                 checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
                 selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
                 selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
-                selectInput("colorClusters","Color Clusters By",clusterChoice),
+                selectInput("colorClusters_MAST","Color Clusters By",clusterChoice),
                 withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
               )#wellPanel
             ),
@@ -147,7 +147,7 @@ shinyUI(
           )
         ),#subtab "Principle Component Analysis" end
         
-        tabPanel("Dimensionality Reduction(tSNE)", 
+        tabPanel("Dimensionality Reduction", 
                  fluidRow(
                    column(4,
                           wellPanel(
