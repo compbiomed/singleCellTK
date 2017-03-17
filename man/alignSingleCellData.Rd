@@ -51,3 +51,13 @@ Object to import into the shiny app.
 \description{
 Align Single Cell RNA-Seq Data and Create a SCESet Object
 }
+\examples{
+\dontrun{
+singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
+inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
+index_path = "/path/to/genome/index",
+gtf_annotation = "/path/to/gene/annotations.gtf",
+sample_annotations = sample.annotation.df,
+threads=4)
+}
+}
