@@ -1,4 +1,4 @@
-#' Example Single Cell RNA-Seq data in SCESet Object
+#' Example Single Cell RNA-Seq data in SCESet Object, GSE60361 subest
 #'
 #' A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et
 #' al. Science 2015. The data was produced from cells from the mouse
@@ -20,7 +20,7 @@
 #'                                 inputdataframes = TRUE)
 "GSE60361_subset"
 
-#' Example Single Cell RNA-Seq data in SCESet Object
+#' Example Single Cell RNA-Seq data in SCESet Object, SRP063840
 #'
 #' 117 Single-cell transcriptome profiling for metastatic renal cell carcinoma
 #' patient-derived cells
@@ -38,3 +38,22 @@
 #'                                 annotfile = SRP063840$annot,
 #'                                 inputdataframes = TRUE)
 "SRP063840"
+
+#' Example Single Cell RNA-Seq data in SCESet Object, GSE36552
+#'
+#' 86 Single-cell transcriptome profiling from embryonic stem cells derived from
+#' donated human pre-implatation embryos.
+#'
+#' @name GSE36552
+#' @docType data
+#' @format List of two data frames, with counts and annotations. Use them as
+#' input to createSCESet()
+#' @source DOI: 10.1038/nsmb.2660
+#' @keywords datasets
+#' @examples
+#' library(scater)
+#' data("GSE36552")
+#' GSE36552_SCESet <- createSCESet(countfile = GSE36552$counts,
+#'                                 annotfile = GSE36552$annot,
+#'                                 inputdataframes = TRUE)
+"GSE36552"

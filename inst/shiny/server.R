@@ -192,18 +192,6 @@ shinyServer(function(input, output, session) {
   })
   # END Emma's Note
 
-  deHeatmapDataframe <- observeEvent(input$makeHeatmap, {
-    if(input$selectHeatmap == "Standard") {
-      output$heatmapPlot <- renderPlot({
-        heatmap(counts(vals$counts)[1:50,], labCol = FALSE, labRow = FALSE)})
-    } else if(input$selectHeatmap == "Complex") {
-      # Do Something
-    } else if(input$selectHeatmap == "Interactive") {
-      output$heatmapPlot <- renderD3heatmap({
-        plotHeatmap(vals$counts)})
-    }
-  })
-
   diffexDataframe <- observeEvent(input$runDiffex, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")

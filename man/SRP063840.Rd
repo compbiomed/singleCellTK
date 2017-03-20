@@ -3,7 +3,7 @@
 \docType{data}
 \name{SRP063840}
 \alias{SRP063840}
-\title{Example Single Cell RNA-Seq data in SCESet Object}
+\title{Example Single Cell RNA-Seq data in SCESet Object, SRP063840}
 \format{List of two data frames, with counts and annotations. Use them as
 input to createSCESet()}
 \source{
