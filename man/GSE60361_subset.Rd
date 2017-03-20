@@ -3,7 +3,7 @@
 \docType{data}
 \name{GSE60361_subset}
 \alias{GSE60361_subset}
-\title{Example Single Cell RNA-Seq data in SCESet Object}
+\title{Example Single Cell RNA-Seq data in SCESet Object, GSE60361 subest}
 \format{List of two data frames, with counts and annotations. Use them as
 input to createSCESet()}
 \source{
