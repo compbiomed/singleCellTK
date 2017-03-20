@@ -14,6 +14,8 @@
 #' analyis. Available options are DESeq, DESeq2, and limma. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+#' @param displayRowLabels Display the row labels on the heatmap. The default
+#' is TRUE.
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -22,10 +24,10 @@
 #' \dontrun{
 #' scDiffEx(newsceset_david, "age", "0.1")
 #' }
-#' 
+#'
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
-                     clusterCol=TRUE){
+                     clusterCol=TRUE, displayRowLabels=TRUE){
   in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
   if (length(levels(in.condition)) != 2)
     stop("only two labels supported, ", condition, " has ",
@@ -66,24 +68,47 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
+#' @param displayRowLabels Display the row labels on the heatmap. The default
+#' is TRUE.
+#' @param displayColumnLabels Display the column labels on the heatmap. The
+#' default is TRUE
+#' @param displayRowDendrograms Display the row dendrograms on the heatmap. The
+#' default is TRUE
+#' @param displayColumnDendrograms Display the column dendrograms on the
+#' heatmap. The default is TRUE.
+#' @param annotationColors Set of annotation colors for color bar. If null,
+#' no color bar is shown. default is NULL.
+#' @param columnTitle Title to be displayed at top of heatmap.
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                     clusterCol=TRUE){
-  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
+                        clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                        displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                        annotationColors=NULL, columnTitle="Differential Expression"){
+  diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
-  topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
-                                             height = unit(0.333, "cm"))
+  if (is.null(annotationColors)){
+    topha <- NULL
+  } else {
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(condition = Biobase::pData(inSCESet)[,condition]),
+                                               col = list(condition = annotationColors),
+                                               height = unit(0.333, "cm"))
+    
+  }
   
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
-                                     column_title = "Differential Expression",
+                                     column_title = columnTitle,
                                      cluster_rows = clusterRow,
                                      cluster_columns = clusterCol,
-                                     top_annotation = topha)
+                                     top_annotation = topha,
+                                     show_row_names = displayRowLabels,
+                                     show_column_names = displayColumnLabels,
+                                     show_row_dend = displayRowDendrograms,
+                                     show_column_dend = displayColumnDendrograms)
   return(heatmap)
 }
 
@@ -105,7 +130,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-
+  
   d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,
@@ -113,7 +138,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 }
 
 #' Perform differential expression analysis with DESeq2
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -137,7 +162,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with DESeq
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required
@@ -162,7 +187,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 }
 
 #' Perform differential expression analysis with limma
-#' 
+#'
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCESet object. Required

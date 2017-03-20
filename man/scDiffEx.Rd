@@ -5,7 +5,8 @@
 \title{Create a heatmap for differential expression analysis}
 \usage{
 scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
-  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE)
+  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE,
+  displayRowLabels = TRUE)
 }
 \arguments{
 \item{inSCESet}{Input SCESet object. Required}
@@ -29,6 +30,9 @@ analyis. Available options are DESeq, DESeq2, and limma. Required}
 \item{clusterRow}{Cluster the rows. The default is TRUE}
 
 \item{clusterCol}{Cluster the columns. The default is TRUE}
+
+\item{displayRowLabels}{Display the row labels on the heatmap. The default
+is TRUE.}
 }
 \value{
 A list of differentially expressed genes.
