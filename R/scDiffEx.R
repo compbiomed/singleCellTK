@@ -44,7 +44,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-
+  
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -56,7 +56,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-
+  
   return(diffex.results[newgenes,])
 }
 
@@ -76,22 +76,32 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' default is TRUE
 #' @param displayColumnDendrograms Display the column dendrograms on the
 #' heatmap. The default is TRUE.
+#' @param annotationColors Set of annotation colors for color bar. If null,
+#' no color bar is shown. default is NULL.
+#' @param columnTitle Title to be displayed at top of heatmap.
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE){
-  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
+                        clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                        displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                        annotationColors=NULL, columnTitle="Differential Expression"){
+  diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition])
   colnames(diffex.annotation) <- condition
-  topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
-                                             height = unit(0.333, "cm"))
+  if (is.null(annotationColors)){
+    topha <- NULL
+  } else {
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(condition = Biobase::pData(inSCESet)[,condition]),
+                                               col = list(condition = annotationColors),
+                                               height = unit(0.333, "cm"))
+    
+  }
   
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
-                                     column_title = "Differential Expression",
+                                     column_title = columnTitle,
                                      cluster_rows = clusterRow,
                                      cluster_columns = clusterCol,
                                      top_annotation = topha,
@@ -120,7 +130,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-
+  
   d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,

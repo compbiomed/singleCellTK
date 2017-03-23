@@ -29,6 +29,15 @@
 #' @export alignSingleCellData
 #'
 #' @examples
+#' \dontrun{
+#' singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz",
+#' "/path/to/sample2_1.fastq.gz"),
+#' inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
+#' index_path = "/path/to/genome/index",
+#' gtf_annotation = "/path/to/gene/annotations.gtf",
+#' sample_annotations = sample.annotation.df,
+#' threads=4)
+#' }
 alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                                 gtf_annotation, output_dir=NULL,
                                 sample_annotations=NULL,

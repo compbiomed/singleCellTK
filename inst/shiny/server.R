@@ -9,6 +9,12 @@ library(d3heatmap)
 library(ggplot2)
 library(plotly)
 library(DESeq)
+library(GGally)
+library(data.table)
+library(MAST)
+library(rsvd)
+library(pcaMethods)
+library(colourpicker)
 
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
@@ -28,11 +34,15 @@ shinyServer(function(input, output, session) {
                                   featurefile = input$featurefile$datapath)
       updateSelectInput(session, "colorClusters",
                         choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "colorClusters_MAST",
+                        choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
       updateSelectInput(session, "selectDiffex_condition",
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "subCovariate",
+                        choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "selectAdditionalVariables",
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
@@ -99,11 +109,35 @@ shinyServer(function(input, output, session) {
       else{
         g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
-          ggplotly(g)
+          g
         })
       }
     })
   })
+
+  #demo PCA by Lloyd
+  #singlCellTK::runDimRed may want to change
+  multipcaDataFrame <- observeEvent(input$plotPCA, {
+   withBusyIndicatorServer("plotPCA", {
+     if(is.null(vals$counts)){
+       alert("Warning: Upload data first!")
+     }
+     else{
+       g = runPCA(plot.type = input$plotTypeId,
+                  method = input$pcaAlgorithm,
+                  countm = exprs(vals$counts),
+                  annotm = pData(vals$counts),
+                  featurem = fData(vals$counts),
+                  involving.variables = input$pcaCheckbox,
+                  additional.variables = input$selectAdditionalVariables,
+                  colorClusters = input$colorClusters_MAST)
+       output$pcaPlot <- renderPlot({
+         g
+       })
+     }
+   }) 
+  })
+  #end Lloyd's Code
 
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
   clusterDataFrame <- observeEvent(input$plotClusters, {
@@ -158,18 +192,6 @@ shinyServer(function(input, output, session) {
   })
   # END Emma's Note
 
-  deHeatmapDataframe <- observeEvent(input$makeHeatmap, {
-    if(input$selectHeatmap == "Standard") {
-      output$heatmapPlot <- renderPlot({
-        heatmap(counts(vals$counts)[1:50,], labCol = FALSE, labRow = FALSE)})
-    } else if(input$selectHeatmap == "Complex") {
-      # Do Something
-    } else if(input$selectHeatmap == "Interactive") {
-      output$heatmapPlot <- renderD3heatmap({
-        plotHeatmap(vals$counts)})
-    }
-  })
-
   diffexDataframe <- observeEvent(input$runDiffex, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
@@ -188,15 +210,57 @@ shinyServer(function(input, output, session) {
 
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
+      if (input$displayHeatmapColorBar){
+        names = names(input)
+        conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
+        condNames = paste0("hmColorBar_", conditions)
+        names = names[names %in% condNames]
+        if (length(names)==0){
+          colors = sapply(1:length(conditions), function (i) palette()[(i %% length(palette()))+1])
+          names(colors) = conditions
+        } else {
+          colors = rep("", length(names))
+          names(colors) = names
+          for (i in 1:length(colors)){
+            n = names[i]
+            colors[i]<-input[[as.character(n)]]
+            names(colors)[i] = gsub("hmColorBar_", "", n)
+          }
+        }
+      } else {
+        colors=NULL
+      }
       draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
                   clusterCol=input$clusterColumns,
                   displayRowLabels=input$displayHeatmapRowLabels,
                   displayColumnLabels=input$displayHeatmapColumnLabels,
                   displayRowDendrograms=input$displayHeatmapRowDendrograms,
-                  displayColumnDendrograms=input$displayHeatmapColumnDendrograms))
+                  displayColumnDendrograms=input$displayHeatmapColumnDendrograms,
+                  annotationColors=colors,
+                  columnTitle=input$heatmapColumnsTitle))
     }
   }, height=600)
+
+  output$colorBarOptions <- renderUI({
+    if (!is.null(vals$counts)){
+      conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
+      L = vector("list", length(conditions))
+      for (i in 1:length(L)){
+        id=paste0("hmColorBar_", conditions[i])
+        if (is.null(input[[id]])){
+          color = palette()[(i %% length(palette()))+1]
+        } else {
+          color = input[[id]]
+        }
+        L[[i]] = list(colourInput(
+          id, 
+          conditions[i], 
+          color))
+      }
+      return(L)  
+    }
+  })
 
   output$interactivediffPlot <- renderD3heatmap({
     if(!is.null(vals$diffexgenelist)){
