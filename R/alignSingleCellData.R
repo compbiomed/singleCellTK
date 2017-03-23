@@ -40,6 +40,10 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
          call. = FALSE)
   }
   
+  if(any(grepl("~",c(inputfile1,inputfil2,index_path, gtf_annotation, output_dir)), na.rm = TRUE)){
+    stop("ERROR: tilde ~ filenames are not supported. Provide the full path.")
+  }
+  
   #verify that inputfile1 file(s) exist
   if(!all(file.exists(inputfile1))){
     stop("Error with inputfile1 files, verify that all file exist.")
