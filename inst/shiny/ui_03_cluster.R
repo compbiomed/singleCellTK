@@ -37,12 +37,24 @@ shiny_panel_cluster <- fluidPage(
                         selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
                         selectInput("pcX", "X axis:", pcComponents),
                         selectInput("pcY", "Y axis:", pcComponents, selected = "PC2"),
+                        conditionalPanel(
+                          condition = "input.selectDimRed == 'PCA'",
+                          selectInput("pcX", "X axis:", pcComponents),
+                          selectInput("pcY", "Y axis:", pcComponents, selected = "PC2")
+                        ),
                         selectInput("colorClusters","Color Clusters By",clusterChoice),
                         withBusyIndicatorUI(actionButton("plotData", "Plot Data"))
                       )),
                column(8,
                       plotlyOutput("dimredPlot"))
                
+                      plotlyOutput("dimredPlot")),
+               column(6,
+                      ""),
+               column(6,
+                      #conditionalPanel(
+                      #condition = "input.selectDimRed == 'PCA'",
+                      tableOutput('pctable'))#)
              ),
              mainPanel(
                h1("Instructions"),

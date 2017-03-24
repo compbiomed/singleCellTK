@@ -106,13 +106,31 @@ shinyServer(function(input, output, session) {
       if(is.null(vals$counts)){
         alert("Warning: Upload data first!")
       }
+      #Sebastian's Code
       else{
         g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
+        if(input$selectDimRed == "PCA"){
+          vals$PCA <- getPCA(vals$counts)
+          #updateVals('PCA')
+          algo <- vals$PCA
+          PC <- paste("PC",1:nrow(pData(vals$counts)),sep="")
+          Variances <- attr(vals$PCA,"percentVar")*100
+          var <- data.frame(PC,Variances)
+          output$pctable <- renderTable(var[1:10,])
+        }
+        else{
+          vals$TSNE <- getTSNE(vals$counts)
+          algo <- vals$TSNE
+          output$pctable <- renderTable(data.frame(NULL))
+        }
+        g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorClusters, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
           g
+          ggplotly(g)
         })
       }
     })
+    #End Sebastian's Code
   })
 
   #demo PCA by Lloyd
