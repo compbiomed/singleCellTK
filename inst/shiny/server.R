@@ -131,7 +131,7 @@ shinyServer(function(input, output, session) {
         alert("Warning: Upload data first!")
       }
       else{
-        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
+        g <- runDimRed(input$selectDimRed, vals$counts, input$colorDims, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
           g
         })
@@ -183,21 +183,21 @@ shinyServer(function(input, output, session) {
   })
   
   # If K-Means is Selected
-  # This assumes the PCAs are stored in pData(vlas$counts)$PCA (this will change based off
+  # This assumes the PCAs are stored in pData(vals$counts)$PCA (this will change based off
   # of Sebastian's implementation)
   observeEvent(input$numberKClusters, {
     k <- input$numberKClusters
     if(input$selectDataC == "Raw Data") {
       cl <- kmeans(t(exprs(vals$counts)), k) # Need to Transpose vals$counts so samples are clustered
-      pData(vals$counts)$Kmeans <- cl
+      pData(vals$counts)$Kmeans <- cl$cluster
     } else if(input$selectDataC == "PCA Components") {
       pc1 <- input$pcX_Clustering_Data
       pc2 <- input$pcY_Clustering_Data
       cl <- kmeans(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)], k)
-      pData(vals$counts)$Kmeans <- cl
+      pData(vals$counts)$Kmeans <- cl$cluster
     } else if(input$selectDataC == "tSNE Components") {
       cl <- kmeans(tsne[,2:3], k)
-      pData(vals$counts)$Kmeans <- cl
+      pData(vals$counts)$Kmeans <- cl$cluster
     }
   })
   
@@ -215,13 +215,13 @@ shinyServer(function(input, output, session) {
     PC2 <- input$pcY_Clustering_Plot
     # Color
     if (input$colorClusters_Plot == "Cluster Label"){
-      pca$color <- factor(pData(vals$counts)$Kmeans$cluster)
+      pca$color <- factor(pData(vals$counts)$Kmeans)
     } else {
       pca$color <- eval(parse(text = paste("pData(vals$counts)$",input$colorClusters_Plot,sep="")))
     }
     # Shape
     if (input$shapeClusters_Plot == "Cluster Label"){
-      pca$shape <- factor(pData(vals$counts)$Kmeans$cluster)
+      pca$shape <- factor(pData(vals$counts)$Kmeans)
     } else {
       pca$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters_Plot,sep="")))
     }
@@ -239,14 +239,26 @@ shinyServer(function(input, output, session) {
   }) 
   
   # If plot dendogram is selected
+  # Sebastian: Change input to PCA/tSNE
   clusterDataFrameDendogram <- observeEvent(input$plotClustersDendogram, {
     if(input$selectDataC == "Raw Data") {
       e <- exprs(vals$counts)
-    } 
+    } else if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
+      # Get PCA Values (in format such that rows are PCs, columns are samples)
+      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    } else if(input$selectDataC == "tSNE Components") {
+      e <- data.frame(t(pData(vals$counts)$tSNE))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    }
     d <- dist(t(e))
     h <- hclust(d, "ward.D")
     k <- as.integer(input$numberHClusters)
-    phenoData(vals$counts)$Hierarchical <- cutree(h, k=k)
+    pData(vals$counts)$Hierarchical <- cutree(h, k=k)
     
     output$dendoPlot <- renderPlot({
       plot(h, hang=-1, main=sprintf("%s Clusters", k))
@@ -257,10 +269,22 @@ shinyServer(function(input, output, session) {
   })
   
   # If plot hiererchical clustering is selected
+  # Sebastian: Change input to PCA/tSNE
   clusterDataFramePhylogenetic <- observeEvent(input$plotClustersPTree, {
     if(input$selectDataC == "Raw Data") {
       e <- exprs(vals$counts)
-    } 
+    } else if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
+      # Get PCA Values (in format such that rows are PCs, columns are samples)
+      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    } else if(input$selectDataC == "tSNE Components") {
+      e <- data.frame(t(pData(vals$counts)$tSNE))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    }
     d <- dist(t(e))
     h <- hclust(d, "ward.D")
     
@@ -284,7 +308,7 @@ shinyServer(function(input, output, session) {
   #   }
   #   # Shape
   #   if (input$shapeClusters == "Cluster Label"){
-  #     tsne$shape <- factor(phenoData(vals$counts)$Kmeans$cluster)
+  #     tsne$shape <- factor(phenoData(vals$counts)$Kmeans)
   #   } else {
   #     tsne$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters,sep="")))
   #   }
