@@ -125,7 +125,6 @@ shinyServer(function(input, output, session) {
         }
         g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorClusters, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
-          g
           ggplotly(g)
         })
       }
