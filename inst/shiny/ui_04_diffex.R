@@ -6,8 +6,9 @@ shiny_panel_diffex <- fluidPage(
       fluidRow(
         column(4,
                wellPanel(
-                 selectInput("selectDiffex","Differential Expression",c("DESeq", "DESeq2", "limma")),
+                 selectInput("selectDiffex","Differential Expression",c("limma", "DESeq", "DESeq2")),
                  selectInput("selectDiffex_condition","Select Condition",clusterChoice),
+                 uiOutput("selectDiffex_conditionofinterestUI"),
                  sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
                  checkboxInput("applyCutoff", "Apply p-value Cutoff"),
                  checkboxInput("clusterRows", "Cluster Heatmap Rows", value=TRUE),
