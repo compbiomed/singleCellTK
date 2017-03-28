@@ -6,7 +6,7 @@
 \usage{
 scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
   usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE,
-  displayRowLabels = TRUE)
+  displayRowLabels = TRUE, levelofinterest)
 }
 \arguments{
 \item{inSCESet}{Input SCESet object. Required}
@@ -33,6 +33,11 @@ analyis. Available options are DESeq, DESeq2, and limma. Required}
 
 \item{displayRowLabels}{Display the row labels on the heatmap. The default
 is TRUE.}
+
+\item{levelofinterest}{If the condition has more than two labels,
+levelofinterest should contain one factor for condition. The differential
+expression results will compare the factor in levelofinterest to all other
+data.}
 }
 \value{
 A list of differentially expressed genes.

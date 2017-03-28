@@ -70,6 +70,14 @@ shinyServer(function(input, output, session) {
     }
   }, options = list(scrollX = TRUE))
 
+  output$selectDiffex_conditionofinterestUI <- renderUI({
+    if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
+      selectInput("selectDiffex_conditionofinterest",
+                  "Select Factor of Interest",
+                  unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+    }
+  })
+  
   output$summarycontents <- renderTable({
     if(!(is.null(vals$counts))){
       summarizeTable(vals$counts)
@@ -203,7 +211,8 @@ shinyServer(function(input, output, session) {
                                         input$selectPval, input$selectNGenes, input$applyCutoff,
                                         diffexmethod=input$selectDiffex,
                                         clusterRow=input$clusterRows,
-                                        clusterCol=input$clusterColumns)
+                                        clusterCol=input$clusterColumns,
+                                        levelofinterest = input$selectDiffex_conditionofinterest)
       })
     }
   })
