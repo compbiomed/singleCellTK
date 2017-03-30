@@ -108,7 +108,6 @@ shinyServer(function(input, output, session) {
       }
       #Sebastian's Code
       else{
-        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
         if(input$selectDimRed == "PCA"){
           vals$PCA <- getPCA(vals$counts)
           #updateVals('PCA')
