@@ -193,29 +193,61 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  annotationColors <- reactiveValues(options = NULL, cols = NULL, colors = NULL)
+  
+  observeEvent(input$colorBar_Condition, {
+    options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+    annotationColors$options = options
+    cols = callModule(colourGroup, "cgi", options = options)
+    annotationColors$cols = cols
+    annotationColors$colors = cols()
+  })
+  
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
       if (input$displayHeatmapColorBar){
-        names = names(input)
-        conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
-        condNames = paste0("hmColorBar_", conditions)
-        names = names[names %in% condNames]
-        if (length(names)==0){
-          colors = sapply(1:length(conditions), function (i) palette()[(i %% length(palette()))+1])
-          names(colors) = conditions
-        } else {
-          colors = rep("", length(names))
-          names(colors) = names
-          for (i in 1:length(colors)){
-            n = names[i]
-            colors[i]<-input[[as.character(n)]]
-            names(colors)[i] = gsub("hmColorBar_", "", n)
-          }
-        }
+        # names = names(input)
+        #conditions = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+        
+        # if (is.null(input$colorBar_Condition)){
+        #   colors = NULL
+        # } else {
+        #   # options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+        #   # cols = callModule(colourGroup, "cgi", options = options)
+        #   # colors = cols()
+        #   #alert(colors())
+        #   colors = annotationColors$colors
+        #   #alert(colors)
+        # }
+        
+        # options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+        # annotationColors$options = options
+        cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
+        annotationColors$options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+        annotationColors$cols = cols
+        annotationColors$colors = cols()
+        colors = annotationColors$colors
+        #alert(colors)
+        
+        # condNames = paste0("hmColorBar_", conditions)
+        # names = names[names %in% condNames]
+        # if (length(names)==0){
+        #   colors = sapply(1:length(conditions), function (i) palette()[(i %% length(palette()))+1])
+        #   names(colors) = unique(unlist(pData(vals$counts)[,input$selectDiffex_condition]))
+        # } else {
+        #   colors = rep("", length(names))
+        #   names(colors) = input$colorBar_Condition
+        #   for (i in 1:length(colors)){
+        #     n = names[i]
+        #     colors[i]<-input[[as.character(n)]]
+        #     names(colors)[i] = gsub("hmColorBar_", "", n)
+        #   }
+        # }
       } else {
         colors=NULL
       }
-      draw(plot_DiffEx(vals$counts, input$selectDiffex_condition,
+      
+      draw(plot_DiffEx(vals$counts, input$colorBar_Condition,
                   rownames(vals$diffexgenelist), clusterRow=input$clusterRows,
                   clusterCol=input$clusterColumns,
                   displayRowLabels=input$displayHeatmapRowLabels,
@@ -227,9 +259,12 @@ shinyServer(function(input, output, session) {
     }
   }, height=600)
   
+  
+  
   output$colorBarOptions <- renderUI({
-    if (!is.null(vals$counts)){
-      conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
+    if (!is.null(vals$counts) & !is.null(input$colorBar_Condition)){
+      conditions = unique(unlist(pData(vals$counts)[,unique(input$colorBar_Condition)]))
+      #alert(conditions)
       L = vector("list", length(conditions))
       for (i in 1:length(L)){
         id=paste0("hmColorBar_", conditions[i])
@@ -246,6 +281,15 @@ shinyServer(function(input, output, session) {
       return(L)  
     }
   })
+  
+  output$colorBarCondition <- renderUI({
+    if (is.null(vals$counts)){
+      selectInput("colorBar_Condition", "Select Condition", c(), multiple=TRUE)
+    } else {
+      selectInput("colorBar_Condition", "Select Condition", 
+                names(pData(vals$counts)), multiple=TRUE)
+    }
+    })
   
   output$interactivediffPlot <- renderD3heatmap({
     if(!is.null(vals$diffexgenelist)){

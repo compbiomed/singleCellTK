@@ -5,6 +5,7 @@ library(plotly)
 library(d3heatmap)
 
 source("helpers.R")
+source("colourGroupInput.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
@@ -198,7 +199,8 @@ shinyUI(
                                   column(4,
                                          wellPanel("Colorbar Options",
                                             checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
-                                            uiOutput("colorBarOptions")
+                                            # uiOutput("colorBarOptions")
+                                            colourGroupInput("cgi")
                                                    )
                                          )
                                 )
