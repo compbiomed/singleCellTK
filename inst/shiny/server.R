@@ -21,15 +21,32 @@ options(shiny.maxRequestSize=1000*1024^2)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-
+  
   #-----------------------------------------------------------------------------
-  # Reactive Values - Used throughout app
+  # MISC - Used throughout app
   #-----------------------------------------------------------------------------
   
+  #reactive values object
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset")
   )
+  
+  #Update all of the columns that depend on pvals columns
+  updateAllPdataInputs <- function(){
+    updateSelectInput(session, "colorClusters",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "colorClusters_MAST",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "selectDiffex_condition",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "subCovariate",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "selectAdditionalVariables",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "deletepdatacolumn",
+                      choices = colnames(pData(vals$counts)))
+  }
   
   #-----------------------------------------------------------------------------
   # Page 1: Upload
@@ -41,20 +58,9 @@ shinyServer(function(input, output, session) {
       vals$counts <- createSCESet(countfile = input$countsfile$datapath,
                                   annotfile = input$annotfile$datapath,
                                   featurefile = input$featurefile$datapath)
-      updateSelectInput(session, "colorClusters",
-                        choices = colnames(pData(vals$counts)))
-      updateSelectInput(session, "colorClusters_MAST",
-                        choices = colnames(pData(vals$counts)))
+      updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
-      updateSelectInput(session, "selectDiffex_condition",
-                        choices = colnames(pData(vals$counts)))
-      updateSelectInput(session, "subCovariate",
-                        choices = colnames(pData(vals$counts)))
-      updateSelectInput(session, "selectAdditionalVariables",
-                        choices = colnames(pData(vals$counts)))
-      updateSelectInput(session, "deletepdatacolumn",
-                        choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
                         selected = "PC1")
@@ -117,6 +123,17 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
+    }
+  })
+  
+  #Delete a column from the pData annotations
+  observeEvent(input$deletepDatabutton, {
+    if(is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      pData(vals$counts) <- pData(vals$counts)[,!(colnames(pData(vals$counts)) %in% input$deletepdatacolumn), drop=F]
+      updateAllPdataInputs()
     }
   })
   
