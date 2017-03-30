@@ -16,6 +16,10 @@
 #' @param clusterCol Cluster the columns. The default is TRUE
 #' @param displayRowLabels Display the row labels on the heatmap. The default
 #' is TRUE.
+#' @param levelofinterest If the condition has more than two labels,
+#' levelofinterest should contain one factor for condition. The differential
+#' expression results will compare the factor in levelofinterest to all other
+#' data.
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -27,24 +31,32 @@
 #'
 scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
-                     clusterCol=TRUE, displayRowLabels=TRUE){
+                     clusterCol=TRUE, displayRowLabels=TRUE,
+                     levelofinterest){
   in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
-  if (length(levels(in.condition)) != 2)
-    stop("only two labels supported, ", condition, " has ",
-         length(levels(in.condition)), " labels")
+  
+  if (length(levels(in.condition)) < 2){
+    stop("You must submit a condition with more than 1 labels: ", condition,
+         " has ", length(levels(in.condition)), " labels")
+  } else if(length(levels(in.condition)) > 2){
+    in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
+                           levelofinterest,
+                           paste("not",levelofinterest,sep=""))))
+  }
+  
   if(diffexmethod == "DESeq"){
     diffex.results <- scDiffEx_deseq(inSCESet, in.condition)
   }
   else if(diffexmethod == "DESeq2"){
-    diffex.results <- scDiffEx_deseq2(inSCESet, condition)
+    diffex.results <- scDiffEx_deseq2(inSCESet, in.condition)
   }
   else if(diffexmethod == "limma"){
-    diffex.results <- scDiffEx_limma(inSCESet, condition)
+    diffex.results <- scDiffEx_limma(inSCESet, in.condition)
   }
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-
+  
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -56,7 +68,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-
+  
   return(diffex.results[newgenes,])
 }
 
@@ -98,7 +110,6 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                                                col = colors)
     
   }
-
   
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
@@ -131,7 +142,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-
+  
   d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,
@@ -152,7 +163,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 scDiffEx_deseq2 <- function(inSCESet, condition){
   cnts <- scater::counts(inSCESet)
-  annot_data <- Biobase::pData(inSCESet)[,condition,drop=F]
+  annot_data <- data.frame(condition)
   colnames(annot_data) <- "condition"
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
                                         colData = annot_data,
@@ -200,7 +211,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #' @export scDiffEx_limma
 #'
 scDiffEx_limma <- function(inSCESet, condition){
-  design <- stats::model.matrix(~factor(Biobase::pData(inSCESet)[,condition]))
+  design <- stats::model.matrix(~factor(condition))
   fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
   ebayes <- limma::eBayes(fit)
   topGenes <- limma::topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
