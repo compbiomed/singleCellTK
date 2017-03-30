@@ -137,6 +137,14 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  output$downloadSCESet <- downloadHandler(
+    filename = function() {
+      paste('SCESet-', Sys.Date(), '.rds', sep='')
+    },
+    content = function(file) {
+      saveRDS(vals$counts, file)
+  })
+  
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
@@ -364,6 +372,14 @@ shinyServer(function(input, output, session) {
       write.csv(vals$diffexgenelist, file)
     }
   )
+  
+  observeEvent(input$saveBiomarker, {
+    if(is.null(input$biomarkerName)){
+      alert("Warning: Specify biomarker name!")
+    } else{
+      fData(vals$counts)[,input$biomarkerName] <- ifelse(rownames(fData(vals$counts)) %in% rownames(vals$diffexgenelist), 1,0)
+    }
+  })
   
   #-----------------------------------------------------------------------------
   # Page 5: Subsampling
