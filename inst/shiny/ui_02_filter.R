@@ -4,7 +4,9 @@ shiny_panel_filter <- fluidPage(
     h1("Data Summary"),
     fluidPage(
       fluidRow(
-        column(8, tableOutput('summarycontents')),
+        column(8,
+          tableOutput('summarycontents'),
+          dataTableOutput('contents')),
         column(
           4,
           wellPanel(
@@ -16,12 +18,12 @@ shiny_panel_filter <- fluidPage(
                         sampleChoice,
                         multiple = TRUE),
             actionButton("filterData", "Filter Data"),
-            actionButton("resetData", "Reset")
+            actionButton("resetData", "Reset"),
+            h2("Delete an annotation column:"),
+            selectInput("deletepdatacolumn","Annotation Column:", clusterChoice),
+            actionButton("deletepDatabutton","Delete Column")
           )
         )
-      ),
-      fluidRow(
-        dataTableOutput('contents')
       )
     )
   ),

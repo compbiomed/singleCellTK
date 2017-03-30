@@ -25,6 +25,7 @@ Imports:
     limma,
     locfit,
     MAST,
+    matrixStats,
     methods,
     multtest,
     pcaMethods,
@@ -35,8 +36,7 @@ Imports:
     S4Vectors,
     scater,
     shiny,
-    shinyjs,
-    matrixStats
+    shinyjs
 RoxygenNote: 6.0.1
 Suggests: Rsubread,
     knitr,
