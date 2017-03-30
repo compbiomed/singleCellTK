@@ -199,6 +199,7 @@ shinyUI(
                                   column(4,
                                          wellPanel("Colorbar Options",
                                             checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
+                                            uiOutput("colorBarCondition"),
                                             # uiOutput("colorBarOptions")
                                             colourGroupInput("cgi")
                                                    )
