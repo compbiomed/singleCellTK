@@ -44,6 +44,8 @@ shinyServer(function(input, output, session) {
                         choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "selectAdditionalVariables",
                         choices = colnames(pData(vals$counts)))
+      updateSelectInput(session, "deletepdatacolumn",
+                        choices = colnames(pData(vals$counts)))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
                         selected = "PC1")
