@@ -88,14 +88,14 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
                      displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
                      annotationColors=NULL, columnTitle="Differential Expression"){
-  diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition])
-  colnames(diffex.annotation) <- condition
+  diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition, drop=FALSE])
   if (is.null(annotationColors)){
     topha <- NULL
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(condition = Biobase::pData(inSCESet)[,condition]),
-                                               col = list(condition = annotationColors),
-                                               height = unit(0.333, "cm"))
+    colors = list()
+    colors[[condition]] = annotationColors
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
+                                               col = colors)
     
   }
 
