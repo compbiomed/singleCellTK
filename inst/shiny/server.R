@@ -21,12 +21,21 @@ options(shiny.maxRequestSize=1000*1024^2)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+
+  #-----------------------------------------------------------------------------
+  # Reactive Values - Used throughout app
+  #-----------------------------------------------------------------------------
   
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset")
   )
-
+  
+  #-----------------------------------------------------------------------------
+  # Page 1: Upload
+  #-----------------------------------------------------------------------------
+  
+  #Upload data through shiny app
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       vals$counts <- createSCESet(countfile = input$countsfile$datapath,
@@ -63,7 +72,12 @@ shinyServer(function(input, output, session) {
       vals$original <- vals$counts
     })
   })
+  
+  #-----------------------------------------------------------------------------
+  # Page 2: Data Summary
+  #-----------------------------------------------------------------------------
 
+  #Render data table if there are fewer than 50 samples
   output$contents <- renderDataTable({
     if(!(is.null(vals$counts)) && nrow(pData(vals$counts)) < 50){
       temptable <- cbind(rownames(fData(vals$counts)),exprs(vals$counts))
@@ -72,20 +86,14 @@ shinyServer(function(input, output, session) {
     }
   }, options = list(scrollX = TRUE))
 
-  output$selectDiffex_conditionofinterestUI <- renderUI({
-    if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
-      selectInput("selectDiffex_conditionofinterest",
-                  "Select Factor of Interest",
-                  unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
-    }
-  })
-  
+  #Render summary table
   output$summarycontents <- renderTable({
     if(!(is.null(vals$counts))){
       summarizeTable(vals$counts)
     }
   })
 
+  #Filter the data based on the options
   observeEvent(input$filterData, {
     if(is.null(vals$original)){
       alert("Warning: Upload data first!")
@@ -100,6 +108,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
     if(is.null(vals$original)){
       alert("Warning: Upload data first!")
@@ -110,7 +119,12 @@ shinyServer(function(input, output, session) {
                         choices = rownames(pData(vals$counts)))
     }
   })
+  
+  #-----------------------------------------------------------------------------
+  # Page 3: DR & Clustering
+  #-----------------------------------------------------------------------------
 
+  #Plot dimensionality reduction plot
   drDataframe <- observeEvent(input$plotData, {
     withBusyIndicatorServer("plotData", {
       if(is.null(vals$counts)){
@@ -125,7 +139,7 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  #demo PCA by Lloyd
+  #Multi PCA plot by Lloyd
   #singlCellTK::runDimRed may want to change
   multipcaDataFrame <- observeEvent(input$plotPCA, {
    withBusyIndicatorServer("plotPCA", {
@@ -149,6 +163,7 @@ shinyServer(function(input, output, session) {
   })
   #end Lloyd's Code
 
+  #Plot clusters from k-means clustering plot
   # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
   clusterDataFrame <- observeEvent(input$plotClusters, {
     if(input$selectCluster == "K-Means" && input$selectDataC == "PCA Components") {
@@ -202,6 +217,20 @@ shinyServer(function(input, output, session) {
   })
   # END Emma's Note
 
+  #-----------------------------------------------------------------------------
+  # Page 4: Differential Expression
+  #-----------------------------------------------------------------------------
+  
+  #For conditions with more than two factors, select the factor of interest
+  output$selectDiffex_conditionofinterestUI <- renderUI({
+    if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
+      selectInput("selectDiffex_conditionofinterest",
+                  "Select Factor of Interest",
+                  unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+    }
+  })
+  
+  #Run differential expression
   diffexDataframe <- observeEvent(input$runDiffex, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
@@ -218,7 +247,8 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
+  #Plot the differential expression results
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
       if (input$displayHeatmapColorBar){
@@ -253,6 +283,7 @@ shinyServer(function(input, output, session) {
     }
   }, height=600)
 
+  #Create the color bar options
   output$colorBarOptions <- renderUI({
     if (!is.null(vals$counts)){
       conditions = unique(pData(vals$counts)[,input$selectDiffex_condition])
@@ -272,7 +303,8 @@ shinyServer(function(input, output, session) {
       return(L)  
     }
   })
-
+  
+  #Render the interactive heatmap
   output$interactivediffPlot <- renderD3heatmap({
     if(!is.null(vals$diffexgenelist)){
       plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
@@ -280,7 +312,8 @@ shinyServer(function(input, output, session) {
                     clusterCol=input$clusterColumns)
     }
   })
-
+  
+  #Create the differential expression results table
   output$diffextable <- renderDataTable({
     if(!is.null(vals$diffexgenelist)){
       temptable <- cbind(rownames(vals$diffexgenelist),data.frame(vals$diffexgenelist))
@@ -289,8 +322,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Need to modify the scDiffEx function to return gene list initially and then
-  # returns
+  # Download the differential expression results table
   output$downloadGeneList <- downloadHandler(
     filename = function() {
       paste("diffex_results-", Sys.Date(), ".csv", sep="")
@@ -299,7 +331,12 @@ shinyServer(function(input, output, session) {
       write.csv(vals$diffexgenelist, file)
     }
   )
+  
+  #-----------------------------------------------------------------------------
+  # Page 5: Subsampling
+  #-----------------------------------------------------------------------------
 
+  #Run subsampling analysis
   runDownsampler <- observeEvent(input$runSubsample, {
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
@@ -314,8 +351,8 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #Run differential power analysis
   runDiffPower <- observeEvent(input$runDifferentialPower, {
-
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
