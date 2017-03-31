@@ -34,8 +34,16 @@ shinyServer(function(input, output, session) {
   
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
+    updateSelectInput(session, "colorDims",
+                      choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "colorClusters",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "shapeClusters",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "colorClusters_Plot",
+                      choices = c("Cluster Label", colnames(pData(vals$counts))))
+    updateSelectInput(session, "shapeClusters_Plot",
+                      choices = c("Cluster Label", colnames(pData(vals$counts))))
     updateSelectInput(session, "colorClusters_MAST",
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "selectDiffex_condition",
@@ -67,6 +75,22 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "pcY",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
                         selected = "PC2")
+      updateSelectInput(session, "pcX_Clustering_Data",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC1")
+      updateSelectInput(session, "pcY_Clustering_Data",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC2")
+      updateSelectInput(session, "pcX_Clustering_Plot",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC1")
+      updateSelectInput(session, "pcY_Clustering_Plot",
+                        choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
+                        selected = "PC2")
+      updateSelectInput(session, "numberKClusters",
+                        choices = 1:nrow(pData(vals$counts)))
+      updateSelectInput(session, "numberHClusters",
+                        choices = 1:nrow(pData(vals$counts)))
       insertUI(
         selector = '#uploadAlert',
         ## wrap element in a div with id for ease of removal
@@ -171,7 +195,7 @@ shinyServer(function(input, output, session) {
           algo <- vals$TSNE
           output$pctable <- renderTable(data.frame(NULL))
         }
-        g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorClusters, input$pcX, input$pcY)
+        g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorDims, input$pcX, input$pcY)
         output$dimredPlot <- renderPlotly({
           ggplotly(g)
         })
@@ -203,60 +227,188 @@ shinyServer(function(input, output, session) {
    }) 
   })
   #end Lloyd's Code
-
-  #Plot clusters from k-means clustering plot
-  # Below needs to be put into a function (partially runDimRed) and/or make a new function or redesign both functions (Emma - 2/16/17)
-  clusterDataFrame <- observeEvent(input$plotClusters, {
-    if(input$selectCluster == "K-Means" && input$selectDataC == "PCA Components") {
-      pc1 <- input$pcX
-      pc2 <- input$pcY
-      k <- input$selectK
+  
+  ### Start Emma's Code (Still being modulerized)
+  # Run PCA or tSNE if selected as data set for clustering
+  # This will eventually be replaced with a check if the PCA/tSNE values already exist (Sebastian)
+  observeEvent(input$selectDataC, {
+    if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
       pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
       pca <- data.frame(reducedDimension(pca))
       pca <- setNames(cbind(rownames(pca), pca, row.names=NULL), c("Sample", colnames(pca)))
-      w <- input$colorClusters
-      d <- c("Treatment")
-      pca$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-      pca$Sample <- rownames(pData(vals$counts))
-      cl <- kmeans(pca[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)], k)
-      g <- ggplot(pca, aes(PC1, PC2, label=Sample, color=factor(cl$cluster), shape=Treatment)) + 
-        geom_point() +
-        theme(legend.title=element_blank())
-    } else if(input$selectCluster == "K-Means" && input$selectDataC == "tSNE Components"){
-      k <- input$selectK
+      pData(vals$counts)$PCA <- pca
+    } else if(input$selectDataC == "tSNE Components") {
       tsne <- scater::plotTSNE(vals$counts, return_SCESet=TRUE)
       tsne <- data.frame(reducedDimension(tsne))
       tsne <- setNames(cbind(rownames(tsne), tsne, row.names=NULL), c("Sample", colnames(tsne)))
-      w <- input$colorClusters
-      tsne$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-      tsne$Sample <- rownames(pData(vals$counts))
-      cl <- kmeans(tsne[,2:3], k)
-      g <- ggplot(tsne, aes(X1, X2, label=Sample, color=factor(cl$cluster), shape=Treatment)) + 
-        geom_point() +
-        theme(legend.title=element_blank())
-    } else if(input$selectCluster == "K-Means" && input$selectDataC == "Raw Data"){
-      pc1 <- input$pcX
-      pc2 <- input$pcY
-      k <- input$selectK
-      # Need to Transpose vals$counts so samples are clustered
-      cl <- kmeans(t(exprs(vals$counts)), k)
-      pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
-      pca <- data.frame(reducedDimension(pca))
-      pca <- setNames(cbind(rownames(pca), pca, row.names=NULL), c("Sample", colnames(pca)))
-      w <- input$colorClusters
-      d <- c("Treatment")
-      pca$Treatment <- eval(parse(text = paste("pData(vals$counts)$",w,sep="")))
-      pca$Sample <- rownames(pData(vals$counts))
-      g <- ggplot(pca, aes(PC1, PC2, label=Sample, color=factor(cl$cluster), shape=Treatment)) + 
-        geom_point() +
-        theme(legend.title=element_blank())
+      pData(vals$counts)$tSNE <- tsne
     }
+  })
+  
+  # If K-Means is Selected
+  # This assumes the PCAs are stored in pData(vals$counts)$PCA (this will change based off
+  # of Sebastian's implementation)
+  observeEvent(input$numberKClusters, {
+    k <- input$numberKClusters
+    if(input$selectDataC == "Raw Data") {
+      cl <- kmeans(t(exprs(vals$counts)), k) # Need to Transpose vals$counts so samples are clustered
+      pData(vals$counts)$Kmeans <- cl$cluster
+      updateAllPdataInputs()
+    } else if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
+      cl <- kmeans(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)], k)
+      pData(vals$counts)$Kmeans <- cl$cluster
+      updateAllPdataInputs()
+    } else if(input$selectDataC == "tSNE Components") {
+      cl <- kmeans(tsne[,2:3], k)
+      pData(vals$counts)$Kmeans <- cl$cluster
+      updateAllPdataInputs()
+    }
+    
+  })
+  
+  # If visualize with PCA is Selected
+  # Run PCA or tSNE if selected as data set for clustering
+  # This will eventually be replaced with a check if the PCA/tSNE values already exist (Sebastian)
+  clusterDataFramePCA <- observeEvent(input$plotClustersPCA, {
+    ### Run PCA
+    pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
+    pca <- data.frame(reducedDimension(pca))
+    pca <- setNames(cbind(rownames(pca), pca, row.names=NULL), c("Sample", colnames(pca)))
+    
+    ### Plotting Parameters
+    PC1 <- input$pcX_Clustering_Plot
+    PC2 <- input$pcY_Clustering_Plot
+    # Color
+    if (input$colorClusters_Plot == "Cluster Label"){
+      pca$color <- factor(pData(vals$counts)$Kmeans)
+    } else {
+      pca$color <- eval(parse(text = paste("pData(vals$counts)$",input$colorClusters_Plot,sep="")))
+    }
+    # Shape
+    if (input$shapeClusters_Plot == "Cluster Label"){
+      pca$shape <- factor(pData(vals$counts)$Kmeans)
+    } else {
+      pca$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters_Plot,sep="")))
+    }
+    # Label
+    pca$label <- rownames(pData(vals$counts))
+    
+    ### Create Plot Object
+    g <- ggplot(pca, aes(PC1, PC2, label=label, color=color, shape=shape)) + 
+      geom_point() +
+      theme(legend.title=element_blank())
+    
     output$clusterPlot <- renderPlotly({
       ggplotly(g)
     })
-
+  }) 
+  
+  # If plot dendogram is selected
+  # Sebastian: Change input to PCA/tSNE
+  clusterDataFrameDendogram <- observeEvent(input$plotClustersDendogram, {
+    if(input$selectDataC == "Raw Data") {
+      e <- exprs(vals$counts)
+    } else if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
+      # Get PCA Values (in format such that rows are PCs, columns are samples)
+      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    } else if(input$selectDataC == "tSNE Components") {
+      e <- data.frame(t(pData(vals$counts)$tSNE))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    }
+    d <- dist(t(e))
+    h <- hclust(d, "ward.D")
+    k <- as.integer(input$numberHClusters)
+    pData(vals$counts)$Hierarchical <- cutree(h, k=k)
+    updateAllPdataInputs()
+    
+    output$dendoPlot <- renderPlot({
+      plot(h, hang=-1, main=sprintf("%s Clusters", k))
+      if (k > 1) {
+        rect.hclust(h, k=k, border="red")
+      }
+    })
   })
-  # END Emma's Note
+  
+  # If plot hiererchical clustering is selected
+  # Sebastian: Change input to PCA/tSNE
+  clusterDataFramePhylogenetic <- observeEvent(input$plotClustersPTree, {
+    if(input$selectDataC == "Raw Data") {
+      e <- exprs(vals$counts)
+    } else if(input$selectDataC == "PCA Components") {
+      pc1 <- input$pcX_Clustering_Data
+      pc2 <- input$pcY_Clustering_Data
+      # Get PCA Values (in format such that rows are PCs, columns are samples)
+      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    } else if(input$selectDataC == "tSNE Components") {
+      e <- data.frame(t(pData(vals$counts)$tSNE))
+      colnames(e) <- colnames(exprs(vals$counts))
+      e <- e[-1,]
+    }
+    d <- dist(t(e))
+    h <- hclust(d, "ward.D")
+    
+    output$phyloPlot <- renderPlot({
+      plot(as.phylo(h), type="unrooted")
+    })
+  })
+  
+  # clusterDataFrametSNE <- observeEvent(input$plotClustersTSNE, {
+  #   ### Run tSNE
+  #   tsne <- scater::plotTSNE(vals$counts, return_SCESet=TRUE)
+  #   tsne <- data.frame(reducedDimension(tsne))
+  #   tsne <- setNames(cbind(rownames(tsne), tsne, row.names=NULL), c("Sample", colnames(tsne)))
+  #   
+  #   ### Plotting Parameters
+  #   # Color
+  #   if (input$colorClusters == "Cluster Label"){
+  #     tsne$color <- factor(phenoData(vals$counts)$Kmeans$cluster)
+  #   } else {
+  #     tsne$color <- eval(parse(text = paste("pData(vals$counts)$",input$colorClusters,sep="")))
+  #   }
+  #   # Shape
+  #   if (input$shapeClusters == "Cluster Label"){
+  #     tsne$shape <- factor(phenoData(vals$counts)$Kmeans)
+  #   } else {
+  #     tsne$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters,sep="")))
+  #   }
+  #   # Label
+  #   tsne$label <- rownames(pData(vals$counts))
+  #   
+  #   ### Create Plot Object
+  #   g <- ggplot(tsne, aes(X1, X2, label=label, color=color, shape=shape)) + 
+  #     geom_point() +
+  #     theme(legend.title=element_blank())
+  #   
+  #   output$clusterPlot <- renderPlotly({
+  #     ggplotly(g)
+  #   })
+  # })
+  
+  #clusterDataFrameScatter <- observeEvent( {
+    
+  #})
+  
+  #clusterDataFrameTable <- observeEvent(input$makeCTable, {
+   # k <- input$numberClusters
+    #cl <- kmeans(t(exprs(vals$counts)), k)
+    #output$clusterTable <- renderDataTable({
+     # data.frame(cl$cluster)})
+#  })
+      
+  ### END Emma's Note
+  
+
 
   #-----------------------------------------------------------------------------
   # Page 4: Differential Expression
