@@ -3,6 +3,7 @@ library(shiny)
 library(shinyjs)
 library(plotly)
 library(d3heatmap)
+library(ape)
 
 source("helpers.R")
 
@@ -10,10 +11,12 @@ clusterChoice <- ''
 sampleChoice <- ''
 alertText <- ''
 pcComponents <- ''
+numClusters <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep="")
+  numClusters <- 1:nrow(pData(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
