@@ -36,7 +36,8 @@ Imports:
     S4Vectors,
     scater,
     shiny,
-    shinyjs
+    shinyjs,
+    ape
 RoxygenNote: 6.0.1
 Suggests: Rsubread,
     knitr,
