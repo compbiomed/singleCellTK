@@ -6,6 +6,9 @@
 
 singleCellTK is under development. You can install the development version from github:
 
+> Note: Some package dependencies require Bioconductor v3.4,
+> https://bioconductor.org/install/
+
 ```
 # install.packages("devtools")
 devtools::install_github("compbiomed/singleCellTK")
