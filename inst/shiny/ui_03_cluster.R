@@ -38,6 +38,8 @@ shiny_panel_cluster <- fluidPage(
                         selectInput("pcX", "X axis:", pcComponents),
                         selectInput("pcY", "Y axis:", pcComponents, selected = "PC2"),
                         selectInput("colorClusters","Color Clusters By",clusterChoice),
+                        checkboxInput("dimRedUseCustomColors", "Use custom colors"),
+                        colourGroupInput("dimRedColors"),
                         withBusyIndicatorUI(actionButton("plotData", "Plot Data"))
                       )),
                column(8,

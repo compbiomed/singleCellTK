@@ -36,7 +36,8 @@ shiny_panel_diffex <- fluidPage(
                               column(4,
                                      wellPanel("Colorbar Options",
                                                checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
-                                               uiOutput("colorBarOptions")
+                                               uiOutput("colorBarCondition"),
+                                               colourGroupInput("cgi")
                                      )
                               )
                             )

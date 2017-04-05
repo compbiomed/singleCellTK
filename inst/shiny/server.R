@@ -115,7 +115,13 @@ shinyServer(function(input, output, session) {
         alert("Warning: Upload data first!")
       }
       else{
-        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY)
+        cols=NULL
+        if (input$dimRedUseCustomColors){
+          options = unique(unlist(pData(vals$counts)[,input$colorClusters]))
+          cols = callModule(colourGroup, "dimRedColors", options)
+          cols = cols()
+        } 
+        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY, customColors=cols)
         output$dimredPlot <- renderPlotly({
           g
         })
@@ -225,48 +231,23 @@ shinyServer(function(input, output, session) {
     cols = callModule(colourGroup, "cgi", options = options)
     annotationColors$cols = cols
     annotationColors$colors = cols()
-  })
+  }, ignoreInit=TRUE)
   
   output$diffPlot <- renderPlot({
     if(!is.null(vals$diffexgenelist)){
       if (input$displayHeatmapColorBar){
-        # names = names(input)
-        #conditions = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-        
-        # if (is.null(input$colorBar_Condition)){
-        #   colors = NULL
-        # } else {
-        #   # options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-        #   # cols = callModule(colourGroup, "cgi", options = options)
-        #   # colors = cols()
-        #   #alert(colors())
-        #   colors = annotationColors$colors
-        #   #alert(colors)
-        # }
-        
-        # options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-        # annotationColors$options = options
-        cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
-        annotationColors$options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-        annotationColors$cols = cols
-        annotationColors$colors = cols()
-        colors = annotationColors$colors
-        #alert(colors)
-        
-        # condNames = paste0("hmColorBar_", conditions)
-        # names = names[names %in% condNames]
-        # if (length(names)==0){
-        #   colors = sapply(1:length(conditions), function (i) palette()[(i %% length(palette()))+1])
-        #   names(colors) = unique(unlist(pData(vals$counts)[,input$selectDiffex_condition]))
-        # } else {
-        #   colors = rep("", length(names))
-        #   names(colors) = input$colorBar_Condition
-        #   for (i in 1:length(colors)){
-        #     n = names[i]
-        #     colors[i]<-input[[as.character(n)]]
-        #     names(colors)[i] = gsub("hmColorBar_", "", n)
-        #   }
-        # }
+        if (is.null(input$colorBar_Condition)){
+          colors = NULL
+        } else {
+          # cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
+          # annotationColors$options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
+          # annotationColors$cols = cols
+          # annotationColors$colors = cols()
+          # colors = annotationColors$colors
+          
+          cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
+          colors = cols()
+        }
       } else {
         colors=NULL
       }
@@ -306,10 +287,10 @@ shinyServer(function(input, output, session) {
   
   output$colorBarCondition <- renderUI({
     if (is.null(vals$counts)){
-      selectInput("colorBar_Condition", "Select Condition", c(), multiple=TRUE)
+      selectInput("colorBar_Condition", "Select Condition", c())
     } else {
       selectInput("colorBar_Condition", "Select Condition", 
-                names(pData(vals$counts)), multiple=TRUE)
+                names(pData(vals$counts)))
     }
     })
   
