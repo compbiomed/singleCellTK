@@ -12,7 +12,7 @@
 #' @export runDimRed
 #'
 
-runDimRed <- function(method, count_data, colorClusters, pc1, pc2){
+runDimRed <- function(method, count_data, colorClusters, pc1, pc2, customColors=NULL){
   if(method == "PCA"){
     reducedDimension(count_data) <- reducedDimension(scater::plotPCA(count_data, return_SCESet=TRUE, draw_plot=FALSE))
     variances <- attr(reducedDimension(count_data),"percentVar")
@@ -21,7 +21,12 @@ runDimRed <- function(method, count_data, colorClusters, pc1, pc2){
     d <- c("Treatment")
     l$Treatment <- eval(parse(text = paste("pData(count_data)$",w,sep="")))
     l$Sample <- rownames(pData(count_data))
-    g <- ggplot(l, aes_string(pc1, pc2, color=d))+geom_point()+labs(x = paste(pc1,toString(round(variances[strtoi(strsplit(pc1,"PC")[[1]][-1])]*100,2)),"%"),y = paste(pc2,toString(round(variances[strtoi(strsplit(pc2,"PC")[[1]][-1])]*100,2)),"%"))
+    if (is.null(customColors)){
+      g <- ggplot(l, aes_string(pc1, pc2, color=d))+geom_point()+labs(x = paste(pc1,toString(round(variances[strtoi(strsplit(pc1,"PC")[[1]][-1])]*100,2)),"%"),y = paste(pc2,toString(round(variances[strtoi(strsplit(pc2,"PC")[[1]][-1])]*100,2)),"%"))
+    } else {
+      g <- ggplot(l, aes_string(pc1, pc2, color=d))+geom_point()+scale_colour_manual(values=customColors)+labs(x = paste(pc1,toString(round(variances[strtoi(strsplit(pc1,"PC")[[1]][-1])]*100,2)),"%"),y = paste(pc2,toString(round(variances[strtoi(strsplit(pc2,"PC")[[1]][-1])]*100,2)),"%"))
+    }
+    
   } else if(method == "tSNE"){
     tsne <- scater::plotTSNE(count_data, return_SCESet=TRUE)
     g <- reducedDimension(tsne)
@@ -29,6 +34,10 @@ runDimRed <- function(method, count_data, colorClusters, pc1, pc2){
     w <- colorClusters
     l$Treatment <- eval(parse(text = paste("pData(count_data)$",w,sep="")))
     l$Sample <- rownames(pData(count_data))
-    g <- ggplot(l, aes(X1, X2, label=Sample, color=Treatment))+geom_point()
+    if (is.null(customColors)){
+      g <- ggplot(l, aes(X1, X2, label=Sample, color=Treatment))+geom_point()
+    } else {
+      g <- ggplot(l, aes(X1, X2, label=Sample, color=Treatment))+geom_point()+scale_colour_manual(values=customColors)
+    }
   }
 }

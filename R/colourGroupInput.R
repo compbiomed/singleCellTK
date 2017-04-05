@@ -1,11 +1,13 @@
+#'
+#'
+
 colourGroupInput = function(inputId) {
   ns = NS(inputId)
-  
-  tagList(
-    uiOutput(ns("colorChoosers"))
-  )
-  
+  uiOutput(ns("colorChoosers"))
 }
+
+#'
+#'
 
 colourGroup = function(input, output, session, options="", labels = "", value = "red", ...){
   ns = session$ns
