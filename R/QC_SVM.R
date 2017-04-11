@@ -28,15 +28,27 @@
    # fit SVM model using the train dataset 
    sfit <- e1071::svm(l~., data=train_df, 
                       scale= FALSE,
-                      kernel="radial", 
+                      kernel="radial",   # shoudl also make this changable but set the "radial" as default
                       gamma = 1,  # gamma should not be fixed later 
                       cost = 0.1 # cost should not be fixed later 
                       # also consider including weight later 
                       # also consider c-v here
                       )
    
-   
    test.pred = predict(sfit, test_set)
+   
+   # parameter tuning for the SVM model 
+      # if the set_tune = T, then also provide a data.frame of the parameters(para =),
+      # and the result would be an object, which gives the parameters for the best model 
+      # as well as the prediction for the test dataset
+   sfit.tune <- e1071::tune.svm(l~., data = train_df, 
+                                sampling="fix",
+                                gamma = 2^seq(-8,8,2),   # gamma should be given by users  
+                                cost = 2^seq(-8,8,2)     # cost should be given by users
+                                )
+   
+   
+   
    return(test.pred)
    
  } 
