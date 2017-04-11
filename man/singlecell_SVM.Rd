@@ -4,7 +4,8 @@
 \alias{singlecell_SVM}
 \title{To implement SVM for quality control}
 \usage{
-singlecell_SVM(train_set, train_label, test_set, var)
+singlecell_SVM(train_set, train_label, test_set, var, tune_para = FALSE,
+  gamma_range, cost_range)
 }
 \arguments{
 \item{train_set}{The training dataset (cells x features)}
@@ -14,6 +15,12 @@ singlecell_SVM(train_set, train_label, test_set, var)
 \item{test_set}{The test dataset (cells x features)}
 
 \item{var}{feature names used for predicting cell quality ##}
+
+\item{tune_para}{boolean values determining if doing the parameter tuning}
+
+\item{gamma_range}{vector of gamma paramters provided if tune_para is TRUE}
+
+\item{cost_range}{vecor of cost patameters provided if tune_para is TRUE}
 }
 \description{
 To implement SVM for quality control
