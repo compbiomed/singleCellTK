@@ -39,10 +39,29 @@
 #'                                 inputdataframes = TRUE)
 "GSE73121"
 
+#' Example Single Cell RNA-Seq data in SCESet Object, GSE66507
+#'
+#' 30 Single-cells from embryonic stem cells separated into three different
+#' tissue types.
+#'
+#' @name GSE66507
+#' @docType data
+#' @format List of two data frames, with counts and annotations. Use them as
+#' input to createSCESet()
+#' @source DOI: 10.1242/dev.123547
+#' @keywords datasets
+#' @examples
+#' library(scater)
+#' data("GSE66507")
+#' GSE66507_SCESet <- createSCESet(countfile = GSE66507$counts,
+#'                                 annotfile = GSE66507$annot,
+#'                                 inputdataframes = TRUE)
+"GSE66507"
+
 #' Example Single Cell RNA-Seq data in SCESet Object, GSE36552
 #'
-#' 86 Single-cell transcriptome profiling from embryonic stem cells derived from
-#' donated human pre-implatation embryos.
+#' 124 Single-cell transcriptome profiling from embryonic stem cells derived
+#' from donated human pre-implatation embryos.
 #'
 #' @name GSE36552
 #' @docType data
