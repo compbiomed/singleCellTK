@@ -13,8 +13,8 @@ DOI: 10.1038/nsmb.2660
 GSE36552
 }
 \description{
-86 Single-cell transcriptome profiling from embryonic stem cells derived from
-donated human pre-implatation embryos.
+124 Single-cell transcriptome profiling from embryonic stem cells derived
+from donated human pre-implatation embryos.
 }
 \examples{
 library(scater)
