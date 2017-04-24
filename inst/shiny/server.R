@@ -63,9 +63,15 @@ shinyServer(function(input, output, session) {
   #Upload data through shiny app
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
-      vals$counts <- createSCESet(countfile = input$countsfile$datapath,
-                                  annotfile = input$annotfile$datapath,
-                                  featurefile = input$featurefile$datapath)
+      if(input$uploadChoice == "files"){
+        vals$counts <- createSCESet(countfile = input$countsfile$datapath,
+                                    annotfile = input$annotfile$datapath,
+                                    featurefile = input$featurefile$datapath)
+      } else {
+        vals$counts <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
+                                    annotfile = eval(as.symbol(input$selectExampleData))$annot,
+                                    inputdataframes = TRUE)
+      }
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
