@@ -22,6 +22,7 @@ Imports:
     DESeq2,
     GGally,
     ggplot2,
+    gridExtra,
     limma,
     locfit,
     MAST,
@@ -37,7 +38,8 @@ Imports:
     scater,
     shiny,
     shinyjs,
-    ape
+    ape,
+    ggtree
 RoxygenNote: 6.0.1
 Suggests: Rsubread,
     knitr,
