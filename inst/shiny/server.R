@@ -15,6 +15,10 @@ library(MAST)
 library(rsvd)
 library(pcaMethods)
 library(colourpicker)
+library(gridExtra)
+library(cluster)
+library(ggtree)
+
 
 #1GB max upload size
 options(shiny.maxRequestSize=1000*1024^2)
@@ -29,12 +33,15 @@ shinyServer(function(input, output, session) {
   #reactive values object
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
-    original = getShinyOption("inputSCEset")
+    original = getShinyOption("inputSCEset"),
+    PCA = NULL
   )
   
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
     updateSelectInput(session, "colorDims",
+                      choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "clusterChoice",
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "colorClusters",
                       choices = colnames(pData(vals$counts)))
@@ -54,7 +61,16 @@ shinyServer(function(input, output, session) {
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "deletepdatacolumn",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "colorBy",
+                      choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))))
+    updateSelectInput(session, "shapeBy",
+                      choices = c("No Shape", colnames(pData(vals$counts))))
+    updateSelectInput(session, "Knumber",
+                      choices = 1:nrow(pData(vals$counts)))
   }
+  
+  # Close app on quit
+  session$onSessionEnded(stopApp)
   
   #-----------------------------------------------------------------------------
   # Page 1: Upload
@@ -69,6 +85,8 @@ shinyServer(function(input, output, session) {
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
+      updateSelectInput(session, "colorGenes",
+                        choices = colnames(vals$counts))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
                         selected = "PC1")
@@ -90,6 +108,8 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "numberKClusters",
                         choices = 1:nrow(pData(vals$counts)))
       updateSelectInput(session, "numberHClusters",
+                        choices = 1:nrow(pData(vals$counts)))
+      updateSelectInput(session, "Knumber",
                         choices = 1:nrow(pData(vals$counts)))
       insertUI(
         selector = '#uploadAlert',
@@ -173,37 +193,6 @@ shinyServer(function(input, output, session) {
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
 
-  #Plot dimensionality reduction plot
-  drDataframe <- observeEvent(input$plotData, {
-    withBusyIndicatorServer("plotData", {
-      if(is.null(vals$counts)){
-        alert("Warning: Upload data first!")
-      }
-      #Sebastian's Code
-      else{
-        if(input$selectDimRed == "PCA"){
-          vals$PCA <- getPCA(vals$counts)
-          #updateVals('PCA')
-          algo <- vals$PCA
-          PC <- paste("PC",1:nrow(pData(vals$counts)),sep="")
-          Variances <- attr(vals$PCA,"percentVar")*100
-          var <- data.frame(PC,Variances)
-          output$pctable <- renderTable(var[1:10,])
-        }
-        else{
-          vals$TSNE <- getTSNE(vals$counts)
-          algo <- vals$TSNE
-          output$pctable <- renderTable(data.frame(NULL))
-        }
-        g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorDims, input$pcX, input$pcY)
-        output$dimredPlot <- renderPlotly({
-          ggplotly(g)
-        })
-      }
-    })
-    #End Sebastian's Code
-  })
-
   #Multi PCA plot by Lloyd
   #singlCellTK::runDimRed may want to change
   multipcaDataFrame <- observeEvent(input$plotPCA, {
@@ -228,188 +217,94 @@ shinyServer(function(input, output, session) {
   })
   #end Lloyd's Code
   
-  ### Start Emma's Code (Still being modulerized)
-  # Run PCA or tSNE if selected as data set for clustering
-  # This will eventually be replaced with a check if the PCA/tSNE values already exist (Sebastian)
-  observeEvent(input$selectDataC, {
-    if(input$selectDataC == "PCA Components") {
-      pc1 <- input$pcX_Clustering_Data
-      pc2 <- input$pcY_Clustering_Data
-      pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
-      pca <- data.frame(reducedDimension(pca))
-      pca <- setNames(cbind(rownames(pca), pca, row.names=NULL), c("Sample", colnames(pca)))
-      pData(vals$counts)$PCA <- pca
-    } else if(input$selectDataC == "tSNE Components") {
-      tsne <- scater::plotTSNE(vals$counts, return_SCESet=TRUE)
-      tsne <- data.frame(reducedDimension(tsne))
-      tsne <- setNames(cbind(rownames(tsne), tsne, row.names=NULL), c("Sample", colnames(tsne)))
-      pData(vals$counts)$tSNE <- tsne
+  output$clusterPlot <- renderPlotly({
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else{
+      if(input$dimRedPlotMethod=="PCA"){
+        if (is.null(vals$PCA)) {
+          vals$PCA <- getPCA(vals$counts)
+        }
+        if(!is.null(vals$PCA)){
+          if (input$colorBy == "Gene Expression") {
+            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+          } else if (input$colorBy != "Gene Expression") {
+            g <- singleCellTK::plotPCA(vals$counts, vals$PCA, input$colorBy, input$shapeBy, input$pcX, input$pcY)
+          } else if (input$colorGenes == ""){
+            g <- singleCellTK::plotPCA(vals$counts, vals$PCA, "No Color", "No Shape", input$pcX, input$pcY)
+          } 
+          ggplotly(g)
+        } else {
+          ggplotly(ggplot() + geom_point())
+        }
+      } else if(input$dimRedPlotMethod=="tSNE"){
+        if (is.null(vals$TSNE)) {
+          vals$TSNE <- getTSNE(vals$counts)
+        }
+        if(!is.null(vals$TSNE)){
+          if (input$colorBy == "Gene Expression") {
+            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+          } else if (input$colorBy != "Gene Expression") {
+            g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, input$colorBy, input$shapeBy)
+          } else if (input$colorGenes == ""){
+            g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, "No Color", "No Shape")
+          }
+          ggplotly(g)
+        } else {
+        ggplotly(ggplot() + geom_point())
+        }
+      }
     }
   })
   
-  # If K-Means is Selected
-  # This assumes the PCAs are stored in pData(vals$counts)$PCA (this will change based off
-  # of Sebastian's implementation)
-  observeEvent(input$numberKClusters, {
-    k <- input$numberKClusters
-    if(input$selectDataC == "Raw Data") {
-      cl <- kmeans(t(exprs(vals$counts)), k) # Need to Transpose vals$counts so samples are clustered
-      pData(vals$counts)$Kmeans <- cl$cluster
-      updateAllPdataInputs()
-    } else if(input$selectDataC == "PCA Components") {
-      pc1 <- input$pcX_Clustering_Data
-      pc2 <- input$pcY_Clustering_Data
-      cl <- kmeans(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)], k)
-      pData(vals$counts)$Kmeans <- cl$cluster
-      updateAllPdataInputs()
-    } else if(input$selectDataC == "tSNE Components") {
-      cl <- kmeans(tsne[,2:3], k)
-      pData(vals$counts)$Kmeans <- cl$cluster
-      updateAllPdataInputs()
-    }
-    
-  })
   
-  # If visualize with PCA is Selected
-  # Run PCA or tSNE if selected as data set for clustering
-  # This will eventually be replaced with a check if the PCA/tSNE values already exist (Sebastian)
-  clusterDataFramePCA <- observeEvent(input$plotClustersPCA, {
-    ### Run PCA
-    pca <- scater::plotPCA(vals$counts, return_SCESet=TRUE)
-    pca <- data.frame(reducedDimension(pca))
-    pca <- setNames(cbind(rownames(pca), pca, row.names=NULL), c("Sample", colnames(pca)))
-    
-    ### Plotting Parameters
-    PC1 <- input$pcX_Clustering_Plot
-    PC2 <- input$pcY_Clustering_Plot
-    # Color
-    if (input$colorClusters_Plot == "Cluster Label"){
-      pca$color <- factor(pData(vals$counts)$Kmeans)
-    } else {
-      pca$color <- eval(parse(text = paste("pData(vals$counts)$",input$colorClusters_Plot,sep="")))
-    }
-    # Shape
-    if (input$shapeClusters_Plot == "Cluster Label"){
-      pca$shape <- factor(pData(vals$counts)$Kmeans)
-    } else {
-      pca$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters_Plot,sep="")))
-    }
-    # Label
-    pca$label <- rownames(pData(vals$counts))
-    
-    ### Create Plot Object
-    g <- ggplot(pca, aes(PC1, PC2, label=label, color=color, shape=shape)) + 
-      geom_point() +
-      theme(legend.title=element_blank())
-    
-    output$clusterPlot <- renderPlotly({
-      ggplotly(g)
-    })
-  }) 
-  
-  # If plot dendogram is selected
-  # Sebastian: Change input to PCA/tSNE
-  clusterDataFrameDendogram <- observeEvent(input$plotClustersDendogram, {
-    if(input$selectDataC == "Raw Data") {
-      e <- exprs(vals$counts)
-    } else if(input$selectDataC == "PCA Components") {
-      pc1 <- input$pcX_Clustering_Data
-      pc2 <- input$pcY_Clustering_Data
-      # Get PCA Values (in format such that rows are PCs, columns are samples)
-      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
-      colnames(e) <- colnames(exprs(vals$counts))
-      e <- e[-1,]
-    } else if(input$selectDataC == "tSNE Components") {
-      e <- data.frame(t(pData(vals$counts)$tSNE))
-      colnames(e) <- colnames(exprs(vals$counts))
-      e <- e[-1,]
-    }
-    d <- dist(t(e))
-    h <- hclust(d, "ward.D")
-    k <- as.integer(input$numberHClusters)
-    pData(vals$counts)$Hierarchical <- cutree(h, k=k)
-    updateAllPdataInputs()
-    
-    output$dendoPlot <- renderPlot({
-      plot(h, hang=-1, main=sprintf("%s Clusters", k))
-      if (k > 1) {
-        rect.hclust(h, k=k, border="red")
+  output$pctable <- renderTable(
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else{
+      if (input$dimRedPlotMethod == "PCA") {
+        data.frame(PC = paste("PC",1:nrow(pData(vals$counts)),sep=""), Variances = attr(vals$PCA,"percentVar")*100)[1:10,]
       }
     })
-  })
   
-  # If plot hiererchical clustering is selected
-  # Sebastian: Change input to PCA/tSNE
-  clusterDataFramePhylogenetic <- observeEvent(input$plotClustersPTree, {
-    if(input$selectDataC == "Raw Data") {
-      e <- exprs(vals$counts)
-    } else if(input$selectDataC == "PCA Components") {
-      pc1 <- input$pcX_Clustering_Data
-      pc2 <- input$pcY_Clustering_Data
-      # Get PCA Values (in format such that rows are PCs, columns are samples)
-      e <- data.frame(t(pData(vals$counts)$PCA[,(strtoi(strsplit(pc1, split = "PC")[[1]][2])+1):(strtoi(strsplit(pc2, split = "PC")[[1]][2])+1)]))
-      colnames(e) <- colnames(exprs(vals$counts))
-      e <- e[-1,]
-    } else if(input$selectDataC == "tSNE Components") {
-      e <- data.frame(t(pData(vals$counts)$tSNE))
-      colnames(e) <- colnames(exprs(vals$counts))
-      e <- e[-1,]
+  output$treePlot <- renderPlot(
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else{
+      if(input$dimRedPlotMethod=="Dendrogram"){
+        if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+          d <- dist(data)
+          h <- hclust(d, "ward.D")
+          g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size=2)
+          g
+        } else if (input$clusteringAlgorithmD == "Hierarchical") {
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+          d <- dist(data)
+          h <- hclust(d, "ward.D")
+          g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size=2)
+          g
+        }
+      }
     }
-    d <- dist(t(e))
-    h <- hclust(d, "ward.D")
-    
-    output$phyloPlot <- renderPlot({
-      plot(as.phylo(h), type="unrooted")
+  )
+  
+  clusterDataFrame <- observeEvent(input$clusterData, {
+    withBusyIndicatorServer("clusterData", {
+      if(input$clusteringAlgorithm == "K-Means"){
+        data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+        koutput <- kmeans(data, input$Knumber)
+        pData(vals$counts)$Kmeans <- factor(koutput$cluster)
+        updateAllPdataInputs()
+      } else if(input$clusteringAlgorithm == "Clara") {
+        data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+        coutput <- clara(data, input$Cnumber)
+        pData(vals$counts)$Clara <- factor(coutput$clustering)
+        updateAllPdataInputs()
+      } 
     })
   })
   
-  # clusterDataFrametSNE <- observeEvent(input$plotClustersTSNE, {
-  #   ### Run tSNE
-  #   tsne <- scater::plotTSNE(vals$counts, return_SCESet=TRUE)
-  #   tsne <- data.frame(reducedDimension(tsne))
-  #   tsne <- setNames(cbind(rownames(tsne), tsne, row.names=NULL), c("Sample", colnames(tsne)))
-  #   
-  #   ### Plotting Parameters
-  #   # Color
-  #   if (input$colorClusters == "Cluster Label"){
-  #     tsne$color <- factor(phenoData(vals$counts)$Kmeans$cluster)
-  #   } else {
-  #     tsne$color <- eval(parse(text = paste("pData(vals$counts)$",input$colorClusters,sep="")))
-  #   }
-  #   # Shape
-  #   if (input$shapeClusters == "Cluster Label"){
-  #     tsne$shape <- factor(phenoData(vals$counts)$Kmeans)
-  #   } else {
-  #     tsne$shape <- eval(parse(text = paste("pData(vals$counts)$",input$shapeClusters,sep="")))
-  #   }
-  #   # Label
-  #   tsne$label <- rownames(pData(vals$counts))
-  #   
-  #   ### Create Plot Object
-  #   g <- ggplot(tsne, aes(X1, X2, label=label, color=color, shape=shape)) + 
-  #     geom_point() +
-  #     theme(legend.title=element_blank())
-  #   
-  #   output$clusterPlot <- renderPlotly({
-  #     ggplotly(g)
-  #   })
-  # })
-  
-  #clusterDataFrameScatter <- observeEvent( {
-    
-  #})
-  
-  #clusterDataFrameTable <- observeEvent(input$makeCTable, {
-   # k <- input$numberClusters
-    #cl <- kmeans(t(exprs(vals$counts)), k)
-    #output$clusterTable <- renderDataTable({
-     # data.frame(cl$cluster)})
-#  })
-      
-  ### END Emma's Note
-  
-
-
   #-----------------------------------------------------------------------------
   # Page 4: Differential Expression
   #-----------------------------------------------------------------------------
