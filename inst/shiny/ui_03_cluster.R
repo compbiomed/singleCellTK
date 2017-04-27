@@ -30,110 +30,113 @@ shiny_panel_cluster <- fluidPage(
       )
     ),#subtab "PCA (MAST example)" end
     
-    tabPanel("Dimensionality Reduction", 
-             fluidRow(
-               column(4,
-                      wellPanel(
-                        selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
-                        conditionalPanel(
-                          condition = "input.selectDimRed == 'PCA'",
-                          selectInput("pcX", "X axis:", pcComponents),
-                          selectInput("pcY", "Y axis:", pcComponents, selected = "PC2")
-                        ),
-                        selectInput("colorDims","Color Points By",clusterChoice),
-                        withBusyIndicatorUI(actionButton("plotData", "Plot Data"))
-                      )),
-               column(8,
-                      plotlyOutput("dimredPlot")),
-               column(6,
-                      ""),
-               column(6,
-                      tableOutput('pctable'))
-             ),
-             mainPanel(
-               h1("Instructions"),
-               p(""), strong("tSNE:"), 
-               p("1. Choose algorithm (PCA or tSNE)"),
-               p("2. Choose which components to use for the x and y axes"),
-               p("3. Choose feature to color data by"),
-               p("4. Visualize your data")
-             )
-    ),#Dimensionality Reduction (PCA/tSNE) end
-    
     tabPanel("Clustering",
              fluidRow(
                column(4,
                       wellPanel(
-                                p("Select data type:"),
-                                selectInput("selectDataC", "Data", c("", "Raw Data", "PCA Components", "tSNE Components")),
-                                conditionalPanel(
-                                  condition = sprintf("input['%s'] == 'PCA Components'", "selectDataC"),
-                                  selectInput("pcX_Clustering_Data", "X axis:", pcComponents),
-                                  selectInput("pcY_Clustering_Data", "Y axis:", pcComponents, selected = "PC2")
-                                ),
-                            
-                                p("Select clustering algorithm:"),
-                                selectInput("selectCluster", "Algorithm", c("","K-Means", "Hierarchical", "Phylogenetic Tree")),
-                                conditionalPanel(
-                                  condition = sprintf("input['%s'] == 'K-Means'", "selectCluster"),
-                                  selectInput("numberKClusters","Number of Clusters",numClusters)
-                                ),
-                                
-                                conditionalPanel(
-                                  condition = sprintf("input['%s'] == 'Hierarchical'", "selectCluster"),
-                                  selectInput("numberHClusters","Number of Clusters",numClusters),
-                                  withBusyIndicatorUI(actionButton("plotClustersDendogram", "Plot Dendogram"))
-                                ),
-                                
-                                conditionalPanel(
-                                  condition = sprintf("input['%s'] == 'Phylogenetic Tree'", "selectCluster"),
-                                  withBusyIndicatorUI(actionButton("plotClustersPTree", "Plot Phylogenetic Tree"))
-                                ),
-                                
-                                conditionalPanel(
-                                  condition = sprintf("input['%s'] == 'K-Means'", "selectCluster"),
-                                  p("Select Visualization"),
-                                  selectInput("selectCOutput", "Output", c("", "PCA Plot", "Scatter Plot", "Table")),
-                                  conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'PCA Plot'", "selectCOutput"),
-                                    selectInput("pcX_Clustering_Plot", "X axis:", pcComponents),
-                                    selectInput("pcY_Clustering_Plot", "Y axis:", pcComponents, selected = "PC2"),
-                                    selectInput("colorClusters_Plot", "Color Clusters By", clusterChoice),
-                                    selectInput("shapeClusters_Plot", "Shape Clusters By", clusterChoice),
-                                    withBusyIndicatorUI(actionButton("plotClustersPCA", "Plot Clusters"))
-                                  ), 
-                                  conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'Scatter Plot'", "selectCOutput"),
-                                    withBusyIndicatorUI(actionButton("plotClustersScatter", "Plot Clusters"))
-                                  ),
-                                  conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'Table'", "selectCOutput"),
-                                    withBusyIndicatorUI(actionButton("makeCTable", "Generate Table"))
-                                  )
-                                )
+                      ###  VISUALIZATION (e.g. PCA, tSNE)
+                      selectInput("dimRedPlotMethod","Visualization Method:",c("PCA","tSNE", "Dendrogram")),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
+                        selectInput("pcX", "X axis:", pcComponents),
+                        selectInput("pcY", "Y axis:", pcComponents, selected = "PC2")
+                      ),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                        selectInput("colorBy", "Color points by:", c("No Color", 'Gene Expression', clusterChoice)),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
+                          #textInput("colorGenes", "Gene(s):", value = ""),
+                          selectInput("colorGenes","Select Gene:",
+                                      geneChoice, multiple=FALSE),
+                          radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"))
+                        ),
+                        selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice))
+                      ),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                        radioButtons("booleanCluster", "Cluster Data?", c("Yes", "No"), selected = "No")
+                      ),
+                      ### CLUSTERING --> VISUALIZATION
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'Yes'", "booleanCluster"),
+                        selectInput("selectClusterInputData", "Data to Cluster:", c("Raw Data", "PCA Components", "tSNE Components")),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' ", "dimRedPlotMethod", "dimRedPlotMethod"),
+                          radioButtons("clusteringAlgorithm", "Select Clustering Algorithm:", c("K-Means", "Clara"))
+                        ),
+                        
+                        ##----------------------------------#
+                        ## K-Means
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'K-Means'", "clusteringAlgorithm"),
+                          selectInput("Knumber","Number of Clusters (k):", numClusters)
+                        ),
+                        ##----------------------------------#
+                        ## Clara
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'Clara'", "clusteringAlgorithm"),
+                          selectInput("Cnumber","Number of Clusters:", numClusters)
+                        ),
+                        ##----------------------------------#
+                        # ## Hierarchical Clustering
+                        # conditionalPanel(
+                        #   condition = sprintf("input['%s'] == 'Hierarchical'", "clusteringAlgorithm"),
+                        #   selectInput("numberHClusters","Number of Clusters",numClusters)
+                        # ),
+                        # ##----------------------------------#
+                        # ## Phylogenetic Tree
+                        # conditionalPanel(
+                        #   condition = sprintf("input['%s'] == 'Phylogenetic Tree'", "clusteringAlgorithm"),
+                        #   selectInput("numberPClusters","Number of Clusters",numClusters)
+                        # ),
+                        ##----------------------------------#
+                        ## Input other clustering algorithms here
+                        ##----------------------------------#
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
+                          withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
+                        )
+                      ),
+                      
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
+                        radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected="Hierarchical")
                       )
-               ),
+                      
+                      )
+                    ),
                column(8,
                       conditionalPanel(
-                        condition = sprintf("input['%s'] == 'Hierarchical'", "selectCluster"),
-                        plotOutput("dendoPlot")
+                        condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'Hierarchical' || input['%s'] == 'Phylogenetic Tree'", "clusteringAlgorithmD", "clusteringAlgorithmD"),
+                          plotOutput("treePlot"))
                       ),
                       conditionalPanel(
-                        condition = sprintf("input['%s'] == 'Phylogenetic Tree'", "selectCluster"),
-                        plotOutput("phyloPlot")
-                      ),
-                      plotlyOutput("clusterPlot"))
-             ),
+                        condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
+                          plotlyOutput("clusterPlot"))
+                      )
+               ),
+               
+              column(6,
+                     ""),
+               column(6,
+                      tableOutput('pctable'))
+               ),
+             
              mainPanel(
-               h1("Instructions"),
-               p(""), strong("Clustering:"),
-               p("1. Choose clustering algorithm (K-Means, ...)"),
-               p("2. Choose which data to use (raw data, principal component values, tSNE values)"), 
-               p("3. Choose which components to use for the x and y axes"),
-               p("4. Choose feature to color data by"),
-               p("5. Visualize your data and clusters")
+                      h1("Instructions"),
+                      p(""), strong("Clustering:"),
+                      p("1. Choose visualization method (PCA, tSNE)"),
+                      p("2. Choose optional plot features: color and shape by data annotations"),
+                      p("3. Choose to cluster data and with what algorithm"),
+                      p("4. Opt to color data by cluster labels (K-Means, Clara)"),
+                      p("5. Visualize your data (and clusters) and change options to dynamically visualize results")
+                    )
              )
-    )
   ),#Clustering end
   includeHTML("www/footer.html")
 )
