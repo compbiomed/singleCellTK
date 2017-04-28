@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
       updateSelectInput(session, "colorGenes",
-                        choices = colnames(vals$counts))
+                        choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
                         choices = paste("PC",1:nrow(pData(vals$counts)),sep=""),
                         selected = "PC1")
@@ -126,6 +126,8 @@ shinyServer(function(input, output, session) {
                       data-dismiss='alert'>&times;</button>"))
         )
       vals$original <- vals$counts
+      vals$PCA <- NULL
+      vals$TSNE <- NULL
     })
   })
   
@@ -161,6 +163,10 @@ shinyServer(function(input, output, session) {
                                   remove_noexpress=input$removeNoexpress,
                                   remove_bottom=0.01 * input$LowExpression,
                                   minimum_detect_genes=input$minDetectGenect)
+      #Refresh things for the clustering tab
+      vals$PCA <- NULL
+      vals$TSNE <- NULL
+      updateAllPdataInputs()
     }
   })
 
@@ -173,6 +179,10 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
+      #Refresh things for the clustering tab
+      vals$PCA <- NULL
+      vals$TSNE <- NULL
+      updateAllPdataInputs()
     }
   })
   
@@ -259,6 +269,8 @@ shinyServer(function(input, output, session) {
         } else {
         ggplotly(ggplot() + geom_point())
         }
+      } else{
+        ggplotly(ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white")))
       }
     }
   })
