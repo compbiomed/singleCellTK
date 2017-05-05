@@ -293,11 +293,23 @@ shinyServer(function(input, output, session) {
           if(is.null(input$colorBy)) {
             return()}
           if (input$colorBy == "Gene Expression") {
-            if (is.null(input$colorGenes)){
-              ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
-            } else {
-              g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
-              g
+            if (input$colorGeneBy == "Biomarker (from DE tab)"){
+              if (input$colorGenesBiomarker == ""){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'",input$colorGenesBiomarker,"']",sep=""))))
+                rownames(biomarkers) <- fData(vals$counts)[,'Gene']
+                biomarkers <- rownames(subset(biomarkers, biomarkers[,1] == 1))
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+                g
+              }
+            } else if (input$colorGeneBy == "Manual Input") {
+              if (is.null(input$colorGenes)){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+                g
+              }
             }
           }
         }
@@ -307,11 +319,23 @@ shinyServer(function(input, output, session) {
         } 
         if(!is.null(vals$TSNE)){
           if (input$colorBy == "Gene Expression") {
-            if (is.null(input$colorGenes)){
-              ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
-            } else {
-              g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
-              g
+            if (input$colorGeneBy == "Biomarker (from DE tab)"){
+              if (input$colorGenesBiomarker == ""){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'",input$colorGenesBiomarker,"']",sep=""))))
+                rownames(biomarkers) <- fData(vals$counts)[,'Gene']
+                biomarkers <- rownames(subset(biomarkers, biomarkers[,1] == 1))
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g
+              }
+            } else if (input$colorGeneBy == "Manual Input") {
+              if (is.null(input$colorGenes)){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g
+              }
             }
           }
         }
@@ -327,13 +351,13 @@ shinyServer(function(input, output, session) {
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
           data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
           d <- dist(data)
-          h <- hclust(d, "ward.D")
+          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size=2)
           g
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
           data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
           d <- dist(data)
-          h <- hclust(d, "ward.D")
+          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size=2)
           g
         }
@@ -346,7 +370,8 @@ shinyServer(function(input, output, session) {
       if(input$clusteringAlgorithm == "K-Means"){
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         koutput <- kmeans(data, input$Knumber)
-        pData(vals$counts)$Kmeans <- factor(koutput$cluster)
+        name <- input$clusterName
+        pData(vals$counts)[,paste(name)] <- factor(koutput$cluster)
         updateAllPdataInputs()
       } else if(input$clusteringAlgorithm == "Clara") {
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
