@@ -242,9 +242,7 @@ shinyServer(function(input, output, session) {
           vals$PCA <- getPCA(vals$counts)
         }
         if(!is.null(vals$PCA)){
-          if (input$colorBy == "Gene Expression") {
-            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
-          } else if (input$colorBy != "Gene Expression") {
+          if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotPCA(vals$counts, vals$PCA, input$colorBy, input$shapeBy, input$pcX, input$pcY)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotPCA(vals$counts, vals$PCA, "No Color", "No Shape", input$pcX, input$pcY)
@@ -258,9 +256,7 @@ shinyServer(function(input, output, session) {
           vals$TSNE <- getTSNE(vals$counts)
         }
         if(!is.null(vals$TSNE)){
-          if (input$colorBy == "Gene Expression") {
-            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
-          } else if (input$colorBy != "Gene Expression") {
+          if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, input$colorBy, input$shapeBy)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, "No Color", "No Shape")
@@ -285,10 +281,48 @@ shinyServer(function(input, output, session) {
       }
     })
   
+  output$geneExpressionPlot <- renderPlot(
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      if(input$dimRedPlotMethod=="PCA"){
+        if (is.null(vals$PCA)) {
+          vals$PCA <- getPCA(vals$counts)
+        }
+        if(!is.null(vals$PCA)){
+          if(is.null(input$colorBy)) {
+            return()}
+          if (input$colorBy == "Gene Expression") {
+            if (is.null(input$colorGenes)){
+              ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+            } else {
+              g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+              g
+            }
+          }
+        }
+      } else if(input$dimRedPlotMethod == "tSNE"){
+        if (is.null(vals$TSNE)) {
+          vals$TSNE <- getTSNE(vals$counts)
+        } 
+        if(!is.null(vals$TSNE)){
+          if (input$colorBy == "Gene Expression") {
+            if (is.null(input$colorGenes)){
+              ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+            } else {
+              g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+              g
+            }
+          }
+        }
+      }
+    }
+  )
+  
   output$treePlot <- renderPlot(
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
-    } else{
+    } else {
       if(input$dimRedPlotMethod=="Dendrogram"){
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
           data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
@@ -303,7 +337,7 @@ shinyServer(function(input, output, session) {
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size=2)
           g
         }
-      }
+      } 
     }
   )
   

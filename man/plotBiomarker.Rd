@@ -7,7 +7,7 @@
 Use this function to get expression or binary data of gene list}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
-  shape = NULL, axis_df = NULL, x = "PC1", y = "PC2")
+  shape = "No Shape", axis_df = NULL, x = "PC1", y = "PC2")
 }
 \arguments{
 \item{count_data}{A SCE object}

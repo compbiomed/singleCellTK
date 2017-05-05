@@ -48,7 +48,7 @@ shiny_panel_cluster <- fluidPage(
                           condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
                           #textInput("colorGenes", "Gene(s):", value = ""),
                           selectInput("colorGenes","Select Gene:",
-                                      geneChoice, multiple=FALSE),
+                                      geneChoice, multiple=TRUE),
                           radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"))
                         ),
                         selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice))
@@ -117,7 +117,16 @@ shiny_panel_cluster <- fluidPage(
                         condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
                         conditionalPanel(
                           condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
-                          plotlyOutput("clusterPlot"))
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] != 'Gene Expression'", "colorBy"),
+                            plotlyOutput("clusterPlot"))
+                          )
+                      ),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
+                          plotOutput("geneExpressionPlot"))
                       )
                ),
                
