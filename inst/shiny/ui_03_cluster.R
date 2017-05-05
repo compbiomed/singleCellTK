@@ -46,9 +46,16 @@ shiny_panel_cluster <- fluidPage(
                         selectInput("colorBy", "Color points by:", c("No Color", 'Gene Expression', clusterChoice)),
                         conditionalPanel(
                           condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
-                          #textInput("colorGenes", "Gene(s):", value = ""),
-                          selectInput("colorGenes","Select Gene:",
-                                      geneChoice, multiple=TRUE),
+                          radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")),
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
+                            selectInput("colorGenes","Select Gene(s):",
+                                        geneChoice, multiple=TRUE)
+                          ),
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'Biomarker (from DE tab)'", "colorGeneBy"),
+                            textInput("colorGenesBiomarker", "Enter Name of Gene List:", "")
+                          ),
                           radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"))
                         ),
                         selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice))
@@ -79,29 +86,24 @@ shiny_panel_cluster <- fluidPage(
                           selectInput("Cnumber","Number of Clusters:", numClusters)
                         ),
                         ##----------------------------------#
-                        # ## Hierarchical Clustering
-                        # conditionalPanel(
-                        #   condition = sprintf("input['%s'] == 'Hierarchical'", "clusteringAlgorithm"),
-                        #   selectInput("numberHClusters","Number of Clusters",numClusters)
-                        # ),
-                        # ##----------------------------------#
-                        # ## Phylogenetic Tree
-                        # conditionalPanel(
-                        #   condition = sprintf("input['%s'] == 'Phylogenetic Tree'", "clusteringAlgorithm"),
-                        #   selectInput("numberPClusters","Number of Clusters",numClusters)
-                        # ),
+                        ## K-Means & Clara
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
+                          textInput("clusterName", "Name of Clusters:", value="")
+                        ),
                         ##----------------------------------#
                         ## Input other clustering algorithms here
                         ##----------------------------------#
                         conditionalPanel(
-                          condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
+                          condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
                           withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
                         )
                       ),
                       
                       conditionalPanel(
                         condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
-                        radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected="Hierarchical")
+                        radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected="Hierarchical"),
+                        selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median","centroid"))
                       )
                       
                       )
