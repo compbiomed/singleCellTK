@@ -67,6 +67,8 @@ shinyServer(function(input, output, session) {
                       choices = c("No Shape", colnames(pData(vals$counts))))
     updateSelectInput(session, "Knumber",
                       choices = 1:nrow(pData(vals$counts)))
+    updateSelectInput(session, "colorGenes",
+                      choices = c(rownames(vals$counts)))
   }
   
   # Close app on quit

@@ -76,20 +76,22 @@ shiny_panel_cluster <- fluidPage(
                         ##----------------------------------#
                         ## K-Means
                         conditionalPanel(
-                          condition = sprintf("input['%s'] == 'K-Means'", "clusteringAlgorithm"),
+                          condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
                           selectInput("Knumber","Number of Clusters (k):", numClusters)
                         ),
                         ##----------------------------------#
                         ## Clara
                         conditionalPanel(
-                          condition = sprintf("input['%s'] == 'Clara'", "clusteringAlgorithm"),
+                          condition = sprintf("input['%s'] == 'Clara' && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
                           selectInput("Cnumber","Number of Clusters:", numClusters)
                         ),
                         ##----------------------------------#
                         ## K-Means & Clara
                         conditionalPanel(
-                          condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
-                          textInput("clusterName", "Name of Clusters:", value="")
+                          condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "clusteringAlgorithm", "clusteringAlgorithm"),
+                            textInput("clusterName", "Name of Clusters:", value=""))
                         ),
                         ##----------------------------------#
                         ## Input other clustering algorithms here
@@ -97,7 +99,9 @@ shiny_panel_cluster <- fluidPage(
                         conditionalPanel(
                           condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
                           withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
+                          
                         )
+                        
                       ),
                       
                       conditionalPanel(
@@ -140,12 +144,24 @@ shiny_panel_cluster <- fluidPage(
              
              mainPanel(
                       h1("Instructions"),
-                      p(""), strong("Clustering:"),
-                      p("1. Choose visualization method (PCA, tSNE)"),
-                      p("2. Choose optional plot features: color and shape by data annotations"),
-                      p("3. Choose to cluster data and with what algorithm"),
-                      p("4. Opt to color data by cluster labels (K-Means, Clara)"),
-                      p("5. Visualize your data (and clusters) and change options to dynamically visualize results")
+                      h3("Visualizing Samples by PCA or tSNE"),
+                      p("1. (For PCA) Choose which prinicipal components to plot"),
+                      p("2. Choose what option to color and/or shape your data by"),
+                      h4("Color by Gene Expression"),
+                      p("a. Choose to color by a manually inputted list of gene(s) (up to 9) or a biomarker lit from the differential expression tab"),
+                      p("b. Select either a continuous or binary color scale"),
+                      h3("Cluster with K-Means or Clara"),
+                      p("1. Select cluster data"),
+                      p("2. Choose which data to cluster (raw or dimension reduced data)"),
+                      p("3. Choose the clustering algorithm"),
+                      p("4. Choose the number of cluster centers"),
+                      p("5. Assign a name to your clusters"),
+                      p("6. Press Cluster Data"),
+                      h3("Visualizing Samples by Dendrogram"),
+                      p("1. Select visualization method to be Dendrogram)"),
+                      p("2. Choose which data to cluster (raw or dimension reduced data)"),
+                      p("3. Choose the clustering algorithm"),
+                      p("4. Choose the distance metric")
                     )
              )
   ),#Clustering end
