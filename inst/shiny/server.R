@@ -375,11 +375,17 @@ shinyServer(function(input, output, session) {
         name <- input$clusterName
         pData(vals$counts)[,paste(name)] <- factor(koutput$cluster)
         updateAllPdataInputs()
+        updateSelectInput(session, "colorBy",
+                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          selected = input$clusterName)
       } else if(input$clusteringAlgorithm == "Clara") {
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         coutput <- clara(data, input$Cnumber)
         pData(vals$counts)$Clara <- factor(coutput$clustering)
         updateAllPdataInputs()
+        updateSelectInput(session, "colorBy",
+                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          selected = input$clusterName)
       } 
     })
   })
