@@ -67,6 +67,8 @@ shinyServer(function(input, output, session) {
                       choices = c("No Shape", colnames(pData(vals$counts))))
     updateSelectInput(session, "Knumber",
                       choices = 1:nrow(pData(vals$counts)))
+    updateSelectInput(session, "colorGenes",
+                      choices = c(rownames(vals$counts)))
   }
   
   # Close app on quit
@@ -242,9 +244,7 @@ shinyServer(function(input, output, session) {
           vals$PCA <- getPCA(vals$counts)
         }
         if(!is.null(vals$PCA)){
-          if (input$colorBy == "Gene Expression") {
-            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
-          } else if (input$colorBy != "Gene Expression") {
+          if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotPCA(vals$counts, vals$PCA, input$colorBy, input$shapeBy, input$pcX, input$pcY)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotPCA(vals$counts, vals$PCA, "No Color", "No Shape", input$pcX, input$pcY)
@@ -258,9 +258,7 @@ shinyServer(function(input, output, session) {
           vals$TSNE <- getTSNE(vals$counts)
         }
         if(!is.null(vals$TSNE)){
-          if (input$colorBy == "Gene Expression") {
-            g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
-          } else if (input$colorBy != "Gene Expression") {
+          if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, input$colorBy, input$shapeBy)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, "No Color", "No Shape")
@@ -285,25 +283,87 @@ shinyServer(function(input, output, session) {
       }
     })
   
+  output$geneExpressionPlot <- renderPlot(
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      if(input$dimRedPlotMethod=="PCA"){
+        if (is.null(vals$PCA)) {
+          vals$PCA <- getPCA(vals$counts)
+        }
+        if(!is.null(vals$PCA)){
+          if(is.null(input$colorBy)) {
+            return()}
+          if (input$colorBy == "Gene Expression") {
+            if (input$colorGeneBy == "Biomarker (from DE tab)"){
+              if (input$colorGenesBiomarker == ""){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'",input$colorGenesBiomarker,"']",sep=""))))
+                rownames(biomarkers) <- fData(vals$counts)[,'Gene']
+                biomarkers <- rownames(subset(biomarkers, biomarkers[,1] == 1))
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+                g
+              }
+            } else if (input$colorGeneBy == "Manual Input") {
+              if (is.null(input$colorGenes)){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy,vals$PCA, input$pcX, input$pcY)
+                g
+              }
+            }
+          }
+        }
+      } else if(input$dimRedPlotMethod == "tSNE"){
+        if (is.null(vals$TSNE)) {
+          vals$TSNE <- getTSNE(vals$counts)
+        } 
+        if(!is.null(vals$TSNE)){
+          if (input$colorBy == "Gene Expression") {
+            if (input$colorGeneBy == "Biomarker (from DE tab)"){
+              if (input$colorGenesBiomarker == ""){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'",input$colorGenesBiomarker,"']",sep=""))))
+                rownames(biomarkers) <- fData(vals$counts)[,'Gene']
+                biomarkers <- rownames(subset(biomarkers, biomarkers[,1] == 1))
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g
+              }
+            } else if (input$colorGeneBy == "Manual Input") {
+              if (is.null(input$colorGenes)){
+                ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white"))
+              } else {
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g
+              }
+            }
+          }
+        }
+      }
+    }
+  )
+  
   output$treePlot <- renderPlot(
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
-    } else{
+    } else {
       if(input$dimRedPlotMethod=="Dendrogram"){
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
           data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
           d <- dist(data)
-          h <- hclust(d, "ward.D")
+          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size=2)
           g
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
           data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
           d <- dist(data)
-          h <- hclust(d, "ward.D")
+          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size=2)
           g
         }
-      }
+      } 
     }
   )
   
@@ -312,13 +372,20 @@ shinyServer(function(input, output, session) {
       if(input$clusteringAlgorithm == "K-Means"){
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         koutput <- kmeans(data, input$Knumber)
-        pData(vals$counts)$Kmeans <- factor(koutput$cluster)
+        name <- input$clusterName
+        pData(vals$counts)[,paste(name)] <- factor(koutput$cluster)
         updateAllPdataInputs()
+        updateSelectInput(session, "colorBy",
+                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          selected = input$clusterName)
       } else if(input$clusteringAlgorithm == "Clara") {
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         coutput <- clara(data, input$Cnumber)
         pData(vals$counts)$Clara <- factor(coutput$clustering)
         updateAllPdataInputs()
+        updateSelectInput(session, "colorBy",
+                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          selected = input$clusterName)
       } 
     })
   })
