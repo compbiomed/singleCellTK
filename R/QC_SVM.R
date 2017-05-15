@@ -3,9 +3,9 @@
 #       https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0888-1#Sec12  )
 
 # ToDo: need to (1)select parameters for SVM, need to think about whether let users choose the parameters
-#       ,or(2) use cross-validation to choose the parameters for the users,
+#       ,or(2) use cross-validation to choose the parameters for the users, ----ing 
 #        
-#         (3) show the test error rate if test_label is included ?
+#         (3) show the test error rate if test_label is included ?     
 
 
  #' To implement SVM for quality control 
@@ -44,6 +44,7 @@
       # if the set_tune = T, then also provide a data.frame of the parameters(para =),
       # and the result would be an object, which gives the parameters for the best model 
       # as well as the prediction for the test dataset
+   sfit.tune <- NULL
    if(tune_para ==TRUE){
      if(!is.null(gamma_range) & !is.null(cost_range)){  # both gamma & cost are given
        sfit.tune <- e1071::tune.svm(l~., data = train_df, 
@@ -69,6 +70,10 @@
    }  # should has output for this later
    
    
+   
+   #if(!is.null(sfit.tune)){
+     #cat("which part of the sfit.tune should be returned to the user")
+     #}
    
    return(test.pred)
    
