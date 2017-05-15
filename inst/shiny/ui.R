@@ -9,11 +9,13 @@ source("helpers.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
+geneChoice <- ''
 alertText <- ''
 pcComponents <- ''
 numClusters <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
+  geneChoice <- rownames(exprs(getShinyOption("inputSCEset")))
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep="")
   numClusters <- 1:nrow(pData(getShinyOption("inputSCEset")))

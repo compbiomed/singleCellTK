@@ -24,6 +24,7 @@ Imports:
     e1071,
     GGally,
     ggplot2,
+    gridExtra,
     limma,
     locfit,
     MAST,
@@ -39,6 +40,11 @@ Imports:
     scater,
     shiny,
     shinyjs,
+<<<<<<< HEAD
+=======
+    ape,
+    ggtree
+>>>>>>> upstream/master
 RoxygenNote: 6.0.1
 Suggests: Rsubread,
     knitr,
