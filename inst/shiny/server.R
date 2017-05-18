@@ -61,6 +61,8 @@ shinyServer(function(input, output, session) {
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "deletepdatacolumn",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "hurdlecondition",
+                      choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "colorBy",
                       choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))))
     updateSelectInput(session, "shapeBy",
@@ -568,6 +570,7 @@ shinyServer(function(input, output, session) {
         vals$mastgenelist <- MAST(vals$counts,
                                   FCTHRESHOLD=input$FCthreshold,
                                   freq_expressed=input$hurdlethresh,
+                                  condition=input$hurdlecondition,
                                   p.value=input$hurdlepvalue)
       })
     }
