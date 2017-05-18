@@ -559,6 +559,17 @@ shinyServer(function(input, output, session) {
   # Page 6: MAST
   #-----------------------------------------------------------------------------
   
+  #For conditions with more than two factors, select the factor of interest
+  output$hurdleconditionofinterestUI <- renderUI({
+    if(length(unique(pData(vals$counts)[,input$hurdlecondition])) > 2){
+      selectInput("hurdleconditionofinterest",
+                  "Select Factor of Interest",
+                  unique(sort(pData(vals$counts)[,input$hurdlecondition])))
+    }
+  })
+  
+  
+  
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
     if(is.null(vals$counts)){
