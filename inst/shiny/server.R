@@ -582,6 +582,7 @@ shinyServer(function(input, output, session) {
                                   FCTHRESHOLD=input$FCthreshold,
                                   freq_expressed=input$hurdlethresh,
                                   condition=input$hurdlecondition,
+                                  interest.level = input$hurdleconditionofinterest,
                                   p.value=input$hurdlepvalue)
       })
     }
