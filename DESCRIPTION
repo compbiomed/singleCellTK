@@ -40,13 +40,11 @@ Imports:
     scater,
     shiny,
     shinyjs,
-<<<<<<< HEAD
-=======
     ape,
     ggtree
->>>>>>> upstream/master
 RoxygenNote: 6.0.1
-Suggests: Rsubread,
+Suggests: 
+    Rsubread,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
