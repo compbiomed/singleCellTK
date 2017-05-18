@@ -552,4 +552,33 @@ shinyServer(function(input, output, session) {
       #    }
     }
   })
+  
+  #-----------------------------------------------------------------------------
+  # Page 6: MAST
+  #-----------------------------------------------------------------------------
+  
+  #Run MAST differential expression
+  observeEvent(input$runDEhurdle, {
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runDEhurdle", {
+        #run diffex to get gene list and pvalues
+        vals$mastgenelist <- MAST(vals$counts,
+                                  FCTHRESHOLD=input$FCthreshold,
+                                  freq_expressed=input$hurdlethresh,
+                                  p.value=input$hurdlepvalue)
+      })
+    }
+  })
+  
+  #Create the MAST results table
+  output$mastresults <- renderDataTable({
+    if(!is.null(vals$mastgenelist)){
+      vals$mastgenelist
+    }
+  })
+  
+  #download mast results
 })
