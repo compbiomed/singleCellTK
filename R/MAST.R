@@ -34,11 +34,10 @@ MAST <- function(SCEdata,
   fdata <- fData(SCEdata)
   count <- counts(SCEdata)
   
-  SCE_new <- MAST::FromMatrix(count, pdata, fdata)
+  SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
   
   # filter
-  SCE_new_sample <- SCE_new[sample(which(MAST::freq(SCE_new) > freq_expressed)),]
-  
+  SCE_new_sample <- SCE_new[which(MAST::freq(SCE_new)>freq_expressed),]
   
   # Defferential expression using a hurdle model using the filtered dataset
   if(is.numeric(colData(SCE_new_sample)[,condition])) {  # if the condition is numeric, to change it to factor
