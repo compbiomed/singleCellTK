@@ -568,10 +568,37 @@ shinyServer(function(input, output, session) {
         vals$mastgenelist <- MAST(vals$counts,
                                   FCTHRESHOLD=input$FCthreshold,
                                   freq_expressed=input$hurdlethresh,
-                                  p.value=input$hurdlepvalue)
+                                  p.value=as.numeric(input$hurdlepvalue))
       })
     }
   })
+  
+  output$threshplot <- renderPlot({
+    if(!(is.null(vals$mastgenelist))){
+      vals$thres <- thresholdGenes(vals$counts)
+      par(mfrow=c(5,4))
+      plot(vals$thres)
+      par(mfrow=c(1,1))
+    }
+  })
+  
+  output$hurdleviolin <- renderPlot({
+    if(!(is.null(vals$mastgenelist))){
+      MASTviolin(vals$mastgenelist, vals$thres, 49)
+    }
+  }, height=600)
+  
+  output$hurdlelm <- renderPlot({
+    if(!(is.null(vals$mastgenelist))){
+      MASTregresion(vals$mastgenelist, vals$thres, 49)
+    }
+  }, height=600)
+  
+  output$hurdleHeatmap <- renderPlot({
+    if(!(is.null(vals$mastgenelist))){
+      ComplexHeatmap::Heatmap(matrix(1:100, ncol=10))
+    }
+  }, height=600)
   
   #Create the MAST results table
   output$mastresults <- renderDataTable({

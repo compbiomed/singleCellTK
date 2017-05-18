@@ -18,10 +18,10 @@ MAST <- function(SCEdata,
   fdata = data.frame(Gene = rownames(expres))
   rownames(fdata) = fdata$Gene
   count <- counts(SCEdata)
-  SCE_new <- MAST::FromMatrix(count, pdata, fdata)
+  SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
   
   # filter
-  SCE_new_sample <- SCE_new[sample(which(MAST::freq(SCE_new)>freq_expressed)),]
+  SCE_new_sample <- SCE_new[which(MAST::freq(SCE_new)>freq_expressed),]
   
   
   # Defferential expression using a hurdle model using the filtered dataset
@@ -39,7 +39,7 @@ MAST <- function(SCEdata,
   resultdata <- fcHurdle
   
   # Filter the data again by the adjusted pvalue and coef
-  fcHurdleSig <-  fcHurdle[fcHurdle$fdr<p.value & abs(fcHurdle$coef)>FCTHRESHOLD,]
+  fcHurdleSig <-  fcHurdle[fcHurdle$fdr<p.value & abs(fcHurdle$coef)>FCTHRESHOLD & !is.nan(fcHurdle$coef),]
   colnames(fcHurdleSig)[1] <- "Gene"
   data.table::setorder(fcHurdleSig, fdr)
   
