@@ -45,7 +45,7 @@ MAST <- function(SCEdata,
   }
   ##   >2 levels in the condition 
   if(!is.null(interest.level)){
-    levels(MAST::colData(SCE_new_sample)[,condition]) <- c(levels(colData(SCE_new_sample)[,condition]), paste0("no_", interest.level))
+    levels(colData(SCE_new_sample)[,condition]) <- c(levels(colData(SCE_new_sample)[,condition]), paste0("no_", interest.level))
     colData(SCE_new_sample)[,condition][colData(SCE_new_sample)[,condition] != interest.level] <- paste0("no_", interest.level)
     colData(SCE_new_sample)[,condition] <- droplevels(as.factor(colData(SCE_new_sample)[,condition]))
     
