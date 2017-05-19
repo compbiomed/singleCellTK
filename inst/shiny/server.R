@@ -86,15 +86,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if(input$uploadChoice == "files"){
-        vals$counts <- createSCESet(countfile = input$countsfile$datapath,
+        vals$original <- createSCESet(countfile = input$countsfile$datapath,
                                     annotfile = input$annotfile$datapath,
                                     featurefile = input$featurefile$datapath)
       } else {
-        vals$counts <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
+        vals$original <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
                                     annotfile = eval(as.symbol(input$selectExampleData))$annot,
                                     featurefile = eval(as.symbol(input$selectExampleData))$features,
                                     inputdataframes = TRUE)
       }
+      vals$counts <- vals$original
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
@@ -132,7 +133,6 @@ shinyServer(function(input, output, session) {
                       Successfully Uploaded! <button type='button' class='close' \
                       data-dismiss='alert'>&times;</button>"))
         )
-      vals$original <- vals$counts
       vals$PCA <- NULL
       vals$TSNE <- NULL
     })
@@ -159,11 +159,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$selectColFilter_conditionofinterestUI <- renderUI({
-    if(input$filter_sample_by_annotation != 'none'){
-      selectInput("selectColFilter_conditionofinterest",
-                  "Select Factor(s) to Filter",
-                  unique(sort(pData(vals$original)[,input$filter_sample_by_annotation])),
-                  multiple = TRUE)
+    if(input$filter_sample_by_annotation != ''){
+      if(input$filter_sample_by_annotation != 'none'){
+        selectInput("selectColFilter_conditionofinterest",
+                    "Select Factor(s) to Filter",
+                    unique(sort(pData(vals$original)[,input$filter_sample_by_annotation])),
+                    multiple = TRUE)
+      }
     }
   })
   
@@ -178,7 +180,6 @@ shinyServer(function(input, output, session) {
       if(input$filter_sample_by_annotation != 'none'){
         deletesamples <- c(deletesamples, rownames(pData(vals$counts))[pData(vals$counts)[,input$filter_sample_by_annotation] == input$selectColFilter_conditionofinterest])
       }
-      alert(deletesamples)
       vals$counts <- filterSCData(vals$counts,
                                   deletesamples=deletesamples,
                                   remove_noexpress=input$removeNoexpress,
@@ -229,9 +230,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
-
-  #Multi PCA plot by Lloyd
-  #singlCellTK::runDimRed may want to change
   multipcaDataFrame <- observeEvent(input$plotPCA, {
    withBusyIndicatorServer("plotPCA", {
      if(is.null(vals$counts)){
@@ -252,7 +250,6 @@ shinyServer(function(input, output, session) {
      }
    }) 
   })
-  #end Lloyd's Code
   
   output$clusterPlot <- renderPlotly({
     if(is.null(vals$counts)){
@@ -364,7 +361,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  output$treePlot <- renderPlot(
+  output$treePlot <- renderPlot({
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else {
@@ -384,7 +381,7 @@ shinyServer(function(input, output, session) {
         }
       } 
     }
-  )
+  }, height=600)
   
   clusterDataFrame <- observeEvent(input$clusterData, {
     withBusyIndicatorServer("clusterData", {
@@ -407,6 +404,15 @@ shinyServer(function(input, output, session) {
                           selected = input$clusterName)
       } 
     })
+  })
+  
+  observeEvent(input$reRunTSNE, {
+    if(is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      vals$TSNE <- getTSNE(vals$counts)
+    }
   })
   
   #-----------------------------------------------------------------------------
