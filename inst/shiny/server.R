@@ -90,6 +90,7 @@ shinyServer(function(input, output, session) {
       } else {
         vals$counts <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
                                     annotfile = eval(as.symbol(input$selectExampleData))$annot,
+                                    featurefile = eval(as.symbol(input$selectExampleData))$features,
                                     inputdataframes = TRUE)
       }
       updateAllPdataInputs()

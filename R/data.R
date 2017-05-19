@@ -76,3 +76,23 @@
 #'                                 annotfile = GSE36552$annot,
 #'                                 inputdataframes = TRUE)
 "GSE36552"
+
+#' Example Single Cell RNA-Seq MAITS data from MAST package
+#'
+#' 96 Single-cell transcriptome profiling from Mucosal Associated Invariant T
+#' cells (MAITs), measured on the Fluidigm C1.
+#'
+#' @name maits_SCESet
+#' @docType data
+#' @format List of three data frames, with counts, features and annotations.
+#' Use them as input to createSCESet()
+#' @source DOI: 10.1186/s13059-015-0844-5
+#' @keywords datasets
+#' @examples
+#' library(scater)
+#' data("maits_SCESet")
+#' maits_SCESet <- createSCESet(countfile = maits_SCESet$counts,
+#'                              annotfile = maits_SCESet$annot,
+#'                              featurefile = maits_SCESet$features,
+#'                              inputdataframes = TRUE)
+"maits_SCESet"
