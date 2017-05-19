@@ -17,7 +17,6 @@
  #' @param tune_para boolean values determining if doing the parameter tuning 
  #' @param gamma_range vector of gamma paramters provided if tune_para is TRUE
  #' @param cost_range vecor of cost patameters provided if tune_para is TRUE
- #' @example  ToDo
  #' @export
  singlecell_SVM <- function(train_set, train_label, test_set, var, tune_para=FALSE,gamma_range,cost_range ){
    # train data frame preparation 

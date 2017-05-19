@@ -2,6 +2,8 @@
 
 export(Downsample)
 export(MAST)
+export(MASTregression)
+export(MASTviolin)
 export(alignSingleCellData)
 export(createSCESet)
 export(differentialPower)
