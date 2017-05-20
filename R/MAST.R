@@ -16,7 +16,7 @@ MAST <- function(SCEdata,
                  FCTHRESHOLD=log2(1.5) , p.value = 0.05 ){
   
   if(is.null(condition)){
-    stop("specify the condition of interst")
+    stop("specify the condition of interest")
   }
   
   if(length(unique(pData(SCEdata)[,condition])) == 1) {
@@ -24,9 +24,9 @@ MAST <- function(SCEdata,
   }
   
   if(is.null(interest.level) & length(unique(pData(SCEdata)[, condition]))>2 ){
-    stop("have to specify a level of interest when more than 2 levels are in the condiciton")
+    stop("You must specify a level of interest when more than 2 levels are in the condition")
   }
-  
+
   # data preparation 
   nGeneOn <- colSums(counts(SCEdata))
   pdata <- pData(SCEdata)
@@ -44,10 +44,10 @@ MAST <- function(SCEdata,
     colData(SCE_new_sample)[,condition] <- as.factor(colData(SCE_new_sample)[,condition])
   }
   ##   >2 levels in the condition 
-  if(!is.null(interest.level)){
-    levels(MAST::colData(SCE_new_sample)[,condition]) <- c(levels(colData(SCE_new_sample)[,condition]), paste0("no_", interest.level))
+  if(!is.null(interest.level) & length(unique(pData(SCEdata)[, condition]))>2 ){
+    levels(colData(SCE_new_sample)[,condition]) <- c(levels(colData(SCE_new_sample)[,condition]), paste0("no_", interest.level))
     colData(SCE_new_sample)[,condition][colData(SCE_new_sample)[,condition] != interest.level] <- paste0("no_", interest.level)
-    colData(SCE_new_sample)[,condition] <- droplevels(colData(SCE_new_sample)[,condition])
+    colData(SCE_new_sample)[,condition] <- droplevels(as.factor(colData(SCE_new_sample)[,condition]))
     
     #hurdle1 <- MAST::zlm.SingleCellAssay(as.formula(paste0('~', condition)),SCE_new_sample)
     hurdle1 <- MAST::zlm(as.formula(paste0('~', condition)),SCE_new_sample)
@@ -55,11 +55,11 @@ MAST <- function(SCEdata,
     
     summaryDT <- summaryh1[['datatable']]
     
-    fcHurdle <<- merge(summaryDT[summaryDT$contrast==paste0(condition, "no_", interest.level) & summaryDT$component=='H', c('primerid','Pr(>Chisq)')],   # hurdel p value 
+    fcHurdle <- merge(summaryDT[summaryDT$contrast==paste0(condition, "no_", interest.level) & summaryDT$component=='H', c('primerid','Pr(>Chisq)')],   # hurdel p value 
                       summaryDT[summaryDT$contrast==paste0(condition, "no_", interest.level) & summaryDT$component=='logFC', c('primerid','coef','ci.hi','ci.lo')]  # logFC coefficients
     )  
-  }else if(is.null(interest.level)){
-    colData(SCE_new_sample)[,condition] <- droplevels(colData(SCE_new_sample)[,condition])
+  }else {
+    colData(SCE_new_sample)[,condition] <- droplevels(as.factor(colData(SCE_new_sample)[,condition]))
     level.cond  <- levels(colData(SCE_new_sample)[,condition])
     
     hurdle1 <- MAST::zlm(as.formula(paste0('~', condition)),SCE_new_sample)
@@ -67,7 +67,7 @@ MAST <- function(SCEdata,
     
     summaryDT <- summaryh1[['datatable']]
     
-    fcHurdle <<- merge(summaryDT[summaryDT$contrast==paste0(condition, level.cond[2]) & summaryDT$component=='H', c('primerid','Pr(>Chisq)')],   # hurdel p value 
+    fcHurdle <- merge(summaryDT[summaryDT$contrast==paste0(condition, level.cond[2]) & summaryDT$component=='H', c('primerid','Pr(>Chisq)')],   # hurdel p value 
                       summaryDT[summaryDT$contrast==paste0(condition, level.cond[2]) & summaryDT$component=='logFC', c('primerid','coef','ci.hi','ci.lo')]  # logFC coefficients
     )
   }

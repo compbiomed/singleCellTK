@@ -63,6 +63,8 @@ shinyServer(function(input, output, session) {
                       choices = colnames(pData(vals$counts)))
     updateSelectInput(session, "hurdlecondition",
                       choices = colnames(pData(vals$counts)))
+    updateSelectInput(session, "filter_sample_by_annotation",
+                      choices = c('none',colnames(pData(vals$original))))
     updateSelectInput(session, "colorBy",
                       choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))))
     updateSelectInput(session, "shapeBy",
@@ -84,14 +86,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if(input$uploadChoice == "files"){
-        vals$counts <- createSCESet(countfile = input$countsfile$datapath,
+        vals$original <- createSCESet(countfile = input$countsfile$datapath,
                                     annotfile = input$annotfile$datapath,
                                     featurefile = input$featurefile$datapath)
       } else {
-        vals$counts <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
+        vals$original <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
                                     annotfile = eval(as.symbol(input$selectExampleData))$annot,
+                                    featurefile = eval(as.symbol(input$selectExampleData))$features,
                                     inputdataframes = TRUE)
       }
+      vals$counts <- vals$original
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = rownames(pData(vals$counts)))
@@ -129,7 +133,6 @@ shinyServer(function(input, output, session) {
                       Successfully Uploaded! <button type='button' class='close' \
                       data-dismiss='alert'>&times;</button>"))
         )
-      vals$original <- vals$counts
       vals$PCA <- NULL
       vals$TSNE <- NULL
     })
@@ -154,7 +157,18 @@ shinyServer(function(input, output, session) {
       summarizeTable(vals$counts)
     }
   })
-
+  
+  output$selectColFilter_conditionofinterestUI <- renderUI({
+    if(input$filter_sample_by_annotation != ''){
+      if(input$filter_sample_by_annotation != 'none'){
+        selectInput("selectColFilter_conditionofinterest",
+                    "Select Factor(s) to Filter",
+                    unique(sort(pData(vals$original)[,input$filter_sample_by_annotation])),
+                    multiple = TRUE)
+      }
+    }
+  })
+  
   #Filter the data based on the options
   observeEvent(input$filterData, {
     if(is.null(vals$original)){
@@ -162,8 +176,12 @@ shinyServer(function(input, output, session) {
     }
     else{
       vals$counts <- vals$original
+      deletesamples <- input$deletesamplelist
+      if(input$filter_sample_by_annotation != 'none'){
+        deletesamples <- c(deletesamples, rownames(pData(vals$counts))[pData(vals$counts)[,input$filter_sample_by_annotation] == input$selectColFilter_conditionofinterest])
+      }
       vals$counts <- filterSCData(vals$counts,
-                                  deletesamples=input$deletesamplelist,
+                                  deletesamples=deletesamples,
                                   remove_noexpress=input$removeNoexpress,
                                   remove_bottom=0.01 * input$LowExpression,
                                   minimum_detect_genes=input$minDetectGenect)
@@ -212,9 +230,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
-
-  #Multi PCA plot by Lloyd
-  #singlCellTK::runDimRed may want to change
   multipcaDataFrame <- observeEvent(input$plotPCA, {
    withBusyIndicatorServer("plotPCA", {
      if(is.null(vals$counts)){
@@ -235,7 +250,6 @@ shinyServer(function(input, output, session) {
      }
    }) 
   })
-  #end Lloyd's Code
   
   output$clusterPlot <- renderPlotly({
     if(is.null(vals$counts)){
@@ -347,7 +361,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  output$treePlot <- renderPlot(
+  output$treePlot <- renderPlot({
     if(is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else {
@@ -367,7 +381,7 @@ shinyServer(function(input, output, session) {
         }
       } 
     }
-  )
+  }, height=600)
   
   clusterDataFrame <- observeEvent(input$clusterData, {
     withBusyIndicatorServer("clusterData", {
@@ -390,6 +404,15 @@ shinyServer(function(input, output, session) {
                           selected = input$clusterName)
       } 
     })
+  })
+  
+  observeEvent(input$reRunTSNE, {
+    if(is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      vals$TSNE <- getTSNE(vals$counts)
+    }
   })
   
   #-----------------------------------------------------------------------------
