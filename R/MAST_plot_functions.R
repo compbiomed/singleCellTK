@@ -36,7 +36,7 @@ MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
   thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                      min_per_bin = 30)
   assays(SCE_new) <- list(thresh=thres$counts_threshold, tpm=assay(SCE_new))
-  entrez_to_plot <- fcHurdleSig[1:49,"Gene"]
+  entrez_to_plot <- fcHurdleSig$Gene[1:49]
   flat_dat <- as(SCE_new[entrez_to_plot,], 'data.table')
   if(threshP){
     ggbase <- ggplot(flat_dat,
