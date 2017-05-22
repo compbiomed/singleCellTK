@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "Knumber",
                       choices = 1:nrow(pData(vals$counts)))
     updateSelectInput(session, "colorGenes",
-                      choices = c(rownames(vals$counts)))
+                      choices = c(rownames(vals$counts)[1:100]))
   }
   
   # Close app on quit
@@ -622,7 +622,8 @@ shinyServer(function(input, output, session) {
   
   output$hurdleviolin <- renderPlot({
     if(!(is.null(vals$mastgenelist))){
-      MASTviolin(vals$mastgenelist, vals$thres, 49)
+      MASTviolin(vals$counts, vals$mastgenelist,
+                 variable=input$hurdlecondition)
     }
   }, height=600)
   
