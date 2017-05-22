@@ -7,11 +7,11 @@ thresholdGenes <- function(SCEdata){
   expres <- exprs(SCEdata)
   fdata = data.frame(Gene = rownames(expres))
   rownames(fdata) = fdata$Gene
-  count <- counts(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pData(SCEdata), fdata)
   
   SCE_new <- SCE_new[which(freq(SCE_new)>0),]
-  thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20, min_per_bin = 30)
+  thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+                                     min_per_bin = 30)
   return(thres)
 }
 
@@ -22,20 +22,33 @@ thresholdGenes <- function(SCEdata){
 #' @param SCEdata SCESet object
 #' @param fcHurdleSig The filtered result from hurdle model 
 #' @param samplesize The number of most significant genes
+#' @param threshP Plot threshold values from adaptive thresholding. Default is
+#' FALSE
+#' @param variable Select the condition of interest
 #' @export
-MASTviolin <- function(SCEdata,fcHurdleSig, 
-                       samplesize = 49){
+MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
+                       variable){
   expres <- exprs(SCEdata)
   fdata = data.frame(Gene = rownames(expres))
   rownames(fdata) = fdata$Gene
   SCE_new <- MAST::FromMatrix(expres, pData(SCEdata), fdata)
   SCE_new <- SCE_new[which(MAST::freq(SCE_new)>0),]
-  thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20, min_per_bin = 30)
+  thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+                                     min_per_bin = 30)
   assays(SCE_new) <- list(thresh=thres$counts_threshold, tpm=assay(SCE_new))
-  entrez_to_plot <- fcHurdleSig$Gene[1:49]
+  entrez_to_plot <- fcHurdleSig[1:49,"Gene"]
   flat_dat <- as(SCE_new[entrez_to_plot,], 'data.table')
-  ggbase <- ggplot(flat_dat, aes(x=level1class, y=tpm,color=level1class)) + geom_jitter()+facet_wrap(~primerid, scale='free_y',ncol=7)
-  violinplot <- ggbase+geom_violin()+ggtitle("Violin Plot")
+  if(threshP){
+    ggbase <- ggplot(flat_dat,
+                     aes_string(x=variable, y="thresh", color=variable)) + 
+      geom_jitter() + facet_wrap(~primerid, scale='free_y', ncol=7)
+  }
+  else{
+    ggbase <- ggplot(flat_dat,
+                     aes_string(x=variable, y="tpm", color=variable)) + 
+      geom_jitter() + facet_wrap(~primerid, scale='free_y', ncol=7)
+  }
+  violinplot <- ggbase + geom_violin() + ggtitle("Violin Plot")
   return(violinplot)
 }
 

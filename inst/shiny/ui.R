@@ -15,7 +15,7 @@ pcComponents <- ''
 numClusters <- ''
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
-  geneChoice <- rownames(exprs(getShinyOption("inputSCEset")))
+  geneChoice <- rownames(exprs(getShinyOption("inputSCEset"))[1:100])
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep="")
   numClusters <- 1:nrow(pData(getShinyOption("inputSCEset")))
