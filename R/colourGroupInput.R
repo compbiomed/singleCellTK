@@ -3,13 +3,16 @@
 
 colourGroupInput = function(inputId) {
   ns = NS(inputId)
-  uiOutput(ns("colorChoosers"))
+  tagList(
+    strong(textOutput(ns("heading"))),
+    uiOutput(ns("colorChoosers"))
+  )
 }
 
 #'
 #'
 
-colourGroup = function(input, output, session, options="", labels = "", value = "red", ...){
+colourGroup = function(input, output, session, heading = "", options="", labels = "", value = "", ...){
   ns = session$ns
   ids = reactive(sapply(options, function (option) paste(option, "inputId", sep="_")))
 
@@ -23,6 +26,8 @@ colourGroup = function(input, output, session, options="", labels = "", value = 
     })
   })
 
+  output$heading = renderText({heading})
+  
   output$colorChoosers = renderUI({
     if (length(options)!=0){
       L = vector("list", length(options))
