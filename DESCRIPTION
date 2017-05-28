@@ -11,6 +11,7 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
+    ape,
     Biobase,
     biomaRt,
     circlize,
@@ -20,8 +21,10 @@ Imports:
     data.table,
     DESeq,
     DESeq2,
+    e1071,
     GGally,
     ggplot2,
+    gridExtra,
     limma,
     locfit,
     MAST,
@@ -37,9 +40,11 @@ Imports:
     scater,
     shiny,
     shinyjs,
-    ape
+    ape,
+    ggtree
 RoxygenNote: 6.0.1
-Suggests: Rsubread,
+Suggests: 
+    Rsubread,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
