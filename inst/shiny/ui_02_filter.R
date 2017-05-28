@@ -6,6 +6,8 @@ shiny_panel_filter <- fluidPage(
       fluidRow(
         column(8,
           tableOutput('summarycontents'),
+          plotlyOutput('countshist'),
+          plotlyOutput('geneshist'),
           dataTableOutput('contents')),
         column(
           4,
@@ -22,6 +24,14 @@ shiny_panel_filter <- fluidPage(
             h3("Delete an annotation column:"),
             selectInput("deletepdatacolumn","Annotation Column:", clusterChoice),
             actionButton("deletepDatabutton","Delete Column"),
+            tags$hr(),
+            h3("Filter samples by annotation"),
+            uiOutput("FilterSamples"),
+            uiOutput("filterSampleOptions"),
+            tags$hr(),
+            h3("Filter genes by feature annotation"),
+            selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
+            uiOutput("filterFeatureOptions"),
             tags$hr(),
             downloadButton("downloadSCESet","Download SCEset")
           )

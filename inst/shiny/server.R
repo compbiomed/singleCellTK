@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 2: Data Summary
   #-----------------------------------------------------------------------------
-
+  
   #Render data table if there are fewer than 50 samples
   output$contents <- renderDataTable({
     if(!(is.null(vals$counts)) && nrow(pData(vals$counts)) < 50){
@@ -115,7 +115,33 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, options = list(scrollX = TRUE))
-
+  
+  #Render histogram of read counts per cell
+  output$countshist <- renderPlotly({
+    if(!(is.null(vals$counts))){
+      f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
+      x <- list(title = "Reads per cell", titlefont = f)
+      y <- list(title = "Number of cells", titlefont = f)
+      plot_ly(x = apply(scater::counts(vals$counts), 2, function(x) sum(x)), type="histogram") %>%
+        layout(xaxis=x, yaxis=y)
+    } else {
+      plotly_empty(type="scatter") %>% add_trace(mode="lines")
+      }
+  })
+  
+  #Render histogram of genes detected per cell
+  output$geneshist <- renderPlotly({
+    if(!(is.null(vals$counts))){
+      f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
+      x <- list(title = "Genes detected per cell", titlefont = f)
+      y <- list(title = "Number of cells", titlefont = f)
+      plot_ly(x = apply(scater::counts(vals$counts), 2, function(x) sum(x>0)), type="histogram") %>%
+        layout(xaxis=x, yaxis=y)
+    } else {
+      plotly_empty(type="scatter") %>% add_trace(mode="lines")
+      }
+  })  
+  
   #Render summary table
   output$summarycontents <- renderTable({
     if(!(is.null(vals$counts))){
@@ -159,6 +185,58 @@ shinyServer(function(input, output, session) {
       updateAllPdataInputs()
     }
   })
+ 
+  #Create UI for filtering samples based on annotations
+  output$FilterSamples <- renderUI({
+    annot = ''
+    if (!is.null(vals$counts)){
+      annot = colnames(pData(vals$counts))
+    }
+    selectInput("filteredSample", "Select Annotation:", c("none", annot))
+  })
+  observeEvent(input$filteredSample, {
+    output$filterSampleOptions <- renderUI({
+      if (input$filteredSample != "none")({
+        L = vector("list", 2)
+        L[[1]] = list(checkboxGroupInput("filterSampleChoices", 
+                                         label = "Select samples to keep",
+                                         choices = unique(pData(vals$counts)[,input$filteredSample])))
+        L[[2]] = list(actionButton("runFilterSample", "Filter"))
+        return(L)
+      }) else {
+        L = list()
+      }
+    })
+  })
+  
+  #Filter the selected samples
+  observeEvent(input$runFilterSample, {
+    filter = pData(vals$counts)[,input$filteredSample] %in% input$filterSampleChoices
+    vals$counts = vals$counts[,filter]
+  })
+   
+  #Create UI for filtering genes based on feature annotations
+  observeEvent(input$filteredFeature, {
+    output$filterFeatureOptions <- renderUI({
+      if (input$filteredFeature != "none")({
+        L = vector("list", 2)
+        L[[1]] = list(checkboxGroupInput("filterFeatureChoices", 
+                                         label = "Select features to keep",
+                                         choices = unique(fData(vals$counts)[,input$filteredFeature])))
+        L[[2]] = list(actionButton("runFilterFeature", "Filter"))
+        return(L)
+      }) else {
+        L = list()
+      }
+    })
+  })
+  
+  #Filter the selected features
+  observeEvent(input$runFilterFeature, {
+    filter = fData(vals$counts)[,input$filteredFeature] %in% input$filterFeatureChoices
+    vals$counts = vals$counts[filter,]
+  })
+  
   
   output$downloadSCESet <- downloadHandler(
     filename = function() {
@@ -171,7 +249,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
-
+  
   #Plot dimensionality reduction plot
   drDataframe <- observeEvent(input$plotData, {
     withBusyIndicatorServer("plotData", {
@@ -180,14 +258,6 @@ shinyServer(function(input, output, session) {
       }
       #Sebastian's Code
       else{
-        cols=NULL
-        if (input$dimRedUseCustomColors){
-          options = unique(unlist(pData(vals$counts)[,input$colorClusters]))
-          cols = callModule(colourGroup, "dimRedColors", options)
-          cols = cols()
-        } 
-        g <- runDimRed(input$selectDimRed, vals$counts, input$colorClusters, input$pcX, input$pcY, customColors=cols)
-
         if(input$selectDimRed == "PCA"){
           vals$PCA <- getPCA(vals$counts)
           #updateVals('PCA')
@@ -423,11 +493,14 @@ shinyServer(function(input, output, session) {
   
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionofinterestUI <- renderUI({
-    if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
-      selectInput("selectDiffex_conditionofinterest",
-                  "Select Factor of Interest",
-                  unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+    if(!is.null(vals$counts)){
+      if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
+        selectInput("selectDiffex_conditionofinterest",
+                    "Select Factor of Interest",
+                    unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+      }
     }
+    
   })
   
   #Run differential expression
@@ -448,16 +521,29 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  annotationColors <- reactiveValues(options = NULL, cols = NULL, colors = NULL)
   
-  observeEvent(input$colorBar_Condition, {
-    options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-    annotationColors$options = options
-    cols = callModule(colourGroup, "cgi", options = options)
-    annotationColors$cols = cols
-    annotationColors$colors = cols()
-  }, ignoreInit=TRUE)
+  output$colorBarCondition <- renderUI({
+    if (is.null(vals$counts)){
+      selectInput("colorBar_Condition", "Select Condition", c())
+    } else {
+      selectizeInput("colorBar_Condition", "Select Condition", 
+                     names(pData(vals$counts)), multiple=TRUE)
+    }
+  })
   
+  annotationColors <- reactiveValues(cols = list())
+  
+  output$HeatmapSampleAnnotations <- renderUI({
+    if (!is.null(vals$counts)){
+      h = input$colorBar_Condition
+      L = lapply(1:length(h), function(i) colourGroupInput(paste0("colourGroup", i)))
+      annotationColors$cols = lapply(1:length(h), function(i) callModule(colourGroup, paste0("colourGroup", i),
+                                                                  heading = h[i], 
+                                                                  options = unique(unlist(pData(vals$counts)[,h[i]]))))
+      return(L)
+    }
+    
+  })
 
   #Plot the differential expression results
   output$diffPlot <- renderPlot({
@@ -466,14 +552,9 @@ shinyServer(function(input, output, session) {
         if (is.null(input$colorBar_Condition)){
           colors = NULL
         } else {
-          # cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
-          # annotationColors$options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition]))
-          # annotationColors$cols = cols
-          # annotationColors$colors = cols()
-          # colors = annotationColors$colors
-          
-          cols = callModule(colourGroup, "cgi", options = unique(unlist(pData(vals$counts)[,input$colorBar_Condition])))
-          colors = cols()
+          colors = lapply(annotationColors$cols, function(col) col())
+          names(colors) = input$colorBar_Condition
+          if (is.null(colors[[length(colors)]][[1]])){colors=NULL}
         }
       } else {
         colors=NULL
@@ -490,37 +571,6 @@ shinyServer(function(input, output, session) {
                   columnTitle=input$heatmapColumnsTitle))
     }
   }, height=600)
-
-  #Create the color bar options
-  output$colorBarOptions <- renderUI({
-    if (!is.null(vals$counts) & !is.null(input$colorBar_Condition)){
-      conditions = unique(unlist(pData(vals$counts)[,unique(input$colorBar_Condition)]))
-      #alert(conditions)
-      L = vector("list", length(conditions))
-      for (i in 1:length(L)){
-        id=paste0("hmColorBar_", conditions[i])
-        if (is.null(input[[id]])){
-          color = palette()[(i %% length(palette()))+1]
-        } else {
-          color = input[[id]]
-        }
-        L[[i]] = list(colourInput(
-          id, 
-          conditions[i], 
-          color))
-      }
-      return(L)  
-    }
-  })
-  
-  output$colorBarCondition <- renderUI({
-    if (is.null(vals$counts)){
-      selectInput("colorBar_Condition", "Select Condition", c())
-    } else {
-      selectInput("colorBar_Condition", "Select Condition", 
-                names(pData(vals$counts)))
-    }
-    })
   
   #Render the interactive heatmap
   output$interactivediffPlot <- renderD3heatmap({
@@ -555,6 +605,7 @@ shinyServer(function(input, output, session) {
       alert("Warning: Specify biomarker name!")
     } else{
       fData(vals$counts)[,input$biomarkerName] <- ifelse(rownames(fData(vals$counts)) %in% rownames(vals$diffexgenelist), 1,0)
+      updateSelectInput(session, "filteredFeature", choices = c("none", colnames(fData(vals$counts))))
     }
   })
   

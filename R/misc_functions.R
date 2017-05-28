@@ -9,10 +9,14 @@
 summarizeTable <- function(indata){
   return(data.frame("Metric"=c("Number of Samples",
                                "Number of Genes",
+                               "Average number of reads per cell",
+                               "Average number of genes per cell",
                                "Samples with <1700 detected genes",
                                "Genes with no expression across all samples"),
                     "Value"=c(ncol(indata),
                               nrow(indata),
+                              as.integer(mean(apply(scater::counts(indata), 2, function(x) sum(x)))),
+                              as.integer(mean(apply(scater::counts(indata), 2, function(x) sum(x>0)))),
                               sum(apply(scater::counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700),
                               sum(rowSums(scater::counts(indata)) == 0))))
 }

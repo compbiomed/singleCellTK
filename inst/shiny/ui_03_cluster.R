@@ -35,11 +35,6 @@ shiny_panel_cluster <- fluidPage(
                column(4,
                       wellPanel(
                         selectInput("selectDimRed","Algorithm",c("PCA","tSNE")),
-                        selectInput("pcX", "X axis:", pcComponents),
-                        selectInput("pcY", "Y axis:", pcComponents, selected = "PC2"),
-                        selectInput("colorClusters","Color Clusters By",clusterChoice),
-                        checkboxInput("dimRedUseCustomColors", "Use custom colors"),
-                        colourGroupInput("dimRedColors"),
                         conditionalPanel(
                           condition = "input.selectDimRed == 'PCA'",
                           selectInput("pcX", "X axis:", pcComponents),
