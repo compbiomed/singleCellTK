@@ -10,7 +10,12 @@
 #' @export getTSNE
 #'
 getTSNE <- function(count_data){
-  ntop <- 500
+  if (nrow(counts(count_data)) < 500){
+    ntop <- nrow(counts(count_data))
+  }
+  else{
+    ntop <- 500
+  }
   scale_features <- TRUE
   exprs_mat <- exprs(count_data)
   rv <- matrixStats::rowVars(exprs_mat)
