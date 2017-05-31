@@ -1,35 +1,6 @@
 shiny_panel_cluster <- fluidPage(
   tabsetPanel(
     tabPanel(
-      "PCA (MAST example)",
-      fluidRow(
-        column(
-          4,
-          wellPanel(
-            selectInput(inputId ="pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
-            checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
-            selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
-            selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
-            selectInput("colorClusters_MAST","Color Clusters By",clusterChoice),
-            withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
-          )#wellPanel
-        ),
-        column(
-          8,
-          plotOutput("pcaPlot")
-        )
-      ),#fluidRow
-      mainPanel(
-        h1("Instructions"),
-        p(""), strong("Principle Component Analysis:"), 
-        p("1. Choose algorithm (one of the PCA algorithms)"),
-        p("2. Choose components to be involved in paired plot"),
-        p("3. Choose 2 components in Checkbox to produce single plot(if more than 2 components are selected, only the first 2 will be used)"),
-        p("3. Choose feature to color data by"),
-        p("4. Visualize your data")
-      )
-    ),#subtab "PCA (MAST example)" end
-    tabPanel(
       "Clustering",
       fluidRow(
         column(
@@ -161,7 +132,36 @@ shiny_panel_cluster <- fluidPage(
         p("3. Choose the clustering algorithm"),
         p("4. Choose the distance metric")
       )
+    ),
+    tabPanel(
+      "PCA (MAST example)",
+      fluidRow(
+        column(
+          4,
+          wellPanel(
+            selectInput(inputId ="pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
+            checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
+            selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
+            selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
+            selectInput("colorClusters_MAST","Color Clusters By",clusterChoice),
+            withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
+          )#wellPanel
+        ),
+        column(
+          8,
+          plotOutput("pcaPlot")
+        )
+      ),
+      mainPanel(
+        h1("Instructions"),
+        p(""), strong("Principle Component Analysis:"), 
+        p("1. Choose algorithm (one of the PCA algorithms)"),
+        p("2. Choose components to be involved in paired plot"),
+        p("3. Choose 2 components in Checkbox to produce single plot(if more than 2 components are selected, only the first 2 will be used)"),
+        p("3. Choose feature to color data by"),
+        p("4. Visualize your data")
+      )
     )
-  ),#Clustering end
+  ),
   includeHTML("www/footer.html")
 )
