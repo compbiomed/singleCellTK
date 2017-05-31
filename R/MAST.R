@@ -8,11 +8,14 @@
 #' indicate which level should be used to compare to all other samples.
 #' @param freq_expressed Filter genes that are expressed in at least this
 #' fraction of cells. The default is expression in 0.1 of samples.
-#' @param fc_threshold the threshold for filetering the sample 
-#' @param p.value p values for selecting the hurdle reslut, default is 0.05
+#' @param fc_threshold Minimum fold change for differentially expressed gene.
+#' @param p.value p values for selecting the hurdle result, default is 0.05
+#' @param usethresh Use adaptive thresholding to filter genes. The default is
+#' FALSE.
 #' @export
 MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
-                 freq_expressed = 0.1, fc_threshold=log2(1.5), p.value = 0.05){
+                 freq_expressed = 0.1, fc_threshold=log2(1.5), p.value = 0.05,
+                 usethresh=FALSE){
   
   if(is.null(condition)){
     stop("specify the condition of interest")
@@ -28,11 +31,20 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
   }
 
   # Create MAST SingleCellAssay 
-  nGeneOn <- colSums(counts(SCEdata))
   pdata <- pData(SCEdata)
   expres <- exprs(SCEdata)
   fdata <- fData(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
+  
+  #Caculate CDR for zlm model
+  colData(SCE_new)$cngeneson <- scale(colSums(assay(SCE_new) > 0))
+  
+  if(usethresh){
+    SCE_new <- SCE_new[which(freq(SCE_new)>0),]
+    thresh <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+                                       min_per_bin = 30)
+    assays(SCE_new) <- list(thresh=thresh$counts_threshold, tpm=assay(SCE_new))
+  }
   
   # filter based on frequency of expression across samples
   SCE_new_sample <- SCE_new[which(MAST::freq(SCE_new) > freq_expressed),]
@@ -48,7 +60,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     colData(SCE_new_sample)[,condition][colData(SCE_new_sample)[,condition] != interest.level] <- paste0("no_", interest.level)
     colData(SCE_new_sample)[,condition] <- droplevels(as.factor(colData(SCE_new_sample)[,condition]))
     
-    hurdle1 <- MAST::zlm(as.formula(paste0('~', condition)),SCE_new_sample)
+    hurdle1 <- MAST::zlm(as.formula(paste0('~', condition, "+cngeneson")),SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1,doLRT=paste0(condition, "no_", interest.level))  
     
     summaryDT <- summaryh1[['datatable']]
@@ -60,7 +72,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     colData(SCE_new_sample)[,condition] <- droplevels(as.factor(colData(SCE_new_sample)[,condition]))
     level.cond  <- levels(colData(SCE_new_sample)[,condition])
     
-    hurdle1 <- MAST::zlm(as.formula(paste0('~', condition)),SCE_new_sample)
+    hurdle1 <- MAST::zlm(as.formula(paste0('~', condition, "+cngeneson")),SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1,doLRT=paste0(condition, level.cond[2]))  
     
     summaryDT <- summaryh1[['datatable']]
