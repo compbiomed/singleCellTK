@@ -604,7 +604,7 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
         vals$mastgenelist <- MAST(vals$counts,
-                                  FCTHRESHOLD=input$FCthreshold,
+                                  fc_threshold=input$FCthreshold,
                                   freq_expressed=input$hurdlethresh,
                                   condition=input$hurdlecondition,
                                   interest.level = input$hurdleconditionofinterest,
