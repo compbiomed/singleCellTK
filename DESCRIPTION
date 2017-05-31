@@ -24,6 +24,7 @@ Imports:
     e1071,
     GGally,
     ggplot2,
+    ggtree,
     gridExtra,
     limma,
     locfit,
@@ -39,9 +40,7 @@ Imports:
     S4Vectors,
     scater,
     shiny,
-    shinyjs,
-    ape,
-    ggtree
+    shinyjs
 RoxygenNote: 6.0.1
 Suggests: 
     Rsubread,

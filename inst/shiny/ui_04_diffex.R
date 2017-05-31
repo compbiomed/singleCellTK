@@ -15,7 +15,7 @@ shiny_panel_diffex <- fluidPage(
             checkboxInput("clusterRows", "Cluster Heatmap Rows", value=TRUE),
             checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
             sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
-            selectInput("selectCorrection","Correction Type",c("FDR")),
+            selectInput("selectCorrection","Correction Method:",c("FDR")),
             withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
             downloadButton("downloadGeneList","Download Results"),
             h3("Save gene list as biomarker:"),
