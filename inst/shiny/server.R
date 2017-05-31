@@ -595,8 +595,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  
-  
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
     if(is.null(vals$counts)){
@@ -615,14 +613,21 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$threshplot <- renderPlot({
-    if(!(is.null(vals$mastgenelist))){
-      vals$thres <- thresholdGenes(vals$counts)
-      par(mfrow=c(5,4))
-      plot(vals$thres)
-      par(mfrow=c(1,1))
+  observeEvent(input$runThreshPlot, {
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
     }
-  }, height=600)
+    else{
+      withBusyIndicatorServer("runThreshPlot", {
+        output$threshplot <- renderPlot({
+          vals$thres <- thresholdGenes(vals$counts)
+          par(mfrow=c(5,4))
+          plot(vals$thres)
+          par(mfrow=c(1,1))
+        }, height=600)
+      })
+    }
+  })
   
   output$hurdleviolin <- renderPlot({
     if(!(is.null(vals$mastgenelist))){
