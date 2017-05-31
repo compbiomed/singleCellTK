@@ -5,7 +5,8 @@
 \title{MAST}
 \usage{
 MAST(SCEdata, condition = NULL, interest.level = NULL,
-  freq_expressed = 0.1, fc_threshold = log2(1.5), p.value = 0.05)
+  freq_expressed = 0.1, fc_threshold = log2(1.5), p.value = 0.05,
+  usethresh = FALSE)
 }
 \arguments{
 \item{SCEdata}{SCESet object}
@@ -18,9 +19,12 @@ indicate which level should be used to compare to all other samples.}
 \item{freq_expressed}{Filter genes that are expressed in at least this
 fraction of cells. The default is expression in 0.1 of samples.}
 
-\item{fc_threshold}{the threshold for filetering the sample}
+\item{fc_threshold}{Minimum fold change for differentially expressed gene.}
 
-\item{p.value}{p values for selecting the hurdle reslut, default is 0.05}
+\item{p.value}{p values for selecting the hurdle result, default is 0.05}
+
+\item{usethresh}{Use adaptive thresholding to filter genes. The default is
+FALSE.}
 }
 \description{
 Run MAST analysis on a SCESet object.
