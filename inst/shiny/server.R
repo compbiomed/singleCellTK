@@ -421,10 +421,12 @@ shinyServer(function(input, output, session) {
   
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionofinterestUI <- renderUI({
-    if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
-      selectInput("selectDiffex_conditionofinterest",
-                  "Select Factor of Interest",
-                  unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+    if(!is.null(vals$counts)){
+      if(length(unique(pData(vals$counts)[,input$selectDiffex_condition])) > 2){
+        selectInput("selectDiffex_conditionofinterest",
+                    "Select Factor of Interest",
+                    unique(sort(pData(vals$counts)[,input$selectDiffex_condition])))
+      }
     }
   })
   
@@ -584,10 +586,12 @@ shinyServer(function(input, output, session) {
   
   #For conditions with more than two factors, select the factor of interest
   output$hurdleconditionofinterestUI <- renderUI({
-    if(length(unique(pData(vals$counts)[,input$hurdlecondition])) > 2){
-      selectInput("hurdleconditionofinterest",
-                  "Select Factor of Interest",
-                  unique(sort(pData(vals$counts)[,input$hurdlecondition])))
+    if(!is.null(vals$counts)){
+      if(length(unique(pData(vals$counts)[,input$hurdlecondition])) > 2){
+        selectInput("hurdleconditionofinterest",
+                    "Select Factor of Interest",
+                    unique(sort(pData(vals$counts)[,input$hurdlecondition])))
+      }
     }
   })
   
