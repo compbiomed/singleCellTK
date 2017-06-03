@@ -577,8 +577,8 @@ shinyServer(function(input, output, session) {
   output$HeatmapSampleAnnotations <- renderUI({
     if (!is.null(vals$counts)){
       h = input$colorBar_Condition
-      L = lapply(1:length(h), function(i) colourGroupInput(paste0("colourGroup", i)))
-      annotationColors$cols = lapply(1:length(h), function(i) callModule(colourGroup, paste0("colourGroup", i),
+      L = lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
+      annotationColors$cols = lapply(1:length(h), function(i) callModule(colourGroup, paste0("colorGroup", i),
                                                                   heading = h[i], 
                                                                   options = unique(unlist(pData(vals$counts)[,h[i]]))))
       return(L)
