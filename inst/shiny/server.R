@@ -696,14 +696,14 @@ shinyServer(function(input, output, session) {
   
   #For conditions with more than two factors, select the factor of interest
   output$hurdleconditionofinterestUI <- renderUI({
-    if(length(unique(pData(vals$counts)[,input$hurdlecondition])) > 2){
-      selectInput("hurdleconditionofinterest",
-                  "Select Factor of Interest",
-                  unique(sort(pData(vals$counts)[,input$hurdlecondition])))
+    if(!is.null(vals$counts)){
+      if(length(unique(pData(vals$counts)[,input$hurdlecondition])) > 2){
+        selectInput("hurdleconditionofinterest",
+                    "Select Factor of Interest",
+                    unique(sort(pData(vals$counts)[,input$hurdlecondition])))
+      }
     }
   })
-  
-  
   
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
@@ -714,23 +714,31 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
         vals$mastgenelist <- MAST(vals$counts,
-                                  FCTHRESHOLD=input$FCthreshold,
-                                  freq_expressed=input$hurdlethresh,
                                   condition=input$hurdlecondition,
                                   interest.level = input$hurdleconditionofinterest,
-                                  p.value=input$hurdlepvalue)
+                                  freq_expressed=input$hurdlethresh,
+                                  fc_threshold=input$FCthreshold,
+                                  p.value=input$hurdlepvalue,
+                                  usethresh=input$useAdaptThresh)
       })
     }
   })
   
-  output$threshplot <- renderPlot({
-    if(!(is.null(vals$mastgenelist))){
-      vals$thres <- thresholdGenes(vals$counts)
-      par(mfrow=c(5,4))
-      plot(vals$thres)
-      par(mfrow=c(1,1))
+  observeEvent(input$runThreshPlot, {
+    if(is.null(vals$counts)){
+      alert("Warning: Upload data first!")
     }
-  }, height=600)
+    else{
+      withBusyIndicatorServer("runThreshPlot", {
+        output$threshplot <- renderPlot({
+          vals$thres <- thresholdGenes(vals$counts)
+          par(mfrow=c(5,4))
+          plot(vals$thres)
+          par(mfrow=c(1,1))
+        }, height=600)
+      })
+    }
+  })
   
   output$hurdleviolin <- renderPlot({
     if(!(is.null(vals$mastgenelist))){
