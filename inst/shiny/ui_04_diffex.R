@@ -32,6 +32,7 @@ shiny_panel_diffex <- fluidPage(
                        fluidRow(
                          column(
                            4,
+                           br(),
                            wellPanel(
                              "General Options",
                              checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
