@@ -6,6 +6,7 @@ library(d3heatmap)
 library(ape)
 
 source("helpers.R")
+source("colourGroupInput.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
