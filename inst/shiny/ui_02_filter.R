@@ -34,7 +34,7 @@ shiny_panel_filter <- fluidPage(
             uiOutput("filterSampleOptions"),
             tags$hr(),
             h3("Filter genes by feature annotation"),
-            selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
+            uiOutput("filterFeatures"),
             uiOutput("filterFeatureOptions"),
             tags$hr(),
             downloadButton("downloadSCESet","Download SCEset")
