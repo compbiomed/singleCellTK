@@ -256,11 +256,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
-        L = vector("list", 2)
-        L[[1]] = list(checkboxGroupInput("filterSampleChoices", 
-                                         label = "Select samples to keep",
-                                         choices = unique(pData(vals$counts)[,input$filteredSample])))
-        L[[2]] = list(actionButton("runFilterSample", "Filter"))
+        L = vector("list", 3)
+        L[[1]] = renderText("Select samples to keep")
+        L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
+                      list(checkboxGroupInput("filterSampleChoices",
+                                          label = NULL,
+                                          choices = unique(pData(vals$counts)[,input$filteredSample])))     
+                           )
+        L[[3]] = list(actionButton("runFilterSample", "Filter"))
         return(L)
       }) else {
         L = list()
@@ -275,14 +278,24 @@ shinyServer(function(input, output, session) {
   })
    
   #Create UI for filtering genes based on feature annotations
+  output$filterFeatures <- renderUI({
+    fannot = ''
+    if (!is.null(vals$counts)){
+      fannot = colnames(fData(vals$counts))
+    }
+    selectInput("filteredFeature", "Select Feature:", c("none", fannot))
+  })
   observeEvent(input$filteredFeature, {
     output$filterFeatureOptions <- renderUI({
       if (input$filteredFeature != "none")({
-        L = vector("list", 2)
-        L[[1]] = list(checkboxGroupInput("filterFeatureChoices", 
-                                         label = "Select features to keep",
-                                         choices = unique(fData(vals$counts)[,input$filteredFeature])))
-        L[[2]] = list(actionButton("runFilterFeature", "Filter"))
+        L = vector("list", 3)
+        L[[1]] = renderText("Select features to keep")
+        L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
+                           list(checkboxGroupInput("filterFeatureChoices",
+                                               label = NULL,
+                                               choices = unique(fData(vals$counts)[,input$filteredFeature])))     
+        )
+        L[[3]] = list(actionButton("runFilterFeature", "Filter"))
         return(L)
       }) else {
         L = list()
@@ -309,59 +322,25 @@ shinyServer(function(input, output, session) {
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
   
-  #Plot dimensionality reduction plot
-  drDataframe <- observeEvent(input$plotData, {
-    withBusyIndicatorServer("plotData", {
+  multipcaDataFrame <- observeEvent(input$plotPCA, {
+    withBusyIndicatorServer("plotPCA", {
       if(is.null(vals$counts)){
         alert("Warning: Upload data first!")
       }
-      #Sebastian's Code
       else{
-        if(input$selectDimRed == "PCA"){
-          vals$PCA <- getPCA(vals$counts)
-          #updateVals('PCA')
-          algo <- vals$PCA
-          PC <- paste("PC",1:nrow(pData(vals$counts)),sep="")
-          Variances <- attr(vals$PCA,"percentVar")*100
-          var <- data.frame(PC,Variances)
-          output$pctable <- renderTable(var[1:10,])
-        }
-        else{
-          vals$TSNE <- getTSNE(vals$counts)
-          algo <- vals$TSNE
-          output$pctable <- renderTable(data.frame(NULL))
-        }
-        g <- plotDimRed(input$selectDimRed, algo, vals$counts, input$colorDims, input$pcX, input$pcY)
-        output$dimredPlot <- renderPlotly({
-          ggplotly(g)
+        g = runPCA(plot.type = input$plotTypeId,
+                   method = input$pcaAlgorithm,
+                   countm = exprs(vals$counts),
+                   annotm = pData(vals$counts),
+                   featurem = fData(vals$counts),
+                   involving.variables = input$pcaCheckbox,
+                   additional.variables = input$selectAdditionalVariables,
+                   colorClusters = input$colorClusters_MAST)
+        output$pcaPlot <- renderPlot({
+          g
         })
       }
-    })
-    #End Sebastian's Code
-  })
-
-  #Multi PCA plot by Lloyd
-  #singlCellTK::runDimRed may want to change
-
-  multipcaDataFrame <- observeEvent(input$plotPCA, {
-   withBusyIndicatorServer("plotPCA", {
-     if(is.null(vals$counts)){
-       alert("Warning: Upload data first!")
-     }
-     else{
-       g = runPCA(plot.type = input$plotTypeId,
-                  method = input$pcaAlgorithm,
-                  countm = exprs(vals$counts),
-                  annotm = pData(vals$counts),
-                  featurem = fData(vals$counts),
-                  involving.variables = input$pcaCheckbox,
-                  additional.variables = input$selectAdditionalVariables,
-                  colorClusters = input$colorClusters_MAST)
-       output$pcaPlot <- renderPlot({
-         g
-       })
-     }
-   }) 
+    }) 
   })
   
   output$clusterPlot <- renderPlotly({
@@ -394,7 +373,7 @@ shinyServer(function(input, output, session) {
           }
           ggplotly(g)
         } else {
-        ggplotly(ggplot() + geom_point())
+          ggplotly(ggplot() + geom_point())
         }
       } else{
         ggplotly(ggplot() + theme_bw() + theme(plot.background = element_rect(fill='white')) + theme(panel.border = element_rect(colour = "white")))
@@ -558,6 +537,7 @@ shinyServer(function(input, output, session) {
                                         clusterRow=input$clusterRows,
                                         clusterCol=input$clusterColumns,
                                         levelofinterest = input$selectDiffex_conditionofinterest)
+        updateSelectInput(session, "colorBar_Condition", selected = input$selectDiffex_condition)
       })
     }
   })
@@ -567,7 +547,7 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
       selectInput("colorBar_Condition", "Select Condition", c())
     } else {
-      selectizeInput("colorBar_Condition", "Select Condition", 
+      selectInput("colorBar_Condition", "Select Condition", 
                      names(pData(vals$counts)), multiple=TRUE)
     }
   })
@@ -575,7 +555,7 @@ shinyServer(function(input, output, session) {
   annotationColors <- reactiveValues(cols = list())
   
   output$HeatmapSampleAnnotations <- renderUI({
-    if (!is.null(vals$counts)){
+    if (!is.null(vals$counts) && length(input$colorBar_Condition)>0){
       h = input$colorBar_Condition
       L = lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
       annotationColors$cols = lapply(1:length(h), function(i) callModule(colourGroup, paste0("colorGroup", i),
