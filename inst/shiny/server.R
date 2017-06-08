@@ -256,15 +256,20 @@ shinyServer(function(input, output, session) {
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
-        L = vector("list", 3)
-        L[[1]] = renderText("Select samples to keep")
-        L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                      list(checkboxGroupInput("filterSampleChoices",
-                                          label = NULL,
-                                          choices = unique(pData(vals$counts)[,input$filteredSample])))     
-                           )
-        L[[3]] = list(actionButton("runFilterSample", "Filter"))
-        return(L)
+        if (length(unique(pData(vals$counts)[,input$filteredSample]))<100){
+          L = vector("list", 3)
+          L[[1]] = renderText("Select samples to keep")
+          L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
+                        list(checkboxGroupInput("filterSampleChoices",
+                                            label = NULL,
+                                            choices = unique(pData(vals$counts)[,input$filteredSample])))     
+                             )
+          L[[3]] = list(actionButton("runFilterSample", "Filter"))
+          return(L)
+        } else {
+          L = list(renderText("Annotation must have fewer than 100 options"))
+          return(L)
+        }
       }) else {
         L = list()
       }
@@ -288,15 +293,21 @@ shinyServer(function(input, output, session) {
   observeEvent(input$filteredFeature, {
     output$filterFeatureOptions <- renderUI({
       if (input$filteredFeature != "none")({
-        L = vector("list", 3)
-        L[[1]] = renderText("Select features to keep")
-        L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                           list(checkboxGroupInput("filterFeatureChoices",
-                                               label = NULL,
-                                               choices = unique(fData(vals$counts)[,input$filteredFeature])))     
-        )
-        L[[3]] = list(actionButton("runFilterFeature", "Filter"))
-        return(L)
+        if (length(unique(fData(vals$counts)[,input$filteredFeature]))<100){
+          L = vector("list", 3)
+          L[[1]] = renderText("Select features to keep")
+          L[[2]] = wellPanel(style = "overflow-y:scroll; max-height: 100px",
+                             list(checkboxGroupInput("filterFeatureChoices",
+                                                 label = NULL,
+                                                 choices = unique(fData(vals$counts)[,input$filteredFeature])))     
+          )
+          L[[3]] = list(actionButton("runFilterFeature", "Filter"))
+          return(L)
+        } else {
+          L = list(renderText("Annotation must have fewer than 100 options"))
+          return(L)
+        }
+        
       }) else {
         L = list()
       }
