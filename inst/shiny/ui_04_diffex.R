@@ -27,27 +27,32 @@ shiny_panel_diffex <- fluidPage(
           8,
           tabsetPanel(
             id = 'dataset',
-            tabPanel('Heatmap', plotOutput("diffPlot")),
-            tabPanel('Heatmap Options', 
+            tabPanel(
+              'Heatmap',
               fluidPage(
                 fluidRow(
-                  column(
-                    4,
-                    wellPanel(
-                      "General Options",
-                      checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
-                      checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value=TRUE),
-                      checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value=TRUE),
-                      checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value=TRUE),
-                      textInput("heatmapColumnsTitle", "Columns Title", value = "Differential Expression")
-                    )
-                  ),
-                  column(
-                    4,
-                    wellPanel(
-                      "Colorbar Options",
-                      checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
-                      uiOutput("colorBarOptions")
+                  br(),
+                  tabsetPanel(
+                    tabPanel('Heatmap', plotOutput("diffPlot")),
+                    tabPanel(
+                      "Options",
+                      column(
+                        6,
+                        wellPanel(
+                          "General Options",
+                          checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
+                          checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value=TRUE),
+                          checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value=TRUE),
+                          checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value=TRUE),
+                          textInput("heatmapColumnsTitle", "Columns Title", value = "Differential Expression")
+                        ),
+                        wellPanel(
+                          "Colorbar Options",
+                          checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
+                          uiOutput("colorBarCondition"),
+                          uiOutput("HeatmapSampleAnnotations")
+                        )
+                      )
                     )
                   )
                 )

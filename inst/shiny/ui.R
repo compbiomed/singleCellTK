@@ -6,9 +6,11 @@ library(d3heatmap)
 library(ape)
 
 source("helpers.R")
+source("colourGroupInput.R")
 
 clusterChoice <- ''
 sampleChoice <- ''
+featureChoice <- ''
 geneChoice <- ''
 alertText <- ''
 pcComponents <- ''
@@ -17,6 +19,7 @@ if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(exprs(getShinyOption("inputSCEset"))[1:100])
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
+  featureChoice <- colnames(fData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep="")
   numClusters <- 1:nrow(pData(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
