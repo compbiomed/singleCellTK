@@ -97,20 +97,16 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' @export plot_DiffEx
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                        clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                        displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
-                        annotationColors=NULL, columnTitle="Differential Expression"){
-  diffex.annotation <- data.frame(condition = Biobase::pData(inSCESet)[,condition])
-  colnames(diffex.annotation) <- condition
+                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
+                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                     annotationColors=NULL, columnTitle="Differential Expression"){
   if (is.null(annotationColors)){
     topha <- NULL
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = data.frame(condition = Biobase::pData(inSCESet)[,condition]),
-                                               col = list(condition = annotationColors),
-                                               height = unit(0.333, "cm"))
-    
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = Biobase::pData(inSCESet)[,condition, drop=FALSE],
+                                               col = annotationColors)
   }
-  
+
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                                      name="Expression",
                                      column_title = columnTitle,
