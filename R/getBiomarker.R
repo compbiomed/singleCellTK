@@ -17,8 +17,8 @@ getBiomarker <- function(count_data, gene,binary="Binary"){
   # Get counts for gene in sample
   c <- counts(count_data)[c(gene),]
   # If color scale is "yes"/"no"
-  if(binary == "Binary"){
-    expression <- c>0
+  if (binary == "Binary"){
+    expression <- c > 0
   }
   # If color scale is a continuouse scale bar
   else if (binary == "Continuous"){

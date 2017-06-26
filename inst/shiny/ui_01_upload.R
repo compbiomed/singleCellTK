@@ -5,16 +5,16 @@ shiny_panel_upload <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
   tags$div(
-    class="jumbotron",
+    class = "jumbotron",
     tags$div(
-      class="container",
+      class = "container",
       h1("Single Cell Toolkit"),
       p("Filter, cluster, and analyze single cell RNA-Seq data")
     )
   ),
   tags$div(
-    class="container",
-    tags$div(id="uploadAlert", alertText),
+    class = "container",
+    tags$div(id = "uploadAlert", alertText),
     radioButtons("uploadChoice", "Upload:",
                  c("Files" = "files",
                    "Example data" = "example")),
@@ -60,7 +60,7 @@ shiny_panel_upload <- fluidPage(
       actionButton("uploadData", "Upload")
     ),
     tags$div(
-      class="container",
+      class = "container",
       p("")
     )
   ),

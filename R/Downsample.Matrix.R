@@ -11,7 +11,7 @@
 Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144),
                               byBatch = FALSE, batch = NULL, iterations = 10) {
   if (byBatch == FALSE) {
-    outmat <- array(, dim=c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
+    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
     for (j in 1:dim(datamatrix)[2]) {
       probs <- datamatrix[, j] / sum(datamatrix[, j])
       for (k in 1:length(newcounts)) {
@@ -23,7 +23,7 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
     }
   }
   else {
-    outmat <- array(, dim=c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
+    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
     for (j in 1:nlevels(batch)) {
       probs <- datamatrix[,which(batch == levels(batch)[j])] / sum(datamatrix[,which(batch == levels(batch)[j])])
       for (k in 1:length(newcounts)) {
@@ -39,22 +39,22 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
 
 powerCalc <- function(datamatrix, sampleSizeRange=c(1000,10000000), byBatch=FALSE, batch=NULL, numSize=25) {
   if (byBatch == FALSE){
-    outmat <- array(, dim=c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
+    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
     for (j in 1:dim(datamatrix)[2]) {
       probs <- as.numeric(datamatrix[, j] / sum(datamatrix[, j]))
-      for(i in 1:length(probs)){
-        discoveryPower <- 1 - dbinom(0, size=floor(seq.int(from=sampleSizeRange[1], to=sampleSizeRange[2], length.out=numSize)), prob=probs[i])
+      for (i in 1:length(probs)){
+        discoveryPower <- 1 - dbinom(0, size = floor(seq.int(from = sampleSizeRange[1], to = sampleSizeRange[2], length.out = numSize)), prob = probs[i])
         outmat[i,j,] <- discoveryPower
       }
     }
   }
   else {
-    outmat <- array(, dim=c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
+    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
     for (j in 1:nlevels(batch)) {
       probs <- datamatrix[,which(batch == levels(batch)[j])] / sum(datamatrix[,which(batch == levels(batch)[j])])
-      for(i in 1:length(as.vector(probs))) {
-        discoveryPower <- 1-dbinom(0, size=floor(seq.int(from=sampleSizeRange[1], to=sampleSizeRange[2], length.out=numSize)), prob=as.vector(probs)[i])
-        outmat[((i-1)%%dim(datamatrix)[1])+1,which(batch == levels(batch)[j])[ceiling(i/dim(datamatrix)[1])],] <- discoveryPower
+      for (i in 1:length(as.vector(probs))) {
+        discoveryPower <- 1 - dbinom(0, size = floor(seq.int(from = sampleSizeRange[1], to = sampleSizeRange[2], length.out = numSize)), prob = as.vector(probs)[i])
+        outmat[( (i - 1) %% dim(datamatrix)[1]) + 1,which(batch == levels(batch)[j])[ceiling(i / dim(datamatrix)[1])],] <- discoveryPower
       }
     }
   }
@@ -62,11 +62,11 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000,10000000), byBatch=FALS
 }
 
 require(multtest)
-multiple.t.test <- function(class.labels, dataset, test.type="t.equalvar") {
-  tval <- multtest::mt.teststat(dataset, classlabel=class.labels, test=test.type, nonpara="n")
+multiple.t.test <- function(class.labels, dataset, test.type = "t.equalvar") {
+  tval <- multtest::mt.teststat(dataset, classlabel = class.labels, test = test.type, nonpara = "n")
   df <- (ncol(dataset) - 2)
-  pval <- 2*(1-pt(abs(tval),df))
-  fdr <- p.adjust(pval, method="fdr")
+  pval <- 2 * (1 - pt(abs(tval),df))
+  fdr <- p.adjust(pval, method = "fdr")
   return(fdr)
 }
 require(DESeq)
@@ -88,7 +88,7 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
     if (method == "tpm.t"){
       shrunkDown <- datamatrix[apply(datamatrix,1,sum) > 10, ]
       genenames <- rownames(datamatrix[apply(datamatrix,1,sum) > 10, ])
-      scaledMatrix <- apply(shrunkDown,2,function(x){x/sum(x)})
+      scaledMatrix <- apply(shrunkDown,2,function(x){x / sum(x)})
       t.result <- multiple.t.test(condition, scaledMatrix)
       genelist <- genenames[which(t.result <= significance)]
     }
@@ -97,14 +97,14 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
       genenames <- rownames(datamatrix[apply(datamatrix,1,sum) > 10, ])
       countData <- newCountDataSet( shrunkDown, condition )
       countData <- estimateSizeFactors( countData )
-      countData <- estimateDispersions( countData, method="pooled", fitType="local" )
-      diff.results <- nbinomTest( countData, levels(condition)[1], levels(condition)[2] )
-      top.results <- p.adjust( diff.results$pval, method="fdr" )
+      countData <- estimateDispersions( countData, method = "pooled", fitType = "local" )
+      diff.results <- nbinomTest(countData, levels(condition)[1], levels(condition)[2] )
+      top.results <- p.adjust( diff.results$pval, method = "fdr" )
       genelist <- genenames[which(top.results <= significance)]
     }
   }
   #Create an empty matrix to keep track of how often significant genes are rediscovered after downsampling
-  rediscovered <- matrix(rep(0, length(genelist)*dim(downmatrix)[3]), nrow=length(genelist))
+  rediscovered <- matrix(rep(0, length(genelist) * dim(downmatrix)[3]), nrow = length(genelist))
   rownames(rediscovered) <- genelist
   #For each downsampling level:
   for (k in 1:dim(downmatrix)[3]) {
@@ -113,7 +113,7 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
       if (method == "tpm.t"){
         shrunkDown <- downmatrix[apply(downmatrix[,,k,l],1,sum) > 0, ,k, l]
         genenames <- rownames(datamatrix[apply(downmatrix[,,k,l],1,sum) > 0, ])
-        scaledMatrix <- apply(shrunkDown,2,function(x){x/sum(x)})
+        scaledMatrix <- apply(shrunkDown,2,function(x){x / sum(x)})
         t.result <- multiple.t.test(condition, scaledMatrix)
         newgenes <- genenames[which(t.result <= significance)]
         rediscovered[rownames(rediscovered) %in% newgenes, k] <- rediscovered[rownames(rediscovered) %in% newgenes, k] + 1
@@ -123,14 +123,14 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
         genenames <- rownames(datamatrix[apply(downmatrix[,,k,l],1,sum) > 0, ])
         countData <- newCountDataSet( shrunkDown, condition )
         countData <- estimateSizeFactors( countData )
-        countData <- estimateDispersions( countData, method="pooled", fitType="local" )
+        countData <- estimateDispersions( countData, method = "pooled", fitType = "local" )
         diff.results <- nbinomTest( countData, levels(condition)[1], levels(condition)[2])
-        top.results <- p.adjust( diff.results$pval, method="fdr" )
+        top.results <- p.adjust( diff.results$pval, method = "fdr" )
         newgenes <- genenames[which(top.results <= significance)]
         rediscovered[rownames(rediscovered) %in% newgenes, k] <- rediscovered[rownames(rediscovered) %in% newgenes, k] + 1
       }
     }
   }
-  rediscovered <- rediscovered/dim(downmatrix)[4]
+  rediscovered <- rediscovered / dim(downmatrix)[4]
   return(rediscovered)
 }

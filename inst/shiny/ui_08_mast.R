@@ -1,6 +1,6 @@
 shiny_panel_mast <- fluidPage(
   tags$div(
-    class="container",
+    class = "container",
     h1("MAST"),
     fluidPage(
       fluidRow(
@@ -10,7 +10,7 @@ shiny_panel_mast <- fluidPage(
             h3("Adaptive Thresholding:"),
             withBusyIndicatorUI(actionButton("runThreshPlot", "Run Thresholding")),
             h3("Hurdle Model:"),
-            checkboxInput("useAdaptThresh", "Use Adaptive Thresholds", value=TRUE),
+            checkboxInput("useAdaptThresh", "Use Adaptive Thresholds", value = TRUE),
             sliderInput("FCthreshold", "Select fold change threshold", log2(1), log2(2), 0.6),
             sliderInput("hurdlethresh", "Select expression threshold", 0, 1, 0.1),
             sliderInput("samplesize", "Select Sample Size", 0, 500, 100),

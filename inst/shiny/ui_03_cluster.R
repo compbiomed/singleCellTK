@@ -22,7 +22,7 @@ shiny_panel_cluster <- fluidPage(
                 conditionalPanel(
                   condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
                   selectInput(
-                    "colorGenes","Select Gene(s):",geneChoice, multiple=TRUE
+                    "colorGenes","Select Gene(s):", geneChoice, multiple = TRUE
                   )
                 ),
                 conditionalPanel(
@@ -64,7 +64,7 @@ shiny_panel_cluster <- fluidPage(
                 condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
                 conditionalPanel(
                   condition = sprintf("input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "clusteringAlgorithm", "clusteringAlgorithm"),
-                  textInput("clusterName", "Name of Clusters:", value="")
+                  textInput("clusterName", "Name of Clusters:", value = "")
                 )
               ),
               ##----------------------------------#
@@ -77,7 +77,7 @@ shiny_panel_cluster <- fluidPage(
             ),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
-              radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected="Hierarchical"),
+              radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected = "Hierarchical"),
               selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median","centroid"))
             )
           )
@@ -139,7 +139,7 @@ shiny_panel_cluster <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput(inputId ="pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
+            selectInput(inputId = "pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
             checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
             selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
             selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),

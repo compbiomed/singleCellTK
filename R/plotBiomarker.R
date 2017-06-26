@@ -17,17 +17,17 @@
 #'
 
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape="No Shape",axis_df=NULL,x="PC1", y="PC2"){
-  if(shape == "No Shape"){
+  if (shape == "No Shape"){
     shape <- NULL
   }
-  if(visual=="PCA"){
-    if(is.null(axis_df)){
+  if (visual == "PCA"){
+    if (is.null(axis_df)){
       axis_df <- getPCA(count_data)
     }
     variances <- attr(axis_df,"percentVar")
   }
-  if(visual=="tSNE"){
-    if(is.null(axis_df)){
+  if (visual == "tSNE"){
+    if (is.null(axis_df)){
       axis_df <- getTSNE(count_data)
     }
   }
@@ -37,78 +37,78 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
   for (i in 1:length(gene)){
     bio_df <- getBiomarker(count_data,gene[i],binary)
     l <- axis_df
-    if(!is.null(shape)){
-      l$shape <- factor(eval(parse(text = paste("pData(count_data)$",shape,sep=""))))
+    if (!is.null(shape)){
+      l$shape <- factor(eval(parse(text = paste("pData(count_data)$", shape, sep = ""))))
     }
     gene_name <- colnames(bio_df)[2]
     colnames(bio_df)[2] <- "expression"
     l$Sample <- bio_df$sample
     l$expression <- bio_df$expression
     c <- counts(count_data)[c(gene_name),]
-    percent <- round(100*sum(c>0)/length(c),2)
-    if(visual == "PCA"){
-      if(binary == "Binary"){
-        if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
-          g <- ggplot(l, aes_string(x, y, label="Sample")) +
-            geom_point(color="grey")
+    percent <- round(100 * sum(c > 0) / length(c), 2)
+    if (visual == "PCA"){
+      if (binary == "Binary"){
+        if (min(round(l$expression, 6)) == max(round(l$expression, 6))){
+          g <- ggplot(l, aes_string(x, y, label = "Sample")) +
+            geom_point(color = "grey")
         } else {
-          g <- ggplot(l, aes_string(x, y, label="Sample")) + aes(color=ifelse(expression=="TRUE","blue","grey"))+
+          g <- ggplot(l, aes_string(x, y, label = "Sample")) + aes(color = ifelse(expression == "TRUE", "blue", "grey")) +
             geom_point() +
-            scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) +
+            scale_color_manual(labels = c("Yes", "No"), values = c("Blue", "Grey")) +
             labs(color = "Expression")
         }
       }
       else if (binary == "Continuous"){
-        if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
-          g <- ggplot(l, aes_string(x, y, label="Sample")) +
-            geom_point(color="grey")
+        if (min(round(l$expression, 6)) == max(round(l$expression, 6))){
+          g <- ggplot(l, aes_string(x, y, label = "Sample")) +
+            geom_point(color = "grey")
         } else{
-          g <- ggplot(l, aes_string(x, y,label="Sample", color="expression"))+
-            scale_colour_gradient(limits=c(min(l$expression), max(l$expression)), low="grey", high="blue")+
-            geom_point()
-        }
-        g <- g + labs(color = "Expression")
-      }
-      g <- g+
-        ggtitle(paste(gene_name," - ",percent,"%"," cells",sep = "")) +
-        theme(plot.title = element_text(hjust = 0.5))+
-        labs(x = paste(x,toString(round(variances[strtoi(strsplit(x,"PC")[[1]][-1])]*100,2)),"%"),y = paste(y,toString(round(variances[strtoi(strsplit(y,"PC")[[1]][-1])]*100,2)),"%"))
-    } else if(visual == "tSNE"){
-      if(binary == "Binary"){
-        if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
-          g <- ggplot(l, aes(X1, X2, label=Sample)) +
-            geom_point(color="grey")
-        } else {
-        g <- ggplot(l, aes(X1, X2, label=Sample, color=ifelse(expression=="TRUE","blue","grey")))+
-          geom_point() +
-          scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) +
-          labs(color = "Expression")
-        }
-      }
-      else if (binary == "Continuous"){
-        if(min(round(l$expression, 6)) == max(round(l$expression, 6))) {
-          g <- ggplot(l, aes(X1, X2, label=Sample)) +
-            geom_point(color="grey")
-        } else{
-          g <- ggplot(l, aes(X1, X2, label=Sample, color=expression))+
-            scale_colour_gradient(limits=c(min(l$expression), max(l$expression)), low="grey", high="blue") +
+          g <- ggplot(l, aes_string(x, y,label = "Sample", color = "expression")) +
+            scale_colour_gradient(limits = c(min(l$expression), max(l$expression)), low = "grey", high = "blue") +
             geom_point()
         }
         g <- g + labs(color = "Expression")
       }
       g <- g +
-        ggtitle(paste(gene_name," - ",percent,"%"," cells",sep = "")) +
+        ggtitle(paste(gene_name," - ",percent,"%"," cells", sep = "")) +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        labs(x = paste(x,toString(round(variances[strtoi(strsplit(x,"PC")[[1]][-1])] * 100,2)), "%"), y = paste(y,toString(round(variances[strtoi(strsplit(y,"PC")[[1]][-1])] * 100,2)),"%"))
+    } else if (visual == "tSNE"){
+      if (binary == "Binary"){
+        if (min(round(l$expression, 6)) == max(round(l$expression, 6))){
+          g <- ggplot(l, aes(X1, X2, label = Sample)) +
+            geom_point(color = "grey")
+        } else {
+        g <- ggplot(l, aes(X1, X2, label = Sample, color = ifelse(expression == "TRUE","blue", "grey"))) +
+          geom_point() +
+          scale_color_manual(labels = c("Yes", "No"), values = c("Blue", "Grey")) +
+          labs(color = "Expression")
+        }
+      }
+      else if (binary == "Continuous"){
+        if (min(round(l$expression, 6)) == max(round(l$expression, 6))) {
+          g <- ggplot(l, aes(X1, X2, label = Sample)) +
+            geom_point(color = "grey")
+        } else{
+          g <- ggplot(l, aes(X1, X2, label = Sample, color = expression)) +
+            scale_colour_gradient(limits = c(min(l$expression), max(l$expression)), low = "grey", high = "blue") +
+            geom_point()
+        }
+        g <- g + labs(color = "Expression")
+      }
+      g <- g +
+        ggtitle(paste(gene_name, " - ",percent,"%"," cells",sep = "")) +
         theme(plot.title = element_text(hjust = 0.5))
     }
-    if(!is.null(shape)){
-      g <- g + aes_string(shape="shape") +
+    if (!is.null(shape)){
+      g <- g + aes_string(shape = "shape") +
         labs(shape = shape)
     }
-    if (i==1) {
+    if (i == 1) {
       plist <- list(g)
     } else{
       plist <- cbind(plist, list(g))
     }
   }
-  return(grid.draw(arrangeGrob(grobs=plist, ncol = ceiling(sqrt(length(gene))))))
+  return(grid.draw(arrangeGrob(grobs = plist, ncol = ceiling(sqrt(length(gene))))))
 }

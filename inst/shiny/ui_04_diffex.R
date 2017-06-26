@@ -1,6 +1,6 @@
 shiny_panel_diffex <- fluidPage(
   tags$div(
-    class="container",
+    class = "container",
     h1("Differential Expression"),
     fluidPage(
       fluidRow(
@@ -12,8 +12,8 @@ shiny_panel_diffex <- fluidPage(
             uiOutput("selectDiffex_conditionofinterestUI"),
             sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
             checkboxInput("applyCutoff", "Apply p-value Cutoff"),
-            checkboxInput("clusterRows", "Cluster Heatmap Rows", value=TRUE),
-            checkboxInput("clusterColumns", "Cluster Heatmap Columns", value=TRUE),
+            checkboxInput("clusterRows", "Cluster Heatmap Rows", value = TRUE),
+            checkboxInput("clusterColumns", "Cluster Heatmap Columns", value = TRUE),
             sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
             selectInput("selectCorrection","Correction Method:",c("FDR")),
             withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
@@ -40,15 +40,15 @@ shiny_panel_diffex <- fluidPage(
                         6,
                         wellPanel(
                           "General Options",
-                          checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value=TRUE),
-                          checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value=TRUE),
-                          checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value=TRUE),
-                          checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value=TRUE),
+                          checkboxInput("displayHeatmapRowLabels", "Display Row Labels", value = TRUE),
+                          checkboxInput("displayHeatmapColumnLabels", "Display Column Labels", value = TRUE),
+                          checkboxInput("displayHeatmapColumnDendrograms", "Display Column Dendrograms", value = TRUE),
+                          checkboxInput("displayHeatmapRowDendrograms", "Display Row Dendrograms", value = TRUE),
                           textInput("heatmapColumnsTitle", "Columns Title", value = "Differential Expression")
                         ),
                         wellPanel(
                           "Colorbar Options",
-                          checkboxInput("displayHeatmapColorBar", "Color Bar", value=TRUE),
+                          checkboxInput("displayHeatmapColorBar", "Color Bar", value = TRUE),
                           uiOutput("colorBarCondition"),
                           uiOutput("HeatmapSampleAnnotations")
                         )

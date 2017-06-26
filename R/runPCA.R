@@ -15,25 +15,25 @@
 #' @export runPCA
 #'
 
-runPCA = function(plot.type, method, countm,annotm,featurem, involving.variables, additional.variables, colorClusters){
-  dr0col  = function(M) M[, colSums(abs(M)) != 0]
-  scaRAW = FromMatrix(exprsArray = countm, cData = annotm, fData = featurem)
-  if(plot.type == "Single Plot"){
-    variables = c(involving.variables, additional.variables)
-    variables = variables[1:2]
-    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
-    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=2)$x}
+runPCA <- function(plot.type, method, countm,annotm,featurem, involving.variables, additional.variables, colorClusters){
+  dr0col  <- function(M) M[, colSums(abs(M)) != 0]
+  scaRAW <- FromMatrix(exprsArray = countm, cData = annotm, fData = featurem)
+  if (plot.type == "Single Plot"){
+    variables <- c(involving.variables, additional.variables)
+    variables <- variables[1:2]
+    if (method == "regular PCA"){projection <- prcomp(dr0col(t(assay(scaRAW))), scale = TRUE)$x}
+    else if (method == "randomized PCA"){projection <- rpca(dr0col(t(assay(scaRAW))), retx = TRUE, k = 2)$x}
     #else if(method = "robust PCA"){}
-    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
-    text.tmp = paste("g = ggplot(pca) + geom_point(aes(x=",variables[1],",y=",variables[2],",color=as.factor(",colorClusters,")))",sep = "")
+    pca <- data.table(projection,  as.data.frame(colData(scaRAW)))
+    text.tmp <- paste("g = ggplot(pca) + geom_point(aes(x=",variables[1],",y=",variables[2],",color=as.factor(",colorClusters,")))",sep = "")
   }
   else {#plot.type == "Paired Plot"
-    variables = c(involving.variables, additional.variables)
-    variables = na.omit(variables[1:7])
-    if(method == "regular PCA"){projection = prcomp(dr0col(t(assay(scaRAW))),scale = TRUE)$x}
-    else if(method == "randomized PCA"){projection = rpca(dr0col(t(assay(scaRAW))), retx=TRUE, k=3)$x}
-    pca = data.table(projection,  as.data.frame(colData(scaRAW)))
-    text.tmp = paste("g = ggpairs(pca, columns=variables,mapping=aes(color=",colorClusters,"), upper=list(continuous='blank'))",sep = "")
+    variables <- c(involving.variables, additional.variables)
+    variables <- na.omit(variables[1:7])
+    if (method == "regular PCA"){projection <- prcomp(dr0col(t(assay(scaRAW))), scale = TRUE)$x}
+    else if (method == "randomized PCA"){projection <- rpca(dr0col(t(assay(scaRAW))), retx = TRUE, k = 3)$x}
+    pca <- data.table(projection,  as.data.frame(colData(scaRAW)))
+    text.tmp <- paste("g = ggpairs(pca, columns=variables,mapping=aes(color=",colorClusters,"), upper=list(continuous='blank'))",sep = "")
   }
   eval(parse(text = text.tmp))
   return(g)
