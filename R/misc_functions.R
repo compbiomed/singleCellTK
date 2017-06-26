@@ -7,17 +7,17 @@
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
 summarizeTable <- function(indata){
-  return(data.frame("Metric"=c("Number of Samples",
+  return(data.frame("Metric" = c("Number of Samples",
                                "Number of Genes",
                                "Average number of reads per cell",
                                "Average number of genes per cell",
                                "Samples with <1700 detected genes",
                                "Genes with no expression across all samples"),
-                    "Value"=c(ncol(indata),
+                    "Value" = c(ncol(indata),
                               nrow(indata),
                               as.integer(mean(apply(scater::counts(indata), 2, function(x) sum(x)))),
-                              as.integer(mean(apply(scater::counts(indata), 2, function(x) sum(x>0)))),
-                              sum(apply(scater::counts(indata), 2, function(x) sum(as.numeric(x)==0)) < 1700),
+                              as.integer(mean(apply(scater::counts(indata), 2, function(x) sum(x > 0)))),
+                              sum(apply(scater::counts(indata), 2, function(x) sum(as.numeric(x) == 0)) < 1700),
                               sum(rowSums(scater::counts(indata)) == 0))))
 }
 
@@ -48,27 +48,27 @@ summarizeTable <- function(indata){
 #'                                 inputdataframes = TRUE)
 createSCESet <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
                          inputdataframes=FALSE){
-  if(is.null(countfile)){
+  if (is.null(countfile)){
     stop("You must supply a count file.")
   }
-  if(inputdataframes){
+  if (inputdataframes){
     countsin <- countfile
     annotin <- annotfile
     featurein <- featurefile
   } else{
-    countsin <- utils::read.table(countfile, sep="\t", header=T, row.names=1)
-    if(!is.null(annotfile)){
-      annotin <- utils::read.table(annotfile, sep="\t", header=T, row.names=1)
+    countsin <- utils::read.table(countfile, sep = "\t", header = T, row.names = 1)
+    if (!is.null(annotfile)){
+      annotin <- utils::read.table(annotfile, sep = "\t", header = T, row.names = 1)
     }
-    if(!is.null(featurefile)){
-      featurein <- utils::read.table(featurefile, sep="\t", header=T, row.names=1)
+    if (!is.null(featurefile)){
+      featurein <- utils::read.table(featurefile, sep = "\t", header = T, row.names = 1)
     }
   }
-  if(is.null(annotfile)){
-    annotin <- data.frame(row.names=colnames(countsin))
+  if (is.null(annotfile)){
+    annotin <- data.frame(row.names = colnames(countsin))
     annotin$Sample <- rownames(annotin)
   }
-  if(is.null(featurefile)){
+  if (is.null(featurefile)){
     featurein <- data.frame(Gene = rownames(countsin))
     rownames(featurein) <- featurein$Gene
   }
@@ -106,9 +106,9 @@ filterSCData <- function(insceset, deletesamples=NULL, remove_noexpress=TRUE,
   if (remove_noexpress){
     insceset <- insceset[rowSums(counts(insceset)) != 0,]
   }
-  nkeeprows <- ceiling((1-remove_bottom) * as.numeric(nrow(insceset)))
+  nkeeprows <- ceiling( (1 - remove_bottom) * as.numeric(nrow(insceset)))
   tokeeprow <- order(rowSums(counts(insceset)), decreasing = TRUE)[1:nkeeprows]
-  tokeepcol <- apply(counts(insceset), 2, function(x) sum(as.numeric(x)==0)) >= minimum_detect_genes
+  tokeepcol <- apply(counts(insceset), 2, function(x) sum(as.numeric(x) == 0)) >= minimum_detect_genes
   insceset <- insceset[tokeeprow,tokeepcol]
   return(insceset)
 }

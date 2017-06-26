@@ -2,7 +2,7 @@
 #'
 
 colourGroupInput <- function(inputId) {
-  ns = NS(inputId)
+  ns <- NS(inputId)
   tagList(
     strong(textOutput(ns("heading"))),
     uiOutput(ns("colorChoosers"))
@@ -15,11 +15,10 @@ colourGroupInput <- function(inputId) {
 colourGroup <- function(input, output, session, heading = "", options="",
                         labels = "", value = "", ...){
   ns <- session$ns
-  ids <- reactive(sapply(options, function (option) paste(option, "inputId",
-                                                         sep="_")))
+  ids <- reactive(sapply(options, function (option) paste(option, "inputId", sep = "_")))
 
   cols <- reactive({
-    if (length(options)!=0){
+    if (length(options) != 0){
       sapply(1:length(options), function (i) {
         if (!is.null(input[[as.character(ids()[i])]])){
           setNames(input[[as.character(ids()[i])]], options[i])
@@ -37,7 +36,7 @@ colourGroup <- function(input, output, session, heading = "", options="",
   output$heading <- renderText({heading})
 
   output$colorChoosers <- renderUI({
-    if (length(options)!=0){
+    if (length(options) != 0){
       L <- vector("list", length(options))
       for (i in 1:length(L)){
         if (is.null(input[[as.character(ids()[i])]])) {
