@@ -88,7 +88,9 @@ differentialPower <- function(datamatrix, downmatrix, conditions, genelist=FALSE
     if (method == "tpm.t"){
       shrunkDown <- datamatrix[apply(datamatrix, 1, sum) > 10, ]
       genenames <- rownames(datamatrix[apply(datamatrix, 1, sum) > 10, ])
-      scaledMatrix <- apply(shrunkDown, 2, function(x){x / sum(x)})
+      scaledMatrix <- apply(shrunkDown, 2, function(x){
+        x / sum(x)
+      })
       t.result <- multiple.t.test(condition, scaledMatrix)
       genelist <- genenames[which(t.result <= significance)]
     }

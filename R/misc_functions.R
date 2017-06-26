@@ -1,5 +1,5 @@
 #' Summarize SCESet
-#' 
+#'
 #' Creates a table of summary metrics from an input SCESet.
 #'
 #' @param indata Input SCESet
@@ -22,7 +22,7 @@ summarizeTable <- function(indata){
 }
 
 #' Create a SCESet object
-#' 
+#'
 #' From a file of counts and a file of annotation information, create a SCESet
 #' object.
 #'
@@ -36,11 +36,10 @@ summarizeTable <- function(indata){
 #' have the same genes in the same order as countfile. This is optional.
 #' @param inputdataframes If TRUE, countfile and annotfile are read as data
 #' frames instead of file paths. The default is FALSE.
-#' instead of 
 #'
 #' @return a SCESet object
 #' @export createSCESet
-#' @examples 
+#' @examples
 #' library(scater)
 #' data("GSE60361_subset")
 #' GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,

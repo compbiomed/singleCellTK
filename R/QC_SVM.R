@@ -1,20 +1,20 @@
-# to implement the SVM for the quality control 
+# to implement the SVM for the quality control
 # (Ref: Classification of low quality cells from single-cell RNA-seq data
 #       https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0888-1#Sec12  )
 
 # ToDo: need to (1)select parameters for SVM, need to think about whether let users choose the parameters
-#       ,or(2) use cross-validation to choose the parameters for the users, ----ing 
-#        
-#         (3) show the test error rate if test_label is included ?     
+#       ,or(2) use cross-validation to choose the parameters for the users, ----ing
+#
+#         (3) show the test error rate if test_label is included ?
 
 
-#' To implement SVM for quality control 
-#' 
-#' @param train_set The training dataset (cells x features) 
+#' To implement SVM for quality control
+#'
+#' @param train_set The training dataset (cells x features)
 #' @param train_label   The training label annotation specifying the high/low quality of the training dataset.
 #' @param test_set The test dataset (cells x features)
-#' @param var feature names used for predicting cell quality ## 
-#' @param tune_para boolean values determining if doing the parameter tuning 
+#' @param var feature names used for predicting cell quality
+#' @param tune_para boolean values determining if doing the parameter tuning
 #' @param gamma_range vector of gamma paramters provided if tune_para is TRUE
 #' @param cost_range vecor of cost patameters provided if tune_para is TRUE
 #' @export

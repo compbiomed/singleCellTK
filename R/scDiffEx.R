@@ -210,7 +210,8 @@ scDiffEx_limma <- function(inSCESet, condition){
   design <- stats::model.matrix(~factor(condition))
   fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
   ebayes <- limma::eBayes(fit)
-  topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr", number = nrow(inSCESet))
+  topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+                              number = nrow(inSCESet))
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }

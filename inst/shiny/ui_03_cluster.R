@@ -38,7 +38,7 @@ shiny_panel_cluster <- fluidPage(
               condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
               radioButtons("booleanCluster", "Cluster Data?", c("Yes", "No"), selected = "No")
             ),
-            ### CLUSTERING --> VISUALIZATION
+            # CLUSTERING --> VISUALIZATION
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Yes'", "booleanCluster"),
               selectInput("selectClusterInputData", "Data to Cluster:", c("Raw Data", "PCA Components", "tSNE Components")),
@@ -53,13 +53,13 @@ shiny_panel_cluster <- fluidPage(
                 selectInput("Knumber", "Number of Clusters (k):", numClusters)
               ),
               ##----------------------------------#
-              ## Clara
+              # Clara
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'Clara' && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
                 selectInput("Cnumber", "Number of Clusters:", numClusters)
               ),
               ##----------------------------------#
-              ## K-Means & Clara
+              # K-Means and Clara
               conditionalPanel(
                 condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
                 conditionalPanel(

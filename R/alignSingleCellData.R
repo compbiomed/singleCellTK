@@ -5,7 +5,7 @@
 #' full file name, without _1.fastq.gz, .fastq.gz, _1.fastq, .fastq or .bam
 #' endings.
 #' @param inputfile2 If fastq files are provided in input list, a list of
-#' corresponding paired fastq files, if applicable. 
+#' corresponding paired fastq files, if applicable.
 #' @param index_path Path to the Rsubread genome index.
 #' @param gtf_annotation Path to the GTF gene annotation to use. This must
 #' correspond to the genome specified in index_path.

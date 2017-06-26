@@ -1,6 +1,5 @@
-
 #' get Biomarker
-#'   
+#'
 #' Use this function to get expression or binary data of gene list
 #'
 #' @param count_data A SCE object
@@ -11,7 +10,7 @@
 #' @param axis_df df of PC or tSNE components
 #' @param x x coordinate for PCA
 #' @param y y coordinate for PCA
-#' 
+#'
 #' @return A Biomarker plot
 #' @export plotBiomarker
 #'
