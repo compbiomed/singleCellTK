@@ -30,7 +30,7 @@ plotTSNE <- function(count_data, tsne_df=NULL, colorBy=NULL, shape=NULL){
     l$shape <- factor(eval(parse(text = paste("pData(count_data)$",shape,sep=""))))
   }
   l$Sample <- rownames(pData(count_data))
-  g <- ggplot(l, aes_string("X1", "X2", label="Sample")) + 
+  g <- ggplot(l, aes_string("X1", "X2", label="Sample")) +
     geom_point()
   if(!is.null(colorBy)){
     g <- g + aes_string(color="color") +

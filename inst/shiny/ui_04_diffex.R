@@ -26,14 +26,14 @@ shiny_panel_diffex <- fluidPage(
         column(
           8,
           tabsetPanel(
-            id = 'dataset',
+            id = "dataset",
             tabPanel(
-              'Heatmap',
+              "Heatmap",
               fluidPage(
                 fluidRow(
                   br(),
                   tabsetPanel(
-                    tabPanel('Heatmap', plotOutput("diffPlot")),
+                    tabPanel("Heatmap", plotOutput("diffPlot")),
                     tabPanel(
                       "Options",
                       column(
@@ -58,12 +58,12 @@ shiny_panel_diffex <- fluidPage(
                 )
               )
             ),
-            tabPanel('Results Table', dataTableOutput('diffextable')),
-            tabPanel('Interactive Heatmap', d3heatmapOutput("interactivediffPlot"))
+            tabPanel("Results Table", dataTableOutput("diffextable")),
+            tabPanel("Interactive Heatmap", d3heatmapOutput("interactivediffPlot"))
           )
         )
       )
     )
   ),
-  includeHTML('www/footer.html')
+  includeHTML("www/footer.html")
 )

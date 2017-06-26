@@ -3,5 +3,5 @@ shiny_panel_pathway <- fluidPage(
     class="container",
     h1("Pathway Activity Analysis")
   ),
-  includeHTML('www/footer.html')
+  includeHTML("www/footer.html")
 )

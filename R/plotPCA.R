@@ -20,7 +20,7 @@ plotPCA <- function(count_data, pca_df=NULL, colorBy=NULL, shape=NULL, pcX="PC1"
   }
   if(colorBy == "No Color"){
     colorBy <- NULL
-  } 
+  }
   if(shape == "No Shape"){
     shape <- NULL
   }
@@ -33,7 +33,7 @@ plotPCA <- function(count_data, pca_df=NULL, colorBy=NULL, shape=NULL, pcX="PC1"
   }
   l$Sample <- rownames(pData(count_data))
   variances <- attr(pca_df,"percentVar")
-  g <- ggplot(l, aes_string(pcX, pcY, label="Sample")) + 
+  g <- ggplot(l, aes_string(pcX, pcY, label="Sample")) +
        geom_point()+
        labs(x = paste(pcX,toString(round(variances[strtoi(strsplit(pcX,"PC")[[1]][-1])]*100,2)),"%"),y = paste(pcY,toString(round(variances[strtoi(strsplit(pcY,"PC")[[1]][-1])]*100,2)),"%"))
   if(!is.null(colorBy)){

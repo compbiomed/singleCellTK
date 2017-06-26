@@ -46,7 +46,7 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000,10000000), byBatch=FALS
         discoveryPower <- 1 - dbinom(0, size=floor(seq.int(from=sampleSizeRange[1], to=sampleSizeRange[2], length.out=numSize)), prob=probs[i])
         outmat[i,j,] <- discoveryPower
       }
-    }    
+    }
   }
   else {
     outmat <- array(, dim=c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))

@@ -3,5 +3,5 @@ shiny_panel_batchcorrect <- fluidPage(
     class="container",
     h1("Batch Correction")
   ),
-  includeHTML('www/footer.html')
+  includeHTML("www/footer.html")
 )

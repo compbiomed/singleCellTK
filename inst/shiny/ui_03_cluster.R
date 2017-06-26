@@ -15,7 +15,7 @@ shiny_panel_cluster <- fluidPage(
             ),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
-              selectInput("colorBy", "Color points by:", c("No Color", 'Gene Expression', clusterChoice)),
+              selectInput("colorBy", "Color points by:", c("No Color", "Gene Expression", clusterChoice)),
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
                 radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")),
@@ -109,7 +109,7 @@ shiny_panel_cluster <- fluidPage(
           )
         ),
         column(6,""),
-        column(6,tableOutput('pctable'))
+        column(6,tableOutput("pctable"))
       ),
       mainPanel(
         h1("Instructions"),
@@ -154,7 +154,7 @@ shiny_panel_cluster <- fluidPage(
       ),
       mainPanel(
         h1("Instructions"),
-        p(""), strong("Principle Component Analysis:"), 
+        p(""), strong("Principle Component Analysis:"),
         p("1. Choose algorithm (one of the PCA algorithms)"),
         p("2. Choose components to be involved in paired plot"),
         p("3. Choose 2 components in Checkbox to produce single plot(if more than 2 components are selected, only the first 2 will be used)"),
