@@ -34,7 +34,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      clusterCol=TRUE, displayRowLabels=TRUE,
                      levelofinterest){
   in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
-  
+
   if (length(levels(in.condition)) < 2){
     stop("You must submit a condition with more than 1 labels: ", condition,
          " has ", length(levels(in.condition)), " labels")
@@ -43,7 +43,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                            levelofinterest,
                            paste("not",levelofinterest,sep=""))))
   }
-  
+
   if(diffexmethod == "DESeq"){
     diffex.results <- scDiffEx_deseq(inSCESet, in.condition)
   }
@@ -56,7 +56,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-  
+
   if(usesig){
     if(length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
@@ -68,7 +68,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-  
+
   return(diffex.results[newgenes,])
 }
 
@@ -98,7 +98,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE,
                      annotationColors=NULL, columnTitle="Differential Expression"){
   if (is.null(annotationColors)){
     topha <- NULL
@@ -138,7 +138,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-  
+
   d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
                        Rowv=clusterRow,
                        Colv=clusterCol,

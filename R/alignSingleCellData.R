@@ -48,11 +48,11 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     stop("Rsubread package needed for this function to work. Please install it.",
          call. = FALSE)
   }
-  
+
   if(any(grepl("~",c(inputfile1,inputfile2,index_path, gtf_annotation, output_dir)), na.rm = TRUE)){
     stop("ERROR: tilde ~ filenames are not supported. Provide the full path.")
   }
-  
+
   #verify that inputfile1 file(s) exist
   if(!all(file.exists(inputfile1))){
     stop("Error with inputfile1 files, verify that all file exist.")
@@ -67,17 +67,17 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
       stop("Error. inputfile1 and inputfile2 are different lengths.")
     }
   }
-  
+
   #make sure the index exists
-  if(!file.exists(paste(index_path, "00.b.array", sep='.'))){
+  if(!file.exists(paste(index_path, "00.b.array", sep="."))){
     stop("Verify the Rsubread index is correctly specified.")
   }
-  
+
   #make sure the gtf annotation exists
   if(!file.exists(gtf_annotation)){
     stop("Error with gtf annotation file, make sure the file exists.")
   }
-  
+
   #make sure the output directory exists if save_bam or save_count_files is set
   if(save_bam | save_count_files){
     if(is.null(output_dir)){
@@ -88,7 +88,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
   } else{
     output_dir <- tempdir()
   }
-  
+
   countframe <- NULL
   rsubread_stats <- NULL
 
@@ -101,7 +101,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     message("Processing: ", sample_name)
     rsub_log_file <- NULL
     feature_log_file <- NULL
-    
+
     if(is.null(inputfile2)){
       readfile2=NULL
     } else{
@@ -124,8 +124,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                       indels=5)
       sink()
       close(rsub_log)
-      
-      
+
       feature_log_file <- tempfile()
       feature_log <- file(feature_log_file, open="wt")
       sink(feature_log, type="output")
@@ -136,8 +135,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                                              isPairedEnd=!is.null(inputfile2))
       sink()
       close(feature_log)
-      
-      
+
     } else if(grepl("\\.bam$", inputfile1[i])){
       feature_log_file <- tempfile()
       feature_log <- file(feature_log_file, open="wt")
@@ -152,13 +150,13 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     } else{
       stop("Input file type error. Make all files are of the supported type.")
     }
-    
+
     rsubread_stats_line <- parse_rsubread_logs(rsub_log_file,
                                                feature_log_file,
                                                sample_name)
     unlink(rsub_log_file)
     unlink(feature_log_file)
-    
+
     #add the feature counts to the countframe
     if(is.null(countframe)){
       countframe <- data.frame(fCountsList$counts, row.names = fCountsList$annotation[,1])
@@ -167,14 +165,14 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
       countframe <- cbind(countframe, data.frame(fCountsList$counts))
       colnames(countframe)[i] <- sample_name
     }
-    
+
     #add reads_mapped to rsubread_stats
     if(is.null(rsubread_stats)){
       rsubread_stats <- rsubread_stats_line
     } else {
       rsubread_stats <- rbind(rsubread_stats, rsubread_stats_line)
     }
-    
+
     if(!save_bam){
       unlink(bam_file_path)
       unlink(paste(bam_file_path, "indel", sep="."))
@@ -193,13 +191,13 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                   quote=FALSE)
     }
   }
-  
+
   #remove any gene names with empty gene name
   if(any(rownames(countframe) == "")){
     warning("One of the feature names is empty. This can be caused by a problem with your GTF file. The empty feature name will be removed.")
     countframe <- countframe[rownames(countframe) != "",,drop=F]
   }
-  
+
   if(!is.null(sample_annotations)){
     if(!(all(rownames(sample_annotations) == colnames(countframe)))){
       warning("Sample annotation sample names do not match the countframe names. Sample annotations will not be added.")
@@ -210,15 +208,14 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
   } else {
     sample_annotations <- rsubread_stats
   }
-  
-  
+
   if(!is.null(feature_annotations)){
     if(!(all(rownames(feature_annotations) == rownames(countframe)))){
       warning("Feature annotation names do not match the countframe features. Feature annotations will not be added.")
       feature_annotations <- NULL
     }
   }
-  
+
   #createsceset from the count file, multiqcdata, and annotations if they exist (validate the sample names are right)
   scobject <- createSCESet(countfile = countframe,
                            annotfile = sample_annotations,
@@ -242,7 +239,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 #'
 parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_name=NULL){
   #process feature count log num reads and log num featured
-  f_fh <- file(featurecount_log, open='r')
+  f_fh <- file(featurecount_log, open="r")
   features <- readLines(f_fh)
   close(f_fh)
   total_line <- unlist(strsplit(features[grep("Total reads ", features)], " +", perl=T))
@@ -252,7 +249,7 @@ parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_na
   #if not null align log
   if(!is.null(align_log)){
     #process align log
-    a_fh <- file(align_log, open='r')
+    a_fh <- file(align_log, open="r")
     align <- readLines(a_fh)
     close(a_fh)
     map_line <- unlist(strsplit(align[grep("Mapped", align)], " +", perl=T))

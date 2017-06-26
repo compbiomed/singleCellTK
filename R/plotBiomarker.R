@@ -50,18 +50,18 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
       if(binary == "Binary"){
         if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
           g <- ggplot(l, aes_string(x, y, label="Sample")) +
-            geom_point(color="grey") 
+            geom_point(color="grey")
         } else {
           g <- ggplot(l, aes_string(x, y, label="Sample")) + aes(color=ifelse(expression=="TRUE","blue","grey"))+
             geom_point() +
-            scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) + 
+            scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) +
             labs(color = "Expression")
         }
       }
       else if (binary == "Continuous"){
         if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
           g <- ggplot(l, aes_string(x, y, label="Sample")) +
-            geom_point(color="grey") 
+            geom_point(color="grey")
         } else{
           g <- ggplot(l, aes_string(x, y,label="Sample", color="expression"))+
             scale_colour_gradient(limits=c(min(l$expression), max(l$expression)), low="grey", high="blue")+
@@ -77,11 +77,11 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
       if(binary == "Binary"){
         if(min(round(l$expression, 6)) == max(round(l$expression, 6))){
           g <- ggplot(l, aes(X1, X2, label=Sample)) +
-            geom_point(color="grey") 
+            geom_point(color="grey")
         } else {
         g <- ggplot(l, aes(X1, X2, label=Sample, color=ifelse(expression=="TRUE","blue","grey")))+
           geom_point() +
-          scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) + 
+          scale_color_manual(labels = c("Yes", "No"), values=c("Blue", "Grey")) +
           labs(color = "Expression")
         }
       }

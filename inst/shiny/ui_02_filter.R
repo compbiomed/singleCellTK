@@ -5,15 +5,15 @@ shiny_panel_filter <- fluidPage(
     fluidPage(
       fluidRow(
         column(8,
-          tableOutput('summarycontents'),
-          plotlyOutput('countshist'),
-          plotlyOutput('geneshist'),
-          dataTableOutput('contents')),
+          tableOutput("summarycontents"),
+          plotlyOutput("countshist"),
+          plotlyOutput("geneshist"),
+          dataTableOutput("contents")),
         column(
           4,
           wellPanel(
             checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value=TRUE),
-            numericInput('minDetectGenect', label = 'Minimum Detected Genes per Sample.', value=1700, min = 1, max = 100000),
+            numericInput("minDetectGenect", label = "Minimum Detected Genes per Sample.", value=1700, min = 1, max = 100000),
             numericInput("LowExpression", "% Low Gene Expression to Filter",value=40, min = 0, max = 100),
             h2("Delete Outliers"),
             selectInput("deletesamplelist","Select Samples:",
@@ -40,5 +40,5 @@ shiny_panel_filter <- fluidPage(
       )
     )
   ),
-  includeHTML('www/footer.html')
+  includeHTML("www/footer.html")
 )

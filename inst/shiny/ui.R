@@ -8,13 +8,13 @@ library(ape)
 source("helpers.R")
 source("colourGroupInput.R")
 
-clusterChoice <- ''
-sampleChoice <- ''
-featureChoice <- ''
-geneChoice <- ''
-alertText <- ''
-pcComponents <- ''
-numClusters <- ''
+clusterChoice <- ""
+sampleChoice <- ""
+featureChoice <- ""
+geneChoice <- ""
+alertText <- ""
+pcComponents <- ""
+numClusters <- ""
 if(!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(pData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(exprs(getShinyOption("inputSCEset"))[1:100])
@@ -53,7 +53,7 @@ shinyUI(
     tabPanel("MAST", shiny_panel_mast),
     navbarMenu(
       "More",
-      tabPanel("Batch Correction", shiny_panel_batchcorrect),      
+      tabPanel("Batch Correction", shiny_panel_batchcorrect),
       tabPanel("Pathway Activity Analysis", shiny_panel_pathway)
     )
   )
