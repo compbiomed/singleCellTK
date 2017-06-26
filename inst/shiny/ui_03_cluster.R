@@ -7,7 +7,7 @@ shiny_panel_cluster <- fluidPage(
           4,
           wellPanel(
             ###  VISUALIZATION (e.g. PCA, tSNE)
-            selectInput("dimRedPlotMethod","Visualization Method:",c("PCA","tSNE", "Dendrogram")),
+            selectInput("dimRedPlotMethod", "Visualization Method:", c("PCA", "tSNE", "Dendrogram")),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
               selectInput("pcX", "X axis:", pcComponents),
@@ -22,7 +22,7 @@ shiny_panel_cluster <- fluidPage(
                 conditionalPanel(
                   condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
                   selectInput(
-                    "colorGenes","Select Gene(s):", geneChoice, multiple = TRUE
+                    "colorGenes", "Select Gene(s):", geneChoice, multiple = TRUE
                   )
                 ),
                 conditionalPanel(
@@ -50,13 +50,13 @@ shiny_panel_cluster <- fluidPage(
               ## K-Means
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
-                selectInput("Knumber","Number of Clusters (k):", numClusters)
+                selectInput("Knumber", "Number of Clusters (k):", numClusters)
               ),
               ##----------------------------------#
               ## Clara
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'Clara' && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
-                selectInput("Cnumber","Number of Clusters:", numClusters)
+                selectInput("Cnumber", "Number of Clusters:", numClusters)
               ),
               ##----------------------------------#
               ## K-Means & Clara
@@ -78,7 +78,7 @@ shiny_panel_cluster <- fluidPage(
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
               radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected = "Hierarchical"),
-              selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median","centroid"))
+              selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"))
             )
           )
         ),
@@ -108,8 +108,8 @@ shiny_panel_cluster <- fluidPage(
             )
           )
         ),
-        column(6,""),
-        column(6,tableOutput("pctable"))
+        column(6, ""),
+        column(6, tableOutput("pctable"))
       ),
       mainPanel(
         h1("Instructions"),
@@ -139,11 +139,11 @@ shiny_panel_cluster <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput(inputId = "pcaAlgorithm",label = "Algorithm",choices = c("regular PCA","randomized PCA","robust PCA","RR PCA")),
-            checkboxGroupInput(inputId = "pcaCheckbox",label = "Involving variables", choices = c("PC1","PC2","PC3"),selected = c("PC1","PC2","PC3")),
-            selectInput(inputId = "selectAdditionalVariables",label = "Additional variables:",choices = clusterChoice,multiple = TRUE),
-            selectInput("plotTypeId","Plot Type",c("Paired Plot","Single Plot"),"Paired Plot"),
-            selectInput("colorClusters_MAST","Color Clusters By",clusterChoice),
+            selectInput(inputId = "pcaAlgorithm", label = "Algorithm", choices = c("regular PCA", "randomized PCA", "robust PCA", "RR PCA")),
+            checkboxGroupInput(inputId = "pcaCheckbox", label = "Involving variables", choices = c("PC1", "PC2", "PC3"), selected = c("PC1", "PC2", "PC3")),
+            selectInput(inputId = "selectAdditionalVariables", label = "Additional variables:", choices = clusterChoice, multiple = TRUE),
+            selectInput("plotTypeId", "Plot Type", c("Paired Plot", "Single Plot"), "Paired Plot"),
+            selectInput("colorClusters_MAST", "Color Clusters By", clusterChoice),
             withBusyIndicatorUI(actionButton("plotPCA", "Plot PCA Data"))
           )#wellPanel
         ),

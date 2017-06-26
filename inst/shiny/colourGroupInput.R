@@ -15,11 +15,11 @@ colourGroupInput <- function(inputId) {
 colourGroup <- function(input, output, session, heading = "", options="",
                         labels = "", value = "", ...){
   ns <- session$ns
-  ids <- reactive(sapply(options, function (option) paste(option, "inputId", sep = "_")))
+  ids <- reactive(sapply(options, function(option) paste(option, "inputId", sep = "_")))
 
   cols <- reactive({
     if (length(options) != 0){
-      sapply(1:length(options), function (i) {
+      sapply(1:length(options), function(i) {
         if (!is.null(input[[as.character(ids()[i])]])){
           setNames(input[[as.character(ids()[i])]], options[i])
         }

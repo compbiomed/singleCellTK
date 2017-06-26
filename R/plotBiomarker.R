@@ -16,7 +16,7 @@
 #' @export plotBiomarker
 #'
 
-plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape="No Shape",axis_df=NULL,x="PC1", y="PC2"){
+plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA", shape="No Shape", axis_df=NULL, x="PC1", y="PC2"){
   if (shape == "No Shape"){
     shape <- NULL
   }
@@ -24,7 +24,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
     if (is.null(axis_df)){
       axis_df <- getPCA(count_data)
     }
-    variances <- attr(axis_df,"percentVar")
+    variances <- attr(axis_df, "percentVar")
   }
   if (visual == "tSNE"){
     if (is.null(axis_df)){
@@ -35,7 +35,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
     gene <- gene[1:9]
   }
   for (i in 1:length(gene)){
-    bio_df <- getBiomarker(count_data,gene[i],binary)
+    bio_df <- getBiomarker(count_data, gene[i], binary)
     l <- axis_df
     if (!is.null(shape)){
       l$shape <- factor(eval(parse(text = paste("pData(count_data)$", shape, sep = ""))))
@@ -44,7 +44,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
     colnames(bio_df)[2] <- "expression"
     l$Sample <- bio_df$sample
     l$expression <- bio_df$expression
-    c <- counts(count_data)[c(gene_name),]
+    c <- counts(count_data)[c(gene_name), ]
     percent <- round(100 * sum(c > 0) / length(c), 2)
     if (visual == "PCA"){
       if (binary == "Binary"){
@@ -63,23 +63,23 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
           g <- ggplot(l, aes_string(x, y, label = "Sample")) +
             geom_point(color = "grey")
         } else{
-          g <- ggplot(l, aes_string(x, y,label = "Sample", color = "expression")) +
+          g <- ggplot(l, aes_string(x, y, label = "Sample", color = "expression")) +
             scale_colour_gradient(limits = c(min(l$expression), max(l$expression)), low = "grey", high = "blue") +
             geom_point()
         }
         g <- g + labs(color = "Expression")
       }
       g <- g +
-        ggtitle(paste(gene_name," - ",percent,"%"," cells", sep = "")) +
+        ggtitle(paste(gene_name, " - ", percent, "%", " cells", sep = "")) +
         theme(plot.title = element_text(hjust = 0.5)) +
-        labs(x = paste(x,toString(round(variances[strtoi(strsplit(x,"PC")[[1]][-1])] * 100,2)), "%"), y = paste(y,toString(round(variances[strtoi(strsplit(y,"PC")[[1]][-1])] * 100,2)),"%"))
+        labs(x = paste(x, toString(round(variances[strtoi(strsplit(x, "PC")[[1]][-1])] * 100, 2)), "%"), y = paste(y, toString(round(variances[strtoi(strsplit(y, "PC")[[1]][-1])] * 100, 2)), "%"))
     } else if (visual == "tSNE"){
       if (binary == "Binary"){
         if (min(round(l$expression, 6)) == max(round(l$expression, 6))){
           g <- ggplot(l, aes(X1, X2, label = Sample)) +
             geom_point(color = "grey")
         } else {
-        g <- ggplot(l, aes(X1, X2, label = Sample, color = ifelse(expression == "TRUE","blue", "grey"))) +
+        g <- ggplot(l, aes(X1, X2, label = Sample, color = ifelse(expression == "TRUE", "blue", "grey"))) +
           geom_point() +
           scale_color_manual(labels = c("Yes", "No"), values = c("Blue", "Grey")) +
           labs(color = "Expression")
@@ -97,7 +97,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",shape=
         g <- g + labs(color = "Expression")
       }
       g <- g +
-        ggtitle(paste(gene_name, " - ",percent,"%"," cells",sep = "")) +
+        ggtitle(paste(gene_name, " - ", percent, "%", " cells", sep = "")) +
         theme(plot.title = element_text(hjust = 0.5))
     }
     if (!is.null(shape)){

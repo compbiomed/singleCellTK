@@ -33,7 +33,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE,
                      levelofinterest){
-  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
+  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[, condition]))
 
   if (length(levels(in.condition)) < 2){
     stop("You must submit a condition with more than 1 labels: ", condition,
@@ -69,7 +69,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
 
-  return(diffex.results[newgenes,])
+  return(diffex.results[newgenes, ])
 }
 
 #' Plot Differential Expression
@@ -103,11 +103,11 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   if (is.null(annotationColors)){
     topha <- NULL
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = Biobase::pData(inSCESet)[,condition, drop = FALSE],
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = Biobase::pData(inSCESet)[, condition, drop = FALSE],
                                                col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList, ]))),
                                      name = "Expression",
                                      column_title = columnTitle,
                                      cluster_rows = clusterRow,
@@ -134,15 +134,15 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                           clusterCol=TRUE){
-  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[, condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
 
-  d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
+  d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList, ]))),
                        Rowv = clusterRow,
                        Colv = clusterCol,
-                       ColSideColors = RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[,1]))])
+                       ColSideColors = RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[, 1]))])
 }
 
 #' Perform differential expression analysis with DESeq2
@@ -185,9 +185,9 @@ scDiffEx_deseq <- function(inSCESet, condition){
   countData <- DESeq::estimateSizeFactors(countData)
   countData <- DESeq::estimateDispersions(countData, method = "pooled",
                                           fitType = "local")
-  diff.results <- DESeq::nbinomTest( countData, levels(condition)[1],
-                                     levels(condition)[2])
-  top.results <- stats::p.adjust( diff.results$pval, method = "fdr" )
+  diff.results <- DESeq::nbinomTest(countData, levels(condition)[1],
+                                    levels(condition)[2])
+  top.results <- stats::p.adjust(diff.results$pval, method = "fdr")
   diff.results$padj <- top.results
   rownames(diff.results) <- diff.results$id
   diff.results$id <- NULL
