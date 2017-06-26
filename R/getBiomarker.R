@@ -11,21 +11,21 @@
 #' @export getBiomarker
 #'
 
-getBiomarker <- function(count_data, gene,binary="Binary"){
+getBiomarker <- function(count_data, gene, binary="Binary"){
   # Get sample names
   sample <- rownames(pData(count_data))
   # Get counts for gene in sample
-  c <- counts(count_data)[c(gene),]
+  c <- counts(count_data)[c(gene), ]
   # If color scale is "yes"/"no"
   if (binary == "Binary"){
     expression <- c > 0
   }
   # If color scale is a continuouse scale bar
   else if (binary == "Continuous"){
-    expression <- exprs(count_data)[c(gene),]
+    expression <- exprs(count_data)[c(gene), ]
   }
   # Make data frame with sample, counts
-  bio <- data.frame(sample,expression)
-  colnames(bio) <- c("sample",gene)
+  bio <- data.frame(sample, expression)
+  colnames(bio) <- c("sample", gene)
   return(bio)
 }

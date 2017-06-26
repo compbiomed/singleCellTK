@@ -21,13 +21,13 @@ getTSNE <- function(count_data){
   rv <- matrixStats::rowVars(exprs_mat)
   feature_set <-
     order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
-  exprs_to_plot <- exprs_mat[feature_set,]
+  exprs_to_plot <- exprs_mat[feature_set, ]
   keep_feature <- (matrixStats::rowVars(exprs_to_plot) > 0.001)
   keep_feature[is.na(keep_feature)] <- FALSE
   exprs_to_plot <- exprs_to_plot[keep_feature, ]
   exprs_to_plot <- t(scale(t(exprs_to_plot), scale = scale_features))
   perplexity <- floor(ncol(count_data) / 5)
-  tsne_out <- Rtsne::Rtsne(t(exprs_to_plot),perplexity = perplexity,
+  tsne_out <- Rtsne::Rtsne(t(exprs_to_plot), perplexity = perplexity,
                            initial_dims = max(50, ncol(count_data)))
   tsne_out <- data.frame(tsne_out$Y[, 1:2],
                            row.names = sampleNames(count_data))

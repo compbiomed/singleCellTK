@@ -53,7 +53,7 @@ shiny_panel_upload <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
-      selectInput("selectExampleData","Or, choose example data:",
+      selectInput("selectExampleData", "Or, choose example data:",
                   exampleDatasets)
     ),
     withBusyIndicatorUI(

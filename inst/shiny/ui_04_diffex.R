@@ -7,20 +7,20 @@ shiny_panel_diffex <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput("selectDiffex","Differential Expression",c("limma", "DESeq", "DESeq2")),
-            selectInput("selectDiffex_condition","Select Condition",clusterChoice),
+            selectInput("selectDiffex", "Differential Expression", c("limma", "DESeq", "DESeq2")),
+            selectInput("selectDiffex_condition", "Select Condition", clusterChoice),
             uiOutput("selectDiffex_conditionofinterestUI"),
             sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
             checkboxInput("applyCutoff", "Apply p-value Cutoff"),
             checkboxInput("clusterRows", "Cluster Heatmap Rows", value = TRUE),
             checkboxInput("clusterColumns", "Cluster Heatmap Columns", value = TRUE),
             sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
-            selectInput("selectCorrection","Correction Method:",c("FDR")),
+            selectInput("selectCorrection", "Correction Method:", c("FDR")),
             withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
-            downloadButton("downloadGeneList","Download Results"),
+            downloadButton("downloadGeneList", "Download Results"),
             h3("Save gene list as biomarker:"),
             textInput("biomarkerName", "Biomarker Name: ", value = ""),
-            actionButton("saveBiomarker","Save Biomarker")
+            actionButton("saveBiomarker", "Save Biomarker")
           )
         ),
         column(

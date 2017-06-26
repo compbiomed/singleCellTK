@@ -104,11 +104,11 @@ filterSCData <- function(insceset, deletesamples=NULL, remove_noexpress=TRUE,
                          remove_bottom=0.5, minimum_detect_genes=1700){
   insceset <- insceset[, !(colnames(insceset) %in% deletesamples)]
   if (remove_noexpress){
-    insceset <- insceset[rowSums(counts(insceset)) != 0,]
+    insceset <- insceset[rowSums(counts(insceset)) != 0, ]
   }
-  nkeeprows <- ceiling( (1 - remove_bottom) * as.numeric(nrow(insceset)))
+  nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
   tokeeprow <- order(rowSums(counts(insceset)), decreasing = TRUE)[1:nkeeprows]
   tokeepcol <- apply(counts(insceset), 2, function(x) sum(as.numeric(x) == 0)) >= minimum_detect_genes
-  insceset <- insceset[tokeeprow,tokeepcol]
+  insceset <- insceset[tokeeprow, tokeepcol]
   return(insceset)
 }

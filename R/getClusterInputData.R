@@ -8,7 +8,7 @@
 #' @export getClusterInputData
 #'
 
-getClusterInputData <- function(count_data, inputData,vals){
+getClusterInputData <- function(count_data, inputData, vals){
   if (inputData == "Raw Data"){
     e <- t(exprs(count_data))
   } else if (inputData == "PCA Components") {

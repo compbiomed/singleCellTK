@@ -20,7 +20,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   geneChoice <- rownames(exprs(getShinyOption("inputSCEset"))[1:100])
   sampleChoice <- rownames(pData(getShinyOption("inputSCEset")))
   featureChoice <- colnames(fData(getShinyOption("inputSCEset")))
-  pcComponents <- paste("PC",1:nrow(pData(getShinyOption("inputSCEset"))),sep = "")
+  pcComponents <- paste("PC", 1:nrow(pData(getShinyOption("inputSCEset"))), sep = "")
   numClusters <- 1:nrow(pData(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
@@ -41,7 +41,7 @@ source("ui_08_mast.R", local = TRUE) #creates shiny_panel_mast variable
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    paste("Single Cell Toolkit v",packageVersion("singleCellTK"), sep = ""),
+    paste("Single Cell Toolkit v", packageVersion("singleCellTK"), sep = ""),
     #bootstrap theme
     theme = "bootstrap.min.css",
     #Upload Tab

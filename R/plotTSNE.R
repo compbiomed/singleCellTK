@@ -24,10 +24,10 @@ plotTSNE <- function(count_data, tsne_df=NULL, colorBy=NULL, shape=NULL){
   }
   l <- tsne_df
   if (!is.null(colorBy)){
-    l$color <- eval(parse(text = paste("pData(count_data)$",colorBy,sep = "")))
+    l$color <- eval(parse(text = paste("pData(count_data)$", colorBy, sep = "")))
   }
   if (!is.null(shape)){
-    l$shape <- factor(eval(parse(text = paste("pData(count_data)$",shape, sep = ""))))
+    l$shape <- factor(eval(parse(text = paste("pData(count_data)$", shape, sep = ""))))
   }
   l$Sample <- rownames(pData(count_data))
   g <- ggplot(l, aes_string("X1", "X2", label = "Sample")) +
