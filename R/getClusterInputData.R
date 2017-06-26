@@ -3,7 +3,7 @@
 #' @param count_data A SCE object
 #' @param inputData A string ("Raw Data", "PCA Components", "tSNE Components")
 #' @param vals Reactive Dataframe
-#' 
+#'
 #' @return Cluster input data
 #' @export getClusterInputData
 #'

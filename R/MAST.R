@@ -1,7 +1,7 @@
-#' MAST 
-#' 
+#' MAST
+#'
 #' Run MAST analysis on a SCESet object.
-#' 
+#'
 #' @param SCEdata SCESet object
 #' @param condition select varible (from the pdata) that is used for modle
 #' @param interest.level If the condition of interest has more than two factors,

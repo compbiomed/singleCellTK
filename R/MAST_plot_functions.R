@@ -1,5 +1,5 @@
-#' thresholdGenes 
-#' 
+#' thresholdGenes
+#'
 #' @param SCEdata SCESet object
 #' @export
 thresholdGenes <- function(SCEdata){
@@ -16,11 +16,11 @@ thresholdGenes <- function(SCEdata){
 }
 
 #' MAST Violin
-#' 
+#'
 #' Run MAST analysis on a SCESet object.
-#' 
+#'
 #' @param SCEdata SCESet object
-#' @param fcHurdleSig The filtered result from hurdle model 
+#' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
 #' FALSE
@@ -53,11 +53,11 @@ MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
 }
 
 #' MAST linear model
-#' 
+#'
 #' Run MAST analysis on a SCESet object.
-#' 
+#'
 #' @param SCEdata SCESet object
-#' @param fcHurdleSig The filtered result from hurdle model 
+#' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @export
 MASTregression <- function(SCEdata, fcHurdleSig, samplesize = 49){

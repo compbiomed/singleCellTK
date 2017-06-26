@@ -1,6 +1,5 @@
-
 #' Plot PCA or tSNE
-#'   
+#'
 #' Use this function to plot PCA or tSNE results
 #'
 #' @param method Either PCA or tSNE
@@ -9,7 +8,7 @@
 #' @param colorClusters The variable to color clusters by
 #' @param pc1 User choice for the first principal component
 #' @param pc2 User choice for the second prinicipal component
-#' 
+#'
 #' @return A reduced dimension object
 #' @export plotDimRed
 #'

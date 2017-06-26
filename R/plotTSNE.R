@@ -1,13 +1,12 @@
-
 #' Plot TSNE
-#'   
+#'
 #' Use this function to plot PCA or tSNE results
 #'
 #' @param count_data A SCE object
 #' @param tsne_df tSNE data frame
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
-#' 
+#'
 #' @return A TSNE plot
 #' @export plotTSNE
 #'

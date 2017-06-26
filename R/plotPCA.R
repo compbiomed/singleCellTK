@@ -1,6 +1,5 @@
-
 #' Plot PCA
-#'   
+#'
 #' Use this function to plot PCA or tSNE results
 #'
 #' @param count_data A SCE object
@@ -9,7 +8,7 @@
 #' @param shape Shape of the points
 #' @param pcX User choice for the first principal component
 #' @param pcY User choice for the second prinicipal component
-#' 
+#'
 #' @return A PCA plot
 #' @export plotPCA
 #'

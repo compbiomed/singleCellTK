@@ -33,7 +33,9 @@ colourGroup <- function(input, output, session, heading = "", options="",
     cols2 <- debounce(cols, 2000)
   }
 
-  output$heading <- renderText({heading})
+  output$heading <- renderText({
+    heading
+  })
 
   output$colorChoosers <- renderUI({
     if (length(options) != 0){
@@ -45,7 +47,8 @@ colourGroup <- function(input, output, session, heading = "", options="",
           color <- input[[as.character(ids()[i])]]
         }
         L[[i]] <- list(do.call(colourpicker::colourInput,
-                         list(ns(ids()[i]), label = options[i], value = color, ...)))
+                               list(ns(ids()[i]), label = options[i],
+                                    value = color, ...)))
       }
       return(L)
     }

@@ -1,12 +1,11 @@
-
 #' get Biomarker
-#'   
+#'
 #' Use this function to get expression or binary data of gene list
 #'
 #' @param count_data A SCE object
 #' @param gene gene list
 #' @param binary binary or gradient
-#' 
+#'
 #' @return A PCA plot
 #' @export getBiomarker
 #'

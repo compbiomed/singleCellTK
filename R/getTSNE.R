@@ -1,11 +1,11 @@
 #' Get t-SNE components for a feature counts table
-#'   
+#'
 #' Selects the 500 most variable genes in the feature count, performs
 #' t-SNE based on them and outputs the principal components in a data frame
 #' and their variances as percentVar attribute
 #'
 #' @param count_data Matrix of expresion values
-#' 
+#'
 #' @return A reduced dimension object
 #' @export getTSNE
 #'
