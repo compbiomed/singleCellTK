@@ -7,7 +7,7 @@ shiny_panel_diffex <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput("selectDiffex", "Differential Expression", c("limma", "DESeq", "DESeq2")),
+            selectInput("selectDiffex", "Differential Expression", c("limma", "DESeq", "DESeq2", "ANOVA")),
             selectInput("selectDiffex_condition", "Select Condition", clusterChoice),
             uiOutput("selectDiffex_conditionofinterestUI"),
             sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
