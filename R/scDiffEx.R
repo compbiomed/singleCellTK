@@ -39,9 +39,11 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
     stop("You must submit a condition with more than 1 labels: ", condition,
          " has ", length(levels(in.condition)), " labels")
   } else if (length(levels(in.condition)) > 2){
-    in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
-                           levelofinterest,
-                           paste("not", levelofinterest, sep = ""))))
+    if(diffexmethod != "ANOVA"){
+      in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
+                                                  levelofinterest,
+                                                  paste("not", levelofinterest, sep = ""))))
+    }
   }
 
   if (diffexmethod == "DESeq"){
@@ -52,6 +54,9 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   }
   else if (diffexmethod == "limma"){
     diffex.results <- scDiffEx_limma(inSCESet, in.condition)
+  }
+  else if (diffexmethod == "ANOVA"){
+    diffex.results <- scDiffEx_anova(inSCESet, in.condition)
   }
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
@@ -214,4 +219,38 @@ scDiffEx_limma <- function(inSCESet, condition){
                               number = nrow(inSCESet))
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
+}
+
+#' Perform ANOVA analysis
+#'
+#' Returns a data frame of gene names and adjusted p-values
+#'
+#' @param inSCESet Input SCESet object. Required
+#' @param condition The name of the condition to use for differential
+#' expression. Must be a name of a column from pData that contains two labels.
+#' Required
+#'
+#' @return A data frame of gene names and adjusted p-values
+#' @export scDiffEx_anova
+#'
+scDiffEx_anova <- function(inSCESet, condition){
+  mod <- model.matrix(~as.factor(condition), data=pData(inSCESet))
+  mod0 <- model.matrix(~1,data=pData(inSCESet))
+  dat <- exprs(inSCESet)
+  n <- dim(dat)[2]
+  m <- dim(dat)[1]
+  df1 <- dim(mod)[2]
+  df0 <- dim(mod0)[2]
+  p <- rep(0, m)
+  Id <- diag(n)
+  resid <- dat %*% (Id - mod %*% solve(t(mod) %*% mod) %*% 
+                      t(mod))
+  resid0 <- dat %*% (Id - mod0 %*% solve(t(mod0) %*% mod0) %*% 
+                       t(mod0))
+  rss1 <- resid^2 %*% rep(1, n)
+  rss0 <- resid0^2 %*% rep(1, n)
+  fstats <- ((rss0 - rss1)/(df1 - df0))/(rss1/(n - df1))
+  p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
+  results <- data.frame(row.names = rownames(dat), p.value=p, padj=p.adjust(p, method = "fdr"))
+  return(results)
 }

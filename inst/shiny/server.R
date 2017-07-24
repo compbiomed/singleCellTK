@@ -509,7 +509,7 @@ shinyServer(function(input, output, session) {
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionofinterestUI <- renderUI({
     if (!is.null(vals$counts)){
-      if (length(unique(pData(vals$counts)[, input$selectDiffex_condition])) > 2){
+      if (length(unique(pData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         selectInput("selectDiffex_conditionofinterest",
                     "Select Factor of Interest",
                     unique(sort(pData(vals$counts)[, input$selectDiffex_condition])))
