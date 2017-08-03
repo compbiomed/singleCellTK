@@ -2,9 +2,7 @@
 % Please edit documentation in R/plotDimRed.R
 \name{plotDimRed}
 \alias{plotDimRed}
-\title{Plot PCA or tSNE
-  
-Use this function to plot PCA or tSNE results}
+\title{Plot PCA or tSNE}
 \usage{
 plotDimRed(method, vals_method, count_data, colorClusters, pc1, pc2)
 }
@@ -25,7 +23,5 @@ plotDimRed(method, vals_method, count_data, colorClusters, pc1, pc2)
 A reduced dimension object
 }
 \description{
-Plot PCA or tSNE
-  
 Use this function to plot PCA or tSNE results
 }

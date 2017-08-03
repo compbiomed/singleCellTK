@@ -2,9 +2,7 @@
 % Please edit documentation in R/getBiomarker.R
 \name{getBiomarker}
 \alias{getBiomarker}
-\title{get Biomarker
-  
-Use this function to get expression or binary data of gene list}
+\title{get Biomarker}
 \usage{
 getBiomarker(count_data, gene, binary = "Binary")
 }
@@ -19,7 +17,5 @@ getBiomarker(count_data, gene, binary = "Binary")
 A PCA plot
 }
 \description{
-get Biomarker
-  
 Use this function to get expression or binary data of gene list
 }

@@ -2,11 +2,7 @@
 % Please edit documentation in R/getTSNE.R
 \name{getTSNE}
 \alias{getTSNE}
-\title{Get t-SNE components for a feature counts table
-  
-Selects the 500 most variable genes in the feature count, performs
-t-SNE based on them and outputs the principal components in a data frame
-and their variances as percentVar attribute}
+\title{Get t-SNE components for a feature counts table}
 \usage{
 getTSNE(count_data)
 }
@@ -17,8 +13,6 @@ getTSNE(count_data)
 A reduced dimension object
 }
 \description{
-Get t-SNE components for a feature counts table
-  
 Selects the 500 most variable genes in the feature count, performs
 t-SNE based on them and outputs the principal components in a data frame
 and their variances as percentVar attribute

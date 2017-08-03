@@ -2,9 +2,7 @@
 % Please edit documentation in R/plotBiomarker.R
 \name{plotBiomarker}
 \alias{plotBiomarker}
-\title{get Biomarker
-  
-Use this function to get expression or binary data of gene list}
+\title{get Biomarker}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
   shape = "No Shape", axis_df = NULL, x = "PC1", y = "PC2")
@@ -30,7 +28,5 @@ plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
 A Biomarker plot
 }
 \description{
-get Biomarker
-  
 Use this function to get expression or binary data of gene list
 }
