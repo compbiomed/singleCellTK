@@ -2,9 +2,7 @@
 % Please edit documentation in R/runDimRed.R
 \name{runDimRed}
 \alias{runDimRed}
-\title{Run PCA or tSNE
-  
-Use this function to run limma differential expression and load an interactive D3 heatmap}
+\title{Run PCA or tSNE}
 \usage{
 runDimRed(method, count_data, colorClusters, pc1, pc2)
 }
@@ -23,7 +21,5 @@ runDimRed(method, count_data, colorClusters, pc1, pc2)
 A reduced dimension object
 }
 \description{
-Run PCA or tSNE
-  
 Use this function to run limma differential expression and load an interactive D3 heatmap
 }

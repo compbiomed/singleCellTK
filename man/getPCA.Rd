@@ -2,11 +2,7 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{Get PCA components for a feature counts table
-  
-Selects the 500 most variable genes in the feature count, performs
-PCA based on them and outputs the principal components in a data frame
-and their variances as percentVar attribute}
+\title{Get PCA components for a feature counts table}
 \usage{
 getPCA(count_data)
 }
@@ -17,8 +13,6 @@ getPCA(count_data)
 A reduced dimension object
 }
 \description{
-Get PCA components for a feature counts table
-  
 Selects the 500 most variable genes in the feature count, performs
 PCA based on them and outputs the principal components in a data frame
 and their variances as percentVar attribute
