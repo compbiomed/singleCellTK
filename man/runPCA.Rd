@@ -12,11 +12,11 @@ runPCA(plot.type, method, countm, annotm, featurem, involving.variables,
 
 \item{method}{regular PCA/randomized PCA/...}
 
-\item{countm}{A SCE object}
+\item{countm}{A count matrix}
 
-\item{annotm}{A SCE object}
+\item{annotm}{An annotation matrix}
 
-\item{featurem}{A SCE object}
+\item{featurem}{A feature annotation matrix}
 
 \item{involving.variables}{User choice for the prinicipal components}
 
