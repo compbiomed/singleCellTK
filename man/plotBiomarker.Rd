@@ -2,19 +2,20 @@
 % Please edit documentation in R/plotBiomarker.R
 \name{plotBiomarker}
 \alias{plotBiomarker}
-\title{get Biomarker}
+\title{plotBiomarker}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
   shape = "No Shape", axis_df = NULL, x = "PC1", y = "PC2")
 }
 \arguments{
-\item{count_data}{A SCE object}
+\item{count_data}{A SingleCellExperiment object}
 
 \item{gene}{gene list}
 
-\item{binary}{binary or gradient}
+\item{binary}{"Binary" for binary expression or "Continuous" for a gradient.
+Default: "Binary"}
 
-\item{visual}{visualization type of plot (PCA or tSNE)}
+\item{visual}{Type of visualization (PCA or tSNE). Default: "PCA"}
 
 \item{shape}{visualization shape}
 
@@ -28,5 +29,5 @@ plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
 A Biomarker plot
 }
 \description{
-Use this function to get expression or binary data of gene list
+Given a set of genes, return a ggplot of expression values.
 }

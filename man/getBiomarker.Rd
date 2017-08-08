@@ -2,20 +2,22 @@
 % Please edit documentation in R/getBiomarker.R
 \name{getBiomarker}
 \alias{getBiomarker}
-\title{get Biomarker}
+\title{getBiomarker}
 \usage{
 getBiomarker(count_data, gene, binary = "Binary")
 }
 \arguments{
-\item{count_data}{A SCE object}
+\item{count_data}{A SingleCellExperiment object}
 
 \item{gene}{gene list}
 
-\item{binary}{binary or gradient}
+\item{binary}{"Binary" for binary expression or "Continuous" for a gradient.
+Default: "Binary"}
 }
 \value{
-A PCA plot
+A data.frame of expression values
 }
 \description{
-Use this function to get expression or binary data of gene list
+Given a list of genes and a SingleCellExperiment object, return the binary or
+continuous expression of the genes.
 }

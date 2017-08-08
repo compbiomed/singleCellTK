@@ -9,7 +9,7 @@
 #'
 #' @return A TSNE plot
 #' @export plotTSNE
-#'s
+#'
 plotTSNE <- function(count_data, tsne_df=NULL, colorBy="No Color", shape="No Shape"){
   if (is.null(tsne_df)){
     tsne_df <- getTSNE(count_data)

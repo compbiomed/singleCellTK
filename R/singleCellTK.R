@@ -2,7 +2,7 @@
 #'
 #' Use this function to run the single cell analysis app.
 #'
-#' @param inputData The input SCESet class object
+#' @param inputData The input SingleCellExperiment class object
 #'
 #' @return The shiny app will open
 #'

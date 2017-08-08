@@ -2,18 +2,18 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{Get PCA components for a feature counts table}
+\title{Get PCA components for a SCE object}
 \usage{
 getPCA(count_data)
 }
 \arguments{
-\item{count_data}{Matrix of expresion values}
+\item{count_data}{SCE set}
 }
 \value{
 A reduced dimension object
 }
 \description{
-Selects the 500 most variable genes in the feature count, performs
+Selects the 500 most variable genes in the SCE, performs
 PCA based on them and outputs the principal components in a data frame
 and their variances as percentVar attribute
 }

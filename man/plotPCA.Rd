@@ -4,8 +4,8 @@
 \alias{plotPCA}
 \title{Plot PCA}
 \usage{
-plotPCA(count_data, pca_df = NULL, colorBy = NULL, shape = NULL,
-  pcX = "PC1", pcY = "PC2")
+plotPCA(count_data, pca_df = NULL, colorBy = "No Color",
+  shape = "No Shape", pcX = "PC1", pcY = "PC2")
 }
 \arguments{
 \item{count_data}{A SCE object}
