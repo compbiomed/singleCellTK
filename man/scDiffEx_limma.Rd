@@ -7,7 +7,7 @@
 scDiffEx_limma(inSCESet, condition)
 }
 \arguments{
-\item{inSCESet}{Input SCESet object. Required}
+\item{inSCESet}{Input SingleCellExperiment object. Required}
 
 \item{condition}{The name of the condition to use for differential
 expression. Must be a name of a column from pData that contains two labels.

@@ -4,7 +4,8 @@
 \alias{plotTSNE}
 \title{Plot TSNE}
 \usage{
-plotTSNE(count_data, tsne_df = NULL, colorBy = NULL, shape = NULL)
+plotTSNE(count_data, tsne_df = NULL, colorBy = "No Color",
+  shape = "No Shape")
 }
 \arguments{
 \item{count_data}{A SCE object}

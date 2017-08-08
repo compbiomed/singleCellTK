@@ -1,9 +1,8 @@
 #' Create a heatmap for differential expression analysis
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
-#' Required
+#' expression. Required
 #' @param significance FDR corrected significance cutoff for differentially
 #' expressed genes. Required
 #' @param ntop Number of top differentially expressed genes to display in the
@@ -33,7 +32,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE,
                      levelofinterest){
-  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[, condition]))
+  in.condition <- droplevels(as.factor(colData(inSCESet)[, condition]))
 
   if (length(levels(in.condition)) < 2){
     stop("You must submit a condition with more than 1 labels: ", condition,
@@ -108,11 +107,11 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
   if (is.null(annotationColors)){
     topha <- NULL
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = Biobase::pData(inSCESet)[, condition, drop = FALSE],
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
                                                col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList, ]))),
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
                                      name = "Expression",
                                      column_title = columnTitle,
                                      cluster_rows = clusterRow,
@@ -139,12 +138,12 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                           clusterCol=TRUE){
-  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[, condition])
+  diffex.annotation <- data.frame(colData(inSCESet)[, condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
 
-  d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList, ]))),
+  d3heatmap::d3heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
                        Rowv = clusterRow,
                        Colv = clusterCol,
                        ColSideColors = RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[, 1]))])
@@ -154,7 +153,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from pData that contains two labels.
 #' Required
@@ -163,7 +162,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #' @export scDiffEx_deseq2
 #'
 scDiffEx_deseq2 <- function(inSCESet, condition){
-  cnts <- scater::counts(inSCESet)
+  cnts <- assay(inSCESet, "counts")
   annot_data <- data.frame(condition)
   colnames(annot_data) <- "condition"
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
@@ -178,7 +177,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition A factor for the condition to use for differential
 #' expression. Must be a two level factor. Required
 #'
@@ -186,7 +185,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #' @export scDiffEx_deseq
 #'
 scDiffEx_deseq <- function(inSCESet, condition){
-  countData <- DESeq::newCountDataSet(scater::counts(inSCESet), condition)
+  countData <- DESeq::newCountDataSet(assay(inSCESet, "counts"), condition)
   countData <- DESeq::estimateSizeFactors(countData)
   countData <- DESeq::estimateDispersions(countData, method = "pooled",
                                           fitType = "local")
@@ -203,7 +202,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from pData that contains two labels.
 #' Required
@@ -213,7 +212,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 scDiffEx_limma <- function(inSCESet, condition){
   design <- stats::model.matrix(~factor(condition))
-  fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
+  fit <- limma::lmFit(log2(assay(inSCESet, "counts") + 1), design)
   ebayes <- limma::eBayes(fit)
   topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
                               number = nrow(inSCESet))
@@ -225,7 +224,7 @@ scDiffEx_limma <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from pData that contains two labels.
 #' Required
@@ -234,9 +233,9 @@ scDiffEx_limma <- function(inSCESet, condition){
 #' @export scDiffEx_anova
 #'
 scDiffEx_anova <- function(inSCESet, condition){
-  mod <- model.matrix(~as.factor(condition), data=pData(inSCESet))
-  mod0 <- model.matrix(~1,data=pData(inSCESet))
-  dat <- exprs(inSCESet)
+  mod <- model.matrix(~as.factor(condition), data=colData(inSCESet))
+  mod0 <- model.matrix(~1,data=colData(inSCESet))
+  dat <- log2(assay(inSCESet, "counts") + 1)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
   df1 <- dim(mod)[2]

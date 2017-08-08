@@ -2,12 +2,12 @@
 % Please edit documentation in R/getTSNE.R
 \name{getTSNE}
 \alias{getTSNE}
-\title{Get t-SNE components for a feature counts table}
+\title{Get t-SNE components for a SCE object}
 \usage{
 getTSNE(count_data)
 }
 \arguments{
-\item{count_data}{Matrix of expresion values}
+\item{count_data}{SCE object}
 }
 \value{
 A reduced dimension object
