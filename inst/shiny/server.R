@@ -636,7 +636,7 @@ shinyServer(function(input, output, session) {
     }
     else{
       subData <- reactiveValues(
-        counts = Downsample(counts(vals$counts), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
+        counts = Downsample(assay(vals$counts, "counts"), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
       )
       output$downDone <- renderPlot({
         heatmap(as.matrix(subData$counts[order(apply(subData$counts[, , 10, 1], 1, sum), decreasing = TRUE)[1:20], , 10, 1]))
@@ -652,7 +652,7 @@ shinyServer(function(input, output, session) {
     else{
       #    if(exists('subData$counts')){
       output$powerBoxPlot <- renderPlot({
-        subData <- Downsample(counts(vals$counts), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
+        subData <- Downsample(assay(vals$counts, "counts"), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
         diffPower <- differentialPower(datamatrix = counts(vals$counts), downmatrix = subData, conditions = phenoData(vals$counts)[[input$subCovariate]], method = input$selectDiffMethod)
         boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
       })
