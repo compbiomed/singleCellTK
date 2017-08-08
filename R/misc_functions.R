@@ -72,7 +72,7 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  return(SummarizedExperiment(assays=list(counts=as.matrix(countsin)),
+  return(SingleCellExperiment(assays=list(counts=as.matrix(countsin)),
                               colData=annotin,
                               rowData=featurein))
 }
