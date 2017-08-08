@@ -1,6 +1,5 @@
 library(shiny)
 library(shinyjs)
-library(scater)
 library(ComplexHeatmap)
 library(biomaRt)
 library(circlize)
@@ -155,7 +154,7 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Reads per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(scater::counts(vals$counts), 2, function(x) sum(x)), type = "histogram") %>%
+      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x)), type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
@@ -168,7 +167,7 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Genes detected per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(scater::counts(vals$counts), 2, function(x) sum(x > 0)), type = "histogram") %>%
+      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x > 0)), type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
