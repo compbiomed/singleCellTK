@@ -322,9 +322,9 @@ shinyServer(function(input, output, session) {
       else{
         g <- runPCA(plot.type = input$plotTypeId,
                     method = input$pcaAlgorithm,
-                    countm = exprs(vals$counts),
-                    annotm = pData(vals$counts),
-                    featurem = fData(vals$counts),
+                    countm = log2(assay(vals$counts, "counts") + 1),
+                    annotm = colData(vals$counts),
+                    featurem = rowData(vals$counts),
                     involving.variables = input$pcaCheckbox,
                     additional.variables = input$selectAdditionalVariables,
                     colorClusters = input$colorClusters_MAST)

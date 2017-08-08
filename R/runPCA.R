@@ -5,9 +5,9 @@
 #'
 #' @param plot.type Either 'Single Plot' or 'Paired Plot'
 #' @param method regular PCA/randomized PCA/...
-#' @param countm A SCE object
-#' @param annotm A SCE object
-#' @param featurem A SCE object
+#' @param countm A count matrix
+#' @param annotm An annotation matrix
+#' @param featurem A feature annotation matrix
 #' @param involving.variables User choice for the prinicipal components
 #' @param additional.variables User choice for feature
 #' @param colorClusters The variable to color clusters by
