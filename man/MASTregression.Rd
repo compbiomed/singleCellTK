@@ -7,12 +7,12 @@
 MASTregression(SCEdata, fcHurdleSig, samplesize = 49)
 }
 \arguments{
-\item{SCEdata}{SCESet object}
+\item{SCEdata}{SingleCellExperiment object}
 
 \item{fcHurdleSig}{The filtered result from hurdle model}
 
 \item{samplesize}{The number of most significant genes}
 }
 \description{
-Run MAST analysis on a SCESet object.
+Run MAST analysis on a SingleCellExperiment object.
 }

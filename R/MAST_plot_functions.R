@@ -1,13 +1,13 @@
 #' thresholdGenes
 #'
-#' @param SCEdata SCESet object
+#' @param SCEdata SingleCellExperiment object
 #' @export
 thresholdGenes <- function(SCEdata){
   # data preparation
-  expres <- exprs(SCEdata)
+  expres <- log2(assay(SCEdata, "counts")+1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCE_new <- MAST::FromMatrix(expres, pData(SCEdata), fdata)
+  SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
 
   SCE_new <- SCE_new[which(freq(SCE_new) > 0), ]
   thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
@@ -17,9 +17,9 @@ thresholdGenes <- function(SCEdata){
 
 #' MAST Violin
 #'
-#' Run MAST analysis on a SCESet object.
+#' Run MAST analysis on a SingleCellExperiment object.
 #'
-#' @param SCEdata SCESet object
+#' @param SCEdata SingleCellExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
@@ -28,10 +28,10 @@ thresholdGenes <- function(SCEdata){
 #' @export
 MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
                        variable){
-  expres <- exprs(SCEdata)
+  expres <- log2(assay(SCEdata, "counts")+1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCE_new <- MAST::FromMatrix(expres, pData(SCEdata), fdata)
+  SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
   SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
   thres <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                      min_per_bin = 30)
@@ -54,19 +54,19 @@ MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
 
 #' MAST linear model
 #'
-#' Run MAST analysis on a SCESet object.
+#' Run MAST analysis on a SingleCellExperiment object.
 #'
-#' @param SCEdata SCESet object
+#' @param SCEdata SingleCellExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @export
 MASTregression <- function(SCEdata, fcHurdleSig, samplesize = 49){
-  count <- counts(SCEdata)
-  expres <- exprs(SCEdata)
+  count <- assay(SCEdata, "counts")
+  expres <- log2(count+1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCE_new <- MAST::FromMatrix(expres, pData(SCEdata), fdata)
-  SCE_new_lm <- MAST::FromMatrix(count, pData(SCEdata), fdata)
+  SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
+  SCE_new_lm <- MAST::FromMatrix(count, colData(SCEdata), fdata)
   cdr2 < -colSums(assay(SCE_new_lm) > 0)
   colData(SCE_new)$cngeneson <- scale(cdr2)
   SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
