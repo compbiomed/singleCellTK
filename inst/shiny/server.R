@@ -83,14 +83,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- createSCESet(countfile = input$countsfile$datapath,
-                                    annotfile = input$annotfile$datapath,
-                                    featurefile = input$featurefile$datapath)
+        vals$original <- createSCE(countfile = input$countsfile$datapath,
+                                   annotfile = input$annotfile$datapath,
+                                   featurefile = input$featurefile$datapath)
       } else {
-        vals$original <- createSCESet(countfile = eval(as.symbol(input$selectExampleData))$counts,
-                                    annotfile = eval(as.symbol(input$selectExampleData))$annot,
-                                    featurefile = eval(as.symbol(input$selectExampleData))$features,
-                                    inputdataframes = TRUE)
+        vals$original <- createSCE(countfile = eval(as.symbol(input$selectExampleData))$counts,
+                                   annotfile = eval(as.symbol(input$selectExampleData))$annot,
+                                   featurefile = eval(as.symbol(input$selectExampleData))$features,
+                                   inputdataframes = TRUE)
       }
       vals$counts <- vals$original
       updateAllPdataInputs()
@@ -304,7 +304,7 @@ shinyServer(function(input, output, session) {
 
   output$downloadSCESet <- downloadHandler(
     filename <- function() {
-      paste("SCESet-", Sys.Date(), ".rds", sep = "")
+      paste("SCE-", Sys.Date(), ".rds", sep = "")
     },
     content <- function(file) {
       saveRDS(vals$counts, file)
