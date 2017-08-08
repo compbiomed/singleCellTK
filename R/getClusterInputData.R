@@ -7,10 +7,9 @@
 #' @return Cluster input data
 #' @export getClusterInputData
 #'
-
 getClusterInputData <- function(count_data, inputData, vals){
   if (inputData == "Raw Data"){
-    e <- t(exprs(count_data))
+    e <- t(log2(assay(count_data, "counts") + 1))
   } else if (inputData == "PCA Components") {
     if (is.null(vals$PCA)) {
       vals$PCA <- getPCA(vals$counts)
