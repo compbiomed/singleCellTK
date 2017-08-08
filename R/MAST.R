@@ -3,7 +3,7 @@
 #' Run MAST analysis on a SCESet object.
 #'
 #' @param SCEdata SCESet object
-#' @param condition select varible (from the pdata) that is used for modle
+#' @param condition select varible (from the colData) that is used for modle
 #' @param interest.level If the condition of interest has more than two factors,
 #' indicate which level should be used to compare to all other samples.
 #' @param freq_expressed Filter genes that are expressed in at least this
@@ -21,19 +21,19 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     stop("specify the condition of interest")
   }
 
-  if (length(unique(pData(SCEdata)[, condition])) == 1) {
+  if (length(unique(colData(SCEdata)[, condition])) == 1) {
     stop("only one level is in the condition")
   }
 
-  if (is.null(interest.level) & length(unique(pData(SCEdata)[, condition])) > 2){
+  if (is.null(interest.level) & length(unique(colData(SCEdata)[, condition])) > 2){
     stop("You must specify a level of interest when more than 2 levels are in",
          " the condition")
   }
 
   # Create MAST SingleCellAssay
-  pdata <- pData(SCEdata)
-  expres <- exprs(SCEdata)
-  fdata <- fData(SCEdata)
+  pdata <- colData(SCEdata)
+  expres <- assay(SCEdata, "counts")
+  fdata <- rowData(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
 
   #Caculate CDR for zlm model
@@ -55,7 +55,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
   }
 
   # >2 levels in the condition
-  if (!is.null(interest.level) & length(unique(pData(SCEdata)[, condition])) > 2){
+  if (!is.null(interest.level) & length(unique(colData(SCEdata)[, condition])) > 2){
     levels(colData(SCE_new_sample)[, condition]) <- c(levels(colData(SCE_new_sample)[, condition]), paste0("no_", interest.level))
     colData(SCE_new_sample)[, condition][colData(SCE_new_sample)[, condition] != interest.level] <- paste0("no_", interest.level)
     colData(SCE_new_sample)[, condition] <- droplevels(as.factor(colData(SCE_new_sample)[, condition]))
