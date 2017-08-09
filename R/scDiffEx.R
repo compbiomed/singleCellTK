@@ -155,7 +155,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 #' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
+#' expression. Must be a name of a column from colData that contains two labels.
 #' Required
 #'
 #' @return A data frame of gene names and adjusted p-values
@@ -204,7 +204,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 #' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
+#' expression. Must be a name of a column from colData that contains two labels.
 #' Required
 #'
 #' @return A data frame of gene names and adjusted p-values
@@ -226,7 +226,7 @@ scDiffEx_limma <- function(inSCESet, condition){
 #'
 #' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
+#' expression. Must be a name of a column from colData that contains two labels.
 #' Required
 #'
 #' @return A data frame of gene names and adjusted p-values

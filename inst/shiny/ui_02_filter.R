@@ -31,10 +31,10 @@ shiny_panel_filter <- fluidPage(
             uiOutput("filterFeatureOptions"),
             tags$hr(),
             h3("Delete an annotation column:"),
-            selectInput("deletepdatacolumn", "Annotation Column:", clusterChoice),
-            actionButton("deletepDatabutton", "Delete Column"),
+            selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
+            actionButton("deleterowDatabutton", "Delete Column"),
             tags$hr(),
-            downloadButton("downloadSCESet", "Download SCEset")
+            downloadButton("downloadSCE", "Download SingleCellExperiment")
           )
         )
       )
