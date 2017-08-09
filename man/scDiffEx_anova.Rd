@@ -10,7 +10,7 @@ scDiffEx_anova(inSCESet, condition)
 \item{inSCESet}{Input SingleCellExperiment object. Required}
 
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from pData that contains two labels.
+expression. Must be a name of a column from colData that contains two labels.
 Required}
 }
 \value{
