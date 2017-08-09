@@ -728,7 +728,7 @@ shinyServer(function(input, output, session) {
 
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregresion(vals$mastgenelist, vals$thres, 49)
+      MASTregression(vals$mastgenelist, vals$thres, 49)
     }
   }, height = 600)
 
