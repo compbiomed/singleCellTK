@@ -1,5 +1,5 @@
 exampleDatasets <- c("GSE36552", "GSE60361_subset", "GSE66507", "GSE73121",
-                     "maits_SCESet")
+                     "maits")
 
 shiny_panel_upload <- fluidPage(
   useShinyjs(),

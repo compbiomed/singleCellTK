@@ -52,8 +52,6 @@ colourGroup <- function(input, output, session, heading = "", options="",
       }
       return(L)
     }
-
   })
-
   return(cols2)
 }

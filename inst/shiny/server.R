@@ -17,6 +17,7 @@ library(colourpicker)
 library(gridExtra)
 library(cluster)
 library(ggtree)
+library(SingleCellExperiment)
 
 
 #1GB max upload size
@@ -39,35 +40,35 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
     updateSelectInput(session, "colorDims",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "clusterChoice",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "colorClusters",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "shapeClusters",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "colorClusters_Plot",
-                      choices = c("Cluster Label", colnames(pData(vals$counts))))
+                      choices = c("Cluster Label", colnames(colData(vals$counts))))
     updateSelectInput(session, "shapeClusters_Plot",
-                      choices = c("Cluster Label", colnames(pData(vals$counts))))
+                      choices = c("Cluster Label", colnames(colData(vals$counts))))
     updateSelectInput(session, "colorClusters_MAST",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "selectDiffex_condition",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "subCovariate",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "selectAdditionalVariables",
-                      choices = colnames(pData(vals$counts)))
-    updateSelectInput(session, "deletepdatacolumn",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
+    updateSelectInput(session, "deleterowdatacolumn",
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "hurdlecondition",
-                      choices = colnames(pData(vals$counts)))
+                      choices = colnames(colData(vals$counts)))
     updateSelectInput(session, "colorBy",
-                      choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))))
+                      choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))))
     updateSelectInput(session, "shapeBy",
-                      choices = c("No Shape", colnames(pData(vals$counts))))
+                      choices = c("No Shape", colnames(colData(vals$counts))))
     updateSelectInput(session, "Knumber",
-                      choices = 1:nrow(pData(vals$counts)))
+                      choices = 1:ncol(vals$counts))
     updateSelectInput(session, "colorGenes",
                       choices = c(rownames(vals$counts)[1:100]))
   }
@@ -87,41 +88,39 @@ shinyServer(function(input, output, session) {
                                    annotfile = input$annotfile$datapath,
                                    featurefile = input$featurefile$datapath)
       } else {
-        vals$original <- createSCE(countfile = eval(as.symbol(input$selectExampleData))$counts,
-                                   annotfile = eval(as.symbol(input$selectExampleData))$annot,
-                                   featurefile = eval(as.symbol(input$selectExampleData))$features,
-                                   inputdataframes = TRUE)
+        data(list=paste0(input$selectExampleData,"_sce"))
+        vals$original <- base::eval(parse(text=paste0(input$selectExampleData,"_sce")))
       }
       vals$counts <- vals$original
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
-                        choices = rownames(pData(vals$counts)))
+                        choices = colnames(vals$counts))
       updateSelectInput(session, "colorGenes",
                         choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC1")
       updateSelectInput(session, "pcY",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC2")
       updateSelectInput(session, "pcX_Clustering_Data",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC1")
       updateSelectInput(session, "pcY_Clustering_Data",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC2")
       updateSelectInput(session, "pcX_Clustering_Plot",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC1")
       updateSelectInput(session, "pcY_Clustering_Plot",
-                        choices = paste("PC", 1:nrow(pData(vals$counts)), sep = ""),
+                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC2")
       updateSelectInput(session, "numberKClusters",
-                        choices = 1:nrow(pData(vals$counts)))
+                        choices = 1:ncol(vals$counts))
       updateSelectInput(session, "numberHClusters",
-                        choices = 1:nrow(pData(vals$counts)))
+                        choices = 1:ncol(vals$counts))
       updateSelectInput(session, "Knumber",
-                        choices = 1:nrow(pData(vals$counts)))
+                        choices = 1:ncol(vals$counts))
       insertUI(
         selector = "#uploadAlert",
         ## wrap element in a div with id for ease of removal
@@ -141,8 +140,8 @@ shinyServer(function(input, output, session) {
 
   #Render data table if there are fewer than 50 samples
   output$contents <- renderDataTable({
-    if (!(is.null(vals$counts)) && nrow(pData(vals$counts)) < 50){
-      temptable <- cbind(rownames(fData(vals$counts)), exprs(vals$counts))
+    if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
+      temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts, "counts")+ 1))
       colnames(temptable)[1] <- "Gene"
       temptable
     }
@@ -158,7 +157,7 @@ shinyServer(function(input, output, session) {
         layout(xaxis = x, yaxis = y)
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
-      }
+    }
   })
 
   #Render histogram of genes detected per cell
@@ -209,7 +208,7 @@ shinyServer(function(input, output, session) {
     else{
       vals$counts <- vals$original
       updateSelectInput(session, "deletesamplelist",
-                        choices = rownames(pData(vals$counts)))
+                        choices = colnames(vals$counts))
       #Refresh things for the clustering tab
       vals$PCA <- NULL
       vals$TSNE <- NULL
@@ -217,13 +216,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  #Delete a column from the pData annotations
-  observeEvent(input$deletepDatabutton, {
+  #Delete a column from the colData annotations
+  observeEvent(input$deleterowDatabutton, {
     if (is.null(vals$original)){
       alert("Warning: Upload data first!")
     }
     else{
-      pData(vals$counts) <- pData(vals$counts)[, !(colnames(pData(vals$counts)) %in% input$deletepdatacolumn), drop = F]
+      colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = F]
       updateAllPdataInputs()
     }
   })
@@ -232,20 +231,21 @@ shinyServer(function(input, output, session) {
   output$FilterSamples <- renderUI({
     annot <- ""
     if (!is.null(vals$counts)){
-      annot <- colnames(pData(vals$counts))
+      annot <- colnames(colData(vals$counts))
     }
     selectInput("filteredSample", "Select Annotation:", c("none", annot))
   })
+  
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
-        if (length(unique(pData(vals$counts)[, input$filteredSample])) < 100){
+        if (length(unique(colData(vals$counts)[, input$filteredSample])) < 100){
           L <- vector("list", 3)
           L[[1]] <- renderText("Select samples to keep")
           L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
                         list(checkboxGroupInput("filterSampleChoices",
                                             label = NULL,
-                                            choices = unique(pData(vals$counts)[, input$filteredSample])))
+                                            choices = unique(colData(vals$counts)[, input$filteredSample])))
                              )
           L[[3]] <- list(actionButton("runFilterSample", "Filter"))
           return(L)
@@ -261,7 +261,7 @@ shinyServer(function(input, output, session) {
 
   #Filter the selected samples
   observeEvent(input$runFilterSample, {
-    filter <- pData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
+    filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
     vals$counts <- vals$counts[, filter]
   })
 
@@ -269,7 +269,7 @@ shinyServer(function(input, output, session) {
   output$filterFeatures <- renderUI({
     fannot <- ""
     if (!is.null(vals$counts)){
-      fannot <- colnames(fData(vals$counts))
+      fannot <- colnames(rowData(vals$counts))
     }
     selectInput("filteredFeature", "Select Feature:", c("none", fannot))
   })
@@ -277,13 +277,13 @@ shinyServer(function(input, output, session) {
   observeEvent(input$filteredFeature, {
     output$filterFeatureOptions <- renderUI({
       if (input$filteredFeature != "none")({
-        if (length(unique(fData(vals$counts)[, input$filteredFeature])) < 100){
+        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
           L <- vector("list", 3)
           L[[1]] <- renderText("Select features to keep")
           L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
                              list(checkboxGroupInput("filterFeatureChoices",
                                                      label = NULL,
-                                                     choices = unique(fData(vals$counts)[, input$filteredFeature]))))
+                                                     choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
           L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
           return(L)
         } else {
@@ -298,11 +298,11 @@ shinyServer(function(input, output, session) {
 
   #Filter the selected features
   observeEvent(input$runFilterFeature, {
-    filter <- fData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
+    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
     vals$counts <- vals$counts[filter, ]
   })
 
-  output$downloadSCESet <- downloadHandler(
+  output$downloadSCE <- downloadHandler(
     filename <- function() {
       paste("SCE-", Sys.Date(), ".rds", sep = "")
     },
@@ -375,16 +375,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$pctable <- renderTable(
+  output$pctable <- renderTable({
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        data.frame(PC = paste("PC", 1:nrow(pData(vals$counts)), sep = ""), Variances = attr(vals$PCA, "percentVar") * 100)[1:10, ]
+        data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""), Variances = attr(vals$PCA, "percentVar") * 100)[1:10, ]
       }
-    })
+    }
+  })
 
-  output$geneExpressionPlot <- renderPlot(
+  output$geneExpressionPlot <- renderPlot({
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else {
@@ -401,8 +402,8 @@ shinyServer(function(input, output, session) {
               if (input$colorGenesBiomarker == ""){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
-                rownames(biomarkers) <- fData(vals$counts)[, "Gene"]
+                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
+                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
                 g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy, vals$PCA, input$pcX, input$pcY)
                 g
@@ -427,8 +428,8 @@ shinyServer(function(input, output, session) {
               if (input$colorGenesBiomarker == ""){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                biomarkers <- data.frame(eval(parse(text = paste("fData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
-                rownames(biomarkers) <- fData(vals$counts)[, "Gene"]
+                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
+                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
                 g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
                 g
@@ -445,7 +446,7 @@ shinyServer(function(input, output, session) {
         }
       }
     }
-  )
+  })
 
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
@@ -475,18 +476,18 @@ shinyServer(function(input, output, session) {
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         koutput <- kmeans(data, input$Knumber)
         name <- input$clusterName
-        pData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
+        colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
         updateAllPdataInputs()
         updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
                           selected = input$clusterName)
       } else if (input$clusteringAlgorithm == "Clara") {
         data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
         coutput <- clara(data, input$Cnumber)
-        pData(vals$counts)$Clara <- factor(coutput$clustering)
+        colData(vals$counts)$Clara <- factor(coutput$clustering)
         updateAllPdataInputs()
         updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(pData(vals$counts))),
+                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
                           selected = input$clusterName)
       }
     })
@@ -508,13 +509,12 @@ shinyServer(function(input, output, session) {
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionofinterestUI <- renderUI({
     if (!is.null(vals$counts)){
-      if (length(unique(pData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
+      if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         selectInput("selectDiffex_conditionofinterest",
                     "Select Factor of Interest",
-                    unique(sort(pData(vals$counts)[, input$selectDiffex_condition])))
+                    unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
       }
     }
-
   })
 
   #Run differential expression
@@ -541,7 +541,7 @@ shinyServer(function(input, output, session) {
       selectInput("colorBar_Condition", "Select Condition", c())
     } else {
       selectInput("colorBar_Condition", "Select Condition",
-                     names(pData(vals$counts)), multiple = TRUE)
+                  colnames(colData(vals$counts)), multiple = TRUE)
     }
   })
 
@@ -554,7 +554,7 @@ shinyServer(function(input, output, session) {
       annotationColors$cols <- lapply(1:length(h),
                                       function(i) callModule(colourGroup, paste0("colorGroup", i),
                                                              heading = h[i],
-                                                             options = unique(unlist(pData(vals$counts)[, h[i]]))))
+                                                             options = unique(unlist(colData(vals$counts)[, h[i]]))))
       return(L)
     }
   })
@@ -620,8 +620,8 @@ shinyServer(function(input, output, session) {
     if (is.null(input$biomarkerName)){
       alert("Warning: Specify biomarker name!")
     } else{
-      fData(vals$counts)[, input$biomarkerName] <- ifelse(rownames(fData(vals$counts)) %in% rownames(vals$diffexgenelist), 1, 0)
-      updateSelectInput(session, "filteredFeature", choices = c("none", colnames(fData(vals$counts))))
+      rowData(vals$counts)[, input$biomarkerName] <- ifelse(rownames(rowData(vals$counts)) %in% rownames(vals$diffexgenelist), 1, 0)
+      updateSelectInput(session, "filteredFeature", choices = c("none", colnames(rowData(vals$counts))))
     }
   })
 
@@ -636,7 +636,11 @@ shinyServer(function(input, output, session) {
     }
     else{
       subData <- reactiveValues(
-        counts = Downsample(assay(vals$counts, "counts"), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
+        counts = Downsample(assay(vals$counts, "counts"),
+                            newcounts = floor(2 ^ seq.int(from = log2(input$minSim),
+                                                          to = log2(input$maxSim),
+                                                          length.out = 10)),
+                            iterations = input$iterations)
       )
       output$downDone <- renderPlot({
         heatmap(as.matrix(subData$counts[order(apply(subData$counts[, , 10, 1], 1, sum), decreasing = TRUE)[1:20], , 10, 1]))
@@ -653,7 +657,7 @@ shinyServer(function(input, output, session) {
       #    if(exists('subData$counts')){
       output$powerBoxPlot <- renderPlot({
         subData <- Downsample(assay(vals$counts, "counts"), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
-        diffPower <- differentialPower(datamatrix = counts(vals$counts), downmatrix = subData, conditions = phenoData(vals$counts)[[input$subCovariate]], method = input$selectDiffMethod)
+        diffPower <- differentialPower(datamatrix = assay(vals$counts, "counts"), downmatrix = subData, conditions = colData(vals$counts)[, input$subCovariate], method = input$selectDiffMethod)
         boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
       })
       #    }
@@ -672,10 +676,10 @@ shinyServer(function(input, output, session) {
   #For conditions with more than two factors, select the factor of interest
   output$hurdleconditionofinterestUI <- renderUI({
     if (!is.null(vals$counts)){
-      if (length(unique(pData(vals$counts)[, input$hurdlecondition])) > 2){
+      if (length(unique(colData(vals$counts)[, input$hurdlecondition])) > 2){
         selectInput("hurdleconditionofinterest",
                     "Select Factor of Interest",
-                    unique(sort(pData(vals$counts)[, input$hurdlecondition])))
+                    unique(sort(colData(vals$counts)[, input$hurdlecondition])))
       }
     }
   })

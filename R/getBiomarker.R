@@ -13,7 +13,7 @@
 #'
 getBiomarker <- function(count_data, gene, binary="Binary"){
   # Get sample names
-  sample <- rownames(colData(count_data))
+  sample <- colnames(count_data)
   # Get counts for gene in sample
   c <- assay(count_data, "counts")[c(gene), ]
   # If color scale is "yes"/"no"
