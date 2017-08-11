@@ -28,11 +28,7 @@ The filtered single cell object.
 Filter Genes and Samples from a Single Cell Object
 }
 \examples{
-library(scater)
-data("GSE60361_subset")
-GSE60361_SCESet <- createSCESet(countfile = GSE60361_subset$counts,
-                                annotfile = GSE60361_subset$annot,
-                                inputdataframes = TRUE)
-GSE60361_SCESet_filtered <- filterSCData(GSE60361_SCESet,
-                                         deletesamples="X1772063061_G11")
+data("GSE60361_subset_sce")
+GSE60361_subset_sce <- filterSCData(GSE60361_subset_sce,
+                                    deletesamples="X1772063061_G11")
 }

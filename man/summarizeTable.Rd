@@ -2,16 +2,16 @@
 % Please edit documentation in R/misc_functions.R
 \name{summarizeTable}
 \alias{summarizeTable}
-\title{Summarize SCESet}
+\title{Summarize SingleCellExperiment}
 \usage{
 summarizeTable(indata)
 }
 \arguments{
-\item{indata}{Input SCESet}
+\item{indata}{Input SingleCellExperiment}
 }
 \value{
 A data.frame object of summary metrics.
 }
 \description{
-Creates a table of summary metrics from an input SCESet.
+Creates a table of summary metrics from an input SingleCellExperiment.
 }

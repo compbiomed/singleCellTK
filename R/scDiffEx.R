@@ -1,9 +1,8 @@
 #' Create a heatmap for differential expression analysis
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
-#' Required
+#' expression. Required
 #' @param significance FDR corrected significance cutoff for differentially
 #' expressed genes. Required
 #' @param ntop Number of top differentially expressed genes to display in the
@@ -33,32 +32,37 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
                      usesig=TRUE, diffexmethod, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE,
                      levelofinterest){
-  in.condition <- droplevels(as.factor(Biobase::pData(inSCESet)[,condition]))
-  
+  in.condition <- droplevels(as.factor(colData(inSCESet)[, condition]))
+
   if (length(levels(in.condition)) < 2){
     stop("You must submit a condition with more than 1 labels: ", condition,
          " has ", length(levels(in.condition)), " labels")
-  } else if(length(levels(in.condition)) > 2){
-    in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
-                           levelofinterest,
-                           paste("not",levelofinterest,sep=""))))
+  } else if (length(levels(in.condition)) > 2){
+    if(diffexmethod != "ANOVA"){
+      in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
+                                                  levelofinterest,
+                                                  paste("not", levelofinterest, sep = ""))))
+    }
   }
-  
-  if(diffexmethod == "DESeq"){
+
+  if (diffexmethod == "DESeq"){
     diffex.results <- scDiffEx_deseq(inSCESet, in.condition)
   }
-  else if(diffexmethod == "DESeq2"){
+  else if (diffexmethod == "DESeq2"){
     diffex.results <- scDiffEx_deseq2(inSCESet, in.condition)
   }
-  else if(diffexmethod == "limma"){
+  else if (diffexmethod == "limma"){
     diffex.results <- scDiffEx_limma(inSCESet, in.condition)
+  }
+  else if (diffexmethod == "ANOVA"){
+    diffex.results <- scDiffEx_anova(inSCESet, in.condition)
   }
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-  
-  if(usesig){
-    if(length(which(diffex.results$padj <= significance)) < ntop){
+
+  if (usesig){
+    if (length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
     }
     else{
@@ -68,8 +72,8 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
   else{
     newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
   }
-  
-  return(diffex.results[newgenes,])
+
+  return(diffex.results[newgenes, ])
 }
 
 #' Plot Differential Expression
@@ -98,17 +102,17 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #'
 plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                      clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE, 
+                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE,
                      annotationColors=NULL, columnTitle="Differential Expression"){
   if (is.null(annotationColors)){
     topha <- NULL
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = Biobase::pData(inSCESet)[,condition, drop=FALSE],
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
                                                col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
-                                     name="Expression",
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
+                                     name = "Expression",
                                      column_title = columnTitle,
                                      cluster_rows = clusterRow,
                                      cluster_columns = clusterCol,
@@ -134,31 +138,31 @@ plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
                           clusterCol=TRUE){
-  diffex.annotation <- data.frame(Biobase::pData(inSCESet)[,condition])
+  diffex.annotation <- data.frame(colData(inSCESet)[, condition])
   colnames(diffex.annotation) <- condition
   topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
                                              height = unit(0.333, "cm"))
-  
-  d3heatmap::d3heatmap(t(scale(t(Biobase::exprs(inSCESet)[geneList,]))),
-                       Rowv=clusterRow,
-                       Colv=clusterCol,
-                       ColSideColors=RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[,1]))])
+
+  d3heatmap::d3heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
+                       Rowv = clusterRow,
+                       Colv = clusterCol,
+                       ColSideColors = RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[, 1]))])
 }
 
 #' Perform differential expression analysis with DESeq2
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
+#' expression. Must be a name of a column from colData that contains two labels.
 #' Required
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export scDiffEx_deseq2
 #'
 scDiffEx_deseq2 <- function(inSCESet, condition){
-  cnts <- scater::counts(inSCESet)
+  cnts <- assay(inSCESet, "counts")
   annot_data <- data.frame(condition)
   colnames(annot_data) <- "condition"
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
@@ -173,7 +177,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition A factor for the condition to use for differential
 #' expression. Must be a two level factor. Required
 #'
@@ -181,13 +185,13 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #' @export scDiffEx_deseq
 #'
 scDiffEx_deseq <- function(inSCESet, condition){
-  countData <- DESeq::newCountDataSet(scater::counts(inSCESet), condition)
+  countData <- DESeq::newCountDataSet(assay(inSCESet, "counts"), condition)
   countData <- DESeq::estimateSizeFactors(countData)
-  countData <- DESeq::estimateDispersions(countData, method="pooled",
-                                          fitType="local")
-  diff.results <- DESeq::nbinomTest( countData, levels(condition)[1],
-                                     levels(condition)[2])
-  top.results <- stats::p.adjust( diff.results$pval, method="fdr" )
+  countData <- DESeq::estimateDispersions(countData, method = "pooled",
+                                          fitType = "local")
+  diff.results <- DESeq::nbinomTest(countData, levels(condition)[1],
+                                    levels(condition)[2])
+  top.results <- stats::p.adjust(diff.results$pval, method = "fdr")
   diff.results$padj <- top.results
   rownames(diff.results) <- diff.results$id
   diff.results$id <- NULL
@@ -198,9 +202,9 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SCESet object. Required
+#' @param inSCESet Input SingleCellExperiment object. Required
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from pData that contains two labels.
+#' expression. Must be a name of a column from colData that contains two labels.
 #' Required
 #'
 #' @return A data frame of gene names and adjusted p-values
@@ -208,9 +212,44 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 scDiffEx_limma <- function(inSCESet, condition){
   design <- stats::model.matrix(~factor(condition))
-  fit <- limma::lmFit(Biobase::exprs(inSCESet), design)
+  fit <- limma::lmFit(log2(assay(inSCESet, "counts") + 1), design)
   ebayes <- limma::eBayes(fit)
-  topGenes <- limma::topTable(ebayes, coef=2, adjust="fdr", number=nrow(inSCESet))
+  topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+                              number = nrow(inSCESet))
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
+}
+
+#' Perform ANOVA analysis
+#'
+#' Returns a data frame of gene names and adjusted p-values
+#'
+#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param condition The name of the condition to use for differential
+#' expression. Must be a name of a column from colData that contains two labels.
+#' Required
+#'
+#' @return A data frame of gene names and adjusted p-values
+#' @export scDiffEx_anova
+#'
+scDiffEx_anova <- function(inSCESet, condition){
+  mod <- model.matrix(~as.factor(condition), data=colData(inSCESet))
+  mod0 <- model.matrix(~1,data=colData(inSCESet))
+  dat <- log2(assay(inSCESet, "counts") + 1)
+  n <- dim(dat)[2]
+  m <- dim(dat)[1]
+  df1 <- dim(mod)[2]
+  df0 <- dim(mod0)[2]
+  p <- rep(0, m)
+  Id <- diag(n)
+  resid <- dat %*% (Id - mod %*% solve(t(mod) %*% mod) %*% 
+                      t(mod))
+  resid0 <- dat %*% (Id - mod0 %*% solve(t(mod0) %*% mod0) %*% 
+                       t(mod0))
+  rss1 <- resid^2 %*% rep(1, n)
+  rss0 <- resid0^2 %*% rep(1, n)
+  fstats <- ((rss0 - rss1)/(df1 - df0))/(rss1/(n - df1))
+  p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
+  results <- data.frame(row.names = rownames(dat), p.value=p, padj=p.adjust(p, method = "fdr"))
+  return(results)
 }
