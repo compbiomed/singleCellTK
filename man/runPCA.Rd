@@ -2,9 +2,7 @@
 % Please edit documentation in R/runPCA.R
 \name{runPCA}
 \alias{runPCA}
-\title{Run multiple PCA approach
-  
-Use this function to run Principle component Analysis using different approach and load plot}
+\title{Run multiple PCA approach}
 \usage{
 runPCA(plot.type, method, countm, annotm, featurem, involving.variables,
   additional.variables, colorClusters)
@@ -14,11 +12,11 @@ runPCA(plot.type, method, countm, annotm, featurem, involving.variables,
 
 \item{method}{regular PCA/randomized PCA/...}
 
-\item{countm}{A SCE object}
+\item{countm}{A count matrix}
 
-\item{annotm}{A SCE object}
+\item{annotm}{An annotation matrix}
 
-\item{featurem}{A SCE object}
+\item{featurem}{A feature annotation matrix}
 
 \item{involving.variables}{User choice for the prinicipal components}
 
@@ -30,7 +28,6 @@ runPCA(plot.type, method, countm, annotm, featurem, involving.variables,
 A reduced dimension object
 }
 \description{
-Run multiple PCA approach
-  
-Use this function to run Principle component Analysis using different approach and load plot
+Use this function to run Principle component Analysis using different
+approach and load plot
 }

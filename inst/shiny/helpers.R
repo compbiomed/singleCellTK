@@ -8,7 +8,7 @@
 # for better user experience
 # Need to use with the corresponding `withBusyIndicator` server function
 withBusyIndicatorUI <- function(button) {
-  id <- button[['attribs']][['id']]
+  id <- button[["attribs"]][["id"]]
   div(
     `data-for-btn` = id,
     button,
@@ -45,7 +45,7 @@ withBusyIndicatorServer <- function(buttonId, expr) {
     shinyjs::enable(buttonId)
     shinyjs::hide(selector = loadingEl)
   })
-  
+
   # Try to run the code when the button is clicked and show an error message if
   # an error occurs or a success message if it completes
   tryCatch({
@@ -54,7 +54,9 @@ withBusyIndicatorServer <- function(buttonId, expr) {
     shinyjs::delay(2000, shinyjs::hide(selector = doneEl, anim = TRUE, animType = "fade",
                                        time = 0.5))
     value
-  }, error = function(err) { errorFunc(err, buttonId) })
+  }, error = function(err){
+    errorFunc(err, buttonId)
+  })
 }
 
 # When an error happens after a button click, show the error
