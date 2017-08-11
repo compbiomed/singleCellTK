@@ -4,7 +4,8 @@
 \alias{MASTregression}
 \title{MAST linear model}
 \usage{
-MASTregression(SCEdata, fcHurdleSig, samplesize = 49)
+MASTregression(SCEdata, fcHurdleSig, samplesize = 49, threshP = FALSE,
+  variable)
 }
 \arguments{
 \item{SCEdata}{SingleCellExperiment object}
@@ -12,6 +13,11 @@ MASTregression(SCEdata, fcHurdleSig, samplesize = 49)
 \item{fcHurdleSig}{The filtered result from hurdle model}
 
 \item{samplesize}{The number of most significant genes}
+
+\item{threshP}{Plot threshold values from adaptive thresholding. Default is
+FALSE}
+
+\item{variable}{Select the condition of interest}
 }
 \description{
 Run MAST analysis on a SingleCellExperiment object.
