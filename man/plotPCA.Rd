@@ -2,12 +2,10 @@
 % Please edit documentation in R/plotPCA.R
 \name{plotPCA}
 \alias{plotPCA}
-\title{Plot PCA
-  
-Use this function to plot PCA or tSNE results}
+\title{Plot PCA}
 \usage{
-plotPCA(count_data, pca_df = NULL, colorBy = NULL, shape = NULL,
-  pcX = "PC1", pcY = "PC2")
+plotPCA(count_data, pca_df = NULL, colorBy = "No Color",
+  shape = "No Shape", pcX = "PC1", pcY = "PC2")
 }
 \arguments{
 \item{count_data}{A SCE object}
@@ -26,7 +24,5 @@ plotPCA(count_data, pca_df = NULL, colorBy = NULL, shape = NULL,
 A PCA plot
 }
 \description{
-Plot PCA
-  
 Use this function to plot PCA or tSNE results
 }

@@ -8,11 +8,11 @@ differentialPower(datamatrix, downmatrix, conditions, genelist = FALSE,
   significance = 0.05, method = "tpm.t")
 }
 \arguments{
-\item{datamatrix}{The original raw readcount matrix. When used within the Shiny app, this will be counts(SCEsetObject).}
+\item{datamatrix}{The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").}
 
 \item{downmatrix}{The 4-dimensional array of simulated subsampled datasets. Produced by Downsample()}
 
-\item{conditions}{A vector of conditions, such as treatment or batch. Passed as phenoData(SCEsetObject)$treatment.}
+\item{conditions}{A vector of conditions, such as treatment or batch. Passed as colData(SingleCellExperiment)$treatment.}
 
 \item{genelist}{Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the oringinal data.}
 

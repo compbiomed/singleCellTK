@@ -9,11 +9,10 @@ scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
   displayRowLabels = TRUE, levelofinterest)
 }
 \arguments{
-\item{inSCESet}{Input SCESet object. Required}
+\item{inSCESet}{Input SingleCellExperiment object. Required}
 
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from pData that contains two labels.
-Required}
+expression. Required}
 
 \item{significance}{FDR corrected significance cutoff for differentially
 expressed genes. Required}

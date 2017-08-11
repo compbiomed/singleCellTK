@@ -14,7 +14,7 @@ singlecell_SVM(train_set, train_label, test_set, var, tune_para = FALSE,
 
 \item{test_set}{The test dataset (cells x features)}
 
-\item{var}{feature names used for predicting cell quality ##}
+\item{var}{feature names used for predicting cell quality}
 
 \item{tune_para}{boolean values determining if doing the parameter tuning}
 

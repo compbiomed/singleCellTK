@@ -2,11 +2,10 @@
 % Please edit documentation in R/plotTSNE.R
 \name{plotTSNE}
 \alias{plotTSNE}
-\title{Plot TSNE
-  
-Use this function to plot PCA or tSNE results}
+\title{Plot TSNE}
 \usage{
-plotTSNE(count_data, tsne_df = NULL, colorBy = NULL, shape = NULL)
+plotTSNE(count_data, tsne_df = NULL, colorBy = "No Color",
+  shape = "No Shape")
 }
 \arguments{
 \item{count_data}{A SCE object}
@@ -21,7 +20,5 @@ plotTSNE(count_data, tsne_df = NULL, colorBy = NULL, shape = NULL)
 A TSNE plot
 }
 \description{
-Plot TSNE
-  
 Use this function to plot PCA or tSNE results
 }
