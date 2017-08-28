@@ -19,7 +19,6 @@ library(cluster)
 library(ggtree)
 library(SingleCellExperiment)
 
-
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
