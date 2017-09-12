@@ -7,7 +7,7 @@
 MASTviolin(SCEdata, fcHurdleSig, samplesize = 49, threshP = FALSE, variable)
 }
 \arguments{
-\item{SCEdata}{SingleCellExperiment object}
+\item{SCEdata}{SingleCelltkExperiment object}
 
 \item{fcHurdleSig}{The filtered result from hurdle model}
 
@@ -19,5 +19,5 @@ FALSE}
 \item{variable}{Select the condition of interest}
 }
 \description{
-Run MAST analysis on a SingleCellExperiment object.
+Run MAST analysis on a SingleCelltkExperiment object.
 }

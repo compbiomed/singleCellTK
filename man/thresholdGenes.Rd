@@ -7,7 +7,7 @@
 thresholdGenes(SCEdata)
 }
 \arguments{
-\item{SCEdata}{SingleCellExperiment object}
+\item{SCEdata}{SingleCelltkExperiment object}
 }
 \description{
 thresholdGenes
