@@ -1,6 +1,6 @@
 #' thresholdGenes
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @export
 thresholdGenes <- function(SCEdata){
   # data preparation
@@ -17,9 +17,9 @@ thresholdGenes <- function(SCEdata){
 
 #' MAST Violin
 #'
-#' Run MAST analysis on a SingleCellExperiment object.
+#' Run MAST analysis on a SingleCelltkExperiment object.
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
@@ -57,9 +57,9 @@ MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
 
 #' MAST linear model
 #'
-#' Run MAST analysis on a SingleCellExperiment object.
+#' Run MAST analysis on a SingleCelltkExperiment object.
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is

@@ -1,6 +1,6 @@
 #' Create a heatmap for differential expression analysis
 #'
-#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param inSCESet Input SingleCelltkExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Required
 #' @param significance FDR corrected significance cutoff for differentially
@@ -153,7 +153,7 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param inSCESet Input SingleCelltkExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains two labels.
 #' Required
@@ -177,7 +177,7 @@ scDiffEx_deseq2 <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param inSCESet Input SingleCelltkExperiment object. Required
 #' @param condition A factor for the condition to use for differential
 #' expression. Must be a two level factor. Required
 #'
@@ -202,7 +202,7 @@ scDiffEx_deseq <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param inSCESet Input SingleCelltkExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains two labels.
 #' Required
@@ -224,7 +224,7 @@ scDiffEx_limma <- function(inSCESet, condition){
 #'
 #' Returns a data frame of gene names and adjusted p-values
 #'
-#' @param inSCESet Input SingleCellExperiment object. Required
+#' @param inSCESet Input SingleCelltkExperiment object. Required
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains two labels.
 #' Required

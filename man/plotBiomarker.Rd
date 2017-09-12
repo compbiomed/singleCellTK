@@ -5,10 +5,10 @@
 \title{plotBiomarker}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", axis_df = NULL, x = "PC1", y = "PC2")
+  shape = "No Shape", x = "PC1", y = "PC2")
 }
 \arguments{
-\item{count_data}{A SingleCellExperiment object}
+\item{count_data}{A SingleCelltkExperiment object}
 
 \item{gene}{gene list}
 
@@ -18,8 +18,6 @@ Default: "Binary"}
 \item{visual}{Type of visualization (PCA or tSNE). Default: "PCA"}
 
 \item{shape}{visualization shape}
-
-\item{axis_df}{df of PC or tSNE components}
 
 \item{x}{x coordinate for PCA}
 

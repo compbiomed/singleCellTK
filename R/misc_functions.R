@@ -1,8 +1,8 @@
-#' Summarize SingleCellExperiment
+#' Summarize SingleCelltkExperiment
 #'
-#' Creates a table of summary metrics from an input SingleCellExperiment.
+#' Creates a table of summary metrics from an input SingleCelltkExperiment.
 #'
-#' @param indata Input SingleCellExperiment
+#' @param indata Input SingleCelltkExperiment
 #'
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
@@ -21,10 +21,10 @@ summarizeTable <- function(indata){
                               sum(rowSums(assay(indata, "counts")) == 0))))
 }
 
-#' Create a SingleCellExperiment object
+#' Create a SingleCelltkExperiment object
 #'
 #' From a file of counts and a file of annotation information, create a
-#' SingleCellExperiment object.
+#' SingleCelltkExperiment object.
 #'
 #' @param countfile The path to a text file that contains a header row of sample
 #' names, and rows of raw counts per gene for those samples.
@@ -37,7 +37,7 @@ summarizeTable <- function(indata){
 #' @param inputdataframes If TRUE, countfile and annotfile are read as data
 #' frames instead of file paths. The default is FALSE.
 #'
-#' @return a SingleCellExperiment object
+#' @return a SingleCelltkExperiment object
 #' @export createSCE
 #' @examples
 #' \dontrun{
@@ -72,9 +72,9 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  return(SingleCellExperiment(assays=list(counts=as.matrix(countsin)),
-                              colData=annotin,
-                              rowData=featurein))
+  return(SingleCelltkExperiment(assays=list(counts=as.matrix(countsin)),
+                                colData=annotin,
+                                rowData=featurein))
 }
 
 #' Filter Genes and Samples from a Single Cell Object
