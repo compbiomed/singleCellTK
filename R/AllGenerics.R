@@ -1,5 +1,5 @@
 #' Get PCA variances
-#' 
+#'
 #' @param x SCtkE object
 #' @param ... other parameters
 #'
@@ -7,7 +7,7 @@
 setGeneric("pca_variances", function(x, ...) standardGeneric("pca_variances"))
 
 #' Set PCA variances
-#' 
+#'
 #' @param x SCtkE object
 #' @param ... other parameters
 #' @param value PCA variances DataFrame()

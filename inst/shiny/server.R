@@ -86,8 +86,8 @@ shinyServer(function(input, output, session) {
                                    annotfile = input$annotfile$datapath,
                                    featurefile = input$featurefile$datapath)
       } else {
-        data(list=paste0(input$selectExampleData,"_sce"))
-        vals$original <- base::eval(parse(text=paste0(input$selectExampleData,"_sce")))
+        data(list = paste0(input$selectExampleData, "_sce"))
+        vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
       }
       vals$counts <- vals$original
       updateAllPdataInputs()
@@ -138,7 +138,7 @@ shinyServer(function(input, output, session) {
   output$contents <- renderDataTable({
     if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
       temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts,
-                                                           "counts")+ 1))
+                                                           "counts") + 1))
       colnames(temptable)[1] <- "Gene"
       temptable
     }
@@ -230,7 +230,7 @@ shinyServer(function(input, output, session) {
     }
     selectInput("filteredSample", "Select Annotation:", c("none", annot))
   })
-  
+
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
@@ -365,8 +365,8 @@ shinyServer(function(input, output, session) {
           ggplotly(ggplot() + geom_point())
         }
       } else{
-        ggplotly(ggplot() + theme_bw() + 
-                   theme(plot.background = element_rect(fill = "white")) + 
+        ggplotly(ggplot() + theme_bw() +
+                   theme(plot.background = element_rect(fill = "white")) +
                    theme(panel.border = element_rect(colour = "white")))
       }
     }
@@ -726,7 +726,7 @@ shinyServer(function(input, output, session) {
 
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregression(vals$counts, vals$mastgenelist, 
+      MASTregression(vals$counts, vals$mastgenelist,
                      variable = input$hurdlecondition)
     }
   }, height = 600)
