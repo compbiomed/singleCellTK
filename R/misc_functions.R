@@ -15,9 +15,9 @@ summarizeTable <- function(indata){
                                "Genes with no expression across all samples"),
                     "Value" = c(ncol(indata),
                               nrow(indata),
-                              as.integer(mean(apply(assay(indata, "counts"), 2, function(x) sum(x)))),
-                              as.integer(mean(apply(assay(indata, "counts"), 2, function(x) sum(x > 0)))),
-                              sum(apply(assay(indata, "counts"), 2, function(x) sum(as.numeric(x) == 0)) < 1700),
+                              as.integer(mean(colSums(assay(indata, "counts")))),
+                              as.integer(mean(colSums(assay(indata, "counts") > 0))),
+                              sum(colSums(assay(indata, "counts") != 0) < 1700),
                               sum(rowSums(assay(indata, "counts")) == 0))))
 }
 
@@ -72,9 +72,9 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  return(SingleCelltkExperiment(assays=list(counts=as.matrix(countsin)),
-                                colData=annotin,
-                                rowData=featurein))
+  return(SingleCelltkExperiment(assays = list(counts = as.matrix(countsin)),
+                                colData = annotin,
+                                rowData = featurein))
 }
 
 #' Filter Genes and Samples from a Single Cell Object

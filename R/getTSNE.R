@@ -16,7 +16,7 @@ getTSNE <- function(count_data, use_assay="counts"){
   } else{
     ntop <- 500
   }
-  if(!(use_assay %in% names(assays(count_data)))){
+  if (!(use_assay %in% names(assays(count_data)))){
     stop(use_assay, " not in the assay list")
   }
   exprs_mat <- log2(assay(count_data, use_assay) + 1)

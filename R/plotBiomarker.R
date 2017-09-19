@@ -50,7 +50,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     if (visual == "PCA"){
       if (binary == "Binary"){
         l$expression <- ifelse(l$expression, "Yes", "No")
-        g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y, label = "Sample", color = "expression")) + 
+        g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y, label = "Sample", color = "expression")) +
           ggplot2::geom_point() +
           ggplot2::scale_color_manual(limits = c("Yes", "No"), values = c("Blue", "Grey")) +
           ggplot2::labs(color = "Expression")
