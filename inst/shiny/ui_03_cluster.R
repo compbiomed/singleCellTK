@@ -21,8 +21,9 @@ shiny_panel_cluster <- fluidPage(
                 radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")),
                 conditionalPanel(
                   condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
-                  selectInput(
-                    "colorGenes", "Select Gene(s):", geneChoice, multiple = TRUE
+                  selectizeInput(
+                    "colorGenes", label="Select Gene(s):", geneChoice,
+                    multiple = TRUE, options = list(maxOptions = 100000)
                   )
                 ),
                 conditionalPanel(

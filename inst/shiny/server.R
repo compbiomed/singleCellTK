@@ -1,24 +1,3 @@
-library(shiny)
-library(shinyjs)
-library(ComplexHeatmap)
-library(biomaRt)
-library(circlize)
-library(limma)
-library(d3heatmap)
-library(ggplot2)
-library(plotly)
-library(DESeq)
-library(GGally)
-library(data.table)
-library(MAST)
-library(rsvd)
-library(pcaMethods)
-library(colourpicker)
-library(gridExtra)
-library(cluster)
-library(ggtree)
-library(SingleCellExperiment)
-
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
@@ -67,8 +46,8 @@ shinyServer(function(input, output, session) {
                       choices = c("No Shape", colnames(colData(vals$counts))))
     updateSelectInput(session, "Knumber",
                       choices = 1:ncol(vals$counts))
-    updateSelectInput(session, "colorGenes",
-                      choices = c(rownames(vals$counts)[1:100]))
+    updateSelectizeInput(session, "colorGenes",
+                      choices = c(rownames(vals$counts)))
   }
 
   # Close app on quit
@@ -93,7 +72,7 @@ shinyServer(function(input, output, session) {
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
-      updateSelectInput(session, "colorGenes",
+      updateSelectizeInput(session, "colorGenes",
                         choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
                         choices = paste("PC", 1:ncol(vals$counts), sep = ""),
@@ -377,8 +356,13 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
-                   Variances = pca_variances(vals$counts)$percentVar * 100)[1:10, ]
+        if(nrow(pca_variances(vals$counts)) != ncol(vals$counts)){
+          vals$counts <- getPCA(vals$counts)
+        }
+        if(nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
+          data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
+                     Variances = pca_variances(vals$counts)$percentVar * 100)[1:10, ]
+        }
       }
     }
   })
