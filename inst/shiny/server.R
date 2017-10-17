@@ -11,43 +11,34 @@ shinyServer(function(input, output, session) {
   #reactive values object
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
-    original = getShinyOption("inputSCEset")
+    original = getShinyOption("inputSCEset"),
+    selectgenes = rownames(getShinyOption("inputSCEset"))
   )
 
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
-    updateSelectInput(session, "colorDims",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "clusterChoice",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "colorClusters",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "shapeClusters",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "colorClusters_Plot",
-                      choices = c("Cluster Label", colnames(colData(vals$counts))))
-    updateSelectInput(session, "shapeClusters_Plot",
-                      choices = c("Cluster Label", colnames(colData(vals$counts))))
+    pdata_options <- colnames(colData(vals$counts))
     updateSelectInput(session, "colorClusters_MAST",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "selectDiffex_condition",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "subCovariate",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "selectAdditionalVariables",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "deleterowdatacolumn",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "hurdlecondition",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "colorBy",
-                      choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))))
+                      choices = c("No Color", "Gene Expression", pdata_options))
     updateSelectInput(session, "shapeBy",
-                      choices = c("No Shape", colnames(colData(vals$counts))))
+                      choices = c("No Shape", pdata_options))
     updateSelectInput(session, "Knumber",
                       choices = 1:ncol(vals$counts))
+    selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
-                      choices = c(rownames(vals$counts)))
+                      choices = selectthegenes, server = TRUE)
   }
 
   # Close app on quit
@@ -80,23 +71,9 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "pcY",
                         choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC2")
-      updateSelectInput(session, "pcX_Clustering_Data",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC1")
-      updateSelectInput(session, "pcY_Clustering_Data",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC2")
-      updateSelectInput(session, "pcX_Clustering_Plot",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC1")
-      updateSelectInput(session, "pcY_Clustering_Plot",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC2")
-      updateSelectInput(session, "numberKClusters",
-                        choices = 1:ncol(vals$counts))
-      updateSelectInput(session, "numberHClusters",
-                        choices = 1:ncol(vals$counts))
       updateSelectInput(session, "Knumber",
+                        choices = 1:ncol(vals$counts))
+      updateSelectInput(session, "Cnumber",
                         choices = 1:ncol(vals$counts))
       insertUI(
         selector = "#uploadAlert",
@@ -356,7 +333,7 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        if(nrow(pca_variances(vals$counts)) != ncol(vals$counts)){
+        if (nrow(pca_variances(vals$counts)) != ncol(vals$counts)) {
           vals$counts <- getPCA(vals$counts)
         }
         if(nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
@@ -480,7 +457,9 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     }
     else{
-      vals$counts <- getTSNE(vals$counts)
+      withBusyIndicatorServer("reRunTSNE", {
+        vals$counts <- getTSNE(vals$counts)
+      })
     }
   })
 

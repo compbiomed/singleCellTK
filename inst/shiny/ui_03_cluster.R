@@ -22,7 +22,7 @@ shiny_panel_cluster <- fluidPage(
                 conditionalPanel(
                   condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
                   selectizeInput(
-                    "colorGenes", label="Select Gene(s):", geneChoice,
+                    "colorGenes", label = "Select Gene(s):", NULL,
                     multiple = TRUE, options = list(maxOptions = 100000)
                   )
                 ),
