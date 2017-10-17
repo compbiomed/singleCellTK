@@ -34,7 +34,6 @@ Imports:
     matrixStats,
     methods,
     multtest,
-    pcaMethods,
     plotly,
     RColorBrewer,
     rsvd,
