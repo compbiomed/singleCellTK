@@ -2,18 +2,20 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{Get PCA components for a SCE object}
+\title{Get PCA components for a SCtkE object}
 \usage{
-getPCA(count_data)
+getPCA(count_data, use_assay = "counts")
 }
 \arguments{
-\item{count_data}{SCE set}
+\item{count_data}{SCtkE object}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
 }
 \value{
-A reduced dimension object
+A SCtkE object with reducedDim "PCA" and pca_variances updated
 }
 \description{
 Selects the 500 most variable genes in the SCE, performs
-PCA based on them and outputs the principal components in a data frame
-and their variances as percentVar attribute
+PCA based on them and stores the PCA values in the reducedDims slot of the
+SCE object.
 }

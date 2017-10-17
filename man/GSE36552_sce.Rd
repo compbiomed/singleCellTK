@@ -3,8 +3,8 @@
 \docType{data}
 \name{GSE36552_sce}
 \alias{GSE36552_sce}
-\title{Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE36552}
-\format{SingleCellExperiment}
+\title{Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE36552}
+\format{SingleCelltkExperiment}
 \source{
 DOI: 10.1038/nsmb.2660
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc_functions.R
 \name{createSCE}
 \alias{createSCE}
-\title{Create a SingleCellExperiment object}
+\title{Create a SingleCelltkExperiment object}
 \usage{
 createSCE(countfile = NULL, annotfile = NULL, featurefile = NULL,
   inputdataframes = FALSE)
@@ -23,11 +23,11 @@ have the same genes in the same order as countfile. This is optional.}
 frames instead of file paths. The default is FALSE.}
 }
 \value{
-a SingleCellExperiment object
+a SingleCelltkExperiment object
 }
 \description{
 From a file of counts and a file of annotation information, create a
-SingleCellExperiment object.
+SingleCelltkExperiment object.
 }
 \examples{
 \dontrun{
