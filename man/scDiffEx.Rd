@@ -9,7 +9,7 @@ scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
   displayRowLabels = TRUE, levelofinterest)
 }
 \arguments{
-\item{inSCESet}{Input SingleCellExperiment object. Required}
+\item{inSCESet}{Input SingleCelltkExperiment object. Required}
 
 \item{condition}{The name of the condition to use for differential
 expression. Required}

@@ -4,16 +4,18 @@
 \alias{getTSNE}
 \title{Get t-SNE components for a SCE object}
 \usage{
-getTSNE(count_data)
+getTSNE(count_data, use_assay = "counts")
 }
 \arguments{
 \item{count_data}{SCE object}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
 }
 \value{
-A reduced dimension object
+A SCE object with reducedDim "TSNE" updated
 }
 \description{
 Selects the 500 most variable genes in the feature count, performs
-t-SNE based on them and outputs the principal components in a data frame
-and their variances as percentVar attribute
+t-SNE based on them and stores the TSNE values in the reducedDims slot of the
+SCE object.
 }

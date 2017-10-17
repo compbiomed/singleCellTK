@@ -75,7 +75,7 @@ require(DESeq)
 #'
 #' @param datamatrix The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").
 #' @param downmatrix The 4-dimensional array of simulated subsampled datasets. Produced by Downsample()
-#' @param conditions A vector of conditions, such as treatment or batch. Passed as colData(SingleCellExperiment)$treatment.
+#' @param conditions A vector of conditions, such as treatment or batch. Passed as colData(SingleCelltkExperiment)$treatment.
 #' @param genelist Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the oringinal data.
 #' @param significance Significance threshold, a float between 0 and 1 (exclusive).
 #' @param method Which method should be used for differential expression. Default is simple tpm-based t-test for speed.

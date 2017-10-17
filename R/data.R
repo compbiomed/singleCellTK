@@ -1,4 +1,4 @@
-#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE60361
+#' Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE60361
 #' subest
 #'
 #' A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et
@@ -9,49 +9,49 @@
 #'
 #' @name GSE60361_subset_sce
 #' @docType data
-#' @format SingleCellExperiment
+#' @format SingleCelltkExperiment
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
 #' @examples
 #' data("GSE60361_subset_sce")
 "GSE60361_subset_sce"
 
-#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE73121
+#' Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE73121
 #'
 #' 117 Single-cell transcriptome profiling for metastatic renal cell carcinoma
 #' patient-derived cells
 #'
 #' @name GSE73121_sce
 #' @docType data
-#' @format SingleCellExperiment
+#' @format SingleCelltkExperiment
 #' @source DOI: 10.1186/s13059-016-0945-9
 #' @keywords datasets
 #' @examples
 #' data("GSE73121_sce")
 "GSE73121_sce"
 
-#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE66507
+#' Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE66507
 #'
 #' 30 Single-cells from embryonic stem cells separated into three different
 #' tissue types.
 #'
 #' @name GSE66507_sce
 #' @docType data
-#' @format SingleCellExperiment
+#' @format SingleCelltkExperiment
 #' @source DOI: 10.1242/dev.123547
 #' @keywords datasets
 #' @examples
 #' data("GSE66507_sce")
 "GSE66507_sce"
 
-#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE36552
+#' Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE36552
 #'
 #' 124 Single-cell transcriptome profiling from embryonic stem cells derived
 #' from donated human pre-implatation embryos.
 #'
 #' @name GSE36552_sce
 #' @docType data
-#' @format SingleCellExperiment
+#' @format SingleCelltkExperiment
 #' @source DOI: 10.1038/nsmb.2660
 #' @keywords datasets
 #' @examples
@@ -65,7 +65,7 @@
 #'
 #' @name maits_sce
 #' @docType data
-#' @format SingleCellExperiment
+#' @format SingleCelltkExperiment
 #' @source DOI: 10.1186/s13059-015-0844-5
 #' @keywords datasets
 #' @examples
