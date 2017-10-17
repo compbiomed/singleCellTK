@@ -32,7 +32,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
 
   # Create MAST SingleCellAssay
   pdata <- colData(SCEdata)
-  expres <- log2(assay(SCEdata, "counts")+1)
+  expres <- log2(assay(SCEdata, "counts") + 1)
   fdata <- rowData(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
 
