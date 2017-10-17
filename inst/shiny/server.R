@@ -18,13 +18,9 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
     pdata_options <- colnames(colData(vals$counts))
-    updateSelectInput(session, "colorClusters_MAST",
-                      choices = pdata_options)
     updateSelectInput(session, "selectDiffex_condition",
                       choices = pdata_options)
     updateSelectInput(session, "subCovariate",
-                      choices = pdata_options)
-    updateSelectInput(session, "selectAdditionalVariables",
                       choices = pdata_options)
     updateSelectInput(session, "deleterowdatacolumn",
                       choices = pdata_options)
@@ -265,30 +261,9 @@ shinyServer(function(input, output, session) {
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
 
-  multipcaDataFrame <- observeEvent(input$plotPCA, {
-    withBusyIndicatorServer("plotPCA", {
-      if (is.null(vals$counts)){
-        alert("Warning: Upload data first!")
-      }
-      else{
-        g <- runPCA(plot.type = input$plotTypeId,
-                    method = input$pcaAlgorithm,
-                    countm = log2(assay(vals$counts, "counts") + 1),
-                    annotm = colData(vals$counts),
-                    featurem = rowData(vals$counts),
-                    involving.variables = input$pcaCheckbox,
-                    additional.variables = input$selectAdditionalVariables,
-                    colorClusters = input$colorClusters_MAST)
-        output$pcaPlot <- renderPlot({
-          g
-        })
-      }
-    })
-  })
-
   output$clusterPlot <- renderPlotly({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      ggplotly(ggplot())
     } else{
       if (input$dimRedPlotMethod == "PCA"){
         if (is.null(reducedDim(vals$counts, "PCA"))) {
@@ -330,7 +305,6 @@ shinyServer(function(input, output, session) {
 
   output$pctable <- renderTable({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pca_variances(vals$counts)) != ncol(vals$counts)) {
@@ -346,7 +320,6 @@ shinyServer(function(input, output, session) {
 
   output$geneExpressionPlot <- renderPlot({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
     } else {
       if (input$dimRedPlotMethod == "PCA"){
         if (is.null(reducedDim(vals$counts, "PCA"))) {
@@ -430,26 +403,32 @@ shinyServer(function(input, output, session) {
   }, height = 600)
 
   clusterDataFrame <- observeEvent(input$clusterData, {
-    withBusyIndicatorServer("clusterData", {
-      if (input$clusteringAlgorithm == "K-Means"){
-        data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-        koutput <- kmeans(data, input$Knumber)
-        name <- input$clusterName
-        colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
-        updateAllPdataInputs()
-        updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
-                          selected = input$clusterName)
-      } else if (input$clusteringAlgorithm == "Clara") {
-        data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-        coutput <- clara(data, input$Cnumber)
-        colData(vals$counts)$Clara <- factor(coutput$clustering)
-        updateAllPdataInputs()
-        updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
-                          selected = input$clusterName)
-      }
-    })
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      withBusyIndicatorServer("clusterData", {
+        if (input$clusteringAlgorithm == "K-Means"){
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          koutput <- kmeans(data, input$Knumber)
+          name <- input$clusterName
+          colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
+          updateAllPdataInputs()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        } else if (input$clusteringAlgorithm == "Clara") {
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          coutput <- clara(data, input$Cnumber)
+          colData(vals$counts)$Clara <- factor(coutput$clustering)
+          updateAllPdataInputs()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        }
+      })
+    }
   })
 
   observeEvent(input$reRunTSNE, {
