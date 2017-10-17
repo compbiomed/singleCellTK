@@ -1,25 +1,3 @@
-library(shiny)
-library(shinyjs)
-library(ComplexHeatmap)
-library(biomaRt)
-library(circlize)
-library(limma)
-library(d3heatmap)
-library(ggplot2)
-library(plotly)
-library(DESeq)
-library(GGally)
-library(data.table)
-library(MAST)
-library(rsvd)
-library(pcaMethods)
-library(colourpicker)
-library(gridExtra)
-library(cluster)
-library(ggtree)
-library(SingleCellExperiment)
-
-
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
@@ -34,43 +12,29 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    PCA = NULL
+    selectgenes = rownames(getShinyOption("inputSCEset"))
   )
 
   #Update all of the columns that depend on pvals columns
   updateAllPdataInputs <- function(){
-    updateSelectInput(session, "colorDims",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "clusterChoice",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "colorClusters",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "shapeClusters",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "colorClusters_Plot",
-                      choices = c("Cluster Label", colnames(colData(vals$counts))))
-    updateSelectInput(session, "shapeClusters_Plot",
-                      choices = c("Cluster Label", colnames(colData(vals$counts))))
-    updateSelectInput(session, "colorClusters_MAST",
-                      choices = colnames(colData(vals$counts)))
+    pdata_options <- colnames(colData(vals$counts))
     updateSelectInput(session, "selectDiffex_condition",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "subCovariate",
-                      choices = colnames(colData(vals$counts)))
-    updateSelectInput(session, "selectAdditionalVariables",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "deleterowdatacolumn",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "hurdlecondition",
-                      choices = colnames(colData(vals$counts)))
+                      choices = pdata_options)
     updateSelectInput(session, "colorBy",
-                      choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))))
+                      choices = c("No Color", "Gene Expression", pdata_options))
     updateSelectInput(session, "shapeBy",
-                      choices = c("No Shape", colnames(colData(vals$counts))))
+                      choices = c("No Shape", pdata_options))
     updateSelectInput(session, "Knumber",
                       choices = 1:ncol(vals$counts))
-    updateSelectInput(session, "colorGenes",
-                      choices = c(rownames(vals$counts)[1:100]))
+    selectthegenes <- rownames(vals$counts)
+    updateSelectizeInput(session, "colorGenes",
+                      choices = selectthegenes, server = TRUE)
   }
 
   # Close app on quit
@@ -88,14 +52,14 @@ shinyServer(function(input, output, session) {
                                    annotfile = input$annotfile$datapath,
                                    featurefile = input$featurefile$datapath)
       } else {
-        data(list=paste0(input$selectExampleData,"_sce"))
-        vals$original <- base::eval(parse(text=paste0(input$selectExampleData,"_sce")))
+        data(list = paste0(input$selectExampleData, "_sce"))
+        vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
       }
       vals$counts <- vals$original
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
-      updateSelectInput(session, "colorGenes",
+      updateSelectizeInput(session, "colorGenes",
                         choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
                         choices = paste("PC", 1:ncol(vals$counts), sep = ""),
@@ -103,23 +67,9 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "pcY",
                         choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC2")
-      updateSelectInput(session, "pcX_Clustering_Data",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC1")
-      updateSelectInput(session, "pcY_Clustering_Data",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC2")
-      updateSelectInput(session, "pcX_Clustering_Plot",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC1")
-      updateSelectInput(session, "pcY_Clustering_Plot",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC2")
-      updateSelectInput(session, "numberKClusters",
-                        choices = 1:ncol(vals$counts))
-      updateSelectInput(session, "numberHClusters",
-                        choices = 1:ncol(vals$counts))
       updateSelectInput(session, "Knumber",
+                        choices = 1:ncol(vals$counts))
+      updateSelectInput(session, "Cnumber",
                         choices = 1:ncol(vals$counts))
       insertUI(
         selector = "#uploadAlert",
@@ -128,9 +78,7 @@ shinyServer(function(input, output, session) {
                       class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
                       Successfully Uploaded! <button type='button' class='close' \
                       data-dismiss='alert'>&times;</button>"))
-        )
-      vals$PCA <- NULL
-      vals$TSNE <- NULL
+      )
     })
   })
 
@@ -141,7 +89,8 @@ shinyServer(function(input, output, session) {
   #Render data table if there are fewer than 50 samples
   output$contents <- renderDataTable({
     if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts, "counts")+ 1))
+      temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts,
+                                                           "counts") + 1))
       colnames(temptable)[1] <- "Gene"
       temptable
     }
@@ -153,7 +102,8 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Reads per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x)), type = "histogram") %>%
+      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x)),
+              type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
@@ -166,7 +116,8 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Genes detected per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x > 0)), type = "histogram") %>%
+      plot_ly(x = apply(assay(vals$counts, "counts"), 2,
+                        function(x) sum(x > 0)), type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
@@ -194,8 +145,6 @@ shinyServer(function(input, output, session) {
                                   remove_bottom = 0.01 * input$LowExpression,
                                   minimum_detect_genes = input$minDetectGenect)
       #Refresh things for the clustering tab
-      vals$PCA <- NULL
-      vals$TSNE <- NULL
       updateAllPdataInputs()
     }
   })
@@ -210,8 +159,6 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
       #Refresh things for the clustering tab
-      vals$PCA <- NULL
-      vals$TSNE <- NULL
       updateAllPdataInputs()
     }
   })
@@ -235,7 +182,7 @@ shinyServer(function(input, output, session) {
     }
     selectInput("filteredSample", "Select Annotation:", c("none", annot))
   })
-  
+
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
@@ -314,86 +261,71 @@ shinyServer(function(input, output, session) {
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
 
-  multipcaDataFrame <- observeEvent(input$plotPCA, {
-    withBusyIndicatorServer("plotPCA", {
-      if (is.null(vals$counts)){
-        alert("Warning: Upload data first!")
-      }
-      else{
-        g <- runPCA(plot.type = input$plotTypeId,
-                    method = input$pcaAlgorithm,
-                    countm = log2(assay(vals$counts, "counts") + 1),
-                    annotm = colData(vals$counts),
-                    featurem = rowData(vals$counts),
-                    involving.variables = input$pcaCheckbox,
-                    additional.variables = input$selectAdditionalVariables,
-                    colorClusters = input$colorClusters_MAST)
-        output$pcaPlot <- renderPlot({
-          g
-        })
-      }
-    })
-  })
-
   output$clusterPlot <- renderPlotly({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      ggplotly(ggplot())
     } else{
       if (input$dimRedPlotMethod == "PCA"){
-        if (is.null(vals$PCA)) {
-          vals$PCA <- getPCA(vals$counts)
+        if (is.null(reducedDim(vals$counts, "PCA"))) {
+          vals$counts <- getPCA(vals$counts)
         }
-        if (!is.null(vals$PCA)){
+        if (!is.null(reducedDim(vals$counts, "PCA"))){
           if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotPCA(vals$counts, vals$PCA, input$colorBy,
+            g <- singleCellTK::plotPCA(vals$counts, input$colorBy,
                                        input$shapeBy, input$pcX, input$pcY)
           } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotPCA(vals$counts, vals$PCA, "No Color",
-                                       "No Shape", input$pcX, input$pcY)
+            g <- singleCellTK::plotPCA(vals$counts, "No Color", "No Shape",
+                                       input$pcX, input$pcY)
           }
           ggplotly(g)
         } else {
           ggplotly(ggplot() + geom_point())
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        if (is.null(vals$TSNE)) {
-          vals$TSNE <- getTSNE(vals$counts)
+        if (is.null(reducedDim(vals$counts, "TSNE"))) {
+          vals$counts <- getTSNE(vals$counts)
         }
-        if (!is.null(vals$TSNE)){
+        if (!is.null(reducedDim(vals$counts, "TSNE"))){
           if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, input$colorBy, input$shapeBy)
+            g <- singleCellTK::plotTSNE(vals$counts, input$colorBy, input$shapeBy)
           } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotTSNE(vals$counts, vals$TSNE, "No Color", "No Shape")
+            g <- singleCellTK::plotTSNE(vals$counts, "No Color", "No Shape")
           }
           ggplotly(g)
         } else {
           ggplotly(ggplot() + geom_point())
         }
       } else{
-        ggplotly(ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white")))
+        ggplotly(ggplot() + theme_bw() +
+                   theme(plot.background = element_rect(fill = "white")) +
+                   theme(panel.border = element_rect(colour = "white")))
       }
     }
   })
 
   output$pctable <- renderTable({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""), Variances = attr(vals$PCA, "percentVar") * 100)[1:10, ]
+        if (nrow(pca_variances(vals$counts)) != ncol(vals$counts)) {
+          vals$counts <- getPCA(vals$counts)
+        }
+        if(nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
+          data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
+                     Variances = pca_variances(vals$counts)$percentVar * 100)[1:10, ]
+        }
       }
     }
   })
 
   output$geneExpressionPlot <- renderPlot({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
     } else {
       if (input$dimRedPlotMethod == "PCA"){
-        if (is.null(vals$PCA)) {
-          vals$PCA <- getPCA(vals$counts)
+        if (is.null(reducedDim(vals$counts, "PCA"))) {
+          vals$counts <- getPCA(vals$counts)
         }
-        if (!is.null(vals$PCA)){
+        if (!is.null(reducedDim(vals$counts, "PCA"))){
           if (is.null(input$colorBy)) {
             return()
           }
@@ -405,24 +337,24 @@ shinyServer(function(input, output, session) {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy, vals$PCA, input$pcX, input$pcY)
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy, input$pcX, input$pcY)
                 g
               }
             } else if (input$colorGeneBy == "Manual Input") {
               if (is.null(input$colorGenes)){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy, vals$PCA, input$pcX, input$pcY)
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy, input$pcX, input$pcY)
                 g
               }
             }
           }
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        if (is.null(vals$TSNE)) {
-          vals$TSNE <- getTSNE(vals$counts)
+        if (is.null(reducedDim(vals$counts, "TSNE"))){
+          vals$counts <- getTSNE(vals$counts)
         }
-        if (!is.null(vals$TSNE)){
+        if (!is.null(reducedDim(vals$counts, "TSNE"))){
           if (input$colorBy == "Gene Expression") {
             if (input$colorGeneBy == "Biomarker (from DE tab)"){
               if (input$colorGenesBiomarker == ""){
@@ -431,14 +363,14 @@ shinyServer(function(input, output, session) {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy)
                 g
               }
             } else if (input$colorGeneBy == "Manual Input") {
               if (is.null(input$colorGenes)){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy, vals$TSNE)
+                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy)
                 g
               }
             }
@@ -454,13 +386,13 @@ shinyServer(function(input, output, session) {
     } else {
       if (input$dimRedPlotMethod == "Dendrogram"){
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
           d <- dist(data)
           h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size = 2)
           g
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
           d <- dist(data)
           h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size = 2)
@@ -471,26 +403,32 @@ shinyServer(function(input, output, session) {
   }, height = 600)
 
   clusterDataFrame <- observeEvent(input$clusterData, {
-    withBusyIndicatorServer("clusterData", {
-      if (input$clusteringAlgorithm == "K-Means"){
-        data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
-        koutput <- kmeans(data, input$Knumber)
-        name <- input$clusterName
-        colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
-        updateAllPdataInputs()
-        updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
-                          selected = input$clusterName)
-      } else if (input$clusteringAlgorithm == "Clara") {
-        data <- getClusterInputData(vals$counts, input$selectClusterInputData, vals)
-        coutput <- clara(data, input$Cnumber)
-        colData(vals$counts)$Clara <- factor(coutput$clustering)
-        updateAllPdataInputs()
-        updateSelectInput(session, "colorBy",
-                          choices = c("No Color", "Gene Expression", colnames(colData(vals$counts))),
-                          selected = input$clusterName)
-      }
-    })
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      withBusyIndicatorServer("clusterData", {
+        if (input$clusteringAlgorithm == "K-Means"){
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          koutput <- kmeans(data, input$Knumber)
+          name <- input$clusterName
+          colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
+          updateAllPdataInputs()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        } else if (input$clusteringAlgorithm == "Clara") {
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          coutput <- clara(data, input$Cnumber)
+          colData(vals$counts)$Clara <- factor(coutput$clustering)
+          updateAllPdataInputs()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        }
+      })
+    }
   })
 
   observeEvent(input$reRunTSNE, {
@@ -498,7 +436,9 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     }
     else{
-      vals$TSNE <- getTSNE(vals$counts)
+      withBusyIndicatorServer("reRunTSNE", {
+        vals$counts <- getTSNE(vals$counts)
+      })
     }
   })
 
@@ -728,7 +668,7 @@ shinyServer(function(input, output, session) {
 
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregression(vals$counts, vals$mastgenelist, 
+      MASTregression(vals$counts, vals$mastgenelist,
                      variable = input$hurdlecondition)
     }
   }, height = 600)

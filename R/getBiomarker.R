@@ -1,9 +1,9 @@
 #' getBiomarker
 #'
-#' Given a list of genes and a SingleCellExperiment object, return the binary or
+#' Given a list of genes and a SingleCelltkExperiment object, return the binary or
 #' continuous expression of the genes.
 #'
-#' @param count_data A SingleCellExperiment object
+#' @param count_data A SingleCelltkExperiment object
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
@@ -23,7 +23,7 @@ getBiomarker <- function(count_data, gene, binary="Binary"){
   # If color scale is a continuouse scale bar
   #TODO: change this to tpm assay or other normalized assay
   else if (binary == "Continuous"){
-    expression <- log2(c+1)
+    expression <- log2(c + 1)
   }
   # Make data frame with sample, counts
   bio <- data.frame(sample, expression)

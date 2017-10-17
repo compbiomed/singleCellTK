@@ -4,14 +4,12 @@
 \alias{getClusterInputData}
 \title{Get data to use as input clustering algorithms}
 \usage{
-getClusterInputData(count_data, inputData, vals)
+getClusterInputData(count_data, inputData)
 }
 \arguments{
 \item{count_data}{A SCE object}
 
 \item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components")}
-
-\item{vals}{Reactive Dataframe}
 }
 \value{
 Cluster input data

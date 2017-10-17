@@ -3,7 +3,6 @@
 #' Use this function to plot PCA or tSNE results
 #'
 #' @param count_data A SCE object
-#' @param pca_df PCA data frame
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
 #' @param pcX User choice for the first principal component
@@ -12,26 +11,27 @@
 #' @return A PCA plot
 #' @export plotPCA
 #'
-plotPCA <- function(count_data, pca_df=NULL, colorBy="No Color", shape="No Shape", pcX="PC1", pcY="PC2"){
-  if (is.null(pca_df)){
-    pca_df <- getPCA(count_data)
+plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
+                    pcY="PC2"){
+  if (is.null(reducedDim(count_data, "PCA"))){
+    count_data <- getPCA(count_data)
   }
+  pca_df <- data.frame(reducedDim(count_data, "PCA"))
+  variances <- pca_variances(count_data)$percentVar
   if (colorBy == "No Color"){
     colorBy <- NULL
   }
   if (shape == "No Shape"){
     shape <- NULL
   }
-  l <- pca_df
   if (!is.null(colorBy)){
-    l$color <- eval(parse(text = paste("colData(count_data)$", colorBy, sep = "")))
+    pca_df$color <- eval(parse(text = paste("colData(count_data)$", colorBy, sep = "")))
   }
   if (!is.null(shape)){
-    l$shape <- factor(eval(parse(text = paste("colData(count_data)$", shape, sep = ""))))
+    pca_df$shape <- factor(eval(parse(text = paste("colData(count_data)$", shape, sep = ""))))
   }
-  l$Sample <- colnames(count_data)
-  variances <- attr(pca_df, "percentVar")
-  g <- ggplot2::ggplot(l, ggplot2::aes_string(pcX, pcY, label = "Sample")) +
+  pca_df$Sample <- colnames(count_data)
+  g <- ggplot2::ggplot(pca_df, ggplot2::aes_string(pcX, pcY, label = "Sample")) +
     ggplot2::geom_point() +
     ggplot2::labs(x = paste(pcX, toString(round(variances[strtoi(strsplit(pcX, "PC")[[1]][-1])] * 100, 2)), "%"), y = paste(pcY, toString(round(variances[strtoi(strsplit(pcY, "PC")[[1]][-1])] * 100, 2)), "%"))
   if (!is.null(colorBy)){

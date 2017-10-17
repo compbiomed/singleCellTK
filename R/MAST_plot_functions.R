@@ -1,10 +1,10 @@
 #' thresholdGenes
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @export
 thresholdGenes <- function(SCEdata){
   # data preparation
-  expres <- log2(assay(SCEdata, "counts")+1)
+  expres <- log2(assay(SCEdata, "counts") + 1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
   SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
@@ -17,19 +17,19 @@ thresholdGenes <- function(SCEdata){
 
 #' MAST Violin
 #'
-#' Run MAST analysis on a SingleCellExperiment object.
+#' Run MAST analysis on a SingleCelltkExperiment object.
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
 #' FALSE
 #' @param variable Select the condition of interest
-#' 
+#'
 #' @export
 MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
                        variable){
-  expres <- log2(assay(SCEdata, "counts")+1)
+  expres <- log2(assay(SCEdata, "counts") + 1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
   SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
@@ -40,37 +40,37 @@ MASTviolin <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
   entrez_to_plot <- fcHurdleSig$Gene[1:49]
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
   if (threshP){
-    yvalue = "thresh"
+    yvalue <- "thresh"
   }
   else{
-    yvalue = "tpm"
+    yvalue <- "tpm"
   }
   violinplot <- ggplot2::ggplot(flat_dat, ggplot2::aes_string(x = variable,
                                                               y = yvalue,
                                                               color = variable)) +
-    ggplot2::geom_jitter() + 
-    ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7) + 
-    ggplot2::geom_violin() + 
+    ggplot2::geom_jitter() +
+    ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7) +
+    ggplot2::geom_violin() +
     ggplot2::ggtitle("Violin Plot")
   return(violinplot)
 }
 
 #' MAST linear model
 #'
-#' Run MAST analysis on a SingleCellExperiment object.
+#' Run MAST analysis on a SingleCelltkExperiment object.
 #'
-#' @param SCEdata SingleCellExperiment object
+#' @param SCEdata SingleCelltkExperiment object
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
 #' FALSE
 #' @param variable Select the condition of interest
-#' 
+#'
 #' @export
 MASTregression <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
                            variable){
   count <- assay(SCEdata, "counts")
-  expres <- log2(count+1)
+  expres <- log2(count + 1)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
   SCE_new <- MAST::FromMatrix(expres, colData(SCEdata), fdata)
@@ -83,24 +83,24 @@ MASTregression <- function(SCEdata, fcHurdleSig, samplesize = 49, threshP=FALSE,
   assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
   entrez_to_plot <- fcHurdleSig$Gene[1:49]
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
-  
+
   if (threshP){
-    yvalue = "thresh"
+    yvalue <- "thresh"
   }
   else{
-    yvalue = "tpm"
+    yvalue <- "tpm"
   }
-  
+
   ggbase <- ggplot2::ggplot(flat_dat, ggplot2::aes_string(x = variable,
                                                           y = yvalue,
                                                           color = variable)) +
-    ggplot2::geom_jitter() + 
+    ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7)
-  
+
   flat_dat[, lmPred := lm(thresh~cngeneson + condition)$fitted, key = primerid]
 
-  regressionplot <- ggbase + 
-    ggplot2::aes(x = cngeneson) + 
+  regressionplot <- ggbase +
+    ggplot2::aes(x = cngeneson) +
     ggplot2::geom_line(ggplot2::aes(y = lmPred), lty = 1) +
     ggplot2::xlab("Standardized Cellular Detection Rate")
   return(regressionplot)
