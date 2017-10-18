@@ -36,6 +36,8 @@ summarizeTable <- function(indata){
 #' have the same genes in the same order as countfile. This is optional.
 #' @param inputdataframes If TRUE, countfile and annotfile are read as data
 #' frames instead of file paths. The default is FALSE.
+#' @param create_logcounts If TRUE, create a log2(counts+1) normalized assay
+#' and include it in the object. The default is TRUE
 #'
 #' @return a SingleCelltkExperiment object
 #' @export createSCE
@@ -45,7 +47,7 @@ summarizeTable <- function(indata){
 #'                           annotfile = "/path/to/input_annots.txt")
 #'}
 createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
-                      inputdataframes=FALSE){
+                      inputdataframes=FALSE, create_logcounts=TRUE){
   if (is.null(countfile)){
     stop("You must supply a count file.")
   }
@@ -72,9 +74,13 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  return(SingleCelltkExperiment(assays = list(counts = as.matrix(countsin)),
-                                colData = annotin,
-                                rowData = featurein))
+  newassay <- SingleCelltkExperiment(assays = list(counts = as.matrix(countsin)),
+                                     colData = annotin,
+                                     rowData = featurein)
+  if(create_logcounts){
+    assay(newassay, "logcounts") <- log2(assay(newassay, "counts") + 1)
+  }
+  return(newassay)
 }
 
 #' Filter Genes and Samples from a Single Cell Object

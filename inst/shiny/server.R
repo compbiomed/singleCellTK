@@ -50,7 +50,8 @@ shinyServer(function(input, output, session) {
       if (input$uploadChoice == "files"){
         vals$original <- createSCE(countfile = input$countsfile$datapath,
                                    annotfile = input$annotfile$datapath,
-                                   featurefile = input$featurefile$datapath)
+                                   featurefile = input$featurefile$datapath,
+                                   create_logcounts = input$createLogcounts)
       } else {
         data(list = paste0(input$selectExampleData, "_sce"))
         vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))

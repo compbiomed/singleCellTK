@@ -133,6 +133,5 @@ shiny_panel_cluster <- fluidPage(
       p("3. Choose the clustering algorithm"),
       p("4. Choose the distance metric")
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )

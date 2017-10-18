@@ -30,6 +30,5 @@ shiny_panel_subsample <- fluidPage(
         plotOutput("powerBoxPlot")
       )
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )

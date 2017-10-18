@@ -39,6 +39,5 @@ shiny_panel_filter <- fluidPage(
         )
       )
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )
