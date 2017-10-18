@@ -71,6 +71,7 @@ shinyUI(
       "More",
       tabPanel("Batch Correction", shiny_panel_batchcorrect),
       tabPanel("Pathway Activity Analysis", shiny_panel_pathway)
-    )
+    ),
+    footer = includeHTML("www/footer.html")
   )
 )

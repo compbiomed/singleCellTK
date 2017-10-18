@@ -5,7 +5,7 @@
 \title{Create a SingleCelltkExperiment object}
 \usage{
 createSCE(countfile = NULL, annotfile = NULL, featurefile = NULL,
-  inputdataframes = FALSE)
+  inputdataframes = FALSE, create_logcounts = TRUE)
 }
 \arguments{
 \item{countfile}{The path to a text file that contains a header row of sample
@@ -21,6 +21,9 @@ have the same genes in the same order as countfile. This is optional.}
 
 \item{inputdataframes}{If TRUE, countfile and annotfile are read as data
 frames instead of file paths. The default is FALSE.}
+
+\item{create_logcounts}{If TRUE, create a log2(counts+1) normalized assay
+and include it in the object. The default is TRUE}
 }
 \value{
 a SingleCelltkExperiment object
