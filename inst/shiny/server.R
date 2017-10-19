@@ -60,6 +60,8 @@ shinyServer(function(input, output, session) {
       updateAllPdataInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
+      updateSelectInput(session, "dimRedAssaySelect",
+                        choices = names(assays(vals$counts)))
       updateSelectizeInput(session, "colorGenes",
                         choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
@@ -267,30 +269,44 @@ shinyServer(function(input, output, session) {
       ggplotly(ggplot())
     } else{
       if (input$dimRedPlotMethod == "PCA"){
-        if (is.null(reducedDim(vals$counts, "PCA"))) {
-          vals$counts <- getPCA(vals$counts)
+        pcadimname <- paste0("PCA","_",input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, pcadimname))) {
+          vals$counts <- getPCA(vals$counts,
+                                use_assay = input$dimRedAssaySelect,
+                                reducedDimName = pcadimname)
         }
-        if (!is.null(reducedDim(vals$counts, "PCA"))){
+        if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotPCA(vals$counts, input$colorBy,
-                                       input$shapeBy, input$pcX, input$pcY)
+                                       input$shapeBy, input$pcX, input$pcY,
+                                       use_assay=input$dimRedAssaySelect,
+                                       reducedDimName=pcadimname)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotPCA(vals$counts, "No Color", "No Shape",
-                                       input$pcX, input$pcY)
+                                       input$pcX, input$pcY,
+                                       use_assay=input$dimRedAssaySelect,
+                                       reducedDimName=pcadimname)
           }
           ggplotly(g)
         } else {
           ggplotly(ggplot() + geom_point())
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        if (is.null(reducedDim(vals$counts, "TSNE"))) {
-          vals$counts <- getTSNE(vals$counts)
+        tsnedimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, tsnedimname))) {
+          vals$counts <- getTSNE(vals$counts,
+                                 use_assay = input$dimRedAssaySelect,
+                                 reducedDimName = tsnedimname)
         }
-        if (!is.null(reducedDim(vals$counts, "TSNE"))){
+        if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotTSNE(vals$counts, input$colorBy, input$shapeBy)
+            g <- singleCellTK::plotTSNE(vals$counts, input$colorBy, input$shapeBy,
+                                        use_assay=input$dimRedAssaySelect,
+                                        reducedDimName=tsnedimname)
           } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotTSNE(vals$counts, "No Color", "No Shape")
+            g <- singleCellTK::plotTSNE(vals$counts, "No Color", "No Shape",
+                                        use_assay=input$dimRedAssaySelect,
+                                        reducedDimName=tsnedimname)
           }
           ggplotly(g)
         } else {
@@ -304,13 +320,11 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
     if (is.null(vals$counts)){
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        if (nrow(pca_variances(vals$counts)) != ncol(vals$counts)) {
-          vals$counts <- getPCA(vals$counts)
-        }
         if(nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
           data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
                      Variances = pca_variances(vals$counts)$percentVar * 100)[1:10, ]
@@ -323,10 +337,11 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
     } else {
       if (input$dimRedPlotMethod == "PCA"){
-        if (is.null(reducedDim(vals$counts, "PCA"))) {
+        pcadimname <- paste0("PCA","_",input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, pcadimname))) {
           vals$counts <- getPCA(vals$counts)
         }
-        if (!is.null(reducedDim(vals$counts, "PCA"))){
+        if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (is.null(input$colorBy)) {
             return()
           }
@@ -338,24 +353,32 @@ shinyServer(function(input, output, session) {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "PCA", input$shapeBy, input$pcX, input$pcY)
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
+                                   "PCA", input$shapeBy, input$pcX, input$pcY,
+                                   use_assay = input$dimRedAssaySelect,
+                                   reducedDimName = pcadimname)
                 g
               }
             } else if (input$colorGeneBy == "Manual Input") {
               if (is.null(input$colorGenes)){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "PCA", input$shapeBy, input$pcX, input$pcY)
+                g <- plotBiomarker(vals$counts, input$colorGenes,
+                                   input$colorBinary, "PCA", input$shapeBy,
+                                   input$pcX, input$pcY,
+                                   use_assay = input$dimRedAssaySelect,
+                                   reducedDimName = pcadimname)
                 g
               }
             }
           }
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        if (is.null(reducedDim(vals$counts, "TSNE"))){
+        tsnedimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, tsnedimname))){
           vals$counts <- getTSNE(vals$counts)
         }
-        if (!is.null(reducedDim(vals$counts, "TSNE"))){
+        if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy == "Gene Expression") {
             if (input$colorGeneBy == "Biomarker (from DE tab)"){
               if (input$colorGenesBiomarker == ""){
@@ -364,14 +387,20 @@ shinyServer(function(input, output, session) {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
                 biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary, "tSNE", input$shapeBy)
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
+                                   "tSNE", input$shapeBy,
+                                   use_assay = input$dimRedAssaySelect,
+                                   reducedDimName = tsnedimname)
                 g
               }
             } else if (input$colorGeneBy == "Manual Input") {
               if (is.null(input$colorGenes)){
                 ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
               } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes, input$colorBinary, "tSNE", input$shapeBy)
+                g <- plotBiomarker(vals$counts, input$colorGenes,
+                                   input$colorBinary, "tSNE", input$shapeBy,
+                                   use_assay = input$dimRedAssaySelect,
+                                   reducedDimName = tsnedimname)
                 g
               }
             }
@@ -408,8 +437,16 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     } else {
       withBusyIndicatorServer("clusterData", {
+        currdimname <- NULL
+        if (input$selectClusterInputData == "PCA Components") {
+          currdimname <- paste0("PCA","_",input$dimRedAssaySelect)
+        } else if (input$selectClusterInputData == "tSNE Components") {
+          currdimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+        }
         if (input$clusteringAlgorithm == "K-Means"){
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData,
+                                      use_assay = input$dimRedAssaySelect,
+                                      reducedDimName = currdimname)
           koutput <- kmeans(data, input$Knumber)
           name <- input$clusterName
           colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
@@ -419,7 +456,9 @@ shinyServer(function(input, output, session) {
                                         colnames(colData(vals$counts))),
                             selected = input$clusterName)
         } else if (input$clusteringAlgorithm == "Clara") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData,
+                                      use_assay = input$dimRedAssaySelect,
+                                      reducedDimName = currdimname)
           coutput <- clara(data, input$Cnumber)
           colData(vals$counts)$Clara <- factor(coutput$clustering)
           updateAllPdataInputs()

@@ -12,7 +12,7 @@
 #' @return A SCtkE object with reducedDim "PCA" and pca_variances updated
 #' @export getPCA
 #'
-getPCA <- function(count_data, use_assay="counts", reducedDimName="PCA"){
+getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   if (nrow(count_data) < 500){
     ntop <- nrow(count_data)
   }
