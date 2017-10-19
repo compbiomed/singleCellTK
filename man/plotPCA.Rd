@@ -5,7 +5,7 @@
 \title{Plot PCA}
 \usage{
 plotPCA(count_data, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
-  pcY = "PC2")
+  pcY = "PC2", use_assay = "counts", reducedDimName = "PCA")
 }
 \arguments{
 \item{count_data}{A SCE object}
@@ -17,6 +17,11 @@ plotPCA(count_data, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
 \item{pcX}{User choice for the first principal component}
 
 \item{pcY}{User choice for the second prinicipal component}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+
+\item{reducedDimName}{PCA dimension name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 }
 \value{
 A PCA plot

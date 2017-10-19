@@ -31,6 +31,7 @@ geneChoice <- ""
 alertText <- ""
 pcComponents <- ""
 numClusters <- ""
+currassays <- ""
 if (!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(getShinyOption("inputSCEset"))
@@ -38,6 +39,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   featureChoice <- colnames(rowData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC", 1:ncol(getShinyOption("inputSCEset")), sep = "")
   numClusters <- 1:ncol(getShinyOption("inputSCEset"))
+  currassays <- names(assays(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \

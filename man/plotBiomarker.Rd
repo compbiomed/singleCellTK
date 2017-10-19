@@ -5,7 +5,8 @@
 \title{plotBiomarker}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", x = "PC1", y = "PC2")
+  shape = "No Shape", x = "PC1", y = "PC2", use_assay = "counts",
+  reducedDimName = "PCA")
 }
 \arguments{
 \item{count_data}{A SingleCelltkExperiment object}
@@ -22,6 +23,11 @@ Default: "Binary"}
 \item{x}{x coordinate for PCA}
 
 \item{y}{y coordinate for PCA}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+
+\item{reducedDimName}{PCA dimension name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 }
 \value{
 A Biomarker plot

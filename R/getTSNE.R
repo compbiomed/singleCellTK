@@ -12,7 +12,7 @@
 #' @return A SCE object with reducedDim "TSNE" updated
 #' @export getTSNE
 #'
-getTSNE <- function(count_data, use_assay="counts", reducedDimName="TSNE"){
+getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   if (nrow(count_data) < 500){
     ntop <- nrow(count_data)
   } else{
