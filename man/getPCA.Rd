@@ -4,12 +4,15 @@
 \alias{getPCA}
 \title{Get PCA components for a SCtkE object}
 \usage{
-getPCA(count_data, use_assay = "counts")
+getPCA(count_data, use_assay = "counts", reducedDimName = "PCA")
 }
 \arguments{
 \item{count_data}{SCtkE object}
 
 \item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+
+\item{reducedDimName}{Store the PCA data with this name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 }
 \value{
 A SCtkE object with reducedDim "PCA" and pca_variances updated
