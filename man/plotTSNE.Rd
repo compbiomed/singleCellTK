@@ -5,7 +5,7 @@
 \title{Plot TSNE}
 \usage{
 plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
-  use_assay = "counts", reducedDimName = "TSNE")
+  use_assay = "logcounts", reducedDimName = "TSNE")
 }
 \arguments{
 \item{count_data}{A SCE object}
