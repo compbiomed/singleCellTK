@@ -4,12 +4,15 @@
 \alias{getTSNE}
 \title{Get t-SNE components for a SCE object}
 \usage{
-getTSNE(count_data, use_assay = "counts")
+getTSNE(count_data, use_assay = "counts", reducedDimName = "TSNE")
 }
 \arguments{
 \item{count_data}{SCE object}
 
 \item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+
+\item{reducedDimName}{Store the tSNE data with this name. The default is
+TSNE. The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 }
 \value{
 A SCE object with reducedDim "TSNE" updated
