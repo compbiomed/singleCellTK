@@ -4,7 +4,7 @@
 \alias{getTSNE}
 \title{Get t-SNE components for a SCE object}
 \usage{
-getTSNE(count_data, use_assay = "counts", reducedDimName = "TSNE")
+getTSNE(count_data, use_assay = "logcounts", reducedDimName = "TSNE")
 }
 \arguments{
 \item{count_data}{SCE object}

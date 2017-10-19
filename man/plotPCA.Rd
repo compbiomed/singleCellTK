@@ -5,7 +5,7 @@
 \title{Plot PCA}
 \usage{
 plotPCA(count_data, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
-  pcY = "PC2", use_assay = "counts", reducedDimName = "PCA")
+  pcY = "PC2", use_assay = "logcounts", reducedDimName = "PCA")
 }
 \arguments{
 \item{count_data}{A SCE object}

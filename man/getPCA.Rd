@@ -4,7 +4,7 @@
 \alias{getPCA}
 \title{Get PCA components for a SCtkE object}
 \usage{
-getPCA(count_data, use_assay = "counts", reducedDimName = "PCA")
+getPCA(count_data, use_assay = "logcounts", reducedDimName = "PCA")
 }
 \arguments{
 \item{count_data}{SCtkE object}
