@@ -5,7 +5,7 @@
 \title{Plot TSNE}
 \usage{
 plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
-  use_assay = "logcounts", reducedDimName = "TSNE")
+  reducedDimName = "TSNE", runTSNE = FALSE, use_assay = "logcounts")
 }
 \arguments{
 \item{count_data}{A SCE object}
@@ -14,10 +14,14 @@ plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
 
 \item{shape}{Shape of the points}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
-
 \item{reducedDimName}{TSNE dimension name. The default is PCA.
 The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+
+\item{runTSNE}{Run t-SNE if the reducedDimName doesn't exist. the Default is
+FALSE.}
+
+\item{use_assay}{Indicate which assay to use for t-SNE if you are running it.
+Default is "counts"}
 }
 \value{
 A TSNE plot

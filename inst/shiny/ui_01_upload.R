@@ -21,7 +21,7 @@ shiny_panel_upload <- fluidPage(
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
       h3("Upload data in tab separated text format:"),
       fluidRow(
-        column(width=4,
+        column(width = 4,
           fileInput("countsfile", "Counts (required):",
                    accept = c(
                      "text/csv",
@@ -34,7 +34,7 @@ shiny_panel_upload <- fluidPage(
           ),
           checkboxInput("createLogcounts", "Create log2(counts) assay on upload", value = TRUE)
         ),
-        column(width=4,
+        column(width = 4,
           fileInput("annotfile", "Annotations (optional):",
                    accept = c(
                      "text/csv",
@@ -46,7 +46,7 @@ shiny_panel_upload <- fluidPage(
                    )
           )
         ),
-        column(width=4,
+        column(width = 4,
           fileInput("featurefile", "Features (optional):",
                    accept = c(
                      "text/csv",

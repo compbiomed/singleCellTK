@@ -49,7 +49,7 @@ shiny_panel_cluster <- fluidPage(
               radioButtons("clusteringAlgorithm", "Select Clustering Algorithm:", c("K-Means", "Clara"))
             ),
             ##----------------------------------#
-            ## K-Means
+            # K-Means
             conditionalPanel(
               condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
               selectInput("Knumber", "Number of Clusters (k):", numClusters)

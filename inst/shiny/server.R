@@ -269,7 +269,7 @@ shinyServer(function(input, output, session) {
       ggplotly(ggplot())
     } else{
       if (input$dimRedPlotMethod == "PCA"){
-        pcadimname <- paste0("PCA","_",input$dimRedAssaySelect)
+        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
           vals$counts <- getPCA(vals$counts,
                                 use_assay = input$dimRedAssaySelect,
@@ -279,20 +279,20 @@ shinyServer(function(input, output, session) {
           if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotPCA(vals$counts, input$colorBy,
                                        input$shapeBy, input$pcX, input$pcY,
-                                       use_assay=input$dimRedAssaySelect,
-                                       reducedDimName=pcadimname)
+                                       use_assay = input$dimRedAssaySelect,
+                                       reducedDimName = pcadimname)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotPCA(vals$counts, "No Color", "No Shape",
                                        input$pcX, input$pcY,
-                                       use_assay=input$dimRedAssaySelect,
-                                       reducedDimName=pcadimname)
+                                       use_assay = input$dimRedAssaySelect,
+                                       reducedDimName = pcadimname)
           }
           ggplotly(g)
         } else {
           ggplotly(ggplot() + geom_point())
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        tsnedimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+        tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))) {
           vals$counts <- getTSNE(vals$counts,
                                  use_assay = input$dimRedAssaySelect,
@@ -301,12 +301,12 @@ shinyServer(function(input, output, session) {
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy != "Gene Expression") {
             g <- singleCellTK::plotTSNE(vals$counts, input$colorBy, input$shapeBy,
-                                        use_assay=input$dimRedAssaySelect,
-                                        reducedDimName=tsnedimname)
+                                        use_assay = input$dimRedAssaySelect,
+                                        reducedDimName = tsnedimname)
           } else if (input$colorGenes == ""){
             g <- singleCellTK::plotTSNE(vals$counts, "No Color", "No Shape",
-                                        use_assay=input$dimRedAssaySelect,
-                                        reducedDimName=tsnedimname)
+                                        use_assay = input$dimRedAssaySelect,
+                                        reducedDimName = tsnedimname)
           }
           ggplotly(g)
         } else {
@@ -337,7 +337,7 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
     } else {
       if (input$dimRedPlotMethod == "PCA"){
-        pcadimname <- paste0("PCA","_",input$dimRedAssaySelect)
+        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
           vals$counts <- getPCA(vals$counts)
         }
@@ -374,7 +374,7 @@ shinyServer(function(input, output, session) {
           }
         }
       } else if (input$dimRedPlotMethod == "tSNE"){
-        tsnedimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+        tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))){
           vals$counts <- getTSNE(vals$counts)
         }
@@ -439,9 +439,9 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("clusterData", {
         currdimname <- NULL
         if (input$selectClusterInputData == "PCA Components") {
-          currdimname <- paste0("PCA","_",input$dimRedAssaySelect)
+          currdimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         } else if (input$selectClusterInputData == "tSNE Components") {
-          currdimname <- paste0("TSNE","_",input$dimRedAssaySelect)
+          currdimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         }
         if (input$clusteringAlgorithm == "K-Means"){
           data <- getClusterInputData(vals$counts, input$selectClusterInputData,
