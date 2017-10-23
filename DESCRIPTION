@@ -46,5 +46,6 @@ RoxygenNote: 6.0.1
 Suggests:
     Rsubread,
     knitr,
+    cellrangerRkit,
     rmarkdown
 VignetteBuilder: knitr
