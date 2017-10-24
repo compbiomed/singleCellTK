@@ -699,23 +699,29 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #TODO: Choose assay here
   output$hurdleviolin <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTviolin(vals$counts, vals$mastgenelist,
+      MASTviolin(SCEdata = vals$counts, use_assay = "logcounts",
+                 fcHurdleSig = vals$mastgenelist,
                  variable = input$hurdlecondition)
     }
   }, height = 600)
 
+  #TODO: Choose assay here
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregression(vals$counts, vals$mastgenelist,
+      MASTregression(SCEdata = vals$counts, use_assay = "logcounts",
+                     fcHurdleSig = vals$mastgenelist,
                      variable = input$hurdlecondition)
     }
   }, height = 600)
 
   output$hurdleHeatmap <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      ComplexHeatmap::Heatmap(matrix(1:100, ncol = 10))
+      draw(plot_DiffEx(vals$counts, input$hurdlecondition,
+                       rownames(vals$mastgenelist),
+                       annotationColors = c("red","green")))
     }
   }, height = 600)
 
