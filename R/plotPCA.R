@@ -11,7 +11,7 @@
 #' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
 #' @param runPCA Run PCA if the reducedDimName doesn't exist. the Default is
 #' FALSE.
-#' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
 
 #'
 #' @return A PCA plot

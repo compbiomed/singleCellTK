@@ -31,7 +31,7 @@ shiny_panel_cluster <- fluidPage(
                 condition = sprintf("input['%s'] == 'Biomarker (from DE tab)'", "colorGeneBy"),
                 textInput("colorGenesBiomarker", "Enter Name of Gene List:", "")
               ),
-              radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"))
+              radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"), selected = "Continuous")
             ),
             selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
             withBusyIndicatorUI(actionButton("reRunTSNE", "Re-run tSNE"))

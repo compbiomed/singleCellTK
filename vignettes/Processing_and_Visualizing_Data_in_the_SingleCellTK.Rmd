@@ -109,6 +109,12 @@ MASTviolin(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = 
 MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = FALSE, variable = "condition")
 ```
 
+```{r maits_heatmap}
+plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
+                 geneList = mast_results$Gene,
+                 annotationColors = "auto")
+```
+
 # PBMC - 4k Example
 
 PBMC - 4k example

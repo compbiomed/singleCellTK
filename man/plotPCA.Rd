@@ -25,7 +25,7 @@ The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 \item{runPCA}{Run PCA if the reducedDimName doesn't exist. the Default is
 FALSE.}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
 }
 \value{
 A PCA plot
