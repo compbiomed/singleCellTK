@@ -45,6 +45,7 @@ Imports:
 RoxygenNote: 6.0.1
 Suggests:
     Rsubread,
+    BiocStyle,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
