@@ -6,7 +6,7 @@
 \usage{
 MAST(SCEdata, condition = NULL, interest.level = NULL,
   freq_expressed = 0.1, fc_threshold = log2(1.5), p.value = 0.05,
-  usethresh = FALSE)
+  usethresh = FALSE, use_assay = "logcounts")
 }
 \arguments{
 \item{SCEdata}{SCESet object}
@@ -25,6 +25,9 @@ fraction of cells. The default is expression in 0.1 of samples.}
 
 \item{usethresh}{Use adaptive thresholding to filter genes. The default is
 FALSE.}
+
+\item{use_assay}{The assay to use for the MAST calculations. The default is
+"logcounts"}
 }
 \description{
 Run MAST analysis on a SCESet object.
