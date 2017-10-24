@@ -3,6 +3,8 @@
 #' Run MAST analysis on a SCESet object.
 #'
 #' @param SCEdata SCESet object
+#' @param use_assay The assay to use for the MAST calculations. The default is
+#' "logcounts"
 #' @param condition select varible (from the colData) that is used for modle
 #' @param interest.level If the condition of interest has more than two factors,
 #' indicate which level should be used to compare to all other samples.
@@ -15,7 +17,7 @@
 #' @export
 MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
                  freq_expressed = 0.1, fc_threshold=log2(1.5), p.value = 0.05,
-                 usethresh=FALSE){
+                 usethresh=FALSE, use_assay = "logcounts"){
 
   if (is.null(condition)){
     stop("specify the condition of interest")
@@ -32,7 +34,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
 
   # Create MAST SingleCellAssay
   pdata <- colData(SCEdata)
-  expres <- log2(assay(SCEdata, "counts") + 1)
+  expres <- assay(SCEdata, use_assay)
   fdata <- rowData(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
 
@@ -40,8 +42,8 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
   colData(SCE_new)$cngeneson <- scale(colSums(assay(SCE_new) > 0))
 
   if (usethresh){
-    SCE_new <- SCE_new[which(freq(SCE_new) > 0), ]
-    thresh <- thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+    SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
+    thresh <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                        min_per_bin = 30)
     assays(SCE_new) <- list(thresh = thresh$counts_threshold, tpm = assay(SCE_new))
   }

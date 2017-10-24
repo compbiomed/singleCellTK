@@ -18,37 +18,46 @@ shiny_panel_upload <- fluidPage(
     radioButtons("uploadChoice", "Upload:",
                  c("Files" = "files",
                    "Example data" = "example")),
-    conditionalPanel(
-      condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
-      fileInput("countsfile", "Upload a matrix of counts here",
-                accept = c(
-                  "text/csv",
-                  "text/comma-separated-values",
-                  "text/tab-separated-values",
-                  "text/plain",
-                  ".csv",
-                  ".tsv"
-                )
-      ),
-      fileInput("annotfile", "Optional: Upload a matrix of annotations here",
-                accept = c(
-                  "text/csv",
-                  "text/comma-separated-values",
-                  "text/tab-separated-values",
-                  "text/plain",
-                  ".csv",
-                  ".tsv"
-                )
-      ),
-      fileInput("featurefile", "Optional: Upload a matrix of feature annotations here",
-                accept = c(
-                  "text/csv",
-                  "text/comma-separated-values",
-                  "text/tab-separated-values",
-                  "text/plain",
-                  ".csv",
-                  ".tsv"
-                )
+    conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
+      h3("Upload data in tab separated text format:"),
+      fluidRow(
+        column(width = 4,
+          fileInput("countsfile", "Counts (required):",
+                   accept = c(
+                     "text/csv",
+                     "text/comma-separated-values",
+                     "text/tab-separated-values",
+                     "text/plain",
+                     ".csv",
+                     ".tsv"
+                   )
+          ),
+          checkboxInput("createLogcounts", "Create log2(counts) assay on upload", value = TRUE)
+        ),
+        column(width = 4,
+          fileInput("annotfile", "Annotations (optional):",
+                   accept = c(
+                     "text/csv",
+                     "text/comma-separated-values",
+                     "text/tab-separated-values",
+                     "text/plain",
+                     ".csv",
+                     ".tsv"
+                   )
+          )
+        ),
+        column(width = 4,
+          fileInput("featurefile", "Features (optional):",
+                   accept = c(
+                     "text/csv",
+                     "text/comma-separated-values",
+                     "text/tab-separated-values",
+                     "text/plain",
+                     ".csv",
+                     ".tsv"
+                   )
+          )
+        )
       )
     ),
     conditionalPanel(

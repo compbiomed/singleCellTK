@@ -80,6 +80,7 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #'
 #' @param inSCESet Input data object that contains the data to be plotted.
 #' Required
+#' @param use_assay Indicate which assay to use. Default is "logcounts"
 #' @param condition The condition used for plotting the heatmap. Required
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
@@ -100,18 +101,29 @@ scDiffEx <- function(inSCESet, condition, significance=0.05, ntop=500,
 #' condition.
 #' @export plot_DiffEx
 #'
-plot_DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                     clusterCol=TRUE, displayRowLabels=TRUE, displayColumnLabels=TRUE,
-                     displayRowDendrograms=TRUE, displayColumnDendrograms=TRUE,
-                     annotationColors=NULL, columnTitle="Differential Expression"){
+plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
+                        clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
+                        displayColumnLabels=TRUE, displayRowDendrograms=TRUE,
+                        displayColumnDendrograms=TRUE, annotationColors=NULL,
+                        columnTitle="Differential Expression"){
   if (is.null(annotationColors)){
     topha <- NULL
+  } else if (annotationColors == "auto") {
+    colors <- RColorBrewer::brewer.pal(8, "Set1")
+    cond_levels <- unique(colData(inSCESet)[, condition])
+    if(length(cond_levels) > 8){
+      stop("Too many levels in condition for auto coloring")
+    }
+    col <- list()
+    col[[condition]] <- setNames(colors[1:length(cond_levels)], cond_levels)
+    topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
+                                               col = col)
   } else {
     topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
                                                col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(assay(inSCESet, use_assay)[geneList, ]))),
                                      name = "Expression",
                                      column_title = columnTitle,
                                      cluster_rows = clusterRow,

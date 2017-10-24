@@ -4,10 +4,14 @@
 \alias{MASTviolin}
 \title{MAST Violin}
 \usage{
-MASTviolin(SCEdata, fcHurdleSig, samplesize = 49, threshP = FALSE, variable)
+MASTviolin(SCEdata, use_assay = "logcounts", fcHurdleSig, samplesize = 49,
+  threshP = FALSE, variable)
 }
 \arguments{
 \item{SCEdata}{SingleCelltkExperiment object}
+
+\item{use_assay}{The assay to use for the MAST calculations. The default is
+"logcounts"}
 
 \item{fcHurdleSig}{The filtered result from hurdle model}
 

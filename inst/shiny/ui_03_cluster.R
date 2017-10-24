@@ -7,6 +7,7 @@ shiny_panel_cluster <- fluidPage(
         4,
         wellPanel(
           ###  VISUALIZATION (e.g. PCA, tSNE)
+          selectInput("dimRedAssaySelect", "Select Data", currassays),
           selectInput("dimRedPlotMethod", "Visualization Method:", c("PCA", "tSNE", "Dendrogram")),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
@@ -30,7 +31,7 @@ shiny_panel_cluster <- fluidPage(
                 condition = sprintf("input['%s'] == 'Biomarker (from DE tab)'", "colorGeneBy"),
                 textInput("colorGenesBiomarker", "Enter Name of Gene List:", "")
               ),
-              radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"))
+              radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"), selected = "Continuous")
             ),
             selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
             withBusyIndicatorUI(actionButton("reRunTSNE", "Re-run tSNE"))
@@ -48,7 +49,7 @@ shiny_panel_cluster <- fluidPage(
               radioButtons("clusteringAlgorithm", "Select Clustering Algorithm:", c("K-Means", "Clara"))
             ),
             ##----------------------------------#
-            ## K-Means
+            # K-Means
             conditionalPanel(
               condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
               selectInput("Knumber", "Number of Clusters (k):", numClusters)
@@ -133,6 +134,5 @@ shiny_panel_cluster <- fluidPage(
       p("3. Choose the clustering algorithm"),
       p("4. Choose the distance metric")
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )
