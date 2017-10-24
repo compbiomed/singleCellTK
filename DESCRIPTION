@@ -46,6 +46,7 @@ RoxygenNote: 6.0.1
 Suggests:
     Rsubread,
     BiocStyle,
+    DT,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
