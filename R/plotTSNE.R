@@ -5,15 +5,34 @@
 #' @param count_data A SCE object
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
+#' @param reducedDimName TSNE dimension name. The default is PCA.
+#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
+#' @param runTSNE Run t-SNE if the reducedDimName doesn't exist. the Default is
+#' FALSE.
+#' @param use_assay Indicate which assay to use for t-SNE if you are running it.
+#' Default is "counts"
+#' 
 #'
 #' @return A TSNE plot
 #' @export plotTSNE
 #'
-plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape"){
-  if (is.null(reducedDim(count_data, "TSNE"))){
-    count_data <- getTSNE(count_data)
+plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
+                     reducedDimName="TSNE", runTSNE=FALSE,
+                     use_assay="logcounts"){
+  if (is.null(reducedDim(count_data, reducedDimName))){
+    if(runTSNE){
+      count_data <- getTSNE(count_data, use_assay = use_assay,
+                            reducedDimName = reducedDimName)
+    } else {
+      stop(reducedDimName, " dimension not found. Run getTSNE() or set runTSNE to TRUE.")
+    }
   }
-  tsne_df <- data.frame(reducedDim(count_data, "TSNE"))
+  tsne_df <- data.frame(reducedDim(count_data, reducedDimName))
+  if(ncol(tsne_df) > 2){
+    warning("More than two t-SNE dimensions. Using the first two.")
+  }
+  xdim <- colnames(tsne_df)[1]
+  ydim <- colnames(tsne_df)[2]
   if (colorBy == "No Color"){
     colorBy <- NULL
   }
@@ -27,7 +46,7 @@ plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape"){
     tsne_df$shape <- factor(eval(parse(text = paste("colData(count_data)$", shape, sep = ""))))
   }
   tsne_df$Sample <- colnames(count_data)
-  g <- ggplot2::ggplot(tsne_df, ggplot2::aes_string("X1", "X2", label = "Sample")) +
+  g <- ggplot2::ggplot(tsne_df, ggplot2::aes_string(xdim, ydim, label = "Sample")) +
     ggplot2::geom_point()
   if (!is.null(colorBy)){
     g <- g + ggplot2::aes_string(color = "color") +

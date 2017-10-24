@@ -68,6 +68,5 @@ shiny_panel_diffex <- fluidPage(
         )
       )
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )
