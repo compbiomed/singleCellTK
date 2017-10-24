@@ -6,11 +6,13 @@
 #'
 #' @param count_data SCE object
 #' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param reducedDimName Store the tSNE data with this name. The default is
+#' TSNE. The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
 #'
 #' @return A SCE object with reducedDim "TSNE" updated
 #' @export getTSNE
 #'
-getTSNE <- function(count_data, use_assay="counts"){
+getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   if (nrow(count_data) < 500){
     ntop <- nrow(count_data)
   } else{
@@ -32,6 +34,6 @@ getTSNE <- function(count_data, use_assay="counts"){
                            initial_dims = max(50, ncol(count_data)))
   tsne_out <- tsne_out$Y[, 1:2]
   rownames(tsne_out) <- colnames(count_data)
-  reducedDim(count_data, "TSNE") <- tsne_out
+  reducedDim(count_data, reducedDimName) <- tsne_out
   return(count_data)
 }

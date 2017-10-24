@@ -6,11 +6,13 @@
 #'
 #' @param count_data SCtkE object
 #' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param reducedDimName Store the PCA data with this name. The default is PCA.
+#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
 #'
 #' @return A SCtkE object with reducedDim "PCA" and pca_variances updated
 #' @export getPCA
 #'
-getPCA <- function(count_data, use_assay="counts"){
+getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   if (nrow(count_data) < 500){
     ntop <- nrow(count_data)
   }
@@ -31,7 +33,8 @@ getPCA <- function(count_data, use_assay="counts"){
   pca <- prcomp(exprs_to_plot)
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
-  reducedDim(count_data, "PCA") <- pca
+  reducedDim(count_data, reducedDimName) <- pca
   pca_variances(count_data) <- DataFrame(percentVar)
+  rownames(pca_variances(count_data)) <- paste0("PC", 1:nrow(pca_variances(count_data)))
   return(count_data)
 }

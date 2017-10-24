@@ -10,27 +10,31 @@
 #' @param shape visualization shape
 #' @param x x coordinate for PCA
 #' @param y y coordinate for PCA
+#' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param reducedDimName PCA dimension name. The default is PCA.
+#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
 #'
 #' @return A Biomarker plot
 #' @export plotBiomarker
 #'
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
-                          shape="No Shape", x="PC1", y="PC2"){
+                          shape="No Shape", x="PC1", y="PC2",
+                          use_assay="counts", reducedDimName="PCA"){
   if (shape == "No Shape"){
     shape <- NULL
   }
   if (visual == "PCA"){
-    if (is.null(reducedDim(count_data, "PCA"))) {
-      count_data <- getPCA(count_data)
+    if (is.null(reducedDim(count_data, reducedDimName))) {
+      count_data <- getPCA(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
-    axis_df <- data.frame(reducedDim(count_data, "PCA"))
+    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
     variances <- pca_variances(count_data)$percentVar
   }
   if (visual == "tSNE"){
-    if (is.null(reducedDim(count_data, "TSNE"))) {
-      count_data <- getTSNE(count_data)
+    if (is.null(reducedDim(count_data, reducedDimName))) {
+      count_data <- getTSNE(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
-    axis_df <- data.frame(reducedDim(count_data, "TSNE"))
+    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
   }
   if (length(gene) > 9) {
     gene <- gene[1:9]
