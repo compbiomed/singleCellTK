@@ -630,20 +630,44 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #Run subsampling analysis
+  runSequenceDepthSubsampler <- observeEvent(input$runSubsampleDepth, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      vals$subDetectedGenes <- DownsampleDepth(originalData = counts(vals$counts),
+                                               minCount = input$minCount,
+                                               minCells = input$minCells,
+                                               maxDepth = input$maxDepth,
+                                               depthResolution = input$depthResolution,
+                                               iterations = iterations)
+      output$DepthDone <- renderPlot({
+        plot(apply(vals$subDetectedGenes,2,median),
+             seq(from = 0,to = input$maxDepth, length.out = input$depthResolution),
+             lwd=4, xlab="log10(Total read counts)",ylab="Number of detected genes",
+             main = "Number of dected genes by sequencing depth")
+        lines(apply(vals$subDetectedGenes,2,function(x){quantile(x,0.25)}), 
+              seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subDetectedGenes,2,function(x){quantile(x,0.25)}), 
+              seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+      })
+    }
+  })
+  
   runDownsampler <- observeEvent(input$runSubsample, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
     else{
-      subData <- reactiveValues(
-        counts = Downsample(assay(vals$counts, "counts"),
-                            newcounts = floor(2 ^ seq.int(from = log2(input$minSim),
-                                                          to = log2(input$maxSim),
-                                                          length.out = 10)),
+      vals$subPower <- iterateSimulations(originalData = counts(vals$counts),
+                            realLabels = colData(vals$counts)[,input$subCovariate,drop=FALSE][,1],
+                            totalReads = input$selectTotReads,
+                            cells = input$selectNCells,
                             iterations = input$iterations)
-      )
+      vals$subEffectSize <- calcEffectSizes(counts(vals$counts),
+                            condition = colData(vals$counts)[,input$subCovariate,drop=FALSE][,1])
       output$downDone <- renderPlot({
-        heatmap(as.matrix(subData$counts[order(apply(subData$counts[, , 10, 1], 1, sum), decreasing = TRUE)[1:20], , 10, 1]))
+        plot(apply(vals$subPower,1,function(x){sum(x<0.05)/length(x)})~vals$subEffectSize,ylim=c(0,1))
       })
     }
   })
