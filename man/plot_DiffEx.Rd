@@ -4,14 +4,17 @@
 \alias{plot_DiffEx}
 \title{Plot Differential Expression}
 \usage{
-plot_DiffEx(inSCESet, condition, geneList, clusterRow = TRUE,
-  clusterCol = TRUE, displayRowLabels = TRUE, displayColumnLabels = TRUE,
-  displayRowDendrograms = TRUE, displayColumnDendrograms = TRUE,
-  annotationColors = NULL, columnTitle = "Differential Expression")
+plot_DiffEx(inSCESet, use_assay = "logcounts", condition, geneList,
+  clusterRow = TRUE, clusterCol = TRUE, displayRowLabels = TRUE,
+  displayColumnLabels = TRUE, displayRowDendrograms = TRUE,
+  displayColumnDendrograms = TRUE, annotationColors = NULL,
+  columnTitle = "Differential Expression")
 }
 \arguments{
 \item{inSCESet}{Input data object that contains the data to be plotted.
 Required}
+
+\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
 
 \item{condition}{The condition used for plotting the heatmap. Required}
 
