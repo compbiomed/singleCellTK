@@ -277,8 +277,10 @@ shinyServer(function(input, output, session) {
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotPCA(vals$counts, input$colorBy,
-                                       input$shapeBy, input$pcX, input$pcY,
+            g <- singleCellTK::plotPCA(count_data = vals$counts,
+                                       colorBy = input$colorBy,
+                                       shape = input$shapeBy, pcX = input$pcX,
+                                       pcY = input$pcY,
                                        use_assay = input$dimRedAssaySelect,
                                        reducedDimName = pcadimname)
           } else if (input$colorGenes == ""){
@@ -719,9 +721,11 @@ shinyServer(function(input, output, session) {
 
   output$hurdleHeatmap <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      draw(plot_DiffEx(vals$counts, input$hurdlecondition,
-                       rownames(vals$mastgenelist),
-                       annotationColors = c("red","green")))
+      draw(plot_DiffEx(vals$counts, use_assay = "logcounts",
+                       condition = input$hurdlecondition,
+                       geneList=vals$mastgenelist$Gene,
+                       annotationColors = "auto",
+                       columnTitle = "MAST"))
     }
   }, height = 600)
 
@@ -733,4 +737,12 @@ shinyServer(function(input, output, session) {
   })
 
   #download mast results
+  output$downloadHurdleResult <- downloadHandler(
+    filename = function() {
+      paste("mast_results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(vals$mastgenelist, file)
+    }
+  )
 })
