@@ -36,6 +36,12 @@ shinyServer(function(input, output, session) {
     updateSelectizeInput(session, "colorGenes",
                       choices = selectthegenes, server = TRUE)
   }
+  
+  updateAssayInputs <- function(){
+    currassays <- names(assays(vals$counts))
+    updateSelectInput(session, "dimRedAssaySelect",
+                      choices = currassays)
+  }
 
   # Close app on quit
   session$onSessionEnded(stopApp)
@@ -58,10 +64,9 @@ shinyServer(function(input, output, session) {
       }
       vals$counts <- vals$original
       updateAllPdataInputs()
+      updateAssayInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
-      updateSelectInput(session, "dimRedAssaySelect",
-                        choices = names(assays(vals$counts)))
       updateSelectizeInput(session, "colorGenes",
                         choices = rownames(vals$counts))
       updateSelectInput(session, "pcX",
@@ -258,6 +263,27 @@ shinyServer(function(input, output, session) {
     },
     content <- function(file) {
       saveRDS(vals$counts, file)
+  })
+  
+  output$assayList <- renderTable(
+    if(!is.null(vals$counts) && length(names(assays(vals$counts))) > 0){
+      data.table(assays=names(assays(vals$counts)))
+    }
+  )
+  
+  output$reducedDimsList <- renderTable(
+    if(!is.null(vals$counts) && length(names(reducedDims(vals$counts))) > 0){
+      data.table("Reduced Dimension"=names(reducedDims(vals$counts)))
+    }
+  )
+  
+  observeEvent(input$addLogcountsAssay, {
+    if ("logcounts" %in% names(assays(vals$counts))){
+      alert("logcounts already exists!")
+    } else {
+      assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+      updateAssayInputs()
+    }
   })
 
   #-----------------------------------------------------------------------------

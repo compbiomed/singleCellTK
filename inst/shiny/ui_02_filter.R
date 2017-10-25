@@ -5,10 +5,30 @@ shiny_panel_filter <- fluidPage(
     fluidPage(
       fluidRow(
         column(8,
-          tableOutput("summarycontents"),
-          plotlyOutput("countshist"),
-          plotlyOutput("geneshist"),
-          dataTableOutput("contents")),
+          tabsetPanel(
+            tabPanel(
+              "Data Summary",
+              tableOutput("summarycontents"),
+              plotlyOutput("countshist"),
+              plotlyOutput("geneshist"),
+              dataTableOutput("contents")
+            ),
+            tabPanel(
+              "SCTKExperiment Details",
+              fluidRow(
+                column(6,
+                  h3("Available Assays:"),
+                  tableOutput("assayList"),
+                  actionButton("addLogcountsAssay", "Add Log Counts Assay")
+                ),
+                column(6,
+                  h3("Available Reduced Dims:"),
+                  tableOutput("reducedDimsList")
+                )
+              )
+            )
+          )
+        ),
         column(
           4,
           wellPanel(
