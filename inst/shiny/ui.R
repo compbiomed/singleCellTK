@@ -1,4 +1,3 @@
-library(singleCellTK)
 library(shiny)
 library(shinyjs)
 library(ComplexHeatmap)
@@ -20,6 +19,7 @@ library(cluster)
 library(ggtree)
 library(ape)
 library(SingleCellExperiment)
+library(singleCellTK)
 
 source("helpers.R")
 source("colourGroupInput.R")
