@@ -19,7 +19,7 @@ shiny_panel_filter <- fluidPage(
                 column(6,
                   h3("Available Assays:"),
                   tableOutput("assayList"),
-                  actionButton("addLogcountsAssay", "Add Log Counts Assay")
+                  withBusyIndicatorUI(actionButton("addLogcountsAssay", "Add Log Counts Assay"))
                 ),
                 column(6,
                   h3("Available Reduced Dims:"),

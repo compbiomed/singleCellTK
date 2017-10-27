@@ -12,7 +12,8 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    selectgenes = rownames(getShinyOption("inputSCEset"))
+    selectgenes = rownames(getShinyOption("inputSCEset")),
+    combatstatus = ""
   )
 
   #Update all of the columns that depend on pvals columns
@@ -30,6 +31,10 @@ shinyServer(function(input, output, session) {
                       choices = c("No Color", "Gene Expression", pdata_options))
     updateSelectInput(session, "shapeBy",
                       choices = c("No Shape", pdata_options))
+    updateSelectInput(session, "combatBatchVar",
+                      choices = pdata_options)
+    updateSelectInput(session, "combatConditionVar",
+                      choices = pdata_options)
     updateSelectInput(session, "Knumber",
                       choices = 1:ncol(vals$counts))
     selectthegenes <- rownames(vals$counts)
@@ -40,6 +45,8 @@ shinyServer(function(input, output, session) {
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect",
+                      choices = currassays)
+    updateSelectInput(session, "combatAssay",
                       choices = currassays)
   }
 
@@ -68,7 +75,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
       updateSelectizeInput(session, "colorGenes",
-                        choices = rownames(vals$counts))
+                        choices = rownames(vals$counts), server = TRUE)
       updateSelectInput(session, "pcX",
                         choices = paste("PC", 1:ncol(vals$counts), sep = ""),
                         selected = "PC1")
@@ -281,8 +288,10 @@ shinyServer(function(input, output, session) {
     if ("logcounts" %in% names(assays(vals$counts))){
       alert("logcounts already exists!")
     } else {
-      assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
-      updateAssayInputs()
+      withBusyIndicatorServer("addLogcountsAssay", {
+        assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+        updateAssayInputs()
+      })
     }
   })
 
@@ -676,9 +685,59 @@ shinyServer(function(input, output, session) {
       #    }
     }
   })
+  
+  #-----------------------------------------------------------------------------
+  # Page 6: Batch Correction
+  #-----------------------------------------------------------------------------
+  
+  output$selectCombat_refbatchUI <- renderUI({
+    if (!is.null(vals$counts)){
+      if(input$combatRef){
+        selectInput("combatRefBatch", "Choose Reference Batch:",
+                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
+      }
+    }
+  })
+  
+  observeEvent(input$combatRun, { 
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("combatRun", {
+        #check for zeros
+        if(any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+          alert("Warning: Rows with a sum of zero found. Filter data to continue")
+        } else {
+          if(input$combatRef){
+            assay(vals$counts, input$combatSaveAssay) <-
+              ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
+                         use_assay = input$combatAssay,
+                         par.prior = input$combatParametric,
+                         covariates = input$combatConditionVar,
+                         mean.only = input$combatMeanOnly,
+                         ref.batch = input$combatRefBatch)
+          } else {
+            assay(vals$counts, input$combatSaveAssay) <-
+              ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
+                         use_assay = input$combatAssay,
+                         par.prior = input$combatParametric,
+                         covariates = input$combatConditionVar,
+                         mean.only = input$combatMeanOnly)
+          }
+          updateAssayInputs()
+          vals$combatstatus <- "ComBat Complete"
+        }
+      })
+    }
+  })
+  
+  output$combatStatus <- renderUI({
+    h2(vals$combatstatus)
+  })
 
   #-----------------------------------------------------------------------------
-  # Page 6: MAST
+  # Page 7: MAST
   #-----------------------------------------------------------------------------
 
   #For conditions with more than two factors, select the factor of interest
