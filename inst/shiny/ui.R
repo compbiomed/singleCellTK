@@ -1,4 +1,3 @@
-library(singleCellTK)
 library(shiny)
 library(shinyjs)
 library(ComplexHeatmap)
@@ -20,6 +19,7 @@ library(cluster)
 library(ggtree)
 library(ape)
 library(SingleCellExperiment)
+library(singleCellTK)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -32,12 +32,14 @@ alertText <- ""
 pcComponents <- ""
 numClusters <- ""
 currassays <- ""
+pcComponents_selectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(getShinyOption("inputSCEset"))
   sampleChoice <- colnames(getShinyOption("inputSCEset"))
   featureChoice <- colnames(rowData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC", 1:ncol(getShinyOption("inputSCEset")), sep = "")
+  pcComponents_selectedY <- pcComponents[2]
   numClusters <- 1:ncol(getShinyOption("inputSCEset"))
   currassays <- names(assays(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
