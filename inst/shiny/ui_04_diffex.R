@@ -12,6 +12,7 @@ shiny_panel_diffex <- fluidPage(
                                                                      "DESeq",
                                                                      "DESeq2",
                                                                      "ANOVA")),
+            selectInput("diffexAssay", "Select Data", currassays),
             selectInput("selectDiffex_condition", "Select Condition", clusterChoice),
             uiOutput("selectDiffex_conditionofinterestUI"),
             sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
