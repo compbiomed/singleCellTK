@@ -5,10 +5,30 @@ shiny_panel_filter <- fluidPage(
     fluidPage(
       fluidRow(
         column(8,
-          tableOutput("summarycontents"),
-          plotlyOutput("countshist"),
-          plotlyOutput("geneshist"),
-          dataTableOutput("contents")),
+          tabsetPanel(
+            tabPanel(
+              "Data Summary",
+              tableOutput("summarycontents"),
+              plotlyOutput("countshist"),
+              plotlyOutput("geneshist"),
+              dataTableOutput("contents")
+            ),
+            tabPanel(
+              "SCTKExperiment Details",
+              fluidRow(
+                column(6,
+                  h3("Available Assays:"),
+                  tableOutput("assayList"),
+                  withBusyIndicatorUI(actionButton("addLogcountsAssay", "Add Log Counts Assay"))
+                ),
+                column(6,
+                  h3("Available Reduced Dims:"),
+                  tableOutput("reducedDimsList")
+                )
+              )
+            )
+          )
+        ),
         column(
           4,
           wellPanel(
@@ -19,15 +39,15 @@ shiny_panel_filter <- fluidPage(
             selectInput("deletesamplelist", "Select Samples:",
                         sampleChoice,
                         multiple = TRUE),
-            actionButton("filterData", "Filter Data"),
+            withBusyIndicatorUI(actionButton("filterData", "Filter Data")),
             actionButton("resetData", "Reset"),
             tags$hr(),
             h3("Filter samples by annotation"),
-            uiOutput("FilterSamples"),
+            selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
             uiOutput("filterSampleOptions"),
             tags$hr(),
             h3("Filter genes by feature annotation"),
-            uiOutput("filterFeatures"),
+            selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
             uiOutput("filterFeatureOptions"),
             tags$hr(),
             h3("Delete an annotation column:"),
