@@ -121,7 +121,28 @@ PBMC - 4k example
 
 # Batch Effects Example
 
-Batch effects example
+It is possible to use ComBat within the Single Cell Toolkit. This support is
+experimental, since ComBat was not designed for scRNA-Seq. Here, we will load
+the bladderbatch example data into a SingleCellExperiment object.
+
+```{r load_bladderbatch}
+library(bladderbatch)
+data(bladderdata)
+dat <- bladderEset[1:50,]
+
+pheno = pData(dat)
+edata = exprs(dat)
+bladder_sctke <- createSCE(countfile = edata,
+                           annotfile = pheno,
+                           inputdataframes = T,
+                           create_logcounts = F)
+assay(bladder_sctke, "microarray") <- assay(bladder_sctke, "counts")
+assay(bladder_sctke, "counts") <- NULL
+assay(bladder_sctke, "combat") <- ComBat_SCE(SCEdata = bladder_sctke,
+                                             batch = "batch",
+                                             use_assay = "microarray",
+                                             covariates = "cancer")
+```
 
 # Session info {.unnumbered}
 

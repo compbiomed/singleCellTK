@@ -12,7 +12,7 @@ shiny_panel_cluster <- fluidPage(
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
             selectInput("pcX", "X axis:", pcComponents),
-            selectInput("pcY", "Y axis:", pcComponents, selected = "PC2")
+            selectInput("pcY", "Y axis:", pcComponents, selected = pcComponents_selectedY)
           ),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
