@@ -12,34 +12,55 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    selectgenes = rownames(getShinyOption("inputSCEset")),
     combatstatus = ""
   )
 
   #Update all of the columns that depend on pvals columns
-  updateAllPdataInputs <- function(){
+  updateColDataNames <- function(){
     pdata_options <- colnames(colData(vals$counts))
-    updateSelectInput(session, "selectDiffex_condition",
-                      choices = pdata_options)
-    updateSelectInput(session, "subCovariate",
-                      choices = pdata_options)
+    updateSelectInput(session, "filteredSample",
+                      choices = c("none", pdata_options))
     updateSelectInput(session, "deleterowdatacolumn",
-                      choices = pdata_options)
-    updateSelectInput(session, "hurdlecondition",
                       choices = pdata_options)
     updateSelectInput(session, "colorBy",
                       choices = c("No Color", "Gene Expression", pdata_options))
     updateSelectInput(session, "shapeBy",
                       choices = c("No Shape", pdata_options))
+    updateSelectInput(session, "selectDiffex_condition",
+                      choices = pdata_options)
+    updateSelectInput(session, "subCovariate",
+                      choices = pdata_options)
     updateSelectInput(session, "combatBatchVar",
                       choices = pdata_options)
     updateSelectInput(session, "combatConditionVar",
                       choices = pdata_options)
-    updateSelectInput(session, "Knumber",
-                      choices = 1:ncol(vals$counts))
+    updateSelectInput(session, "hurdlecondition",
+                      choices = pdata_options)
+  }
+  
+  updateGeneNames <- function(){
     selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
-                      choices = selectthegenes, server = TRUE)
+                         choices = selectthegenes, server = TRUE)
+  }
+  
+  updateFeatureAnnots <- function(){
+    updateSelectInput(session, "filteredFeature",
+                      choices = c("none", colnames(rowData(vals$counts))))
+  }
+  
+  updateNumSamples <- function(){
+    numsamples <- ncol(vals$counts)
+    updateSelectInput(session, "Knumber",
+                      choices = 1:numsamples)
+    updateSelectInput(session, "Cnumber",
+                      choices = 1:numsamples)
+    updateSelectInput(session, "pcX",
+                      choices = paste("PC", 1:numsamples, sep = ""),
+                      selected = "PC1")
+    updateSelectInput(session, "pcY",
+                      choices = paste("PC", 1:numsamples, sep = ""),
+                      selected = "PC2")
   }
   
   updateAssayInputs <- function(){
@@ -47,6 +68,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "dimRedAssaySelect",
                       choices = currassays)
     updateSelectInput(session, "combatAssay",
+                      choices = currassays)
+    updateSelectInput(session, "diffexAssay",
                       choices = currassays)
   }
 
@@ -70,22 +93,12 @@ shinyServer(function(input, output, session) {
         vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
       }
       vals$counts <- vals$original
-      updateAllPdataInputs()
+      updateColDataNames()
+      updateNumSamples()
       updateAssayInputs()
+      updateGeneNames()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
-      updateSelectizeInput(session, "colorGenes",
-                        choices = rownames(vals$counts), server = TRUE)
-      updateSelectInput(session, "pcX",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC1")
-      updateSelectInput(session, "pcY",
-                        choices = paste("PC", 1:ncol(vals$counts), sep = ""),
-                        selected = "PC2")
-      updateSelectInput(session, "Knumber",
-                        choices = 1:ncol(vals$counts))
-      updateSelectInput(session, "Cnumber",
-                        choices = 1:ncol(vals$counts))
       insertUI(
         selector = "#uploadAlert",
         ## wrap element in a div with id for ease of removal
@@ -103,6 +116,9 @@ shinyServer(function(input, output, session) {
 
   #Render data table if there are fewer than 50 samples
   output$contents <- renderDataTable({
+    if (!is.null(getShinyOption("inputSCEset"))){
+      updateGeneNames()
+    }
     if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
       temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts,
                                                            "counts") + 1))
@@ -152,15 +168,21 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     }
     else{
-      vals$counts <- vals$original
-      deletesamples <- input$deletesamplelist
-      vals$counts <- filterSCData(vals$counts,
-                                  deletesamples = deletesamples,
-                                  remove_noexpress = input$removeNoexpress,
-                                  remove_bottom = 0.01 * input$LowExpression,
-                                  minimum_detect_genes = input$minDetectGenect)
-      #Refresh things for the clustering tab
-      updateAllPdataInputs()
+      withBusyIndicatorServer("filterData", {
+        vals$counts <- vals$original
+        deletesamples <- input$deletesamplelist
+        vals$counts <- filterSCData(vals$counts,
+                                    deletesamples = deletesamples,
+                                    remove_noexpress = input$removeNoexpress,
+                                    remove_bottom = 0.01 * input$LowExpression,
+                                    minimum_detect_genes = input$minDetectGenect)
+        #Refresh things for the clustering tab
+        updateGeneNames()
+        if(!is.null(input$deletesamplelist)){
+          updateSelectInput(session, "deletesamplelist",
+                            choices = colnames(vals$counts))
+        }
+      })
     }
   })
 
@@ -174,7 +196,10 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
       #Refresh things for the clustering tab
-      updateAllPdataInputs()
+      updateColDataNames()
+      updateNumSamples()
+      updateAssayInputs()
+      updateGeneNames()
     }
   })
 
@@ -185,17 +210,8 @@ shinyServer(function(input, output, session) {
     }
     else{
       colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = F]
-      updateAllPdataInputs()
+      updateColDataNames()
     }
-  })
-
-  #Create UI for filtering samples based on annotations
-  output$FilterSamples <- renderUI({
-    annot <- ""
-    if (!is.null(vals$counts)){
-      annot <- colnames(colData(vals$counts))
-    }
-    selectInput("filteredSample", "Select Annotation:", c("none", annot))
   })
 
   observeEvent(input$filteredSample, {
@@ -225,15 +241,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runFilterSample, {
     filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
     vals$counts <- vals$counts[, filter]
-  })
-
-  #Create UI for filtering genes based on feature annotations
-  output$filterFeatures <- renderUI({
-    fannot <- ""
-    if (!is.null(vals$counts)){
-      fannot <- colnames(rowData(vals$counts))
-    }
-    selectInput("filteredFeature", "Select Feature:", c("none", fannot))
+    updateNumSamples()
   })
 
   observeEvent(input$filteredFeature, {
@@ -262,6 +270,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runFilterFeature, {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
     vals$counts <- vals$counts[filter, ]
+    updateGeneNames()
   })
 
   output$downloadSCE <- downloadHandler(
@@ -306,7 +315,7 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCA"){
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(vals$counts,
+          vals$counts <- getPCA(count_data = vals$counts,
                                 use_assay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
         }
@@ -331,7 +340,7 @@ shinyServer(function(input, output, session) {
       } else if (input$dimRedPlotMethod == "tSNE"){
         tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))) {
-          vals$counts <- getTSNE(vals$counts,
+          vals$counts <- getTSNE(count_data = vals$counts,
                                  use_assay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
         }
@@ -376,7 +385,9 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCA"){
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(vals$counts)
+          vals$counts <- getPCA(count_data = vals$counts,
+                                use_assay = input$dimRedAssaySelect,
+                                reducedDimName = pcadimname)
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (is.null(input$colorBy)) {
@@ -413,7 +424,9 @@ shinyServer(function(input, output, session) {
       } else if (input$dimRedPlotMethod == "tSNE"){
         tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))){
-          vals$counts <- getTSNE(vals$counts)
+          vals$counts <- getTSNE(count_data = vals$counts,
+                                 use_assay = input$dimRedAssaySelect,
+                                 reducedDimName = tsnedimname)
         }
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy == "Gene Expression") {
@@ -487,7 +500,7 @@ shinyServer(function(input, output, session) {
           koutput <- kmeans(data, input$Knumber)
           name <- input$clusterName
           colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
-          updateAllPdataInputs()
+          updateColDataNames()
           updateSelectInput(session, "colorBy",
                             choices = c("No Color", "Gene Expression",
                                         colnames(colData(vals$counts))),
@@ -498,7 +511,7 @@ shinyServer(function(input, output, session) {
                                       reducedDimName = currdimname)
           coutput <- clara(data, input$Cnumber)
           colData(vals$counts)$Clara <- factor(coutput$clustering)
-          updateAllPdataInputs()
+          updateColDataNames()
           updateSelectInput(session, "colorBy",
                             choices = c("No Color", "Gene Expression",
                                         colnames(colData(vals$counts))),
@@ -514,7 +527,9 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("reRunTSNE", {
-        vals$counts <- getTSNE(vals$counts)
+        vals$counts <- getTSNE(count_data = vals$counts,
+                               use_assay = input$dimRedAssaySelect,
+                               reducedDimName = paste0("TSNE", "_", input$dimRedAssaySelect))
       })
     }
   })
@@ -592,8 +607,10 @@ shinyServer(function(input, output, session) {
       } else {
         colors <- NULL
       }
-      draw(plot_DiffEx(vals$counts, input$colorBar_Condition,
-                       rownames(vals$diffexgenelist),
+      draw(plot_DiffEx(inSCESet = vals$counts,
+                       use_assay = input$diffexAssay,
+                       condition = input$colorBar_Condition,
+                       geneList = rownames(vals$diffexgenelist),
                        clusterRow = input$clusterRows,
                        clusterCol = input$clusterColumns,
                        displayRowLabels = input$displayHeatmapRowLabels,
@@ -637,8 +654,10 @@ shinyServer(function(input, output, session) {
     if (is.null(input$biomarkerName)){
       alert("Warning: Specify biomarker name!")
     } else{
-      rowData(vals$counts)[, input$biomarkerName] <- ifelse(rownames(rowData(vals$counts)) %in% rownames(vals$diffexgenelist), 1, 0)
-      updateSelectInput(session, "filteredFeature", choices = c("none", colnames(rowData(vals$counts))))
+      biomarker_name <- gsub(" ","_" ,input$biomarkerName)
+      alert(biomarker_name)
+      rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
+      updateFeatureAnnots()
     }
   })
 
@@ -709,8 +728,9 @@ shinyServer(function(input, output, session) {
         if(any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
           alert("Warning: Rows with a sum of zero found. Filter data to continue")
         } else {
+          saveassayname <- gsub(" ", "_" , input$combatSaveAssay)
           if(input$combatRef){
-            assay(vals$counts, input$combatSaveAssay) <-
+            assay(vals$counts, saveassayname) <-
               ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
                          use_assay = input$combatAssay,
                          par.prior = input$combatParametric,
@@ -718,7 +738,7 @@ shinyServer(function(input, output, session) {
                          mean.only = input$combatMeanOnly,
                          ref.batch = input$combatRefBatch)
           } else {
-            assay(vals$counts, input$combatSaveAssay) <-
+            assay(vals$counts, saveassayname) <-
               ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
                          use_assay = input$combatAssay,
                          par.prior = input$combatParametric,
