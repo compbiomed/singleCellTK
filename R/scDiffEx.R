@@ -111,7 +111,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
   } else if (annotationColors == "auto") {
     colors <- RColorBrewer::brewer.pal(8, "Set1")
     cond_levels <- unique(colData(inSCESet)[, condition])
-    if(length(cond_levels) > 8){
+    if (length(cond_levels) > 8){
       stop("Too many levels in condition for auto coloring")
     }
     col <- list()
