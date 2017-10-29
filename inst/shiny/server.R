@@ -464,20 +464,21 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else {
-      if (input$dimRedPlotMethod == "Dendrogram"){
+      if (input$dimRedPlotMethod == "Dendrogram" && paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
+        data <- getClusterInputData(count_data = vals$counts,
+                                    inputData = "PCA Components",
+                                    use_assay = input$dimRedAssaySelect,
+                                    reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+        d <- stats::dist(data)
+        h <- stats::hclust(d, input$dendroDistanceMetric)
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-          d <- dist(data)
-          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size = 2)
-          g
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-          d <- dist(data)
-          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size = 2)
-          g
+        } else {
+          stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
         }
+        g
       }
     }
   }, height = 600)
