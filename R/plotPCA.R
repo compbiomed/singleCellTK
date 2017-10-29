@@ -45,8 +45,8 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
   pca_df$Sample <- colnames(count_data)
   g <- ggplot2::ggplot(pca_df, ggplot2::aes_string(pcX, pcY, label = "Sample")) +
     ggplot2::geom_point() +
-    ggplot2::labs(x = paste0(pcX, " ", toString(round(variances[pcX,] * 100, 2)), "%"),
-                  y = paste0(pcY, " ", toString(round(variances[pcY,] * 100, 2)), "%"))
+    ggplot2::labs(x = paste0(pcX, " ", toString(round(variances[pcX, ] * 100, 2)), "%"),
+                  y = paste0(pcY, " ", toString(round(variances[pcY, ] * 100, 2)), "%"))
   if (!is.null(colorBy)){
     g <- g + ggplot2::aes_string(color = "color") +
       ggplot2::labs(color = colorBy)

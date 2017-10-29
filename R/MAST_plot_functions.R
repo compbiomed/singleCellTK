@@ -3,7 +3,7 @@
 #' @param SCEdata SingleCelltkExperiment object
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
-#' 
+#'
 #' @export
 thresholdGenes <- function(SCEdata, use_assay="logcounts"){
   # data preparation
@@ -84,7 +84,8 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   colData(SCE_new)$cngeneson <- scale(cdr2)
   SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
 
-  thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20, min_per_bin = 30)
+  thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+                                           min_per_bin = 30)
   assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
   entrez_to_plot <- fcHurdleSig$Gene[1:49]
 
@@ -97,16 +98,17 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   }
 
   res_data <- NULL
-  for(i in unique(flat_dat$primerid)){
-    resdf <- flat_dat[flat_dat$primerid==i,]
-    resdf$lmPred <- lm(as.formula(paste0(yvalue,"~cngeneson+", variable)), data=flat_dat[flat_dat$primerid==i,])$fitted
-    if(is.null(res_data)){
+  for (i in unique(flat_dat$primerid)){
+    resdf <- flat_dat[flat_dat$primerid == i, ]
+    resdf$lmPred <- lm(as.formula(paste0(yvalue, "~cngeneson+", variable)),
+                       data = flat_dat[flat_dat$primerid == i, ])$fitted
+    if (is.null(res_data)){
       res_data <- resdf
     } else {
       res_data <- rbind(res_data, resdf)
     }
   }
-  
+
   ggbase <- ggplot2::ggplot(res_data, ggplot2::aes_string(x = variable,
                                                           y = yvalue,
                                                           color = variable)) +

@@ -14,7 +14,7 @@ shiny_panel_diffex <- fluidPage(
                                                                      "ANOVA")),
             selectInput("diffexAssay", "Select Data", currassays),
             selectInput("selectDiffex_condition", "Select Condition", clusterChoice),
-            uiOutput("selectDiffex_conditionofinterestUI"),
+            uiOutput("selectDiffex_conditionUI"),
             sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
             checkboxInput("applyCutoff", "Apply p-value Cutoff"),
             checkboxInput("clusterRows", "Cluster Heatmap Rows", value = TRUE),
