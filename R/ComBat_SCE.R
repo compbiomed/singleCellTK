@@ -1,5 +1,5 @@
 #' ComBat_SCE
-#' 
+#'
 #' Run ComBat on a SingleCelltkExperiment object
 #'
 #' @param SCEdata SingleCelltkExperiment object. Required
@@ -14,31 +14,31 @@
 #' @param mean.only If TRUE ComBat only corrects the mean of the batch effect
 #' @param ref.batch If given, will use the selected batch as a reference for
 #' batch adjustment.
-#' 
+#'
 #' @return ComBat matrix based on inputs. You can save this matrix into the
 #' SingleCelltkExperiment with assay()
-#' 
+#'
 #' @export
 ComBat_SCE <- function(SCEdata, batch, use_assay="logcounts",
                        par.prior="Parametric", covariates=NULL, mean.only=FALSE,
                        ref.batch=NULL){
-  
+
   #prepare model matrix
   mod <- NULL
-  if(length(covariates) > 0){
+  if (length(covariates) > 0){
     mod <- model.matrix(as.formula(paste0("~", paste0(covariates,
                                                       collapse = "+"))),
-                        data=data.frame(colData(SCEdata)[, covariates, drop=FALSE]))
+                        data = data.frame(colData(SCEdata)[, covariates, drop = FALSE]))
   }
-  
+
   #prepare parametric
-  if(par.prior == "Parametric"){
+  if (par.prior == "Parametric"){
     par.prior <- TRUE
   } else {
     par.prior <- FALSE
   }
-  
-  resassay <- 
+
+  resassay <-
     sva::ComBat(dat = assay(SCEdata, use_assay),
                 batch = colData(SCEdata)[, batch],
                 mod = mod, par.prior = par.prior,

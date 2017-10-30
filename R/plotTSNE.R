@@ -11,7 +11,6 @@
 #' FALSE.
 #' @param use_assay Indicate which assay to use for t-SNE if you are running it.
 #' Default is "counts"
-#' 
 #'
 #' @return A TSNE plot
 #' @export plotTSNE
@@ -20,7 +19,7 @@ plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
                      reducedDimName="TSNE", runTSNE=FALSE,
                      use_assay="logcounts"){
   if (is.null(reducedDim(count_data, reducedDimName))){
-    if(runTSNE){
+    if (runTSNE){
       count_data <- getTSNE(count_data, use_assay = use_assay,
                             reducedDimName = reducedDimName)
     } else {
@@ -28,7 +27,7 @@ plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
     }
   }
   tsne_df <- data.frame(reducedDim(count_data, reducedDimName))
-  if(ncol(tsne_df) > 2){
+  if (ncol(tsne_df) > 2){
     warning("More than two t-SNE dimensions. Using the first two.")
   }
   xdim <- colnames(tsne_df)[1]
