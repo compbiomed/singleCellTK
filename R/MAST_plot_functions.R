@@ -42,7 +42,7 @@ MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                      min_per_bin = 30)
   assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
-  entrez_to_plot <- fcHurdleSig$Gene[1:49]
+  entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
   if (threshP){
     yvalue <- "thresh"
@@ -87,7 +87,7 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                            min_per_bin = 30)
   assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
-  entrez_to_plot <- fcHurdleSig$Gene[1:49]
+  entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
 
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
 
