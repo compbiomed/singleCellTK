@@ -37,18 +37,18 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "hurdlecondition",
                       choices = pdata_options)
   }
-  
+
   updateGeneNames <- function(){
     selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
                          choices = selectthegenes, server = TRUE)
   }
-  
+
   updateFeatureAnnots <- function(){
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", colnames(rowData(vals$counts))))
   }
-  
+
   updateNumSamples <- function(){
     numsamples <- ncol(vals$counts)
     updateSelectInput(session, "Knumber",
@@ -61,8 +61,10 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "pcY",
                       choices = paste("PC", 1:numsamples, sep = ""),
                       selected = "PC2")
+    updateNumericInput(session, "downsampleNum", value = numsamples,
+                       max=numsamples)
   }
-  
+
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect",
@@ -70,6 +72,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "combatAssay",
                       choices = currassays)
     updateSelectInput(session, "diffexAssay",
+                      choices = currassays)
+    updateSelectInput(session, "mastAssay",
                       choices = currassays)
   }
 
@@ -155,6 +159,14 @@ shinyServer(function(input, output, session) {
       }
   })
 
+  #random downsample of samples
+  observeEvent(input$downsampleGo, {
+    withBusyIndicatorServer("downsampleGo", {
+      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
+      updateNumSamples()
+    })
+  })
+
   #Render summary table
   output$summarycontents <- renderTable({
     if (!(is.null(vals$counts))){
@@ -178,7 +190,7 @@ shinyServer(function(input, output, session) {
                                     minimum_detect_genes = input$minDetectGenect)
         #Refresh things for the clustering tab
         updateGeneNames()
-        if(!is.null(input$deletesamplelist)){
+        if (!is.null(input$deletesamplelist)){
           updateSelectInput(session, "deletesamplelist",
                             choices = colnames(vals$counts))
         }
@@ -280,19 +292,19 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$counts, file)
   })
-  
+
   output$assayList <- renderTable(
-    if(!is.null(vals$counts) && length(names(assays(vals$counts))) > 0){
-      data.table(assays=names(assays(vals$counts)))
+    if (!is.null(vals$counts) && length(names(assays(vals$counts))) > 0){
+      data.table(assays = names(assays(vals$counts)))
     }
   )
-  
+
   output$reducedDimsList <- renderTable(
-    if(!is.null(vals$counts) && length(names(reducedDims(vals$counts))) > 0){
-      data.table("Reduced Dimension"=names(reducedDims(vals$counts)))
+    if (!is.null(vals$counts) && length(names(reducedDims(vals$counts))) > 0){
+      data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
   )
-  
+
   observeEvent(input$addLogcountsAssay, {
     if ("logcounts" %in% names(assays(vals$counts))){
       alert("logcounts already exists!")
@@ -371,7 +383,7 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
     } else{
       if (input$dimRedPlotMethod == "PCA") {
-        if(nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
+        if (nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
           data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
                      Variances = pca_variances(vals$counts)$percentVar * 100)[1:10, ]
         }
@@ -464,20 +476,21 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     } else {
-      if (input$dimRedPlotMethod == "Dendrogram"){
+      if (input$dimRedPlotMethod == "Dendrogram" && paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
+        data <- getClusterInputData(count_data = vals$counts,
+                                    inputData = "PCA Components",
+                                    use_assay = input$dimRedAssaySelect,
+                                    reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+        d <- stats::dist(data)
+        h <- stats::hclust(d, input$dendroDistanceMetric)
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-          d <- dist(data)
-          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size = 2)
-          g
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData)
-          d <- dist(data)
-          h <- hclust(d, input$dendroDistanceMetric)
           g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size = 2)
-          g
+        } else {
+          stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
         }
+        g
       }
     }
   }, height = 600)
@@ -506,11 +519,13 @@ shinyServer(function(input, output, session) {
                                         colnames(colData(vals$counts))),
                             selected = input$clusterName)
         } else if (input$clusteringAlgorithm == "Clara") {
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData,
+          data <- getClusterInputData(count_data = vals$counts,
+                                      inputData = input$selectClusterInputData,
                                       use_assay = input$dimRedAssaySelect,
                                       reducedDimName = currdimname)
           coutput <- clara(data, input$Cnumber)
-          colData(vals$counts)$Clara <- factor(coutput$clustering)
+          name <- input$clusterName
+          colData(vals$counts)[, paste(name)] <- factor(coutput$clustering)
           updateColDataNames()
           updateSelectInput(session, "colorBy",
                             choices = c("No Color", "Gene Expression",
@@ -539,7 +554,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #For conditions with more than two factors, select the factor of interest
-  output$selectDiffex_conditionofinterestUI <- renderUI({
+  output$selectDiffex_conditionUI <- renderUI({
     if (!is.null(vals$counts)){
       if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         selectInput("selectDiffex_conditionofinterest",
@@ -654,7 +669,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$biomarkerName)){
       alert("Warning: Specify biomarker name!")
     } else{
-      biomarker_name <- gsub(" ","_" ,input$biomarkerName)
+      biomarker_name <- gsub(" ", "_", input$biomarkerName)
       alert(biomarker_name)
       rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
       updateFeatureAnnots()
@@ -704,34 +719,34 @@ shinyServer(function(input, output, session) {
       #    }
     }
   })
-  
+
   #-----------------------------------------------------------------------------
   # Page 6: Batch Correction
   #-----------------------------------------------------------------------------
-  
+
   output$selectCombat_refbatchUI <- renderUI({
     if (!is.null(vals$counts)){
-      if(input$combatRef){
+      if (input$combatRef){
         selectInput("combatRefBatch", "Choose Reference Batch:",
                     unique(sort(colData(vals$counts)[, input$combatBatchVar])))
       }
     }
   })
-  
-  observeEvent(input$combatRun, { 
+
+  observeEvent(input$combatRun, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
     else{
       withBusyIndicatorServer("combatRun", {
         #check for zeros
-        if(any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+        if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
           alert("Warning: Rows with a sum of zero found. Filter data to continue")
         } else {
-          saveassayname <- gsub(" ", "_" , input$combatSaveAssay)
-          if(input$combatRef){
+          saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+          if (input$combatRef){
             assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
+              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
                          use_assay = input$combatAssay,
                          par.prior = input$combatParametric,
                          covariates = input$combatConditionVar,
@@ -739,7 +754,7 @@ shinyServer(function(input, output, session) {
                          ref.batch = input$combatRefBatch)
           } else {
             assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch=input$combatBatchVar,
+              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
                          use_assay = input$combatAssay,
                          par.prior = input$combatParametric,
                          covariates = input$combatConditionVar,
@@ -751,7 +766,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   output$combatStatus <- renderUI({
     h2(vals$combatstatus)
   })
@@ -779,7 +794,8 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
-        vals$mastgenelist <- MAST(vals$counts,
+        vals$mastgenelist <- MAST(SCEdata = vals$counts,
+                                  use_assay = input$mastAssay,
                                   condition = input$hurdlecondition,
                                   interest.level = input$hurdleconditionofinterest,
                                   freq_expressed = input$hurdlethresh,
@@ -797,7 +813,8 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runThreshPlot", {
         output$threshplot <- renderPlot({
-          vals$thres <- thresholdGenes(vals$counts)
+          vals$thres <- thresholdGenes(SCEdata = vals$counts,
+                                       use_assay = input$mastAssay)
           par(mfrow = c(5, 4))
           plot(vals$thres)
           par(mfrow = c(1, 1))
@@ -806,19 +823,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  #TODO: Choose assay here
   output$hurdleviolin <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTviolin(SCEdata = vals$counts, use_assay = "logcounts",
+      MASTviolin(SCEdata = vals$counts, use_assay = input$mastAssay,
                  fcHurdleSig = vals$mastgenelist,
                  variable = input$hurdlecondition)
     }
   }, height = 600)
 
-  #TODO: Choose assay here
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregression(SCEdata = vals$counts, use_assay = "logcounts",
+      MASTregression(SCEdata = vals$counts, use_assay = input$mastAssay,
                      fcHurdleSig = vals$mastgenelist,
                      variable = input$hurdlecondition)
     }
@@ -826,9 +841,9 @@ shinyServer(function(input, output, session) {
 
   output$hurdleHeatmap <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      draw(plot_DiffEx(vals$counts, use_assay = "logcounts",
+      draw(plot_DiffEx(vals$counts, use_assay = input$mastAssay,
                        condition = input$hurdlecondition,
-                       geneList=vals$mastgenelist$Gene,
+                       geneList = vals$mastgenelist$Gene,
                        annotationColors = "auto",
                        columnTitle = "MAST"))
     }

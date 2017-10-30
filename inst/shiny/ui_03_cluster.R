@@ -7,7 +7,7 @@ shiny_panel_cluster <- fluidPage(
         4,
         wellPanel(
           ###  VISUALIZATION (e.g. PCA, tSNE)
-          selectInput("dimRedAssaySelect", "Select Data", currassays),
+          selectInput("dimRedAssaySelect", "Select Assay:", currassays),
           selectInput("dimRedPlotMethod", "Visualization Method:", c("PCA", "tSNE", "Dendrogram")),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),

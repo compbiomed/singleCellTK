@@ -7,6 +7,7 @@ shiny_panel_mast <- fluidPage(
         column(
           4,
           wellPanel(
+            selectInput("mastAssay", "Select Assay:", currassays),
             h3("Adaptive Thresholding:"),
             withBusyIndicatorUI(actionButton("runThreshPlot",
                                              "Run Thresholding")),

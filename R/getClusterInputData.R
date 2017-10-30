@@ -5,7 +5,7 @@
 #' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
 #' @param reducedDimName If clustering on PCA or TSNE data, dimension name.
 #' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
-#' 
+#'
 #' @return Cluster input data
 #' @export getClusterInputData
 #'
@@ -14,7 +14,7 @@ getClusterInputData <- function(count_data, inputData, use_assay="logcounts",
   if (inputData == "Raw Data"){
     e <- assay(count_data, use_assay)
   } else if (inputData == "PCA Components") {
-    if(is.null(reducedDimName)){
+    if (is.null(reducedDimName)){
       stop("You must supply a PCA dim name")
     }
     if (is.null(reducedDim(count_data, reducedDimName))) {
@@ -23,7 +23,7 @@ getClusterInputData <- function(count_data, inputData, use_assay="logcounts",
     }
     e <- reducedDim(count_data, reducedDimName)
   } else if (inputData == "tSNE Components") {
-    if(is.null(reducedDimName)){
+    if (is.null(reducedDimName)){
       stop("You must supply a tSNE dim name")
     }
     if (is.null(reducedDim(count_data, "TSNE"))) {

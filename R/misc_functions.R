@@ -77,7 +77,7 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
   newassay <- SingleCelltkExperiment(assays = list(counts = as.matrix(countsin)),
                                      colData = annotin,
                                      rowData = featurein)
-  if(create_logcounts){
+  if (create_logcounts){
     assay(newassay, "logcounts") <- log2(assay(newassay, "counts") + 1)
   }
   return(newassay)
