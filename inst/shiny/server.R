@@ -470,7 +470,7 @@ shinyServer(function(input, output, session) {
         }
       }
     }
-  })
+  }, height = 600)
 
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
