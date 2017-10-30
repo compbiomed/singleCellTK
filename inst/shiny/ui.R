@@ -32,15 +32,17 @@ alertText <- ""
 pcComponents <- ""
 numClusters <- ""
 currassays <- ""
+numSamples <- 30
 pcComponents_selectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
+  numSamples <- ncol(getShinyOption("inputSCEset"))
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(getShinyOption("inputSCEset"))
   sampleChoice <- colnames(getShinyOption("inputSCEset"))
   featureChoice <- colnames(rowData(getShinyOption("inputSCEset")))
-  pcComponents <- paste("PC", 1:ncol(getShinyOption("inputSCEset")), sep = "")
+  pcComponents <- paste("PC", 1:numSamples, sep = "")
   pcComponents_selectedY <- pcComponents[2]
-  numClusters <- 1:ncol(getShinyOption("inputSCEset"))
+  numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\

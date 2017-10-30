@@ -61,6 +61,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "pcY",
                       choices = paste("PC", 1:numsamples, sep = ""),
                       selected = "PC2")
+    updateNumericInput(session, "downsampleNum", value = numsamples,
+                       max=numsamples)
   }
 
   updateAssayInputs <- function(){
@@ -155,6 +157,14 @@ shinyServer(function(input, output, session) {
     } else {
       plotly_empty(type = "scatter") %>% add_trace(mode = "lines")
       }
+  })
+
+  #random downsample of samples
+  observeEvent(input$downsampleGo, {
+    withBusyIndicatorServer("downsampleGo", {
+      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
+      updateNumSamples()
+    })
   })
 
   #Render summary table
