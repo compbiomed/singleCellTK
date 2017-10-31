@@ -19,7 +19,7 @@ shiny_panel_pathway <- fluidPage(
         downloadButton("downloadPathway", "Download Pathway Results")
       ),
       mainPanel(
-        plotOutput("pathwayPlot", height="600px")
+        plotOutput("pathwayPlot", height = "600px")
       )
     )
   )

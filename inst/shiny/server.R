@@ -65,7 +65,7 @@ shinyServer(function(input, output, session) {
                       choices = paste("PC", 1:numsamples, sep = ""),
                       selected = "PC2")
     updateNumericInput(session, "downsampleNum", value = numsamples,
-                       max=numsamples)
+                       max = numsamples)
   }
 
   updateAssayInputs <- function(){
@@ -877,7 +877,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   output$selectPathwayGeneLists <- renderUI({
-    if(input$genelistSource == "Manual Input"){
+    if (input$genelistSource == "Manual Input"){
       if (!is.null(vals$counts)){
         selectizeInput("pathwayGeneLists", "Select Gene List(s):",
                        colnames(rowData(vals$counts)), multiple = T)
@@ -891,9 +891,9 @@ shinyServer(function(input, output, session) {
   })
 
   output$selectNumTopPaths <- renderUI({
-    if(!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-      sliderInput("pickNtopPaths", "Number of top pathways:", min=1,
-                  max=length(c2BroadSets), value=500, step=1)
+    if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+      sliderInput("pickNtopPaths", "Number of top pathways:", min = 1,
+                  max = length(c2BroadSets), value = 500, step = 1)
     }
   })
 
@@ -904,24 +904,24 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("pathwayRun", {
         if (input$genelistSource == "Manual Input"){
           #expecting logical vector
-          if(!all(rowData(test_indata)[,"test_biomarker"] %in% c(1,0))){
+          if (!all(rowData(test_indata)[, "test_biomarker"] %in% c(1, 0))){
             alert("ERROR: malformed biomarker annotation")
           } else {
             biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[,input$pathwayGeneLists] == 1]
+            biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[, input$pathwayGeneLists] == 1]
             vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)$es.obs
           }
         } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
           #expecting some genes in list are in the rownames
-          if("ALL" %in% input$pathwayGeneLists) {
+          if ("ALL" %in% input$pathwayGeneLists) {
             if (length(input$pathwayPlotVar) != 1){
               alert("Choose only one variable for full gsva profiling")
             } else {
               tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)$es.obs
               fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
               fit <- limma::eBayes(fit)
-              toptableres <- limma::topTable(fit, number=input$pickNtopPaths)
-              vals$gsva_res <- tempres[rownames(toptableres),]
+              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
+              vals$gsva_res <- tempres[rownames(toptableres), ]
             }
           } else {
             c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
@@ -935,26 +935,26 @@ shinyServer(function(input, output, session) {
   })
 
   output$pathwayPlot <- renderPlot({
-    if(!(is.null(vals$gsva_res))){
-      if(input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
+    if (!(is.null(vals$gsva_res))){
+      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
         gsva_res_t <- data.frame(t(vals$gsva_res))
-        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop=F], 1, paste, collapse="_")
+        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
         gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
-        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars=paste(input$pathwayPlotVar, collapse = "_"),
-                                        variable.name="pathway")
+        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
+                                        variable.name = "pathway")
         ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
                                                                      y = "value",
                                                                      color = paste(input$pathwayPlotVar, collapse = "_"))) +
           ggplot2::geom_violin() +
           ggplot2::geom_jitter() +
           ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
-        
+
         ggbase
       } else if (input$pathwayOutPlot == "Heatmap"){
         topha <- NULL
-        if(length(input$pathwayPlotVar) > 0){
+        if (length(input$pathwayPlotVar) > 0){
           colors <- RColorBrewer::brewer.pal(8, "Set1")
-          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop=F], 1, paste, collapse="_")
+          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
           cond_levels <- unique(cond)
           if (length(cond_levels) < 8){
             col <- list()
@@ -971,7 +971,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #download mast results
   output$downloadPathway <- downloadHandler(
     filename = function() {

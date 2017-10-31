@@ -58,7 +58,7 @@ shiny_panel_diffex <- fluidPage(
             )
           ),
           tabPanel(
-            "Results Table", 
+            "Results Table",
             dataTableOutput("diffextable")
           ),
           tabPanel(
