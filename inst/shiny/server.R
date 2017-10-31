@@ -13,7 +13,8 @@ shinyServer(function(input, output, session) {
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
     combatstatus = "",
-    diffexgenelist = NULL
+    diffexgenelist = NULL,
+    gsva_res = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -169,6 +170,8 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("downsampleGo", {
       vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
       updateNumSamples()
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
     })
   })
 
@@ -194,6 +197,7 @@ shinyServer(function(input, output, session) {
                                     remove_bottom = 0.01 * input$LowExpression,
                                     minimum_detect_genes = input$minDetectGenect)
         vals$diffexgenelist <- NULL
+        vals$gsva_res <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         if (!is.null(input$deletesamplelist)){
@@ -213,6 +217,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -260,6 +266,8 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("runFilterSample", {
       filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
       vals$counts <- vals$counts[, filter]
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
       updateNumSamples()
     })
   })
@@ -291,6 +299,8 @@ shinyServer(function(input, output, session) {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
     vals$counts <- vals$counts[filter, ]
     updateGeneNames()
+    vals$diffexgenelist <- NULL
+    vals$gsva_res <- NULL
   })
 
   output$downloadSCE <- downloadHandler(
