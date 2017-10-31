@@ -73,14 +73,14 @@ shinyUI(
     tabPanel("Upload", shiny_panel_upload),
     tabPanel("Data Summary and Filtering", shiny_panel_filter),
     tabPanel("DR & Clustering", shiny_panel_cluster),
+    tabPanel("Batch Correction", shiny_panel_batchcorrect),
     navbarMenu(
       "Differential Expression",
       tabPanel("Differential Expression", shiny_panel_diffex),
       tabPanel("MAST", shiny_panel_mast)
     ),
-    tabPanel("Subsampling", shiny_panel_subsample),
-    tabPanel("Batch Correction", shiny_panel_batchcorrect),
     tabPanel("Pathway Activity Analysis", shiny_panel_pathway),
+    tabPanel("Sample Size", shiny_panel_subsample),
     footer = includeHTML("www/footer.html")
   )
 )

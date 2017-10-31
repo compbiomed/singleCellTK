@@ -1,7 +1,7 @@
 shiny_panel_subsample <- fluidPage(
   tags$div(
     class = "container",
-    h1("Subsampling"),
+    h1("Sample Size"),
     sidebarLayout(
       sidebarPanel(
         selectInput("subCovariate",
