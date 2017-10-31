@@ -27,8 +27,8 @@ shiny_panel_filter <- fluidPage(
         actionButton("deleterowDatabutton", "Delete Column"),
         tags$hr(),
         h3("Randomly Subset"),
-        numericInput("downsampleNum", "Number of samples to keep:", min=2,
-                     max=numSamples, value = numSamples, step = 1),
+        numericInput("downsampleNum", "Number of samples to keep:", min = 2,
+                     max = numSamples, value = numSamples, step = 1),
         withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data")),
         tags$hr(),
         downloadButton("downloadSCE", "Download SingleCelltkExperiment")
