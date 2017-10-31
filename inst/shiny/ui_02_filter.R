@@ -43,18 +43,35 @@ shiny_panel_filter <- fluidPage(
             dataTableOutput("contents")
           ),
           tabPanel(
-            "SCTKExperiment Details",
+            "Assay Details",
+            br(),
             fluidRow(
-              column(6,
-                     h3("Available Assays:"),
-                     tableOutput("assayList"),
-                     withBusyIndicatorUI(actionButton("addLogcountsAssay", "Add Log Counts Assay"))
-              ),
-              column(6,
-                     h3("Available Reduced Dims:"),
-                     tableOutput("reducedDimsList")
+              sidebarLayout(
+                sidebarPanel(
+                  h4("Assay Options:"),
+                  selectInput("addAssayType", "Add Assay Type:", "logcounts"),
+                  withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
+                  selectInput("delAssayType", "Delete Assay Type:", currassays),
+                  withBusyIndicatorUI(actionButton("delAssay", "Delete Assay"))
+                ),
+                mainPanel(
+                  fluidRow(
+                    column(6,
+                           h4("Available Assays:"),
+                           tableOutput("assayList")
+                    ),
+                    column(6,
+                           h4("Available Reduced Dims:"),
+                           tableOutput("reducedDimsList")
+                    )
+                  )
+                )
               )
             )
+          ),
+          tabPanel(
+            "Annotation Data",
+            DT::dataTableOutput("colDataDataFrame")
           )
         )
       ),

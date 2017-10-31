@@ -71,16 +71,12 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "dimRedAssaySelect",
-                      choices = currassays)
-    updateSelectInput(session, "combatAssay",
-                      choices = currassays)
-    updateSelectInput(session, "diffexAssay",
-                      choices = currassays)
-    updateSelectInput(session, "mastAssay",
-                      choices = currassays)
-    updateSelectInput(session, "pathwayAssay",
-                      choices = currassays)
+    updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInput(session, "combatAssay", choices = currassays)
+    updateSelectInput(session, "diffexAssay", choices = currassays)
+    updateSelectInput(session, "mastAssay", choices = currassays)
+    updateSelectInput(session, "pathwayAssay", choices = currassays)
+    updateSelectInput(session, "delAssayType", choices = currassays)
   }
 
   # Close app on quit
@@ -323,16 +319,37 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  observeEvent(input$addLogcountsAssay, {
-    if ("logcounts" %in% names(assays(vals$counts))){
-      alert("logcounts already exists!")
+  observeEvent(input$addAssay, {
+    if (input$addAssayType %in% names(assays(vals$counts))){
+      alert("assay already exists!")
     } else {
-      withBusyIndicatorServer("addLogcountsAssay", {
-        assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+      withBusyIndicatorServer("addAssay", {
+        if (input$addAssayType == "logcounts"){
+          assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+        } else {
+          stop("unsupported assay type")
+        }
         updateAssayInputs()
       })
     }
   })
+
+  observeEvent(input$delAssay, {
+    if (!(input$delAssayType %in% names(assays(vals$counts)))){
+      alert("assay does not exist!")
+    } else {
+      withBusyIndicatorServer("delAssay", {
+        assay(vals$counts, input$delAssayType) <- NULL
+        updateAssayInputs()
+      })
+    }
+  })
+
+  output$colDataDataFrame = DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      data.frame(colData(vals$counts))
+    }
+  }, options = list(scrollX = TRUE, pageLength=50))
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
