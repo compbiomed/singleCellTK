@@ -23,6 +23,7 @@ Imports:
     data.table,
     DESeq,
     DESeq2,
+    DT,
     e1071,
     GGally,
     ggplot2,
@@ -47,7 +48,6 @@ RoxygenNote: 6.0.1
 Suggests:
     Rsubread,
     BiocStyle,
-    DT,
     knitr,
     bladderbatch,
     rmarkdown
