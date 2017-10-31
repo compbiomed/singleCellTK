@@ -919,8 +919,8 @@ shinyServer(function(input, output, session) {
 
   output$selectNumTopPaths <- renderUI({
     if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-      sliderInput("pickNtopPaths", "Number of top pathways:", min = 1,
-                  max = length(c2BroadSets), value = 500, step = 1)
+      sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
+                  max = length(c2BroadSets), value = 500, step = 5)
     }
   })
 
