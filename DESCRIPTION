@@ -29,7 +29,7 @@ Imports:
     ggplot2,
     ggtree,
     gridExtra,
-    GSVA,
+    GSVA (>= 1.26.0),
     GSVAdata,
     limma,
     locfit,

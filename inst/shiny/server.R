@@ -940,7 +940,7 @@ shinyServer(function(input, output, session) {
           } else {
             biomarker <- list()
             biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[, input$pathwayGeneLists] == 1]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)$es.obs
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
           }
         } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
           #expecting some genes in list are in the rownames
@@ -948,7 +948,7 @@ shinyServer(function(input, output, session) {
             if (length(input$pathwayPlotVar) != 1){
               alert("Choose only one variable for full gsva profiling")
             } else {
-              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)$es.obs
+              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
               fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
               fit <- limma::eBayes(fit)
               toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
@@ -956,7 +956,7 @@ shinyServer(function(input, output, session) {
             }
           } else {
             c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)$es.obs
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
           }
         } else{
           stop("ERROR: Unsupported gene list source ", input$genelistSource)

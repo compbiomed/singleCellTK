@@ -121,7 +121,7 @@ plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
 library(GSVA)
 library(GSVAdata)
 data("c2BroadSets")
-tempres <- gsva(assay(maits_subset, "logcounts"), c2BroadSets)$es.obs
+tempres <- gsva(assay(maits_subset, "logcounts"), c2BroadSets, parallel.sz=1)
 fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(maits_subset)[, "condition"])))
 fit <- limma::eBayes(fit)
 toptableres <- limma::topTable(fit, number = 5)
