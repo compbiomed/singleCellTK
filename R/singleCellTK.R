@@ -2,7 +2,7 @@
 #'
 #' Use this function to run the single cell analysis app.
 #'
-#' @param inputData The input SingleCelltkExperiment class object
+#' @param inputData The input SCtkExperiment class object
 #'
 #' @return The shiny app will open
 #'

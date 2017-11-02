@@ -3,9 +3,9 @@
 \docType{data}
 \name{GSE60361_subset_sce}
 \alias{GSE60361_subset_sce}
-\title{Example Single Cell RNA-Seq data in SingleCelltkExperiment Object, GSE60361
+\title{Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
 subest}
-\format{SingleCelltkExperiment}
+\format{SCtkExperiment}
 \source{
 DOI: 10.1126/science.aaa1934
 }

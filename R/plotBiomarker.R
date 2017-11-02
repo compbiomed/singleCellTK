@@ -2,7 +2,7 @@
 #'
 #' Given a set of genes, return a ggplot of expression values.
 #'
-#' @param count_data A SingleCelltkExperiment object
+#' @param count_data A SCtkExperiment object
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"

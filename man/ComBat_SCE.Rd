@@ -9,7 +9,7 @@ ComBat_SCE(SCEdata, batch, use_assay = "logcounts",
   ref.batch = NULL)
 }
 \arguments{
-\item{SCEdata}{SingleCelltkExperiment object. Required}
+\item{SCEdata}{SCtkExperiment object. Required}
 
 \item{batch}{The name of a column in colData to use as the batch variable.
 Required}
@@ -30,8 +30,8 @@ batch adjustment.}
 }
 \value{
 ComBat matrix based on inputs. You can save this matrix into the
-SingleCelltkExperiment with assay()
+SCtkExperiment with assay()
 }
 \description{
-Run ComBat on a SingleCelltkExperiment object
+Run ComBat on a SCtkExperiment object
 }

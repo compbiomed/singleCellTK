@@ -7,7 +7,7 @@
 scDiffEx_deseq(inSCESet, condition)
 }
 \arguments{
-\item{inSCESet}{Input SingleCelltkExperiment object. Required}
+\item{inSCESet}{Input SCtkExperiment object. Required}
 
 \item{condition}{A factor for the condition to use for differential
 expression. Must be a two level factor. Required}
