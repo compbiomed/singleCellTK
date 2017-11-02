@@ -71,6 +71,8 @@ shinyServer(function(input, output, session) {
                       choices = 1:ncol(vals$counts))
     updateSelectInput(session, "colorGenes",
                       choices = c(rownames(vals$counts)[1:100]))
+    updateSelectInput(session,"select_ReadDepth_Condition",
+                      choices = colnames(colData(vals$counts)))
   }
 
   # Close app on quit
@@ -635,31 +637,52 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     }
     else{
-      vals$subDetectedGenes <- DownsampleDepth(originalData = counts(vals$counts),
+      vals$subDepth <- DownsampleDepth(originalData = vals$counts,
                                                minCount = input$minCount,
                                                minCells = input$minCells,
-                                               maxDepth = input$maxDepth,
+                                               maxDepth = 10^input$maxDepth,
+                                               realLabels = input$select_ReadDepth_Condition,
                                                depthResolution = input$depthResolution,
-                                               iterations = iterations)
+                                               iterations = input$iterations)
+
       output$DepthDone <- renderPlot({
-        plot(apply(vals$subDetectedGenes,2,median),
-             seq(from = 0,to = input$maxDepth, length.out = input$depthResolution),
+        plot(apply(vals$subDepth[,,1],2,median)~
+               seq(from = 0,to = input$maxDepth, length.out = input$depthResolution),
              lwd=4, xlab="log10(Total read counts)",ylab="Number of detected genes",
              main = "Number of dected genes by sequencing depth")
-        lines(apply(vals$subDetectedGenes,2,function(x){quantile(x,0.25)}), 
-              seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
-        lines(apply(vals$subDetectedGenes,2,function(x){quantile(x,0.25)}), 
-              seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+      })
+      output$MinEffectDone <- renderPlot({
+        plot(apply(vals$subDepth[,,2],2,median)~
+               seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Average significant effect size",
+             ylim=c(0,2))
+        lines(apply(vals$subDepth[,,2],2,function(x){quantile(x,0.25)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,2],2,function(x){quantile(x,0.75)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+      })
+      output$sigNumDone <- renderPlot({
+        plot(apply(vals$subDepth[,,3],2,median)~
+               seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Number of significantly DiffEx genes")
+        lines(apply(vals$subDepth[,,3],2,function(x){quantile(x,0.25)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,3],2,function(x){quantile(x,0.75)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
       })
     }
   })
   
-  runDownsampler <- observeEvent(input$runSubsample, {
+  observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
     else{
-      vals$subPower <- iterateSimulations(originalData = counts(vals$counts),
+      vals$subCells <- iterateSimulations(originalData = counts(vals$counts),
                             realLabels = colData(vals$counts)[,input$subCovariate,drop=FALSE][,1],
                             totalReads = input$selectTotReads,
                             cells = input$selectNCells,
@@ -673,7 +696,7 @@ shinyServer(function(input, output, session) {
   })
 
   #Run differential power analysis
-  runDiffPower <- observeEvent(input$runDifferentialPower, {
+  runDiffPower <- observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }

@@ -16,11 +16,16 @@ shiny_panel_subsample <- fluidPage(
                          value = 10, min = 2, max = 10000),
             sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
             sliderInput("depthResolution", "how many values to simulate", 5, 100, 10, 5),
-            selectInput("select_ReadDepth_Condition", "Condition for diffex", clusterChoice),
+            selectInput("select_ReadDepth_Condition", "Condition for diffex", c("Random",clusterChoice),selected="Random"),
             actionButton("runSubsampleDepth", "Run subsampler")
-          ),
-          tabPanel("Genes Detected", plotOutput("DepthDone")),
-          tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone"))
+          )
+        ),
+          column(8,
+            tabsetPanel(
+              tabPanel("Genes Detected", plotOutput("DepthDone")),
+              tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone")),
+              tabPanel("Number of Diffex Genes",plotOutput("sigNumDone"))
+            )
           )
         )
       ),
@@ -45,7 +50,8 @@ shiny_panel_subsample <- fluidPage(
             actionButton("runSubsampleCells", "Run resampler")
           ),
           tabPanel("Genes Detected", plotOutput("CellCountDone")),
-          tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone"))
+          tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone")),
+          tabPanel("Number of Significant DiffEx Genes", plotOutput("cellNumSigDone"))
         )
       )
     ),
