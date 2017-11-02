@@ -5,6 +5,7 @@ shiny_panel_batchcorrect <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput("combatAssay", "Select Assay:", currassays),
+        selectInput("batchMethod", "Select Method:", "ComBat"),
         selectInput("combatBatchVar", "Select Batch Condition:", clusterChoice),
         selectInput("combatConditionVar", "Select Additional Covariates:",
                     clusterChoice, multiple = TRUE),

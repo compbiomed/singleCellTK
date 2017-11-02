@@ -16,6 +16,8 @@ shiny_panel_pathway <- fluidPage(
         radioButtons("pathwayOutPlot", "Plot Type:", c("Violin", "Heatmap")),
         withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
         tags$hr(),
+        h3("Save pathway results:"),
+        actionButton("savePathway", "Save Pathways"),
         downloadButton("downloadPathway", "Download Pathway Results")
       ),
       mainPanel(

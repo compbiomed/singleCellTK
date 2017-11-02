@@ -115,6 +115,23 @@ plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
                  annotationColors = "auto")
 ```
 
+### Pathway Activity with GSVA
+
+```{r maits_gsva}
+library(GSVA)
+library(GSVAdata)
+data("c2BroadSets")
+tempres <- gsva(assay(maits_subset, "logcounts"), c2BroadSets)$es.obs
+fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(maits_subset)[, "condition"])))
+fit <- limma::eBayes(fit)
+toptableres <- limma::topTable(fit, number = 5)
+gsva_res <- tempres[rownames(toptableres), ]
+
+if(all(colnames(maits_subset) == colnames(gsva_res))){
+  colData(maits_subset) <- cbind(colData(maits_subset), data.frame(t(gsva_res)))
+}
+```
+
 # PBMC - 4k Example
 
 PBMC - 4k example

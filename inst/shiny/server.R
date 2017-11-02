@@ -773,29 +773,33 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("combatRun", {
-        #check for zeros
-        if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-          alert("Warning: Rows with a sum of zero found. Filter data to continue")
-        } else {
-          saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-          if (input$combatRef){
-            assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                         use_assay = input$combatAssay,
-                         par.prior = input$combatParametric,
-                         covariates = input$combatConditionVar,
-                         mean.only = input$combatMeanOnly,
-                         ref.batch = input$combatRefBatch)
+        if(input$batchMethod == "ComBat"){
+          #check for zeros
+          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+            alert("Warning: Rows with a sum of zero found. Filter data to continue")
           } else {
-            assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                         use_assay = input$combatAssay,
-                         par.prior = input$combatParametric,
-                         covariates = input$combatConditionVar,
-                         mean.only = input$combatMeanOnly)
+            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+            if (input$combatRef){
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly,
+                           ref.batch = input$combatRefBatch)
+            } else {
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly)
+            }
+            updateAssayInputs()
+            vals$combatstatus <- "ComBat Complete"
           }
-          updateAssayInputs()
-          vals$combatstatus <- "ComBat Complete"
+        } else {
+          alert("Unsupported Batch Correction Method!")
         }
       })
     }
@@ -996,6 +1000,18 @@ shinyServer(function(input, output, session) {
         }
         Heatmap(vals$gsva_res, top_annotation = topha)
       }
+    }
+  })
+  
+  #save pathawy activity results in the colData
+  observeEvent(input$savePathway, {
+    if (!(is.null(vals$gsva_res))){
+      if(all(colnames(vals$counts) == colnames(vals$gsva_res))){
+        colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
+        updateColDataNames()
+      }
+    } else {
+      alert("Run pathway first!")
     }
   })
 
