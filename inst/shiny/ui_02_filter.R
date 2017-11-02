@@ -31,7 +31,7 @@ shiny_panel_filter <- fluidPage(
                      max = numSamples, value = numSamples, step = 1),
         withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data")),
         tags$hr(),
-        downloadButton("downloadSCE", "Download SingleCelltkExperiment")
+        downloadButton("downloadSCE", "Download SCtkExperiment")
       ),
       mainPanel(
         tabsetPanel(

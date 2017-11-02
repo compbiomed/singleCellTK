@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc_functions.R
 \name{createSCE}
 \alias{createSCE}
-\title{Create a SingleCelltkExperiment object}
+\title{Create a SCtkExperiment object}
 \usage{
 createSCE(countfile = NULL, annotfile = NULL, featurefile = NULL,
   inputdataframes = FALSE, create_logcounts = TRUE)
@@ -26,11 +26,11 @@ frames instead of file paths. The default is FALSE.}
 and include it in the object. The default is TRUE}
 }
 \value{
-a SingleCelltkExperiment object
+a SCtkExperiment object
 }
 \description{
 From a file of counts and a file of annotation information, create a
-SingleCelltkExperiment object.
+SCtkExperiment object.
 }
 \examples{
 \dontrun{

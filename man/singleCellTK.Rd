@@ -7,7 +7,7 @@
 singleCellTK(inputData = NULL)
 }
 \arguments{
-\item{inputData}{The input SingleCelltkExperiment class object}
+\item{inputData}{The input SCtkExperiment class object}
 }
 \value{
 The shiny app will open
