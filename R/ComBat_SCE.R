@@ -1,8 +1,8 @@
 #' ComBat_SCE
 #'
-#' Run ComBat on a SingleCelltkExperiment object
+#' Run ComBat on a SCtkExperiment object
 #'
-#' @param SCEdata SingleCelltkExperiment object. Required
+#' @param SCEdata SCtkExperiment object. Required
 #' @param batch The name of a column in colData to use as the batch variable.
 #' Required
 #' @param use_assay The assay to use for ComBat. The default is "logcounts"
@@ -16,7 +16,7 @@
 #' batch adjustment.
 #'
 #' @return ComBat matrix based on inputs. You can save this matrix into the
-#' SingleCelltkExperiment with assay()
+#' SCtkExperiment with assay()
 #'
 #' @export
 ComBat_SCE <- function(SCEdata, batch, use_assay="logcounts",

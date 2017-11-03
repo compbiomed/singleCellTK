@@ -1,6 +1,6 @@
 #' thresholdGenes
 #'
-#' @param SCEdata SingleCelltkExperiment object
+#' @param SCEdata SCtkExperiment object
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #'
@@ -20,9 +20,9 @@ thresholdGenes <- function(SCEdata, use_assay="logcounts"){
 
 #' MAST Violin
 #'
-#' Run MAST analysis on a SingleCelltkExperiment object.
+#' Run MAST analysis on a SCtkExperiment object.
 #'
-#' @param SCEdata SingleCelltkExperiment object
+#' @param SCEdata SCtkExperiment object
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #' @param fcHurdleSig The filtered result from hurdle model
@@ -62,9 +62,9 @@ MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
 
 #' MAST linear model
 #'
-#' Run MAST analysis on a SingleCelltkExperiment object.
+#' Run MAST analysis on a SCtkExperiment object.
 #'
-#' @param SCEdata SingleCelltkExperiment object
+#' @param SCEdata SCtkExperiment object
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #' @param fcHurdleSig The filtered result from hurdle model

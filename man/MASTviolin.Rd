@@ -8,7 +8,7 @@ MASTviolin(SCEdata, use_assay = "logcounts", fcHurdleSig, samplesize = 49,
   threshP = FALSE, variable)
 }
 \arguments{
-\item{SCEdata}{SingleCelltkExperiment object}
+\item{SCEdata}{SCtkExperiment object}
 
 \item{use_assay}{The assay to use for the MAST calculations. The default is
 "logcounts"}
@@ -23,5 +23,5 @@ FALSE}
 \item{variable}{Select the condition of interest}
 }
 \description{
-Run MAST analysis on a SingleCelltkExperiment object.
+Run MAST analysis on a SCtkExperiment object.
 }

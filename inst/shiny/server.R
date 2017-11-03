@@ -12,7 +12,9 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    combatstatus = ""
+    combatstatus = "",
+    diffexgenelist = NULL,
+    gsva_res = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -35,6 +37,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "combatConditionVar",
                       choices = pdata_options)
     updateSelectInput(session, "hurdlecondition",
+                      choices = pdata_options)
+    updateSelectInput(session, "pathwayPlotVar",
                       choices = pdata_options)
   }
 
@@ -62,19 +66,17 @@ shinyServer(function(input, output, session) {
                       choices = paste("PC", 1:numsamples, sep = ""),
                       selected = "PC2")
     updateNumericInput(session, "downsampleNum", value = numsamples,
-                       max=numsamples)
+                       max = numsamples)
   }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "dimRedAssaySelect",
-                      choices = currassays)
-    updateSelectInput(session, "combatAssay",
-                      choices = currassays)
-    updateSelectInput(session, "diffexAssay",
-                      choices = currassays)
-    updateSelectInput(session, "mastAssay",
-                      choices = currassays)
+    updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInput(session, "combatAssay", choices = currassays)
+    updateSelectInput(session, "diffexAssay", choices = currassays)
+    updateSelectInput(session, "mastAssay", choices = currassays)
+    updateSelectInput(session, "pathwayAssay", choices = currassays)
+    updateSelectInput(session, "delAssayType", choices = currassays)
   }
 
   # Close app on quit
@@ -164,6 +166,8 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("downsampleGo", {
       vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
       updateNumSamples()
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
     })
   })
 
@@ -188,6 +192,8 @@ shinyServer(function(input, output, session) {
                                     remove_noexpress = input$removeNoexpress,
                                     remove_bottom = 0.01 * input$LowExpression,
                                     minimum_detect_genes = input$minDetectGenect)
+        vals$diffexgenelist <- NULL
+        vals$gsva_res <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         if (!is.null(input$deletesamplelist)){
@@ -207,6 +213,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -237,7 +245,7 @@ shinyServer(function(input, output, session) {
                                             label = NULL,
                                             choices = unique(colData(vals$counts)[, input$filteredSample])))
                              )
-          L[[3]] <- list(actionButton("runFilterSample", "Filter"))
+          L[[3]] <- list(withBusyIndicatorUI(actionButton("runFilterSample", "Filter")))
           return(L)
         } else {
           L <- list(renderText("Annotation must have fewer than 100 options"))
@@ -251,9 +259,13 @@ shinyServer(function(input, output, session) {
 
   #Filter the selected samples
   observeEvent(input$runFilterSample, {
-    filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
-    vals$counts <- vals$counts[, filter]
-    updateNumSamples()
+    withBusyIndicatorServer("runFilterSample", {
+      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
+      vals$counts <- vals$counts[, filter]
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
+      updateNumSamples()
+    })
   })
 
   observeEvent(input$filteredFeature, {
@@ -283,6 +295,8 @@ shinyServer(function(input, output, session) {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
     vals$counts <- vals$counts[filter, ]
     updateGeneNames()
+    vals$diffexgenelist <- NULL
+    vals$gsva_res <- NULL
   })
 
   output$downloadSCE <- downloadHandler(
@@ -305,16 +319,37 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  observeEvent(input$addLogcountsAssay, {
-    if ("logcounts" %in% names(assays(vals$counts))){
-      alert("logcounts already exists!")
+  observeEvent(input$addAssay, {
+    if (input$addAssayType %in% names(assays(vals$counts))){
+      alert("assay already exists!")
     } else {
-      withBusyIndicatorServer("addLogcountsAssay", {
-        assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+      withBusyIndicatorServer("addAssay", {
+        if (input$addAssayType == "logcounts"){
+          assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+        } else {
+          stop("unsupported assay type")
+        }
         updateAssayInputs()
       })
     }
   })
+
+  observeEvent(input$delAssay, {
+    if (!(input$delAssayType %in% names(assays(vals$counts)))){
+      alert("assay does not exist!")
+    } else {
+      withBusyIndicatorServer("delAssay", {
+        assay(vals$counts, input$delAssayType) <- NULL
+        updateAssayInputs()
+      })
+    }
+  })
+
+  output$colDataDataFrame = DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      data.frame(colData(vals$counts))
+    }
+  }, options = list(scrollX = TRUE, pageLength=50))
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -470,7 +505,7 @@ shinyServer(function(input, output, session) {
         }
       }
     }
-  })
+  }, height = 600)
 
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
@@ -670,7 +705,6 @@ shinyServer(function(input, output, session) {
       alert("Warning: Specify biomarker name!")
     } else{
       biomarker_name <- gsub(" ", "_", input$biomarkerName)
-      alert(biomarker_name)
       rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
       updateFeatureAnnots()
     }
@@ -739,29 +773,33 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("combatRun", {
-        #check for zeros
-        if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-          alert("Warning: Rows with a sum of zero found. Filter data to continue")
-        } else {
-          saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-          if (input$combatRef){
-            assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                         use_assay = input$combatAssay,
-                         par.prior = input$combatParametric,
-                         covariates = input$combatConditionVar,
-                         mean.only = input$combatMeanOnly,
-                         ref.batch = input$combatRefBatch)
+        if(input$batchMethod == "ComBat"){
+          #check for zeros
+          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+            alert("Warning: Rows with a sum of zero found. Filter data to continue")
           } else {
-            assay(vals$counts, saveassayname) <-
-              ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                         use_assay = input$combatAssay,
-                         par.prior = input$combatParametric,
-                         covariates = input$combatConditionVar,
-                         mean.only = input$combatMeanOnly)
+            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+            if (input$combatRef){
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly,
+                           ref.batch = input$combatRefBatch)
+            } else {
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly)
+            }
+            updateAssayInputs()
+            vals$combatstatus <- "ComBat Complete"
           }
-          updateAssayInputs()
-          vals$combatstatus <- "ComBat Complete"
+        } else {
+          alert("Unsupported Batch Correction Method!")
         }
       })
     }
@@ -790,8 +828,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDEhurdle, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
-    }
-    else{
+    } else {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
         vals$mastgenelist <- MAST(SCEdata = vals$counts,
@@ -863,6 +900,128 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       write.csv(vals$mastgenelist, file)
+    }
+  )
+
+  #-----------------------------------------------------------------------------
+  # Page 8: Pathway Activity Analysis
+  #-----------------------------------------------------------------------------
+
+  output$selectPathwayGeneLists <- renderUI({
+    if (input$genelistSource == "Manual Input"){
+      if (!is.null(vals$counts)){
+        selectizeInput("pathwayGeneLists", "Select Gene List(s):",
+                       colnames(rowData(vals$counts)), multiple = T)
+      } else {
+        h4("Note: upload data.")
+      }
+    } else {
+      selectInput("pathwayGeneLists", "Select Gene List(s):",
+                  c("ALL", names(c2BroadSets)), multiple = T)
+    }
+  })
+
+  output$selectNumTopPaths <- renderUI({
+    if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+      sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
+                  max = length(c2BroadSets), value = 500, step = 5)
+    }
+  })
+
+  observeEvent(input$pathwayRun, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      withBusyIndicatorServer("pathwayRun", {
+        if (input$genelistSource == "Manual Input"){
+          #expecting logical vector
+          if (!all(rowData(test_indata)[, "test_biomarker"] %in% c(1, 0))){
+            alert("ERROR: malformed biomarker annotation")
+          } else {
+            biomarker <- list()
+            biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[, input$pathwayGeneLists] == 1]
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
+          }
+        } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
+          #expecting some genes in list are in the rownames
+          if ("ALL" %in% input$pathwayGeneLists) {
+            if (length(input$pathwayPlotVar) != 1){
+              alert("Choose only one variable for full gsva profiling")
+            } else {
+              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
+              fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+              fit <- limma::eBayes(fit)
+              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
+              vals$gsva_res <- tempres[rownames(toptableres), ]
+            }
+          } else {
+            c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
+          }
+        } else{
+          stop("ERROR: Unsupported gene list source ", input$genelistSource)
+        }
+      })
+    }
+  })
+
+  output$pathwayPlot <- renderPlot({
+    if (!(is.null(vals$gsva_res))){
+      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
+        gsva_res_t <- data.frame(t(vals$gsva_res))
+        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
+        gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
+        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
+                                        variable.name = "pathway")
+        ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
+                                                                     y = "value",
+                                                                     color = paste(input$pathwayPlotVar, collapse = "_"))) +
+          ggplot2::geom_violin() +
+          ggplot2::geom_jitter() +
+          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
+
+        ggbase
+      } else if (input$pathwayOutPlot == "Heatmap"){
+        topha <- NULL
+        if (length(input$pathwayPlotVar) > 0){
+          colors <- RColorBrewer::brewer.pal(8, "Set1")
+          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
+          cond_levels <- unique(cond)
+          if (length(cond_levels) < 8){
+            col <- list()
+            col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
+            conddf <- data.frame(cond, row.names = colnames(vals$gsva_res))
+            colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
+            topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
+                                                       col = col)
+          } else {
+            alert("Too many levels in selected condition(s)")
+          }
+        }
+        Heatmap(vals$gsva_res, top_annotation = topha)
+      }
+    }
+  })
+  
+  #save pathawy activity results in the colData
+  observeEvent(input$savePathway, {
+    if (!(is.null(vals$gsva_res))){
+      if(all(colnames(vals$counts) == colnames(vals$gsva_res))){
+        colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
+        updateColDataNames()
+      }
+    } else {
+      alert("Run pathway first!")
+    }
+  })
+
+  #download mast results
+  output$downloadPathway <- downloadHandler(
+    filename = function() {
+      paste("pathway_results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(vals$gsva_res, file)
     }
   )
 })

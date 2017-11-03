@@ -9,7 +9,7 @@ plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
   reducedDimName = "PCA")
 }
 \arguments{
-\item{count_data}{A SingleCelltkExperiment object}
+\item{count_data}{A SCtkExperiment object}
 
 \item{gene}{gene list}
 

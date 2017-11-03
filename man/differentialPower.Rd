@@ -12,7 +12,7 @@ differentialPower(datamatrix, downmatrix, conditions, genelist = FALSE,
 
 \item{downmatrix}{The 4-dimensional array of simulated subsampled datasets. Produced by Downsample()}
 
-\item{conditions}{A vector of conditions, such as treatment or batch. Passed as colData(SingleCelltkExperiment)$treatment.}
+\item{conditions}{A vector of conditions, such as treatment or batch. Passed as colData(SCtkExperiment)$treatment.}
 
 \item{genelist}{Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the oringinal data.}
 

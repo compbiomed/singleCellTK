@@ -3,21 +3,21 @@
 #'
 #' @slot pca_variances The percent variation contained in each PCA dimension
 #'
-#' @exportClass SingleCelltkExperiment
+#' @exportClass SCtkExperiment
 #'
-setClass("SingleCelltkExperiment",
+setClass("SCtkExperiment",
          slots = c(pca_variances = "DataFrame"),
          contains = "SingleCellExperiment")
 
-#' Create a SingleCelltkExperiment
+#' Create a SCtkExperiment
 #'
 #' @param ... SingleCellExperiment and SummarizedExperiment components
 #' @param pca_variances The percent variation contained in each PCA dimension
 #'
-#' @export SingleCelltkExperiment
+#' @export SCtkExperiment
 #'
-SingleCelltkExperiment <- function(..., pca_variances = DataFrame()) {
+SCtkExperiment <- function(..., pca_variances = DataFrame()) {
   sce <- SingleCellExperiment(...)
-  out <- new("SingleCelltkExperiment", sce, pca_variances = DataFrame())
+  out <- new("SCtkExperiment", sce, pca_variances = DataFrame())
   return(out)
 }
