@@ -1,8 +1,8 @@
-#' Summarize SingleCelltkExperiment
+#' Summarize SCtkExperiment
 #'
-#' Creates a table of summary metrics from an input SingleCelltkExperiment.
+#' Creates a table of summary metrics from an input SCtkExperiment.
 #'
-#' @param indata Input SingleCelltkExperiment
+#' @param indata Input SCtkExperiment
 #'
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
@@ -21,10 +21,10 @@ summarizeTable <- function(indata){
                               sum(rowSums(assay(indata, "counts")) == 0))))
 }
 
-#' Create a SingleCelltkExperiment object
+#' Create a SCtkExperiment object
 #'
 #' From a file of counts and a file of annotation information, create a
-#' SingleCelltkExperiment object.
+#' SCtkExperiment object.
 #'
 #' @param countfile The path to a text file that contains a header row of sample
 #' names, and rows of raw counts per gene for those samples.
@@ -39,7 +39,7 @@ summarizeTable <- function(indata){
 #' @param create_logcounts If TRUE, create a log2(counts+1) normalized assay
 #' and include it in the object. The default is TRUE
 #'
-#' @return a SingleCelltkExperiment object
+#' @return a SCtkExperiment object
 #' @export createSCE
 #' @examples
 #' \dontrun{
@@ -74,7 +74,7 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  newassay <- SingleCelltkExperiment(assays = list(counts = as.matrix(countsin)),
+  newassay <- SCtkExperiment(assays = list(counts = as.matrix(countsin)),
                                      colData = annotin,
                                      rowData = featurein)
   if (create_logcounts){

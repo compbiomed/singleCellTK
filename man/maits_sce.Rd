@@ -4,7 +4,7 @@
 \name{maits_sce}
 \alias{maits_sce}
 \title{Example Single Cell RNA-Seq MAITS data from MAST package}
-\format{SingleCelltkExperiment}
+\format{SCtkExperiment}
 \source{
 DOI: 10.1186/s13059-015-0844-5
 }

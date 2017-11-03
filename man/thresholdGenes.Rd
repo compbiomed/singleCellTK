@@ -7,7 +7,7 @@
 thresholdGenes(SCEdata, use_assay = "logcounts")
 }
 \arguments{
-\item{SCEdata}{SingleCelltkExperiment object}
+\item{SCEdata}{SCtkExperiment object}
 
 \item{use_assay}{The assay to use for the MAST calculations. The default is
 "logcounts"}

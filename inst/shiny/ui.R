@@ -18,11 +18,14 @@ library(gridExtra)
 library(cluster)
 library(ggtree)
 library(ape)
+library(GSVA)
+library(GSVAdata)
 library(SingleCellExperiment)
 library(singleCellTK)
 
 source("helpers.R")
 source("colourGroupInput.R")
+data("c2BroadSets")
 
 clusterChoice <- ""
 sampleChoice <- ""
@@ -70,14 +73,14 @@ shinyUI(
     tabPanel("Upload", shiny_panel_upload),
     tabPanel("Data Summary and Filtering", shiny_panel_filter),
     tabPanel("DR & Clustering", shiny_panel_cluster),
-    tabPanel("Differential Expression", shiny_panel_diffex),
-    tabPanel("Subsampling", shiny_panel_subsample),
     tabPanel("Batch Correction", shiny_panel_batchcorrect),
-    tabPanel("MAST", shiny_panel_mast),
     navbarMenu(
-      "More",
-      tabPanel("Pathway Activity Analysis", shiny_panel_pathway)
+      "Differential Expression",
+      tabPanel("Differential Expression", shiny_panel_diffex),
+      tabPanel("MAST", shiny_panel_mast)
     ),
+    tabPanel("Pathway Activity Analysis", shiny_panel_pathway),
+    tabPanel("Sample Size", shiny_panel_subsample),
     footer = includeHTML("www/footer.html")
   )
 )

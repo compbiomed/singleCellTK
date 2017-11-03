@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.3.0
+Version: 0.3.3
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
@@ -23,11 +23,14 @@ Imports:
     data.table,
     DESeq,
     DESeq2,
+    DT,
     e1071,
     GGally,
     ggplot2,
     ggtree,
     gridExtra,
+    GSVA (>= 1.26.0),
+    GSVAdata,
     limma,
     locfit,
     MAST,
@@ -46,7 +49,6 @@ RoxygenNote: 6.0.1
 Suggests:
     Rsubread,
     BiocStyle,
-    DT,
     knitr,
     bladderbatch,
     rmarkdown

@@ -3,15 +3,15 @@
 \docType{methods}
 \name{pca_variances}
 \alias{pca_variances}
-\alias{pca_variances,SingleCelltkExperiment-method}
-\alias{pca_variances<-,SingleCelltkExperiment-method}
+\alias{pca_variances,SCtkExperiment-method}
+\alias{pca_variances<-,SCtkExperiment-method}
 \title{Get PCA variances}
 \usage{
 pca_variances(x, ...)
 
-\S4method{pca_variances}{SingleCelltkExperiment}(x)
+\S4method{pca_variances}{SCtkExperiment}(x)
 
-\S4method{pca_variances}{SingleCelltkExperiment}(x) <- value
+\S4method{pca_variances}{SCtkExperiment}(x) <- value
 }
 \arguments{
 \item{x}{SCtkE object}
