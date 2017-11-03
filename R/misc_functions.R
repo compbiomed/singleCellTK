@@ -86,6 +86,8 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
 #' Filter Genes and Samples from a Single Cell Object
 #'
 #' @param insceset Input single cell object, required
+#' @param use_assay Indicate which assay to use for filtering. Default is
+#' "counts"
 #' @param deletesamples List of samples to delete from the object.
 #' @param remove_noexpress Remove genes that have no expression across all
 #' samples. The default is true
@@ -93,6 +95,9 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
 #' single cell object. This occurs after remove_noexpress. The default is 0.50.
 #' @param minimum_detect_genes Minimum number of genes with at least 1
 #' count to include a sample in the single cell object. The default is 1700.
+#' @param filter_spike Apply filtering to Spike in controls (indicated by
+#' isSpike).
+#' The default is TRUE.
 #'
 #' @return The filtered single cell object.
 #' @export filterSCData
@@ -101,15 +106,31 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
 #' data("GSE60361_subset_sce")
 #' GSE60361_subset_sce <- filterSCData(GSE60361_subset_sce,
 #'                                     deletesamples="X1772063061_G11")
-filterSCData <- function(insceset, deletesamples=NULL, remove_noexpress=TRUE,
-                         remove_bottom=0.5, minimum_detect_genes=1700){
+filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
+                         remove_noexpress=TRUE, remove_bottom=0.5,
+                         minimum_detect_genes=1700, filter_spike=TRUE){
+  #delete specified samples
   insceset <- insceset[, !(colnames(insceset) %in% deletesamples)]
+
+  #remove genes with no expression
   if (remove_noexpress){
-    insceset <- insceset[rowSums(assay(insceset, "counts")) != 0, ]
+    if (filter_spike){
+      insceset <- insceset[rowSums(assay(insceset, use_assay)) != 0, ]
+    } else {
+      insceset <- insceset[(rowSums(assay(insceset, use_assay)) != 0 | isSpike(insceset)), ]
+    }
   }
-  nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
-  tokeeprow <- order(rowSums(assay(insceset, "counts")), decreasing = TRUE)[1:nkeeprows]
-  tokeepcol <- apply(assay(insceset, "counts"), 2, function(x) sum(as.numeric(x) == 0)) >= minimum_detect_genes
+  if (filter_spike){
+    nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
+    tokeeprow <- order(rowSums(assay(insceset, use_assay)), decreasing = TRUE)[1:nkeeprows]
+  } else {
+    nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset))) - sum(isSpike(insceset))
+    tokeeprow <- order(rowSums(assay(insceset, use_assay)), decreasing = TRUE)
+    tokeeprow <- setdiff(tokeeprow, which(isSpike(insceset)))
+    tokeeprow <- tokeeprow[1:nkeeprows]
+    tokeeprow <- c(tokeeprow, which(isSpike(insceset)))
+  }
+  tokeepcol <- apply(assay(insceset, use_assay), 2, function(x) sum(as.numeric(x) == 0)) >= minimum_detect_genes
   insceset <- insceset[tokeeprow, tokeepcol]
   return(insceset)
 }

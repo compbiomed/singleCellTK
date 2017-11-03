@@ -187,11 +187,12 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("filterData", {
         vals$counts <- vals$original
         deletesamples <- input$deletesamplelist
-        vals$counts <- filterSCData(vals$counts,
+        vals$counts <- filterSCData(insceset = vals$counts,
+                                    use_assay = "counts", #TODO: user selects filtering assay
                                     deletesamples = deletesamples,
                                     remove_noexpress = input$removeNoexpress,
                                     remove_bottom = 0.01 * input$LowExpression,
-                                    minimum_detect_genes = input$minDetectGenect)
+                                    minimum_detect_genes = input$minDetectGenect) #TODO: user decides to filter spikeins
         vals$diffexgenelist <- NULL
         vals$gsva_res <- NULL
         #Refresh things for the clustering tab
@@ -345,11 +346,11 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$colDataDataFrame = DT::renderDataTable({
-    if(!is.null(vals$counts)){
+  output$colDataDataFrame <- DT::renderDataTable({
+    if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
-  }, options = list(scrollX = TRUE, pageLength=50))
+  }, options = list(scrollX = TRUE, pageLength = 50))
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -773,7 +774,7 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("combatRun", {
-        if(input$batchMethod == "ComBat"){
+        if (input$batchMethod == "ComBat"){
           #check for zeros
           if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
             alert("Warning: Rows with a sum of zero found. Filter data to continue")
@@ -1002,11 +1003,11 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #save pathawy activity results in the colData
   observeEvent(input$savePathway, {
     if (!(is.null(vals$gsva_res))){
-      if(all(colnames(vals$counts) == colnames(vals$gsva_res))){
+      if (all(colnames(vals$counts) == colnames(vals$gsva_res))){
         colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
         updateColDataNames()
       }

@@ -4,11 +4,15 @@
 \alias{filterSCData}
 \title{Filter Genes and Samples from a Single Cell Object}
 \usage{
-filterSCData(insceset, deletesamples = NULL, remove_noexpress = TRUE,
-  remove_bottom = 0.5, minimum_detect_genes = 1700)
+filterSCData(insceset, use_assay = "counts", deletesamples = NULL,
+  remove_noexpress = TRUE, remove_bottom = 0.5,
+  minimum_detect_genes = 1700, filter_spike = TRUE)
 }
 \arguments{
 \item{insceset}{Input single cell object, required}
+
+\item{use_assay}{Indicate which assay to use for filtering. Default is
+"counts"}
 
 \item{deletesamples}{List of samples to delete from the object.}
 
@@ -20,6 +24,10 @@ single cell object. This occurs after remove_noexpress. The default is 0.50.}
 
 \item{minimum_detect_genes}{Minimum number of genes with at least 1
 count to include a sample in the single cell object. The default is 1700.}
+
+\item{filter_spike}{Apply filtering to Spike in controls (indicated by
+isSpike).
+The default is TRUE.}
 }
 \value{
 The filtered single cell object.
