@@ -37,9 +37,9 @@ shiny_panel_subsample <- fluidPage(
           4,
           wellPanel(
             numericInput("minCellNum", "Minimum number of cells to simulate",
-                         value = 100, min=10, max=10000),
+                         value = 10, min=1, max=10000),
             numericInput("maxCellNum", "Maximum number of cells to simulate",
-                         value=3, min=1, max=100000),
+                         value=100, min=10, max=100000),
             numericInput("iterations",
                          label = "Number of bootstrap iterations per cellcount.",
                          value = 10, min = 2, max = 10000),
@@ -47,11 +47,24 @@ shiny_panel_subsample <- fluidPage(
                          value = 1000000, min = 1000, max = 1000000000),
             checkboxInput("useReadCount","Use the same number of reads as in original dataset"),
             selectInput("select_CellNum_Condition", "Condition for diffex", clusterChoice),
+            numericInput("minCount", "Minimum readcount to detect gene",
+                         value = 10, min=1, max=10000),
+            numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
+                         value=3, min=1, max=100000),
+            numericInput("depthResolution","How many dataset sizes to simulate",
+                         value = 10, min=1, max = 100),
             actionButton("runSubsampleCells", "Run resampler")
           ),
           tabPanel("Genes Detected", plotOutput("CellCountDone")),
           tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone")),
           tabPanel("Number of Significant DiffEx Genes", plotOutput("cellNumSigDone"))
+        ),
+        column(8,
+          tabsetPanel(
+            tabPanel("Genes Detected", plotOutput("CellsDone")),
+            tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCells")),
+            tabPanel("Number of Diffex Genes",plotOutput("sigNumCells"))
+          )
         )
       )
     ),

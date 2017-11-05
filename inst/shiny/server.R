@@ -73,6 +73,8 @@ shinyServer(function(input, output, session) {
                       choices = c(rownames(vals$counts)[1:100]))
     updateSelectInput(session,"select_ReadDepth_Condition",
                       choices = colnames(colData(vals$counts)))
+    updateSelectInput(session,"select_CellNum_Condition",
+                      choices = colnames(colData(vals$counts)))
   }
 
   # Close app on quit
@@ -682,15 +684,56 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     }
     else{
-      vals$subCells <- iterateSimulations(originalData = counts(vals$counts),
-                            realLabels = colData(vals$counts)[,input$subCovariate,drop=FALSE][,1],
-                            totalReads = input$selectTotReads,
-                            cells = input$selectNCells,
-                            iterations = input$iterations)
-      vals$subEffectSize <- calcEffectSizes(counts(vals$counts),
-                            condition = colData(vals$counts)[,input$subCovariate,drop=FALSE][,1])
-      output$downDone <- renderPlot({
-        plot(apply(vals$subPower,1,function(x){sum(x<0.05)/length(x)})~vals$subEffectSize,ylim=c(0,1))
+      if(input$useReadCount){
+        vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                            realLabels = input$select_CellNum_Condition,
+                                            totalReads = sum(counts(vals$counts)),
+                                            minCellnum = input$minCellNum,
+                                            maxCellnum = input$maxCellNum,
+                                            minCountDetec = input$minCount,
+                                            minCellsDetec = input$minCells,
+                                            depthResolution = input$depthResolution,
+                                            iterations = input$iterations)
+      }
+      else{
+        vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                         realLabels = input$select_CellNum_Condition,
+                                         totalReads = input$totalReads,
+                                         minCellnum = input$minCellNum,
+                                         maxCellnum = input$maxCellNum,
+                                         minCountDetec = input$minCount,
+                                         minCellsDetec = input$minCells,
+                                         depthResolution = input$depthResolution,
+                                         iterations = input$iterations)
+      }
+      output$CellsDone <- renderPlot({
+        plot(apply(vals$subCells[,,1],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd=4, xlab="log10(Total read counts)",ylab="Number of detected genes",
+             main = "Number of dected genes by sequencing depth")
+        lines(apply(vals$subCells[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subCells[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+      })
+      output$MinEffectCells <- renderPlot({
+        plot(apply(vals$subCells[,,2],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Average significant effect size",
+             ylim=c(0,2))
+        lines(apply(vals$subCells[,,2],2,function(x){quantile(x,0.25)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subCells[,,2],2,function(x){quantile(x,0.75)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+      })
+      output$sigNumCells <- renderPlot({
+        plot(apply(vals$subCells[,,3],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Number of significantly DiffEx genes")
+        lines(apply(vals$subCells[,,3],2,function(x){quantile(x,0.25)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subCells[,,3],2,function(x){quantile(x,0.75)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
       })
     }
   })

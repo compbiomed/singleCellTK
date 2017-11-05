@@ -32,6 +32,43 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
   return(outArray)
 }
 
+
+
+#' Estimate numbers of detected genes, significantly differentially expressed genes, and median significant effect size
+#'
+#' @param originalData Matrix. The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").
+#' @param minCountDetec Numeric. The minimum number of reads found for a gene to be considered detected.
+#' @param minCellsDetec Numeric. The minimum number of cells a gene must have at least 1 read in for it to be considered detected.
+#' @param minCellnum Numeric. The minimum number of virtual cells to include in the smallest simulated dataset.
+#' @param maxCellnum Numeric. The maximum number of virtual cells to include in the largest simulated dataset
+#' @param realLabels Factor. The condition labels for differential expression. If only two factors present, will default to t-test. If multiple factors, will default to ANOVA.
+#' @param depthResolution Numeric. How many different read depth should the script simulate? Will simulate a number of experimental designs ranging from 10 reads to maxReadDepth, with logarithmic spacing.
+#' @param iterations Numeric. How many times should each experimental design be simulated?
+#' @param totalReads Numeric. How many aligned reads to put in each simulated dataset.
+#' @return A 3-dimensional array, with dimensions = c(iterations, depthResolution, 3). [,,1] contains the number of detected genes in each simulated dataset, [,,2] contains the number of significantly differentially expressed genes in each simulation, and [,,3] contains the mediansignificant effect size in each simulation. If no genes are significantly differentially expressed, the median effect size defaults to infinity.
+#' @export DownsampleCells
+DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3, minCellnum = 10,
+                            maxCellnum = 1000, realLabels, depthResolution = 10, iterations = 10,
+                            totalReads = 1000000){
+  realLabels <- colData(originalData)[,realLabels]
+  originalData <- counts(originalData)
+  foundGenesMatrix <- matrix(nrow=iterations,ncol=depthResolution)
+  minEffectSizeMatrix <- matrix(nrow=iterations,ncol=depthResolution)
+  numSigGenesMatrix <- matrix(nrow=iterations,ncol=depthResolution)
+  cellNums <- seq(minCellnum,maxCellnum,length.out=depthResolution)
+  effectSizes <- calcEffectSizes(originalData, realLabels)
+  for(i in 1:depthResolution){
+    for(j in 1:iterations){
+      tempData <- generateSimulatedData(totalReads=totalReads, cells=cellNums[i], as.matrix(originalData), realLabels=as.factor(realLabels))
+      tempSigDiff <- subDiffEx(tempData)
+      foundGenesMatrix[j,i] <- sum(apply(tempData[-1,],1,function(x){sum(x>0)>=minCellsDetec && sum(x)>=minCountDetec}))
+      numSigGenesMatrix[j,i] <- sum(tempSigDiff <= 0.05)
+      minEffectSizeMatrix[j,i] <- abs(min(abs(effectSizes[which(tempSigDiff <= 0.05)])))
+    }
+  }
+  outArray <- array(c(foundGenesMatrix,minEffectSizeMatrix,numSigGenesMatrix),dim=c(iterations,depthResolution,3))
+  return(outArray)
+}
 #' Downsample Data
 #'
 #' @param datamatrix TODO:document
