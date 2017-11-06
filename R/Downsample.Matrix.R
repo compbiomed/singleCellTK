@@ -154,6 +154,8 @@ subDiffEx <- function(tempData){
 #' @export iterateSimulations
 #' 
 iterateSimulations <- function(originalData, realLabels, totalReads, cells, iterations){
+  realLabels <- colData(originalData)[,realLabels]
+  originalData <- counts(originalData)
   sigMatrix <- matrix(nrow=dim(originalData)[1])
   for(i in 1:iterations){
     tempData <- generateSimulatedData(totalReads, cells, originalData, realLabels=as.factor(realLabels))
