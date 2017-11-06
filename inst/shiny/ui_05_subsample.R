@@ -74,13 +74,18 @@ shiny_panel_subsample <- fluidPage(
         column(
           4,
           wellPanel(
-            numericInput("numCells","How many simulated cells?",
+            numericInput("numCellsSnap","How many simulated cells?",
                          value = 100, min = 2, max = 10000),
-            numericInput("numReads","How many total reads?",
+            numericInput("numReadsSnap","How many total reads?",
                          value = 1000000, min=1000, max=1000000000),
             selectInput("select_Snapshot_Condition", "Condition for diffex", clusterChoice),
+            numericInput("iterationsSnap","Number of bootstrap iterations",
+                         value = 10, min = 2, max = 1000),
             actionButton("runSnapshot", "Run resampling snapshot")
           )
+        ),
+        column(8,
+               plotOutput("Snaplot")
         )
       )
     )
