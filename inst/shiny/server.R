@@ -40,6 +40,12 @@ shinyServer(function(input, output, session) {
                       choices = pdata_options)
     updateSelectInput(session, "pathwayPlotVar",
                       choices = pdata_options)
+    updateSelectInput(session, "select_ReadDepth_Condition",
+                      choices = pdata_options)
+    updateSelectInput(session, "select_CellNum_Condition",
+                      choices = pdata_options)
+    updateSelectInput(session, "select_Snapshot_Condition",
+                      choices = pdata_options)
   }
 
   updateGeneNames <- function(){
@@ -715,42 +721,126 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #Run subsampling analysis
-  runDownsampler <- observeEvent(input$runSubsample, {
+  runSequenceDepthSubsampler <- observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
     else{
-      subData <- reactiveValues(
-        counts = Downsample(assay(vals$counts, "counts"),
-                            newcounts = floor(2 ^ seq.int(from = log2(input$minSim),
-                                                          to = log2(input$maxSim),
-                                                          length.out = 10)),
-                            iterations = input$iterations)
-      )
-      output$downDone <- renderPlot({
-        heatmap(as.matrix(subData$counts[order(apply(subData$counts[, , 10, 1], 1, sum), decreasing = TRUE)[1:20], , 10, 1]))
+      vals$subDepth <- DownsampleDepth(originalData = vals$counts,
+                                               minCount = input$minCount,
+                                               minCells = input$minCells,
+                                               maxDepth = 10^input$maxDepth,
+                                               realLabels = input$select_ReadDepth_Condition,
+                                               depthResolution = input$depthResolution,
+                                               iterations = input$iterations)
+
+      output$DepthDone <- renderPlot({
+        plot(apply(vals$subDepth[,,1],2,median)~
+               seq(from = 0,to = input$maxDepth, length.out = input$depthResolution),
+             lwd=4, xlab="log10(Total read counts)",ylab="Number of detected genes",
+             main = "Number of dected genes by sequencing depth")
+        lines(apply(vals$subDepth[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = 0,to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+      })
+      output$MinEffectDone <- renderPlot({
+        plot(apply(vals$subDepth[,,2],2,median)~
+               seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Average significant effect size",
+             ylim=c(0,2))
+        lines(apply(vals$subDepth[,,2],2,function(x){quantile(x,0.25)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,2],2,function(x){quantile(x,0.75)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+      })
+      output$sigNumDone <- renderPlot({
+        plot(apply(vals$subDepth[,,3],2,median)~
+               seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+             lwd = 4, xlab = "log10(Total read counts)",ylab="Number of significantly DiffEx genes")
+        lines(apply(vals$subDepth[,,3],2,function(x){quantile(x,0.25)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subDepth[,,3],2,function(x){quantile(x,0.75)})~
+                seq(from=0, to=input$maxDepth, length.out=input$depthResolution),lty=2, lwd=3)
+      })
+    }
+  })
+  
+  observeEvent(input$runSubsampleCells, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      if(input$useReadCount){
+        vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                            realLabels = input$select_CellNum_Condition,
+                                            totalReads = sum(counts(vals$counts)),
+                                            minCellnum = input$minCellNum,
+                                            maxCellnum = input$maxCellNum,
+                                            minCountDetec = input$minCount,
+                                            minCellsDetec = input$minCells,
+                                            depthResolution = input$depthResolution,
+                                            iterations = input$iterations)
+      }
+      else{
+        vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                         realLabels = input$select_CellNum_Condition,
+                                         totalReads = input$totalReads,
+                                         minCellnum = input$minCellNum,
+                                         maxCellnum = input$maxCellNum,
+                                         minCountDetec = input$minCount,
+                                         minCellsDetec = input$minCells,
+                                         depthResolution = input$depthResolution,
+                                         iterations = input$iterations)
+      }
+      output$CellsDone <- renderPlot({
+        plot(apply(vals$subCells[,,1],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd=4, xlab="Number of virtual cells",ylab="Number of detected genes",
+             main = "Number of dected genes by cell number")
+        lines(apply(vals$subCells[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+        lines(apply(vals$subCells[,,1],2,function(x){quantile(x,0.25)})~ 
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+      })
+      output$MinEffectCells <- renderPlot({
+        plot(apply(vals$subCells[,,2],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd = 4, xlab = "Number of virtual cells",ylab="Average significant effect size",
+             ylim=c(0,2))
+        lines(apply(vals$subCells[,,2],2,function(x){quantile(x,0.25)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subCells[,,2],2,function(x){quantile(x,0.75)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+      })
+      output$sigNumCells <- renderPlot({
+        plot(apply(vals$subCells[,,3],2,median)~
+               seq(from = input$minCellNum,to = input$maxCellNum, length.out = input$depthResolution),
+             lwd = 4, xlab = "Number of vitual cells",ylab="Number of significantly DiffEx genes")
+        lines(apply(vals$subCells[,,3],2,function(x){quantile(x,0.25)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
+        lines(apply(vals$subCells[,,3],2,function(x){quantile(x,0.75)})~
+                seq(from = input$minCellNum,to = input$maxCellNum, length.out=input$depthResolution),lty=2, lwd=3)
       })
     }
   })
 
   #Run differential power analysis
-  runDiffPower <- observeEvent(input$runDifferentialPower, {
+  runDiffPower <- observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
     }
     else{
-      #    if(exists('subData$counts')){
-      output$powerBoxPlot <- renderPlot({
-        subData <- Downsample(assay(vals$counts, "counts"), newcounts = floor(2 ^ seq.int(from = log2(input$minSim), to = log2(input$maxSim), length.out = 10)), iterations = input$iterations)
-        diffPower <- differentialPower(datamatrix = assay(vals$counts, "counts"), downmatrix = subData, conditions = colData(vals$counts)[, input$subCovariate], method = input$selectDiffMethod)
-        boxplot(diffPower)#,names=floor(2^seq.int(from=log2(input$minSim), to=log2(input$maxSim), length.out=10)))
+      vals$snapshot <- iterateSimulations(originalData = vals$counts,
+                                         realLabels = input$select_Snapshot_Condition,
+                                         totalReads = input$numReadsSnap,
+                                         cells = input$numCellsSnap,
+                                         iterations=input$iterationsSnap)
+      vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[,input$select_Snapshot_Condition])
+      output$Snaplot <- renderPlot({
+        plot(apply(vals$snapshot,1,function(x){sum(x<=0.05)/length(x)})~vals$effectSizes,
+             xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
       })
-      #    }
-      #    else{
-      #      output$powerBoxPlot <- renderPlot({
-      #        plot(c(0,1),c(0,1),main="You need to run the subsampler first.")
-      #      })
-      #    }
     }
   })
 

@@ -1,25 +1,92 @@
 shiny_panel_subsample <- fluidPage(
-  tags$div(
-    class = "container",
-    h1("Sample Size"),
-    sidebarLayout(
-      sidebarPanel(
-        selectInput("subCovariate",
-                    "Covariate for differential expression", clusterChoice),
-        selectInput("selectDiffMethod", "Differential Expression Method",
-                    c("tpm.t", "DESeq")),
-        numericInput("minSim", label = "Minimum subsample Size.", value = 1000,
-                     min = 1, max = 1000000),
-        numericInput("maxSim", label = "Maximum subsample Size.", value = 10000,
-                     min = 100, max = 100000000),
-        numericInput("iterations", label = "Number of bootstrap iterations.",
-                     value = 10, min = 2, max = 1000),
-        actionButton("runSubsample", "Run subsampler"),
-        actionButton("runDifferentialPower", "Run differential power analysis")
+  tabsetPanel(
+    tabPanel(
+      "Sequencing Depth",
+      fluidRow(
+        column(
+          4,
+          wellPanel(
+            numericInput("minCount", "Minimum readcount to detect gene",
+                         value = 10, min=1, max=10000),
+            numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
+                         value=3, min=1, max=100000),
+            #TO DO: Add a 'track a particular gene' option. Show counts for that gene.
+            numericInput("iterations",
+                         label = "Number of bootstrap iterations.",
+                         value = 10, min = 2, max = 10000),
+            sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
+            sliderInput("depthResolution", "how many values to simulate", 5, 100, 10, 5),
+            selectInput("select_ReadDepth_Condition", "Condition for diffex", c("Random",clusterChoice),selected="Random"),
+            actionButton("runSubsampleDepth", "Run subsampler")
+          )
+        ),
+          column(8,
+            tabsetPanel(
+              tabPanel("Genes Detected", plotOutput("DepthDone")),
+              tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone")),
+              tabPanel("Number of Diffex Genes",plotOutput("sigNumDone"))
+            )
+          )
+        )
       ),
-      mainPanel(
-        plotOutput("downDone"),
-        plotOutput("powerBoxPlot")
+    
+    tabPanel(
+      "Number of cells",
+      fluidRow(
+        column(
+          4,
+          wellPanel(
+            numericInput("minCellNum", "Minimum number of cells to simulate",
+                         value = 10, min=1, max=10000),
+            numericInput("maxCellNum", "Maximum number of cells to simulate",
+                         value=100, min=10, max=100000),
+            numericInput("iterations",
+                         label = "Number of bootstrap iterations per cellcount.",
+                         value = 10, min = 2, max = 10000),
+            numericInput("totalReads", "Estimated number of aligned reads",
+                         value = 1000000, min = 1000, max = 1000000000),
+            checkboxInput("useReadCount","Use the same number of reads as in original dataset"),
+            selectInput("select_CellNum_Condition", "Condition for diffex", clusterChoice),
+            numericInput("minCount", "Minimum readcount to detect gene",
+                         value = 10, min=1, max=10000),
+            numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
+                         value=3, min=1, max=100000),
+            numericInput("depthResolution","How many dataset sizes to simulate",
+                         value = 10, min=1, max = 100),
+            actionButton("runSubsampleCells", "Run resampler")
+          ),
+          tabPanel("Genes Detected", plotOutput("CellCountDone")),
+          tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone")),
+          tabPanel("Number of Significant DiffEx Genes", plotOutput("cellNumSigDone"))
+        ),
+        column(8,
+          tabsetPanel(
+            tabPanel("Genes Detected", plotOutput("CellsDone")),
+            tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCells")),
+            tabPanel("Number of Diffex Genes",plotOutput("sigNumCells"))
+          )
+        )
+      )
+    ),
+    tabPanel(
+      "Snapshot",
+      fluidRow(
+        column(
+          4,
+          wellPanel(
+            numericInput("numCellsSnap","How many simulated cells?",
+                         value = 100, min = 2, max = 10000),
+            numericInput("numReadsSnap","How many total reads?",
+                         value = 1000000, min=1000, max=1000000000),
+            selectInput("select_Snapshot_Condition", "Condition for diffex", clusterChoice),
+            numericInput("iterationsSnap","Number of bootstrap iterations",
+                         value = 10, min = 2, max = 1000),
+            actionButton("runSnapshot", "Run resampling snapshot")
+          )
+        ),
+        column(8,
+               plotOutput("Snaplot")
+        )
       )
     )
   )
