@@ -192,7 +192,7 @@ shinyServer(function(input, output, session) {
                                     deletesamples = deletesamples,
                                     remove_noexpress = input$removeNoexpress,
                                     remove_bottom = 0.01 * input$LowExpression,
-                                    minimum_detect_genes = input$minDetectGenect) #TODO: user decides to filter spikeins
+                                    minimum_detect_genes = input$minDetectGene) #TODO: user decides to filter spikeins
         vals$diffexgenelist <- NULL
         vals$gsva_res <- NULL
         #Refresh things for the clustering tab

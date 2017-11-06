@@ -130,7 +130,7 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
     tokeeprow <- tokeeprow[1:nkeeprows]
     tokeeprow <- c(tokeeprow, which(isSpike(insceset)))
   }
-  tokeepcol <- apply(assay(insceset, use_assay), 2, function(x) sum(as.numeric(x) == 0)) >= minimum_detect_genes
+  tokeepcol <- colSums(assay(insceset, use_assay) != 0) >= minimum_detect_genes
   insceset <- insceset[tokeeprow, tokeepcol]
   return(insceset)
 }
