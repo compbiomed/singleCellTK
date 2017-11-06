@@ -1,16 +1,23 @@
 ---
-title: "Aligning and Quantifying scRNA-Seq Data"
-author: "David Jenkins"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+title: "Processing and Visualizing Data in the Single Cell Toolkit"
+author:
+- name: David Jenkins
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+  email: dfj@bu.edu
+package: singleCellTK
+output: 
+  BiocStyle::html_document2:
+    toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Aligning and Quantifying scRNA-Seq Data}
+  %\VignetteIndexEntry{Primer}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 In this vignette, we will suggest a workflow for processing single cell RNA-Seq
-data to produce an ESetSC object that can be used in the single cell toolkit.
+data to produce an SCtkExperiment object that can be used in the single cell toolkit.
 
 ## Suggested Software
 
@@ -76,17 +83,19 @@ directly into the shiny app for downstream analysis. Detailed information about
 the options available in the ```alignSingleCellData()``` function can be found
 in the function help, but here is an example command:
 
->>> __NOTE__: Alignment to large genomes (the human genome) can take more than
->>> 8GB of memory. Make sure to run the ```alignSingleCellData()``` function
->>> from a computer with sufficient memory.
+> __NOTE__: Alignment to large genomes (the human genome) can take more than
+> 8GB of memory. Make sure to run the ```alignSingleCellData()``` function
+> from a computer with sufficient memory.
 
 ```{r, eval=FALSE}
-singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
-                    inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
-                    index_path = "/path/to/genome/index",
-                    gtf_annotation = "/path/to/gene/annotations.gtf",
-                    sample_annotations = sample.annotation.df,
-                    threads=4)
+singlecellobject <- alignSingleCellData(inputfile1 = c(
+  "/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
+  inputfile2 = c("/path/to/sample1_2.fastq.gz",
+                 "/path/to/sample2_2.fastq.gz"),
+  index_path = "/path/to/genome/index",
+  gtf_annotation = "/path/to/gene/annotations.gtf",
+  sample_annotations = sample.annotation.df,
+  threads=4)
 ```
 
 #### Parallelization
@@ -95,7 +104,7 @@ While setting the number of threads in the ```alignSingleCellData()``` function
 will increase the speed of each individual alignment, the function will align
 each sample sequentially. To save time, you may want to perform alignment and
 feature counting on each file in a parallel computing environment and combine
-the samples to create an ESetSC object. The ```alignSingleCellData()``` function
+the samples to create an SCtkExperiment object. The ```alignSingleCellData()``` function
 can be run on an individual file. Once individual sample objects have been
 created, combine them using the ```mergeSCESet()``` function.
 
@@ -108,10 +117,10 @@ provided in the ```inputfile1``` parameter. Note that if your read data was
 sequenced using paired-end reads, set the ```isPairedEnd``` parameter
 ```TRUE```.
 
-## Manually Creating a Single Cell Object with createSCESet()
+## Manually Creating a Single Cell Object with createSCE()
 
 If you choose to align and quantify your data using alternative tools, you can
-use the ```createSCESet()``` function to create a single cell object that can
+use the ```createSCE()``` function to create a single cell object that can
 be used in the single cell toolkit by providing a count data frame and
 optionally providing sample and feature annotations. See the
-```createSCESet()``` function help page for details.
+```createSCE()``` function help page for details.

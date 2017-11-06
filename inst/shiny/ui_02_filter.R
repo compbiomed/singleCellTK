@@ -5,7 +5,7 @@ shiny_panel_filter <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
-        numericInput("minDetectGenect", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
+        numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
         numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
         h2("Delete Outliers"),
         selectInput("deletesamplelist", "Select Samples:",
