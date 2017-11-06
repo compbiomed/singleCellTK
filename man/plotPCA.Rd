@@ -4,13 +4,12 @@
 \alias{plotPCA}
 \title{Plot PCA}
 \usage{
-plotPCA(count_data, pca_df = NULL, colorBy = "No Color",
-  shape = "No Shape", pcX = "PC1", pcY = "PC2")
+plotPCA(count_data, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
+  pcY = "PC2", reducedDimName = "PCA", runPCA = FALSE,
+  use_assay = "logcounts")
 }
 \arguments{
 \item{count_data}{A SCE object}
-
-\item{pca_df}{PCA data frame}
 
 \item{colorBy}{The variable to color clusters by}
 
@@ -19,6 +18,14 @@ plotPCA(count_data, pca_df = NULL, colorBy = "No Color",
 \item{pcX}{User choice for the first principal component}
 
 \item{pcY}{User choice for the second prinicipal component}
+
+\item{reducedDimName}{PCA dimension name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+
+\item{runPCA}{Run PCA if the reducedDimName doesn't exist. the Default is
+FALSE.}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
 }
 \value{
 A PCA plot

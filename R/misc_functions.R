@@ -1,8 +1,8 @@
-#' Summarize SingleCellExperiment
+#' Summarize SCtkExperiment
 #'
-#' Creates a table of summary metrics from an input SingleCellExperiment.
+#' Creates a table of summary metrics from an input SCtkExperiment.
 #'
-#' @param indata Input SingleCellExperiment
+#' @param indata Input SCtkExperiment
 #'
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
@@ -15,16 +15,16 @@ summarizeTable <- function(indata){
                                "Genes with no expression across all samples"),
                     "Value" = c(ncol(indata),
                               nrow(indata),
-                              as.integer(mean(apply(assay(indata, "counts"), 2, function(x) sum(x)))),
-                              as.integer(mean(apply(assay(indata, "counts"), 2, function(x) sum(x > 0)))),
-                              sum(apply(assay(indata, "counts"), 2, function(x) sum(as.numeric(x) == 0)) < 1700),
+                              as.integer(mean(colSums(assay(indata, "counts")))),
+                              as.integer(mean(colSums(assay(indata, "counts") > 0))),
+                              sum(colSums(assay(indata, "counts") != 0) < 1700),
                               sum(rowSums(assay(indata, "counts")) == 0))))
 }
 
-#' Create a SingleCellExperiment object
+#' Create a SCtkExperiment object
 #'
 #' From a file of counts and a file of annotation information, create a
-#' SingleCellExperiment object.
+#' SCtkExperiment object.
 #'
 #' @param countfile The path to a text file that contains a header row of sample
 #' names, and rows of raw counts per gene for those samples.
@@ -36,8 +36,10 @@ summarizeTable <- function(indata){
 #' have the same genes in the same order as countfile. This is optional.
 #' @param inputdataframes If TRUE, countfile and annotfile are read as data
 #' frames instead of file paths. The default is FALSE.
+#' @param create_logcounts If TRUE, create a log2(counts+1) normalized assay
+#' and include it in the object. The default is TRUE
 #'
-#' @return a SingleCellExperiment object
+#' @return a SCtkExperiment object
 #' @export createSCE
 #' @examples
 #' \dontrun{
@@ -45,7 +47,7 @@ summarizeTable <- function(indata){
 #'                           annotfile = "/path/to/input_annots.txt")
 #'}
 createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
-                      inputdataframes=FALSE){
+                      inputdataframes=FALSE, create_logcounts=TRUE){
   if (is.null(countfile)){
     stop("You must supply a count file.")
   }
@@ -72,9 +74,13 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  return(SingleCellExperiment(assays=list(counts=as.matrix(countsin)),
-                              colData=annotin,
-                              rowData=featurein))
+  newassay <- SCtkExperiment(assays = list(counts = as.matrix(countsin)),
+                                     colData = annotin,
+                                     rowData = featurein)
+  if (create_logcounts){
+    assay(newassay, "logcounts") <- log2(assay(newassay, "counts") + 1)
+  }
+  return(newassay)
 }
 
 #' Filter Genes and Samples from a Single Cell Object

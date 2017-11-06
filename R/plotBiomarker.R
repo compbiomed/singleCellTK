@@ -2,34 +2,39 @@
 #'
 #' Given a set of genes, return a ggplot of expression values.
 #'
-#' @param count_data A SingleCellExperiment object
+#' @param count_data A SCtkExperiment object
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
 #' @param visual Type of visualization (PCA or tSNE). Default: "PCA"
 #' @param shape visualization shape
-#' @param axis_df df of PC or tSNE components
 #' @param x x coordinate for PCA
 #' @param y y coordinate for PCA
+#' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param reducedDimName PCA dimension name. The default is PCA.
+#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
 #'
 #' @return A Biomarker plot
 #' @export plotBiomarker
 #'
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
-                          shape="No Shape", axis_df=NULL, x="PC1", y="PC2"){
+                          shape="No Shape", x="PC1", y="PC2",
+                          use_assay="counts", reducedDimName="PCA"){
   if (shape == "No Shape"){
     shape <- NULL
   }
   if (visual == "PCA"){
-    if (is.null(axis_df)){
-      axis_df <- getPCA(count_data)
+    if (is.null(reducedDim(count_data, reducedDimName))) {
+      count_data <- getPCA(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
-    variances <- attr(axis_df, "percentVar")
+    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
+    variances <- pca_variances(count_data)$percentVar
   }
   if (visual == "tSNE"){
-    if (is.null(axis_df)){
-      axis_df <- getTSNE(count_data)
+    if (is.null(reducedDim(count_data, reducedDimName))) {
+      count_data <- getTSNE(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
+    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
   }
   if (length(gene) > 9) {
     gene <- gene[1:9]
@@ -42,14 +47,14 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     }
     gene_name <- colnames(bio_df)[2]
     colnames(bio_df)[2] <- "expression"
-    l$Sample <- bio_df$sample
+    l$Sample <- as.character(bio_df$sample)
     l$expression <- bio_df$expression
     c <- assay(count_data, "counts")[c(gene_name), ]
     percent <- round(100 * sum(c > 0) / length(c), 2)
     if (visual == "PCA"){
       if (binary == "Binary"){
         l$expression <- ifelse(l$expression, "Yes", "No")
-        g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y, label = "Sample", color = "expression")) + 
+        g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y, label = "Sample", color = "expression")) +
           ggplot2::geom_point() +
           ggplot2::scale_color_manual(limits = c("Yes", "No"), values = c("Blue", "Grey")) +
           ggplot2::labs(color = "Expression")

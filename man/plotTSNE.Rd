@@ -4,17 +4,24 @@
 \alias{plotTSNE}
 \title{Plot TSNE}
 \usage{
-plotTSNE(count_data, tsne_df = NULL, colorBy = "No Color",
-  shape = "No Shape")
+plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
+  reducedDimName = "TSNE", runTSNE = FALSE, use_assay = "logcounts")
 }
 \arguments{
 \item{count_data}{A SCE object}
 
-\item{tsne_df}{tSNE data frame}
-
 \item{colorBy}{The variable to color clusters by}
 
 \item{shape}{Shape of the points}
+
+\item{reducedDimName}{TSNE dimension name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+
+\item{runTSNE}{Run t-SNE if the reducedDimName doesn't exist. the Default is
+FALSE.}
+
+\item{use_assay}{Indicate which assay to use for t-SNE if you are running it.
+Default is "counts"}
 }
 \value{
 A TSNE plot
