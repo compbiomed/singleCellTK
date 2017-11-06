@@ -89,6 +89,5 @@ shiny_panel_subsample <- fluidPage(
         )
       )
     )
-  ),
-  includeHTML("www/footer.html")
+  )
 )

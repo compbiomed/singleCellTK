@@ -5,10 +5,11 @@
 \title{plotBiomarker}
 \usage{
 plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", axis_df = NULL, x = "PC1", y = "PC2")
+  shape = "No Shape", x = "PC1", y = "PC2", use_assay = "counts",
+  reducedDimName = "PCA")
 }
 \arguments{
-\item{count_data}{A SingleCellExperiment object}
+\item{count_data}{A SCtkExperiment object}
 
 \item{gene}{gene list}
 
@@ -19,11 +20,14 @@ Default: "Binary"}
 
 \item{shape}{visualization shape}
 
-\item{axis_df}{df of PC or tSNE components}
-
 \item{x}{x coordinate for PCA}
 
 \item{y}{y coordinate for PCA}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+
+\item{reducedDimName}{PCA dimension name. The default is PCA.
+The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
 }
 \value{
 A Biomarker plot

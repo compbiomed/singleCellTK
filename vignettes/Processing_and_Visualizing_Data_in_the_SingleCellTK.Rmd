@@ -1,0 +1,168 @@
+---
+title: "Processing and Visualizing Data in the Single Cell Toolkit"
+author:
+- name: David Jenkins
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+  email: dfj@bu.edu
+- name: Tyler Faits
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: W. Evan Johnson
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+package: singleCellTK
+output: 
+  BiocStyle::html_document2:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Primer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+Intro
+
+# MAITS Example
+
+MAITS intro
+
+```{r maits_load, message=FALSE, warning=FALSE}
+library(singleCellTK)
+library(DT)
+data("maits_sce")
+```
+
+## summarizeTable
+
+You can get summary metrics with the `summarizeTable` function:
+
+```{r maits_summarize}
+datatable(summarizeTable(maits_sce))
+```
+
+## Filtering by Annotation
+
+Explore the available annotations in the data:
+
+```{r maits_colnames}
+colnames(colData(maits_sce))
+table(colData(maits_sce)$ourfilter)
+```
+
+The data has a filtered dataset with 74 'pass filter' samples, let's subset
+the data to include the pass filter samples
+
+```{r maits_filter}
+maits_subset <- maits_sce[, colData(maits_sce)$ourfilter]
+table(colData(maits_subset)$ourfilter)
+datatable(summarizeTable(maits_subset))
+```
+
+## Visualization
+
+```{r maits_availablereduceddims}
+reducedDims(maits_subset)
+```
+
+### PCA
+
+```{r maits_pca}
+plotPCA(maits_subset, reducedDimName = "PCA_logcounts", colorBy = "condition")
+```
+
+
+### t-SNE
+
+```{r maits_tsne}
+plotTSNE(maits_subset, reducedDimName = "TSNE_logcounts", colorBy = "condition")
+```
+
+## Differential Expression with MAST
+
+### Adaptive Thresholding
+
+```{r maits_thresh, fig.height=8}
+thresholds <- thresholdGenes(maits_subset)
+par(mfrow = c(5, 4))
+plot(thresholds)
+par(mfrow = c(1, 1))
+```
+
+### Run MAST
+
+```{r maits_MAST}
+mast_results <- MAST(maits_subset, condition = "condition", usethresh = TRUE,
+                     use_assay = "logcounts")
+```
+
+```{r maits_violin, fig.height=8}
+MASTviolin(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = "condition")
+```
+
+```{r maits_lm, fig.height=8}
+MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = FALSE, variable = "condition")
+```
+
+```{r maits_heatmap}
+plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
+                 geneList = mast_results$Gene,
+                 annotationColors = "auto")
+```
+
+### Pathway Activity with GSVA
+
+```{r maits_gsva}
+library(GSVA)
+library(GSVAdata)
+data("c2BroadSets")
+tempres <- gsva(assay(maits_subset, "logcounts"), c2BroadSets, parallel.sz=1)
+fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(maits_subset)[, "condition"])))
+fit <- limma::eBayes(fit)
+toptableres <- limma::topTable(fit, number = 5)
+gsva_res <- tempres[rownames(toptableres), ]
+
+if(all(colnames(maits_subset) == colnames(gsva_res))){
+  colData(maits_subset) <- cbind(colData(maits_subset), data.frame(t(gsva_res)))
+}
+```
+
+# PBMC - 4k Example
+
+PBMC - 4k example
+
+# Batch Effects Example
+
+It is possible to use ComBat within the Single Cell Toolkit. This support is
+experimental, since ComBat was not designed for scRNA-Seq. Here, we will load
+the bladderbatch example data into a SingleCellExperiment object.
+
+```{r load_bladderbatch}
+library(bladderbatch)
+data(bladderdata)
+dat <- bladderEset[1:50,]
+
+pheno = pData(dat)
+edata = exprs(dat)
+bladder_sctke <- createSCE(countfile = edata,
+                           annotfile = pheno,
+                           inputdataframes = T,
+                           create_logcounts = F)
+assay(bladder_sctke, "microarray") <- assay(bladder_sctke, "counts")
+assay(bladder_sctke, "counts") <- NULL
+assay(bladder_sctke, "combat") <- ComBat_SCE(SCEdata = bladder_sctke,
+                                             batch = "batch",
+                                             use_assay = "microarray",
+                                             covariates = "cancer")
+```
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

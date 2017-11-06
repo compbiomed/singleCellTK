@@ -1,12 +1,31 @@
-library(singleCellTK)
 library(shiny)
 library(shinyjs)
-library(plotly)
+library(ComplexHeatmap)
+library(biomaRt)
+library(circlize)
+library(limma)
 library(d3heatmap)
+library(ggplot2)
+library(plotly)
+library(DESeq)
+library(GGally)
+library(data.table)
+library(MAST)
+library(rsvd)
+library(pcaMethods)
+library(colourpicker)
+library(gridExtra)
+library(cluster)
+library(ggtree)
 library(ape)
+library(GSVA)
+library(GSVAdata)
+library(SingleCellExperiment)
+library(singleCellTK)
 
 source("helpers.R")
 source("colourGroupInput.R")
+data("c2BroadSets")
 
 clusterChoice <- ""
 sampleChoice <- ""
@@ -15,13 +34,19 @@ geneChoice <- ""
 alertText <- ""
 pcComponents <- ""
 numClusters <- ""
+currassays <- ""
+numSamples <- 30
+pcComponents_selectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
+  numSamples <- ncol(getShinyOption("inputSCEset"))
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
-  geneChoice <- rownames(getShinyOption("inputSCEset"))[1:100]
+  geneChoice <- rownames(getShinyOption("inputSCEset"))
   sampleChoice <- colnames(getShinyOption("inputSCEset"))
   featureChoice <- colnames(rowData(getShinyOption("inputSCEset")))
-  pcComponents <- paste("PC", 1:ncol(getShinyOption("inputSCEset")), sep = "")
-  numClusters <- 1:ncol(getShinyOption("inputSCEset"))
+  pcComponents <- paste("PC", 1:numSamples, sep = "")
+  pcComponents_selectedY <- pcComponents[2]
+  numClusters <- 1:numSamples
+  currassays <- names(assays(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
@@ -48,13 +73,14 @@ shinyUI(
     tabPanel("Upload", shiny_panel_upload),
     tabPanel("Data Summary and Filtering", shiny_panel_filter),
     tabPanel("DR & Clustering", shiny_panel_cluster),
-    tabPanel("Differential Expression", shiny_panel_diffex),
-    tabPanel("Subsampling", shiny_panel_subsample),
-    tabPanel("MAST", shiny_panel_mast),
+    tabPanel("Batch Correction", shiny_panel_batchcorrect),
     navbarMenu(
-      "More",
-      tabPanel("Batch Correction", shiny_panel_batchcorrect),
-      tabPanel("Pathway Activity Analysis", shiny_panel_pathway)
-    )
+      "Differential Expression",
+      tabPanel("Differential Expression", shiny_panel_diffex),
+      tabPanel("MAST", shiny_panel_mast)
+    ),
+    tabPanel("Pathway Activity Analysis", shiny_panel_pathway),
+    tabPanel("Sample Size", shiny_panel_subsample),
+    footer = includeHTML("www/footer.html")
   )
 )

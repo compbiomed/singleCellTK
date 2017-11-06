@@ -7,7 +7,7 @@
 getBiomarker(count_data, gene, binary = "Binary")
 }
 \arguments{
-\item{count_data}{A SingleCellExperiment object}
+\item{count_data}{A SCtkExperiment object}
 
 \item{gene}{gene list}
 
@@ -18,6 +18,6 @@ Default: "Binary"}
 A data.frame of expression values
 }
 \description{
-Given a list of genes and a SingleCellExperiment object, return the binary or
+Given a list of genes and a SCtkExperiment object, return the binary or
 continuous expression of the genes.
 }
