@@ -6,6 +6,17 @@
 \usage{
 iterateSimulations(originalData, realLabels, totalReads, cells, iterations)
 }
+\arguments{
+\item{originalData}{TODO: document}
+
+\item{realLabels}{TODO: document}
+
+\item{totalReads}{TODO: document}
+
+\item{cells}{TODO: document}
+
+\item{iterations}{TODO: document}
+}
 \description{
 Returns significance data from a snapshot.
 }

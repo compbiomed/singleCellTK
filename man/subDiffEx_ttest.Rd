@@ -10,6 +10,8 @@ subDiffEx_ttest(dataset, class.labels, test.type = "t.equalvar")
 \item{dataset}{Matrix. A simulated counts matrix, sans labels.}
 
 \item{class.labels}{Factor. The condition labels for the simulated cells. Will be coerced into 1's and 0's.}
+
+\item{test.type}{Type of test to perform. The default is t.equalvar.}
 }
 \value{
 A vector of fdr-adjusted p-values for all genes. Nonviable results (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
