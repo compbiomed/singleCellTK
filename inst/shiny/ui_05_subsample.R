@@ -16,20 +16,19 @@ shiny_panel_subsample <- fluidPage(
                          value = 10, min = 2, max = 10000),
             sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
             sliderInput("depthResolution", "how many values to simulate", 5, 100, 10, 5),
-            selectInput("select_ReadDepth_Condition", "Condition for diffex", c("Random",clusterChoice),selected="Random"),
-            actionButton("runSubsampleDepth", "Run subsampler")
+            selectInput("select_ReadDepth_Condition", "Condition for diffex", c("Random", clusterChoice), selected="Random"),
+            withBusyIndicatorUI(actionButton("runSubsampleDepth", "Run subsampler"))
           )
         ),
-          column(8,
-            tabsetPanel(
-              tabPanel("Genes Detected", plotOutput("DepthDone")),
-              tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone")),
-              tabPanel("Number of Diffex Genes",plotOutput("sigNumDone"))
-            )
+        column(8,
+          tabsetPanel(
+            tabPanel("Genes Detected", plotOutput("DepthDone")),
+            tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone")),
+            tabPanel("Number of Diffex Genes", plotOutput("sigNumDone"))
           )
         )
-      ),
-    
+      )
+    ),
     tabPanel(
       "Number of cells",
       fluidRow(
@@ -45,15 +44,15 @@ shiny_panel_subsample <- fluidPage(
                          value = 10, min = 2, max = 10000),
             numericInput("totalReads", "Estimated number of aligned reads",
                          value = 1000000, min = 1000, max = 1000000000),
-            checkboxInput("useReadCount","Use the same number of reads as in original dataset"),
+            checkboxInput("useReadCount", "Use the same number of reads as in original dataset"),
             selectInput("select_CellNum_Condition", "Condition for diffex", clusterChoice),
             numericInput("minCount", "Minimum readcount to detect gene",
                          value = 10, min=1, max=10000),
             numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
                          value=3, min=1, max=100000),
-            numericInput("depthResolution","How many dataset sizes to simulate",
+            numericInput("depthResolution", "How many dataset sizes to simulate",
                          value = 10, min=1, max = 100),
-            actionButton("runSubsampleCells", "Run resampler")
+            withBusyIndicatorUI(actionButton("runSubsampleCells", "Run resampler"))
           ),
           tabPanel("Genes Detected", plotOutput("CellCountDone")),
           tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone")),
@@ -63,7 +62,7 @@ shiny_panel_subsample <- fluidPage(
           tabsetPanel(
             tabPanel("Genes Detected", plotOutput("CellsDone")),
             tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCells")),
-            tabPanel("Number of Diffex Genes",plotOutput("sigNumCells"))
+            tabPanel("Number of Diffex Genes", plotOutput("sigNumCells"))
           )
         )
       )
@@ -74,18 +73,18 @@ shiny_panel_subsample <- fluidPage(
         column(
           4,
           wellPanel(
-            numericInput("numCellsSnap","How many simulated cells?",
+            numericInput("numCellsSnap", "How many simulated cells?",
                          value = 100, min = 2, max = 10000),
-            numericInput("numReadsSnap","How many total reads?",
+            numericInput("numReadsSnap", "How many total reads?",
                          value = 1000000, min=1000, max=1000000000),
             selectInput("select_Snapshot_Condition", "Condition for diffex", clusterChoice),
-            numericInput("iterationsSnap","Number of bootstrap iterations",
+            numericInput("iterationsSnap", "Number of bootstrap iterations",
                          value = 10, min = 2, max = 1000),
-            actionButton("runSnapshot", "Run resampling snapshot")
+            withBusyIndicatorUI(actionButton("runSnapshot", "Run resampling snapshot"))
           )
         ),
         column(8,
-               plotOutput("Snaplot")
+          plotOutput("Snaplot")
         )
       )
     )
