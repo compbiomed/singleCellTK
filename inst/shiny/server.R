@@ -1032,11 +1032,11 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("pathwayRun", {
         if (input$genelistSource == "Manual Input"){
           #expecting logical vector
-          if (!all(rowData(test_indata)[, "test_biomarker"] %in% c(1, 0))){
+          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
             alert("ERROR: malformed biomarker annotation")
           } else {
             biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[, input$pathwayGeneLists] == 1]
+            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
             vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
           }
         } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
