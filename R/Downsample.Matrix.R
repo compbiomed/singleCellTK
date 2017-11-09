@@ -32,8 +32,6 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
   return(outArray)
 }
 
-
-
 #' Estimate numbers of detected genes, significantly differentially expressed genes, and median significant effect size
 #'
 #' @param originalData Matrix. The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").
@@ -69,6 +67,7 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
   outArray <- array(c(foundGenesMatrix, minEffectSizeMatrix, numSigGenesMatrix), dim=c(iterations, depthResolution, 3))
   return(outArray)
 }
+
 #' Downsample Data
 #'
 #' @param datamatrix TODO:document
@@ -83,7 +82,7 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
 Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144),
                               byBatch = FALSE, batch = NULL, iterations = 10) {
   if (byBatch == FALSE) {
-    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
+    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
     for (j in 1:dim(datamatrix)[2]) {
       probs <- datamatrix[, j] / sum(datamatrix[, j])
       for (k in 1:length(newcounts)) {
@@ -95,7 +94,7 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
     }
   }
   else {
-    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
+    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], length(newcounts), iterations))
     for (j in 1:nlevels(batch)) {
       probs <- datamatrix[, which(batch == levels(batch)[j])] / sum(datamatrix[, which(batch == levels(batch)[j])])
       for (k in 1:length(newcounts)) {
@@ -171,7 +170,6 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells, iter
   return(sigMatrix[, -1])
 }
 
-require(multtest)
 #' Runs t-tests on all genes in a simulated dataset with 2 conditions, and adjusts for FDR.
 #' @param dataset Matrix. A simulated counts matrix, sans labels.
 #' @param class.labels Factor. The condition labels for the simulated cells. Will be coerced into 1's and 0's.
@@ -230,7 +228,7 @@ calcEffectSizes <- function(countMatrix, condition){
 
 powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000), byBatch=FALSE, batch=NULL, numSize=25) {
   if (byBatch == FALSE){
-    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
+    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
     for (j in 1:dim(datamatrix)[2]) {
       probs <- as.numeric(datamatrix[, j] / sum(datamatrix[, j]))
       for (i in 1:length(probs)){
@@ -240,7 +238,7 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000), byBatch=FAL
     }
   }
   else {
-    outmat <- array(, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
+    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2], numSize))
     for (j in 1:nlevels(batch)) {
       probs <- datamatrix[, which(batch == levels(batch)[j])] / sum(datamatrix[, which(batch == levels(batch)[j])])
       for (i in 1:length(as.vector(probs))) {
@@ -251,7 +249,6 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000), byBatch=FAL
   }
   return(outmat)
 }
-
 
 #' Calculate power to discover differentially expressed genes upon subsampling
 #'
