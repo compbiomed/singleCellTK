@@ -197,7 +197,6 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("filterData", {
-        vals$counts <- vals$original
         deletesamples <- input$deletesamplelist
         vals$counts <- filterSCData(insceset = vals$counts,
                                     use_assay = "counts", #TODO: user selects filtering assay
