@@ -35,6 +35,7 @@ alertText <- ""
 pcComponents <- ""
 numClusters <- ""
 currassays <- ""
+currreddim <- ""
 numSamples <- 30
 pcComponents_selectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
@@ -47,6 +48,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   pcComponents_selectedY <- pcComponents[2]
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
+  currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
