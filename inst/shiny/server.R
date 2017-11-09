@@ -85,6 +85,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delAssayType", choices = currassays)
   }
 
+  updateReddimInputs <- function(){
+    currreddim <- names(reducedDims(vals$counts))
+    updateSelectInput(session, "delRedDimType", choices = currreddim)
+  }
+
   # Close app on quit
   session$onSessionEnded(stopApp)
 
@@ -109,6 +114,7 @@ shinyServer(function(input, output, session) {
       updateNumSamples()
       updateAssayInputs()
       updateGeneNames()
+      updateReddimInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
       insertUI(
@@ -169,6 +175,7 @@ shinyServer(function(input, output, session) {
 
   #random downsample of samples
   observeEvent(input$downsampleGo, {
+    req(vals$counts)
     withBusyIndicatorServer("downsampleGo", {
       vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
       updateNumSamples()
@@ -179,9 +186,8 @@ shinyServer(function(input, output, session) {
 
   #Render summary table
   output$summarycontents <- renderTable({
-    if (!(is.null(vals$counts))){
-      summarizeTable(vals$counts)
-    }
+    req(vals$counts)
+    summarizeTable(vals$counts)
   })
 
   #Filter the data based on the options
@@ -327,6 +333,7 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$addAssay, {
+    req(vals$counts)
     if (input$addAssayType %in% names(assays(vals$counts))){
       alert("assay already exists!")
     } else {
@@ -342,12 +349,25 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$delAssay, {
+    req(vals$counts)
     if (!(input$delAssayType %in% names(assays(vals$counts)))){
       alert("assay does not exist!")
     } else {
       withBusyIndicatorServer("delAssay", {
         assay(vals$counts, input$delAssayType) <- NULL
         updateAssayInputs()
+      })
+    }
+  })
+
+  observeEvent(input$delRedDim, {
+    req(vals$counts)
+    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
+      alert("reducedDim does not exist!")
+    } else {
+      withBusyIndicatorServer("delRedDim", {
+        reducedDim(vals$counts, input$delRedDimType) <- NULL
+        updateReddimInputs()
       })
     }
   })
@@ -372,6 +392,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getPCA(count_data = vals$counts,
                                 use_assay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (input$colorBy != "Gene Expression") {
@@ -397,6 +418,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getTSNE(count_data = vals$counts,
                                  use_assay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy != "Gene Expression") {
@@ -442,6 +464,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getPCA(count_data = vals$counts,
                                 use_assay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (is.null(input$colorBy)) {
@@ -481,6 +504,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getTSNE(count_data = vals$counts,
                                  use_assay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy == "Gene Expression") {
@@ -587,6 +611,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- getTSNE(count_data = vals$counts,
                                use_assay = input$dimRedAssaySelect,
                                reducedDimName = paste0("TSNE", "_", input$dimRedAssaySelect))
+        updateReddimInputs()
       })
     }
   })
