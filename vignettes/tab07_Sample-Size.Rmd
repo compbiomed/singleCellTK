@@ -29,9 +29,90 @@ vignette: >
 
 Intro
 
-# MAITS Example
+## Downsample Depth
 
-MAITS intro
+```{r down_depth, eval=FALSE}
+library(singleCellTK)
+data("GSE60361_subset_sce")
+subDepth <- DownsampleDepth(originalData = GSE60361_subset_sce,
+                            realLabels = 'level1class')
+
+plot(apply(subDepth[, , 1], 2, median) ~ seq(from = 0, to = 1e+07,
+                                             length.out = 10),
+     lwd = 4, xlab = "log10(Total read counts)",
+     ylab="Number of detected genes",
+     main = "Number of dected genes by sequencing depth")
+lines(apply(subDepth[, , 1], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 0, to = 1e+07, length.out = 10), lty=2, lwd=3)
+lines(apply(subDepth[, , 1], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 0, to = 1e+07, length.out = 10), lty=2, lwd=3)
+
+plot(apply(subDepth[, , 2], 2, median) ~ seq(from = 0, to = 1e+07,
+                                             length.out = 10),
+     lwd = 4, xlab = "log10(Total read counts)",
+     ylab="Average significant effect size", ylim=c(0, 2))
+lines(apply(subDepth[, , 2], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from=0, to=1e+07, length.out=10), lty=2, lwd=3)
+lines(apply(subDepth[, , 2], 2, function(x){quantile(x, 0.75)}) ~
+        seq(from=0, to=1e+07, length.out=10), lty=2, lwd=3)
+
+plot(apply(subDepth[, , 3], 2, median) ~ seq(from = 0, to = 1e+07,
+                                             length.out = 10),
+     lwd = 4, xlab = "log10(Total read counts)",
+     ylab="Number of significantly DiffEx genes")
+lines(apply(subDepth[, , 3], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from=0, to=1e+07, length.out=10), lty=2, lwd=3)
+lines(apply(subDepth[, , 3], 2, function(x){quantile(x, 0.75)}) ~
+        seq(from=0, to=1e+07, length.out=10), lty=2, lwd=3)
+```
+
+## Downsample Cells
+
+```{r down_cell, eval=FALSE}
+subCells <- DownsampleCells(originalData = GSE60361_subset_sce,
+                            realLabels = "level1class",
+                            totalReads = sum(counts(GSE60361_subset_sce)))
+
+plot(apply(subCells[, , 1], 2, median) ~ seq(from = 10, to = 1000,
+                                             length.out = 10), lwd=4,
+     xlab="Number of virtual cells", ylab="Number of detected genes",
+     main = "Number of dected genes by cell number")
+lines(apply(subCells[, , 1], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 10, to = 1000, length.out = 10), lty=2, lwd=3)
+lines(apply(subCells[, , 1], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 10, to = 1000, length.out = 10), lty=2, lwd=3)
+
+plot(apply(subCells[, , 2], 2, median) ~ seq(from = 10, to = 1000,
+                                             length.out = 10), lwd = 4,
+     xlab = "Number of virtual cells", ylab="Average significant effect size",
+     ylim=c(0, 2))
+lines(apply(subCells[, , 2], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 10, to = 1000, length.out=10), lty=2, lwd=3)
+lines(apply(subCells[, , 2], 2, function(x){quantile(x, 0.75)}) ~
+        seq(from = 10, to = 1000, length.out=10), lty=2, lwd=3)
+
+plot(apply(subCells[, , 3], 2, median) ~ seq(from = 10, to = 1000,
+                                             length.out = 10), lwd = 4,
+     xlab = "Number of vitual cells", ylab="Number of significantly DiffEx genes")
+lines(apply(subCells[, , 3], 2, function(x){quantile(x, 0.25)}) ~
+        seq(from = 10, to = 1000, length.out=10), lty=2, lwd=3)
+lines(apply(subCells[, , 3], 2, function(x){quantile(x, 0.75)}) ~
+        seq(from = 10, to = 1000, length.out=10), lty=2, lwd=3)
+```
+
+## Snapshot
+
+```{r snapshot, eval=FALSE}
+snapshot <- iterateSimulations(originalData = GSE60361_subset_sce,
+                               realLabels = "level1class",
+                               totalReads = 1000000, cells = 100,
+                               iterations = 10)
+effectSizes <- calcEffectSizes(countMatrix = counts(GSE60361_subset_sce),
+                               condition = colData(GSE60361_subset_sce)[, "level1class"])
+plot(apply(snapshot, 1, function(x){sum(x<=0.05)/length(x)}) ~ effectSizes, 
+     xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4,
+     main = "Power to detect diffex by effect size")
+```
 
 # Session info {.unnumbered}
 

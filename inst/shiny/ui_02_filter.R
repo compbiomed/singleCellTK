@@ -52,7 +52,11 @@ shiny_panel_filter <- fluidPage(
                   selectInput("addAssayType", "Add Assay Type:", "logcounts"),
                   withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
                   selectInput("delAssayType", "Delete Assay Type:", currassays),
-                  withBusyIndicatorUI(actionButton("delAssay", "Delete Assay"))
+                  withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
+                  tags$hr(),
+                  h4("reducedDim Options:"),
+                  selectInput("delRedDimType", "Delete reducedDim:", currreddim),
+                  withBusyIndicatorUI(actionButton("delRedDim", "Delete reducedDim"))
                 ),
                 mainPanel(
                   fluidRow(
