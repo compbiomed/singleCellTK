@@ -85,6 +85,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delAssayType", choices = currassays)
   }
 
+  updateReddimInputs <- function(){
+    currreddim <- names(reducedDims(vals$counts))
+    updateSelectInput(session, "delRedDimType", choices = currreddim)
+  }
+
   # Close app on quit
   session$onSessionEnded(stopApp)
 
@@ -109,6 +114,7 @@ shinyServer(function(input, output, session) {
       updateNumSamples()
       updateAssayInputs()
       updateGeneNames()
+      updateReddimInputs()
       updateSelectInput(session, "deletesamplelist",
                         choices = colnames(vals$counts))
       insertUI(
@@ -169,6 +175,7 @@ shinyServer(function(input, output, session) {
 
   #random downsample of samples
   observeEvent(input$downsampleGo, {
+    req(vals$counts)
     withBusyIndicatorServer("downsampleGo", {
       vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
       updateNumSamples()
@@ -179,9 +186,8 @@ shinyServer(function(input, output, session) {
 
   #Render summary table
   output$summarycontents <- renderTable({
-    if (!(is.null(vals$counts))){
-      summarizeTable(vals$counts)
-    }
+    req(vals$counts)
+    summarizeTable(vals$counts)
   })
 
   #Filter the data based on the options
@@ -191,7 +197,6 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("filterData", {
-        vals$counts <- vals$original
         deletesamples <- input$deletesamplelist
         vals$counts <- filterSCData(insceset = vals$counts,
                                     use_assay = "counts", #TODO: user selects filtering assay
@@ -327,6 +332,7 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$addAssay, {
+    req(vals$counts)
     if (input$addAssayType %in% names(assays(vals$counts))){
       alert("assay already exists!")
     } else {
@@ -342,12 +348,25 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$delAssay, {
+    req(vals$counts)
     if (!(input$delAssayType %in% names(assays(vals$counts)))){
       alert("assay does not exist!")
     } else {
       withBusyIndicatorServer("delAssay", {
         assay(vals$counts, input$delAssayType) <- NULL
         updateAssayInputs()
+      })
+    }
+  })
+
+  observeEvent(input$delRedDim, {
+    req(vals$counts)
+    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
+      alert("reducedDim does not exist!")
+    } else {
+      withBusyIndicatorServer("delRedDim", {
+        reducedDim(vals$counts, input$delRedDimType) <- NULL
+        updateReddimInputs()
       })
     }
   })
@@ -372,6 +391,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getPCA(count_data = vals$counts,
                                 use_assay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (input$colorBy != "Gene Expression") {
@@ -397,6 +417,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getTSNE(count_data = vals$counts,
                                  use_assay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy != "Gene Expression") {
@@ -442,6 +463,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getPCA(count_data = vals$counts,
                                 use_assay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (is.null(input$colorBy)) {
@@ -481,6 +503,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- getTSNE(count_data = vals$counts,
                                  use_assay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
+          updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, tsnedimname))){
           if (input$colorBy == "Gene Expression") {
@@ -587,6 +610,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- getTSNE(count_data = vals$counts,
                                use_assay = input$dimRedAssaySelect,
                                reducedDimName = paste0("TSNE", "_", input$dimRedAssaySelect))
+        updateReddimInputs()
       })
     }
   })
@@ -1032,11 +1056,11 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("pathwayRun", {
         if (input$genelistSource == "Manual Input"){
           #expecting logical vector
-          if (!all(rowData(test_indata)[, "test_biomarker"] %in% c(1, 0))){
+          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
             alert("ERROR: malformed biomarker annotation")
           } else {
             biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(test_indata)[rowData(test_indata)[, input$pathwayGeneLists] == 1]
+            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
             vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
           }
         } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
