@@ -41,14 +41,15 @@ MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
   thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                      min_per_bin = 30)
-  assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
+  names(assays(SCE_new))[1] <- use_assay
+  assay(SCE_new, "thresh") <- thres$counts_threshold
   entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
   if (threshP){
     yvalue <- "thresh"
   }
   else{
-    yvalue <- "tpm"
+    yvalue <- use_assay
   }
   violinplot <- ggplot2::ggplot(flat_dat, ggplot2::aes_string(x = variable,
                                                               y = yvalue,
@@ -86,7 +87,8 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
 
   thres <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
                                            min_per_bin = 30)
-  assays(SCE_new) <- list(thresh = thres$counts_threshold, tpm = assay(SCE_new))
+  names(assays(SCE_new))[1] <- use_assay
+  assay(SCE_new, "thresh") <- thres$counts_threshold
   entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
 
   flat_dat <- as(SCE_new[entrez_to_plot, ], "data.table")
@@ -94,7 +96,7 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   if (threshP){
     yvalue <- "thresh"
   } else{
-    yvalue <- "tpm"
+    yvalue <- use_assay
   }
 
   res_data <- NULL
