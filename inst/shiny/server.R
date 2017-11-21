@@ -1001,7 +1001,8 @@ shinyServer(function(input, output, session) {
     if (!(is.null(vals$mastgenelist))){
       MASTviolin(SCEdata = vals$counts, use_assay = input$mastAssay,
                  fcHurdleSig = vals$mastgenelist,
-                 variable = input$hurdlecondition)
+                 variable = input$hurdlecondition,
+                 threshP = input$useAdaptThresh)
     }
   }, height = 600)
 
@@ -1009,7 +1010,8 @@ shinyServer(function(input, output, session) {
     if (!(is.null(vals$mastgenelist))){
       MASTregression(SCEdata = vals$counts, use_assay = input$mastAssay,
                      fcHurdleSig = vals$mastgenelist,
-                     variable = input$hurdlecondition)
+                     variable = input$hurdlecondition,
+                     threshP = input$useAdaptThresh)
     }
   }, height = 600)
 

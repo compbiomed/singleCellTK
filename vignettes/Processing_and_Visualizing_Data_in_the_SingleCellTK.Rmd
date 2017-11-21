@@ -106,7 +106,7 @@ MASTviolin(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = 
 ```
 
 ```{r maits_lm, fig.height=8}
-MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = FALSE, variable = "condition")
+MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = "condition")
 ```
 
 ```{r maits_heatmap}
