@@ -112,14 +112,6 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
   #delete specified samples
   insceset <- insceset[, !(colnames(insceset) %in% deletesamples)]
 
-  #remove genes with no expression
-  if (remove_noexpress){
-    if (filter_spike){
-      insceset <- insceset[rowSums(assay(insceset, use_assay)) != 0, ]
-    } else {
-      insceset <- insceset[(rowSums(assay(insceset, use_assay)) != 0 | isSpike(insceset)), ]
-    }
-  }
   if (filter_spike){
     nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
     tokeeprow <- order(rowSums(assay(insceset, use_assay)), decreasing = TRUE)[1:nkeeprows]
@@ -132,5 +124,15 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
   }
   tokeepcol <- colSums(assay(insceset, use_assay) != 0) >= minimum_detect_genes
   insceset <- insceset[tokeeprow, tokeepcol]
+
+  #remove genes with no expression
+  if (remove_noexpress){
+    if (filter_spike){
+      insceset <- insceset[rowSums(assay(insceset, use_assay)) != 0, ]
+    } else {
+      insceset <- insceset[(rowSums(assay(insceset, use_assay)) != 0 | isSpike(insceset)), ]
+    }
+  }
+
   return(insceset)
 }
