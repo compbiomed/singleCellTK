@@ -32,7 +32,8 @@ shiny_panel_upload <- fluidPage(
                      ".tsv"
                    )
           ),
-          checkboxInput("createLogcounts", "Create log2(counts) assay on upload", value = TRUE)
+          selectInput("inputAssayType", "Input Assay Type:", "counts"),
+          checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
           fileInput("annotfile", "Annotations (optional):",

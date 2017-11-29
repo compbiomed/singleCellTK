@@ -49,7 +49,8 @@ shiny_panel_filter <- fluidPage(
               sidebarLayout(
                 sidebarPanel(
                   h4("Assay Options:"),
-                  selectInput("addAssayType", "Add Assay Type:", "logcounts"),
+                  selectInput("addAssayType", "Add Assay Type:", c("logcounts",
+                              "cpm", "logcpm")),
                   withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
                   selectInput("delAssayType", "Delete Assay Type:", currassays),
                   withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
