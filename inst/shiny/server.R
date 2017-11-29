@@ -339,6 +339,22 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("addAssay", {
         if (input$addAssayType == "logcounts"){
           assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+        } else if (input$addAssayType == "cpm") {
+          if("counts" %in% names(assays(vals$counts))){
+            assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
+          } else {
+            alert("Count matrix required for cpm calculation")
+          }
+        } else if (input$addAssayType == "logcpm") {
+          #try to calculate from cpm
+          if ("cpm" %in% names(assays(vals$counts))){
+            assay(vals$counts, "logcpm") <- log2(assay(vals$counts, "cpm") + 1)
+          } else if ("counts" %in% names(assays(vals$counts))){
+          #calculate from counts
+            assay(vals$counts, "logcpm") <- log2(apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) }) + 1)
+          } else {
+            alert("Count matrix or cpm required for logcpm calculation")
+          }
         } else {
           stop("unsupported assay type")
         }
@@ -985,7 +1001,8 @@ shinyServer(function(input, output, session) {
     if (!(is.null(vals$mastgenelist))){
       MASTviolin(SCEdata = vals$counts, use_assay = input$mastAssay,
                  fcHurdleSig = vals$mastgenelist,
-                 variable = input$hurdlecondition)
+                 variable = input$hurdlecondition,
+                 threshP = input$useAdaptThresh)
     }
   }, height = 600)
 
@@ -993,7 +1010,8 @@ shinyServer(function(input, output, session) {
     if (!(is.null(vals$mastgenelist))){
       MASTregression(SCEdata = vals$counts, use_assay = input$mastAssay,
                      fcHurdleSig = vals$mastgenelist,
-                     variable = input$hurdlecondition)
+                     variable = input$hurdlecondition,
+                     threshP = input$useAdaptThresh)
     }
   }, height = 600)
 
