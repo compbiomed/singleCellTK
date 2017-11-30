@@ -579,6 +579,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$clusterData, {
     if (is.null(vals$counts)){
       alert("Warning: Upload data first!")
+    } else if (input$clusterName == "") {
+      alert("Cluster name required!")
     } else {
       withBusyIndicatorServer("clusterData", {
         currdimname <- NULL
