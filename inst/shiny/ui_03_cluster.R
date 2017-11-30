@@ -17,7 +17,8 @@ shiny_panel_cluster <- fluidPage(
           selectInput("colorBy", "Color points by:", c("No Color", "Gene Expression", clusterChoice)),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
-            radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")),
+            #radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")), #TODO: implement biomarker color by
+            radioButtons("colorGeneBy", "Gene list:", c("Manual Input")), 
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
               selectizeInput(
@@ -41,7 +42,7 @@ shiny_panel_cluster <- fluidPage(
         # CLUSTERING --> VISUALIZATION
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Yes'", "booleanCluster"),
-          selectInput("selectClusterInputData", "Data to Cluster:", c("Raw Data", "PCA Components", "tSNE Components")),
+          selectInput("selectClusterInputData", "Data to Cluster:", c("PCA Components", "tSNE Components")),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' ", "dimRedPlotMethod", "dimRedPlotMethod"),
             radioButtons("clusteringAlgorithm", "Select Clustering Algorithm:", c("K-Means", "Clara"))
@@ -64,7 +65,7 @@ shiny_panel_cluster <- fluidPage(
             condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "clusteringAlgorithm", "clusteringAlgorithm"),
-              textInput("clusterName", "Name of Clusters:", value = "")
+              textInput("clusterName", "Name of Clusters:", value = "clusters")
             )
           ),
           ##----------------------------------#
