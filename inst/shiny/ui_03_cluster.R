@@ -1,7 +1,7 @@
 shiny_panel_cluster <- fluidPage(
   tags$div(
     class = "container",
-    h1("Clustering"),
+    h1("DR & Clustering"),
     sidebarLayout(
       sidebarPanel(
         ###  VISUALIZATION (e.g. PCA, tSNE)
