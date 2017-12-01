@@ -129,7 +129,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 2: Data Summary
+  # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
 
   #Render data table if there are fewer than 50 samples
@@ -648,7 +648,62 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 4: Differential Expression
+  # Page 4: Batch Correction
+  #-----------------------------------------------------------------------------
+
+  output$selectCombat_refbatchUI <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$combatRef){
+        selectInput("combatRefBatch", "Choose Reference Batch:",
+                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
+      }
+    }
+  })
+
+  observeEvent(input$combatRun, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("combatRun", {
+        if (input$batchMethod == "ComBat"){
+          #check for zeros
+          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+            alert("Warning: Rows with a sum of zero found. Filter data to continue")
+          } else {
+            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+            if (input$combatRef){
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly,
+                           ref.batch = input$combatRefBatch)
+            } else {
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly)
+            }
+            updateAssayInputs()
+            vals$combatstatus <- "ComBat Complete"
+          }
+        } else {
+          alert("Unsupported Batch Correction Method!")
+        }
+      })
+    }
+  })
+
+  output$combatStatus <- renderUI({
+    h2(vals$combatstatus)
+  })
+
+  #-----------------------------------------------------------------------------
+  # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
 
   #For conditions with more than two factors, select the factor of interest
@@ -774,7 +829,224 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 5: Subsampling
+  # Page 5.2: MAST
+  #-----------------------------------------------------------------------------
+
+  #For conditions with more than two factors, select the factor of interest
+  output$hurdleconditionofinterestUI <- renderUI({
+    if (!is.null(vals$counts)){
+      if (length(unique(colData(vals$counts)[, input$hurdlecondition])) > 2){
+        selectInput("hurdleconditionofinterest",
+                    "Select Factor of Interest",
+                    unique(sort(colData(vals$counts)[, input$hurdlecondition])))
+      }
+    }
+  })
+
+  #Run MAST differential expression
+  observeEvent(input$runDEhurdle, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      withBusyIndicatorServer("runDEhurdle", {
+        #run diffex to get gene list and pvalues
+        vals$mastgenelist <- MAST(SCEdata = vals$counts,
+                                  use_assay = input$mastAssay,
+                                  condition = input$hurdlecondition,
+                                  interest.level = input$hurdleconditionofinterest,
+                                  freq_expressed = input$hurdlethresh,
+                                  fc_threshold = input$FCthreshold,
+                                  p.value = input$hurdlepvalue,
+                                  usethresh = input$useAdaptThresh)
+      })
+    }
+  })
+
+  observeEvent(input$runThreshPlot, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runThreshPlot", {
+        output$threshplot <- renderPlot({
+          vals$thres <- thresholdGenes(SCEdata = vals$counts,
+                                       use_assay = input$mastAssay)
+          par(mfrow = c(5, 4))
+          plot(vals$thres)
+          par(mfrow = c(1, 1))
+        }, height = 600)
+      })
+    }
+  })
+
+  output$hurdleviolin <- renderPlot({
+    if (!(is.null(vals$mastgenelist))){
+      MASTviolin(SCEdata = vals$counts, use_assay = input$mastAssay,
+                 fcHurdleSig = vals$mastgenelist,
+                 variable = input$hurdlecondition,
+                 threshP = input$useAdaptThresh)
+    }
+  }, height = 600)
+
+  output$hurdlelm <- renderPlot({
+    if (!(is.null(vals$mastgenelist))){
+      MASTregression(SCEdata = vals$counts, use_assay = input$mastAssay,
+                     fcHurdleSig = vals$mastgenelist,
+                     variable = input$hurdlecondition,
+                     threshP = input$useAdaptThresh)
+    }
+  }, height = 600)
+
+  output$hurdleHeatmap <- renderPlot({
+    if (!(is.null(vals$mastgenelist))){
+      draw(plot_DiffEx(vals$counts, use_assay = input$mastAssay,
+                       condition = input$hurdlecondition,
+                       geneList = vals$mastgenelist$Gene,
+                       annotationColors = "auto",
+                       columnTitle = "MAST"))
+    }
+  }, height = 600)
+
+  #Create the MAST results table
+  output$mastresults <- renderDataTable({
+    if (!is.null(vals$mastgenelist)){
+      vals$mastgenelist
+    }
+  })
+
+  #download mast results
+  output$downloadHurdleResult <- downloadHandler(
+    filename = function() {
+      paste("mast_results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(vals$mastgenelist, file)
+    }
+  )
+
+  #-----------------------------------------------------------------------------
+  # Page 6: Pathway Activity Analysis
+  #-----------------------------------------------------------------------------
+
+  output$selectPathwayGeneLists <- renderUI({
+    if (input$genelistSource == "Manual Input"){
+      if (!is.null(vals$counts)){
+        selectizeInput("pathwayGeneLists", "Select Gene List(s):",
+                       colnames(rowData(vals$counts)), multiple = T)
+      } else {
+        h4("Note: upload data.")
+      }
+    } else {
+      selectInput("pathwayGeneLists", "Select Gene List(s):",
+                  c("ALL", names(c2BroadSets)), multiple = T)
+    }
+  })
+
+  output$selectNumTopPaths <- renderUI({
+    if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+      sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
+                  max = length(c2BroadSets), value = 25, step = 5)
+    }
+  })
+
+  observeEvent(input$pathwayRun, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    } else {
+      withBusyIndicatorServer("pathwayRun", {
+        if (input$genelistSource == "Manual Input"){
+          #expecting logical vector
+          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
+            alert("ERROR: malformed biomarker annotation")
+          } else {
+            biomarker <- list()
+            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
+          }
+        } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
+          #expecting some genes in list are in the rownames
+          if ("ALL" %in% input$pathwayGeneLists) {
+            if (length(input$pathwayPlotVar) != 1){
+              alert("Choose only one variable for full gsva profiling")
+            } else {
+              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
+              fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+              fit <- limma::eBayes(fit)
+              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
+              vals$gsva_res <- tempres[rownames(toptableres), ]
+            }
+          } else {
+            c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
+            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
+          }
+        } else{
+          stop("ERROR: Unsupported gene list source ", input$genelistSource)
+        }
+      })
+    }
+  })
+
+  output$pathwayPlot <- renderPlot({
+    if (!(is.null(vals$gsva_res))){
+      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
+        gsva_res_t <- data.frame(t(vals$gsva_res))
+        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
+        gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
+        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
+                                        variable.name = "pathway")
+        ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
+                                                                     y = "value",
+                                                                     color = paste(input$pathwayPlotVar, collapse = "_"))) +
+          ggplot2::geom_violin() +
+          ggplot2::geom_jitter() +
+          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
+        ggbase
+      } else if (input$pathwayOutPlot == "Heatmap"){
+        topha <- NULL
+        if (length(input$pathwayPlotVar) > 0){
+          colors <- RColorBrewer::brewer.pal(8, "Set1")
+          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
+          cond_levels <- unique(cond)
+          if (length(cond_levels) < 8){
+            col <- list()
+            col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
+            conddf <- data.frame(cond, row.names = colnames(vals$gsva_res))
+            colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
+            topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
+                                                       col = col)
+          } else {
+            alert("Too many levels in selected condition(s)")
+          }
+        }
+        Heatmap(vals$gsva_res, top_annotation = topha)
+      }
+    }
+  })
+
+  #save pathawy activity results in the colData
+  observeEvent(input$savePathway, {
+    if (!(is.null(vals$gsva_res))){
+      if (all(colnames(vals$counts) == colnames(vals$gsva_res))){
+        colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
+        updateColDataNames()
+      }
+    } else {
+      alert("Run pathway first!")
+    }
+  })
+
+  #download mast results
+  output$downloadPathway <- downloadHandler(
+    filename = function() {
+      paste("pathway_results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(vals$gsva_res, file)
+    }
+  )
+
+  #-----------------------------------------------------------------------------
+  # Page 7: Subsampling
   #-----------------------------------------------------------------------------
 
   #Run subsampling analysis
@@ -906,277 +1178,4 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
-  #-----------------------------------------------------------------------------
-  # Page 6: Batch Correction
-  #-----------------------------------------------------------------------------
-
-  output$selectCombat_refbatchUI <- renderUI({
-    if (!is.null(vals$counts)){
-      if (input$combatRef){
-        selectInput("combatRefBatch", "Choose Reference Batch:",
-                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
-      }
-    }
-  })
-
-  observeEvent(input$combatRun, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("combatRun", {
-        if (input$batchMethod == "ComBat"){
-          #check for zeros
-          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-            alert("Warning: Rows with a sum of zero found. Filter data to continue")
-          } else {
-            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-            if (input$combatRef){
-              assay(vals$counts, saveassayname) <-
-                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                           use_assay = input$combatAssay,
-                           par.prior = input$combatParametric,
-                           covariates = input$combatConditionVar,
-                           mean.only = input$combatMeanOnly,
-                           ref.batch = input$combatRefBatch)
-            } else {
-              assay(vals$counts, saveassayname) <-
-                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                           use_assay = input$combatAssay,
-                           par.prior = input$combatParametric,
-                           covariates = input$combatConditionVar,
-                           mean.only = input$combatMeanOnly)
-            }
-            updateAssayInputs()
-            vals$combatstatus <- "ComBat Complete"
-          }
-        } else {
-          alert("Unsupported Batch Correction Method!")
-        }
-      })
-    }
-  })
-
-  output$combatStatus <- renderUI({
-    h2(vals$combatstatus)
-  })
-
-  #-----------------------------------------------------------------------------
-  # Page 7: MAST
-  #-----------------------------------------------------------------------------
-
-  #For conditions with more than two factors, select the factor of interest
-  output$hurdleconditionofinterestUI <- renderUI({
-    if (!is.null(vals$counts)){
-      if (length(unique(colData(vals$counts)[, input$hurdlecondition])) > 2){
-        selectInput("hurdleconditionofinterest",
-                    "Select Factor of Interest",
-                    unique(sort(colData(vals$counts)[, input$hurdlecondition])))
-      }
-    }
-  })
-
-  #Run MAST differential expression
-  observeEvent(input$runDEhurdle, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    } else {
-      withBusyIndicatorServer("runDEhurdle", {
-        #run diffex to get gene list and pvalues
-        vals$mastgenelist <- MAST(SCEdata = vals$counts,
-                                  use_assay = input$mastAssay,
-                                  condition = input$hurdlecondition,
-                                  interest.level = input$hurdleconditionofinterest,
-                                  freq_expressed = input$hurdlethresh,
-                                  fc_threshold = input$FCthreshold,
-                                  p.value = input$hurdlepvalue,
-                                  usethresh = input$useAdaptThresh)
-      })
-    }
-  })
-
-  observeEvent(input$runThreshPlot, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("runThreshPlot", {
-        output$threshplot <- renderPlot({
-          vals$thres <- thresholdGenes(SCEdata = vals$counts,
-                                       use_assay = input$mastAssay)
-          par(mfrow = c(5, 4))
-          plot(vals$thres)
-          par(mfrow = c(1, 1))
-        }, height = 600)
-      })
-    }
-  })
-
-  output$hurdleviolin <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      MASTviolin(SCEdata = vals$counts, use_assay = input$mastAssay,
-                 fcHurdleSig = vals$mastgenelist,
-                 variable = input$hurdlecondition,
-                 threshP = input$useAdaptThresh)
-    }
-  }, height = 600)
-
-  output$hurdlelm <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      MASTregression(SCEdata = vals$counts, use_assay = input$mastAssay,
-                     fcHurdleSig = vals$mastgenelist,
-                     variable = input$hurdlecondition,
-                     threshP = input$useAdaptThresh)
-    }
-  }, height = 600)
-
-  output$hurdleHeatmap <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      draw(plot_DiffEx(vals$counts, use_assay = input$mastAssay,
-                       condition = input$hurdlecondition,
-                       geneList = vals$mastgenelist$Gene,
-                       annotationColors = "auto",
-                       columnTitle = "MAST"))
-    }
-  }, height = 600)
-
-  #Create the MAST results table
-  output$mastresults <- renderDataTable({
-    if (!is.null(vals$mastgenelist)){
-      vals$mastgenelist
-    }
-  })
-
-  #download mast results
-  output$downloadHurdleResult <- downloadHandler(
-    filename = function() {
-      paste("mast_results-", Sys.Date(), ".csv", sep = "")
-    },
-    content = function(file) {
-      write.csv(vals$mastgenelist, file)
-    }
-  )
-
-  #-----------------------------------------------------------------------------
-  # Page 8: Pathway Activity Analysis
-  #-----------------------------------------------------------------------------
-
-  output$selectPathwayGeneLists <- renderUI({
-    if (input$genelistSource == "Manual Input"){
-      if (!is.null(vals$counts)){
-        selectizeInput("pathwayGeneLists", "Select Gene List(s):",
-                       colnames(rowData(vals$counts)), multiple = T)
-      } else {
-        h4("Note: upload data.")
-      }
-    } else {
-      selectInput("pathwayGeneLists", "Select Gene List(s):",
-                  c("ALL", names(c2BroadSets)), multiple = T)
-    }
-  })
-
-  output$selectNumTopPaths <- renderUI({
-    if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-      sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
-                  max = length(c2BroadSets), value = 500, step = 5)
-    }
-  })
-
-  observeEvent(input$pathwayRun, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    } else {
-      withBusyIndicatorServer("pathwayRun", {
-        if (input$genelistSource == "Manual Input"){
-          #expecting logical vector
-          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
-            alert("ERROR: malformed biomarker annotation")
-          } else {
-            biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
-          }
-        } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
-          #expecting some genes in list are in the rownames
-          if ("ALL" %in% input$pathwayGeneLists) {
-            if (length(input$pathwayPlotVar) != 1){
-              alert("Choose only one variable for full gsva profiling")
-            } else {
-              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
-              fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
-              fit <- limma::eBayes(fit)
-              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
-              vals$gsva_res <- tempres[rownames(toptableres), ]
-            }
-          } else {
-            c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
-          }
-        } else{
-          stop("ERROR: Unsupported gene list source ", input$genelistSource)
-        }
-      })
-    }
-  })
-
-  output$pathwayPlot <- renderPlot({
-    if (!(is.null(vals$gsva_res))){
-      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
-        gsva_res_t <- data.frame(t(vals$gsva_res))
-        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-        gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
-        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
-                                        variable.name = "pathway")
-        ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
-                                                                     y = "value",
-                                                                     color = paste(input$pathwayPlotVar, collapse = "_"))) +
-          ggplot2::geom_violin() +
-          ggplot2::geom_jitter() +
-          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
-
-        ggbase
-      } else if (input$pathwayOutPlot == "Heatmap"){
-        topha <- NULL
-        if (length(input$pathwayPlotVar) > 0){
-          colors <- RColorBrewer::brewer.pal(8, "Set1")
-          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-          cond_levels <- unique(cond)
-          if (length(cond_levels) < 8){
-            col <- list()
-            col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
-            conddf <- data.frame(cond, row.names = colnames(vals$gsva_res))
-            colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
-            topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
-                                                       col = col)
-          } else {
-            alert("Too many levels in selected condition(s)")
-          }
-        }
-        Heatmap(vals$gsva_res, top_annotation = topha)
-      }
-    }
-  })
-
-  #save pathawy activity results in the colData
-  observeEvent(input$savePathway, {
-    if (!(is.null(vals$gsva_res))){
-      if (all(colnames(vals$counts) == colnames(vals$gsva_res))){
-        colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
-        updateColDataNames()
-      }
-    } else {
-      alert("Run pathway first!")
-    }
-  })
-
-  #download mast results
-  output$downloadPathway <- downloadHandler(
-    filename = function() {
-      paste("pathway_results-", Sys.Date(), ".csv", sep = "")
-    },
-    content = function(file) {
-      write.csv(vals$gsva_res, file)
-    }
-  )
 })
