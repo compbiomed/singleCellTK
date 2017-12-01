@@ -633,6 +633,20 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$reRunPCA, {
+    if (is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("reRunPCA", {
+        vals$counts <- getPCA(count_data = vals$counts,
+                              use_assay = input$dimRedAssaySelect,
+                              reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+        updateReddimInputs()
+      })
+    }
+  })
+
   #-----------------------------------------------------------------------------
   # Page 4: Differential Expression
   #-----------------------------------------------------------------------------
