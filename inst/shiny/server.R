@@ -1067,31 +1067,31 @@ shinyServer(function(input, output, session) {
         output$DepthDone <- renderPlot({
           plot(apply(vals$subDepth[, , 1], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Number of detected genes",
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Number of detected genes",
                main = "Number of dected genes by sequencing depth")
           lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$MinEffectDone <- renderPlot({
           plot(apply(vals$subDepth[, , 2], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Average significant effect size",
-               ylim=c(0, 2))
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Average significant effect size",
+               ylim = c(0, 2))
           lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.25)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.75)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$sigNumDone <- renderPlot({
           plot(apply(vals$subDepth[, , 3], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Number of significantly DiffEx genes")
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Number of significantly DiffEx genes")
           lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.25)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.75)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
       })
     }
@@ -1128,31 +1128,31 @@ shinyServer(function(input, output, session) {
         output$CellsDone <- renderPlot({
           plot(apply(vals$subCells[, , 1], 2, median)~
                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd=4, xlab="Number of virtual cells", ylab="Number of detected genes",
+               lwd = 4, xlab = "Number of virtual cells", ylab = "Number of detected genes",
                main = "Number of dected genes by cell number")
           lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$MinEffectCells <- renderPlot({
           plot(apply(vals$subCells[, , 2], 2, median)~
                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd = 4, xlab = "Number of virtual cells", ylab="Average significant effect size",
-               ylim=c(0, 2))
+               lwd = 4, xlab = "Number of virtual cells", ylab = "Average significant effect size",
+               ylim = c(0, 2))
           lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.75)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$sigNumCells <- renderPlot({
           plot(apply(vals$subCells[, , 3], 2, median)~
                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd = 4, xlab = "Number of vitual cells", ylab="Number of significantly DiffEx genes")
+               lwd = 4, xlab = "Number of vitual cells", ylab = "Number of significantly DiffEx genes")
           lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
           lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.75)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
       })
     }
@@ -1169,10 +1169,10 @@ shinyServer(function(input, output, session) {
                                             realLabels = input$select_Snapshot_Condition,
                                             totalReads = input$numReadsSnap,
                                             cells = input$numCellsSnap,
-                                            iterations=input$iterationsSnap)
+                                            iterations = input$iterationsSnap)
         vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[, input$select_Snapshot_Condition])
         output$Snaplot <- renderPlot({
-          plot(apply(vals$snapshot, 1, function(x){sum(x<=0.05)/length(x)})~vals$effectSizes,
+          plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
         })
       })
