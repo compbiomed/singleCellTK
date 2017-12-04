@@ -1017,7 +1017,7 @@ shinyServer(function(input, output, session) {
         tempgsvares <- vals$gsva_res
       }
       if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
-        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths)]
+        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop=F]
         gsva_res_t <- data.frame(t(tempgsvares))
         cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
         gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
