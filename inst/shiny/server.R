@@ -14,7 +14,8 @@ shinyServer(function(input, output, session) {
     original = getShinyOption("inputSCEset"),
     combatstatus = "",
     diffexgenelist = NULL,
-    gsva_res = NULL
+    gsva_res = NULL,
+    gsva_limma = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -391,7 +392,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
-  }, options = list(scrollX = TRUE, pageLength = 50))
+  }, options = list(scrollX = TRUE, pageLength = 30))
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -819,12 +820,14 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$saveBiomarker, {
-    if (is.null(input$biomarkerName)){
+    if (input$biomarkerName == ""){
       alert("Warning: Specify biomarker name!")
     } else{
-      biomarker_name <- gsub(" ", "_", input$biomarkerName)
-      rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
-      updateFeatureAnnots()
+      withBusyIndicatorServer("saveBiomarker", {
+        biomarker_name <- gsub(" ", "_", input$biomarkerName)
+        rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
+        updateFeatureAnnots()
+      })
     }
   })
 
@@ -969,11 +972,7 @@ shinyServer(function(input, output, session) {
             if (length(input$pathwayPlotVar) != 1){
               alert("Choose only one variable for full gsva profiling")
             } else {
-              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
-              fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
-              fit <- limma::eBayes(fit)
-              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
-              vals$gsva_res <- tempres[rownames(toptableres), ]
+              vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
             }
           } else {
             c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
@@ -985,11 +984,41 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  
+  observe({
+    if(length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsva_res))){
+      fit <- limma::lmFit(vals$gsva_res, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+      fit <- limma::eBayes(fit)
+      toptableres <- limma::topTable(fit, number = nrow(vals$gsva_res))
+      temptable <- cbind(rownames(toptableres), toptableres)
+      rownames(temptable) <- NULL
+      colnames(temptable)[1] <- "Pathway"
+      vals$gsva_limma <- temptable
+    } else {
+      vals$gsva_limma <- NULL
+    }
+  })
+
+  output$pathwaytable <- DT::renderDataTable({
+    if (!is.null(vals$gsva_limma)){
+      if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+        vals$gsva_limma[1:min(input$pickNtopPaths, nrow(vals$gsva_limma)),]
+      } else {
+        vals$gsva_limma
+      }
+    }
+  }, options = list(scrollX = TRUE, pageLength = 30))
 
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsva_res))){
+      if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
+        tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))],,drop=F]
+      } else {
+        tempgsvares <- vals$gsva_res
+      }
       if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
-        gsva_res_t <- data.frame(t(vals$gsva_res))
+        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths)]
+        gsva_res_t <- data.frame(t(tempgsvares))
         cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
         gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
         gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
@@ -999,7 +1028,7 @@ shinyServer(function(input, output, session) {
                                                                      color = paste(input$pathwayPlotVar, collapse = "_"))) +
           ggplot2::geom_violin() +
           ggplot2::geom_jitter() +
-          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
+          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(tempgsvares))))
         ggbase
       } else if (input$pathwayOutPlot == "Heatmap"){
         topha <- NULL
@@ -1010,7 +1039,7 @@ shinyServer(function(input, output, session) {
           if (length(cond_levels) < 8){
             col <- list()
             col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
-            conddf <- data.frame(cond, row.names = colnames(vals$gsva_res))
+            conddf <- data.frame(cond, row.names = colnames(tempgsvares))
             colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
             topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
                                                        col = col)
@@ -1018,7 +1047,7 @@ shinyServer(function(input, output, session) {
             alert("Too many levels in selected condition(s)")
           }
         }
-        Heatmap(vals$gsva_res, top_annotation = topha)
+        Heatmap(tempgsvares, top_annotation = topha)
       }
     }
   })

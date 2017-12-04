@@ -23,7 +23,7 @@ shiny_panel_diffex <- fluidPage(
         downloadButton("downloadGeneList", "Download Results"),
         h3("Save gene list as biomarker:"),
         textInput("biomarkerName", "Biomarker Name: ", value = ""),
-        actionButton("saveBiomarker", "Save Biomarker")
+        withBusyIndicatorUI(actionButton("saveBiomarker", "Save Biomarker"))
       ),
       mainPanel(
         tabsetPanel(
