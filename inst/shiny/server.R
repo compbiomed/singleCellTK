@@ -957,30 +957,10 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     } else {
       withBusyIndicatorServer("pathwayRun", {
-        if (input$genelistSource == "Manual Input"){
-          #expecting logical vector
-          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
-            alert("ERROR: malformed biomarker annotation")
-          } else {
-            biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
-          }
-        } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
-          #expecting some genes in list are in the rownames
-          if ("ALL" %in% input$pathwayGeneLists) {
-            if (length(input$pathwayPlotVar) != 1){
-              alert("Choose only one variable for full gsva profiling")
-            } else {
-              vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
-            }
-          } else {
-            c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
-          }
-        } else{
-          stop("ERROR: Unsupported gene list source ", input$genelistSource)
-        }
+        vals$gsva_res <- GSVA_sce(SCEdata = vals$counts,
+                                  use_assay = input$pathwayAssay,
+                                  pathway_source = input$genelistSource,
+                                  pathway_names = input$pathwayGeneLists)
       })
     }
   })
@@ -1018,37 +998,11 @@ shinyServer(function(input, output, session) {
       }
       if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop=F]
-        gsva_res_t <- data.frame(t(tempgsvares))
-        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-        gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
-        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
-                                        variable.name = "pathway")
-        ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
-                                                                     y = "value",
-                                                                     color = paste(input$pathwayPlotVar, collapse = "_"))) +
-          ggplot2::geom_violin() +
-          ggplot2::geom_jitter() +
-          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(tempgsvares))))
-        ggbase
-      } else if (input$pathwayOutPlot == "Heatmap"){
-        topha <- NULL
-        if (length(input$pathwayPlotVar) > 0){
-          colors <- RColorBrewer::brewer.pal(8, "Set1")
-          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-          cond_levels <- unique(cond)
-          if (length(cond_levels) < 8){
-            col <- list()
-            col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
-            conddf <- data.frame(cond, row.names = colnames(tempgsvares))
-            colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
-            topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
-                                                       col = col)
-          } else {
-            alert("Too many levels in selected condition(s)")
-          }
-        }
-        Heatmap(tempgsvares, top_annotation = topha)
       }
+      GSVA_plot(SCEdata = vals$counts,
+                gsva_data = tempgsvares,
+                plot_type = input$pathwayOutPlot,
+                condition = input$pathwayPlotVar)
     }
   })
 
