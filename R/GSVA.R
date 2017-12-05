@@ -30,6 +30,9 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathway_names) {
+      .myenv <- new.env(parent=emptyenv())
+      data("c2BroadSets", package="GSVAdata", envir=.myenv)
+      c2BroadSets <- .myenv$c2BroadSets
       gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2BroadSets)
     } else {
       c2sub <- c2BroadSets[base::setdiff(pathway_names, "ALL")]
@@ -91,7 +94,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
         alert("Too many levels in selected condition(s)")
       }
     }
-    Heatmap(gsva_data, top_annotation = topha)
+    ComplexHeatmap::Heatmap(gsva_data, top_annotation = topha)
   } else {
     stop("ERROR: Unsupported plot type")
   }
