@@ -44,7 +44,8 @@ Imports:
     S4Vectors,
     shiny,
     shinyjs,
-    sva
+    sva,
+    reshape2
 RoxygenNote: 6.0.1
 Suggests:
     testthat,
