@@ -964,7 +964,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   observe({
     if(length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsva_res))){
       fit <- limma::lmFit(vals$gsva_res, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
@@ -982,7 +982,7 @@ shinyServer(function(input, output, session) {
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsva_limma)){
       if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        vals$gsva_limma[1:min(input$pickNtopPaths, nrow(vals$gsva_limma)),]
+        vals$gsva_limma[1:min(input$pickNtopPaths, nrow(vals$gsva_limma)), , drop = F]
       } else {
         vals$gsva_limma
       }
@@ -992,12 +992,12 @@ shinyServer(function(input, output, session) {
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsva_res))){
       if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
-        tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))],,drop=F]
+        tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))], , drop = F]
       } else {
         tempgsvares <- vals$gsva_res
       }
       if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
-        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop=F]
+        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
       }
       GSVA_plot(SCEdata = vals$counts,
                 gsva_data = tempgsvares,
