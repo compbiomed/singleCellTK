@@ -14,7 +14,8 @@ shinyServer(function(input, output, session) {
     original = getShinyOption("inputSCEset"),
     combatstatus = "",
     diffexgenelist = NULL,
-    gsva_res = NULL
+    gsva_res = NULL,
+    gsva_limma = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -129,7 +130,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 2: Data Summary
+  # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
 
   #Render data table if there are fewer than 50 samples
@@ -391,7 +392,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
-  }, options = list(scrollX = TRUE, pageLength = 50))
+  }, options = list(scrollX = TRUE, pageLength = 30))
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -633,8 +634,77 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$reRunPCA, {
+    if (is.null(vals$original)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("reRunPCA", {
+        vals$counts <- getPCA(count_data = vals$counts,
+                              use_assay = input$dimRedAssaySelect,
+                              reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+        updateReddimInputs()
+      })
+    }
+  })
+
   #-----------------------------------------------------------------------------
-  # Page 4: Differential Expression
+  # Page 4: Batch Correction
+  #-----------------------------------------------------------------------------
+
+  output$selectCombat_refbatchUI <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$combatRef){
+        selectInput("combatRefBatch", "Choose Reference Batch:",
+                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
+      }
+    }
+  })
+
+  observeEvent(input$combatRun, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("combatRun", {
+        if (input$batchMethod == "ComBat"){
+          #check for zeros
+          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
+            alert("Warning: Rows with a sum of zero found. Filter data to continue")
+          } else {
+            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+            if (input$combatRef){
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly,
+                           ref.batch = input$combatRefBatch)
+            } else {
+              assay(vals$counts, saveassayname) <-
+                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                           use_assay = input$combatAssay,
+                           par.prior = input$combatParametric,
+                           covariates = input$combatConditionVar,
+                           mean.only = input$combatMeanOnly)
+            }
+            updateAssayInputs()
+            vals$combatstatus <- "ComBat Complete"
+          }
+        } else {
+          alert("Unsupported Batch Correction Method!")
+        }
+      })
+    }
+  })
+
+  output$combatStatus <- renderUI({
+    h2(vals$combatstatus)
+  })
+
+  #-----------------------------------------------------------------------------
+  # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
 
   #For conditions with more than two factors, select the factor of interest
@@ -750,206 +820,19 @@ shinyServer(function(input, output, session) {
   )
 
   observeEvent(input$saveBiomarker, {
-    if (is.null(input$biomarkerName)){
+    if (input$biomarkerName == ""){
       alert("Warning: Specify biomarker name!")
     } else{
-      biomarker_name <- gsub(" ", "_", input$biomarkerName)
-      rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
-      updateFeatureAnnots()
-    }
-  })
-
-  #-----------------------------------------------------------------------------
-  # Page 5: Subsampling
-  #-----------------------------------------------------------------------------
-
-  #Run subsampling analysis
-  observeEvent(input$runSubsampleDepth, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("runSubsampleDepth", {
-        vals$subDepth <- DownsampleDepth(originalData = vals$counts,
-                                         minCount = input$minCount,
-                                         minCells = input$minCells,
-                                         maxDepth = 10 ^ input$maxDepth,
-                                         realLabels = input$select_ReadDepth_Condition,
-                                         depthResolution = input$depthResolution,
-                                         iterations = input$iterations)
-
-        output$DepthDone <- renderPlot({
-          plot(apply(vals$subDepth[, , 1], 2, median)~
-                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Number of detected genes",
-               main = "Number of dected genes by sequencing depth")
-          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty=2, lwd=3)
-        })
-        output$MinEffectDone <- renderPlot({
-          plot(apply(vals$subDepth[, , 2], 2, median)~
-                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Average significant effect size",
-               ylim=c(0, 2))
-          lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.25)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.75)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
-        })
-        output$sigNumDone <- renderPlot({
-          plot(apply(vals$subDepth[, , 3], 2, median)~
-                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
-               lwd = 4, xlab = "log10(Total read counts)", ylab="Number of significantly DiffEx genes")
-          lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.25)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.75)})~
-                  seq(from=0, to=input$maxDepth, length.out=input$depthResolution), lty=2, lwd=3)
-        })
-      })
-    }
-  })
-
-  observeEvent(input$runSubsampleCells, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("runSubsampleCells", {
-        if(input$useReadCount){
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
-                                           realLabels = input$select_CellNum_Condition,
-                                           totalReads = sum(counts(vals$counts)),
-                                           minCellnum = input$minCellNum,
-                                           maxCellnum = input$maxCellNum,
-                                           minCountDetec = input$minCount,
-                                           minCellsDetec = input$minCells,
-                                           depthResolution = input$depthResolution,
-                                           iterations = input$iterations)
-        }
-        else{
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
-                                           realLabels = input$select_CellNum_Condition,
-                                           totalReads = input$totalReads,
-                                           minCellnum = input$minCellNum,
-                                           maxCellnum = input$maxCellNum,
-                                           minCountDetec = input$minCount,
-                                           minCellsDetec = input$minCells,
-                                           depthResolution = input$depthResolution,
-                                           iterations = input$iterations)
-        }
-        output$CellsDone <- renderPlot({
-          plot(apply(vals$subCells[, , 1], 2, median)~
-                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd=4, xlab="Number of virtual cells", ylab="Number of detected genes",
-               main = "Number of dected genes by cell number")
-          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty=2, lwd=3)
-        })
-        output$MinEffectCells <- renderPlot({
-          plot(apply(vals$subCells[, , 2], 2, median)~
-                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd = 4, xlab = "Number of virtual cells", ylab="Average significant effect size",
-               ylim=c(0, 2))
-          lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.75)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
-        })
-        output$sigNumCells <- renderPlot({
-          plot(apply(vals$subCells[, , 3], 2, median)~
-                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
-               lwd = 4, xlab = "Number of vitual cells", ylab="Number of significantly DiffEx genes")
-          lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.25)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
-          lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.75)})~
-                  seq(from = input$minCellNum, to = input$maxCellNum, length.out=input$depthResolution), lty=2, lwd=3)
-        })
-      })
-    }
-  })
-
-  #Run differential power analysis
-  observeEvent(input$runSnapshot, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("runSnapshot", {
-        vals$snapshot <- iterateSimulations(originalData = vals$counts,
-                                            realLabels = input$select_Snapshot_Condition,
-                                            totalReads = input$numReadsSnap,
-                                            cells = input$numCellsSnap,
-                                            iterations=input$iterationsSnap)
-        vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[, input$select_Snapshot_Condition])
-        output$Snaplot <- renderPlot({
-          plot(apply(vals$snapshot, 1, function(x){sum(x<=0.05)/length(x)})~vals$effectSizes,
-               xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
-        })
+      withBusyIndicatorServer("saveBiomarker", {
+        biomarker_name <- gsub(" ", "_", input$biomarkerName)
+        rowData(vals$counts)[, biomarker_name] <- ifelse(rownames(vals$counts) %in% rownames(vals$diffexgenelist), 1, 0)
+        updateFeatureAnnots()
       })
     }
   })
 
   #-----------------------------------------------------------------------------
-  # Page 6: Batch Correction
-  #-----------------------------------------------------------------------------
-
-  output$selectCombat_refbatchUI <- renderUI({
-    if (!is.null(vals$counts)){
-      if (input$combatRef){
-        selectInput("combatRefBatch", "Choose Reference Batch:",
-                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
-      }
-    }
-  })
-
-  observeEvent(input$combatRun, {
-    if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
-    }
-    else{
-      withBusyIndicatorServer("combatRun", {
-        if (input$batchMethod == "ComBat"){
-          #check for zeros
-          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-            alert("Warning: Rows with a sum of zero found. Filter data to continue")
-          } else {
-            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-            if (input$combatRef){
-              assay(vals$counts, saveassayname) <-
-                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                           use_assay = input$combatAssay,
-                           par.prior = input$combatParametric,
-                           covariates = input$combatConditionVar,
-                           mean.only = input$combatMeanOnly,
-                           ref.batch = input$combatRefBatch)
-            } else {
-              assay(vals$counts, saveassayname) <-
-                ComBat_SCE(SCEdata = vals$counts, batch = input$combatBatchVar,
-                           use_assay = input$combatAssay,
-                           par.prior = input$combatParametric,
-                           covariates = input$combatConditionVar,
-                           mean.only = input$combatMeanOnly)
-            }
-            updateAssayInputs()
-            vals$combatstatus <- "ComBat Complete"
-          }
-        } else {
-          alert("Unsupported Batch Correction Method!")
-        }
-      })
-    }
-  })
-
-  output$combatStatus <- renderUI({
-    h2(vals$combatstatus)
-  })
-
-  #-----------------------------------------------------------------------------
-  # Page 7: MAST
+  # Page 5.2: MAST
   #-----------------------------------------------------------------------------
 
   #For conditions with more than two factors, select the factor of interest
@@ -1045,7 +928,7 @@ shinyServer(function(input, output, session) {
   )
 
   #-----------------------------------------------------------------------------
-  # Page 8: Pathway Activity Analysis
+  # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------
 
   output$selectPathwayGeneLists <- renderUI({
@@ -1065,7 +948,7 @@ shinyServer(function(input, output, session) {
   output$selectNumTopPaths <- renderUI({
     if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
       sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
-                  max = length(c2BroadSets), value = 500, step = 5)
+                  max = length(c2BroadSets), value = 25, step = 5)
     }
   })
 
@@ -1074,73 +957,52 @@ shinyServer(function(input, output, session) {
       alert("Warning: Upload data first!")
     } else {
       withBusyIndicatorServer("pathwayRun", {
-        if (input$genelistSource == "Manual Input"){
-          #expecting logical vector
-          if (!all(rowData(vals$counts)[, input$pathwayGeneLists] %in% c(1, 0))){
-            alert("ERROR: malformed biomarker annotation")
-          } else {
-            biomarker <- list()
-            biomarker[[input$pathwayGeneLists]] <- rownames(vals$counts)[rowData(vals$counts)[, input$pathwayGeneLists] == 1]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), biomarker)
-          }
-        } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)") {
-          #expecting some genes in list are in the rownames
-          if ("ALL" %in% input$pathwayGeneLists) {
-            if (length(input$pathwayPlotVar) != 1){
-              alert("Choose only one variable for full gsva profiling")
-            } else {
-              tempres <- gsva(assay(vals$counts, input$pathwayAssay), c2BroadSets)
-              fit <- limma::lmFit(tempres, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
-              fit <- limma::eBayes(fit)
-              toptableres <- limma::topTable(fit, number = input$pickNtopPaths)
-              vals$gsva_res <- tempres[rownames(toptableres), ]
-            }
-          } else {
-            c2sub <- c2BroadSets[base::setdiff(input$pathwayGeneLists, "ALL")]
-            vals$gsva_res <- gsva(assay(vals$counts, input$pathwayAssay), c2sub)
-          }
-        } else{
-          stop("ERROR: Unsupported gene list source ", input$genelistSource)
-        }
+        vals$gsva_res <- GSVA_sce(SCEdata = vals$counts,
+                                  use_assay = input$pathwayAssay,
+                                  pathway_source = input$genelistSource,
+                                  pathway_names = input$pathwayGeneLists)
       })
     }
   })
 
+  observe({
+    if(length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsva_res))){
+      fit <- limma::lmFit(vals$gsva_res, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+      fit <- limma::eBayes(fit)
+      toptableres <- limma::topTable(fit, number = nrow(vals$gsva_res))
+      temptable <- cbind(rownames(toptableres), toptableres)
+      rownames(temptable) <- NULL
+      colnames(temptable)[1] <- "Pathway"
+      vals$gsva_limma <- temptable
+    } else {
+      vals$gsva_limma <- NULL
+    }
+  })
+
+  output$pathwaytable <- DT::renderDataTable({
+    if (!is.null(vals$gsva_limma)){
+      if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+        vals$gsva_limma[1:min(input$pickNtopPaths, nrow(vals$gsva_limma)), , drop = F]
+      } else {
+        vals$gsva_limma
+      }
+    }
+  }, options = list(scrollX = TRUE, pageLength = 30))
+
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsva_res))){
-      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
-        gsva_res_t <- data.frame(t(vals$gsva_res))
-        cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-        gsva_res_t[, paste(input$pathwayPlotVar, collapse = "_")] <- cond
-        gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(input$pathwayPlotVar, collapse = "_"),
-                                        variable.name = "pathway")
-        ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(input$pathwayPlotVar, collapse = "_"),
-                                                                     y = "value",
-                                                                     color = paste(input$pathwayPlotVar, collapse = "_"))) +
-          ggplot2::geom_violin() +
-          ggplot2::geom_jitter() +
-          ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(vals$gsva_res))))
-
-        ggbase
-      } else if (input$pathwayOutPlot == "Heatmap"){
-        topha <- NULL
-        if (length(input$pathwayPlotVar) > 0){
-          colors <- RColorBrewer::brewer.pal(8, "Set1")
-          cond <- apply(colData(vals$counts)[, input$pathwayPlotVar, drop = F], 1, paste, collapse = "_")
-          cond_levels <- unique(cond)
-          if (length(cond_levels) < 8){
-            col <- list()
-            col[[paste(input$pathwayPlotVar, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
-            conddf <- data.frame(cond, row.names = colnames(vals$gsva_res))
-            colnames(conddf) <- paste(input$pathwayPlotVar, collapse = "_")
-            topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
-                                                       col = col)
-          } else {
-            alert("Too many levels in selected condition(s)")
-          }
-        }
-        Heatmap(vals$gsva_res, top_annotation = topha)
+      if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
+        tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))], , drop = F]
+      } else {
+        tempgsvares <- vals$gsva_res
       }
+      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
+        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
+      }
+      GSVA_plot(SCEdata = vals$counts,
+                gsva_data = tempgsvares,
+                plot_type = input$pathwayOutPlot,
+                condition = input$pathwayPlotVar)
     }
   })
 
@@ -1165,4 +1027,138 @@ shinyServer(function(input, output, session) {
       write.csv(vals$gsva_res, file)
     }
   )
+
+  #-----------------------------------------------------------------------------
+  # Page 7: Subsampling
+  #-----------------------------------------------------------------------------
+
+  #Run subsampling analysis
+  observeEvent(input$runSubsampleDepth, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runSubsampleDepth", {
+        vals$subDepth <- DownsampleDepth(originalData = vals$counts,
+                                         minCount = input$minCount,
+                                         minCells = input$minCells,
+                                         maxDepth = 10 ^ input$maxDepth,
+                                         realLabels = input$select_ReadDepth_Condition,
+                                         depthResolution = input$depthResolution,
+                                         iterations = input$iterations)
+
+        output$DepthDone <- renderPlot({
+          plot(apply(vals$subDepth[, , 1], 2, median)~
+                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Number of detected genes",
+               main = "Number of dected genes by sequencing depth")
+          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+        output$MinEffectDone <- renderPlot({
+          plot(apply(vals$subDepth[, , 2], 2, median)~
+                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Average significant effect size",
+               ylim = c(0, 2))
+          lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subDepth[, , 2], 2, function(x){quantile(x, 0.75)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+        output$sigNumDone <- renderPlot({
+          plot(apply(vals$subDepth[, , 3], 2, median)~
+                 seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
+               lwd = 4, xlab = "log10(Total read counts)", ylab = "Number of significantly DiffEx genes")
+          lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.75)})~
+                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+      })
+    }
+  })
+
+  observeEvent(input$runSubsampleCells, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runSubsampleCells", {
+        if(input$useReadCount){
+          vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           realLabels = input$select_CellNum_Condition,
+                                           totalReads = sum(counts(vals$counts)),
+                                           minCellnum = input$minCellNum,
+                                           maxCellnum = input$maxCellNum,
+                                           minCountDetec = input$minCount,
+                                           minCellsDetec = input$minCells,
+                                           depthResolution = input$depthResolution,
+                                           iterations = input$iterations)
+        }
+        else{
+          vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           realLabels = input$select_CellNum_Condition,
+                                           totalReads = input$totalReads,
+                                           minCellnum = input$minCellNum,
+                                           maxCellnum = input$maxCellNum,
+                                           minCountDetec = input$minCount,
+                                           minCellsDetec = input$minCells,
+                                           depthResolution = input$depthResolution,
+                                           iterations = input$iterations)
+        }
+        output$CellsDone <- renderPlot({
+          plot(apply(vals$subCells[, , 1], 2, median)~
+                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
+               lwd = 4, xlab = "Number of virtual cells", ylab = "Number of detected genes",
+               main = "Number of dected genes by cell number")
+          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+        output$MinEffectCells <- renderPlot({
+          plot(apply(vals$subCells[, , 2], 2, median)~
+                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
+               lwd = 4, xlab = "Number of virtual cells", ylab = "Average significant effect size",
+               ylim = c(0, 2))
+          lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subCells[, , 2], 2, function(x){quantile(x, 0.75)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+        output$sigNumCells <- renderPlot({
+          plot(apply(vals$subCells[, , 3], 2, median)~
+                 seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
+               lwd = 4, xlab = "Number of vitual cells", ylab = "Number of significantly DiffEx genes")
+          lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.25)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+          lines(apply(vals$subCells[, , 3], 2, function(x){quantile(x, 0.75)})~
+                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
+        })
+      })
+    }
+  })
+
+  #Run differential power analysis
+  observeEvent(input$runSnapshot, {
+    if (is.null(vals$counts)){
+      alert("Warning: Upload data first!")
+    }
+    else{
+      withBusyIndicatorServer("runSnapshot", {
+        vals$snapshot <- iterateSimulations(originalData = vals$counts,
+                                            realLabels = input$select_Snapshot_Condition,
+                                            totalReads = input$numReadsSnap,
+                                            cells = input$numCellsSnap,
+                                            iterations = input$iterationsSnap)
+        vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[, input$select_Snapshot_Condition])
+        output$Snaplot <- renderPlot({
+          plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
+               xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
+        })
+      })
+    }
+  })
 })

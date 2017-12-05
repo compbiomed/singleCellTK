@@ -1,7 +1,7 @@
 shiny_panel_cluster <- fluidPage(
   tags$div(
     class = "container",
-    h1("Clustering"),
+    h1("DR & Clustering"),
     sidebarLayout(
       sidebarPanel(
         ###  VISUALIZATION (e.g. PCA, tSNE)
@@ -18,7 +18,7 @@ shiny_panel_cluster <- fluidPage(
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
             #radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")), #TODO: implement biomarker color by
-            radioButtons("colorGeneBy", "Gene list:", c("Manual Input")), 
+            radioButtons("colorGeneBy", "Gene list:", c("Manual Input")),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
               selectizeInput(
@@ -33,7 +33,14 @@ shiny_panel_cluster <- fluidPage(
             radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"), selected = "Continuous")
           ),
           selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
-          withBusyIndicatorUI(actionButton("reRunTSNE", "Re-run tSNE"))
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
+            withBusyIndicatorUI(actionButton("reRunTSNE", "Re-run tSNE"))
+          ),
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
+            withBusyIndicatorUI(actionButton("reRunPCA", "Re-run PCA"))
+          )
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
@@ -107,27 +114,7 @@ shiny_panel_cluster <- fluidPage(
             plotOutput("geneExpressionPlot", height = "600px")
           )
         ),
-        tableOutput("pctable"),
-        tags$hr(),
-        h1("Instructions"),
-        h3("Visualizing Samples by PCA or tSNE"),
-        p("1. (For PCA) Choose which prinicipal components to plot"),
-        p("2. Choose what option to color and/or shape your data by"),
-        h4("Color by Gene Expression"),
-        p("a. Choose to color by a manually inputted list of gene(s) (up to 9) or a biomarker lit from the differential expression tab"),
-        p("b. Select either a continuous or binary color scale"),
-        h3("Cluster with K-Means or Clara"),
-        p("1. Select cluster data"),
-        p("2. Choose which data to cluster (raw or dimension reduced data)"),
-        p("3. Choose the clustering algorithm"),
-        p("4. Choose the number of cluster centers"),
-        p("5. Assign a name to your clusters"),
-        p("6. Press Cluster Data"),
-        h3("Visualizing Samples by Dendrogram"),
-        p("1. Select visualization method to be Dendrogram)"),
-        p("2. Choose which data to cluster (raw or dimension reduced data)"),
-        p("3. Choose the clustering algorithm"),
-        p("4. Choose the distance metric")
+        tableOutput("pctable")
       )
     )
   )
