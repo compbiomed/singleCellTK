@@ -1,3 +1,5 @@
+.myenv <- new.env(parent=emptyenv())
+
 #' GSVA_sce
 #'
 #' Run GSVA analysis on a SCESet object.
@@ -11,11 +13,12 @@
 #' available pathways.
 #' @param pathway_names List of pathway names to run, depending on pathway_source
 #' parameter.
+#' @param ... Parameters to pass to gsva
 #' 
 #' @return A data.frame of pathway activity scores from GSVA.
 #' 
 #' @export
-GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names){
+GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...){
   if (pathway_source == "Manual Input"){
     #expecting logical vector
     if (!all(rowData(SCEdata)[, pathway_names] %in% c(1, 0))){
@@ -25,15 +28,17 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
       for (i in pathway_names){
         biomarker[[i]] <- rownames(SCEdata)[rowData(SCEdata)[, i] == 1]
       }
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), biomarker)
+      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), biomarker, ...)
     }
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
+    data("c2BroadSets", package="GSVAdata", envir=.myenv)
+    c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathway_names) {
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2BroadSets)
+      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2BroadSets, ...)
     } else {
       c2sub <- c2BroadSets[base::setdiff(pathway_names, "ALL")]
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2sub)
+      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2sub, ...)
     }
   } else{
     stop("ERROR: Unsupported gene list source ", pathway_source)
@@ -91,7 +96,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
         alert("Too many levels in selected condition(s)")
       }
     }
-    Heatmap(gsva_data, top_annotation = topha)
+    ComplexHeatmap::Heatmap(gsva_data, top_annotation = topha)
   } else {
     stop("ERROR: Unsupported plot type")
   }

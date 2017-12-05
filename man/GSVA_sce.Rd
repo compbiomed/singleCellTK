@@ -4,7 +4,7 @@
 \alias{GSVA_sce}
 \title{GSVA_sce}
 \usage{
-GSVA_sce(SCEdata, use_assay = "logcounts", pathway_source, pathway_names)
+GSVA_sce(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...)
 }
 \arguments{
 \item{SCEdata}{SCESet object}
@@ -19,6 +19,8 @@ available pathways.}
 
 \item{pathway_names}{List of pathway names to run, depending on pathway_source
 parameter.}
+
+\item{...}{Parameters to pass to gsva}
 }
 \value{
 A data.frame of pathway activity scores from GSVA.
