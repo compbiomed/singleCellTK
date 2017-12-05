@@ -13,22 +13,22 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
                             maxDepth = 10000000, realLabels, depthResolution = 10, iterations = 10){
   realLabels <- colData(originalData)[, realLabels]
   originalData <- counts(originalData)
-  foundGenesMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  minEffectSizeMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  numSigGenesMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  depths <- floor(10^(seq(0, log10(maxDepth), length.out=depthResolution)))
+  foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  depths <- floor(10 ^ (seq(0, log10(maxDepth), length.out = depthResolution)))
   cells <- dim(originalData)[2]
   effectSizes <- calcEffectSizes(originalData, realLabels)
   for(i in 1:depthResolution){
     for(j in 1:iterations){
-      tempData <- generateSimulatedData(totalReads=depths[i], cells, as.matrix(originalData), realLabels=as.factor(realLabels))
+      tempData <- generateSimulatedData(totalReads = depths[i], cells, as.matrix(originalData), realLabels = as.factor(realLabels))
       tempSigDiff <- subDiffEx(tempData)
-      foundGenesMatrix[j, i] <- sum(apply(tempData[-1, ], 1, function(x){sum(x>0)>=minCells && sum(x)>=minCount}))
+      foundGenesMatrix[j, i] <- sum(apply(tempData[-1, ], 1, function(x){sum(x > 0) >= minCells && sum(x) >= minCount}))
       numSigGenesMatrix[j, i] <- sum(tempSigDiff <= 0.05)
       minEffectSizeMatrix[j, i] <- abs(min(abs(effectSizes[which(tempSigDiff <= 0.05)])))
     }
   }
-  outArray <- array(c(foundGenesMatrix, minEffectSizeMatrix, numSigGenesMatrix), dim=c(iterations, depthResolution, 3))
+  outArray <- array(c(foundGenesMatrix, minEffectSizeMatrix, numSigGenesMatrix), dim = c(iterations, depthResolution, 3))
   return(outArray)
 }
 
@@ -50,21 +50,21 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
                             totalReads = 1000000){
   realLabels <- colData(originalData)[, realLabels]
   originalData <- counts(originalData)
-  foundGenesMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  minEffectSizeMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  numSigGenesMatrix <- matrix(nrow=iterations, ncol=depthResolution)
-  cellNums <- seq(minCellnum, maxCellnum, length.out=depthResolution)
+  foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
+  cellNums <- seq(minCellnum, maxCellnum, length.out = depthResolution)
   effectSizes <- calcEffectSizes(originalData, realLabels)
   for(i in 1:depthResolution){
     for(j in 1:iterations){
-      tempData <- generateSimulatedData(totalReads=totalReads, cells=cellNums[i], as.matrix(originalData), realLabels=as.factor(realLabels))
+      tempData <- generateSimulatedData(totalReads = totalReads, cells = cellNums[i], as.matrix(originalData), realLabels = as.factor(realLabels))
       tempSigDiff <- subDiffEx(tempData)
-      foundGenesMatrix[j, i] <- sum(apply(tempData[-1, ], 1, function(x){sum(x>0)>=minCellsDetec && sum(x)>=minCountDetec}))
+      foundGenesMatrix[j, i] <- sum(apply(tempData[-1, ], 1, function(x){sum(x > 0) >= minCellsDetec && sum(x) >= minCountDetec}))
       numSigGenesMatrix[j, i] <- sum(tempSigDiff <= 0.05)
       minEffectSizeMatrix[j, i] <- abs(min(abs(effectSizes[which(tempSigDiff <= 0.05)])))
     }
   }
-  outArray <- array(c(foundGenesMatrix, minEffectSizeMatrix, numSigGenesMatrix), dim=c(iterations, depthResolution, 3))
+  outArray <- array(c(foundGenesMatrix, minEffectSizeMatrix, numSigGenesMatrix), dim = c(iterations, depthResolution, 3))
   return(outArray)
 }
 
@@ -118,10 +118,10 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096, 163
 #' @export generateSimulatedData
 #'
 generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
-  cells <- sample(dim(originalData)[2], size=cells, replace=TRUE)
-  totalReads <- floor(totalReads/length(cells))
-  originalData <- t(t(originalData)/apply(originalData, 2, sum))
-  output <- matrix(nrow=dim(originalData)[1], ncol=length(cells))
+  cells <- sample(dim(originalData)[2], size = cells, replace = TRUE)
+  totalReads <- floor(totalReads / length(cells))
+  originalData <- t(t(originalData) / apply(originalData, 2, sum))
+  output <- matrix(nrow = dim(originalData)[1], ncol = length(cells))
   for(i in 1:length(cells)){
     output[, i] <- rmultinom(1, totalReads, originalData[, cells[i]])
   }
@@ -162,9 +162,9 @@ subDiffEx <- function(tempData){
 iterateSimulations <- function(originalData, realLabels, totalReads, cells, iterations){
   realLabels <- colData(originalData)[, realLabels]
   originalData <- counts(originalData)
-  sigMatrix <- matrix(nrow=dim(originalData)[1])
+  sigMatrix <- matrix(nrow = dim(originalData)[1])
   for(i in 1:iterations){
-    tempData <- generateSimulatedData(totalReads, cells, originalData, realLabels=as.factor(realLabels))
+    tempData <- generateSimulatedData(totalReads, cells, originalData, realLabels = as.factor(realLabels))
     sigMatrix <- cbind(sigMatrix, subDiffEx(tempData))
   }
   return(sigMatrix[, -1])
@@ -196,7 +196,7 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #'
 subDiffEx_anova <- function(countMatrix, condition){
   mod <- model.matrix(~as.factor(condition))
-  mod0 <- model.matrix(~1, data=condition)
+  mod0 <- model.matrix(~1, data = condition)
   dat <- log2(countMatrix + 1)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
@@ -208,9 +208,9 @@ subDiffEx_anova <- function(countMatrix, condition){
                       t(mod))
   resid0 <- dat %*% (Id - mod0 %*% solve(t(mod0) %*% mod0) %*%
                        t(mod0))
-  rss1 <- resid^2 %*% rep(1, n)
-  rss0 <- resid0^2 %*% rep(1, n)
-  fstats <- ((rss0 - rss1)/(df1 - df0))/(rss1/(n - df1))
+  rss1 <- resid ^ 2 %*% rep(1, n)
+  rss0 <- resid0 ^ 2 %*% rep(1, n)
+  fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
   p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   return(p.adjust(p, method = "fdr"))
 }
@@ -223,7 +223,7 @@ subDiffEx_anova <- function(countMatrix, condition){
 #'
 calcEffectSizes <- function(countMatrix, condition){
   groups <- levels(as.factor(unlist(condition)))
-  return((apply(countMatrix[, condition==unlist(groups)[1]], 1, mean)-apply(countMatrix[, condition!=unlist(groups)[1]], 1, mean))/apply(countMatrix, 1, sd))
+  return((apply(countMatrix[, condition == unlist(groups)[1]], 1, mean) - apply(countMatrix[, condition != unlist(groups)[1]], 1, mean)) / apply(countMatrix, 1, sd))
 }
 
 powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000), byBatch=FALSE, batch=NULL, numSize=25) {

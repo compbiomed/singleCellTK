@@ -1,7 +1,7 @@
 shiny_panel_filter <- fluidPage(
   tags$div(
     class = "container",
-    h1("Data Summary"),
+    h1("Data Summary and Filtering"),
     sidebarLayout(
       sidebarPanel(
         checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
