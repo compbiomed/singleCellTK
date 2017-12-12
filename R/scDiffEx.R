@@ -10,7 +10,7 @@
 #' @param usesig If TRUE, only display genes that meet the significance cutoff,
 #' up to ntop genes. Required
 #' @param diffexmethod The method for performing differential expression
-#' analyis. Available options are DESeq, DESeq2, and limma. Required
+#' analysis. Available options are DESeq, DESeq2, and limma. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
 #' @param clusterCol Cluster the columns. The default is TRUE
 #' @param displayRowLabels Display the row labels on the heatmap. The default

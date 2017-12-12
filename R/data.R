@@ -1,5 +1,5 @@
 #' Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
-#' subest
+#' subset
 #'
 #' A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et
 #' al. Science 2015. The data was produced from cells from the mouse
@@ -47,7 +47,7 @@
 #' Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE36552
 #'
 #' 124 Single-cell transcriptome profiling from embryonic stem cells derived
-#' from donated human pre-implatation embryos.
+#' from donated human pre-implantation embryos.
 #'
 #' @name GSE36552_sce
 #' @docType data
@@ -58,7 +58,7 @@
 #' data("GSE36552_sce")
 "GSE36552_sce"
 
-#' Example Single Cell RNA-Seq MAITS data from MAST package
+#' Example Single Cell RNA-Seq MAITs data from MAST package
 #'
 #' 96 Single-cell transcriptome profiling from Mucosal Associated Invariant T
 #' cells (MAITs), measured on the Fluidigm C1.

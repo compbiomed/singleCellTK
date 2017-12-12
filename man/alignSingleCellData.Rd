@@ -32,7 +32,7 @@ and in the same order as the list of files in inputfile1. Alignment
 statistics will be added to the annotation data frame.}
 
 \item{feature_annotations}{An optional data.frame of probe annotations, with
-probes as rows and probe annoations in columns.}
+probes as rows and probe annotations in columns.}
 
 \item{threads}{Number of threads to use during alignment. The default is 1.}
 

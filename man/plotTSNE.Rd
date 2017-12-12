@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTSNE.R
 \name{plotTSNE}
 \alias{plotTSNE}
-\title{Plot TSNE}
+\title{Plot t-SNE}
 \usage{
 plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
   reducedDimName = "TSNE", runTSNE = FALSE, use_assay = "logcounts")
@@ -14,18 +14,18 @@ plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
 
 \item{shape}{Shape of the points}
 
-\item{reducedDimName}{TSNE dimension name. The default is PCA.
-The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+\item{reducedDimName}{t-SNE dimension name. The default is TSNE
+The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 
-\item{runTSNE}{Run t-SNE if the reducedDimName doesn't exist. the Default is
+\item{runTSNE}{Run t-SNE if the reducedDimName does not exist. the Default is
 FALSE.}
 
 \item{use_assay}{Indicate which assay to use for t-SNE if you are running it.
 Default is "counts"}
 }
 \value{
-A TSNE plot
+A t-SNE plot
 }
 \description{
-Use this function to plot PCA or tSNE results
+Use this function to plot t-SNE results
 }

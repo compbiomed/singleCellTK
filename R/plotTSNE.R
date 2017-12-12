@@ -1,18 +1,18 @@
-#' Plot TSNE
+#' Plot t-SNE
 #'
-#' Use this function to plot PCA or tSNE results
+#' Use this function to plot t-SNE results
 #'
 #' @param count_data A SCE object
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
-#' @param reducedDimName TSNE dimension name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
-#' @param runTSNE Run t-SNE if the reducedDimName doesn't exist. the Default is
+#' @param reducedDimName t-SNE dimension name. The default is TSNE
+#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
+#' @param runTSNE Run t-SNE if the reducedDimName does not exist. the Default is
 #' FALSE.
 #' @param use_assay Indicate which assay to use for t-SNE if you are running it.
 #' Default is "counts"
 #'
-#' @return A TSNE plot
+#' @return A t-SNE plot
 #' @export plotTSNE
 #'
 plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",

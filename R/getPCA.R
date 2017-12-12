@@ -7,9 +7,10 @@
 #' @param count_data SCtkE object
 #' @param use_assay Indicate which assay to use for PCA. Default is "counts"
 #' @param reducedDimName Store the PCA data with this name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
+#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
-#' @return A SCtkE object with reducedDim "PCA" and pca_variances updated
+#' @return A SCtkE object with the specified reduecedDim and pca_variances
+#' updated
 #' @export getPCA
 #'
 getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
