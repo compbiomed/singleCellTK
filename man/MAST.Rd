@@ -11,7 +11,7 @@ MAST(SCEdata, condition = NULL, interest.level = NULL,
 \arguments{
 \item{SCEdata}{SCESet object}
 
-\item{condition}{select varible (from the colData) that is used for modle}
+\item{condition}{select variable (from the colData) that is used for the model.}
 
 \item{interest.level}{If the condition of interest has more than two factors,
 indicate which level should be used to compare to all other samples.}

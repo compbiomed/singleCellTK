@@ -13,7 +13,7 @@ GSE36552_sce
 }
 \description{
 124 Single-cell transcriptome profiling from embryonic stem cells derived
-from donated human pre-implatation embryos.
+from donated human pre-implantation embryos.
 }
 \examples{
 data("GSE36552_sce")

@@ -27,7 +27,7 @@ Default: "Binary"}
 \item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
 
 \item{reducedDimName}{PCA dimension name. The default is PCA.
-The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
 A Biomarker plot
