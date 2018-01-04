@@ -707,13 +707,33 @@ shinyServer(function(input, output, session) {
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
 
-  #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionUI <- renderUI({
     if (!is.null(vals$counts)){
+      if (input$selectDiffex == "ANOVA") {
+        tagList(
+          selectInput("selectDiffex_condition", "Select Condition(s):",
+                      colnames(colData(vals$counts)), multiple = TRUE)
+        )
+      } else {
+        selectInput("selectDiffex_condition", "Select Condition:", colnames(colData(vals$counts)))
+      }
+    }
+  })
+
+  #For conditions with more than two factors, select the factor of interest
+  output$selectDiffex_conditionlevelUI <- renderUI({
+    if (!is.null(vals$counts)){
       if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
-        selectInput("selectDiffex_conditionofinterest",
-                    "Select Factor of Interest",
-                    unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
+        tagList(
+          selectInput("selectDiffex_conditionofinterest",
+                      "Select Factor of Interest",
+                      unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
+        )
+      } else if (input$selectDiffex == "ANOVA") {
+        tagList(
+          selectInput("anovaCovariates", "Select Additional Covariates:",
+                      colnames(colData(vals$counts)), multiple = TRUE)
+        )
       }
     }
   })
@@ -726,8 +746,13 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runDiffex", {
         #run diffex to get gene list and pvalues
-        vals$diffexgenelist <- scDiffEx(vals$counts, input$selectDiffex_condition,
-                                        input$selectPval, input$selectNGenes, input$applyCutoff,
+        vals$diffexgenelist <- scDiffEx(inSCESet = vals$counts,
+                                        use_assay = input$diffexAssay,
+                                        condition = input$selectDiffex_condition,
+                                        covariates = input$anovaCovariates,
+                                        significance = input$selectPval,
+                                        ntop = input$selectNGenes,
+                                        usesig = input$applyCutoff,
                                         diffexmethod = input$selectDiffex,
                                         clusterRow = input$clusterRows,
                                         clusterCol = input$clusterColumns,
