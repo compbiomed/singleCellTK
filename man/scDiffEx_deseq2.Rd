@@ -4,10 +4,12 @@
 \alias{scDiffEx_deseq2}
 \title{Perform differential expression analysis with DESeq2}
 \usage{
-scDiffEx_deseq2(inSCESet, condition)
+scDiffEx_deseq2(inSCESet, use_assay = "counts", condition)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
+
+\item{use_assay}{Indicate which assay to use. Default is "counts"}
 
 \item{condition}{The name of the condition to use for differential
 expression. Must be a name of a column from colData that contains two labels.

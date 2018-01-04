@@ -4,10 +4,12 @@
 \alias{scDiffEx_limma}
 \title{Perform differential expression analysis with limma}
 \usage{
-scDiffEx_limma(inSCESet, condition)
+scDiffEx_limma(inSCESet, use_assay = "logcounts", condition)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
+
+\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
 
 \item{condition}{The name of the condition to use for differential
 expression. Must be a name of a column from colData that contains two labels.
