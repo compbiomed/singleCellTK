@@ -5,7 +5,7 @@ Version: 0.3.9
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
-    R (>= 3.2),
+    R (>= 3.4),
     SingleCellExperiment
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.

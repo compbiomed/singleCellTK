@@ -194,7 +194,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
   #remove any gene names with empty gene name
   if (any(rownames(countframe) == "")){
     warning("One of the feature names is empty. This can be caused by a problem with your GTF file. The empty feature name will be removed.")
-    countframe <- countframe[rownames(countframe) != "", , drop = F]
+    countframe <- countframe[rownames(countframe) != "", , drop = FALSE]
   }
 
   if (!is.null(sample_annotations)){
@@ -241,8 +241,8 @@ parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_na
   f_fh <- file(featurecount_log, open = "r")
   features <- readLines(f_fh)
   close(f_fh)
-  total_line <- unlist(strsplit(features[grep("Total reads ", features)], " +", perl = T))
-  feature_line <- unlist(strsplit(features[grep("Successfully assigned reads", features)], " +", perl = T))
+  total_line <- unlist(strsplit(features[grep("Total reads ", features)], " +", perl = TRUE))
+  feature_line <- unlist(strsplit(features[grep("Successfully assigned reads", features)], " +", perl = TRUE))
   total_reads <- as.numeric(gsub(",", "", total_line[grep("reads", total_line) + 2]))
   feature_reads <- as.numeric(gsub(",", "", feature_line[grep("reads", feature_line) + 2]))
   #if not null align log
@@ -251,7 +251,7 @@ parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_na
     a_fh <- file(align_log, open = "r")
     align <- readLines(a_fh)
     close(a_fh)
-    map_line <- unlist(strsplit(align[grep("Mapped", align)], " +", perl = T))
+    map_line <- unlist(strsplit(align[grep("Mapped", align)], " +", perl = TRUE))
     mapped_reads <- as.numeric(gsub(",", "", map_line[grep("reads", map_line) - 1]))
     return(data.frame(total_reads = total_reads,
                       reads_mapped = mapped_reads,

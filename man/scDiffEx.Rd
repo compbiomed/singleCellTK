@@ -6,7 +6,7 @@
 \usage{
 scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
   significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
-  clusterRow = TRUE, clusterCol = TRUE, levelofinterest)
+  clusterRow = TRUE, clusterCol = TRUE, levelofinterest = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}

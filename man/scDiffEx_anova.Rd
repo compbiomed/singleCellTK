@@ -13,8 +13,8 @@ scDiffEx_anova(inSCESet, use_assay = "logcounts", condition,
 \item{use_assay}{Indicate which assay to use. Default is "logcounts"}
 
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from colData that contains two labels.
-Required}
+expression. Must be a name of a column from colData that contains at least
+two labels. Required}
 
 \item{covariates}{Additional covariates to add to the model.}
 }
