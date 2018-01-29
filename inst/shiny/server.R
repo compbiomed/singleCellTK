@@ -732,12 +732,21 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         tagList(
+          conditionalPanel(
+            condition = "input.selectDiffex == 'DESeq2'",
+            radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
+                         choiceNames = c("Biomarker (1 vs all)", "Factor of Interest vs. Control Factor"),
+                         choiceValues = c("biomarker", "model"))
+          ),
           selectInput("selectDiffex_conditionofinterest",
                       "Select Factor of Interest",
                       unique(sort(colData(vals$counts)[, input$selectDiffex_condition]))),
-          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
-                       choiceNames = c("Factor vs. Not Factor", "Model"),
-                       choiceValues = c("1vsall","inmodel"))
+          conditionalPanel(
+            condition = "input.selectDiffexConditionMethod == 'model' && input.selectDiffex == 'DESeq2'",
+            selectInput("selectDiffex_controlcondition",
+                        "Select Control Factor",
+                        unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
+          )
         )
       } else if (input$selectDiffex == "ANOVA") {
         tagList(
@@ -771,7 +780,9 @@ shinyServer(function(input, output, session) {
                                         diffexmethod = input$selectDiffex,
                                         clusterRow = input$clusterRows,
                                         clusterCol = input$clusterColumns,
-                                        levelofinterest = input$selectDiffex_conditionofinterest)
+                                        levelofinterest = input$selectDiffex_conditionofinterest,
+                                        analysis_type = input$selectDiffexConditionMethod,
+                                        controlLevel = input$selectDiffex_controlcondition)
         updateSelectInput(session, "colorBar_Condition", selected = input$selectDiffex_condition)
       })
     }

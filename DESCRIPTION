@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.3.9
+Version: 0.4.0
 Author: David Jenkins
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:

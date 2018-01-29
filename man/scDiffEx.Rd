@@ -6,7 +6,8 @@
 \usage{
 scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
   significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
-  clusterRow = TRUE, clusterCol = TRUE, levelofinterest = NULL)
+  clusterRow = TRUE, clusterCol = TRUE, levelofinterest = NULL,
+  analysis_type = NULL, controlLevel = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -39,6 +40,13 @@ analysis. Available options are DESeq2, limma, and ANOVA. Required}
 levelofinterest should contain one factor for condition. The differential
 expression results will compare the factor in levelofinterest to all other
 data.}
+
+\item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
+other samples. Choose "contrast" to compare the levelofinterest to a
+controlLevel.}
+
+\item{controlLevel}{If the condition has more than two lables, controlLevel
+should contain one factor from condition to use as the control.}
 }
 \value{
 A list of differentially expressed genes.
