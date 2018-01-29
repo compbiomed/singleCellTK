@@ -4,14 +4,19 @@
 \alias{scDiffEx_anova}
 \title{Perform ANOVA analysis}
 \usage{
-scDiffEx_anova(inSCESet, condition)
+scDiffEx_anova(inSCESet, use_assay = "logcounts", condition,
+  covariates = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
+\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
+
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from colData that contains two labels.
-Required}
+expression. Must be a name of a column from colData that contains at least
+two labels. Required}
+
+\item{covariates}{Additional covariates to add to the model.}
 }
 \value{
 A data frame of gene names and adjusted p-values

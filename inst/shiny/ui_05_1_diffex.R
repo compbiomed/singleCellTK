@@ -6,11 +6,10 @@ shiny_panel_diffex <- fluidPage(
       sidebarPanel(
         #TODO: Remove DESeq, add edgeR, add more custom options?
         selectInput("diffexAssay", "Select Assay:", currassays),
-        selectInput("selectDiffex", "Select Method:", c("limma", "DESeq",
-                                                        "DESeq2", "ANOVA")),
-        selectInput("selectDiffex_condition", "Select Condition:",
-                    clusterChoice),
+        selectInput("selectDiffex", "Select Method:", c("limma", "DESeq2",
+                                                        "ANOVA")),
         uiOutput("selectDiffex_conditionUI"),
+        uiOutput("selectDiffex_conditionlevelUI"),
         sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
         checkboxInput("applyCutoff", "Apply p-value Cutoff"),
         checkboxInput("clusterRows", "Cluster Heatmap Rows", value = TRUE),
@@ -60,10 +59,6 @@ shiny_panel_diffex <- fluidPage(
           tabPanel(
             "Results Table",
             dataTableOutput("diffextable")
-          ),
-          tabPanel(
-            "Interactive Heatmap",
-            d3heatmapOutput("interactivediffPlot")
           )
         )
       )

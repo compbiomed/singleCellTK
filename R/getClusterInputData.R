@@ -3,8 +3,8 @@
 #' @param count_data A SCE object
 #' @param inputData A string ("Raw Data", "PCA Components", "tSNE Components")
 #' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
-#' @param reducedDimName If clustering on PCA or TSNE data, dimension name.
-#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
+#' @param reducedDimName If clustering on PCA or t-SNE data, dimension name.
+#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
 #' @return Cluster input data
 #' @export getClusterInputData

@@ -14,8 +14,8 @@ getClusterInputData(count_data, inputData, use_assay = "logcounts",
 
 \item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
-\item{reducedDimName}{If clustering on PCA or TSNE data, dimension name.
-The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+\item{reducedDimName}{If clustering on PCA or t-SNE data, dimension name.
+The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
 Cluster input data

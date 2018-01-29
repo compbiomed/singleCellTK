@@ -1,15 +1,15 @@
 #' Plot PCA
 #'
-#' Use this function to plot PCA or tSNE results
+#' Use this function to plot PCA results
 #'
 #' @param count_data A SCE object
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
 #' @param pcX User choice for the first principal component
-#' @param pcY User choice for the second prinicipal component
+#' @param pcY User choice for the second principal component
 #' @param reducedDimName PCA dimension name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
-#' @param runPCA Run PCA if the reducedDimName doesn't exist. the Default is
+#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
+#' @param runPCA Run PCA if the reducedDimName does not exist. the Default is
 #' FALSE.
 #' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
 

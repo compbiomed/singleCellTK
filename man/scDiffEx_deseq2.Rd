@@ -4,14 +4,30 @@
 \alias{scDiffEx_deseq2}
 \title{Perform differential expression analysis with DESeq2}
 \usage{
-scDiffEx_deseq2(inSCESet, condition)
+scDiffEx_deseq2(inSCESet, use_assay = "counts", condition,
+  analysis_type = "biomarker", levelofinterest = NULL,
+  controlLevel = NULL, covariates = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
+\item{use_assay}{Indicate which assay to use. Default is "counts"}
+
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from colData that contains two labels.
-Required}
+expression. Must be a name of a column from colData that contains at least
+two labels. Required}
+
+\item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
+other samples. Choose "contrast" to compare the levelofinterest to a
+controlLevel (see below).}
+
+\item{levelofinterest}{If the condition has more than two labels,
+levelofinterest should contain one factor of interest from condition.}
+
+\item{controlLevel}{If the condition has more than two lables, controlLevel
+should contain one factor from condition to use as the control.}
+
+\item{covariates}{Additional covariates to add to the model.}
 }
 \value{
 A data frame of gene names and adjusted p-values

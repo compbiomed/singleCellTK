@@ -1,15 +1,15 @@
 #' Get t-SNE components for a SCE object
 #'
 #' Selects the 500 most variable genes in the feature count, performs
-#' t-SNE based on them and stores the TSNE values in the reducedDims slot of the
+#' t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
 #' SCE object.
 #'
 #' @param count_data SCE object
 #' @param use_assay Indicate which assay to use for PCA. Default is "counts"
-#' @param reducedDimName Store the tSNE data with this name. The default is
-#' TSNE. The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.
+#' @param reducedDimName Store the t-SNE data with this name. The default is
+#' TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
-#' @return A SCE object with reducedDim "TSNE" updated
+#' @return A SCE object with the specified reducedDim updated
 #' @export getTSNE
 #'
 getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){

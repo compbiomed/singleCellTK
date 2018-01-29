@@ -14,7 +14,7 @@ differentialPower(datamatrix, downmatrix, conditions, genelist = FALSE,
 
 \item{conditions}{A vector of conditions, such as treatment or batch. Passed as colData(SCtkExperiment)$treatment.}
 
-\item{genelist}{Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the oringinal data.}
+\item{genelist}{Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the original data.}
 
 \item{significance}{Significance threshold, a float between 0 and 1 (exclusive).}
 

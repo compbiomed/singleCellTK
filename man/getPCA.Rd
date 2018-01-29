@@ -12,10 +12,11 @@ getPCA(count_data, use_assay = "logcounts", reducedDimName = "PCA")
 \item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
 
 \item{reducedDimName}{Store the PCA data with this name. The default is PCA.
-The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
-A SCtkE object with reducedDim "PCA" and pca_variances updated
+A SCtkE object with the specified reduecedDim and pca_variances
+updated
 }
 \description{
 Selects the 500 most variable genes in the SCE, performs
