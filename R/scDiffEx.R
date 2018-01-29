@@ -20,6 +20,11 @@
 #' levelofinterest should contain one factor for condition. The differential
 #' expression results will compare the factor in levelofinterest to all other
 #' data.
+#' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
+#' other samples. Choose "contrast" to compare the levelofinterest to a
+#' controlLevel.
+#' @param controlLevel If the condition has more than two lables, controlLevel
+#' should contain one factor from condition to use as the control.
 #'
 #' @return A list of differentially expressed genes.
 #' @export scDiffEx
@@ -32,7 +37,7 @@
 scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, clusterRow=TRUE, clusterCol=TRUE,
-                     levelofinterest=NULL){
+                     levelofinterest=NULL, analysis_type=NULL, controlLevel=NULL){
   if(length(condition) == 1){
     in.condition <- droplevels(as.factor(colData(inSCESet)[, condition]))
   } else if (diffexmethod != "ANOVA"){
@@ -43,7 +48,9 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
     diffex.results <- scDiffEx_deseq2(inSCESet = inSCESet,
                                       use_assay = use_assay,
                                       condition = condition,
+                                      analysis_type = analysis_type,
                                       levelofinterest = levelofinterest,
+                                      controlLevel = controlLevel,
                                       covariates = covariates)
   }
   else if (diffexmethod == "limma"){
@@ -147,40 +154,67 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
+#' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
+#' other samples. Choose "contrast" to compare the levelofinterest to a
+#' controlLevel (see below).
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
+#' @param controlLevel If the condition has more than two lables, controlLevel
+#' should contain one factor from condition to use as the control.
 #' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export scDiffEx_deseq2
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
-                            levelofinterest=NULL, covariates=NULL){
+                            analysis_type="biomarker", levelofinterest=NULL,
+                            controlLevel=NULL, covariates=NULL){
   cnts <- assay(inSCESet, use_assay)
   annot_data <- colData(inSCESet)[, c(condition, covariates), drop=FALSE]
-  if(is.null(covariates)) {
-    dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
-                                          colData = annot_data,
-                                          design = as.formula(paste0("~", condition)))
-  } else {
-    dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
-                                          colData = annot_data,
-                                          design = as.formula(paste0("~",c(condition, covariates),
-                                                                     collapse = "+")))
+
+  if (length(levels(annot_data[, condition])) > 2){
+    if(analysis_type == "biomarker"){
+      if(is.null(levelofinterest)){
+        stop("You must specify a level of interest for biomarker analysis.")
+      } else {
+        annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
+                                                 levelofinterest,
+                                                 paste0("not_", levelofinterest)),
+                                          levels = c(paste0("not_", levelofinterest),
+                                                     levelofinterest))
+      }
+    } else if (analysis_type == "contrast"){
+      if(is.null(levelofinterest) || is.null(controlLevel)){
+        stop("You must specify a level of interest and a control level for contrast analysis.")
+      }
+    } else {
+      stop("Invalid analysis type: ", analysis_type)
+    }
   }
+
+  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
+                                        colData = annot_data,
+                                        design = as.formula(
+                                          paste0("~", c(condition, covariates),
+                                                 collapse = "+")))
   dds <- DESeq2::DESeq(dds)
-  if(is.null(levelofinterest)){
+  if(is.null(levelofinterest) && is.null(controlLevel)){
     res <- DESeq2::results(dds, contrast=c(condition,
-                                           levels(colData(inSCESet)[, c(condition)])[2],
-                                           levels(colData(inSCESet)[, c(condition)])[1]))
+                                           levels(annot_data[,condition])[2],
+                                           levels(annot_data[,condition])[1]))
     res <- DESeq2::lfcShrink(dds, coef=2)
+  } else if(is.null(controlLevel)){
+    res <- DESeq2::results(dds, contrast=c(condition,
+                                           levelofinterest,
+                                           levels(annot_data[,condition])[1]))
+    res <- DESeq2::lfcShrink(dds, coef=which(levels(annot_data[,condition]) == levelofinterest))
   } else {
     res <- DESeq2::results(dds, contrast=c(condition,
                                            levelofinterest,
-                                           levels(colData(inSCESet)[, c(condition)])[1]))
+                                           controlLevel))
     res <- DESeq2::lfcShrink(dds, coef=which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
   }
-  
+
   return(data.frame(res))
 }
 
