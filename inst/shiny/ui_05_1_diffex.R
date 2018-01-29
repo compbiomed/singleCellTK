@@ -59,10 +59,6 @@ shiny_panel_diffex <- fluidPage(
           tabPanel(
             "Results Table",
             dataTableOutput("diffextable")
-          ),
-          tabPanel(
-            "Interactive Heatmap",
-            d3heatmapOutput("interactivediffPlot")
           )
         )
       )

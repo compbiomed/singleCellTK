@@ -32,32 +32,32 @@
 scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, clusterRow=TRUE, clusterCol=TRUE,
-                     levelofinterest){
+                     levelofinterest=NULL){
   if(length(condition) == 1){
     in.condition <- droplevels(as.factor(colData(inSCESet)[, condition]))
   } else if (diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
 
-  if (diffexmethod != "ANOVA"){
-    if (length(levels(in.condition)) < 2){
-      stop("You must submit a condition with more than 1 labels: ", condition,
-           " has ", length(levels(in.condition)), " labels")
-    } else if (length(levels(in.condition)) > 2){
-      in.condition <- droplevels(as.factor(ifelse(in.condition == levelofinterest,
-                                                  levelofinterest,
-                                                  paste("not", levelofinterest, sep = ""))))
-    }
-  }
-
   if (diffexmethod == "DESeq2"){
-    diffex.results <- scDiffEx_deseq2(inSCESet, use_assay = use_assay, in.condition)
+    diffex.results <- scDiffEx_deseq2(inSCESet = inSCESet,
+                                      use_assay = use_assay,
+                                      condition = condition,
+                                      levelofinterest = levelofinterest,
+                                      covariates = covariates)
   }
   else if (diffexmethod == "limma"){
-    diffex.results <- scDiffEx_limma(inSCESet, use_assay = use_assay, in.condition)
+    diffex.results <- scDiffEx_limma(inSCESet = inSCESet,
+                                     use_assay = use_assay,
+                                     condition = condition,
+                                     levelofinterest = levelofinterest,
+                                     covariates = covariates)
   }
   else if (diffexmethod == "ANOVA"){
-    diffex.results <- scDiffEx_anova(inSCESet, use_assay = use_assay, condition, covariates)
+    diffex.results <- scDiffEx_anova(inSCESet = inSCESet,
+                                     use_assay = use_assay,
+                                     condition = condition,
+                                     covariates = covariates)
   }
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
@@ -111,9 +111,9 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
   if (is.null(annotationColors)){
     topha <- NULL
   } else if (annotationColors == "auto") {
-    colors <- RColorBrewer::brewer.pal(8, "Set1")
+    colors <- RColorBrewer::brewer.pal(9, "Set1")
     cond_levels <- unique(colData(inSCESet)[, condition])
-    if (length(cond_levels) > 8){
+    if (length(cond_levels) > 9){
       stop("Too many levels in condition for auto coloring")
     }
     col <- list()
@@ -138,31 +138,6 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
   return(heatmap)
 }
 
-#' Plot Interactive Differential Expression
-#'
-#' @param inSCESet Input data object that contains the data to be plotted.
-#' Required
-#' @param condition The condition used for plotting the heatmap. Required
-#' @param geneList The list of genes to put in the heatmap. Required
-#' @param clusterRow Cluster the rows. The default is TRUE
-#' @param clusterCol Cluster the columns. The default is TRUE
-#'
-#' @return A d3heatmap object is plotted
-#' @export plot_d3DiffEx
-#'
-plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
-                          clusterCol=TRUE){
-  diffex.annotation <- data.frame(colData(inSCESet)[, condition])
-  colnames(diffex.annotation) <- condition
-  topha <- ComplexHeatmap::HeatmapAnnotation(df = diffex.annotation,
-                                             height = unit(0.333, "cm"))
-
-  d3heatmap::d3heatmap(t(scale(t(log2(assay(inSCESet, "counts") + 1)[geneList, ]))),
-                       Rowv = clusterRow,
-                       Colv = clusterCol,
-                       ColSideColors = RColorBrewer::brewer.pal(8, "Set1")[as.numeric(factor(diffex.annotation[, 1]))])
-}
-
 #' Perform differential expression analysis with DESeq2
 #'
 #' Returns a data frame of gene names and adjusted p-values
@@ -170,21 +145,42 @@ plot_d3DiffEx <- function(inSCESet, condition, geneList, clusterRow=TRUE,
 #' @param inSCESet Input SCtkExperiment object. Required
 #' @param use_assay Indicate which assay to use. Default is "counts"
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains two labels.
-#' Required
+#' expression. Must be a name of a column from colData that contains at least
+#' two labels. Required
+#' @param levelofinterest If the condition has more than two labels,
+#' levelofinterest should contain one factor of interest from condition.
+#' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export scDiffEx_deseq2
 #'
-scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition){
+scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
+                            levelofinterest=NULL, covariates=NULL){
   cnts <- assay(inSCESet, use_assay)
-  annot_data <- data.frame(condition)
-  colnames(annot_data) <- "condition"
-  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
-                                        colData = annot_data,
-                                        design = ~ condition)
+  annot_data <- colData(inSCESet)[, c(condition, covariates), drop=FALSE]
+  if(is.null(covariates)) {
+    dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
+                                          colData = annot_data,
+                                          design = as.formula(paste0("~", condition)))
+  } else {
+    dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
+                                          colData = annot_data,
+                                          design = as.formula(paste0("~",c(condition, covariates),
+                                                                     collapse = "+")))
+  }
   dds <- DESeq2::DESeq(dds)
-  res <- DESeq2::results(dds)
+  if(is.null(levelofinterest)){
+    res <- DESeq2::results(dds, contrast=c(condition,
+                                           levels(colData(inSCESet)[, c(condition)])[2],
+                                           levels(colData(inSCESet)[, c(condition)])[1]))
+    res <- DESeq2::lfcShrink(dds, coef=2)
+  } else {
+    res <- DESeq2::results(dds, contrast=c(condition,
+                                           levelofinterest,
+                                           levels(colData(inSCESet)[, c(condition)])[1]))
+    res <- DESeq2::lfcShrink(dds, coef=which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
+  }
+  
   return(data.frame(res))
 }
 
@@ -195,18 +191,46 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition){
 #' @param inSCESet Input SCtkExperiment object. Required
 #' @param use_assay Indicate which assay to use. Default is "logcounts"
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains two labels.
-#' Required
+#' expression. Must be a name of a column from colData that contains at least
+#' two labels. Required
+#' @param levelofinterest If the condition has more than two labels,
+#' levelofinterest should contain one factor of interest from condition.
+#' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export scDiffEx_limma
 #'
-scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition){
-  design <- stats::model.matrix(~factor(condition))
+scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
+                           levelofinterest=NULL, covariates=NULL){
+  condition_factor <- factor(colData(inSCESet)[, c(condition)])
+  if (length(levels(condition_factor)) < 2){
+    stop("Problem with limma condition")
+  }
+  if(is.null(covariates)) {
+    design <- model.matrix(as.formula(paste0("~", paste0(c(condition),
+                                                      collapse = "+"))),
+                        data = data.frame(colData(inSCESet)[, c(condition),
+                                                            drop = FALSE]))
+  } else {
+    design <- model.matrix(as.formula(paste0("~", paste0(c(condition, covariates),
+                                                      collapse = "+"))),
+                        data = data.frame(colData(inSCESet)[, c(condition,
+                                                                covariates),
+                                                            drop = FALSE]))
+  }
   fit <- limma::lmFit(assay(inSCESet, use_assay), design)
   ebayes <- limma::eBayes(fit)
-  topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
-                              number = nrow(inSCESet))
+  if (length(levels(condition_factor)) == 2){
+    topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+                                number = nrow(inSCESet))
+  } else {
+    if(is.null(levelofinterest)){
+      stop("Level of interest required.")
+    }
+    topGenes <- limma::topTable(ebayes, coef = which(levels(condition_factor) == levelofinterest),
+                                adjust = "fdr", number = nrow(inSCESet))
+  }
+ 
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }
@@ -218,8 +242,8 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition){
 #' @param inSCESet Input SCtkExperiment object. Required
 #' @param use_assay Indicate which assay to use. Default is "logcounts"
 #' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains two labels.
-#' Required
+#' expression. Must be a name of a column from colData that contains at least
+#' two labels. Required
 #' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values

@@ -111,8 +111,9 @@ MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variabl
 
 ```{r maits_heatmap}
 plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
-                 geneList = mast_results$Gene,
-                 annotationColors = "auto")
+                 geneList = mast_results$Gene[1:100],
+                 annotationColors = "auto",
+            displayRowLabels = FALSE, displayColumnLabels = FALSE)
 ```
 
 ### Pathway Activity with GSVA
@@ -154,8 +155,8 @@ pheno = pData(dat)
 edata = exprs(dat)
 bladder_sctke <- createSCE(countfile = edata,
                            annotfile = pheno,
-                           inputdataframes = T,
-                           create_logcounts = F)
+                           inputdataframes = TRUE,
+                           create_logcounts = FALSE)
 assay(bladder_sctke, "microarray") <- assay(bladder_sctke, "counts")
 assay(bladder_sctke, "counts") <- NULL
 assay(bladder_sctke, "combat") <- ComBat_SCE(SCEdata = bladder_sctke,

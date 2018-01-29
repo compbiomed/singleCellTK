@@ -56,12 +56,12 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     annotin <- annotfile
     featurein <- featurefile
   } else{
-    countsin <- utils::read.table(countfile, sep = "\t", header = T, row.names = 1)
+    countsin <- utils::read.table(countfile, sep = "\t", header = TRUE, row.names = 1)
     if (!is.null(annotfile)){
-      annotin <- utils::read.table(annotfile, sep = "\t", header = T, row.names = 1)
+      annotin <- utils::read.table(annotfile, sep = "\t", header = TRUE, row.names = 1)
     }
     if (!is.null(featurefile)){
-      featurein <- utils::read.table(featurefile, sep = "\t", header = T, row.names = 1)
+      featurein <- utils::read.table(featurefile, sep = "\t", header = TRUE, row.names = 1)
     }
   }
   if (is.null(annotfile)){

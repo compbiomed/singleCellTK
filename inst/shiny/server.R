@@ -715,7 +715,14 @@ shinyServer(function(input, output, session) {
                       colnames(colData(vals$counts)), multiple = TRUE)
         )
       } else {
-        selectInput("selectDiffex_condition", "Select Condition:", colnames(colData(vals$counts)))
+        tagList(
+          selectInput("selectDiffex_condition",
+                      "Select Condition:",
+                      colnames(colData(vals$counts))),
+          selectInput("selectDiffex_covariates",
+                      "Select Additional Covariates:",
+                      colnames(colData(vals$counts)), multiple = TRUE)
+        )
       }
     }
   })
@@ -727,7 +734,10 @@ shinyServer(function(input, output, session) {
         tagList(
           selectInput("selectDiffex_conditionofinterest",
                       "Select Factor of Interest",
-                      unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
+                      unique(sort(colData(vals$counts)[, input$selectDiffex_condition]))),
+          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
+                       choiceNames = c("Factor vs. Not Factor", "Model"),
+                       choiceValues = c("1vsall","inmodel"))
         )
       } else if (input$selectDiffex == "ANOVA") {
         tagList(
@@ -746,10 +756,15 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runDiffex", {
         #run diffex to get gene list and pvalues
+        if(input$selectDiffex == "ANOVA"){
+          use_covariates <- input$anovaCovariates
+        } else {
+          use_covariates <- input$selectDiffex_covariates
+        }
         vals$diffexgenelist <- scDiffEx(inSCESet = vals$counts,
                                         use_assay = input$diffexAssay,
                                         condition = input$selectDiffex_condition,
-                                        covariates = input$anovaCovariates,
+                                        covariates = use_covariates,
                                         significance = input$selectPval,
                                         ntop = input$selectNGenes,
                                         usesig = input$applyCutoff,
@@ -815,15 +830,6 @@ shinyServer(function(input, output, session) {
                        columnTitle = input$heatmapColumnsTitle))
     }
   }, height = 600)
-
-  #Render the interactive heatmap
-  output$interactivediffPlot <- renderD3heatmap({
-    if (!is.null(vals$diffexgenelist)){
-      plot_d3DiffEx(vals$counts, input$selectDiffex_condition,
-                    rownames(vals$diffexgenelist), clusterRow = input$clusterRows,
-                    clusterCol = input$clusterColumns)
-    }
-  })
 
   #Create the differential expression results table
   output$diffextable <- renderDataTable({

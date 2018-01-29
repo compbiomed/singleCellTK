@@ -68,7 +68,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
       stop("You must specify a condition for Violin plot")
     }
     gsva_res_t <- data.frame(t(gsva_data))
-    cond <- apply(colData(SCEdata)[, condition, drop = F], 1, paste, collapse = "_")
+    cond <- apply(colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
     gsva_res_t[, paste(condition, collapse = "_")] <- cond
     gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(condition, collapse = "_"),
                                     variable.name = "pathway")
@@ -83,7 +83,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
     topha <- NULL
     if (length(condition) > 0){
       colors <- RColorBrewer::brewer.pal(8, "Set1")
-      cond <- apply(colData(SCEdata)[, condition, drop = F], 1, paste, collapse = "_")
+      cond <- apply(colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
       cond_levels <- unique(cond)
       if (length(cond_levels) < 8){
         col <- list()
