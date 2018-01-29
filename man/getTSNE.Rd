@@ -11,14 +11,14 @@ getTSNE(count_data, use_assay = "logcounts", reducedDimName = "TSNE")
 
 \item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
 
-\item{reducedDimName}{Store the tSNE data with this name. The default is
-TSNE. The toolkit will store data with the pattern <ASSSAY>_<ALGORITHM>.}
+\item{reducedDimName}{Store the t-SNE data with this name. The default is
+TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
-A SCE object with reducedDim "TSNE" updated
+A SCE object with the specified reducedDim updated
 }
 \description{
 Selects the 500 most variable genes in the feature count, performs
-t-SNE based on them and stores the TSNE values in the reducedDims slot of the
+t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
 SCE object.
 }

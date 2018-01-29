@@ -4,14 +4,22 @@
 \alias{scDiffEx_limma}
 \title{Perform differential expression analysis with limma}
 \usage{
-scDiffEx_limma(inSCESet, condition)
+scDiffEx_limma(inSCESet, use_assay = "logcounts", condition,
+  levelofinterest = NULL, covariates = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
+\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
+
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from colData that contains two labels.
-Required}
+expression. Must be a name of a column from colData that contains at least
+two labels. Required}
+
+\item{levelofinterest}{If the condition has more than two labels,
+levelofinterest should contain one factor of interest from condition.}
+
+\item{covariates}{Additional covariates to add to the model.}
 }
 \value{
 A data frame of gene names and adjusted p-values

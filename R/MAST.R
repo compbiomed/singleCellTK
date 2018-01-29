@@ -5,7 +5,7 @@
 #' @param SCEdata SCESet object
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
-#' @param condition select varible (from the colData) that is used for modle
+#' @param condition select variable (from the colData) that is used for the model.
 #' @param interest.level If the condition of interest has more than two factors,
 #' indicate which level should be used to compare to all other samples.
 #' @param freq_expressed Filter genes that are expressed in at least this

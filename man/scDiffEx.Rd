@@ -4,15 +4,21 @@
 \alias{scDiffEx}
 \title{Create a heatmap for differential expression analysis}
 \usage{
-scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
-  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE,
-  displayRowLabels = TRUE, levelofinterest)
+scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
+  significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
+  clusterRow = TRUE, clusterCol = TRUE, levelofinterest = NULL,
+  analysis_type = NULL, controlLevel = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
+\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
+
 \item{condition}{The name of the condition to use for differential
 expression. Required}
+
+\item{covariates}{Additional covariates to add to the model. Currently only
+supported for ANOVA. Default is NULL}
 
 \item{significance}{FDR corrected significance cutoff for differentially
 expressed genes. Required}
@@ -24,19 +30,23 @@ heatmap. Required}
 up to ntop genes. Required}
 
 \item{diffexmethod}{The method for performing differential expression
-analyis. Available options are DESeq, DESeq2, and limma. Required}
+analysis. Available options are DESeq2, limma, and ANOVA. Required}
 
 \item{clusterRow}{Cluster the rows. The default is TRUE}
 
 \item{clusterCol}{Cluster the columns. The default is TRUE}
 
-\item{displayRowLabels}{Display the row labels on the heatmap. The default
-is TRUE.}
-
 \item{levelofinterest}{If the condition has more than two labels,
 levelofinterest should contain one factor for condition. The differential
 expression results will compare the factor in levelofinterest to all other
 data.}
+
+\item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
+other samples. Choose "contrast" to compare the levelofinterest to a
+controlLevel.}
+
+\item{controlLevel}{If the condition has more than two lables, controlLevel
+should contain one factor from condition to use as the control.}
 }
 \value{
 A list of differentially expressed genes.
