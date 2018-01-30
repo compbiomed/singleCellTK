@@ -3,6 +3,11 @@ Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
 Version: 0.4.0
 Author: David Jenkins
+Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
+             person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
+             person(given=c("Emma"), family="Briars", email="tfaits@bu.edu", role=c("aut")),
+             person(given=c("Sebastian"), family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
+             person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut")))
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
     R (>= 3.4),

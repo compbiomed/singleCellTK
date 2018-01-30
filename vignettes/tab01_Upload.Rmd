@@ -29,7 +29,7 @@ vignette: >
 
 Intro
 
-# MAITS Example
+# Example
 
 MAITS intro
 
