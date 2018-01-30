@@ -183,6 +183,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                                           levels = c(paste0("not_", levelofinterest),
                                                      levelofinterest))
       }
+      controlLevel <- NULL
     } else if (analysis_type == "contrast"){
       if(is.null(levelofinterest) || is.null(controlLevel)){
         stop("You must specify a level of interest and a control level for contrast analysis.")
@@ -190,6 +191,9 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
     } else {
       stop("Invalid analysis type: ", analysis_type)
     }
+  } else {
+    levelofinterest <- NULL
+    controlLevel <- NULL
   }
 
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
