@@ -1,5 +1,5 @@
 ---
-title: "Processing and Visualizing Data in the Single Cell Toolkit"
+title: "Aligning and Quantifying scRNA-Seq Data"
 author:
 - name: David Jenkins
   affiliation: 
