@@ -1,0 +1,34 @@
+template:
+  params:
+    bootswatch: yeti
+
+navbar:
+  title: "singleCellTK"
+  left:
+    - text: "Interactive Shiny Analysis"
+      menu:
+        - text: "1: Upload"
+          href: articles/tab01_Upload.html
+        - text: "2: Data Summary and Filtering"
+          href: articles/tab02_Data-Summary-and-Filtering.html
+        - text: "3: Dimensionality Reduction and Clustering"
+          href: articles/tab03_Dimensionality-Reduction-and-Clustering.html
+        - text: "4: Batch Correction"
+          href: articles/tab04_Batch-Correction.html
+        - text: "5: Differential Expression"
+          href: articles/tab05_Differential-Expression.html
+        - text: "6: Pathway Activity Analysis"
+          href: articles/tab06_Pathway-Activity-Analysis.html
+        - text: "7: Sample Size"
+          href: articles/tab07_Sample-Size.html
+    - text: "Command Line Analysis"
+      menu:
+        - text: "Aligning and Quantifying scRNA-Seq Data"
+          href: articles/Aligning_and_Quantifying_scRNA-Seq_Data.html
+        - text: "Processing and Visualizing Data"
+          href: articles/Processing_and_Visualizing_Data_in_the_SingleCellTK.html
+    - text: "Reference"
+      href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/compbiomed/singleCellTK
