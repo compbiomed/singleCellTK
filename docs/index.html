@@ -104,11 +104,27 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>singleCellTK is under development. You can install the development version from github:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</code></pre></div>
 <blockquote>
-<p>Note: Some package dependencies require Bioconductor v3.4, <a href="https://bioconductor.org/install/" class="uri">https://bioconductor.org/install/</a></p>
+<p>Note: Some package dependencies require Bioconductor v3.6, <a href="https://bioconductor.org/install/" class="uri">https://bioconductor.org/install/</a></p>
 </blockquote>
-<pre><code><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github"># install.packages("devtools")
-devtools::install_github("compbiomed/singleCellTK")</a></code></pre>
+<div id="troubleshooting-installation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#troubleshooting-installation" class="anchor"></a>Troubleshooting Installation</h4>
+<p>For the majority of users, the commands above will install the latest version of the singleCellTK without any errors. Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">"https://bioconductor.org/biocLite.R"</span>)
+<span class="kw">biocVersion</span>()</code></pre></div>
+<p>If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">biocLite</span>(<span class="st">"BiocUpgrade"</span>)</code></pre></div>
+<p>After you install Bioconductor 3.6 or higher, you should be able to install the toolkit using <code><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">devtools::install_github("compbiomed/singleCellTK")</a></code>. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">biocValid</span>()</code></pre></div>
+<p>If the command above does not return <code>TRUE</code>, run the following command to update your R packages:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">biocLite</span>()</code></pre></div>
+<p>Then, try to install the toolkit again:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</code></pre></div>
+<p>If you still encounter an error, please <a href="mailto:dfj@bu.edu">contact us</a> and we’d be happy to help.</p>
+</div>
 </div>
 <div id="develop-singlecelltk" class="section level2">
 <h2 class="hasAnchor">
