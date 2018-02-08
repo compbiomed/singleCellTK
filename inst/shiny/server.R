@@ -303,6 +303,27 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  observeEvent(input$orgOrganism, {
+    library(input$orgOrganism, character.only = TRUE)
+    indb <- get(paste(input$orgOrganism))
+    output$orgConvertColumns <- renderUI({
+      tagList(
+        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
+        selectInput("orgToCol", "Select To Annotation:", columns(indb))
+      )
+    })
+  })
+
+  observeEvent(input$convertGenes, {
+    vals$counts <- convert_gene_ids(inSCESet = vals$counts,
+                                    in_symbol = input$orgFromCol,
+                                    out_symbol = input$orgToCol,
+                                    database = input$orgOrganism)
+    updateGeneNames()
+    vals$diffexgenelist <- NULL
+    vals$gsva_res <- NULL
+  })
+
   #Filter the selected features
   observeEvent(input$runFilterFeature, {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
