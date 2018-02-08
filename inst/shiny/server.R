@@ -724,6 +724,17 @@ shinyServer(function(input, output, session) {
     h2(vals$combatstatus)
   })
 
+  output$combatBoxplot <- renderPlot({
+    if (!is.null(vals$counts) & 
+        !is.null(input$combatBatchVar) & 
+        length(input$combatConditionVar) == 1){
+      plotBatchVariance(inSCESet = vals$counts,
+                        use_assay = input$combatAssay,
+                        batch = input$combatBatchVar,
+                        condition = input$combatConditionVar)
+    }
+  }, height = 600)
+  
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
