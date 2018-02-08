@@ -45,7 +45,7 @@ data.}
 other samples. Choose "contrast" to compare the levelofinterest to a
 controlLevel.}
 
-\item{controlLevel}{If the condition has more than two lables, controlLevel
+\item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}
 }
 \value{

@@ -23,7 +23,7 @@
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
 #' controlLevel.
-#' @param controlLevel If the condition has more than two lables, controlLevel
+#' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #'
 #' @return A list of differentially expressed genes.
@@ -159,7 +159,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' controlLevel (see below).
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
-#' @param controlLevel If the condition has more than two lables, controlLevel
+#' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #' @param covariates Additional covariates to add to the model.
 #'
@@ -268,7 +268,7 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
     topGenes <- limma::topTable(ebayes, coef = which(levels(condition_factor) == levelofinterest),
                                 adjust = "fdr", number = nrow(inSCESet))
   }
- 
+
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }

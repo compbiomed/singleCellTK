@@ -49,7 +49,8 @@ Imports:
     shiny,
     shinyjs,
     sva,
-    reshape2
+    reshape2,
+    AnnotationDbi
 RoxygenNote: 6.0.1
 Suggests:
     testthat,
@@ -57,5 +58,6 @@ Suggests:
     BiocStyle,
     knitr,
     bladderbatch,
-    rmarkdown
+    rmarkdown,
+    org.Mm.eg.db
 VignetteBuilder: knitr
