@@ -641,6 +641,19 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observe({
+    if (!is.null(vals$original)){
+      if(input$dimRedPlotMethod == "PCA"){
+        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
+        if (!is.null(reducedDim(vals$counts, pcadimname))) {
+          curr_pcs <- colnames(reducedDim(vals$counts, "PCA_counts"))
+          updateSelectInput(session, "pcX", choices=curr_pcs, selected = curr_pcs[1])
+          updateSelectInput(session, "pcY", choices=curr_pcs, selected = curr_pcs[2])
+        }
+      }
+    }
+  })
+
   observeEvent(input$reRunTSNE, {
     if (is.null(vals$original)){
       alert("Warning: Upload data first!")
