@@ -170,7 +170,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                             analysis_type="biomarker", levelofinterest=NULL,
                             controlLevel=NULL, covariates=NULL){
   cnts <- assay(inSCESet, use_assay)
-  annot_data <- colData(inSCESet)[, c(condition, covariates), drop=FALSE]
+  annot_data <- colData(inSCESet)[, c(condition, covariates), drop = FALSE]
 
   if (length(levels(annot_data[, condition])) > 2){
     if(analysis_type == "biomarker"){
@@ -203,20 +203,20 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                                                  collapse = "+")))
   dds <- DESeq2::DESeq(dds)
   if(is.null(levelofinterest) && is.null(controlLevel)){
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levels(annot_data[,condition])[2],
-                                           levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef=2)
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levels(annot_data[,condition])[2],
+                                             levels(annot_data[,condition])[1]))
+    res <- DESeq2::lfcShrink(dds, coef = 2)
   } else if(is.null(controlLevel)){
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levelofinterest,
-                                           levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef=which(levels(annot_data[,condition]) == levelofinterest))
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levelofinterest,
+                                             levels(annot_data[,condition])[1]))
+    res <- DESeq2::lfcShrink(dds, coef = which(levels(annot_data[,condition]) == levelofinterest))
   } else {
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levelofinterest,
-                                           controlLevel))
-    res <- DESeq2::lfcShrink(dds, coef=which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levelofinterest,
+                                             controlLevel))
+    res <- DESeq2::lfcShrink(dds, coef = which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
   }
 
   return(data.frame(res))

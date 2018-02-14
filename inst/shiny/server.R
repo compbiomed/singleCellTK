@@ -315,13 +315,15 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$convertGenes, {
-    vals$counts <- convert_gene_ids(inSCESet = vals$counts,
-                                    in_symbol = input$orgFromCol,
-                                    out_symbol = input$orgToCol,
-                                    database = input$orgOrganism)
-    updateGeneNames()
-    vals$diffexgenelist <- NULL
-    vals$gsva_res <- NULL
+    withBusyIndicatorServer("convertGenes", {
+      vals$counts <- convert_gene_ids(inSCESet = vals$counts,
+                                      in_symbol = input$orgFromCol,
+                                      out_symbol = input$orgToCol,
+                                      database = input$orgOrganism)
+      updateGeneNames()
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
+    })
   })
 
   #Filter the selected features
@@ -647,8 +649,10 @@ shinyServer(function(input, output, session) {
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (!is.null(reducedDim(vals$counts, pcadimname))) {
           curr_pcs <- colnames(reducedDim(vals$counts, "PCA_counts"))
-          updateSelectInput(session, "pcX", choices=curr_pcs, selected = curr_pcs[1])
-          updateSelectInput(session, "pcY", choices=curr_pcs, selected = curr_pcs[2])
+          updateSelectInput(session, "pcX", choices = curr_pcs,
+                            selected = curr_pcs[1])
+          updateSelectInput(session, "pcY", choices = curr_pcs,
+                            selected = curr_pcs[2])
         }
       }
     }
@@ -662,7 +666,8 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("reRunTSNE", {
         vals$counts <- getTSNE(count_data = vals$counts,
                                use_assay = input$dimRedAssaySelect,
-                               reducedDimName = paste0("TSNE", "_", input$dimRedAssaySelect))
+                               reducedDimName = paste0("TSNE", "_",
+                                                       input$dimRedAssaySelect))
         updateReddimInputs()
       })
     }
@@ -676,7 +681,8 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("reRunPCA", {
         vals$counts <- getPCA(count_data = vals$counts,
                               use_assay = input$dimRedAssaySelect,
-                              reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+                              reducedDimName = paste0("PCA", "_",
+                                                      input$dimRedAssaySelect))
         updateReddimInputs()
       })
     }
@@ -738,8 +744,8 @@ shinyServer(function(input, output, session) {
   })
 
   output$combatBoxplot <- renderPlot({
-    if (!is.null(vals$counts) & 
-        !is.null(input$combatBatchVar) & 
+    if (!is.null(vals$counts) &
+        !is.null(input$combatBatchVar) &
         length(input$combatConditionVar) == 1){
       plotBatchVariance(inSCESet = vals$counts,
                         use_assay = input$combatAssay,
@@ -747,7 +753,7 @@ shinyServer(function(input, output, session) {
                         condition = input$combatConditionVar)
     }
   }, height = 600)
-  
+
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------

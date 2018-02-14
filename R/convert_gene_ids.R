@@ -10,10 +10,22 @@
 #' @param in_symbol The input symbol type
 #' @param out_symbol The output symbol type
 #' @param database The org.*.eg.db database to use. The default is org.Hs.eg.db
-#' 
+#'
 #' @return A SCtkExperiment with converted gene IDs.
-#' 
+#'
 #' @export
+#' @examples
+#' if(requireNamespace("org.Mm.eg.db", quietly = TRUE)) {
+#'   #convert mouse gene symbols to ensembl IDs
+#'   library("org.Mm.eg.db")
+#'   sample(rownames(GSE60361_subset_sce), 50)
+#'   GSE60361_subset_symbol <- convert_gene_ids(inSCESet = GSE60361_subset_sce,
+#'                                              in_symbol = "SYMBOL",
+#'                                              out_symbol = "ENSEMBL",
+#'                                              database = "org.Mm.eg.db")
+#'   sample(rownames(GSE60361_subset_symbol), 50)
+#' }
+#'
 convert_gene_ids <- function(inSCESet, in_symbol, out_symbol,
                              database="org.Hs.eg.db"){
   if(!(database %in% c("org.Ag.eg.db","org.At.tair.db","org.Bt.eg.db",
@@ -23,7 +35,7 @@ convert_gene_ids <- function(inSCESet, in_symbol, out_symbol,
     "org.Rn.eg.db","org.Sc.sgd.db","org.Ss.eg.db","org.Xl.eg.db"))){
     stop("The database you want to use, ", database, ", is not supported")
   }
-  if(!(database %in% as.character(grep("^org\\.", installed.packages()[, "Package"], value=T)))){
+  if(!(database %in% as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE)))){
     stop("The database you want to use, ", database, ", is not installed.")
   }
   if(!(database %in% (.packages()))){
@@ -38,7 +50,7 @@ convert_gene_ids <- function(inSCESet, in_symbol, out_symbol,
   if(any(duplicated(oldids)) | any(is.na(oldids))){
     stop("problem with input IDs, duplicates or NAs found")
   }
-  res <- AnnotationDbi::select(indb, keys=oldids, columns=c(out_symbol),
+  res <- AnnotationDbi::select(indb, keys = oldids, columns = c(out_symbol),
                                keytype = in_symbol)
   if(any(is.na(res[,out_symbol]))){
     message(sum(is.na(res[,out_symbol])), " ", out_symbol ,

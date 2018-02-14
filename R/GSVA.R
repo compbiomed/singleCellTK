@@ -1,4 +1,4 @@
-.myenv <- new.env(parent=emptyenv())
+.myenv <- new.env(parent = emptyenv())
 
 #' GSVA_sce
 #'
@@ -31,7 +31,7 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
       gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), biomarker, ...)
     }
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
-    data("c2BroadSets", package="GSVAdata", envir=.myenv)
+    data("c2BroadSets", package = "GSVAdata", envir = .myenv)
     c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathway_names) {
