@@ -4,10 +4,15 @@
 \alias{summarizeTable}
 \title{Summarize SCtkExperiment}
 \usage{
-summarizeTable(indata)
+summarizeTable(indata, use_assay = "counts", expression_cutoff = 1700)
 }
 \arguments{
 \item{indata}{Input SCtkExperiment}
+
+\item{use_assay}{Indicate which assay to summarize. Default is "counts"}
+
+\item{expression_cutoff}{Count number of samples with fewer than
+expression_cutoff genes. The default is 1700.}
 }
 \value{
 A data.frame object of summary metrics.

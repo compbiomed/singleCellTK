@@ -55,7 +55,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     colnames(bio_df)[2] <- "expression"
     l$Sample <- as.character(bio_df$sample)
     l$expression <- bio_df$expression
-    c <- assay(count_data, "counts")[c(gene_name), ]
+    c <- assay(count_data, use_assay)[c(gene_name), ]
     percent <- round(100 * sum(c > 0) / length(c), 2)
     if (visual == "PCA"){
       if (binary == "Binary"){
