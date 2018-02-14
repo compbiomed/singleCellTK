@@ -28,7 +28,10 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
       count_data <- getPCA(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
     axis_df <- data.frame(reducedDim(count_data, reducedDimName))
-    variances <- pca_variances(count_data)$percentVar
+    variances <- NULL
+    if (class(count_data) == "SCtkExperiment"){
+      variances <- pca_variances(count_data)
+    }
   }
   if (visual == "tSNE"){
     if (is.null(reducedDim(count_data, reducedDimName))) {
@@ -40,7 +43,10 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     gene <- gene[1:9]
   }
   for (i in 1:length(gene)){
-    bio_df <- getBiomarker(count_data, gene[i], binary)
+    bio_df <- getBiomarker(count_data = count_data,
+                           gene = gene[i],
+                           binary = binary,
+                           use_assay = use_assay)
     l <- axis_df
     if (!is.null(shape)){
       l$shape <- factor(eval(parse(text = paste0("colData(count_data)$", shape))))
@@ -72,8 +78,13 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
       }
       g <- g +
         ggplot2::ggtitle(paste(gene_name, " - ", percent, "%", " cells", sep = "")) +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::labs(x = paste(x, toString(round(variances[strtoi(strsplit(x, "PC")[[1]][-1])] * 100, 2)), "%"), y = paste(y, toString(round(variances[strtoi(strsplit(y, "PC")[[1]][-1])] * 100, 2)), "%"))
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+      if(is.null(variances)){
+        g <- g + ggplot2::labs(x = x, y = y)
+      } else {
+        g <- g + ggplot2::labs(x = paste0(x, " ", toString(round(variances[x,] * 100, 2)), "%"),
+                               y = paste0(y, " ", toString(round(variances[y,] * 100, 2)), "%"))
+      }
     } else if (visual == "tSNE"){
       if (binary == "Binary"){
         l$expression <- ifelse(l$expression, "Yes", "No")
