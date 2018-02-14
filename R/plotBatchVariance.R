@@ -33,26 +33,26 @@ plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
       cond_mod <- model.matrix(~as.factor(colData(inSCESet)[, condition]))
     }
   }
-  
+
   mod <- cbind(cond_mod, batch_mod[, -1])
-  
+
   cond_test <- batchqc_f.pvalue(assay(inSCESet, use_assay), mod, batch_mod)
   batch_test <- batchqc_f.pvalue(assay(inSCESet, use_assay), mod, cond_mod)
-  
+
   cond_ps <- cond_test$p
   batch_ps <- batch_test$p
-  
+
   r2_full <- cond_test$r2_full
   cond_r2 <- batch_test$r2_reduced
   batch_r2 <- cond_test$r2_reduced
-  explained_variation <- round(cbind(`Full (Condition+Batch)` = r2_full, 
+  explained_variation <- round(cbind(`Full (Condition+Batch)` = r2_full,
                                      Condition = cond_r2, Batch = batch_r2), 5) * 100
   ex_var_m <- reshape2::melt(explained_variation)
   colnames(ex_var_m) <- c("Gene", "Model", "Value")
-  a <- ggplot2::ggplot(ex_var_m, ggplot2::aes(factor(Model), Value)) + 
-    ggplot2::geom_violin(ggplot2::aes(fill = factor(Model))) + 
-    ggplot2::geom_boxplot(width=.1) + 
-    ggplot2::xlab("Model") + 
+  a <- ggplot2::ggplot(ex_var_m, ggplot2::aes(factor(Model), Value)) +
+    ggplot2::geom_violin(ggplot2::aes(fill = factor(Model))) +
+    ggplot2::geom_boxplot(width = .1) +
+    ggplot2::xlab("Model") +
     ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"), guide = FALSE)
   return(a)
 }
@@ -66,25 +66,25 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
   df1 <- dim(mod)[2]
   df0 <- dim(mod0)[2]
   p <- rep(0, m)
-  
+
   resid <- dat - dat %*% mod %*% solve(t(mod) %*% mod) %*% t(mod)
   rss1 <- rowSums(resid * resid)
   rm(resid)
-  
+
   resid0 <- dat - dat %*% mod0 %*% solve(t(mod0) %*% mod0) %*% t(mod0)
   rss0 <- rowSums(resid0 * resid0)
   rm(resid0)
-  
+
   resid00 <- dat - dat %*% mod00 %*% solve(t(mod00) %*% mod00) %*% t(mod00)
   rss00 <- rowSums(resid00 * resid00)
   rm(resid00)
-  
-  r2_full <- 1 - rss1/rss00
-  r2_reduced <- 1 - rss0/rss00
-  
+
+  r2_full <- 1 - rss1 / rss00
+  r2_reduced <- 1 - rss0 / rss00
+
   p <- 1
   if (df1 > df0)  {
-    fstats <- ((rss0 - rss1)/(df1 - df0))/(rss1/(n - df1))
+    fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
     p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   }
   return(list(p = p, r2_full = r2_full, r2_reduced = r2_reduced))
