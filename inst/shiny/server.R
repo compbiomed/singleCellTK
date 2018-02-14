@@ -483,7 +483,7 @@ shinyServer(function(input, output, session) {
 
   #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
-    if (is.null(vals$counts)){
+    if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pca_variances(vals$counts)) == ncol(vals$counts)){

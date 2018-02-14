@@ -11,19 +11,16 @@
 #' @return A data.frame of expression values
 #' @export getBiomarker
 #'
-getBiomarker <- function(count_data, gene, binary="Binary"){
+getBiomarker <- function(count_data, gene, binary="Binary", use_assay="counts"){
   # Get sample names
   sample <- colnames(count_data)
   # Get counts for gene in sample
-  c <- assay(count_data, "counts")[c(gene), ]
+  c <- assay(count_data, use_assay)[c(gene), ]
   # If color scale is "yes"/"no"
   if (binary == "Binary"){
     expression <- c > 0
-  }
-  # If color scale is a continuouse scale bar
-  #TODO: change this to tpm assay or other normalized assay
-  else if (binary == "Continuous"){
-    expression <- log2(c + 1)
+  } else if (binary == "Continuous"){
+    expression <- c
   }
   # Make data frame with sample, counts
   bio <- data.frame(sample, expression)
