@@ -4,7 +4,7 @@
 \alias{getBiomarker}
 \title{getBiomarker}
 \usage{
-getBiomarker(count_data, gene, binary = "Binary")
+getBiomarker(count_data, gene, binary = "Binary", use_assay = "counts")
 }
 \arguments{
 \item{count_data}{A SCtkExperiment object}
@@ -13,6 +13,8 @@ getBiomarker(count_data, gene, binary = "Binary")
 
 \item{binary}{"Binary" for binary expression or "Continuous" for a gradient.
 Default: "Binary"}
+
+\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
 }
 \value{
 A data.frame of expression values

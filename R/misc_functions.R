@@ -3,22 +3,33 @@
 #' Creates a table of summary metrics from an input SCtkExperiment.
 #'
 #' @param indata Input SCtkExperiment
+#' @param use_assay Indicate which assay to summarize. Default is "counts"
+#' @param expression_cutoff Count number of samples with fewer than
+#' expression_cutoff genes. The default is 1700.
 #'
 #' @return A data.frame object of summary metrics.
 #' @export summarizeTable
-summarizeTable <- function(indata){
-  return(data.frame("Metric" = c("Number of Samples",
-                               "Number of Genes",
-                               "Average number of reads per cell",
-                               "Average number of genes per cell",
-                               "Samples with <1700 detected genes",
-                               "Genes with no expression across all samples"),
-                    "Value" = c(ncol(indata),
-                              nrow(indata),
-                              as.integer(mean(colSums(assay(indata, "counts")))),
-                              as.integer(mean(colSums(assay(indata, "counts") > 0))),
-                              sum(colSums(assay(indata, "counts") != 0) < 1700),
-                              sum(rowSums(assay(indata, "counts")) == 0))))
+summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
+  return(
+    data.frame(
+      "Metric" = c(
+        "Number of Samples",
+        "Number of Genes",
+        "Average number of reads per cell",
+        "Average number of genes per cell",
+        paste0("Samples with <", expression_cutoff, " detected genes"),
+        "Genes with no expression across all samples"
+      ),
+      "Value" = c(
+        ncol(indata),
+        nrow(indata),
+        as.integer(mean(colSums(assay(indata, use_assay)))),
+        as.integer(mean(colSums(assay(indata, use_assay) > 0))),
+        sum(colSums(assay(indata, use_assay) != 0) < expression_cutoff),
+        sum(rowSums(assay(indata, use_assay)) == 0)
+      )
+    )
+  )
 }
 
 #' Create a SCtkExperiment object

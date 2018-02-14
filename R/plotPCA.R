@@ -35,12 +35,18 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
   if(!(pcY %in% colnames(pca_df))){
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
-
-  if (all(c(pcX, pcY) %in% rownames(pca_variances(count_data)))){
-    #use the variances in pca_variances
-    variances <- pca_variances(count_data)
-    pcXlab <- paste0(pcX, " ", toString(round(variances[pcX, ] * 100, 2)), "%")
-    pcYlab <- paste0(pcY, " ", toString(round(variances[pcY, ] * 100, 2)), "%")
+  
+  if(class(count_data) == "SCtkExperiment"){
+    if (all(c(pcX, pcY) %in% rownames(pca_variances(count_data)))){
+      #use the variances in pca_variances
+      variances <- pca_variances(count_data)
+      pcXlab <- paste0(pcX, " ", toString(round(variances[pcX, ] * 100, 2)), "%")
+      pcYlab <- paste0(pcY, " ", toString(round(variances[pcY, ] * 100, 2)), "%")
+    } else {
+      #do not use variances in the plot
+      pcXlab <- pcX
+      pcYlab <- pcY
+    }
   } else {
     #do not use variances in the plot
     pcXlab <- pcX

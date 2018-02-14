@@ -7,6 +7,7 @@
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
+#' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
 #'
 #' @return A data.frame of expression values
 #' @export getBiomarker
