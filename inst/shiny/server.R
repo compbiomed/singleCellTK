@@ -33,6 +33,10 @@ shinyServer(function(input, output, session) {
                       choices = pdata_options)
     updateSelectInput(session, "subCovariate",
                       choices = pdata_options)
+    updateSelectInput(session, "batchVarPlot",
+                      choices = c('none', pdata_options))
+    updateSelectInput(session, "conditionVarPlot",
+                      choices = c('none', pdata_options))
     updateSelectInput(session, "combatBatchVar",
                       choices = pdata_options)
     updateSelectInput(session, "combatConditionVar",
@@ -752,12 +756,15 @@ shinyServer(function(input, output, session) {
 
   output$combatBoxplot <- renderPlot({
     if (!is.null(vals$counts) &
-        !is.null(input$combatBatchVar) &
-        length(input$combatConditionVar) == 1){
+        !is.null(input$batchVarPlot) &
+        !is.null(input$conditionVarPlot) &
+        input$batchVarPlot != 'none' &
+        input$conditionVarPlot != 'none' &
+        input$batchVarPlot != input$conditionVarPlot){
       plotBatchVariance(inSCESet = vals$counts,
                         use_assay = input$combatAssay,
-                        batch = input$combatBatchVar,
-                        condition = input$combatConditionVar)
+                        batch = input$batchVarPlot,
+                        condition = input$conditionVarPlot)
     }
   }, height = 600)
 
