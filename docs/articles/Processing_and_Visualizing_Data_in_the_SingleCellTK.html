@@ -134,8 +134,8 @@
 <a href="#summarizetable" class="anchor"></a>summarizeTable</h2>
 <p>You can get summary metrics with the <code>summarizeTable</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_sce))</code></pre></div>
-<div id="htmlwidget-afecfc6ce4c20163ba81" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-afecfc6ce4c20163ba81">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,997336,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7f0fcd1dfa0e3c519aef" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7f0fcd1dfa0e3c519aef">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,997336,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="filtering-by-annotation" class="section level2">
 <h2 class="hasAnchor">
@@ -160,8 +160,8 @@
 ## TRUE 
 ##   74</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_subset))</code></pre></div>
-<div id="htmlwidget-1ebe3b4fd8b127a18a91" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1ebe3b4fd8b127a18a91">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,999245,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f0714862f693c809b11d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f0714862f693c809b11d">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,999245,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="visualization" class="section level2">
 <h2 class="hasAnchor">
@@ -328,12 +328,11 @@ dat &lt;-<span class="st"> </span>bladderEset[<span class="dv">1</span><span cla
 
 pheno =<span class="st"> </span><span class="kw">pData</span>(dat)
 edata =<span class="st"> </span><span class="kw">exprs</span>(dat)
-bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createSCE.html">createSCE</a></span>(<span class="dt">countfile =</span> edata,
+bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createSCE.html">createSCE</a></span>(<span class="dt">assayfile =</span> edata,
                            <span class="dt">annotfile =</span> pheno,
+                           <span class="dt">assay_name =</span> <span class="st">"microarray"</span>,
                            <span class="dt">inputdataframes =</span> <span class="ot">TRUE</span>,
                            <span class="dt">create_logcounts =</span> <span class="ot">FALSE</span>)
-<span class="kw">assay</span>(bladder_sctke, <span class="st">"microarray"</span>) &lt;-<span class="st"> </span><span class="kw">assay</span>(bladder_sctke, <span class="st">"counts"</span>)
-<span class="kw">assay</span>(bladder_sctke, <span class="st">"counts"</span>) &lt;-<span class="st"> </span><span class="ot">NULL</span>
 <span class="kw">assay</span>(bladder_sctke, <span class="st">"combat"</span>) &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ComBat_SCE.html">ComBat_SCE</a></span>(<span class="dt">SCEdata =</span> bladder_sctke,
                                              <span class="dt">batch =</span> <span class="st">"batch"</span>,
                                              <span class="dt">use_assay =</span> <span class="st">"microarray"</span>,

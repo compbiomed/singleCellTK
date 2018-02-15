@@ -127,32 +127,37 @@
 SCtkExperiment object.</p>
     
 
-    <pre class="usage"><span class='fu'>createSCE</span>(<span class='kw'>countfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>annotfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>featurefile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>inputdataframes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>create_logcounts</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>createSCE</span>(<span class='kw'>assayfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>annotfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>featurefile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>assay_name</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>inputdataframes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>create_logcounts</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>countfile</th>
+      <th>assayfile</th>
       <td><p>The path to a text file that contains a header row of sample
 names, and rows of raw counts per gene for those samples.</p></td>
     </tr>
     <tr>
       <th>annotfile</th>
       <td><p>The path to a text file that contains columns of annotation
-information for each sample in the countfile. This file should have the same
-number of rows as there are columns in the countfile.</p></td>
+information for each sample in the assayfile. This file should have the same
+number of rows as there are columns in the assayfile.</p></td>
     </tr>
     <tr>
       <th>featurefile</th>
       <td><p>The path to a text file that contains columns of
 annotation information for each gene in the count matrix. This file should
-have the same genes in the same order as countfile. This is optional.</p></td>
+have the same genes in the same order as assayfile. This is optional.</p></td>
+    </tr>
+    <tr>
+      <th>assay_name</th>
+      <td><p>The name of the assay that you are uploading. The default
+is "counts".</p></td>
     </tr>
     <tr>
       <th>inputdataframes</th>
-      <td><p>If TRUE, countfile and annotfile are read as data
+      <td><p>If TRUE, assayfile and annotfile are read as data
 frames instead of file paths. The default is FALSE.</p></td>
     </tr>
     <tr>
@@ -169,7 +174,7 @@ and include it in the object. The default is TRUE</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>GSE60361_sce</span> <span class='kw'>&lt;-</span> <span class='fu'>createSCE</span>(<span class='kw'>countfile</span> <span class='kw'>=</span> <span class='st'>"/path/to/input_counts.txt"</span>,
+<span class='no'>GSE60361_sce</span> <span class='kw'>&lt;-</span> <span class='fu'>createSCE</span>(<span class='kw'>assayfile</span> <span class='kw'>=</span> <span class='st'>"/path/to/input_counts.txt"</span>,
                           <span class='kw'>annotfile</span> <span class='kw'>=</span> <span class='st'>"/path/to/input_annots.txt"</span>)
 <span class='co'># }</span></pre>
   </div>

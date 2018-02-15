@@ -157,8 +157,8 @@ correspond to the genome specified in index_path.</p></td>
     </tr>
     <tr>
       <th>output_dir</th>
-      <td><p>If save_bam or save_count_files is TRUE, specify a directory
-in which to save the output files.</p></td>
+      <td><p>If save_bam or save_count_files is TRUE, specify a
+directory in which to save the output files.</p></td>
     </tr>
     <tr>
       <th>sample_annotations</th>
@@ -200,13 +200,15 @@ files are paired end.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>singlecellobject</span> <span class='kw'>&lt;-</span> <span class='fu'>alignSingleCellData</span>(<span class='kw'>inputfile1</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"/path/to/sample1_1.fastq.gz"</span>,
-<span class='st'>"/path/to/sample2_1.fastq.gz"</span>),
-<span class='kw'>inputfile2</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"/path/to/sample1_2.fastq.gz"</span>,<span class='st'>"/path/to/sample2_2.fastq.gz"</span>),
-<span class='kw'>index_path</span> <span class='kw'>=</span> <span class='st'>"/path/to/genome/index"</span>,
-<span class='kw'>gtf_annotation</span> <span class='kw'>=</span> <span class='st'>"/path/to/gene/annotations.gtf"</span>,
-<span class='kw'>sample_annotations</span> <span class='kw'>=</span> <span class='no'>sample.annotation.df</span>,
-<span class='kw'>threads</span><span class='kw'>=</span><span class='fl'>4</span>)
+<span class='no'>singlecellobject</span> <span class='kw'>&lt;-</span> <span class='fu'>alignSingleCellData</span>(
+  <span class='kw'>inputfile1</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"/path/to/sample1_1.fastq.gz"</span>,
+                 <span class='st'>"/path/to/sample2_1.fastq.gz"</span>),
+  <span class='kw'>inputfile2</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"/path/to/sample1_2.fastq.gz"</span>,
+                 <span class='st'>"/path/to/sample2_2.fastq.gz"</span>),
+  <span class='kw'>index_path</span> <span class='kw'>=</span> <span class='st'>"/path/to/genome/index"</span>,
+  <span class='kw'>gtf_annotation</span> <span class='kw'>=</span> <span class='st'>"/path/to/gene/annotations.gtf"</span>,
+  <span class='kw'>sample_annotations</span> <span class='kw'>=</span> <span class='no'>sample.annotation.df</span>,
+  <span class='kw'>threads</span><span class='kw'>=</span><span class='fl'>4</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
