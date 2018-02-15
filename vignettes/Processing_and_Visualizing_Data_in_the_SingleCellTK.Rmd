@@ -153,12 +153,11 @@ dat <- bladderEset[1:50,]
 
 pheno = pData(dat)
 edata = exprs(dat)
-bladder_sctke <- createSCE(countfile = edata,
+bladder_sctke <- createSCE(assayfile = edata,
                            annotfile = pheno,
+                           assay_name = "microarray",
                            inputdataframes = TRUE,
                            create_logcounts = FALSE)
-assay(bladder_sctke, "microarray") <- assay(bladder_sctke, "counts")
-assay(bladder_sctke, "counts") <- NULL
 assay(bladder_sctke, "combat") <- ComBat_SCE(SCEdata = bladder_sctke,
                                              batch = "batch",
                                              use_assay = "microarray",
