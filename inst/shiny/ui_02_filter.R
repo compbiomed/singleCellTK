@@ -1,4 +1,5 @@
 shiny_panel_filter <- fluidPage(
+  useShinyalert(),
   tags$div(
     class = "container",
     h1("Data Summary and Filtering"),

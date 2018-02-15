@@ -52,7 +52,8 @@ Imports:
     reshape2,
     AnnotationDbi,
     DelayedArray,
-    SummarizedExperiment
+    SummarizedExperiment,
+    shinyalert
 RoxygenNote: 6.0.1
 Suggests:
     testthat,
