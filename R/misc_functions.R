@@ -23,10 +23,10 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
       "Value" = c(
         ncol(indata),
         nrow(indata),
-        as.integer(mean(colSums(assay(indata, use_assay)))),
-        as.integer(mean(colSums(assay(indata, use_assay) > 0))),
-        sum(colSums(assay(indata, use_assay) != 0) < expression_cutoff),
-        sum(rowSums(assay(indata, use_assay)) == 0)
+        as.integer(mean(DelayedArray::colSums(SummarizedExperiment::assay(indata, use_assay)))),
+        as.integer(mean(DelayedArray::colSums(SummarizedExperiment::assay(indata, use_assay) > 0))),
+        sum(DelayedArray::colSums(SummarizedExperiment::assay(indata, use_assay) != 0) < expression_cutoff),
+        sum(DelayedArray::rowSums(SummarizedExperiment::assay(indata, use_assay)) == 0)
       )
     )
   )
