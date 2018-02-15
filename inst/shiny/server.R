@@ -794,7 +794,8 @@ shinyServer(function(input, output, session) {
 
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionlevelUI <- renderUI({
-    if (!is.null(vals$counts) & length(colnames(colData(sce))) > 0){
+    req(vals$counts)
+    if (length(colnames(colData(vals$counts))) > 0){
       if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         tagList(
           conditionalPanel(
