@@ -23,8 +23,8 @@ corresponding paired fastq files, if applicable.}
 \item{gtf_annotation}{Path to the GTF gene annotation to use. This must
 correspond to the genome specified in index_path.}
 
-\item{output_dir}{If save_bam or save_count_files is TRUE, specify a directory
-in which to save the output files.}
+\item{output_dir}{If save_bam or save_count_files is TRUE, specify a
+directory in which to save the output files.}
 
 \item{sample_annotations}{A data.frame of sample annotations, with samples
 as rows and annotations in columns. The sample names must be identical to
@@ -53,12 +53,14 @@ Align Single Cell RNA-Seq Data and Create a SCESet Object
 }
 \examples{
 \dontrun{
-singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz",
-"/path/to/sample2_1.fastq.gz"),
-inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
-index_path = "/path/to/genome/index",
-gtf_annotation = "/path/to/gene/annotations.gtf",
-sample_annotations = sample.annotation.df,
-threads=4)
+singlecellobject <- alignSingleCellData(
+  inputfile1 = c("/path/to/sample1_1.fastq.gz",
+                 "/path/to/sample2_1.fastq.gz"),
+  inputfile2 = c("/path/to/sample1_2.fastq.gz",
+                 "/path/to/sample2_2.fastq.gz"),
+  index_path = "/path/to/genome/index",
+  gtf_annotation = "/path/to/gene/annotations.gtf",
+  sample_annotations = sample.annotation.df,
+  threads=4)
 }
 }

@@ -29,9 +29,12 @@ vignette: >
 
 Intro
 
-# Example
+# Input Data Format
 
 MAITS intro
+
+# Video Demo
+
 
 # Session info {.unnumbered}
 

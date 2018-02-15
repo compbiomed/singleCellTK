@@ -15,7 +15,8 @@ Depends:
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
-biocViews: SingleCell
+biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
+    Clustering
 LazyData: TRUE
 Imports:
     ape,
