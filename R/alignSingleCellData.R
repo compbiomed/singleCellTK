@@ -9,8 +9,8 @@
 #' @param index_path Path to the Rsubread genome index.
 #' @param gtf_annotation Path to the GTF gene annotation to use. This must
 #' correspond to the genome specified in index_path.
-#' @param output_dir If save_bam or save_count_files is TRUE, specify a directory
-#' in which to save the output files.
+#' @param output_dir If save_bam or save_count_files is TRUE, specify a
+#' directory in which to save the output files.
 #' @param sample_annotations A data.frame of sample annotations, with samples
 #' as rows and annotations in columns. The sample names must be identical to
 #' and in the same order as the list of files in inputfile1. Alignment
@@ -30,13 +30,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' singlecellobject <- alignSingleCellData(inputfile1 = c("/path/to/sample1_1.fastq.gz",
-#' "/path/to/sample2_1.fastq.gz"),
-#' inputfile2 = c("/path/to/sample1_2.fastq.gz","/path/to/sample2_2.fastq.gz"),
-#' index_path = "/path/to/genome/index",
-#' gtf_annotation = "/path/to/gene/annotations.gtf",
-#' sample_annotations = sample.annotation.df,
-#' threads=4)
+#' singlecellobject <- alignSingleCellData(
+#'   inputfile1 = c("/path/to/sample1_1.fastq.gz",
+#'                  "/path/to/sample2_1.fastq.gz"),
+#'   inputfile2 = c("/path/to/sample1_2.fastq.gz",
+#'                  "/path/to/sample2_2.fastq.gz"),
+#'   index_path = "/path/to/genome/index",
+#'   gtf_annotation = "/path/to/gene/annotations.gtf",
+#'   sample_annotations = sample.annotation.df,
+#'   threads=4)
 #' }
 alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                                 gtf_annotation, output_dir=NULL,
