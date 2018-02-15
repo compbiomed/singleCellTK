@@ -103,9 +103,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- createSCE(countfile = input$countsfile$datapath,
+        vals$original <- createSCE(assayfile = input$countsfile$datapath,
                                    annotfile = input$annotfile$datapath,
                                    featurefile = input$featurefile$datapath,
+                                   assay_name = input$inputAssayType,
                                    create_logcounts = input$createLogcounts)
       } else {
         data(list = paste0(input$selectExampleData, "_sce"))
