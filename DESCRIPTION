@@ -50,7 +50,9 @@ Imports:
     shinyjs,
     sva,
     reshape2,
-    AnnotationDbi
+    AnnotationDbi,
+    DelayedArray,
+    SummarizedExperiment
 RoxygenNote: 6.0.1
 Suggests:
     testthat,
