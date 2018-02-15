@@ -36,7 +36,7 @@ shiny_panel_upload <- fluidPage(
                                                                "normcounts",
                                                                "logcounts",
                                                                "cpm", "logcpm",
-                                                               "tpm", "logtpm"),
+                                                               "tpm", "logtpm")),
           checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
