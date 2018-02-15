@@ -21,7 +21,8 @@ shiny_panel_batchcorrect <- fluidPage(
         withBusyIndicatorUI(actionButton("combatRun", "Run"))
       ),
       mainPanel(
-        uiOutput("combatStatus")
+        uiOutput("combatStatus"),
+        plotOutput("combatBoxplot", height = "600px")
       )
     )
   )

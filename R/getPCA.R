@@ -35,7 +35,9 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
   reducedDim(count_data, reducedDimName) <- pca
-  pca_variances(count_data) <- DataFrame(percentVar)
-  rownames(pca_variances(count_data)) <- paste0("PC", 1:nrow(pca_variances(count_data)))
+  if(class(count_data) == "SCtkExperiment"){
+    pca_variances(count_data) <- DataFrame(percentVar)
+    rownames(pca_variances(count_data)) <- paste0("PC", 1:nrow(pca_variances(count_data)))
+  }
   return(count_data)
 }

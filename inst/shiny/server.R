@@ -84,6 +84,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "delAssayType", choices = currassays)
+    updateSelectInput(session, "filterAssaySelect", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -139,8 +140,7 @@ shinyServer(function(input, output, session) {
       updateGeneNames()
     }
     if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), log2(assay(vals$counts,
-                                                           "counts") + 1))
+      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
       colnames(temptable)[1] <- "Gene"
       temptable
     }
@@ -152,7 +152,7 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Reads per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(assay(vals$counts, "counts"), 2, function(x) sum(x)),
+      plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
               type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
@@ -166,7 +166,7 @@ shinyServer(function(input, output, session) {
       f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
       x <- list(title = "Genes detected per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
-      plot_ly(x = apply(assay(vals$counts, "counts"), 2,
+      plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
                         function(x) sum(x > 0)), type = "histogram") %>%
         layout(xaxis = x, yaxis = y)
     } else {
@@ -188,7 +188,9 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-    summarizeTable(vals$counts)
+    summarizeTable(indata = vals$counts,
+                   use_assay = input$filterAssaySelect,
+                   expression_cutoff = input$minDetectGene)
   })
 
   #Filter the data based on the options
@@ -200,7 +202,7 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("filterData", {
         deletesamples <- input$deletesamplelist
         vals$counts <- filterSCData(insceset = vals$counts,
-                                    use_assay = "counts", #TODO: user selects filtering assay
+                                    use_assay = input$filterAssaySelect,
                                     deletesamples = deletesamples,
                                     remove_noexpress = input$removeNoexpress,
                                     remove_bottom = 0.01 * input$LowExpression,
@@ -303,6 +305,29 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  observeEvent(input$orgOrganism, {
+    library(input$orgOrganism, character.only = TRUE)
+    indb <- get(paste(input$orgOrganism))
+    output$orgConvertColumns <- renderUI({
+      tagList(
+        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
+        selectInput("orgToCol", "Select To Annotation:", columns(indb))
+      )
+    })
+  })
+
+  observeEvent(input$convertGenes, {
+    withBusyIndicatorServer("convertGenes", {
+      vals$counts <- convert_gene_ids(inSCESet = vals$counts,
+                                      in_symbol = input$orgFromCol,
+                                      out_symbol = input$orgToCol,
+                                      database = input$orgOrganism)
+      updateGeneNames()
+      vals$diffexgenelist <- NULL
+      vals$gsva_res <- NULL
+    })
+  })
+
   #Filter the selected features
   observeEvent(input$runFilterFeature, {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
@@ -339,7 +364,11 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("addAssay", {
         if (input$addAssayType == "logcounts"){
-          assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+          if("counts" %in% names(assays(vals$counts))){
+            assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
+          } else {
+            alert("A matrix named counts is required to calculate logcounts")
+          }
         } else if (input$addAssayType == "cpm") {
           if("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
@@ -460,7 +489,7 @@ shinyServer(function(input, output, session) {
 
   #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
-    if (is.null(vals$counts)){
+    if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pca_variances(vals$counts)) == ncol(vals$counts)){
@@ -620,6 +649,21 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observe({
+    if (!is.null(vals$original)){
+      if(input$dimRedPlotMethod == "PCA"){
+        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
+        if (!is.null(reducedDim(vals$counts, pcadimname))) {
+          curr_pcs <- colnames(reducedDim(vals$counts, "PCA_counts"))
+          updateSelectInput(session, "pcX", choices = curr_pcs,
+                            selected = curr_pcs[1])
+          updateSelectInput(session, "pcY", choices = curr_pcs,
+                            selected = curr_pcs[2])
+        }
+      }
+    }
+  })
+
   observeEvent(input$reRunTSNE, {
     if (is.null(vals$original)){
       alert("Warning: Upload data first!")
@@ -628,7 +672,8 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("reRunTSNE", {
         vals$counts <- getTSNE(count_data = vals$counts,
                                use_assay = input$dimRedAssaySelect,
-                               reducedDimName = paste0("TSNE", "_", input$dimRedAssaySelect))
+                               reducedDimName = paste0("TSNE", "_",
+                                                       input$dimRedAssaySelect))
         updateReddimInputs()
       })
     }
@@ -642,7 +687,8 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("reRunPCA", {
         vals$counts <- getPCA(count_data = vals$counts,
                               use_assay = input$dimRedAssaySelect,
-                              reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+                              reducedDimName = paste0("PCA", "_",
+                                                      input$dimRedAssaySelect))
         updateReddimInputs()
       })
     }
@@ -703,6 +749,17 @@ shinyServer(function(input, output, session) {
     h2(vals$combatstatus)
   })
 
+  output$combatBoxplot <- renderPlot({
+    if (!is.null(vals$counts) &
+        !is.null(input$combatBatchVar) &
+        length(input$combatConditionVar) == 1){
+      plotBatchVariance(inSCESet = vals$counts,
+                        use_assay = input$combatAssay,
+                        batch = input$combatBatchVar,
+                        condition = input$combatConditionVar)
+    }
+  }, height = 600)
+
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
@@ -729,7 +786,7 @@ shinyServer(function(input, output, session) {
 
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffex_conditionlevelUI <- renderUI({
-    if (!is.null(vals$counts)){
+    if (!is.null(vals$counts) & length(colnames(colData(sce))) > 0){
       if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
         tagList(
           conditionalPanel(
