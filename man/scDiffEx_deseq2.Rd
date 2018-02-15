@@ -24,7 +24,7 @@ controlLevel (see below).}
 \item{levelofinterest}{If the condition has more than two labels,
 levelofinterest should contain one factor of interest from condition.}
 
-\item{controlLevel}{If the condition has more than two lables, controlLevel
+\item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}
 
 \item{covariates}{Additional covariates to add to the model.}
