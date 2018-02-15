@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a heatmap for differential expression analysis — scDiffEx • singleCellTK</title>
+<title>Plot the percent of the variation that is explained by batch and condition
+in the data — plotBatchVariance • singleCellTK</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -119,17 +120,17 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a heatmap for differential expression analysis</h1>
+    <h1>Plot the percent of the variation that is explained by batch and condition
+in the data</h1>
     </div>
 
     
-    <p>Create a heatmap for differential expression analysis</p>
+    <p>Visualize the percent variation in the data that is explained by batch and
+condition if it is givent.</p>
     
 
-    <pre class="usage"><span class='fu'>scDiffEx</span>(<span class='no'>inSCESet</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='no'>condition</span>, <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>significance</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>usesig</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>diffexmethod</span>,
-  <span class='kw'>clusterRow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>clusterCol</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>levelofinterest</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>analysis_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>controlLevel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>plotBatchVariance</span>(<span class='no'>inSCESet</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='no'>batch</span>,
+  <span class='kw'>condition</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -140,76 +141,26 @@
     </tr>
     <tr>
       <th>use_assay</th>
-      <td><p>Indicate which assay to use. Default is "logcounts"</p></td>
+      <td><p>Indicate which assay to use for PCA. Default is "logcounts"</p></td>
+    </tr>
+    <tr>
+      <th>batch</th>
+      <td><p>The column in the annotation data that corresponds to batch.
+Required</p></td>
     </tr>
     <tr>
       <th>condition</th>
-      <td><p>The name of the condition to use for differential
-expression. Required</p></td>
-    </tr>
-    <tr>
-      <th>covariates</th>
-      <td><p>Additional covariates to add to the model. Currently only
-supported for ANOVA. Default is NULL</p></td>
-    </tr>
-    <tr>
-      <th>significance</th>
-      <td><p>FDR corrected significance cutoff for differentially
-expressed genes. Required</p></td>
-    </tr>
-    <tr>
-      <th>ntop</th>
-      <td><p>Number of top differentially expressed genes to display in the
-heatmap. Required</p></td>
-    </tr>
-    <tr>
-      <th>usesig</th>
-      <td><p>If TRUE, only display genes that meet the significance cutoff,
-up to ntop genes. Required</p></td>
-    </tr>
-    <tr>
-      <th>diffexmethod</th>
-      <td><p>The method for performing differential expression
-analysis. Available options are DESeq2, limma, and ANOVA. Required</p></td>
-    </tr>
-    <tr>
-      <th>clusterRow</th>
-      <td><p>Cluster the rows. The default is TRUE</p></td>
-    </tr>
-    <tr>
-      <th>clusterCol</th>
-      <td><p>Cluster the columns. The default is TRUE</p></td>
-    </tr>
-    <tr>
-      <th>levelofinterest</th>
-      <td><p>If the condition has more than two labels,
-levelofinterest should contain one factor for condition. The differential
-expression results will compare the factor in levelofinterest to all other
-data.</p></td>
-    </tr>
-    <tr>
-      <th>analysis_type</th>
-      <td><p>Choose "biomarker" to compare the levelofinterest to all
-other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel.</p></td>
-    </tr>
-    <tr>
-      <th>controlLevel</th>
-      <td><p>If the condition has more than two labels, controlLevel
-should contain one factor from condition to use as the control.</p></td>
+      <td><p>The column in the annotation data that corresponds to
+condition. Optional</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of differentially expressed genes.</p>
+    <p>A boxplot of variation explained by batch, condition, and
+batch+condition (if applicable).</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>scDiffEx</span>(<span class='no'>newsceset_david</span>, <span class='st'>"age"</span>, <span class='st'>"0.1"</span>)
-<span class='co'># }</span><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -217,9 +168,7 @@ should contain one factor from condition to use as the control.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

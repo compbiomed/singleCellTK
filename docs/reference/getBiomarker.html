@@ -127,7 +127,7 @@
 continuous expression of the genes.</p>
     
 
-    <pre class="usage"><span class='fu'>getBiomarker</span>(<span class='no'>count_data</span>, <span class='no'>gene</span>, <span class='kw'>binary</span> <span class='kw'>=</span> <span class='st'>"Binary"</span>)</pre>
+    <pre class="usage"><span class='fu'>getBiomarker</span>(<span class='no'>count_data</span>, <span class='no'>gene</span>, <span class='kw'>binary</span> <span class='kw'>=</span> <span class='st'>"Binary"</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -144,6 +144,10 @@ continuous expression of the genes.</p>
       <th>binary</th>
       <td><p>"Binary" for binary expression or "Continuous" for a gradient.
 Default: "Binary"</p></td>
+    </tr>
+    <tr>
+      <th>use_assay</th>
+      <td><p>Indicate which assay to use for PCA. Default is "logcounts"</p></td>
     </tr>
     </table>
     

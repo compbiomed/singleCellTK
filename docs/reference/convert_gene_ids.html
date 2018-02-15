@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a heatmap for differential expression analysis — scDiffEx • singleCellTK</title>
+<title>Convert gene IDs — convert_gene_ids • singleCellTK</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -119,17 +119,18 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a heatmap for differential expression analysis</h1>
+    <h1>Convert gene IDs</h1>
     </div>
 
     
-    <p>Create a heatmap for differential expression analysis</p>
+    <p>Convert the gene IDs in a SingleCellExperiment object using Bioconductor
+org.*.eg.db data packages. Because annotation databases do not have a 1:1
+relationship, this tool removes rows with no corresponding annotation in
+your desired annotation, and remove any duplicate annotations after
+conversion.</p>
     
 
-    <pre class="usage"><span class='fu'>scDiffEx</span>(<span class='no'>inSCESet</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='no'>condition</span>, <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>significance</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>, <span class='kw'>usesig</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>diffexmethod</span>,
-  <span class='kw'>clusterRow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>clusterCol</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>levelofinterest</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>analysis_type</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>controlLevel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>convert_gene_ids</span>(<span class='no'>inSCESet</span>, <span class='no'>in_symbol</span>, <span class='no'>out_symbol</span>, <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Hs.eg.db"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -139,76 +140,51 @@
       <td><p>Input SCtkExperiment object. Required</p></td>
     </tr>
     <tr>
-      <th>use_assay</th>
-      <td><p>Indicate which assay to use. Default is "logcounts"</p></td>
+      <th>in_symbol</th>
+      <td><p>The input symbol type</p></td>
     </tr>
     <tr>
-      <th>condition</th>
-      <td><p>The name of the condition to use for differential
-expression. Required</p></td>
+      <th>out_symbol</th>
+      <td><p>The output symbol type</p></td>
     </tr>
     <tr>
-      <th>covariates</th>
-      <td><p>Additional covariates to add to the model. Currently only
-supported for ANOVA. Default is NULL</p></td>
-    </tr>
-    <tr>
-      <th>significance</th>
-      <td><p>FDR corrected significance cutoff for differentially
-expressed genes. Required</p></td>
-    </tr>
-    <tr>
-      <th>ntop</th>
-      <td><p>Number of top differentially expressed genes to display in the
-heatmap. Required</p></td>
-    </tr>
-    <tr>
-      <th>usesig</th>
-      <td><p>If TRUE, only display genes that meet the significance cutoff,
-up to ntop genes. Required</p></td>
-    </tr>
-    <tr>
-      <th>diffexmethod</th>
-      <td><p>The method for performing differential expression
-analysis. Available options are DESeq2, limma, and ANOVA. Required</p></td>
-    </tr>
-    <tr>
-      <th>clusterRow</th>
-      <td><p>Cluster the rows. The default is TRUE</p></td>
-    </tr>
-    <tr>
-      <th>clusterCol</th>
-      <td><p>Cluster the columns. The default is TRUE</p></td>
-    </tr>
-    <tr>
-      <th>levelofinterest</th>
-      <td><p>If the condition has more than two labels,
-levelofinterest should contain one factor for condition. The differential
-expression results will compare the factor in levelofinterest to all other
-data.</p></td>
-    </tr>
-    <tr>
-      <th>analysis_type</th>
-      <td><p>Choose "biomarker" to compare the levelofinterest to all
-other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel.</p></td>
-    </tr>
-    <tr>
-      <th>controlLevel</th>
-      <td><p>If the condition has more than two labels, controlLevel
-should contain one factor from condition to use as the control.</p></td>
+      <th>database</th>
+      <td><p>The org.*.eg.db database to use. The default is org.Hs.eg.db</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of differentially expressed genes.</p>
+    <p>A SCtkExperiment with converted gene IDs.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>scDiffEx</span>(<span class='no'>newsceset_david</span>, <span class='st'>"age"</span>, <span class='st'>"0.1"</span>)
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'>requireNamespace</span>(<span class='st'>"org.Mm.eg.db"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+  <span class='co'>#convert mouse gene symbols to ensembl IDs</span>
+  <span class='fu'>library</span>(<span class='st'>"org.Mm.eg.db"</span>)
+  <span class='fu'>sample</span>(<span class='fu'>rownames</span>(<span class='no'>GSE60361_subset_sce</span>), <span class='fl'>50</span>)
+  <span class='no'>GSE60361_subset_symbol</span> <span class='kw'>&lt;-</span> <span class='fu'>convert_gene_ids</span>(<span class='kw'>inSCESet</span> <span class='kw'>=</span> <span class='no'>GSE60361_subset_sce</span>,
+                                             <span class='kw'>in_symbol</span> <span class='kw'>=</span> <span class='st'>"SYMBOL"</span>,
+                                             <span class='kw'>out_symbol</span> <span class='kw'>=</span> <span class='st'>"ENSEMBL"</span>,
+                                             <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Mm.eg.db"</span>)
+  <span class='fu'>sample</span>(<span class='fu'>rownames</span>(<span class='no'>GSE60361_subset_symbol</span>), <span class='fl'>50</span>)
+}</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>1773 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>51 ENSEMBL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>153 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>19972 SYMBOL originally, 18153 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000036282" "ENSMUSG00000033416" "ENSMUSG00000024781"
+#&gt;  [4] "ENSMUSG00000014773" "ENSMUSG00000061360" "ENSMUSG00000029601"
+#&gt;  [7] "ENSMUSG00000052821" "ENSMUSG00000039611" "ENSMUSG00000067578"
+#&gt; [10] "ENSMUSG00000042331" "ENSMUSG00000030351" "ENSMUSG00000033159"
+#&gt; [13] "ENSMUSG00000039616" "ENSMUSG00000095138" "ENSMUSG00000067571"
+#&gt; [16] "ENSMUSG00000043953" "ENSMUSG00000032059" "ENSMUSG00000004864"
+#&gt; [19] "ENSMUSG00000024045" "ENSMUSG00000055013" "ENSMUSG00000021681"
+#&gt; [22] "ENSMUSG00000018068" "ENSMUSG00000004415" "ENSMUSG00000022217"
+#&gt; [25] "ENSMUSG00000050201" "ENSMUSG00000040724" "ENSMUSG00000020878"
+#&gt; [28] "ENSMUSG00000039154" "ENSMUSG00000038670" "ENSMUSG00000020929"
+#&gt; [31] "ENSMUSG00000086899" "ENSMUSG00000024806" "ENSMUSG00000067851"
+#&gt; [34] "ENSMUSG00000033684" "ENSMUSG00000022243" "ENSMUSG00000031751"
+#&gt; [37] "ENSMUSG00000112663" "ENSMUSG00000063605" "ENSMUSG00000001865"
+#&gt; [40] "ENSMUSG00000030785" "ENSMUSG00000031434" "ENSMUSG00000056091"
+#&gt; [43] "ENSMUSG00000022791" "ENSMUSG00000045252" "ENSMUSG00000045672"
+#&gt; [46] "ENSMUSG00000022505" "ENSMUSG00000059208" "ENSMUSG00000063802"
+#&gt; [49] "ENSMUSG00000025665" "ENSMUSG00000021983"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -126,7 +126,7 @@
     <p>Creates a table of summary metrics from an input SCtkExperiment.</p>
     
 
-    <pre class="usage"><span class='fu'>summarizeTable</span>(<span class='no'>indata</span>)</pre>
+    <pre class="usage"><span class='fu'>summarizeTable</span>(<span class='no'>indata</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>expression_cutoff</span> <span class='kw'>=</span> <span class='fl'>1700</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +134,15 @@
     <tr>
       <th>indata</th>
       <td><p>Input SCtkExperiment</p></td>
+    </tr>
+    <tr>
+      <th>use_assay</th>
+      <td><p>Indicate which assay to summarize. Default is "counts"</p></td>
+    </tr>
+    <tr>
+      <th>expression_cutoff</th>
+      <td><p>Count number of samples with fewer than
+expression_cutoff genes. The default is 1700.</p></td>
     </tr>
     </table>
     
