@@ -4,22 +4,25 @@
 \alias{createSCE}
 \title{Create a SCtkExperiment object}
 \usage{
-createSCE(countfile = NULL, annotfile = NULL, featurefile = NULL,
-  inputdataframes = FALSE, create_logcounts = TRUE)
+createSCE(assayfile = NULL, annotfile = NULL, featurefile = NULL,
+  assay_name = "counts", inputdataframes = FALSE, create_logcounts = TRUE)
 }
 \arguments{
-\item{countfile}{The path to a text file that contains a header row of sample
+\item{assayfile}{The path to a text file that contains a header row of sample
 names, and rows of raw counts per gene for those samples.}
 
 \item{annotfile}{The path to a text file that contains columns of annotation
-information for each sample in the countfile. This file should have the same
-number of rows as there are columns in the countfile.}
+information for each sample in the assayfile. This file should have the same
+number of rows as there are columns in the assayfile.}
 
 \item{featurefile}{The path to a text file that contains columns of
 annotation information for each gene in the count matrix. This file should
-have the same genes in the same order as countfile. This is optional.}
+have the same genes in the same order as assayfile. This is optional.}
 
-\item{inputdataframes}{If TRUE, countfile and annotfile are read as data
+\item{assay_name}{The name of the assay that you are uploading. The default
+is "counts".}
+
+\item{inputdataframes}{If TRUE, assayfile and annotfile are read as data
 frames instead of file paths. The default is FALSE.}
 
 \item{create_logcounts}{If TRUE, create a log2(counts+1) normalized assay
@@ -34,7 +37,7 @@ SCtkExperiment object.
 }
 \examples{
 \dontrun{
-GSE60361_sce <- createSCE(countfile = "/path/to/input_counts.txt",
+GSE60361_sce <- createSCE(assayfile = "/path/to/input_counts.txt",
                           annotfile = "/path/to/input_annots.txt")
 }
 }

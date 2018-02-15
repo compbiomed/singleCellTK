@@ -22,7 +22,7 @@ shiny_panel_upload <- fluidPage(
       h3("Upload data in tab separated text format:"),
       fluidRow(
         column(width = 4,
-          fileInput("countsfile", "Counts (required):",
+          fileInput("countsfile", "Input assay (eg. counts, required):",
                    accept = c(
                      "text/csv",
                      "text/comma-separated-values",
@@ -32,7 +32,11 @@ shiny_panel_upload <- fluidPage(
                      ".tsv"
                    )
           ),
-          selectInput("inputAssayType", "Input Assay Type:", "counts"),
+          selectInput("inputAssayType", "Input Assay Type:", c("counts",
+                                                               "normcounts",
+                                                               "logcounts",
+                                                               "cpm", "logcpm",
+                                                               "tpm", "logtpm"),
           checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,

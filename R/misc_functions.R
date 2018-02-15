@@ -37,15 +37,17 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
 #' From a file of counts and a file of annotation information, create a
 #' SCtkExperiment object.
 #'
-#' @param countfile The path to a text file that contains a header row of sample
+#' @param assayfile The path to a text file that contains a header row of sample
 #' names, and rows of raw counts per gene for those samples.
 #' @param annotfile The path to a text file that contains columns of annotation
-#' information for each sample in the countfile. This file should have the same
-#' number of rows as there are columns in the countfile.
+#' information for each sample in the assayfile. This file should have the same
+#' number of rows as there are columns in the assayfile.
 #' @param featurefile The path to a text file that contains columns of
 #' annotation information for each gene in the count matrix. This file should
-#' have the same genes in the same order as countfile. This is optional.
-#' @param inputdataframes If TRUE, countfile and annotfile are read as data
+#' have the same genes in the same order as assayfile. This is optional.
+#' @param assay_name The name of the assay that you are uploading. The default
+#' is "counts".
+#' @param inputdataframes If TRUE, assayfile and annotfile are read as data
 #' frames instead of file paths. The default is FALSE.
 #' @param create_logcounts If TRUE, create a log2(counts+1) normalized assay
 #' and include it in the object. The default is TRUE
@@ -54,20 +56,21 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
 #' @export createSCE
 #' @examples
 #' \dontrun{
-#' GSE60361_sce <- createSCE(countfile = "/path/to/input_counts.txt",
+#' GSE60361_sce <- createSCE(assayfile = "/path/to/input_counts.txt",
 #'                           annotfile = "/path/to/input_annots.txt")
 #'}
-createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
-                      inputdataframes=FALSE, create_logcounts=TRUE){
-  if (is.null(countfile)){
+createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
+                      assay_name="counts", inputdataframes=FALSE,
+                      create_logcounts=TRUE){
+  if (is.null(assayfile)){
     stop("You must supply a count file.")
   }
   if (inputdataframes){
-    countsin <- countfile
+    countsin <- assayfile
     annotin <- annotfile
     featurein <- featurefile
   } else{
-    countsin <- utils::read.table(countfile, sep = "\t", header = TRUE, row.names = 1)
+    countsin <- utils::read.table(assayfile, sep = "\t", header = TRUE, row.names = 1)
     if (!is.null(annotfile)){
       annotin <- utils::read.table(annotfile, sep = "\t", header = TRUE, row.names = 1)
     }
@@ -85,11 +88,13 @@ createSCE <- function(countfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- DataFrame(featurein)
   }
-  newassay <- SCtkExperiment(assays = list(counts = as.matrix(countsin)),
-                                     colData = annotin,
-                                     rowData = featurein)
+  assaylist <- list()
+  assaylist[[assay_name]] <- as.matrix(countsin)
+  newassay <- SCtkExperiment(assays = assaylist,
+                             colData = annotin,
+                             rowData = featurein)
   if (create_logcounts){
-    assay(newassay, "logcounts") <- log2(assay(newassay, "counts") + 1)
+    assay(newassay, paste0("log", assay_name)) <- log2(assay(newassay, assay_name) + 1)
   }
   return(newassay)
 }
