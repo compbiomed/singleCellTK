@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
   #Filter the data based on the options
   observeEvent(input$filterData, {
     if (is.null(vals$original)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("filterData", {
@@ -223,7 +223,7 @@ shinyServer(function(input, output, session) {
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
     if (is.null(vals$original)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       vals$counts <- vals$original
@@ -242,7 +242,7 @@ shinyServer(function(input, output, session) {
   #Delete a column from the colData annotations
   observeEvent(input$deleterowDatabutton, {
     if (is.null(vals$original)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = F]
@@ -361,20 +361,20 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addAssay, {
     req(vals$counts)
     if (input$addAssayType %in% names(assays(vals$counts))){
-      alert("assay already exists!")
+      shinyalert("Assay already exists!", "", type="info")
     } else {
       withBusyIndicatorServer("addAssay", {
         if (input$addAssayType == "logcounts"){
           if("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
           } else {
-            alert("A matrix named counts is required to calculate logcounts")
+            shinyalert("Error!", "A matrix named counts is required to calculate logcounts.", type="error")
           }
         } else if (input$addAssayType == "cpm") {
           if("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
           } else {
-            alert("Count matrix required for cpm calculation")
+            shinyalert("Error!", "Count matrix required for cpm calculation", type="error")
           }
         } else if (input$addAssayType == "logcpm") {
           #try to calculate from cpm
@@ -384,7 +384,7 @@ shinyServer(function(input, output, session) {
           #calculate from counts
             assay(vals$counts, "logcpm") <- log2(apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) }) + 1)
           } else {
-            alert("Count matrix or cpm required for logcpm calculation")
+            shinyalert("Error!", "Count matrix or cpm required for logcpm calculation", type="error")
           }
         } else {
           stop("unsupported assay type")
@@ -397,7 +397,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$delAssay, {
     req(vals$counts)
     if (!(input$delAssayType %in% names(assays(vals$counts)))){
-      alert("assay does not exist!")
+      shinyalert("Error!", "Assay does not exist!", type="error")
     } else {
       withBusyIndicatorServer("delAssay", {
         assay(vals$counts, input$delAssayType) <- NULL
@@ -409,7 +409,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      alert("reducedDim does not exist!")
+      shinyalert("Error!", "reducedDim does not exist!", type="error")
     } else {
       withBusyIndicatorServer("delRedDim", {
         reducedDim(vals$counts, input$delRedDimType) <- NULL
