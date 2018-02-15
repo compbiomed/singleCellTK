@@ -23,7 +23,7 @@
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
 #' controlLevel.
-#' @param controlLevel If the condition has more than two lables, controlLevel
+#' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #'
 #' @return A list of differentially expressed genes.
@@ -159,7 +159,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' controlLevel (see below).
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
-#' @param controlLevel If the condition has more than two lables, controlLevel
+#' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #' @param covariates Additional covariates to add to the model.
 #'
@@ -170,7 +170,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                             analysis_type="biomarker", levelofinterest=NULL,
                             controlLevel=NULL, covariates=NULL){
   cnts <- assay(inSCESet, use_assay)
-  annot_data <- colData(inSCESet)[, c(condition, covariates), drop=FALSE]
+  annot_data <- colData(inSCESet)[, c(condition, covariates), drop = FALSE]
 
   if (length(levels(annot_data[, condition])) > 2){
     if(analysis_type == "biomarker"){
@@ -203,20 +203,20 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                                                  collapse = "+")))
   dds <- DESeq2::DESeq(dds)
   if(is.null(levelofinterest) && is.null(controlLevel)){
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levels(annot_data[,condition])[2],
-                                           levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef=2)
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levels(annot_data[,condition])[2],
+                                             levels(annot_data[,condition])[1]))
+    res <- DESeq2::lfcShrink(dds, coef = 2)
   } else if(is.null(controlLevel)){
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levelofinterest,
-                                           levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef=which(levels(annot_data[,condition]) == levelofinterest))
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levelofinterest,
+                                             levels(annot_data[,condition])[1]))
+    res <- DESeq2::lfcShrink(dds, coef = which(levels(annot_data[,condition]) == levelofinterest))
   } else {
-    res <- DESeq2::results(dds, contrast=c(condition,
-                                           levelofinterest,
-                                           controlLevel))
-    res <- DESeq2::lfcShrink(dds, coef=which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
+    res <- DESeq2::results(dds, contrast = c(condition,
+                                             levelofinterest,
+                                             controlLevel))
+    res <- DESeq2::lfcShrink(dds, coef = which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
   }
 
   return(data.frame(res))
@@ -268,7 +268,7 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
     topGenes <- limma::topTable(ebayes, coef = which(levels(condition_factor) == levelofinterest),
                                 adjust = "fdr", number = nrow(inSCESet))
   }
- 
+
   colnames(topGenes)[5] <- "padj"
   return(topGenes)
 }

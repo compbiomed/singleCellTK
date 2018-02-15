@@ -4,6 +4,7 @@ shiny_panel_filter <- fluidPage(
     h1("Data Summary and Filtering"),
     sidebarLayout(
       sidebarPanel(
+        selectInput("filterAssaySelect", "Select Assay:", currassays),
         checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
         numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
         numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
@@ -21,6 +22,11 @@ shiny_panel_filter <- fluidPage(
         h3("Filter genes by feature annotation"),
         selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
         uiOutput("filterFeatureOptions"),
+        tags$hr(),
+        h3("Convert gene annotations"),
+        selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE))),
+        uiOutput("orgConvertColumns"),
+        withBusyIndicatorUI(actionButton("convertGenes", "Convert")),
         tags$hr(),
         h3("Delete an annotation column:"),
         selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
