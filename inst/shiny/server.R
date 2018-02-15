@@ -590,7 +590,7 @@ shinyServer(function(input, output, session) {
 
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     } else {
       if (input$dimRedPlotMethod == "Dendrogram" && paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
         data <- getClusterInputData(count_data = vals$counts,
@@ -613,9 +613,9 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$clusterData, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     } else if (input$clusterName == "") {
-      alert("Cluster name required!")
+      shinyalert("Error!", "Cluster name required.", type="error")
     } else {
       withBusyIndicatorServer("clusterData", {
         currdimname <- NULL
@@ -671,7 +671,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$reRunTSNE, {
     if (is.null(vals$original)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("reRunTSNE", {
@@ -686,7 +686,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$reRunPCA, {
     if (is.null(vals$original)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("reRunPCA", {
@@ -714,14 +714,14 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$combatRun, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("combatRun", {
         if (input$batchMethod == "ComBat"){
           #check for zeros
           if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-            alert("Warning: Rows with a sum of zero found. Filter data to continue")
+            shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type="error")
           } else {
             saveassayname <- gsub(" ", "_", input$combatSaveAssay)
             if (input$combatRef){
@@ -744,7 +744,7 @@ shinyServer(function(input, output, session) {
             vals$combatstatus <- "ComBat Complete"
           }
         } else {
-          alert("Unsupported Batch Correction Method!")
+          shinyalert("Error!", "Unsupported Batch Correction Method", type="error")
         }
       })
     }
@@ -825,7 +825,7 @@ shinyServer(function(input, output, session) {
   #Run differential expression
   observeEvent(input$runDiffex, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("runDiffex", {
@@ -928,7 +928,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$saveBiomarker, {
     if (input$biomarkerName == ""){
-      alert("Warning: Specify biomarker name!")
+      shinyalert("Error!", "Specify biomarker name.", type="error")
     } else{
       withBusyIndicatorServer("saveBiomarker", {
         biomarker_name <- gsub(" ", "_", input$biomarkerName)
@@ -956,7 +956,7 @@ shinyServer(function(input, output, session) {
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     } else {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
@@ -974,7 +974,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$runThreshPlot, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("runThreshPlot", {
@@ -1061,7 +1061,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
         vals$gsva_res <- GSVA_sce(SCEdata = vals$counts,
@@ -1121,7 +1121,7 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
       }
     } else {
-      alert("Run pathway first!")
+      shinyalert("Error!", "Run pathway first.", type="error")
     }
   })
 
@@ -1142,7 +1142,7 @@ shinyServer(function(input, output, session) {
   #Run subsampling analysis
   observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("runSubsampleDepth", {
@@ -1189,7 +1189,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("runSubsampleCells", {
@@ -1251,7 +1251,7 @@ shinyServer(function(input, output, session) {
   #Run differential power analysis
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
-      alert("Warning: Upload data first!")
+      shinyalert("Error!", "Upload data first.", type="error")
     }
     else{
       withBusyIndicatorServer("runSnapshot", {
