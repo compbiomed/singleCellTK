@@ -2,18 +2,22 @@
 % Please edit documentation in R/Downsample.Matrix.R
 \name{calcEffectSizes}
 \alias{calcEffectSizes}
-\title{Finds the effect sizes for all genes in the original dataset, regardless of significance.}
+\title{Finds the effect sizes for all genes in the original dataset, regardless of
+significance.}
 \usage{
 calcEffectSizes(countMatrix, condition)
 }
 \arguments{
 \item{countMatrix}{Matrix. A simulated counts matrix, sans labels.}
 
-\item{condition}{Factor. The condition labels for the simulated cells. If more than 2 conditions are given, the first will be compared to all others by default.}
+\item{condition}{Factor. The condition labels for the simulated cells. If
+more than 2 conditions are given, the first will be compared to all others by
+default.}
 }
 \value{
 A vector of cohen's d effect sizes for each gene.
 }
 \description{
-Finds the effect sizes for all genes in the original dataset, regardless of significance.
+Finds the effect sizes for all genes in the original dataset, regardless of
+significance.
 }

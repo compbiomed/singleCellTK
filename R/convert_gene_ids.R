@@ -12,7 +12,6 @@
 #' @param database The org.*.eg.db database to use. The default is org.Hs.eg.db
 #'
 #' @return A SCtkExperiment with converted gene IDs.
-#'
 #' @export
 #' @examples
 #' if(requireNamespace("org.Mm.eg.db", quietly = TRUE)) {

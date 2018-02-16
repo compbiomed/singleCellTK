@@ -15,3 +15,13 @@ The shiny app will open
 \description{
 Use this function to run the single cell analysis app.
 }
+\examples{
+\dontrun{
+#Upload data through the app
+singleCellTK()
+
+#Load the app with a SCtkExperiment object
+data("GSE60361_subset_sce")
+singleCellTK(GSE60361_subset_sce)}
+
+}

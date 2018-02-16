@@ -4,7 +4,11 @@
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #'
-#' @export
+#' @return list of thresholded counts (on natural scale), thresholds, bins,
+#' densities estimated on each bin, and the original data from
+#' MAST::thresholdSCRNACountMatrix
+#' @export 
+#'
 thresholdGenes <- function(SCEdata, use_assay="logcounts"){
   # data preparation
   expres <- assay(SCEdata, use_assay)
@@ -31,7 +35,9 @@ thresholdGenes <- function(SCEdata, use_assay="logcounts"){
 #' FALSE
 #' @param variable Select the condition of interest
 #'
+#' @return A ggplot object of MAST violin plots.
 #' @export
+#'
 MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
                        samplesize = 49, threshP=FALSE, variable){
   expres <- assay(SCEdata, use_assay)
@@ -74,7 +80,9 @@ MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
 #' FALSE
 #' @param variable Select the condition of interest
 #'
+#' @return A ggplot object of MAST linear regression plots.
 #' @export
+#'
 MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
                            samplesize = 49, threshP=FALSE, variable){
   expres <- assay(SCEdata, use_assay)

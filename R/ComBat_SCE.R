@@ -17,8 +17,36 @@
 #'
 #' @return ComBat matrix based on inputs. You can save this matrix into the
 #' SCtkExperiment with assay()
-#'
 #' @export
+#' @examples
+#' if(requireNamespace("bladderbatch", quietly = TRUE)) {
+#'   library(bladderbatch)
+#'   data(bladderdata)
+#'
+#'   #subset for testing
+#'   dat <- bladderEset[1:50,]
+#'   dat <- as(as(dat, "SummarizedExperiment"), "SCtkExperiment")
+#'   mod <- model.matrix(~as.factor(cancer), data = colData(dat))
+#'
+#'   # parametric adjustment
+#'   combat_edata1 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+#'                               batch = "batch", covariates = NULL)
+#'   assay(dat, "parametric_combat") <- combat_edata1
+#'
+#'   # non-parametric adjustment, mean-only version
+#'   combat_edata2 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+#'                               batch = "batch", par.prior = "Non-parametric",
+#'                               mean.only = TRUE, covariates = NULL)
+#'   assay(dat, "nonparametric_combat_meanonly") <- combat_edata2
+#'
+#'   # reference-batch version, with covariates
+#'   combat_edata3 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+#'                               batch = "batch", covariates = "cancer",
+#'                               ref.batch = 3)
+#'   assay(dat, "refbatch_combat_wcov") <- combat_edata3
+#'   assays(dat)
+#' }
+#'
 ComBat_SCE <- function(SCEdata, batch, use_assay="logcounts",
                        par.prior="Parametric", covariates=NULL, mean.only=FALSE,
                        ref.batch=NULL){
@@ -26,9 +54,10 @@ ComBat_SCE <- function(SCEdata, batch, use_assay="logcounts",
   #prepare model matrix
   mod <- NULL
   if (length(covariates) > 0){
-    mod <- model.matrix(as.formula(paste0("~", paste0(covariates,
-                                                      collapse = "+"))),
-                        data = data.frame(colData(SCEdata)[, covariates, drop = FALSE]))
+    mod <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
+      data = data.frame(SingleCellExperiment::colData(SCEdata)[, covariates,
+                                                               drop = FALSE]))
   }
 
   #prepare parametric
@@ -39,8 +68,8 @@ ComBat_SCE <- function(SCEdata, batch, use_assay="logcounts",
   }
 
   resassay <-
-    sva::ComBat(dat = assay(SCEdata, use_assay),
-                batch = colData(SCEdata)[, batch],
+    sva::ComBat(dat = SummarizedExperiment::assay(SCEdata, use_assay),
+                batch = SingleCellExperiment::colData(SCEdata)[, batch],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
   return(resassay)

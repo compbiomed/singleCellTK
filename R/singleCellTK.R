@@ -5,8 +5,16 @@
 #' @param inputData The input SCtkExperiment class object
 #'
 #' @return The shiny app will open
+#' @export
+#' @examples
+#' \dontrun{
+#' #Upload data through the app
+#' singleCellTK()
 #'
-#' @export singleCellTK
+#' #Load the app with a SCtkExperiment object
+#' data("GSE60361_subset_sce")
+#' singleCellTK(GSE60361_subset_sce)}
+#'
 singleCellTK <- function(inputData=NULL) {
   appDir <- system.file("shiny", package = "singleCellTK")
   if(!is.null(inputData) & is.null(rownames(inputData))){

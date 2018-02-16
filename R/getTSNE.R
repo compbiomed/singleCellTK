@@ -10,7 +10,7 @@
 #' TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
 #' @return A SCE object with the specified reducedDim updated
-#' @export getTSNE
+#' @export
 #'
 getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   if (nrow(count_data) < 500){

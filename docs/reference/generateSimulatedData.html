@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generates a single simulated dataset, bootstrapping from the input counts matrix. — generateSimulatedData • singleCellTK</title>
+<title>Generates a single simulated dataset, bootstrapping from the input counts
+matrix. — generateSimulatedData • singleCellTK</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -119,11 +120,13 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generates a single simulated dataset, bootstrapping from the input counts matrix.</h1>
+    <h1>Generates a single simulated dataset, bootstrapping from the input counts
+matrix.</h1>
     </div>
 
     
-    <p>Generates a single simulated dataset, bootstrapping from the input counts matrix.</p>
+    <p>Generates a single simulated dataset, bootstrapping from the input counts
+matrix.</p>
     
 
     <pre class="usage"><span class='fu'>generateSimulatedData</span>(<span class='no'>totalReads</span>, <span class='no'>cells</span>, <span class='no'>originalData</span>, <span class='no'>realLabels</span>)</pre>
@@ -133,7 +136,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>totalReads</th>
-      <td><p>Numeric. The total number of reads in the simulated dataset, to be split between all simulated cells.</p></td>
+      <td><p>Numeric. The total number of reads in the simulated
+dataset, to be split between all simulated cells.</p></td>
     </tr>
     <tr>
       <th>cells</th>
@@ -141,17 +145,21 @@
     </tr>
     <tr>
       <th>originalData</th>
-      <td><p>Matrix. The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
+      <td><p>Matrix. The original raw readcount matrix. When used
+within the Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
     </tr>
     <tr>
       <th>realLabels</th>
-      <td><p>Factor. The condition labels for differential expression. If only two factors present, will default to t-test. If multiple factors, will default to ANOVA.</p></td>
+      <td><p>Factor. The condition labels for differential expression.
+If only two factors present, will default to t-test. If multiple factors,
+will default to ANOVA.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A simulated counts matrix, the first row of which contains the 'true' labels for each virtual cell.</p>
+    <p>A simulated counts matrix, the first row of which contains the 'true'
+labels for each virtual cell.</p>
     
 
   </div>

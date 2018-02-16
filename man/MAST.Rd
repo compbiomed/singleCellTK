@@ -29,6 +29,9 @@ FALSE.}
 \item{use_assay}{The assay to use for the MAST calculations. The default is
 "logcounts"}
 }
+\value{
+A data.frame of differentially expressed genes with p-values.
+}
 \description{
 Run MAST analysis on a SCESet object.
 }

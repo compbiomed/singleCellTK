@@ -8,7 +8,8 @@
 #' expression_cutoff genes. The default is 1700.
 #'
 #' @return A data.frame object of summary metrics.
-#' @export summarizeTable
+#' @export
+#'
 summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
   return(
     data.frame(
@@ -53,7 +54,7 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
 #' and include it in the object. The default is TRUE
 #'
 #' @return a SCtkExperiment object
-#' @export createSCE
+#' @export
 #' @examples
 #' \dontrun{
 #' GSE60361_sce <- createSCE(assayfile = "/path/to/input_counts.txt",
@@ -116,7 +117,7 @@ createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
 #' The default is TRUE.
 #'
 #' @return The filtered single cell object.
-#' @export filterSCData
+#' @export
 #'
 #' @examples
 #' data("GSE60361_subset_sce")

@@ -14,7 +14,10 @@
 #' @param p.value p values for selecting the hurdle result, default is 0.05
 #' @param usethresh Use adaptive thresholding to filter genes. The default is
 #' FALSE.
+#'
+#' @return A data.frame of differentially expressed genes with p-values.
 #' @export
+#'
 MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
                  freq_expressed = 0.1, fc_threshold=log2(1.5), p.value = 0.05,
                  usethresh=FALSE, use_assay = "logcounts"){

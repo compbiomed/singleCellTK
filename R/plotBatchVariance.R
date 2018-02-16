@@ -13,7 +13,7 @@
 #'
 #' @return A boxplot of variation explained by batch, condition, and
 #' batch+condition (if applicable).
-#' @export plotBatchVariance
+#' @export
 #'
 plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
                               condition=NULL){

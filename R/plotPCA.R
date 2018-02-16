@@ -15,7 +15,7 @@
 
 #'
 #' @return A PCA plot
-#' @export plotPCA
+#' @export
 #'
 plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
@@ -35,7 +35,7 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
   if(!(pcY %in% colnames(pca_df))){
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
-  
+
   if(class(count_data) == "SCtkExperiment"){
     if (all(c(pcX, pcY) %in% rownames(pca_variances(count_data)))){
       #use the variances in pca_variances

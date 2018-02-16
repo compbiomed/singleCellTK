@@ -8,20 +8,28 @@ differentialPower(datamatrix, downmatrix, conditions, genelist = FALSE,
   significance = 0.05, method = "tpm.t")
 }
 \arguments{
-\item{datamatrix}{The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").}
+\item{datamatrix}{The original raw readcount matrix. When used within the
+Shiny app, this will be assay(SCEsetObject, "counts").}
 
-\item{downmatrix}{The 4-dimensional array of simulated subsampled datasets. Produced by Downsample()}
+\item{downmatrix}{The 4-dimensional array of simulated subsampled datasets.
+Produced by Downsample()}
 
-\item{conditions}{A vector of conditions, such as treatment or batch. Passed as colData(SCtkExperiment)$treatment.}
+\item{conditions}{A vector of conditions, such as treatment or batch. Passed
+as colData(SCtkExperiment)$treatment.}
 
-\item{genelist}{Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the original data.}
+\item{genelist}{Optional vector of genes to be searched for differential
+expression. If provided, diffexp will not be performed on the original data.}
 
-\item{significance}{Significance threshold, a float between 0 and 1 (exclusive).}
+\item{significance}{Significance threshold, a float between 0 and 1
+(exclusive).}
 
-\item{method}{Which method should be used for differential expression. Default is simple tpm-based t-test for speed.}
+\item{method}{Which method should be used for differential expression.
+Default is simple tpm-based t-test for speed.}
 }
 \value{
-A matrix of recapitulation - rows are genes that were differentially expressed in the original set (or passed as 'genelist'), columns are simulated depths.
+A matrix of recapitulation - rows are genes that were differentially
+expressed in the original set (or passed as 'genelist'), columns are
+simulated depths.
 }
 \description{
 Calculate power to discover differentially expressed genes upon subsampling

@@ -61,6 +61,6 @@ singlecellobject <- alignSingleCellData(
   index_path = "/path/to/genome/index",
   gtf_annotation = "/path/to/gene/annotations.gtf",
   sample_annotations = sample.annotation.df,
-  threads=4)
-}
+  threads=4)}
+
 }

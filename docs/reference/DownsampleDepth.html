@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimate numbers of detected genes, significantly differentially expressed genes, and median significant effect size — DownsampleDepth • singleCellTK</title>
+<title>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size — DownsampleDepth • singleCellTK</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -119,11 +120,13 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimate numbers of detected genes, significantly differentially expressed genes, and median significant effect size</h1>
+    <h1>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size</h1>
     </div>
 
     
-    <p>Estimate numbers of detected genes, significantly differentially expressed genes, and median significant effect size</p>
+    <p>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size</p>
     
 
     <pre class="usage"><span class='fu'>DownsampleDepth</span>(<span class='no'>originalData</span>, <span class='kw'>minCount</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>minCells</span> <span class='kw'>=</span> <span class='fl'>3</span>,
@@ -134,15 +137,18 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>originalData</th>
-      <td><p>Matrix. The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
+      <td><p>Matrix. The original raw readcount matrix. When used
+within the Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
     </tr>
     <tr>
       <th>minCount</th>
-      <td><p>Numeric. The minimum number of reads found for a gene to be considered detected.</p></td>
+      <td><p>Numeric. The minimum number of reads found for a gene to be
+considered detected.</p></td>
     </tr>
     <tr>
       <th>minCells</th>
-      <td><p>Numeric. The minimum number of cells a gene must have at least 1 read in for it to be considered detected.</p></td>
+      <td><p>Numeric. The minimum number of cells a gene must have at
+least 1 read in for it to be considered detected.</p></td>
     </tr>
     <tr>
       <th>maxDepth</th>
@@ -150,21 +156,31 @@
     </tr>
     <tr>
       <th>realLabels</th>
-      <td><p>Factor. The condition labels for differential expression. If only two factors present, will default to t-test. If multiple factors, will default to ANOVA.</p></td>
+      <td><p>Factor. The condition labels for differential expression.
+If only two factors present, will default to t-test. If multiple factors,
+will default to ANOVA.</p></td>
     </tr>
     <tr>
       <th>depthResolution</th>
-      <td><p>Numeric. How many different read depth should the script simulate? Will simulate a number of experimental designs ranging from 10 reads to maxReadDepth, with logarithmic spacing.</p></td>
+      <td><p>Numeric. How many different read depth should the
+script simulate? Will simulate a number of experimental designs ranging from
+10 reads to maxReadDepth, with logarithmic spacing.</p></td>
     </tr>
     <tr>
       <th>iterations</th>
-      <td><p>Numeric. How many times should each experimental design be simulated?</p></td>
+      <td><p>Numeric. How many times should each experimental design be
+simulated?</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A 3-dimensional array, with dimensions = c(iterations, depthResolution, 3). [,,1] contains the number of detected genes in each simulated dataset, [,,2] contains the number of significantly differentially expressed genes in each simulation, and [,,3] contains the mediansignificant effect size in each simulation. If no genes are significantly differentially expressed, the median effect size defaults to infinity.</p>
+    <p>A 3-dimensional array, with dimensions = c(iterations,
+depthResolution, 3). [,,1] contains the number of detected genes in each
+simulated dataset, [,,2] contains the number of significantly differentially
+expressed genes in each simulation, and [,,3] contains the mediansignificant
+effect size in each simulation. If no genes are significantly differentially
+expressed, the median effect size defaults to infinity.</p>
     
 
   </div>

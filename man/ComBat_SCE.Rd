@@ -35,3 +35,33 @@ SCtkExperiment with assay()
 \description{
 Run ComBat on a SCtkExperiment object
 }
+\examples{
+if(requireNamespace("bladderbatch", quietly = TRUE)) {
+  library(bladderbatch)
+  data(bladderdata)
+
+  #subset for testing
+  dat <- bladderEset[1:50,]
+  dat <- as(as(dat, "SummarizedExperiment"), "SCtkExperiment")
+  mod <- model.matrix(~as.factor(cancer), data = colData(dat))
+
+  # parametric adjustment
+  combat_edata1 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+                              batch = "batch", covariates = NULL)
+  assay(dat, "parametric_combat") <- combat_edata1
+
+  # non-parametric adjustment, mean-only version
+  combat_edata2 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+                              batch = "batch", par.prior = "Non-parametric",
+                              mean.only = TRUE, covariates = NULL)
+  assay(dat, "nonparametric_combat_meanonly") <- combat_edata2
+
+  # reference-batch version, with covariates
+  combat_edata3 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",
+                              batch = "batch", covariates = "cancer",
+                              ref.batch = 3)
+  assay(dat, "refbatch_combat_wcov") <- combat_edata3
+  assays(dat)
+}
+
+}

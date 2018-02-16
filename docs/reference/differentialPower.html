@@ -134,33 +134,41 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>datamatrix</th>
-      <td><p>The original raw readcount matrix. When used within the Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
+      <td><p>The original raw readcount matrix. When used within the
+Shiny app, this will be assay(SCEsetObject, "counts").</p></td>
     </tr>
     <tr>
       <th>downmatrix</th>
-      <td><p>The 4-dimensional array of simulated subsampled datasets. Produced by Downsample()</p></td>
+      <td><p>The 4-dimensional array of simulated subsampled datasets.
+Produced by Downsample()</p></td>
     </tr>
     <tr>
       <th>conditions</th>
-      <td><p>A vector of conditions, such as treatment or batch. Passed as colData(SCtkExperiment)$treatment.</p></td>
+      <td><p>A vector of conditions, such as treatment or batch. Passed
+as colData(SCtkExperiment)$treatment.</p></td>
     </tr>
     <tr>
       <th>genelist</th>
-      <td><p>Optional vector of genes to be searched for differential expression. If provided, diffexp will not be performed on the original data.</p></td>
+      <td><p>Optional vector of genes to be searched for differential
+expression. If provided, diffexp will not be performed on the original data.</p></td>
     </tr>
     <tr>
       <th>significance</th>
-      <td><p>Significance threshold, a float between 0 and 1 (exclusive).</p></td>
+      <td><p>Significance threshold, a float between 0 and 1
+(exclusive).</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Which method should be used for differential expression. Default is simple tpm-based t-test for speed.</p></td>
+      <td><p>Which method should be used for differential expression.
+Default is simple tpm-based t-test for speed.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A matrix of recapitulation - rows are genes that were differentially expressed in the original set (or passed as 'genelist'), columns are simulated depths.</p>
+    <p>A matrix of recapitulation - rows are genes that were differentially
+expressed in the original set (or passed as 'genelist'), columns are
+simulated depths.</p>
     
 
   </div>
