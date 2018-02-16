@@ -27,8 +27,7 @@
 #' should contain one factor from condition to use as the control.
 #'
 #' @return A list of differentially expressed genes.
-#' @export scDiffEx
-#'
+#' @export
 #' @examples
 #' \dontrun{
 #' scDiffEx(newsceset_david, "age", "0.1")
@@ -108,7 +107,7 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
-#' @export plot_DiffEx
+#' @export
 #'
 plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
                         clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
@@ -164,7 +163,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
-#' @export scDiffEx_deseq2
+#' @export
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                             analysis_type="biomarker", levelofinterest=NULL,
@@ -236,7 +235,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
-#' @export scDiffEx_limma
+#' @export
 #'
 scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
                            levelofinterest=NULL, covariates=NULL){
@@ -285,7 +284,7 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' @param covariates Additional covariates to add to the model.
 #'
 #' @return A data frame of gene names and adjusted p-values
-#' @export scDiffEx_anova
+#' @export
 #'
 scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
                            covariates=NULL){

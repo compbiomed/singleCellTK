@@ -17,6 +17,9 @@ iterateSimulations(originalData, realLabels, totalReads, cells, iterations)
 
 \item{iterations}{TODO: document}
 }
+\value{
+A matrix of significance information from a snapshot
+}
 \description{
 Returns significance data from a snapshot.
 }

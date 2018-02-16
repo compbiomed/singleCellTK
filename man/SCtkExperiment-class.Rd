@@ -5,6 +5,13 @@
 \alias{SCtkExperiment-class}
 \title{A lightweight S4 extension to the SingleCellExperiment class to store
 additional information.}
+\arguments{
+\item{value}{The DataFrame of pca_variances}
+}
+\value{
+A SingleCellExperiment like object with an addition pca_variances
+slot.
+}
 \description{
 A lightweight S4 extension to the SingleCellExperiment class to store
 additional information.

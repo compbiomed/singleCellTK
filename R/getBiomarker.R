@@ -10,7 +10,7 @@
 #' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
 #'
 #' @return A data.frame of expression values
-#' @export getBiomarker
+#' @export
 #'
 getBiomarker <- function(count_data, gene, binary="Binary", use_assay="counts"){
   # Get sample names

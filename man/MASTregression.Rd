@@ -22,6 +22,9 @@ FALSE}
 
 \item{variable}{Select the condition of interest}
 }
+\value{
+A ggplot object of MAST linear regression plots.
+}
 \description{
 Run MAST analysis on a SCtkExperiment object.
 }

@@ -26,7 +26,7 @@
 #' files are paired end.
 #'
 #' @return Object to import into the shiny app.
-#' @export alignSingleCellData
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -38,8 +38,8 @@
 #'   index_path = "/path/to/genome/index",
 #'   gtf_annotation = "/path/to/gene/annotations.gtf",
 #'   sample_annotations = sample.annotation.df,
-#'   threads=4)
-#' }
+#'   threads=4)}
+#'
 alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                                 gtf_annotation, output_dir=NULL,
                                 sample_annotations=NULL,
@@ -51,7 +51,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
          call. = FALSE)
   }
 
-  if (any(grepl("~", c(inputfile1, inputfile2, index_path, gtf_annotation, output_dir)), na.rm = TRUE)){
+  if (any(grepl("~", c(inputfile1, inputfile2, index_path, gtf_annotation,
+                       output_dir)), na.rm = TRUE)){
     stop("ERROR: tilde ~ filenames are not supported. Provide the full path.")
   }
 
@@ -111,7 +112,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     }
     bam_file_path <- paste(output_dir,
                            paste(sample_name, "bam", sep = "."), sep = "/")
-    if (grepl("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$", inputfile1[i])){
+    if (grepl("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$",
+              inputfile1[i])){
       rsub_log_file <- tempfile()
       rsub_log <- file(rsub_log_file, open = "wt")
       sink(rsub_log, type = "output")
@@ -160,7 +162,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 
     #add the feature counts to the countframe
     if (is.null(countframe)){
-      countframe <- data.frame(fCountsList$counts, row.names = fCountsList$annotation[, 1])
+      countframe <- data.frame(fCountsList$counts,
+                               row.names = fCountsList$annotation[, 1])
       colnames(countframe)[i] <- sample_name
     } else {
       countframe <- cbind(countframe, data.frame(fCountsList$counts))
@@ -217,7 +220,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     }
   }
 
-  #createsceset from the count file, multiqcdata, and annotations if they exist (validate the sample names are right)
+  #createsceset from the count file, multiqcdata, and annotations if they exist
+  # (validate the sample names are right)
   scobject <- createSCE(countfile = countframe,
                         annotfile = sample_annotations,
                         featurefile = feature_annotations,
@@ -238,14 +242,18 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 #' information
 #' @export
 #'
-parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_name=NULL){
+parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL,
+                                sample_name=NULL){
   #process feature count log num reads and log num featured
   f_fh <- file(featurecount_log, open = "r")
   features <- readLines(f_fh)
   close(f_fh)
-  total_line <- unlist(strsplit(features[grep("Total reads ", features)], " +", perl = TRUE))
-  feature_line <- unlist(strsplit(features[grep("Successfully assigned reads", features)], " +", perl = TRUE))
-  total_reads <- as.numeric(gsub(",", "", total_line[grep("reads", total_line) + 2]))
+  total_line <- unlist(strsplit(features[grep("Total reads ", features)],
+                                " +", perl = TRUE))
+  feature_line <- unlist(strsplit(features[grep("Successfully assigned reads",
+                                                features)], " +", perl = TRUE))
+  total_reads <- as.numeric(gsub(",", "", total_line[grep("reads",
+                                                          total_line) + 2]))
   feature_reads <- as.numeric(gsub(",", "", feature_line[grep("reads", feature_line) + 2]))
   #if not null align log
   if (!is.null(align_log)){
@@ -253,8 +261,10 @@ parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL, sample_na
     a_fh <- file(align_log, open = "r")
     align <- readLines(a_fh)
     close(a_fh)
-    map_line <- unlist(strsplit(align[grep("Mapped", align)], " +", perl = TRUE))
-    mapped_reads <- as.numeric(gsub(",", "", map_line[grep("reads", map_line) - 1]))
+    map_line <- unlist(strsplit(align[grep("Mapped", align)], " +",
+                                perl = TRUE))
+    mapped_reads <- as.numeric(gsub(",", "", map_line[grep("reads",
+                                                           map_line) - 1]))
     return(data.frame(total_reads = total_reads,
                       reads_mapped = mapped_reads,
                       pct_mapped = mapped_reads / total_reads,

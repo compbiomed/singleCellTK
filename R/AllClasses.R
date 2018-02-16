@@ -3,6 +3,10 @@
 #'
 #' @slot pca_variances The percent variation contained in each PCA dimension
 #'
+#' @param value The DataFrame of pca_variances
+#'
+#' @return A SingleCellExperiment like object with an addition pca_variances
+#' slot.
 #' @exportClass SCtkExperiment
 #'
 setClass("SCtkExperiment",
@@ -14,7 +18,9 @@ setClass("SCtkExperiment",
 #' @param ... SingleCellExperiment and SummarizedExperiment components
 #' @param pca_variances The percent variation contained in each PCA dimension
 #'
-#' @export SCtkExperiment
+#' @return A SingleCellExperiment like object with an addition pca_variances
+#' slot.
+#' @export
 #'
 SCtkExperiment <- function(..., pca_variances = DataFrame()) {
   sce <- SingleCellExperiment(...)

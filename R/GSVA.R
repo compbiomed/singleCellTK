@@ -18,6 +18,7 @@
 #' @return A data.frame of pathway activity scores from GSVA.
 #' 
 #' @export
+#'
 GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...){
   if (pathway_source == "Manual Input"){
     #expecting logical vector
@@ -59,6 +60,7 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
 #' @return The requested plot of the GSVA results.
 #' 
 #' @export
+#'
 GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
   if (plot_type == "Violin"){
     if(nrow(gsva_data) > 49){

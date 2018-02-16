@@ -15,7 +15,7 @@
 #' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
 #' @return A Biomarker plot
-#' @export plotBiomarker
+#' @export
 #'
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
                           shape="No Shape", x="PC1", y="PC2",

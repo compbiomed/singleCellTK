@@ -13,7 +13,7 @@
 #' Default is "counts"
 #'
 #' @return A t-SNE plot
-#' @export plotTSNE
+#' @export
 #'
 plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
                      reducedDimName="TSNE", runTSNE=FALSE,

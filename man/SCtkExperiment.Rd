@@ -11,6 +11,10 @@ SCtkExperiment(..., pca_variances = DataFrame())
 
 \item{pca_variances}{The percent variation contained in each PCA dimension}
 }
+\value{
+A SingleCellExperiment like object with an addition pca_variances
+slot.
+}
 \description{
 Create a SCtkExperiment
 }

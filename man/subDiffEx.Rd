@@ -2,16 +2,22 @@
 % Please edit documentation in R/Downsample.Matrix.R
 \name{subDiffEx}
 \alias{subDiffEx}
-\title{Passes the output of generateSimulatedData() to differential expression tests, picking either t-tests or ANOVA for data with only two conditions or multiple conditions, respectively.}
+\title{Passes the output of generateSimulatedData() to differential expression
+tests, picking either t-tests or ANOVA for data with only two conditions or
+multiple conditions, respectively.}
 \usage{
 subDiffEx(tempData)
 }
 \arguments{
-\item{tempData}{Matrix. The output of generateSimulatedData(), where the first row contains condition labels.}
+\item{tempData}{Matrix. The output of generateSimulatedData(), where the
+first row contains condition labels.}
 }
 \value{
-A vector of fdr-adjusted p-values for all genes. Nonviable results (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
+A vector of fdr-adjusted p-values for all genes. Nonviable results
+(such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 }
 \description{
-Passes the output of generateSimulatedData() to differential expression tests, picking either t-tests or ANOVA for data with only two conditions or multiple conditions, respectively.
+Passes the output of generateSimulatedData() to differential expression
+tests, picking either t-tests or ANOVA for data with only two conditions or
+multiple conditions, respectively.
 }

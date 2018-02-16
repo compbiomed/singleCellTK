@@ -12,6 +12,11 @@ thresholdGenes(SCEdata, use_assay = "logcounts")
 \item{use_assay}{The assay to use for the MAST calculations. The default is
 "logcounts"}
 }
+\value{
+list of thresholded counts (on natural scale), thresholds, bins,
+densities estimated on each bin, and the original data from
+MAST::thresholdSCRNACountMatrix
+}
 \description{
 thresholdGenes
 }

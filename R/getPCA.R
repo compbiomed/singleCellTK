@@ -11,7 +11,7 @@
 #'
 #' @return A SCtkE object with the specified reduecedDim and pca_variances
 #' updated
-#' @export getPCA
+#' @export
 #'
 getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   if (nrow(count_data) < 500){
@@ -37,7 +37,8 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   reducedDim(count_data, reducedDimName) <- pca
   if(class(count_data) == "SCtkExperiment"){
     pca_variances(count_data) <- DataFrame(percentVar)
-    rownames(pca_variances(count_data)) <- paste0("PC", 1:nrow(pca_variances(count_data)))
+    rownames(pca_variances(count_data)) <- paste0(
+      "PC", 1:nrow(pca_variances(count_data)))
   }
   return(count_data)
 }

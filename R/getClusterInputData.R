@@ -7,7 +7,7 @@
 #' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
 #' @return Cluster input data
-#' @export getClusterInputData
+#' @export
 #'
 getClusterInputData <- function(count_data, inputData, use_assay="logcounts",
                                 reducedDimName=NULL){

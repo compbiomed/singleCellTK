@@ -2,7 +2,8 @@
 % Please edit documentation in R/Downsample.Matrix.R
 \name{subDiffEx_anova}
 \alias{subDiffEx_anova}
-\title{Runs ANOVA on all genes in a simulated dataset with more than 2 conditions, and adjusts for FDR.}
+\title{Runs ANOVA on all genes in a simulated dataset with more than 2 conditions,
+and adjusts for FDR.}
 \usage{
 subDiffEx_anova(countMatrix, condition)
 }
@@ -12,8 +13,10 @@ subDiffEx_anova(countMatrix, condition)
 \item{condition}{Factor. The condition labels for the simulated cells.}
 }
 \value{
-A vector of fdr-adjusted p-values for all genes. Nonviable results (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
+A vector of fdr-adjusted p-values for all genes. Nonviable results
+(such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 }
 \description{
-Runs ANOVA on all genes in a simulated dataset with more than 2 conditions, and adjusts for FDR.
+Runs ANOVA on all genes in a simulated dataset with more than 2 conditions,
+and adjusts for FDR.
 }

@@ -20,6 +20,11 @@ pca_variances(x, ...)
 
 \item{value}{The DataFrame of pca_variances}
 }
+\value{
+A data frame of percent variation explained by each PC.
+
+A SCtkExperiment object with the pca_variances object set.
+}
 \description{
 Get PCA variances
 
