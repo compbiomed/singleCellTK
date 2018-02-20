@@ -89,12 +89,12 @@ createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
   if (is.null(annotfile)){
     annotin <- data.frame(row.names = colnames(countsin))
     annotin$Sample <- rownames(annotin)
-    annotin <- DataFrame(annotin)
+    annotin <- S4Vectors::DataFrame(annotin)
   }
   if (is.null(featurefile)){
     featurein <- data.frame(Gene = rownames(countsin))
     rownames(featurein) <- featurein$Gene
-    featurein <- DataFrame(featurein)
+    featurein <- S4Vectors::DataFrame(featurein)
   }
   assaylist <- list()
   assaylist[[assay_name]] <- as.matrix(countsin)

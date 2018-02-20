@@ -34,7 +34,9 @@ convert_gene_ids <- function(inSCESet, in_symbol, out_symbol,
     "org.Rn.eg.db","org.Sc.sgd.db","org.Ss.eg.db","org.Xl.eg.db"))){
     stop("The database you want to use, ", database, ", is not supported")
   }
-  if(!(database %in% as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE)))){
+  if(!(database %in% as.character(grep("^org\\.",
+                                       utils::installed.packages()[, "Package"],
+                                       value = TRUE)))){
     stop("The database you want to use, ", database, ", is not installed.")
   }
   if(!(database %in% (.packages()))){

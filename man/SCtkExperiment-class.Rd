@@ -22,3 +22,16 @@ additional information.
 \item{\code{pca_variances}}{The percent variation contained in each PCA dimension}
 }}
 
+\examples{
+data("GSE60361_subset_sce")
+counts_mat <- assay(GSE60361_subset_sce, "counts")
+sample_annot <- colData(GSE60361_subset_sce)
+row_annot <- rowData(GSE60361_subset_sce)
+newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
+                         colData=sample_annot,
+                         rowData=row_annot)
+newSCE <- getPCA(newSCE, use_assay = "counts")
+#View the percent variation of the PCA
+pca_variances(newSCE)
+
+}

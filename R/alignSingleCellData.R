@@ -183,16 +183,11 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
     }
     if (save_count_files){
       savecounts <- cbind(fCountsList$annotation[, 1], fCountsList$counts)
-      write.table(savecounts,
-                  paste(output_dir,
-                        paste(sample_name,
-                              "featureCounts",
-                              sep = "."),
-                        sep = "/"),
-                  sep = "\t",
-                  col.names = FALSE,
-                  row.names = FALSE,
-                  quote = FALSE)
+      utils::write.table(savecounts, paste(output_dir,
+                                           paste(sample_name, "featureCounts",
+                                                 sep = "."), sep = "/"),
+                         sep = "\t", col.names = FALSE, row.names = FALSE,
+                         quote = FALSE)
     }
   }
 
@@ -222,7 +217,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 
   #createsceset from the count file, multiqcdata, and annotations if they exist
   # (validate the sample names are right)
-  scobject <- createSCE(countfile = countframe,
+  scobject <- createSCE(assayfile = countframe,
                         annotfile = sample_annotations,
                         featurefile = feature_annotations,
                         inputdataframes = TRUE)

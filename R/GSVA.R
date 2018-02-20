@@ -32,7 +32,7 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
       gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), biomarker, ...)
     }
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
-    data("c2BroadSets", package = "GSVAdata", envir = .myenv)
+    utils::data("c2BroadSets", package = "GSVAdata", envir = .myenv)
     c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathway_names) {
@@ -89,7 +89,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
       cond_levels <- unique(cond)
       if (length(cond_levels) < 8){
         col <- list()
-        col[[paste(condition, collapse = "_")]] <- setNames(colors[1:length(cond_levels)], cond_levels)
+        col[[paste(condition, collapse = "_")]] <- stats::setNames(colors[1:length(cond_levels)], cond_levels)
         conddf <- data.frame(cond, row.names = colnames(gsva_data))
         colnames(conddf) <- paste(condition, collapse = "_")
         topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,

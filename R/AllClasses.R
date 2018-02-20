@@ -8,6 +8,17 @@
 #' @return A SingleCellExperiment like object with an addition pca_variances
 #' slot.
 #' @exportClass SCtkExperiment
+#' @examples
+#' data("GSE60361_subset_sce")
+#' counts_mat <- assay(GSE60361_subset_sce, "counts")
+#' sample_annot <- colData(GSE60361_subset_sce)
+#' row_annot <- rowData(GSE60361_subset_sce)
+#' newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
+#'                          colData=sample_annot,
+#'                          rowData=row_annot)
+#' newSCE <- getPCA(newSCE, use_assay = "counts")
+#' #View the percent variation of the PCA
+#' pca_variances(newSCE)
 #'
 setClass("SCtkExperiment",
          slots = c(pca_variances = "DataFrame"),
@@ -21,9 +32,20 @@ setClass("SCtkExperiment",
 #' @return A SingleCellExperiment like object with an addition pca_variances
 #' slot.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' counts_mat <- assay(GSE60361_subset_sce, "counts")
+#' sample_annot <- colData(GSE60361_subset_sce)
+#' row_annot <- rowData(GSE60361_subset_sce)
+#' newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
+#'                          colData=sample_annot,
+#'                          rowData=row_annot)
+#' newSCE <- getPCA(newSCE, use_assay = "counts")
+#' #View the percent variation of the PCA
+#' pca_variances(newSCE)
 #'
-SCtkExperiment <- function(..., pca_variances = DataFrame()) {
+SCtkExperiment <- function(..., pca_variances = S4Vectors::DataFrame()) {
   sce <- SingleCellExperiment(...)
-  out <- new("SCtkExperiment", sce, pca_variances = DataFrame())
+  out <- new("SCtkExperiment", sce, pca_variances = S4Vectors::DataFrame())
   return(out)
 }
