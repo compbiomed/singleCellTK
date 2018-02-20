@@ -11,6 +11,18 @@
 #'
 #' @return A SCE object with the specified reducedDim updated
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' #add a CPM assay
+#' assay(GSE60361_subset_sce, "cpm") <- apply(assay(GSE60361_subset_sce,
+#'                                                  "counts"),
+#'                                            2, function(x) {
+#'                                              x / (sum(x) / 1000000)
+#'                                            })
+#' GSE60361_subset_sce <- getTSNE(GSE60361_subset_sce,
+#'                                use_assay = "cpm",
+#'                                reducedDimName = "TSNE_cpm")
+#' reducedDims(GSE60361_subset_sce)
 #'
 getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   if (nrow(count_data) < 500){

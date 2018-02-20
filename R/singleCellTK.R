@@ -7,13 +7,16 @@
 #' @return The shiny app will open
 #' @export
 #' @examples
-#' \dontrun{
 #' #Upload data through the app
-#' singleCellTK()
+#' if(interactive()){
+#'   singleCellTK()
+#' }
 #'
 #' #Load the app with a SCtkExperiment object
-#' data("GSE60361_subset_sce")
-#' singleCellTK(GSE60361_subset_sce)}
+#' if(interactive()){
+#'   data("GSE60361_subset_sce")
+#'   singleCellTK(GSE60361_subset_sce)
+#' }
 #'
 singleCellTK <- function(inputData=NULL) {
   appDir <- system.file("shiny", package = "singleCellTK")

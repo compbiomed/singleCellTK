@@ -33,3 +33,9 @@ A PCA plot
 \description{
 Use this function to plot PCA results
 }
+\examples{
+data("GSE60361_subset_sce")
+plotPCA(GSE60361_subset_sce, colorBy = "level1class",
+        reducedDimName = "PCA_counts")
+
+}
