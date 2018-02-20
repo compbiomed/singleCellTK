@@ -29,9 +29,11 @@
 #' @return A list of differentially expressed genes.
 #' @export
 #' @examples
-#' \dontrun{
-#' scDiffEx(newsceset_david, "age", "0.1")
-#' }
+#' data("GSE60361_subset_sce")
+#' res <- scDiffEx(GSE60361_subset_sce,
+#'                 use_assay = "logcounts",
+#'                 "level1class",
+#'                 diffexmethod = "limma")
 #'
 scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
@@ -108,6 +110,14 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
 #' @return ComplexHeatmap object for the provided geneList annotated with the
 #' condition.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- scDiffEx(GSE60361_subset_sce,
+#'                 use_assay = "logcounts",
+#'                 "level1class",
+#'                 diffexmethod = "limma")
+#' plot_DiffEx(GSE60361_subset_sce, condition = "level1class",
+#'             geneList = rownames(res)[1:50], annotationColors = "auto")
 #'
 plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
                         clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
