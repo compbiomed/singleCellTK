@@ -9,6 +9,9 @@
 #'
 #' @return A data.frame object of summary metrics.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' summarizeTable(GSE60361_subset_sce)
 #'
 summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
   return(
@@ -56,10 +59,14 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
 #' @return a SCtkExperiment object
 #' @export
 #' @examples
-#' \dontrun{
-#' GSE60361_sce <- createSCE(assayfile = "/path/to/input_counts.txt",
-#'                           annotfile = "/path/to/input_annots.txt")
-#'}
+#' data("GSE60361_subset_sce")
+#' counts_mat <- assay(GSE60361_subset_sce, "counts")
+#' sample_annot <- colData(GSE60361_subset_sce)
+#' row_annot <- rowData(GSE60361_subset_sce)
+#' newSCE <- createSCE(assayfile = counts_mat, annotfile = sample_annot, 
+#'                     featurefile = row_annot, assay_name = "counts",
+#'                     inputdataframes = TRUE, create_logcounts = TRUE)
+#'
 createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
                       assay_name="counts", inputdataframes=FALSE,
                       create_logcounts=TRUE){

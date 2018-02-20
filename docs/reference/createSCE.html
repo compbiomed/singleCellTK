@@ -173,10 +173,13 @@ and include it in the object. The default is TRUE</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>GSE60361_sce</span> <span class='kw'>&lt;-</span> <span class='fu'>createSCE</span>(<span class='kw'>assayfile</span> <span class='kw'>=</span> <span class='st'>"/path/to/input_counts.txt"</span>,
-                          <span class='kw'>annotfile</span> <span class='kw'>=</span> <span class='st'>"/path/to/input_annots.txt"</span>)
-<span class='co'># }</span></pre>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='no'>counts_mat</span> <span class='kw'>&lt;-</span> <span class='fu'>assay</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='st'>"counts"</span>)
+<span class='no'>sample_annot</span> <span class='kw'>&lt;-</span> <span class='fu'>colData</span>(<span class='no'>GSE60361_subset_sce</span>)
+<span class='no'>row_annot</span> <span class='kw'>&lt;-</span> <span class='fu'>rowData</span>(<span class='no'>GSE60361_subset_sce</span>)
+<span class='no'>newSCE</span> <span class='kw'>&lt;-</span> <span class='fu'>createSCE</span>(<span class='kw'>assayfile</span> <span class='kw'>=</span> <span class='no'>counts_mat</span>, <span class='kw'>annotfile</span> <span class='kw'>=</span> <span class='no'>sample_annot</span>,
+                    <span class='kw'>featurefile</span> <span class='kw'>=</span> <span class='no'>row_annot</span>, <span class='kw'>assay_name</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+                    <span class='kw'>inputdataframes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>create_logcounts</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -55,8 +55,10 @@ A list of differentially expressed genes.
 Create a heatmap for differential expression analysis
 }
 \examples{
-\dontrun{
-scDiffEx(newsceset_david, "age", "0.1")
-}
+data("GSE60361_subset_sce")
+res <- scDiffEx(GSE60361_subset_sce,
+                use_assay = "logcounts",
+                "level1class",
+                diffexmethod = "limma")
 
 }

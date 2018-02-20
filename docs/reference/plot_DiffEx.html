@@ -197,6 +197,14 @@ no color bar is shown. default is NULL.</p></td>
 condition.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='scDiffEx.html'>scDiffEx</a></span>(<span class='no'>GSE60361_subset_sce</span>,
+                <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
+                <span class='st'>"level1class"</span>,
+                <span class='kw'>diffexmethod</span> <span class='kw'>=</span> <span class='st'>"limma"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Zero sample variances detected, have been offset away from zero</span></div><div class='input'><span class='fu'>plot_DiffEx</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"level1class"</span>,
+            <span class='kw'>geneList</span> <span class='kw'>=</span> <span class='fu'>rownames</span>(<span class='no'>res</span>)[<span class='fl'>1</span>:<span class='fl'>50</span>], <span class='kw'>annotationColors</span> <span class='kw'>=</span> <span class='st'>"auto"</span>)</div><div class='img'><img src='plot_DiffEx-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -204,7 +212,9 @@ condition.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
