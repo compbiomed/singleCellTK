@@ -181,7 +181,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   originalData <- t(t(originalData) / apply(originalData, 2, sum))
   output <- matrix(nrow = dim(originalData)[1], ncol = length(cells))
   for(i in 1:length(cells)){
-    output[, i] <- rmultinom(1, totalReads, originalData[, cells[i]])
+    output[, i] <- stats::rmultinom(1, totalReads, originalData[, cells[i]])
   }
   return(rbind(realLabels[cells], output))
 }
@@ -255,8 +255,8 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
   tval <- multtest::mt.teststat(dataset, classlabel = class.labels,
                                 test = test.type, nonpara = "n")
   df <- (ncol(dataset) - 2)
-  pval <- 2 * (1 - pt(abs(tval), df))
-  fdr <- p.adjust(pval, method = "fdr")
+  pval <- 2 * (1 - stats::pt(abs(tval), df))
+  fdr <- stats::p.adjust(pval, method = "fdr")
   return(fdr)
 }
 
@@ -271,8 +271,8 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #' @export
 #'
 subDiffEx_anova <- function(countMatrix, condition){
-  mod <- model.matrix(~as.factor(condition))
-  mod0 <- model.matrix(~1, data = condition)
+  mod <- stats::model.matrix(~as.factor(condition))
+  mod0 <- stats::model.matrix(~1, data = condition)
   dat <- log2(countMatrix + 1)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
@@ -287,8 +287,8 @@ subDiffEx_anova <- function(countMatrix, condition){
   rss1 <- resid ^ 2 %*% rep(1, n)
   rss0 <- resid0 ^ 2 %*% rep(1, n)
   fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
-  p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
-  return(p.adjust(p, method = "fdr"))
+  p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
+  return(stats::p.adjust(p, method = "fdr"))
 }
 
 #' Finds the effect sizes for all genes in the original dataset, regardless of
@@ -337,87 +337,4 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
     }
   }
   return(outmat)
-}
-
-#' Calculate power to discover differentially expressed genes upon subsampling
-#'
-#' @param datamatrix The original raw readcount matrix. When used within the
-#' Shiny app, this will be assay(SCEsetObject, "counts").
-#' @param downmatrix The 4-dimensional array of simulated subsampled datasets.
-#' Produced by Downsample()
-#' @param conditions A vector of conditions, such as treatment or batch. Passed
-#' as colData(SCtkExperiment)$treatment.
-#' @param genelist Optional vector of genes to be searched for differential
-#' expression. If provided, diffexp will not be performed on the original data.
-#' @param significance Significance threshold, a float between 0 and 1
-#' (exclusive).
-#' @param method Which method should be used for differential expression.
-#' Default is simple tpm-based t-test for speed.
-#'
-#' @return A matrix of recapitulation - rows are genes that were differentially
-#' expressed in the original set (or passed as 'genelist'), columns are
-#' simulated depths.
-#' @export
-#'
-differentialPower <- function(datamatrix, downmatrix, conditions,
-                              genelist=FALSE, significance=0.05,
-                              method="tpm.t"){
-  condition <- as.factor(conditions)
-  if (genelist == FALSE){
-    if (method == "tpm.t"){
-      shrunkDown <- datamatrix[apply(datamatrix, 1, sum) > 10, ]
-      genenames <- rownames(datamatrix[apply(datamatrix, 1, sum) > 10, ])
-      scaledMatrix <- apply(shrunkDown, 2, function(x){
-        x / sum(x)
-      })
-      t.result <- multiple.t.test(condition, scaledMatrix)
-      genelist <- genenames[which(t.result <= significance)]
-    }
-    else{
-      shrunkDown <- datamatrix[apply(datamatrix, 1, sum) > 10, ]
-      genenames <- rownames(datamatrix[apply(datamatrix, 1, sum) > 10, ])
-      countData <- newCountDataSet(shrunkDown, condition)
-      countData <- estimateSizeFactors(countData)
-      countData <- estimateDispersions(countData, method = "pooled",
-                                       fitType = "local")
-      diff.results <- nbinomTest(countData, levels(condition)[1],
-                                 levels(condition)[2])
-      top.results <- p.adjust(diff.results$pval, method = "fdr")
-      genelist <- genenames[which(top.results <= significance)]
-    }
-  }
-  #Create an empty matrix to keep track of how often significant genes are
-  #rediscovered after downsampling
-  rediscovered <- matrix(rep(0, length(genelist) * dim(downmatrix)[3]),
-                         nrow = length(genelist))
-  rownames(rediscovered) <- genelist
-  #For each downsampling level:
-  for (k in 1:dim(downmatrix)[3]) {
-    #For each iteration:
-    for (l in 1:dim(downmatrix)[4]) {
-      if (method == "tpm.t"){
-        shrunkDown <- downmatrix[apply(downmatrix[, , k, l], 1, sum) > 0, , k, l]
-        genenames <- rownames(datamatrix[apply(downmatrix[, , k, l], 1, sum) > 0, ])
-        scaledMatrix <- apply(shrunkDown, 2, function(x){x / sum(x)})
-        t.result <- multiple.t.test(condition, scaledMatrix)
-        newgenes <- genenames[which(t.result <= significance)]
-        rediscovered[rownames(rediscovered) %in% newgenes, k] <- rediscovered[rownames(rediscovered) %in% newgenes, k] + 1
-      }
-      else{
-        shrunkDown <- downmatrix[apply(downmatrix[, , k, l], 1, sum) > 0, , k, l]
-        genenames <- rownames(datamatrix[apply(downmatrix[, , k, l], 1, sum) > 0, ])
-        countData <- newCountDataSet(shrunkDown, condition)
-        countData <- estimateSizeFactors(countData)
-        countData <- estimateDispersions(countData, method = "pooled",
-                                         fitType = "local")
-        diff.results <- nbinomTest(countData, levels(condition)[1],
-                                   levels(condition)[2])
-        top.results <- p.adjust(diff.results$pval, method = "fdr")
-        newgenes <- genenames[which(top.results <= significance)]
-        rediscovered[rownames(rediscovered) %in% newgenes, k] <- rediscovered[rownames(rediscovered) %in% newgenes, k] + 1
-      }
-    }
-  }
-  rediscovered <- rediscovered / dim(downmatrix)[4]
-  return(rediscovered)
 }

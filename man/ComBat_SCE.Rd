@@ -43,7 +43,7 @@ if(requireNamespace("bladderbatch", quietly = TRUE)) {
   #subset for testing
   dat <- bladderEset[1:50,]
   dat <- as(as(dat, "SummarizedExperiment"), "SCtkExperiment")
-  mod <- model.matrix(~as.factor(cancer), data = colData(dat))
+  mod <- stats::model.matrix(~as.factor(cancer), data = colData(dat))
 
   # parametric adjustment
   combat_edata1 <- ComBat_SCE(SCEdata = dat, use_assay = "exprs",

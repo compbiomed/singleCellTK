@@ -43,12 +43,12 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   keep_feature <- (matrixStats::colVars(exprs_to_plot) > 0.001)
   keep_feature[is.na(keep_feature)] <- FALSE
   exprs_to_plot <- exprs_to_plot[, keep_feature]
-  pca <- prcomp(exprs_to_plot)
+  pca <- stats::prcomp(exprs_to_plot)
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
   reducedDim(count_data, reducedDimName) <- pca
   if(class(count_data) == "SCtkExperiment"){
-    pca_variances(count_data) <- DataFrame(percentVar)
+    pca_variances(count_data) <- S4Vectors::DataFrame(percentVar)
     rownames(pca_variances(count_data)) <- paste0(
       "PC", 1:nrow(pca_variances(count_data)))
   }

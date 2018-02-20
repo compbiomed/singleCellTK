@@ -21,7 +21,7 @@ plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
   if(nlb <= 1){
     batch_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
   } else {
-    batch_mod <- model.matrix(~as.factor(colData(inSCESet)[, batch]))
+    batch_mod <- stats::model.matrix(~as.factor(colData(inSCESet)[, batch]))
   }
   if(is.null(condition)){
     stop("condition required for now")
@@ -30,7 +30,7 @@ plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
     if(nlc <= 1){
       cond_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
     } else {
-      cond_mod <- model.matrix(~as.factor(colData(inSCESet)[, condition]))
+      cond_mod <- stats::model.matrix(~as.factor(colData(inSCESet)[, condition]))
     }
   }
 
@@ -85,7 +85,7 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
   p <- 1
   if (df1 > df0)  {
     fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
-    p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
+    p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   }
   return(list(p = p, r2_full = r2_full, r2_reduced = r2_reduced))
 }

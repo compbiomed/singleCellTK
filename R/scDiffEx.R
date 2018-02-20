@@ -133,12 +133,13 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
       stop("Too many levels in condition for auto coloring")
     }
     col <- list()
-    col[[condition]] <- setNames(colors[1:length(cond_levels)], cond_levels)
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
-                                               col = col)
+    col[[condition]] <- stats::setNames(colors[1:length(cond_levels)],
+                                        cond_levels)
+    topha <- ComplexHeatmap::HeatmapAnnotation(
+      df = colData(inSCESet)[, condition, drop = FALSE], col = col)
   } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(df = colData(inSCESet)[, condition, drop = FALSE],
-                                               col = annotationColors)
+    topha <- ComplexHeatmap::HeatmapAnnotation(
+      df = colData(inSCESet)[, condition, drop = FALSE], col = annotationColors)
   }
 
   heatmap <- ComplexHeatmap::Heatmap(t(scale(t(assay(inSCESet, use_assay)[geneList, ]))),
@@ -207,7 +208,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
                                         colData = annot_data,
-                                        design = as.formula(
+                                        design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
   dds <- DESeq2::DESeq(dds)
@@ -254,16 +255,15 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
     stop("Problem with limma condition")
   }
   if(is.null(covariates)) {
-    design <- model.matrix(as.formula(paste0("~", paste0(c(condition),
-                                                      collapse = "+"))),
-                        data = data.frame(colData(inSCESet)[, c(condition),
-                                                            drop = FALSE]))
+    design <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
+      data = data.frame(colData(inSCESet)[, c(condition), drop = FALSE]))
   } else {
-    design <- model.matrix(as.formula(paste0("~", paste0(c(condition, covariates),
-                                                      collapse = "+"))),
-                        data = data.frame(colData(inSCESet)[, c(condition,
-                                                                covariates),
-                                                            drop = FALSE]))
+    design <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(c(condition, covariates),
+                                           collapse = "+"))),
+      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+                                          drop = FALSE]))
   }
   fit <- limma::lmFit(assay(inSCESet, use_assay), design)
   ebayes <- limma::eBayes(fit)
@@ -274,8 +274,9 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
     if(is.null(levelofinterest)){
       stop("Level of interest required.")
     }
-    topGenes <- limma::topTable(ebayes, coef = which(levels(condition_factor) == levelofinterest),
-                                adjust = "fdr", number = nrow(inSCESet))
+    topGenes <- limma::topTable(
+      ebayes, coef = which(levels(condition_factor) == levelofinterest),
+      adjust = "fdr", number = nrow(inSCESet))
   }
 
   colnames(topGenes)[5] <- "padj"
@@ -299,22 +300,20 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
                            covariates=NULL){
   if(is.null(covariates)) {
-    mod <- model.matrix(as.formula(paste0("~", paste0(c(condition),
-                                                      collapse = "+"))),
-                        data = data.frame(colData(inSCESet)[, c(condition),
-                                                            drop = FALSE]))
-    mod0 <- model.matrix(~1, data = colData(inSCESet))
+    mod <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
+      data = data.frame(colData(inSCESet)[, c(condition), drop = FALSE]))
+    mod0 <- stats::model.matrix(~1, data = colData(inSCESet))
   } else {
-    mod <- model.matrix(as.formula(paste0("~", paste0(c(condition, covariates),
-                                                      collapse = "+"))),
-                        data = data.frame(colData(inSCESet)[, c(condition,
-                                                                covariates),
-                                                            drop = FALSE]))
-    mod0 <- model.matrix(as.formula(paste0("~", paste0(covariates,
-                                                       collapse = "+"))),
-                         data = data.frame(colData(inSCESet)[, c(condition,
-                                                                 covariates),
-                                                             drop = FALSE]))
+    mod <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(c(condition, covariates),
+                                           collapse = "+"))),
+      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+                                          drop = FALSE]))
+    mod0 <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
+      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+                                          drop = FALSE]))
   }
   dat <- assay(inSCESet, use_assay)
   n <- dim(dat)[2]
@@ -330,8 +329,8 @@ scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
   rss1 <- resid ^ 2 %*% rep(1, n)
   rss0 <- resid0 ^ 2 %*% rep(1, n)
   fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
-  p <- 1 - pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
+  p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   results <- data.frame(row.names = rownames(dat), p.value = p,
-                        padj = p.adjust(p, method = "fdr"))
+                        padj = stats::p.adjust(p, method = "fdr"))
   return(results)
 }

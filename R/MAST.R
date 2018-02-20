@@ -65,7 +65,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     colData(SCE_new_sample)[, condition][colData(SCE_new_sample)[, condition] != interest.level] <- paste0("no_", interest.level)
     colData(SCE_new_sample)[, condition] <- droplevels(as.factor(colData(SCE_new_sample)[, condition]))
 
-    hurdle1 <- MAST::zlm(as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
+    hurdle1 <- MAST::zlm(stats::as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1, doLRT = paste0(condition, "no_", interest.level))
 
     summaryDT <- summaryh1[["datatable"]]
@@ -77,7 +77,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     colData(SCE_new_sample)[, condition] <- droplevels(as.factor(colData(SCE_new_sample)[, condition]))
     level.cond  <- levels(colData(SCE_new_sample)[, condition])
 
-    hurdle1 <- MAST::zlm(as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
+    hurdle1 <- MAST::zlm(stats::as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1, doLRT = paste0(condition, level.cond[2]))
 
     summaryDT <- summaryh1[["datatable"]]
@@ -88,7 +88,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
   }
 
   # Use p-value correction method, here we use fdr
-  fcHurdle$fdr <- p.adjust(fcHurdle$"Pr(>Chisq)", "fdr")
+  fcHurdle$fdr <- stats::p.adjust(fcHurdle$"Pr(>Chisq)", "fdr")
 
   # Filter the data again by the adjusted pvalue and coef
   fcHurdleSig <-  fcHurdle[fcHurdle$fdr < p.value & abs(fcHurdle$coef) > fc_threshold & !is.nan(fcHurdle$coef), ]
