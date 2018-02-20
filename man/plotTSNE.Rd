@@ -29,3 +29,9 @@ A t-SNE plot
 \description{
 Use this function to plot t-SNE results
 }
+\examples{
+data("GSE60361_subset_sce")
+plotTSNE(GSE60361_subset_sce, colorBy = "level1class",
+         reducedDimName = "TSNE_counts")
+
+}
