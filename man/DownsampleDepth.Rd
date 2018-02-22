@@ -43,3 +43,11 @@ expressed, the median effect size defaults to infinity.
 Estimate numbers of detected genes, significantly differentially expressed
 genes, and median significant effect size
 }
+\examples{
+data("GSE60361_subset_sce")
+subset <- GSE60361_subset_sce[1:1000,]
+res <- DownsampleDepth(subset,
+                       realLabels = "level1class",
+                       iterations=2)
+
+}

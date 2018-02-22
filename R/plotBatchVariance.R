@@ -14,30 +14,37 @@
 #' @return A boxplot of variation explained by batch, condition, and
 #' batch+condition (if applicable).
 #' @export
+#' @examples
+#' if(requireNamespace("bladderbatch", quietly = TRUE)) {
+#'   library(bladderbatch)
+#'   data(bladderdata)
+#'   dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
+#'   plotBatchVariance(dat, use_assay="exprs", batch="batch", condition = "cancer")
+#' }
 #'
 plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
                               condition=NULL){
-  nlb <- nlevels(as.factor(colData(inSCESet)[, batch]))
+  nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
   if(nlb <= 1){
     batch_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
   } else {
-    batch_mod <- stats::model.matrix(~as.factor(colData(inSCESet)[, batch]))
+    batch_mod <- stats::model.matrix(~as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
   }
   if(is.null(condition)){
     stop("condition required for now")
   } else {
-    nlc <- nlevels(as.factor(colData(inSCESet)[, condition]))
+    nlc <- nlevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
     if(nlc <= 1){
       cond_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
     } else {
-      cond_mod <- stats::model.matrix(~as.factor(colData(inSCESet)[, condition]))
+      cond_mod <- stats::model.matrix(~as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
     }
   }
 
   mod <- cbind(cond_mod, batch_mod[, -1])
 
-  cond_test <- batchqc_f.pvalue(assay(inSCESet, use_assay), mod, batch_mod)
-  batch_test <- batchqc_f.pvalue(assay(inSCESet, use_assay), mod, cond_mod)
+  cond_test <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCESet, use_assay), mod, batch_mod)
+  batch_test <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCESet, use_assay), mod, cond_mod)
 
   cond_ps <- cond_test$p
   batch_ps <- batch_test$p

@@ -26,44 +26,48 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     stop("specify the condition of interest")
   }
 
-  if (length(unique(colData(SCEdata)[, condition])) == 1) {
+  if (length(unique(SingleCellExperiment::colData(SCEdata)[, condition])) == 1) {
     stop("only one level is in the condition")
   }
 
-  if (is.null(interest.level) & length(unique(colData(SCEdata)[, condition])) > 2){
+  if (is.null(interest.level) & length(unique(SingleCellExperiment::colData(SCEdata)[, condition])) > 2){
     stop("You must specify a level of interest when more than 2 levels are in",
          " the condition")
   }
 
   # Create MAST SingleCellAssay
-  pdata <- colData(SCEdata)
-  expres <- assay(SCEdata, use_assay)
-  fdata <- rowData(SCEdata)
+  pdata <- SingleCellExperiment::colData(SCEdata)
+  expres <- SummarizedExperiment::assay(SCEdata, use_assay)
+  fdata <- SingleCellExperiment::rowData(SCEdata)
   SCE_new <- MAST::FromMatrix(expres, pdata, fdata)
 
   #Caculate CDR for zlm model
-  colData(SCE_new)$cngeneson <- scale(colSums(assay(SCE_new) > 0))
+  SummarizedExperiment::colData(SCE_new)$cngeneson <-
+    scale(colSums(SummarizedExperiment::assay(SCE_new) > 0))
 
   if (usethresh){
     SCE_new <- SCE_new[which(MAST::freq(SCE_new) > 0), ]
-    thresh <- MAST::thresholdSCRNACountMatrix(assay(SCE_new), nbins = 20,
+    thresh <- MAST::thresholdSCRNACountMatrix(SummarizedExperiment::assay(SCE_new), nbins = 20,
                                        min_per_bin = 30)
-    assays(SCE_new) <- list(thresh = thresh$counts_threshold, tpm = assay(SCE_new))
+    SummarizedExperiment::assays(SCE_new) <-
+      list(thresh = thresh$counts_threshold,
+           tpm = SummarizedExperiment::assay(SCE_new))
   }
 
   # filter based on frequency of expression across samples
   SCE_new_sample <- SCE_new[which(MAST::freq(SCE_new) > freq_expressed), ]
 
   # if the condition of interest is numeric, to change it to a factor
-  if (is.numeric(colData(SCE_new_sample)[, condition])){
-    colData(SCE_new_sample)[, condition] <- as.factor(colData(SCE_new_sample)[, condition])
+  if (is.numeric(SummarizedExperiment::colData(SCE_new_sample)[, condition])){
+    SummarizedExperiment::colData(SCE_new_sample)[, condition] <-
+      as.factor(SummarizedExperiment::colData(SCE_new_sample)[, condition])
   }
 
   # >2 levels in the condition
-  if (!is.null(interest.level) & length(unique(colData(SCEdata)[, condition])) > 2){
-    levels(colData(SCE_new_sample)[, condition]) <- c(levels(colData(SCE_new_sample)[, condition]), paste0("no_", interest.level))
-    colData(SCE_new_sample)[, condition][colData(SCE_new_sample)[, condition] != interest.level] <- paste0("no_", interest.level)
-    colData(SCE_new_sample)[, condition] <- droplevels(as.factor(colData(SCE_new_sample)[, condition]))
+  if (!is.null(interest.level) & length(unique(SingleCellExperiment::colData(SCEdata)[, condition])) > 2){
+    levels(SummarizedExperiment::colData(SCE_new_sample)[, condition]) <- c(levels(SummarizedExperiment::colData(SCE_new_sample)[, condition]), paste0("no_", interest.level))
+    SummarizedExperiment::colData(SCE_new_sample)[, condition][SummarizedExperiment::colData(SCE_new_sample)[, condition] != interest.level] <- paste0("no_", interest.level)
+    SummarizedExperiment::colData(SCE_new_sample)[, condition] <- droplevels(as.factor(SummarizedExperiment::colData(SCE_new_sample)[, condition]))
 
     hurdle1 <- MAST::zlm(stats::as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1, doLRT = paste0(condition, "no_", interest.level))
@@ -74,8 +78,8 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
                       summaryDT[summaryDT$contrast == paste0(condition, "no_", interest.level) & summaryDT$component == "logFC", c("primerid", "coef", "ci.hi", "ci.lo")]  # logFC coefficients
     )
   } else {
-    colData(SCE_new_sample)[, condition] <- droplevels(as.factor(colData(SCE_new_sample)[, condition]))
-    level.cond  <- levels(colData(SCE_new_sample)[, condition])
+    SummarizedExperiment::colData(SCE_new_sample)[, condition] <- droplevels(as.factor(SummarizedExperiment::colData(SCE_new_sample)[, condition]))
+    level.cond  <- levels(SummarizedExperiment::colData(SCE_new_sample)[, condition])
 
     hurdle1 <- MAST::zlm(stats::as.formula(paste0("~", condition, "+cngeneson")), SCE_new_sample)
     summaryh1 <- MAST::summary(hurdle1, doLRT = paste0(condition, level.cond[2]))

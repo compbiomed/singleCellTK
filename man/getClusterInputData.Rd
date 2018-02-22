@@ -23,3 +23,9 @@ Cluster input data
 \description{
 Get data to use as input clustering algorithms
 }
+\examples{
+data("GSE60361_subset_sce")
+getClusterInputData(GSE60361_subset_sce, "PCA Components",
+                    use_assay = "logcounts", reducedDimName = "PCA_logcounts")
+
+}

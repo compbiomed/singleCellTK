@@ -45,7 +45,7 @@ setClass("SCtkExperiment",
 #' pca_variances(newSCE)
 #'
 SCtkExperiment <- function(..., pca_variances = S4Vectors::DataFrame()) {
-  sce <- SingleCellExperiment(...)
-  out <- new("SCtkExperiment", sce, pca_variances = S4Vectors::DataFrame())
+  sce <- SingleCellExperiment::SingleCellExperiment(...)
+  out <- methods::new("SCtkExperiment", sce, pca_variances = S4Vectors::DataFrame())
   return(out)
 }

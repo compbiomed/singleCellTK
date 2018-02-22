@@ -27,3 +27,12 @@ batch+condition (if applicable).
 Visualize the percent variation in the data that is explained by batch and
 condition if it is givent.
 }
+\examples{
+if(requireNamespace("bladderbatch", quietly = TRUE)) {
+  library(bladderbatch)
+  data(bladderdata)
+  dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
+  plotBatchVariance(dat, use_assay="exprs", batch="batch", condition = "cancer")
+}
+
+}

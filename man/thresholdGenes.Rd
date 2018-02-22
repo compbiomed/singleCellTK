@@ -20,3 +20,8 @@ MAST::thresholdSCRNACountMatrix
 \description{
 thresholdGenes
 }
+\examples{
+data("GSE60361_subset_sce")
+res <- thresholdGenes(GSE60361_subset_sce)
+
+}

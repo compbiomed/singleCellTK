@@ -102,7 +102,8 @@ createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
                              colData = annotin,
                              rowData = featurein)
   if (create_logcounts){
-    assay(newassay, paste0("log", assay_name)) <- log2(assay(newassay, assay_name) + 1)
+    SummarizedExperiment::assay(newassay, paste0("log", assay_name)) <-
+      log2(SummarizedExperiment::assay(newassay, assay_name) + 1)
   }
   return(newassay)
 }
@@ -138,23 +139,23 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
 
   if (filter_spike){
     nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
-    tokeeprow <- order(rowSums(assay(insceset, use_assay)), decreasing = TRUE)[1:nkeeprows]
+    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, use_assay)), decreasing = TRUE)[1:nkeeprows]
   } else {
-    nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset))) - sum(isSpike(insceset))
-    tokeeprow <- order(rowSums(assay(insceset, use_assay)), decreasing = TRUE)
-    tokeeprow <- setdiff(tokeeprow, which(isSpike(insceset)))
+    nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset))) - sum(SingleCellExperiment::isSpike(insceset))
+    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, use_assay)), decreasing = TRUE)
+    tokeeprow <- setdiff(tokeeprow, which(SingleCellExperiment::isSpike(insceset)))
     tokeeprow <- tokeeprow[1:nkeeprows]
-    tokeeprow <- c(tokeeprow, which(isSpike(insceset)))
+    tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(insceset)))
   }
-  tokeepcol <- colSums(assay(insceset, use_assay) != 0) >= minimum_detect_genes
+  tokeepcol <- colSums(SummarizedExperiment::assay(insceset, use_assay) != 0) >= minimum_detect_genes
   insceset <- insceset[tokeeprow, tokeepcol]
 
   #remove genes with no expression
   if (remove_noexpress){
     if (filter_spike){
-      insceset <- insceset[rowSums(assay(insceset, use_assay)) != 0, ]
+      insceset <- insceset[rowSums(SummarizedExperiment::assay(insceset, use_assay)) != 0, ]
     } else {
-      insceset <- insceset[(rowSums(assay(insceset, use_assay)) != 0 | isSpike(insceset)), ]
+      insceset <- insceset[(rowSums(SummarizedExperiment::assay(insceset, use_assay)) != 0 | SingleCellExperiment::isSpike(insceset)), ]
     }
   }
 

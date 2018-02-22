@@ -30,10 +30,10 @@ getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   } else{
     ntop <- 500
   }
-  if (!(use_assay %in% names(assays(count_data)))){
+  if (!(use_assay %in% names(SummarizedExperiment::assays(count_data)))){
     stop(use_assay, " not in the assay list")
   }
-  exprs_mat <- log2(assay(count_data, use_assay) + 1)
+  exprs_mat <- log2(SummarizedExperiment::assay(count_data, use_assay) + 1)
   rv <- matrixStats::rowVars(exprs_mat)
   feature_set <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprs_to_plot <- exprs_mat[feature_set, ]
@@ -46,6 +46,6 @@ getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
                            initial_dims = max(50, ncol(count_data)))
   tsne_out <- tsne_out$Y[, 1:2]
   rownames(tsne_out) <- colnames(count_data)
-  reducedDim(count_data, reducedDimName) <- tsne_out
+  SingleCellExperiment::reducedDim(count_data, reducedDimName) <- tsne_out
   return(count_data)
 }

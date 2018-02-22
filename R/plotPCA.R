@@ -24,7 +24,7 @@
 plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
                     use_assay="logcounts"){
-  if (is.null(reducedDim(count_data, reducedDimName))){
+  if (is.null(SingleCellExperiment::reducedDim(count_data, reducedDimName))){
     if (runPCA){
       count_data <- getPCA(count_data, use_assay = use_assay,
                            reducedDimName = reducedDimName)
@@ -32,7 +32,7 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
       stop(reducedDimName, " dimension not found. Run getPCA() or set runPCA to TRUE.")
     }
   }
-  pca_df <- data.frame(reducedDim(count_data, reducedDimName))
+  pca_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
   if(!(pcX %in% colnames(pca_df))){
     stop("pcX dimension ", pcX, " is not in the reducedDim data")
   }
@@ -64,10 +64,10 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
     shape <- NULL
   }
   if (!is.null(colorBy)){
-    pca_df$color <- eval(parse(text = paste("colData(count_data)$", colorBy, sep = "")))
+    pca_df$color <- SingleCellExperiment::colData(count_data)[, colorBy]
   }
   if (!is.null(shape)){
-    pca_df$shape <- factor(eval(parse(text = paste("colData(count_data)$", shape, sep = ""))))
+    pca_df$shape <- factor(SingleCellExperiment::colData(count_data)[, shape])
   }
   pca_df$Sample <- colnames(count_data)
   g <- ggplot2::ggplot(pca_df, ggplot2::aes_string(pcX, pcY, label = "Sample")) +

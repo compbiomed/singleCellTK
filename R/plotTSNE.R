@@ -22,7 +22,7 @@
 plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
                      reducedDimName="TSNE", runTSNE=FALSE,
                      use_assay="logcounts"){
-  if (is.null(reducedDim(count_data, reducedDimName))){
+  if (is.null(SingleCellExperiment::reducedDim(count_data, reducedDimName))){
     if (runTSNE){
       count_data <- getTSNE(count_data, use_assay = use_assay,
                             reducedDimName = reducedDimName)
@@ -30,7 +30,7 @@ plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
       stop(reducedDimName, " dimension not found. Run getTSNE() or set runTSNE to TRUE.")
     }
   }
-  tsne_df <- data.frame(reducedDim(count_data, reducedDimName))
+  tsne_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
   if (ncol(tsne_df) > 2){
     warning("More than two t-SNE dimensions. Using the first two.")
   }
@@ -43,10 +43,10 @@ plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",
     shape <- NULL
   }
   if (!is.null(colorBy)){
-    tsne_df$color <- eval(parse(text = paste("colData(count_data)$", colorBy, sep = "")))
+    tsne_df$color <- SingleCellExperiment::colData(count_data)[, colorBy]
   }
   if (!is.null(shape)){
-    tsne_df$shape <- factor(eval(parse(text = paste("colData(count_data)$", shape, sep = ""))))
+    tsne_df$shape <- factor(SingleCellExperiment::colData(count_data)[, shape])
   }
   tsne_df$Sample <- colnames(count_data)
   g <- ggplot2::ggplot(tsne_df, ggplot2::aes_string(xdim, ydim, label = "Sample")) +
