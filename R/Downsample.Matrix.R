@@ -24,12 +24,18 @@
 #' effect size in each simulation. If no genes are significantly differentially
 #' expressed, the median effect size defaults to infinity.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' subset <- GSE60361_subset_sce[1:1000,]
+#' res <- DownsampleDepth(subset,
+#'                        realLabels = "level1class",
+#'                        iterations=2)
 #'
 DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
                             maxDepth = 10000000, realLabels,
                             depthResolution = 10, iterations = 10){
-  realLabels <- colData(originalData)[, realLabels]
-  originalData <- counts(originalData)
+  realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
+  originalData <- SummarizedExperiment::assay(originalData, "counts")
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -85,13 +91,19 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #' effect size in each simulation. If no genes are significantly differentially
 #' expressed, the median effect size defaults to infinity.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' subset <- GSE60361_subset_sce[1:1000,]
+#' res <- DownsampleCells(subset,
+#'                        realLabels = "level1class",
+#'                        iterations=2)
 #'
 DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
                             minCellnum = 10, maxCellnum = 1000, realLabels,
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
-  realLabels <- colData(originalData)[, realLabels]
-  originalData <- counts(originalData)
+  realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
+  originalData <- SummarizedExperiment::assay(originalData, "counts")
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -116,56 +128,13 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
   return(outArray)
 }
 
-#' Downsample Data
-#'
-#' @param datamatrix TODO:document
-#' @param newcounts TODO:document
-#' @param byBatch TODO:document
-#' @param batch TODO:document
-#' @param iterations TODO:document
-#'
-#' @return Downsampled matrix
-#' @export
-#'
-Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096,
-                                                 16384, 65536, 262144),
-                       byBatch = FALSE, batch = NULL, iterations = 10) {
-  if (byBatch == FALSE) {
-    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2],
-                                length(newcounts), iterations))
-    for (j in 1:dim(datamatrix)[2]) {
-      probs <- datamatrix[, j] / sum(datamatrix[, j])
-      for (k in 1:length(newcounts)) {
-        samps <- stats::rmultinom(iterations, newcounts[k], probs)
-        for (l in 1:iterations) {
-          outmat[, j, k, l] <- samps[, l]
-        }
-      }
-    }
-  }
-  else {
-    outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2],
-                                length(newcounts), iterations))
-    for (j in 1:nlevels(batch)) {
-      probs <- datamatrix[, which(batch == levels(batch)[j])] / sum(datamatrix[, which(batch == levels(batch)[j])])
-      for (k in 1:length(newcounts)) {
-        samps <- stats::rmultinom(iterations, newcounts[k], as.vector(probs))
-        for (l in 1:iterations) {
-          outmat[, which(batch == levels(batch)[j]), k, l] <- as.matrix(samps[, l], nrow = dim(datamatrix)[1])
-        }
-      }
-    }
-  }
-  return(outmat)
-}
-
 #' Generates a single simulated dataset, bootstrapping from the input counts
 #' matrix.
 #'
-#' @param originalData Matrix. The original raw readcount matrix. When used
-#' within the Shiny app, this will be assay(SCEsetObject, "counts").
 #' @param totalReads Numeric. The total number of reads in the simulated
 #' dataset, to be split between all simulated cells.
+#' @param originalData Matrix. The original raw readcount matrix. When used
+#' within the Shiny app, this will be assay(SCEsetObject, "counts").
 #' @param cells Numeric. The number of virtual cells to simulate.
 #' @param realLabels Factor. The condition labels for differential expression.
 #' If only two factors present, will default to t-test. If multiple factors,
@@ -174,6 +143,11 @@ Downsample <- function(datamatrix, newcounts = c(4, 16, 64, 256, 1024, 4096,
 #' @return A simulated counts matrix, the first row of which contains the 'true'
 #' labels for each virtual cell.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- generateSimulatedData(totalReads = 1000, cells=10,
+#'                              originalData = assay(GSE60361_subset_sce, "counts"),
+#'                              realLabels = colData(GSE60361_subset_sce)[, "level1class"])
 #'
 generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   cells <- sample(dim(originalData)[2], size = cells, replace = TRUE)
@@ -196,6 +170,12 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- generateSimulatedData(totalReads = 1000, cells=10,
+#'                             originalData = assay(GSE60361_subset_sce, "counts"),
+#'                             realLabels = colData(GSE60361_subset_sce)[, "level1class"])
+#' tempSigDiff <- subDiffEx(res)
 #'
 subDiffEx <- function(tempData){
   realLabels <- tempData[1, ]
@@ -222,11 +202,15 @@ subDiffEx <- function(tempData){
 #'
 #' @return A matrix of significance information from a snapshot
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- iterateSimulations(GSE60361_subset_sce, realLabels = "level1class",
+#'                           totalReads = 1000, cells = 10, iterations = 2)
 #'
 iterateSimulations <- function(originalData, realLabels, totalReads, cells,
                                iterations){
-  realLabels <- colData(originalData)[, realLabels]
-  originalData <- counts(originalData)
+  realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
+  originalData <- SummarizedExperiment::assay(originalData, "counts")
   sigMatrix <- matrix(nrow = dim(originalData)[1])
   for(i in 1:iterations){
     tempData <- generateSimulatedData(totalReads, cells, originalData,
@@ -247,6 +231,15 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
 #' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' res <- generateSimulatedData(totalReads = 1000, cells=10,
+#'                              originalData = assay(subset, "counts"),
+#'                              realLabels = colData(subset)[, "level1class"])
+#' realLabels <- res[1, ]
+#' output <- res[-1, ]
+#' fdr <- subDiffEx_ttest(output, realLabels)
 #'
 subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
   class.labels <- as.numeric(as.factor(class.labels))
@@ -269,6 +262,15 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' res <- generateSimulatedData(totalReads = 1000, cells=10,
+#'                              originalData = assay(subset, "counts"),
+#'                              realLabels = colData(subset)[, "level2class"])
+#' realLabels <- res[1, ]
+#' output <- res[-1, ]
+#' #fdr <- subDiffEx_anova(output, realLabels)
 #'
 subDiffEx_anova <- function(countMatrix, condition){
   mod <- stats::model.matrix(~as.factor(condition))
@@ -293,18 +295,25 @@ subDiffEx_anova <- function(countMatrix, condition){
 
 #' Finds the effect sizes for all genes in the original dataset, regardless of
 #' significance.
+#'
 #' @param countMatrix Matrix. A simulated counts matrix, sans labels.
 #' @param condition Factor. The condition labels for the simulated cells. If
 #' more than 2 conditions are given, the first will be compared to all others by
 #' default.
+#'
 #' @return A vector of cohen's d effect sizes for each gene.
+#'
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- calcEffectSizes(assay(GSE60361_subset_sce, "counts"),
+#'                        condition = colData(GSE60361_subset_sce)[, "level1class"])
 #'
 calcEffectSizes <- function(countMatrix, condition){
   groups <- levels(as.factor(unlist(condition)))
   return((apply(countMatrix[, condition == unlist(groups)[1]], 1, mean) -
             apply(countMatrix[, condition != unlist(groups)[1]], 1, mean)) /
-           apply(countMatrix, 1, sd))
+           apply(countMatrix, 1, S4Vectors::sd))
 }
 
 powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
@@ -315,7 +324,7 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
     for (j in 1:dim(datamatrix)[2]) {
       probs <- as.numeric(datamatrix[, j] / sum(datamatrix[, j]))
       for (i in 1:length(probs)){
-        discoveryPower <- 1 - dbinom(0, size = floor(seq.int(
+        discoveryPower <- 1 - DelayedArray::dbinom(0, size = floor(seq.int(
           from = sampleSizeRange[1],to = sampleSizeRange[2],
           length.out = numSize)), prob = probs[i])
         outmat[i, j, ] <- discoveryPower
@@ -329,7 +338,7 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
       probs <- datamatrix[, which(batch == levels(batch)[j])] /
         sum(datamatrix[, which(batch == levels(batch)[j])])
       for (i in 1:length(as.vector(probs))) {
-        discoveryPower <- 1 - dbinom(0, size = floor(seq.int(
+        discoveryPower <- 1 - DelayedArray::dbinom(0, size = floor(seq.int(
           from = sampleSizeRange[1], to = sampleSizeRange[2],
           length.out = numSize)), prob = as.vector(probs)[i])
         outmat[((i - 1) %% dim(datamatrix)[1]) + 1, which(batch == levels(batch)[j])[ceiling(i / dim(datamatrix)[1])], ] <- discoveryPower

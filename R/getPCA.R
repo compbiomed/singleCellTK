@@ -32,10 +32,10 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   else{
     ntop <- 500
   }
-  if (!(use_assay %in% names(assays(count_data)))){
+  if (!(use_assay %in% names(SummarizedExperiment::assays(count_data)))){
     stop(use_assay, " not in the assay list")
   }
-  exprs_mat <- log2(assay(count_data, use_assay) + 1)
+  exprs_mat <- log2(SummarizedExperiment::assay(count_data, use_assay) + 1)
   rv <- matrixStats::rowVars(exprs_mat)
   feature_set <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprs_to_plot <- exprs_mat[feature_set, , drop = FALSE]
@@ -46,7 +46,7 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   pca <- stats::prcomp(exprs_to_plot)
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
-  reducedDim(count_data, reducedDimName) <- pca
+  SingleCellExperiment::reducedDim(count_data, reducedDimName) <- pca
   if(class(count_data) == "SCtkExperiment"){
     pca_variances(count_data) <- S4Vectors::DataFrame(percentVar)
     rownames(pca_variances(count_data)) <- paste0(

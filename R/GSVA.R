@@ -22,24 +22,24 @@
 GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...){
   if (pathway_source == "Manual Input"){
     #expecting logical vector
-    if (!all(rowData(SCEdata)[, pathway_names] %in% c(1, 0))){
+    if (!all(SingleCellExperiment::rowData(SCEdata)[, pathway_names] %in% c(1, 0))){
       stop("ERROR: malformed biomarker annotation")
     } else {
       biomarker <- list()
       for (i in pathway_names){
-        biomarker[[i]] <- rownames(SCEdata)[rowData(SCEdata)[, i] == 1]
+        biomarker[[i]] <- rownames(SCEdata)[SingleCellExperiment::rowData(SCEdata)[, i] == 1]
       }
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), biomarker, ...)
+      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), biomarker, ...)
     }
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
     utils::data("c2BroadSets", package = "GSVAdata", envir = .myenv)
     c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathway_names) {
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2BroadSets, ...)
+      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), c2BroadSets, ...)
     } else {
       c2sub <- c2BroadSets[base::setdiff(pathway_names, "ALL")]
-      gsva_res <- GSVA::gsva(assay(SCEdata, use_assay), c2sub, ...)
+      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), c2sub, ...)
     }
   } else{
     stop("ERROR: Unsupported gene list source ", pathway_source)
@@ -70,7 +70,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
       stop("You must specify a condition for Violin plot")
     }
     gsva_res_t <- data.frame(t(gsva_data))
-    cond <- apply(colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
+    cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
     gsva_res_t[, paste(condition, collapse = "_")] <- cond
     gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(condition, collapse = "_"),
                                     variable.name = "pathway")
@@ -85,7 +85,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
     topha <- NULL
     if (length(condition) > 0){
       colors <- RColorBrewer::brewer.pal(8, "Set1")
-      cond <- apply(colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
+      cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
       cond_levels <- unique(cond)
       if (length(cond_levels) < 8){
         col <- list()
@@ -95,7 +95,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
         topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
                                                    col = col)
       } else {
-        alert("Too many levels in selected condition(s)")
+        stop("Too many levels in selected condition(s)")
       }
     }
     ComplexHeatmap::Heatmap(gsva_data, top_annotation = topha)

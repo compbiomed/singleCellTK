@@ -21,3 +21,9 @@ A vector of cohen's d effect sizes for each gene.
 Finds the effect sizes for all genes in the original dataset, regardless of
 significance.
 }
+\examples{
+data("GSE60361_subset_sce")
+res <- calcEffectSizes(assay(GSE60361_subset_sce, "counts"),
+                       condition = colData(GSE60361_subset_sce)[, "level1class"])
+
+}

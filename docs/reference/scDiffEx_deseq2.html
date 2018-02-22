@@ -174,6 +174,14 @@ should contain one factor from condition to use as the control.</p></td>
     <p>A data frame of gene names and adjusted p-values</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='co'>#subset to 100 genes</span>
+<span class='no'>subset</span> <span class='kw'>&lt;-</span> <span class='no'>GSE60361_subset_sce</span>[<span class='fu'>rownames</span>(<span class='no'>GSE60361_subset_sce</span>)[<span class='fu'>order</span>(<span class='fu'>rowSums</span>(<span class='fu'>assay</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='st'>"counts"</span>)), <span class='kw'>decreasing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)][<span class='fl'>1</span>:<span class='fl'>100</span>], ]
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>scDiffEx_deseq2</span>(<span class='no'>subset</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"level1class"</span>)</div><div class='output co'>#&gt; <span class='message'>estimating size factors</span></div><div class='output co'>#&gt; <span class='message'>estimating dispersions</span></div><div class='output co'>#&gt; <span class='message'>gene-wise dispersion estimates</span></div><div class='output co'>#&gt; <span class='message'>mean-dispersion relationship</span></div><div class='output co'>#&gt; <span class='message'>-- note: fitType='parametric', but the dispersion trend was not well captured by the</span>
+#&gt; <span class='message'>   function: y = a/x + b, and a local regression fit was automatically substituted.</span>
+#&gt; <span class='message'>   specify fitType='local' or 'mean' to avoid this message next time.</span></div><div class='output co'>#&gt; <span class='message'>final dispersion estimates</span></div><div class='output co'>#&gt; <span class='message'>fitting model and testing</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -181,7 +189,9 @@ should contain one factor from condition to use as the control.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

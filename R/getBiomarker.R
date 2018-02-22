@@ -11,12 +11,14 @@
 #'
 #' @return A data.frame of expression values
 #' @export
+#' @examples
+#' getBiomarker(GSE60361_subset_sce, gene="C1qa")
 #'
 getBiomarker <- function(count_data, gene, binary="Binary", use_assay="counts"){
   # Get sample names
   sample <- colnames(count_data)
   # Get counts for gene in sample
-  c <- assay(count_data, use_assay)[c(gene), ]
+  c <- SummarizedExperiment::assay(count_data, use_assay)[c(gene), ]
   # If color scale is "yes"/"no"
   if (binary == "Binary"){
     expression <- c > 0

@@ -152,6 +152,31 @@ slot.</p>
 </dl>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='no'>counts_mat</span> <span class='kw'>&lt;-</span> <span class='fu'>assay</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='st'>"counts"</span>)
+<span class='no'>sample_annot</span> <span class='kw'>&lt;-</span> <span class='fu'>colData</span>(<span class='no'>GSE60361_subset_sce</span>)
+<span class='no'>row_annot</span> <span class='kw'>&lt;-</span> <span class='fu'>rowData</span>(<span class='no'>GSE60361_subset_sce</span>)
+<span class='no'>newSCE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='SCtkExperiment.html'>SCtkExperiment</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='fu'>list</span>(<span class='kw'>counts</span><span class='kw'>=</span><span class='no'>counts_mat</span>),
+                         <span class='kw'>colData</span><span class='kw'>=</span><span class='no'>sample_annot</span>,
+                         <span class='kw'>rowData</span><span class='kw'>=</span><span class='no'>row_annot</span>)
+<span class='no'>newSCE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getPCA.html'>getPCA</a></span>(<span class='no'>newSCE</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>)
+<span class='co'>#View the percent variation of the PCA</span>
+<span class='fu'><a href='pca_variances.html'>pca_variances</a></span>(<span class='no'>newSCE</span>)</div><div class='output co'>#&gt; DataFrame with 30 rows and 1 column
+#&gt;        percentVar
+#&gt;         &lt;numeric&gt;
+#&gt; PC1    0.37202971
+#&gt; PC2    0.10416416
+#&gt; PC3    0.05879405
+#&gt; PC4    0.04180737
+#&gt; PC5    0.03517237
+#&gt; ...           ...
+#&gt; PC26 8.946783e-03
+#&gt; PC27 8.734286e-03
+#&gt; PC28 8.105553e-03
+#&gt; PC29 7.322064e-03
+#&gt; PC30 7.336992e-32</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -161,7 +186,9 @@ slot.</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#slots">Slots</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

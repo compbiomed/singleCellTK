@@ -182,7 +182,7 @@ SCtkExperiment with assay()</p>
   <span class='co'>#subset for testing</span>
   <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>bladderEset</span>[<span class='fl'>1</span>:<span class='fl'>50</span>,]
   <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as</span>(<span class='fu'>as</span>(<span class='no'>dat</span>, <span class='st'>"SummarizedExperiment"</span>), <span class='st'>"SCtkExperiment"</span>)
-  <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='fu'>model.matrix</span>(~<span class='fu'>as.factor</span>(<span class='no'>cancer</span>), <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>colData</span>(<span class='no'>dat</span>))
+  <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>stats</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/stats/topics/model.matrix'>model.matrix</a></span>(~<span class='fu'>as.factor</span>(<span class='no'>cancer</span>), <span class='kw'>data</span> <span class='kw'>=</span> <span class='fu'>colData</span>(<span class='no'>dat</span>))
 
   <span class='co'># parametric adjustment</span>
   <span class='no'>combat_edata1</span> <span class='kw'>&lt;-</span> <span class='fu'>ComBat_SCE</span>(<span class='kw'>SCEdata</span> <span class='kw'>=</span> <span class='no'>dat</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"exprs"</span>,

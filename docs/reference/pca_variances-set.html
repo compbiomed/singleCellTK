@@ -145,13 +145,43 @@
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A SCtkExperiment object with the pca_variances slot set.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='fu'><a href='pca_variances.html'>pca_variances</a></span>(<span class='no'>GSE60361_subset_sce</span>)</div><div class='output co'>#&gt; DataFrame with 30 rows and 1 column
+#&gt;        percentVar
+#&gt;         &lt;numeric&gt;
+#&gt; PC1    0.37677828
+#&gt; PC2    0.08759633
+#&gt; PC3    0.05694270
+#&gt; PC4    0.03516177
+#&gt; PC5    0.03255553
+#&gt; ...           ...
+#&gt; PC26 1.154553e-02
+#&gt; PC27 1.041788e-02
+#&gt; PC28 9.644153e-03
+#&gt; PC29 8.957024e-03
+#&gt; PC30 7.430641e-32</div><div class='input'><span class='co'>#getPCA() sets the pca_variances</span>
+<span class='no'>newSCE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getPCA.html'>getPCA</a></span>(<span class='no'>GSE60361_subset_sce</span>, <span class='kw'>use_assay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>)
+
+<span class='co'>#alternatively, set the pca_variances directly</span>
+<span class='no'>pca</span> <span class='kw'>&lt;-</span> <span class='fu'>prcomp</span>(<span class='fu'>assay</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='st'>"logcounts"</span>))
+<span class='no'>percentVar</span> <span class='kw'>&lt;-</span> <span class='no'>pca</span>$<span class='no'>sdev</span> ^ <span class='fl'>2</span> / <span class='fu'>sum</span>(<span class='no'>pca</span>$<span class='no'>sdev</span> ^ <span class='fl'>2</span>)
+<span class='fu'><a href='pca_variances.html'>pca_variances</a></span>(<span class='no'>GSE60361_subset_sce</span>) <span class='kw'>&lt;-</span> <span class='fu'>DataFrame</span>(<span class='no'>percentVar</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -35,3 +35,10 @@ A data frame of gene names and adjusted p-values
 \description{
 Returns a data frame of gene names and adjusted p-values
 }
+\examples{
+data("GSE60361_subset_sce")
+#subset to 100 genes
+subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+res <- scDiffEx_deseq2(subset, condition = "level1class")
+
+}

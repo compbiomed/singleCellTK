@@ -16,6 +16,9 @@
 #'
 #' @return A Biomarker plot
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' plotBiomarker(GSE60361_subset_sce, gene="C1qa", shape="level1class")
 #'
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
                           shape="No Shape", x="PC1", y="PC2",
@@ -24,20 +27,20 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     shape <- NULL
   }
   if (visual == "PCA"){
-    if (is.null(reducedDim(count_data, reducedDimName))) {
+    if (is.null(SingleCellExperiment::reducedDim(count_data, reducedDimName))) {
       count_data <- getPCA(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
-    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
+    axis_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
     variances <- NULL
     if (class(count_data) == "SCtkExperiment"){
       variances <- pca_variances(count_data)
     }
   }
   if (visual == "tSNE"){
-    if (is.null(reducedDim(count_data, reducedDimName))) {
+    if (is.null(SingleCellExperiment::reducedDim(count_data, reducedDimName))) {
       count_data <- getTSNE(count_data, use_assay = use_assay, reducedDimName = reducedDimName)
     }
-    axis_df <- data.frame(reducedDim(count_data, reducedDimName))
+    axis_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
   }
   if (length(gene) > 9) {
     gene <- gene[1:9]
@@ -49,13 +52,13 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
                            use_assay = use_assay)
     l <- axis_df
     if (!is.null(shape)){
-      l$shape <- factor(eval(parse(text = paste0("colData(count_data)$", shape))))
+      l$shape <- factor(SingleCellExperiment::colData(count_data)[, shape])
     }
     gene_name <- colnames(bio_df)[2]
     colnames(bio_df)[2] <- "expression"
     l$Sample <- as.character(bio_df$sample)
     l$expression <- bio_df$expression
-    c <- assay(count_data, use_assay)[c(gene_name), ]
+    c <- SummarizedExperiment::assay(count_data, use_assay)[c(gene_name), ]
     percent <- round(100 * sum(c > 0) / length(c), 2)
     if (visual == "PCA"){
       if (binary == "Binary"){

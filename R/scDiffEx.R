@@ -40,7 +40,7 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      diffexmethod, clusterRow=TRUE, clusterCol=TRUE,
                      levelofinterest=NULL, analysis_type=NULL, controlLevel=NULL){
   if(length(condition) == 1){
-    in.condition <- droplevels(as.factor(colData(inSCESet)[, condition]))
+    in.condition <- droplevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
   } else if (diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
@@ -128,7 +128,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
     topha <- NULL
   } else if (annotationColors == "auto") {
     colors <- RColorBrewer::brewer.pal(9, "Set1")
-    cond_levels <- unique(colData(inSCESet)[, condition])
+    cond_levels <- unique(SingleCellExperiment::colData(inSCESet)[, condition])
     if (length(cond_levels) > 9){
       stop("Too many levels in condition for auto coloring")
     }
@@ -136,13 +136,13 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
     col[[condition]] <- stats::setNames(colors[1:length(cond_levels)],
                                         cond_levels)
     topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = colData(inSCESet)[, condition, drop = FALSE], col = col)
+      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE], col = col)
   } else {
     topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = colData(inSCESet)[, condition, drop = FALSE], col = annotationColors)
+      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE], col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(assay(inSCESet, use_assay)[geneList, ]))),
+  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(SummarizedExperiment::assay(inSCESet, use_assay)[geneList, ]))),
                                      name = "Expression",
                                      column_title = columnTitle,
                                      cluster_rows = clusterRow,
@@ -175,12 +175,17 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' #subset to 100 genes
+#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' res <- scDiffEx_deseq2(subset, condition = "level1class")
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                             analysis_type="biomarker", levelofinterest=NULL,
                             controlLevel=NULL, covariates=NULL){
-  cnts <- assay(inSCESet, use_assay)
-  annot_data <- colData(inSCESet)[, c(condition, covariates), drop = FALSE]
+  cnts <- SummarizedExperiment::assay(inSCESet, use_assay)
+  annot_data <- SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE]
 
   if (length(levels(annot_data[, condition])) > 2){
     if(analysis_type == "biomarker"){
@@ -206,8 +211,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
     controlLevel <- NULL
   }
 
-  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts,
-                                        colData = annot_data,
+  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts, colData = annot_data,
                                         design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
@@ -226,7 +230,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
     res <- DESeq2::results(dds, contrast = c(condition,
                                              levelofinterest,
                                              controlLevel))
-    res <- DESeq2::lfcShrink(dds, coef = which(levels(colData(inSCESet)[, c(condition)]) == levelofinterest))
+    res <- DESeq2::lfcShrink(dds, coef = which(levels(SingleCellExperiment::colData(inSCESet)[, c(condition)]) == levelofinterest))
   }
 
   return(data.frame(res))
@@ -247,25 +251,28 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- scDiffEx_limma(GSE60361_subset_sce, condition = "level1class")
 #'
 scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
                            levelofinterest=NULL, covariates=NULL){
-  condition_factor <- factor(colData(inSCESet)[, c(condition)])
+  condition_factor <- factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])
   if (length(levels(condition_factor)) < 2){
     stop("Problem with limma condition")
   }
   if(is.null(covariates)) {
     design <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
-      data = data.frame(colData(inSCESet)[, c(condition), drop = FALSE]))
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition), drop = FALSE]))
   } else {
     design <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition, covariates),
                                            collapse = "+"))),
-      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
                                           drop = FALSE]))
   }
-  fit <- limma::lmFit(assay(inSCESet, use_assay), design)
+  fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, use_assay), design)
   ebayes <- limma::eBayes(fit)
   if (length(levels(condition_factor)) == 2){
     topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
@@ -296,26 +303,29 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
+#' @examples
+#' data("GSE60361_subset_sce")
+#' res <- scDiffEx_anova(GSE60361_subset_sce, condition = "level1class")
 #'
 scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
                            covariates=NULL){
   if(is.null(covariates)) {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
-      data = data.frame(colData(inSCESet)[, c(condition), drop = FALSE]))
-    mod0 <- stats::model.matrix(~1, data = colData(inSCESet))
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition), drop = FALSE]))
+    mod0 <- stats::model.matrix(~1, data = SingleCellExperiment::colData(inSCESet))
   } else {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition, covariates),
                                            collapse = "+"))),
-      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
                                           drop = FALSE]))
     mod0 <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
-      data = data.frame(colData(inSCESet)[, c(condition, covariates),
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
                                           drop = FALSE]))
   }
-  dat <- assay(inSCESet, use_assay)
+  dat <- SummarizedExperiment::assay(inSCESet, use_assay)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
   df1 <- dim(mod)[2]

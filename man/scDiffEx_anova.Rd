@@ -24,3 +24,8 @@ A data frame of gene names and adjusted p-values
 \description{
 Returns a data frame of gene names and adjusted p-values
 }
+\examples{
+data("GSE60361_subset_sce")
+res <- scDiffEx_anova(GSE60361_subset_sce, condition = "level1class")
+
+}
