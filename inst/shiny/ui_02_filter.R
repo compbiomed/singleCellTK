@@ -83,7 +83,31 @@ shiny_panel_filter <- fluidPage(
           ),
           tabPanel(
             "Annotation Data",
-            DT::dataTableOutput("colDataDataFrame")
+            tabsetPanel(
+              tabPanel(
+                "Data",
+                DT::dataTableOutput("colDataDataFrame")
+              ),
+              tabPanel(
+                "Options",
+                wellPanel(
+                  h4("Modify Annotation Data:"),
+                  selectInput("annotModifyChoice", "Select Annotation:", c('none', clusterChoice)),
+                  uiOutput("annotModifyUI"),
+                  tags$hr(),
+                  downloadButton("downloadcolData", "Download Annotation Data"),
+                  tags$hr(),
+                  fileInput(
+                    "newAnnotFile", "Upload and replace annotation data:",
+                    accept = c(
+                      "text/csv",
+                      "text/comma-separated-values",
+                      ".csv"
+                    )
+                  )
+                )
+              )
+            )
           )
         )
       ),
