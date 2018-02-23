@@ -51,6 +51,8 @@ shinyServer(function(input, output, session) {
                       choices = pdata_options)
     updateSelectInput(session, "select_Snapshot_Condition",
                       choices = pdata_options)
+    updateSelectInput(session, "annotModifyChoice",
+                      choices = c("none", pdata_options))
   }
 
   updateGeneNames <- function(){
@@ -427,6 +429,48 @@ shinyServer(function(input, output, session) {
       data.frame(colData(vals$counts))
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
+
+  #download colData
+  output$downloadcolData <- downloadHandler(
+    filename = function() {
+      paste("colData-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(data.frame(colData(vals$counts)), file)
+    }
+  )
+
+  #upload and replace colData
+  observeEvent(input$newAnnotFile, {
+    req(input$newAnnotFile)
+    req(vals$counts)
+    indata <- read.csv(input$newAnnotFile$datapath, header=TRUE, row.names = 1)
+    colData(vals$counts) <- DataFrame(indata)
+    updateColDataNames()
+  })
+
+  #render UI for factor vs numeric
+  output$annotModifyUI <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$annotModifyChoice != "none"){
+        if(is.factor(colData(vals$counts)[, input$annotModifyChoice])){
+          radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "factor")
+        } else {
+          radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "numeric")
+        }
+      }
+    }
+  })
+
+  #update factor vs numeric for colData
+  observeEvent(input$annotTypeSelect, {
+    if(input$annotTypeSelect == "factor" & !is.factor(colData(vals$counts)[, input$annotModifyChoice])){
+      colData(vals$counts)[, input$annotModifyChoice] <- as.factor(colData(vals$counts)[, input$annotModifyChoice])
+    } else if (input$annotTypeSelect == "numeric" & is.factor(colData(vals$counts)[, input$annotModifyChoice])){
+      f <- colData(vals$counts)[, input$annotModifyChoice]
+      colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
+    }
+  })
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
