@@ -2,7 +2,7 @@
 #' in the data
 #'
 #' Visualize the percent variation in the data that is explained by batch and
-#' condition if it is givent.
+#' condition if it is given.
 #'
 #' @param inSCESet Input SCtkExperiment object. Required
 #' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
