@@ -50,26 +50,35 @@ devtools::install_github("compbiomed/singleCellTK")
 
 ## Troubleshooting Installation
 
-For the majority of users, the commands above will install the latest version of the singleCellTK without any errors. Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:
+For the majority of users, the commands above will install the latest version of
+the singleCellTK without any errors. Rarely, you may encounter an error due to
+previously installed versions of some packages that are required for the
+singleCellTK. If you encounter an error during installation, use the commands
+below to check the version of Bioconductor that is installed:
 
 ```{r eval=FALSE}
 source("https://bioconductor.org/biocLite.R")
 biocVersion()
 ```
 
-If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:
+If the version number is not 3.6 or higher, you must upgrade Bioconductor to
+install the toolkit:
 
 ```{r eval=FALSE}
 biocLite("BiocUpgrade")
 ```
 
-After you install Bioconductor 3.6 or higher, you should be able to install the toolkit using ```devtools::install_github("compbiomed/singleCellTK")```. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.
+After you install Bioconductor 3.6 or higher, you should be able to install the
+toolkit using ```devtools::install_github("compbiomed/singleCellTK")```. If you
+still encounter an error, ensure your Bioconductor packages are up to date by
+running the following command.
 
 ```{r eval=FALSE}
 biocValid()
 ```
 
-If the command above does not return ```TRUE```, run the following command to update your R packages:
+If the command above does not return ```TRUE```, run the following command to
+update your R packages:
 
 ```{r eval=FALSE}
 biocLite()
@@ -85,14 +94,17 @@ If you still encounter an error, please [contact us](mailto:dfj@bu.edu) and we'd
 
 # Data Structure
 
-The Single Cell Toolkit uses a [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object to store data matrices along with annotation information, metadata, and reduced
-dimensionality data (PCA, t-SNE, etc.).
+The Single Cell Toolkit uses a [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html)
+object to store data matrices along with annotation information, metadata, and
+reduced dimensionality data
+(PCA, t-SNE, etc.).
 
 # Run the Shiny App
 
 ## Example Data
 
-Example data is available within the app. To get started, simply run the singleCellTK function:
+Example data is available within the app. To get started, simply run the
+singleCellTK function:
 
 ```{r eval=FALSE}
 library(singleCellTK)
