@@ -70,29 +70,29 @@ navbar:
   title: "singleCellTK"
   left:
     - text: "Introduction to singleCellTK"
-      href: articles/01-Introduction_to_singleCellTK.html
+      href: articles/v01-Introduction_to_singleCellTK.html
     - text: "Interactive Shiny Analysis"
       menu:
         - text: "1: Upload"
-          href: articles/03-tab01_Upload.html
+          href: articles/v03-tab01_Upload.html
         - text: "2: Data Summary and Filtering"
-          href: articles/04-tab02_Data-Summary-and-Filtering.html
+          href: articles/v04-tab02_Data-Summary-and-Filtering.html
         - text: "3: Dimensionality Reduction and Clustering"
-          href: articles/05-tab03_Dimensionality-Reduction-and-Clustering.html
+          href: articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html
         - text: "4: Batch Correction"
-          href: articles/06-tab04_Batch-Correction.html
+          href: articles/v06-tab04_Batch-Correction.html
         - text: "5: Differential Expression"
-          href: articles/07-tab05_Differential-Expression.html
+          href: articles/v07-tab05_Differential-Expression.html
         - text: "6: Pathway Activity Analysis"
-          href: articles/08-tab06_Pathway-Activity-Analysis.html
+          href: articles/v08-tab06_Pathway-Activity-Analysis.html
         - text: "7: Sample Size"
-          href: articles/09-tab07_Sample-Size.html
+          href: articles/v09-tab07_Sample-Size.html
     - text: "Command Line Analysis"
       menu:
         - text: "Processing and Visualizing Data"
-          href: articles/02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
+          href: articles/v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
         - text: "Aligning and Quantifying scRNA-Seq Data"
-          href: articles/10-Aligning_and_Quantifying_scRNA-Seq_Data.html
+          href: articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html
     - text: "Reference"
       href: reference/index.html
   right:
