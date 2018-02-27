@@ -25,16 +25,66 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+![](img/upload_01.png)
+
 # Introduction
 
-Intro
+The upload tab is the first tab displayed when the singleCellTK is loaded. Here,
+you can upload a matrix of data along with annotation information to explore
+within the toolkit.
+
+Under the hood, the SCTK created a SCtkExperiment object which stores one or
+more matrix of data along with a column annotation data frame and a row
+annotation data frame. The SCtkExperiment is an extension of the
+SingleCellExperiment object.
 
 # Input Data Format
 
-MAITS intro
+The SCTK accepts tab delimited files on the upload tab. You must provide a
+matrix of count data, and you can optionally provide both sample and feature
+annotation files as well. All files must have the same cells or genes and must
+be in the same order.
 
-# Video Demo
+## Assay
 
+The input assay should be a matrix with genes as rows and samples (cells) as
+columns. For most users, the input assay will be a matrix of counts, but if the
+assay data being uploaded is not a count matrix, you can change the input assay
+type with the "Input Assay Type" dropdown.
+
+| Gene  | Cell1 | Cell2 | ... | CellN |
+|-------|-------|-------|-----|-------|
+| Gene1 | 0     | 0     | ... | 0     |
+| Gene2 | 5     | 6     | ... | 0     |
+| Gene3 | 4     | 3     | ... | 8     |
+| ...   | ...   | ...   | ... | ...   |
+| GeneM | 10    | 10    | ... | 10    |
+
+## Sample Annotations (optional)
+
+Sample anotations should be a table with samples (cells) as rows and annotations
+as columns.
+
+| Cell  | Annot1 |  ... |
+|-------|--------|------|
+| Cell1 | a      |  ... |
+| Cell2 | a      |  ... |
+| Cell3 | b      |  ... |
+| ...   | ...    |  ... |
+| CellN | b      |  ... |
+
+## Feature Annotations (optional)
+
+Feature annotations should be a table with genes as rows and gene annotations
+as columns.
+
+| Gene  | Annot2 |  ... |
+|-------|--------|------|
+| Gene1 | a      |  ... |
+| Gene2 | a      |  ... |
+| Gene3 | b      |  ... |
+| ...   | ...    |  ... |
+| GeneM | b      |  ... |
 
 # Session info {.unnumbered}
 
