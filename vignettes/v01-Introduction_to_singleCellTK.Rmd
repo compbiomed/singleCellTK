@@ -157,18 +157,18 @@ categories: interactive analysis and R console analysis.
 
 ## Interactive Analysis
 
-* [Upload Tab](03-tab01_Upload.html)
-* [Data Summary and Filtering Tab](04-tab02_Data-Summary-and-Filtering.html)
-* [Dimensionality Reduction and Filtering Tab](05-tab03_Dimensionality-Reduction-and-Clustering.html)
-* [Batch Correction Tab](06-tab04_Batch-Correction.html)
-* [Differential Expression Tab](07-tab05_Differential-Expression.html)
-* [Pathway Activity Analysis Tab](08-tab06_Pathway-Activity-Analysis.html)
-* [Sample Size Tab](09-tab07_Sample-Size.html)
+* [Upload Tab](v03-tab01_Upload.html)
+* [Data Summary and Filtering Tab](v04-tab02_Data-Summary-and-Filtering.html)
+* [Dimensionality Reduction and Filtering Tab](v05-tab03_Dimensionality-Reduction-and-Clustering.html)
+* [Batch Correction Tab](v06-tab04_Batch-Correction.html)
+* [Differential Expression Tab](v07-tab05_Differential-Expression.html)
+* [Pathway Activity Analysis Tab](v08-tab06_Pathway-Activity-Analysis.html)
+* [Sample Size Tab](v09-tab07_Sample-Size.html)
 
 ## R Console Analysis
 
-* [Processing and Visualizing Data in the Single Cell Toolkit](02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html)
-* [Aligning and Quantifying scRNA-Seq Data](10-Aligning_and_Quantifying_scRNA-Seq_Data.html)
+* [Processing and Visualizing Data in the Single Cell Toolkit](v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html)
+* [Aligning and Quantifying scRNA-Seq Data](v10-Aligning_and_Quantifying_scRNA-Seq_Data.html)
 
 # Session info {.unnumbered}
 
