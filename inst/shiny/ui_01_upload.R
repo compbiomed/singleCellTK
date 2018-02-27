@@ -40,7 +40,7 @@ shiny_panel_upload <- fluidPage(
           checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
-          fileInput("annotfile", "Annotations (optional):",
+          fileInput("annotfile", "Sample annotations (optional):",
                    accept = c(
                      "text/csv",
                      "text/comma-separated-values",
@@ -52,7 +52,7 @@ shiny_panel_upload <- fluidPage(
           )
         ),
         column(width = 4,
-          fileInput("featurefile", "Features (optional):",
+          fileInput("featurefile", "Feature annotations (optional):",
                    accept = c(
                      "text/csv",
                      "text/comma-separated-values",
