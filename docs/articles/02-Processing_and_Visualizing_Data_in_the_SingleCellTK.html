@@ -28,6 +28,9 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../articles/01-Introduction_to_singleCellTK.html">Introduction to singleCellTK</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Interactive Shiny Analysis
@@ -36,25 +39,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/tab01_Upload.html">1: Upload</a>
+      <a href="../articles/03-tab01_Upload.html">1: Upload</a>
     </li>
     <li>
-      <a href="../articles/tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
+      <a href="../articles/04-tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
     </li>
     <li>
-      <a href="../articles/tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
+      <a href="../articles/05-tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
     </li>
     <li>
-      <a href="../articles/tab04_Batch-Correction.html">4: Batch Correction</a>
+      <a href="../articles/06-tab04_Batch-Correction.html">4: Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/tab05_Differential-Expression.html">5: Differential Expression</a>
+      <a href="../articles/07-tab05_Differential-Expression.html">5: Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
+      <a href="../articles/08-tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
     </li>
     <li>
-      <a href="../articles/tab07_Sample-Size.html">7: Sample Size</a>
+      <a href="../articles/09-tab07_Sample-Size.html">7: Sample Size</a>
     </li>
   </ul>
 </li>
@@ -66,10 +69,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
+      <a href="../articles/02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
     </li>
     <li>
-      <a href="../articles/Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
+      <a href="../articles/10-Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
     </li>
   </ul>
 </li>
@@ -93,11 +96,11 @@
 <!--/.navbar -->
 
       
-      </header><script src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/htmlwidgets-1.0/htmlwidgets.js"></script><script src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/jquery-1.12.4/jquery.min.js"></script><link href="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/datatables-binding-0.4/datatables.js"></script><link href="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/js/jquery.dataTables.min.js"></script><link href="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet">
-<script src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/crosstalk-1.0.0/js/crosstalk.min.js"></script><div class="row">
+      </header><script src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/htmlwidgets-1.0/htmlwidgets.js"></script><script src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/jquery-1.12.4/jquery.min.js"></script><link href="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/datatables-binding-0.4/datatables.js"></script><link href="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/dt-core-1.10.16/js/jquery.dataTables.min.js"></script><link href="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet">
+<script src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/crosstalk-1.0.0/js/crosstalk.min.js"></script><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Processing and Visualizing Data in the Single Cell Toolkit</h1>
@@ -134,8 +137,8 @@
 <a href="#summarizetable" class="anchor"></a>summarizeTable</h2>
 <p>You can get summary metrics with the <code>summarizeTable</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_sce))</code></pre></div>
-<div id="htmlwidget-ef4c84610d041d7b74cc" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ef4c84610d041d7b74cc">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,997336,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0bd5825284c96075e3ec" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0bd5825284c96075e3ec">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,997336,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="filtering-by-annotation" class="section level2">
 <h2 class="hasAnchor">
@@ -160,8 +163,8 @@
 ## TRUE 
 ##   74</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_subset))</code></pre></div>
-<div id="htmlwidget-56179f9f35eaf2265fb0" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-56179f9f35eaf2265fb0">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,999245,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8f38141a6ccf65b0b4f2" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8f38141a6ccf65b0b4f2">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,999245,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="visualization" class="section level2">
 <h2 class="hasAnchor">
@@ -173,13 +176,13 @@
 <h3 class="hasAnchor">
 <a href="#pca" class="anchor"></a>PCA</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotPCA.html">plotPCA</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"PCA_logcounts"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_pca-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_pca-1.png" width="672"></p>
 </div>
 <div id="t-sne" class="section level3">
 <h3 class="hasAnchor">
 <a href="#t-sne" class="anchor"></a>t-SNE</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotTSNE.html">plotTSNE</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"TSNE_logcounts"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_tsne-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_tsne-1.png" width="672"></p>
 </div>
 </div>
 <div id="differential-expression-with-mast" class="section level2">
@@ -201,7 +204,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">4</span>))
 <span class="kw">plot</span>(thresholds)
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_thresh-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_thresh-1.png" width="672"></p>
 </div>
 <div id="run-mast" class="section level3">
 <h3 class="hasAnchor">
@@ -234,7 +237,7 @@
 ##       1.841511       2.293826       2.293826       2.505690       2.909298 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
 ##       3.091104       3.978445       5.059031       7.900775</code></pre>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_violin-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_violin-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MASTregression.html">MASTregression</a></span>(maits_subset, <span class="dt">fcHurdleSig =</span> mast_results, <span class="dt">threshP =</span> <span class="ot">TRUE</span>, <span class="dt">variable =</span> <span class="st">"condition"</span>)</code></pre></div>
 <pre><code>## `fData` has no primerid.  I'll make something up.</code></pre>
 <pre><code>## (0.0144,0.163]  (0.163,0.334]   (0.334,0.53]   (0.53,0.755]   (0.755,1.01] 
@@ -245,12 +248,12 @@
 ##       1.841511       2.293826       2.293826       2.505690       2.909298 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
 ##       3.091104       3.978445       5.059031       7.900775</code></pre>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_lm-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_lm-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_DiffEx.html">plot_DiffEx</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logcounts"</span>, <span class="dt">condition =</span> <span class="st">"condition"</span>,
                  <span class="dt">geneList =</span> mast_results<span class="op">$</span>Gene[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>],
                  <span class="dt">annotationColors =</span> <span class="st">"auto"</span>,
             <span class="dt">displayRowLabels =</span> <span class="ot">FALSE</span>, <span class="dt">displayColumnLabels =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_heatmap-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_heatmap-1.png" width="672"></p>
 </div>
 <div id="pathway-activity-with-gsva" class="section level3">
 <h3 class="hasAnchor">
@@ -307,9 +310,9 @@
   |                                                                       
   |=================================================================| 100%</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/GSVA_plot.html">GSVA_plot</a></span>(maits_subset, gsva_res, <span class="st">"Violin"</span>, <span class="st">"condition"</span>)</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_gsva-1.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_gsva-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/GSVA_plot.html">GSVA_plot</a></span>(maits_subset, gsva_res, <span class="st">"Heatmap"</span>, <span class="st">"condition"</span>)</code></pre></div>
-<p><img src="Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_gsva-2.png" width="672"></p>
+<p><img src="02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_gsva-2.png" width="672"></p>
 </div>
 </div>
 </div>
@@ -365,19 +368,19 @@ bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 ## other attached packages:
 ##  [1] bladderbatch_1.16.0        GSEABase_1.40.1           
 ##  [3] graph_1.56.0               annotate_1.56.1           
-##  [5] XML_3.98-1.9               AnnotationDbi_1.40.0      
-##  [7] DT_0.4                     singleCellTK_0.4.4        
+##  [5] XML_3.98-1.10              AnnotationDbi_1.40.0      
+##  [7] DT_0.4                     singleCellTK_0.4.6        
 ##  [9] SingleCellExperiment_1.0.0 SummarizedExperiment_1.8.1
 ## [11] DelayedArray_0.4.1         matrixStats_0.53.1        
-## [13] Biobase_2.38.0             GenomicRanges_1.30.1      
+## [13] Biobase_2.38.0             GenomicRanges_1.30.3      
 ## [15] GenomeInfoDb_1.14.0        IRanges_2.12.0            
 ## [17] S4Vectors_0.16.0           BiocGenerics_0.24.0       
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] splines_3.4.3          bit64_0.9-7            jsonlite_1.5          
 ##  [4] shiny_1.0.5            blob_1.1.0             GenomeInfoDbData_1.0.0
-##  [7] yaml_2.1.16            pillar_1.1.0           RSQLite_2.0           
-## [10] backports_1.1.2        lattice_0.20-35        limma_3.34.8          
+##  [7] yaml_2.1.16            pillar_1.2.1           RSQLite_2.0           
+## [10] backports_1.1.2        lattice_0.20-35        limma_3.34.9          
 ## [13] digest_0.6.15          RColorBrewer_1.1-2     XVector_0.18.0        
 ## [16] colorspace_1.3-2       htmltools_0.3.6        httpuv_1.3.5          
 ## [19] Matrix_1.2-12          plyr_1.8.4             GetoptLong_0.1.6      
@@ -386,15 +389,15 @@ bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 ## [28] GSVA_1.26.0            mgcv_1.8-23            ggplot2_2.2.1         
 ## [31] lazyeval_0.2.1         survival_2.41-3        magrittr_1.5          
 ## [34] mime_0.5               memoise_1.1.0          evaluate_0.10.1       
-## [37] nlme_3.1-131           MAST_1.4.1             tools_3.4.3           
+## [37] nlme_3.1-131.1         MAST_1.4.1             tools_3.4.3           
 ## [40] data.table_1.10.4-3    GlobalOptions_0.0.12   ComplexHeatmap_1.17.1 
-## [43] stringr_1.2.0          munsell_0.4.3          compiler_3.4.3        
-## [46] rlang_0.1.6            grid_3.4.3             RCurl_1.95-4.10       
+## [43] stringr_1.3.0          munsell_0.4.3          compiler_3.4.3        
+## [46] rlang_0.2.0            grid_3.4.3             RCurl_1.95-4.10       
 ## [49] rjson_0.2.15           htmlwidgets_1.0        circlize_0.4.3        
 ## [52] crosstalk_1.0.0        bitops_1.0-6           labeling_0.3          
 ## [55] rmarkdown_1.8          gtable_0.2.0           abind_1.4-5           
 ## [58] DBI_0.7                reshape2_1.4.3         R6_2.2.2              
-## [61] knitr_1.19             bit_1.1-12             shinythemes_1.1.1     
+## [61] knitr_1.20             bit_1.1-12             shinythemes_1.1.1     
 ## [64] rprojroot_1.3-2        shape_1.4.4            stringi_1.1.6         
 ## [67] sva_3.26.0             Rcpp_0.12.15           geneplotter_1.56.0</code></pre>
 </div>

@@ -130,11 +130,25 @@ Then, follow data upload instructions in the "Upload Tab" vignette.
 To create a SingleCellExperiment object, we have provided the ```createSCE()```
 function:
 
-```{r}
-
+```{r, message=FALSE}
+library(singleCellTK)
+data("GSE60361_subset_sce")
+counts_mat <- assay(GSE60361_subset_sce, "counts")
+sample_annot <- colData(GSE60361_subset_sce)
+row_annot <- rowData(GSE60361_subset_sce)
+newSCE <- createSCE(assayfile = counts_mat, annotfile = sample_annot, 
+                    featurefile = row_annot, assay_name = "counts",
+                    inputdataframes = TRUE, create_logcounts = TRUE)
 ```
 
 ### Loading data stored in a SingleCellExperiment object
+
+Once a SingleCellExperiment object is created, the object can be loaded directly
+from the R console:
+
+```{r eval=FALSE}
+singleCellTK(newSCE)
+```
 
 # Vignettes
 
@@ -143,7 +157,18 @@ categories: interactive analysis and R console analysis.
 
 ## Interactive Analysis
 
+* [Upload Tab](03-tab01_Upload.html)
+* [Data Summary and Filtering Tab](04-tab02_Data-Summary-and-Filtering.html)
+* [Dimensionality Reduction and Filtering Tab](05-tab03_Dimensionality-Reduction-and-Clustering.html)
+* [Batch Correction Tab](06-tab04_Batch-Correction.html)
+* [Differential Expression Tab](07-tab05_Differential-Expression.html)
+* [Pathway Activity Analysis Tab](08-tab06_Pathway-Activity-Analysis.html)
+* [Sample Size Tab](09-tab07_Sample-Size.html)
+
 ## R Console Analysis
+
+* [Processing and Visualizing Data in the Single Cell Toolkit](02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html)
+* [Aligning and Quantifying scRNA-Seq Data](10-Aligning_and_Quantifying_scRNA-Seq_Data.html)
 
 # Session info {.unnumbered}
 

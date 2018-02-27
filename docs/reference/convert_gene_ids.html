@@ -51,7 +51,10 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="dropdown">
+        <li>
+  <a href="../articles/01-Introduction_to_singleCellTK.html">Introduction to singleCellTK</a>
+</li>
+<li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Interactive Shiny Analysis
      
@@ -59,25 +62,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tab01_Upload.html">1: Upload</a>
+      <a href="../articles/03-tab01_Upload.html">1: Upload</a>
     </li>
     <li>
-      <a href="../articles/tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
+      <a href="../articles/04-tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
     </li>
     <li>
-      <a href="../articles/tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
+      <a href="../articles/05-tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
     </li>
     <li>
-      <a href="../articles/tab04_Batch-Correction.html">4: Batch Correction</a>
+      <a href="../articles/06-tab04_Batch-Correction.html">4: Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/tab05_Differential-Expression.html">5: Differential Expression</a>
+      <a href="../articles/07-tab05_Differential-Expression.html">5: Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
+      <a href="../articles/08-tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
     </li>
     <li>
-      <a href="../articles/tab07_Sample-Size.html">7: Sample Size</a>
+      <a href="../articles/09-tab07_Sample-Size.html">7: Sample Size</a>
     </li>
   </ul>
 </li>
@@ -89,10 +92,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
+      <a href="../articles/02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
     </li>
     <li>
-      <a href="../articles/Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
+      <a href="../articles/10-Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
     </li>
   </ul>
 </li>
@@ -168,23 +171,23 @@ conversion.</p>
                                              <span class='kw'>out_symbol</span> <span class='kw'>=</span> <span class='st'>"ENSEMBL"</span>,
                                              <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Mm.eg.db"</span>)
   <span class='fu'>sample</span>(<span class='fu'>rownames</span>(<span class='no'>GSE60361_subset_symbol</span>), <span class='fl'>50</span>)
-}</div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>1773 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>51 ENSEMBL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>153 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>19972 SYMBOL originally, 18153 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000036282" "ENSMUSG00000033416" "ENSMUSG00000024781"
-#&gt;  [4] "ENSMUSG00000014773" "ENSMUSG00000061360" "ENSMUSG00000029601"
-#&gt;  [7] "ENSMUSG00000052821" "ENSMUSG00000039611" "ENSMUSG00000067578"
-#&gt; [10] "ENSMUSG00000042331" "ENSMUSG00000030351" "ENSMUSG00000033159"
-#&gt; [13] "ENSMUSG00000039616" "ENSMUSG00000095138" "ENSMUSG00000067571"
-#&gt; [16] "ENSMUSG00000043953" "ENSMUSG00000032059" "ENSMUSG00000004864"
-#&gt; [19] "ENSMUSG00000024045" "ENSMUSG00000055013" "ENSMUSG00000021681"
-#&gt; [22] "ENSMUSG00000018068" "ENSMUSG00000004415" "ENSMUSG00000022217"
-#&gt; [25] "ENSMUSG00000050201" "ENSMUSG00000040724" "ENSMUSG00000020878"
-#&gt; [28] "ENSMUSG00000039154" "ENSMUSG00000038670" "ENSMUSG00000020929"
-#&gt; [31] "ENSMUSG00000086899" "ENSMUSG00000024806" "ENSMUSG00000067851"
-#&gt; [34] "ENSMUSG00000033684" "ENSMUSG00000022243" "ENSMUSG00000031751"
-#&gt; [37] "ENSMUSG00000112663" "ENSMUSG00000063605" "ENSMUSG00000001865"
-#&gt; [40] "ENSMUSG00000030785" "ENSMUSG00000031434" "ENSMUSG00000056091"
-#&gt; [43] "ENSMUSG00000022791" "ENSMUSG00000045252" "ENSMUSG00000045672"
-#&gt; [46] "ENSMUSG00000022505" "ENSMUSG00000059208" "ENSMUSG00000063802"
-#&gt; [49] "ENSMUSG00000025665" "ENSMUSG00000021983"</div><div class='input'>
+}</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>1773 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>51 ENSEMBL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>153 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>19972 SYMBOL originally, 18153 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000024781" "ENSMUSG00000014763" "ENSMUSG00000022477"
+#&gt;  [4] "ENSMUSG00000029603" "ENSMUSG00000052821" "ENSMUSG00000028309"
+#&gt;  [7] "ENSMUSG00000067578" "ENSMUSG00000018500" "ENSMUSG00000030353"
+#&gt; [10] "ENSMUSG00000026197" "ENSMUSG00000033632" "ENSMUSG00000095075"
+#&gt; [13] "ENSMUSG00000024673" "ENSMUSG00000020120" "ENSMUSG00000037112"
+#&gt; [16] "ENSMUSG00000063952" "ENSMUSG00000024050" "ENSMUSG00000055013"
+#&gt; [19] "ENSMUSG00000021681" "ENSMUSG00000018068" "ENSMUSG00000004415"
+#&gt; [22] "ENSMUSG00000079197" "ENSMUSG00000045288" "ENSMUSG00000040724"
+#&gt; [25] "ENSMUSG00000001445" "ENSMUSG00000003199" "ENSMUSG00000038644"
+#&gt; [28] "ENSMUSG00000020930" "ENSMUSG00000022914" "ENSMUSG00000074909"
+#&gt; [31] "ENSMUSG00000067851" "ENSMUSG00000033671" "ENSMUSG00000047497"
+#&gt; [34] "ENSMUSG00000033009" "ENSMUSG00000020674" "ENSMUSG00000039081"
+#&gt; [37] "ENSMUSG00000011463" "ENSMUSG00000030785" "ENSMUSG00000072944"
+#&gt; [40] "ENSMUSG00000056091" "ENSMUSG00000079620" "ENSMUSG00000074274"
+#&gt; [43] "ENSMUSG00000039196" "ENSMUSG00000008540" "ENSMUSG00000079557"
+#&gt; [46] "ENSMUSG00000046456" "ENSMUSG00000025665" "ENSMUSG00000114797"
+#&gt; [49] "ENSMUSG00000029797" "ENSMUSG00000034744"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

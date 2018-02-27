@@ -28,6 +28,9 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="../articles/01-Introduction_to_singleCellTK.html">Introduction to singleCellTK</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Interactive Shiny Analysis
@@ -36,25 +39,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/tab01_Upload.html">1: Upload</a>
+      <a href="../articles/03-tab01_Upload.html">1: Upload</a>
     </li>
     <li>
-      <a href="../articles/tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
+      <a href="../articles/04-tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
     </li>
     <li>
-      <a href="../articles/tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
+      <a href="../articles/05-tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
     </li>
     <li>
-      <a href="../articles/tab04_Batch-Correction.html">4: Batch Correction</a>
+      <a href="../articles/06-tab04_Batch-Correction.html">4: Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/tab05_Differential-Expression.html">5: Differential Expression</a>
+      <a href="../articles/07-tab05_Differential-Expression.html">5: Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
+      <a href="../articles/08-tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
     </li>
     <li>
-      <a href="../articles/tab07_Sample-Size.html">7: Sample Size</a>
+      <a href="../articles/09-tab07_Sample-Size.html">7: Sample Size</a>
     </li>
   </ul>
 </li>
@@ -66,10 +69,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
+      <a href="../articles/02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
     </li>
     <li>
-      <a href="../articles/Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
+      <a href="../articles/10-Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
     </li>
   </ul>
 </li>
@@ -170,10 +173,20 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <h3 class="hasAnchor">
 <a href="#creating-a-singlecellexperiment-object" class="anchor"></a>Creating a SingleCellExperiment object</h3>
 <p>To create a SingleCellExperiment object, we have provided the <code><a href="../reference/createSCE.html">createSCE()</a></code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(singleCellTK)
+<span class="kw">data</span>(<span class="st">"GSE60361_subset_sce"</span>)
+counts_mat &lt;-<span class="st"> </span><span class="kw">assay</span>(GSE60361_subset_sce, <span class="st">"counts"</span>)
+sample_annot &lt;-<span class="st"> </span><span class="kw">colData</span>(GSE60361_subset_sce)
+row_annot &lt;-<span class="st"> </span><span class="kw">rowData</span>(GSE60361_subset_sce)
+newSCE &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createSCE.html">createSCE</a></span>(<span class="dt">assayfile =</span> counts_mat, <span class="dt">annotfile =</span> sample_annot, 
+                    <span class="dt">featurefile =</span> row_annot, <span class="dt">assay_name =</span> <span class="st">"counts"</span>,
+                    <span class="dt">inputdataframes =</span> <span class="ot">TRUE</span>, <span class="dt">create_logcounts =</span> <span class="ot">TRUE</span>)</code></pre></div>
 </div>
 <div id="loading-data-stored-in-a-singlecellexperiment-object" class="section level3">
 <h3 class="hasAnchor">
 <a href="#loading-data-stored-in-a-singlecellexperiment-object" class="anchor"></a>Loading data stored in a SingleCellExperiment object</h3>
+<p>Once a SingleCellExperiment object is created, the object can be loaded directly from the R console:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/singleCellTK.html">singleCellTK</a></span>(newSCE)</code></pre></div>
 </div>
 </div>
 </div>
@@ -184,10 +197,23 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <div id="interactive-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#interactive-analysis" class="anchor"></a>Interactive Analysis</h2>
+<ul>
+<li><a href="03-tab01_Upload.html">Upload Tab</a></li>
+<li><a href="04-tab02_Data-Summary-and-Filtering.html">Data Summary and Filtering Tab</a></li>
+<li><a href="05-tab03_Dimensionality-Reduction-and-Clustering.html">Dimensionality Reduction and Filtering Tab</a></li>
+<li><a href="06-tab04_Batch-Correction.html">Batch Correction Tab</a></li>
+<li><a href="07-tab05_Differential-Expression.html">Differential Expression Tab</a></li>
+<li><a href="08-tab06_Pathway-Activity-Analysis.html">Pathway Activity Analysis Tab</a></li>
+<li><a href="09-tab07_Sample-Size.html">Sample Size Tab</a></li>
+</ul>
 </div>
 <div id="r-console-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r-console-analysis" class="anchor"></a>R Console Analysis</h2>
+<ul>
+<li><a href="02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data in the Single Cell Toolkit</a></li>
+<li><a href="10-Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a></li>
+</ul>
 </div>
 </div>
 <div id="session-info" class="section level1 unnumbered">
@@ -205,13 +231,26 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] singleCellTK_0.4.6         SingleCellExperiment_1.0.0
+##  [3] SummarizedExperiment_1.8.1 DelayedArray_0.4.1        
+##  [5] matrixStats_0.53.1         Biobase_2.38.0            
+##  [7] GenomicRanges_1.30.3       GenomeInfoDb_1.14.0       
+##  [9] IRanges_2.12.0             S4Vectors_0.16.0          
+## [11] BiocGenerics_0.24.0       
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
-##  [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.15   
-##  [9] stringi_1.1.6   rmarkdown_1.8   knitr_1.19      stringr_1.2.0  
-## [13] digest_0.6.15   evaluate_0.10.1</code></pre>
+##  [1] Rcpp_0.12.15           knitr_1.20             XVector_0.18.0        
+##  [4] magrittr_1.5           zlibbioc_1.24.0        lattice_0.20-35       
+##  [7] stringr_1.3.0          tools_3.4.3            grid_3.4.3            
+## [10] htmltools_0.3.6        yaml_2.1.16            rprojroot_1.3-2       
+## [13] digest_0.6.15          Matrix_1.2-12          GenomeInfoDbData_1.0.0
+## [16] bitops_1.0-6           RCurl_1.95-4.10        evaluate_0.10.1       
+## [19] rmarkdown_1.8          stringi_1.1.6          compiler_3.4.3        
+## [22] backports_1.1.2</code></pre>
 </div>
 </div>
   </div>

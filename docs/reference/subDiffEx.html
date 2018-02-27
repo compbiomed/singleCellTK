@@ -53,7 +53,10 @@ multiple conditions, respectively. — subDiffEx • singleCellTK</title>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="dropdown">
+        <li>
+  <a href="../articles/01-Introduction_to_singleCellTK.html">Introduction to singleCellTK</a>
+</li>
+<li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Interactive Shiny Analysis
      
@@ -61,25 +64,25 @@ multiple conditions, respectively. — subDiffEx • singleCellTK</title>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tab01_Upload.html">1: Upload</a>
+      <a href="../articles/03-tab01_Upload.html">1: Upload</a>
     </li>
     <li>
-      <a href="../articles/tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
+      <a href="../articles/04-tab02_Data-Summary-and-Filtering.html">2: Data Summary and Filtering</a>
     </li>
     <li>
-      <a href="../articles/tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
+      <a href="../articles/05-tab03_Dimensionality-Reduction-and-Clustering.html">3: Dimensionality Reduction and Clustering</a>
     </li>
     <li>
-      <a href="../articles/tab04_Batch-Correction.html">4: Batch Correction</a>
+      <a href="../articles/06-tab04_Batch-Correction.html">4: Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/tab05_Differential-Expression.html">5: Differential Expression</a>
+      <a href="../articles/07-tab05_Differential-Expression.html">5: Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
+      <a href="../articles/08-tab06_Pathway-Activity-Analysis.html">6: Pathway Activity Analysis</a>
     </li>
     <li>
-      <a href="../articles/tab07_Sample-Size.html">7: Sample Size</a>
+      <a href="../articles/09-tab07_Sample-Size.html">7: Sample Size</a>
     </li>
   </ul>
 </li>
@@ -91,10 +94,10 @@ multiple conditions, respectively. — subDiffEx • singleCellTK</title>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
+      <a href="../articles/02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
     </li>
     <li>
-      <a href="../articles/Processing_and_Visualizing_Data_in_the_SingleCellTK.html">Processing and Visualizing Data</a>
+      <a href="../articles/10-Aligning_and_Quantifying_scRNA-Seq_Data.html">Aligning and Quantifying scRNA-Seq Data</a>
     </li>
   </ul>
 </li>
@@ -150,6 +153,12 @@ first row contains condition labels.</p></td>
 (such as for genes with 0 counts in a simulated dataset) are coerced to 1.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"GSE60361_subset_sce"</span>)
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='generateSimulatedData.html'>generateSimulatedData</a></span>(<span class='kw'>totalReads</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>cells</span><span class='kw'>=</span><span class='fl'>10</span>,
+                            <span class='kw'>originalData</span> <span class='kw'>=</span> <span class='fu'>assay</span>(<span class='no'>GSE60361_subset_sce</span>, <span class='st'>"counts"</span>),
+                            <span class='kw'>realLabels</span> <span class='kw'>=</span> <span class='fu'>colData</span>(<span class='no'>GSE60361_subset_sce</span>)[, <span class='st'>"level1class"</span>])
+<span class='no'>tempSigDiff</span> <span class='kw'>&lt;-</span> <span class='fu'>subDiffEx</span>(<span class='no'>res</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -157,7 +166,9 @@ first row contains condition labels.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
