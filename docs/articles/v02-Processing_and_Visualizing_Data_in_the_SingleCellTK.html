@@ -123,22 +123,34 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Intro</p>
+<p>The analysis modules available through the Shiny app are also available as R functions for standard R console processing of single cell RNA-Seq data using a SCtkExperiment object. At any stage, you can load the Shiny App to interactively visualize and analyze a data set, but this vignette will show a standard workflow run entirely through the R console.</p>
 </div>
 <div id="maits-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#maits-example" class="anchor"></a>MAITS Example</h1>
-<p>MAITS intro</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(singleCellTK)
-<span class="kw">library</span>(DT)
-<span class="kw">data</span>(<span class="st">"maits_sce"</span>)</code></pre></div>
+<p>The MAST package contains a convenient scRNA-Seq example data set of 96 Mucosal Associated Invariant T cells (MAITs), half of which were stimulated with cytokines to induce a response. For more details, consult the <a href="https://www.bioconductor.org/packages/release/bioc/html/MAST.html">MAST package</a> and <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html">vignette</a>.</p>
+<p>We will first convert the MAST example dataset to a SCtkExperiment object.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+  <span class="kw">library</span>(MAST)
+  <span class="kw">library</span>(singleCellTK)
+  <span class="kw">library</span>(DT)
+})
+
+<span class="kw">data</span>(maits, <span class="dt">package=</span><span class="st">"MAST"</span>)
+maits_sce &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createSCE.html">createSCE</a></span>(<span class="dt">assayfile =</span> <span class="kw">t</span>(maits<span class="op">$</span>expressionmat),
+                       <span class="dt">annotfile =</span> maits<span class="op">$</span>cdat,
+                       <span class="dt">featurefile =</span> maits<span class="op">$</span>fdat,
+                       <span class="dt">assay_name =</span> <span class="st">"logtpm"</span>,
+                       <span class="dt">inputdataframes =</span> <span class="ot">TRUE</span>,
+                       <span class="dt">create_logcounts =</span> <span class="ot">FALSE</span>)
+<span class="kw">rm</span>(maits)</code></pre></div>
 <div id="summarizetable" class="section level2">
 <h2 class="hasAnchor">
 <a href="#summarizetable" class="anchor"></a>summarizeTable</h2>
 <p>You can get summary metrics with the <code>summarizeTable</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_sce))</code></pre></div>
-<div id="htmlwidget-904bc43a17010114f358" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-904bc43a17010114f358">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,997336,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_sce, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>))</code></pre></div>
+<div id="htmlwidget-9ec0d4e83d43b285cebf" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9ec0d4e83d43b285cebf">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,17867,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>Typically, these summary statistics would be run on a “counts” matrix, but here we have log(tpm) values so the average number of reads per cell is calculated from the normalized values instead of raw counts.</p>
 </div>
 <div id="filtering-by-annotation" class="section level2">
 <h2 class="hasAnchor">
@@ -162,45 +174,70 @@
 <pre><code>## 
 ## TRUE 
 ##   74</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_subset))</code></pre></div>
-<div id="htmlwidget-d6ceab071093262e0fc5" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d6ceab071093262e0fc5">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,999245,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>))</code></pre></div>
+<div id="htmlwidget-c404c15c4ed957ab97b6" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c404c15c4ed957ab97b6">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,16292,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="visualization" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualization" class="anchor"></a>Visualization</h2>
+<p>Initially, there are no reduced dimensionality datasets stored in the object</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reducedDims</span>(maits_subset)</code></pre></div>
-<pre><code>## List of length 4
-## names(4): PCA_counts PCA_logcounts TSNE_counts TSNE_logcounts</code></pre>
+<pre><code>## List of length 0</code></pre>
+<p>PCA and t-SNE can be added to the object with the getPCA() and getTSNE() functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getPCA.html">getPCA</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>,
+                       <span class="dt">reducedDimName =</span> <span class="st">"PCA_logtpm"</span>)
+maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getTSNE.html">getTSNE</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>,
+                        <span class="dt">reducedDimName =</span> <span class="st">"TSNE_logtpm"</span>)
+<span class="kw">reducedDims</span>(maits_subset)</code></pre></div>
+<pre><code>## List of length 2
+## names(2): PCA_logtpm TSNE_logtpm</code></pre>
 <div id="pca" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pca" class="anchor"></a>PCA</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotPCA.html">plotPCA</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"PCA_logcounts"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
+<p>PCA data can be visualized with the plotPCA() function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotPCA.html">plotPCA</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"PCA_logtpm"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
 <p><img src="v02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_pca-1.png" width="672"></p>
 </div>
 <div id="t-sne" class="section level3">
 <h3 class="hasAnchor">
 <a href="#t-sne" class="anchor"></a>t-SNE</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotTSNE.html">plotTSNE</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"TSNE_logcounts"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
+<p>t-SNE data can be visualized with the plotTSNE() function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotTSNE.html">plotTSNE</a></span>(maits_subset, <span class="dt">reducedDimName =</span> <span class="st">"TSNE_logtpm"</span>, <span class="dt">colorBy =</span> <span class="st">"condition"</span>)</code></pre></div>
 <p><img src="v02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_tsne-1.png" width="672"></p>
 </div>
+</div>
+<div id="converting-gene-names" class="section level2">
+<h2 class="hasAnchor">
+<a href="#converting-gene-names" class="anchor"></a>Converting Gene Names</h2>
+<p>The singleCellTK has the ability to convert gene ids to various formats using the org.*.eg.db Bioconductor annotation packages. These packages are not installed by default, so these must be manually installed before this function will work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressPackageStartupMessages</span>({
+  <span class="kw">library</span>(org.Hs.eg.db)
+})
+maits_entrez &lt;-<span class="st"> </span>maits_subset
+maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../reference/convert_gene_ids.html">convert_gene_ids</a></span>(maits_subset, <span class="dt">in_symbol =</span> <span class="st">"ENTREZID"</span>,
+                                 <span class="dt">out_symbol =</span> <span class="st">"SYMBOL"</span>,
+                                 <span class="dt">database =</span> <span class="st">"org.Hs.eg.db"</span>)
+<span class="co">#to remove confusion for MAST about the gene name:</span>
+<span class="kw">rowData</span>(maits_subset)<span class="op">$</span>primerid &lt;-<span class="st"> </span><span class="ot">NULL</span></code></pre></div>
 </div>
 <div id="differential-expression-with-mast" class="section level2">
 <h2 class="hasAnchor">
 <a href="#differential-expression-with-mast" class="anchor"></a>Differential Expression with MAST</h2>
+<p>MAST is a popular package for performing differential expression analysis on scRNA-Seq data that models the effect of dropouts using a bimodal distribution and by including the cellular detection rate into the differential expression model. Functions in the toolkit allow you to perform this analysis on a SCtkExperiemnt object.</p>
 <div id="adaptive-thresholding" class="section level3">
 <h3 class="hasAnchor">
 <a href="#adaptive-thresholding" class="anchor"></a>Adaptive Thresholding</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">thresholds &lt;-<span class="st"> </span><span class="kw"><a href="../reference/thresholdGenes.html">thresholdGenes</a></span>(maits_subset)</code></pre></div>
-<pre><code>## `fData` has no primerid.  I'll make something up.</code></pre>
+<p>First, an adaptive threshold is calculated by binning genes with similar expression levels.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">thresholds &lt;-<span class="st"> </span><span class="kw"><a href="../reference/thresholdGenes.html">thresholdGenes</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>)</code></pre></div>
 <pre><code>## (0.0144,0.163]  (0.163,0.334]   (0.334,0.53]   (0.53,0.755]   (0.755,1.01] 
-##       1.048076       1.048076       1.048076       1.048076       1.048076 
+##       1.104946       1.104946       1.104946       1.104946       1.104946 
 ##    (1.01,1.31]    (1.31,1.65]    (1.65,2.04]    (2.04,2.48]    (2.48,2.99] 
-##       1.048076       1.048076       1.048076       1.243318       1.515176 
+##       1.104946       1.104946       1.104946       1.392792       1.595489 
 ##    (2.99,3.58]    (3.58,4.25]    (4.25,5.02]    (5.02,5.91]    (5.91,6.92] 
-##       1.841511       2.293826       2.293826       2.505690       2.909298 
+##       2.003844       2.477011       2.585636       2.901835       2.901835 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
-##       3.091104       3.978445       5.059031       7.900775</code></pre>
+##       3.177592       4.004409       5.044739       7.947253</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">4</span>))
 <span class="kw">plot</span>(thresholds)
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</code></pre></div>
@@ -209,47 +246,41 @@
 <div id="run-mast" class="section level3">
 <h3 class="hasAnchor">
 <a href="#run-mast" class="anchor"></a>Run MAST</h3>
+<p>MAST analysis can be run with a single function</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mast_results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/MAST.html">MAST</a></span>(maits_subset, <span class="dt">condition =</span> <span class="st">"condition"</span>, <span class="dt">usethresh =</span> <span class="ot">TRUE</span>,
-                     <span class="dt">use_assay =</span> <span class="st">"logcounts"</span>)</code></pre></div>
+                     <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>)</code></pre></div>
 <pre><code>## (0.0144,0.163]  (0.163,0.334]   (0.334,0.53]   (0.53,0.755]   (0.755,1.01] 
-##       1.048076       1.048076       1.048076       1.048076       1.048076 
+##       1.104946       1.104946       1.104946       1.104946       1.104946 
 ##    (1.01,1.31]    (1.31,1.65]    (1.65,2.04]    (2.04,2.48]    (2.48,2.99] 
-##       1.048076       1.048076       1.048076       1.243318       1.515176 
+##       1.104946       1.104946       1.104946       1.392792       1.595489 
 ##    (2.99,3.58]    (3.58,4.25]    (4.25,5.02]    (5.02,5.91]    (5.91,6.92] 
-##       1.841511       2.293826       2.293826       2.505690       2.909298 
+##       2.003844       2.477011       2.585636       2.901835       2.901835 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
-##       3.091104       3.978445       5.059031       7.900775</code></pre>
-<pre><code>## ....................................................................................................................................................................................................................................................................................................................................................................................................................................................................
-## Done!
-## Combining coefficients and standard errors
-## Calculating log-fold changes
-## Calculating likelihood ratio tests
-## Refitting on reduced model...
-## ....................................................................................................................................................................................................................................................................................................................................................................................................................................................................
-## Done!</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MASTviolin.html">MASTviolin</a></span>(maits_subset, <span class="dt">fcHurdleSig =</span> mast_results, <span class="dt">threshP =</span> <span class="ot">TRUE</span>, <span class="dt">variable =</span> <span class="st">"condition"</span>)</code></pre></div>
-<pre><code>## `fData` has no primerid.  I'll make something up.</code></pre>
+##       3.177592       4.004409       5.044739       7.947253</code></pre>
+<p>The resulting significantly differentially expressed genes can be visualized using a violin plot, linear model, or heatmap:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MASTviolin.html">MASTviolin</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>, <span class="dt">fcHurdleSig =</span> mast_results,
+           <span class="dt">threshP =</span> <span class="ot">TRUE</span>, <span class="dt">variable =</span> <span class="st">"condition"</span>)</code></pre></div>
 <pre><code>## (0.0144,0.163]  (0.163,0.334]   (0.334,0.53]   (0.53,0.755]   (0.755,1.01] 
-##       1.048076       1.048076       1.048076       1.048076       1.048076 
+##       1.104946       1.104946       1.104946       1.104946       1.104946 
 ##    (1.01,1.31]    (1.31,1.65]    (1.65,2.04]    (2.04,2.48]    (2.48,2.99] 
-##       1.048076       1.048076       1.048076       1.243318       1.515176 
+##       1.104946       1.104946       1.104946       1.392792       1.595489 
 ##    (2.99,3.58]    (3.58,4.25]    (4.25,5.02]    (5.02,5.91]    (5.91,6.92] 
-##       1.841511       2.293826       2.293826       2.505690       2.909298 
+##       2.003844       2.477011       2.585636       2.901835       2.901835 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
-##       3.091104       3.978445       5.059031       7.900775</code></pre>
+##       3.177592       4.004409       5.044739       7.947253</code></pre>
 <p><img src="v02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_violin-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MASTregression.html">MASTregression</a></span>(maits_subset, <span class="dt">fcHurdleSig =</span> mast_results, <span class="dt">threshP =</span> <span class="ot">TRUE</span>, <span class="dt">variable =</span> <span class="st">"condition"</span>)</code></pre></div>
-<pre><code>## `fData` has no primerid.  I'll make something up.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MASTregression.html">MASTregression</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>, <span class="dt">fcHurdleSig =</span> mast_results,
+               <span class="dt">threshP =</span> <span class="ot">TRUE</span>, <span class="dt">variable =</span> <span class="st">"condition"</span>)</code></pre></div>
 <pre><code>## (0.0144,0.163]  (0.163,0.334]   (0.334,0.53]   (0.53,0.755]   (0.755,1.01] 
-##       1.048076       1.048076       1.048076       1.048076       1.048076 
+##       1.104946       1.104946       1.104946       1.104946       1.104946 
 ##    (1.01,1.31]    (1.31,1.65]    (1.65,2.04]    (2.04,2.48]    (2.48,2.99] 
-##       1.048076       1.048076       1.048076       1.243318       1.515176 
+##       1.104946       1.104946       1.104946       1.392792       1.595489 
 ##    (2.99,3.58]    (3.58,4.25]    (4.25,5.02]    (5.02,5.91]    (5.91,6.92] 
-##       1.841511       2.293826       2.293826       2.505690       2.909298 
+##       2.003844       2.477011       2.585636       2.901835       2.901835 
 ##    (6.92,8.08]    (8.08,9.42]    (9.42,10.9]    (10.9,14.7] 
-##       3.091104       3.978445       5.059031       7.900775</code></pre>
+##       3.177592       4.004409       5.044739       7.947253</code></pre>
 <p><img src="v02-Processing_and_Visualizing_Data_in_the_SingleCellTK_files/figure-html/maits_lm-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_DiffEx.html">plot_DiffEx</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logcounts"</span>, <span class="dt">condition =</span> <span class="st">"condition"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plot_DiffEx.html">plot_DiffEx</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>, <span class="dt">condition =</span> <span class="st">"condition"</span>,
                  <span class="dt">geneList =</span> mast_results<span class="op">$</span>Gene[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>],
                  <span class="dt">annotationColors =</span> <span class="st">"auto"</span>,
             <span class="dt">displayRowLabels =</span> <span class="ot">FALSE</span>, <span class="dt">displayColumnLabels =</span> <span class="ot">FALSE</span>)</code></pre></div>
@@ -258,7 +289,8 @@
 <div id="pathway-activity-with-gsva" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pathway-activity-with-gsva" class="anchor"></a>Pathway Activity with GSVA</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gsva_res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GSVA_sce.html">GSVA_sce</a></span>(maits_subset, <span class="st">"logcounts"</span>,
+<p>The singleCellTK supports pathway activity analysis using the GSVA package. Currently, the toolkit supports performing this analysis on human datasets with entrez IDs. Data can be visualized as a violin plot or a heatmap.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gsva_res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GSVA_sce.html">GSVA_sce</a></span>(maits_entrez, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>,
                      <span class="st">"MSigDB c2 (Human, Entrez ID only)"</span>,
                      <span class="kw">c</span>(<span class="st">"KEGG_PROTEASOME"</span>,
                        <span class="st">"REACTOME_VIF_MEDIATED_DEGRADATION_OF_APOBEC3G"</span>,
@@ -270,16 +302,6 @@
                        <span class="st">"REACTOME_STABILIZATION_OF_P53"</span>,
                        <span class="st">"REACTOME_SCF_BETA_TRCP_MEDIATED_DEGRADATION_OF_EMI1"</span>),
                      <span class="dt">parallel.sz=</span><span class="dv">1</span>)</code></pre></div>
-<pre><code>## Loading required package: GSEABase</code></pre>
-<pre><code>## Loading required package: annotate</code></pre>
-<pre><code>## Loading required package: AnnotationDbi</code></pre>
-<pre><code>## Loading required package: XML</code></pre>
-<pre><code>## Loading required package: graph</code></pre>
-<pre><code>## 
-## Attaching package: 'graph'</code></pre>
-<pre><code>## The following object is masked from 'package:XML':
-## 
-##     addNode</code></pre>
 <pre><code>## Warning in .local(expr, gset.idx.list, ...): 157genes with constant
 ## expression values throuhgout the samples.</code></pre>
 <pre><code>## Warning in .local(expr, gset.idx.list, ...): Since argument method!
@@ -316,36 +338,11 @@
 </div>
 </div>
 </div>
-<div id="pbmc---4k-example" class="section level1">
-<h1 class="hasAnchor">
-<a href="#pbmc---4k-example" class="anchor"></a>PBMC - 4k Example</h1>
-<p>PBMC - 4k example</p>
-</div>
 <div id="batch-effects-example" class="section level1">
 <h1 class="hasAnchor">
 <a href="#batch-effects-example" class="anchor"></a>Batch Effects Example</h1>
 <p>It is possible to use ComBat within the Single Cell Toolkit. This support is experimental, since ComBat was not designed for scRNA-Seq. Here, we will load the bladderbatch example data into a SingleCellExperiment object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bladderbatch)
-<span class="kw">data</span>(bladderdata)
-dat &lt;-<span class="st"> </span>bladderEset[<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>,]
-
-pheno =<span class="st"> </span><span class="kw">pData</span>(dat)
-edata =<span class="st"> </span><span class="kw">exprs</span>(dat)
-bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createSCE.html">createSCE</a></span>(<span class="dt">assayfile =</span> edata,
-                           <span class="dt">annotfile =</span> pheno,
-                           <span class="dt">assay_name =</span> <span class="st">"microarray"</span>,
-                           <span class="dt">inputdataframes =</span> <span class="ot">TRUE</span>,
-                           <span class="dt">create_logcounts =</span> <span class="ot">FALSE</span>)
-<span class="kw">assay</span>(bladder_sctke, <span class="st">"combat"</span>) &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ComBat_SCE.html">ComBat_SCE</a></span>(<span class="dt">SCEdata =</span> bladder_sctke,
-                                             <span class="dt">batch =</span> <span class="st">"batch"</span>,
-                                             <span class="dt">use_assay =</span> <span class="st">"microarray"</span>,
-                                             <span class="dt">covariates =</span> <span class="st">"cancer"</span>)</code></pre></div>
-<pre><code>## Found5batches</code></pre>
-<pre><code>## Adjusting for2covariate(s) or covariate level(s)</code></pre>
 <pre><code>## Standardizing Data across genes</code></pre>
-<pre><code>## Fitting L/S model and finding priors</code></pre>
-<pre><code>## Finding parametric adjustments</code></pre>
-<pre><code>## Adjusting the Data</code></pre>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -368,13 +365,14 @@ bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 ## other attached packages:
 ##  [1] bladderbatch_1.16.0        GSEABase_1.40.1           
 ##  [3] graph_1.56.0               annotate_1.56.1           
-##  [5] XML_3.98-1.10              AnnotationDbi_1.40.0      
-##  [7] DT_0.4                     singleCellTK_0.4.6        
-##  [9] SingleCellExperiment_1.0.0 SummarizedExperiment_1.8.1
-## [11] DelayedArray_0.4.1         matrixStats_0.53.1        
-## [13] Biobase_2.38.0             GenomicRanges_1.30.3      
-## [15] GenomeInfoDb_1.14.0        IRanges_2.12.0            
-## [17] S4Vectors_0.16.0           BiocGenerics_0.24.0       
+##  [5] XML_3.98-1.10              org.Hs.eg.db_3.5.0        
+##  [7] AnnotationDbi_1.40.0       DT_0.4                    
+##  [9] singleCellTK_0.4.6         SingleCellExperiment_1.0.0
+## [11] MAST_1.4.1                 SummarizedExperiment_1.8.1
+## [13] DelayedArray_0.4.1         matrixStats_0.53.1        
+## [15] Biobase_2.38.0             GenomicRanges_1.30.3      
+## [17] GenomeInfoDb_1.14.0        IRanges_2.12.0            
+## [19] S4Vectors_0.16.0           BiocGenerics_0.24.0       
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] splines_3.4.3          bit64_0.9-7            jsonlite_1.5          
@@ -383,23 +381,24 @@ bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 ## [10] backports_1.1.2        lattice_0.20-35        limma_3.34.9          
 ## [13] digest_0.6.15          RColorBrewer_1.1-2     XVector_0.18.0        
 ## [16] colorspace_1.3-2       htmltools_0.3.6        httpuv_1.3.5          
-## [19] Matrix_1.2-12          plyr_1.8.4             GetoptLong_0.1.6      
-## [22] genefilter_1.60.0      zlibbioc_1.24.0        xtable_1.8-2          
-## [25] scales_0.5.0           BiocParallel_1.12.0    tibble_1.4.2          
-## [28] GSVA_1.26.0            mgcv_1.8-23            ggplot2_2.2.1         
-## [31] lazyeval_0.2.1         survival_2.41-3        magrittr_1.5          
-## [34] mime_0.5               memoise_1.1.0          evaluate_0.10.1       
-## [37] nlme_3.1-131.1         MAST_1.4.1             tools_3.4.3           
-## [40] data.table_1.10.4-3    GlobalOptions_0.0.12   ComplexHeatmap_1.17.1 
-## [43] stringr_1.3.0          munsell_0.4.3          compiler_3.4.3        
-## [46] rlang_0.2.0            grid_3.4.3             RCurl_1.95-4.10       
-## [49] rjson_0.2.15           htmlwidgets_1.0        circlize_0.4.3        
-## [52] crosstalk_1.0.0        bitops_1.0-6           labeling_0.3          
-## [55] rmarkdown_1.8          gtable_0.2.0           abind_1.4-5           
-## [58] DBI_0.7                reshape2_1.4.3         R6_2.2.2              
-## [61] knitr_1.20             bit_1.1-12             shinythemes_1.1.1     
-## [64] rprojroot_1.3-2        shape_1.4.4            stringi_1.1.6         
-## [67] sva_3.26.0             Rcpp_0.12.15           geneplotter_1.56.0</code></pre>
+## [19] Matrix_1.2-12          plyr_1.8.4             pkgconfig_2.0.1       
+## [22] GetoptLong_0.1.6       genefilter_1.60.0      zlibbioc_1.24.0       
+## [25] xtable_1.8-2           scales_0.5.0           Rtsne_0.13            
+## [28] BiocParallel_1.12.0    tibble_1.4.2           GSVA_1.26.0           
+## [31] mgcv_1.8-23            ggplot2_2.2.1          lazyeval_0.2.1        
+## [34] survival_2.41-3        magrittr_1.5           mime_0.5              
+## [37] memoise_1.1.0          evaluate_0.10.1        nlme_3.1-131.1        
+## [40] tools_3.4.3            data.table_1.10.4-3    GlobalOptions_0.0.12  
+## [43] ComplexHeatmap_1.17.1  stringr_1.3.0          munsell_0.4.3         
+## [46] compiler_3.4.3         rlang_0.2.0            grid_3.4.3            
+## [49] RCurl_1.95-4.10        rjson_0.2.15           htmlwidgets_1.0       
+## [52] circlize_0.4.3         crosstalk_1.0.0        bitops_1.0-6          
+## [55] labeling_0.3           rmarkdown_1.8          gtable_0.2.0          
+## [58] abind_1.4-5            DBI_0.7                reshape2_1.4.3        
+## [61] R6_2.2.2               knitr_1.20             bit_1.1-12            
+## [64] shinythemes_1.1.1      rprojroot_1.3-2        shape_1.4.4           
+## [67] stringi_1.1.6          sva_3.26.0             Rcpp_0.12.15          
+## [70] geneplotter_1.56.0</code></pre>
 </div>
 </div>
   </div>
@@ -415,10 +414,10 @@ bladder_sctke &lt;-<span class="st"> </span><span class="kw"><a href="../referen
 <li><a href="#summarizetable">summarizeTable</a></li>
       <li><a href="#filtering-by-annotation">Filtering by Annotation</a></li>
       <li><a href="#visualization">Visualization</a></li>
+      <li><a href="#converting-gene-names">Converting Gene Names</a></li>
       <li><a href="#differential-expression-with-mast">Differential Expression with MAST</a></li>
       </ul>
 </li>
-      <li><a href="#pbmc---4k-example">PBMC - 4k Example</a></li>
       <li><a href="#batch-effects-example">Batch Effects Example</a></li>
       <li><a href="#session-info">Session info</a></li>
       </ul>

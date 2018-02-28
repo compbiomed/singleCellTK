@@ -117,19 +117,148 @@
     
     
 <div class="contents">
+<div class="figure">
+<img src="img/upload_01.png">
+</div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Intro</p>
+<p>The upload tab is the first tab displayed when the singleCellTK is loaded. Here, you can upload a matrix of data along with annotation information to explore within the toolkit.</p>
+<p>Under the hood, the SCTK created a SCtkExperiment object which stores one or more matrix of data along with a column annotation data frame and a row annotation data frame. The SCtkExperiment is an extension of the SingleCellExperiment object.</p>
 </div>
 <div id="input-data-format" class="section level1">
 <h1 class="hasAnchor">
 <a href="#input-data-format" class="anchor"></a>Input Data Format</h1>
-<p>MAITS intro</p>
+<p>The SCTK accepts tab delimited files on the upload tab. You must provide a matrix of count data, and you can optionally provide both sample and feature annotation files as well. All files must have the same cells or genes and must be in the same order.</p>
+<div id="assay" class="section level2">
+<h2 class="hasAnchor">
+<a href="#assay" class="anchor"></a>Assay</h2>
+<p>The input assay should be a matrix with genes as rows and samples (cells) as columns. For most users, the input assay will be a matrix of counts, but if the assay data being uploaded is not a count matrix, you can change the input assay type with the “Input Assay Type” dropdown.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Gene</th>
+<th>Cell1</th>
+<th>Cell2</th>
+<th>…</th>
+<th>CellN</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gene1</td>
+<td>0</td>
+<td>0</td>
+<td>…</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Gene2</td>
+<td>5</td>
+<td>6</td>
+<td>…</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Gene3</td>
+<td>4</td>
+<td>3</td>
+<td>…</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>GeneM</td>
+<td>10</td>
+<td>10</td>
+<td>…</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="video-demo" class="section level1">
-<h1 class="hasAnchor">
-<a href="#video-demo" class="anchor"></a>Video Demo</h1>
+<div id="sample-annotations-optional" class="section level2">
+<h2 class="hasAnchor">
+<a href="#sample-annotations-optional" class="anchor"></a>Sample Annotations (optional)</h2>
+<p>Sample anotations should be a table with samples (cells) as rows and annotations as columns.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Cell</th>
+<th>Annot1</th>
+<th>…</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Cell1</td>
+<td>a</td>
+<td>…</td>
+</tr>
+<tr class="even">
+<td>Cell2</td>
+<td>a</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>Cell3</td>
+<td>b</td>
+<td>…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>CellN</td>
+<td>b</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="feature-annotations-optional" class="section level2">
+<h2 class="hasAnchor">
+<a href="#feature-annotations-optional" class="anchor"></a>Feature Annotations (optional)</h2>
+<p>Feature annotations should be a table with genes as rows and gene annotations as columns.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Gene</th>
+<th>Annot2</th>
+<th>…</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gene1</td>
+<td>a</td>
+<td>…</td>
+</tr>
+<tr class="even">
+<td>Gene2</td>
+<td>a</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>Gene3</td>
+<td>b</td>
+<td>…</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>GeneM</td>
+<td>b</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -163,8 +292,13 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#input-data-format">Input Data Format</a></li>
-      <li><a href="#video-demo">Video Demo</a></li>
+      <li>
+<a href="#input-data-format">Input Data Format</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#assay">Assay</a></li>
+      <li><a href="#sample-annotations-optional">Sample Annotations (optional)</a></li>
+      <li><a href="#feature-annotations-optional">Feature Annotations (optional)</a></li>
+      </ul>
+</li>
       <li><a href="#session-info">Session info</a></li>
       </ul>
 </div>
