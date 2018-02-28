@@ -26,16 +26,36 @@ vignette: >
 
 # Introduction
 
-Intro
+The analysis modules available through the Shiny app are also available as R
+functions for standard R console processing of single cell RNA-Seq data using
+a SCtkExperiment object. At any stage, you can load the Shiny App to
+interactively visualize and analyze a data set, but this vignette will show a
+standard workflow run entirely through the R console.
 
 # MAITS Example
 
-MAITS intro
+The MAST package contains a convenient scRNA-Seq example data set of 96 Mucosal
+Associated Invariant T cells (MAITs), half of which were stimulated with
+cytokines to induce a response. For more details, consult the [MAST package](https://www.bioconductor.org/packages/release/bioc/html/MAST.html)
+and [vignette](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html).
+
+We will first convert the MAST example dataset to a SCtkExperiment object.
 
 ```{r maits_load, message=FALSE, warning=FALSE}
-library(singleCellTK)
-library(DT)
-data("maits_sce")
+suppressPackageStartupMessages({
+  library(MAST)
+  library(singleCellTK)
+  library(DT)
+})
+
+data(maits, package="MAST")
+maits_sce <- createSCE(assayfile = t(maits$expressionmat),
+                       annotfile = maits$cdat,
+                       featurefile = maits$fdat,
+                       assay_name = "logtpm",
+                       inputdataframes = TRUE,
+                       create_logcounts = FALSE)
+rm(maits)
 ```
 
 ## summarizeTable
@@ -43,8 +63,12 @@ data("maits_sce")
 You can get summary metrics with the `summarizeTable` function:
 
 ```{r maits_summarize}
-datatable(summarizeTable(maits_sce))
+datatable(summarizeTable(maits_sce, use_assay = "logtpm"))
 ```
+
+Typically, these summary statistics would be run on a "counts" matrix, but here
+we have log(tpm) values so the average number of reads per cell is calculated
+from the normalized values instead of raw counts.
 
 ## Filtering by Annotation
 
@@ -61,34 +85,78 @@ the data to include the pass filter samples
 ```{r maits_filter}
 maits_subset <- maits_sce[, colData(maits_sce)$ourfilter]
 table(colData(maits_subset)$ourfilter)
-datatable(summarizeTable(maits_subset))
+datatable(summarizeTable(maits_subset, use_assay = "logtpm"))
 ```
 
 ## Visualization
+
+Initially, there are no reduced dimensionality datasets stored in the object
 
 ```{r maits_availablereduceddims}
 reducedDims(maits_subset)
 ```
 
-### PCA
+PCA and t-SNE can be added to the object with the getPCA() and getTSNE()
+functions:
 
-```{r maits_pca}
-plotPCA(maits_subset, reducedDimName = "PCA_logcounts", colorBy = "condition")
+```{r maits_getpcatsne}
+maits_subset <- getPCA(maits_subset, use_assay = "logtpm",
+                       reducedDimName = "PCA_logtpm")
+maits_subset <- getTSNE(maits_subset, use_assay = "logtpm",
+                        reducedDimName = "TSNE_logtpm")
+reducedDims(maits_subset)
 ```
 
+### PCA
+
+PCA data can be visualized with the plotPCA() function:
+
+```{r maits_pca}
+plotPCA(maits_subset, reducedDimName = "PCA_logtpm", colorBy = "condition")
+```
 
 ### t-SNE
 
+t-SNE data can be visualized with the plotTSNE() function:
+
 ```{r maits_tsne}
-plotTSNE(maits_subset, reducedDimName = "TSNE_logcounts", colorBy = "condition")
+plotTSNE(maits_subset, reducedDimName = "TSNE_logtpm", colorBy = "condition")
+```
+
+## Converting Gene Names
+
+The singleCellTK has the ability to convert gene ids to various formats using
+the org.*.eg.db Bioconductor annotation packages. These packages are not
+installed by default, so these must be manually installed before this function
+will work.
+
+```{r maits_convert_symbols, message=FALSE}
+suppressPackageStartupMessages({
+  library(org.Hs.eg.db)
+})
+maits_entrez <- maits_subset
+maits_subset <- convert_gene_ids(maits_subset, in_symbol = "ENTREZID",
+                                 out_symbol = "SYMBOL",
+                                 database = "org.Hs.eg.db")
+#to remove confusion for MAST about the gene name:
+rowData(maits_subset)$primerid <- NULL
 ```
 
 ## Differential Expression with MAST
 
+MAST is a popular package for performing differential expression analysis on
+scRNA-Seq data that models the effect of dropouts using a bimodal distribution
+and by including the cellular detection rate into the differential expression
+model. Functions in the toolkit allow you to perform this analysis on a
+SCtkExperiemnt object.
+
 ### Adaptive Thresholding
 
-```{r maits_thresh, fig.height=8}
-thresholds <- thresholdGenes(maits_subset)
+First, an adaptive threshold is calculated by binning genes with similar
+expression levels.
+
+```{r maits_thresh, fig.height=8, message=FALSE}
+thresholds <- thresholdGenes(maits_subset, use_assay = "logtpm")
 par(mfrow = c(5, 4))
 plot(thresholds)
 par(mfrow = c(1, 1))
@@ -96,21 +164,28 @@ par(mfrow = c(1, 1))
 
 ### Run MAST
 
-```{r maits_MAST}
+MAST analysis can be run with a single function
+
+```{r maits_MAST, message=FALSE}
 mast_results <- MAST(maits_subset, condition = "condition", usethresh = TRUE,
-                     use_assay = "logcounts")
+                     use_assay = "logtpm")
 ```
 
-```{r maits_violin, fig.height=8}
-MASTviolin(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = "condition")
+The resulting significantly differentially expressed genes can be visualized
+using a violin plot, linear model, or heatmap:
+
+```{r maits_violin, fig.height=8, message=FALSE}
+MASTviolin(maits_subset, use_assay = "logtpm", fcHurdleSig = mast_results,
+           threshP = TRUE, variable = "condition")
 ```
 
-```{r maits_lm, fig.height=8}
-MASTregression(maits_subset, fcHurdleSig = mast_results, threshP = TRUE, variable = "condition")
+```{r maits_lm, fig.height=8, message=FALSE}
+MASTregression(maits_subset, use_assay = "logtpm", fcHurdleSig = mast_results,
+               threshP = TRUE, variable = "condition")
 ```
 
 ```{r maits_heatmap}
-plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
+plot_DiffEx(maits_subset, use_assay = "logtpm", condition = "condition",
                  geneList = mast_results$Gene[1:100],
                  annotationColors = "auto",
             displayRowLabels = FALSE, displayColumnLabels = FALSE)
@@ -118,8 +193,12 @@ plot_DiffEx(maits_subset, use_assay = "logcounts", condition = "condition",
 
 ### Pathway Activity with GSVA
 
-```{r maits_gsva}
-gsva_res <- GSVA_sce(maits_subset, "logcounts",
+The singleCellTK supports pathway activity analysis using the GSVA package.
+Currently, the toolkit supports performing this analysis on human datasets with
+entrez IDs. Data can be visualized as a violin plot or a heatmap.
+
+```{r maits_gsva, message=FALSE}
+gsva_res <- GSVA_sce(maits_entrez, use_assay = "logtpm",
                      "MSigDB c2 (Human, Entrez ID only)",
                      c("KEGG_PROTEASOME",
                        "REACTOME_VIF_MEDIATED_DEGRADATION_OF_APOBEC3G",
@@ -136,17 +215,13 @@ GSVA_plot(maits_subset, gsva_res, "Violin", "condition")
 GSVA_plot(maits_subset, gsva_res, "Heatmap", "condition")
 ```
 
-# PBMC - 4k Example
-
-PBMC - 4k example
-
 # Batch Effects Example
 
 It is possible to use ComBat within the Single Cell Toolkit. This support is
 experimental, since ComBat was not designed for scRNA-Seq. Here, we will load
 the bladderbatch example data into a SingleCellExperiment object.
 
-```{r load_bladderbatch}
+```{r load_bladderbatch, echo=FALSE, message=FALSE}
 library(bladderbatch)
 data(bladderdata)
 dat <- bladderEset[1:50,]

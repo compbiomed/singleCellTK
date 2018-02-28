@@ -63,5 +63,6 @@ Suggests:
     knitr,
     bladderbatch,
     rmarkdown,
-    org.Mm.eg.db
+    org.Mm.eg.db,
+    org.Hs.eg.db
 VignetteBuilder: knitr
