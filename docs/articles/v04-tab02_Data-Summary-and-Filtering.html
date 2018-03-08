@@ -117,15 +117,123 @@
     
     
 <div class="contents">
+<div class="figure">
+<img src="img/summary_01.png">
+</div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Intro</p>
+<p>The data summary and filtering tab provides several summary statistics and ways to filter your data. The summary statistics and filtering are performed on the selected assay, which can be changed using the “Select Assay” drop-down.</p>
 </div>
-<div id="maits-example" class="section level1">
+<div id="data-summary-table" class="section level1">
 <h1 class="hasAnchor">
-<a href="#maits-example" class="anchor"></a>MAITS Example</h1>
-<p>MAITS intro</p>
+<a href="#data-summary-table" class="anchor"></a>Data summary table</h1>
+<p><img src="img/summary_02.png" width="400"></p>
+<p>The summary table provides several summary statistics about your data including:</p>
+<ul>
+<li>The number of samples</li>
+<li>The number of genes</li>
+<li>The average number of reads per cell</li>
+<li>The average number of genes per cell</li>
+<li>Samples with fewer than the selected cutoff expressed genes</li>
+<li>Genes with no expression across all samples</li>
+</ul>
+</div>
+<div id="filtering" class="section level1">
+<h1 class="hasAnchor">
+<a href="#filtering" class="anchor"></a>Filtering</h1>
+<p>Several filtering options are available</p>
+<div id="cutoffs" class="section level2">
+<h2 class="hasAnchor">
+<a href="#cutoffs" class="anchor"></a>Cutoffs</h2>
+<p><img src="img/summary_03.png" width="400"></p>
+<p>Data can be filtered by user selected cutoff values including:</p>
+<ul>
+<li>Remove genes with no expression across all samples. These genes are uninformative</li>
+<li>Minimum detected genes per sample. Samples with few expressed genes could indicate an empty well.</li>
+<li>Percent low gene expression. This filter will remove the genes with the least expression in the dataset</li>
+</ul>
+<p>When you have set the cutoff filters to the desired level, you can filter data with the “Filter Data” button.</p>
+</div>
+<div id="delete-outliers" class="section level2">
+<h2 class="hasAnchor">
+<a href="#delete-outliers" class="anchor"></a>Delete Outliers</h2>
+<p>If there are specific cells that should be excluded from the dataset, you can select them and they will be removed when “Filter Data” is clicked.</p>
+</div>
+<div id="reset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#reset" class="anchor"></a>Reset</h2>
+<p>The SCTK saves a copy of the originally uploaded data, which can be restored by clicking the “Reset” button.</p>
+</div>
+<div id="filter-samples-by-annotation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filter-samples-by-annotation" class="anchor"></a>Filter samples by annotation</h2>
+<p><img src="img/summary_04.png" width="400"></p>
+<p>Data stored in the annotation data frame can be used for sample filtering. Choose a column from the annotation data frame, the values from this column to keep, and click “Filter.”</p>
+</div>
+<div id="filter-genes-by-feature-annotation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filter-genes-by-feature-annotation" class="anchor"></a>Filter genes by feature annotation</h2>
+<p><img src="img/summary_05.png" width="400"></p>
+<p>Similarly, gene annotations can be used to filter genes. Select a column from the row data frame and the values to keep and click “Filter.”</p>
+</div>
+<div id="convert-gene-annotations" class="section level2">
+<h2 class="hasAnchor">
+<a href="#convert-gene-annotations" class="anchor"></a>Convert gene annotations</h2>
+<p><img src="img/summary_06.png" width="400"></p>
+<p>The SCTK can use annotation data from Bioconductor annotation packages such as <a href="https://www.bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html">org.Hs.eg.db</a> to convert gene annotations between standard annotation types such as Entrez gene ids, Ensembl gene ids, or gene symbols. By default, these packages are not installed, so you will need to manually install the package for your appropriate organism. Instructions for installation can be found on the <a href="https://www.bioconductor.org/install/#install-bioconductor-packages">Bioconductor website</a></p>
+</div>
+<div id="delete-an-annotation-column" class="section level2">
+<h2 class="hasAnchor">
+<a href="#delete-an-annotation-column" class="anchor"></a>Delete an annotation column</h2>
+<p><img src="img/summary_07.png" width="400"></p>
+<p>You can remove an unnecessary or unwanted annotation column by selecting it and clicking the “Delete Column” button.</p>
+</div>
+<div id="randomly-subset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#randomly-subset" class="anchor"></a>Randomly Subset</h2>
+<p><img src="img/summary_08.png" width="400"></p>
+<p>If you are working with a large dataset, you may want to randomly subset the data for exploratory analysis. Specify the number of samples that you wish to keep in the subset data frame and click the “Subset Data” button.</p>
+</div>
+<div id="download-sctkexperiment" class="section level2">
+<h2 class="hasAnchor">
+<a href="#download-sctkexperiment" class="anchor"></a>Download SCtkExperiment</h2>
+<p><img src="img/summary_09.png" width="400"></p>
+<p>To export the SCtkExperiment object from the SCTK, you can download the object in RDS format by clicking the “Download SCtkExperiment” button. This file can be loaded into the R console for downstream analysis.</p>
+</div>
+</div>
+<div id="assay-details" class="section level1">
+<h1 class="hasAnchor">
+<a href="#assay-details" class="anchor"></a>Assay Details</h1>
+<p>The assay details tab describes the available assays and reduced dimensionality data and allows the user to modify the SCTK experiment object</p>
+<div id="available-assays-and-reduceddim-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#available-assays-and-reduceddim-data" class="anchor"></a>Available Assays and reducedDim Data</h2>
+<p><img src="img/summary_10.png" width="400"></p>
+<p>The assays and reduced dimension data listed on this tab are stored in the underlying SCTK experiment object and are available on the tabs in the app.</p>
+</div>
+<div id="add-and-delete-assays-and-reduceddim-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#add-and-delete-assays-and-reduceddim-data" class="anchor"></a>Add and Delete Assays and reducedDim Data</h2>
+<p><img src="img/summary_11.png" width="200"></p>
+<p>If a count matrix is available, users can add a log(counts), CPM (counts per million), and log(CPM) matrix directly through the app. Users can also delete unwanted assays or reducedDim objects on this tab</p>
+</div>
+</div>
+<div id="annotation-data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#annotation-data" class="anchor"></a>Annotation Data</h1>
+<p>The annotation tab displays the annotation matrix.</p>
+<p><img src="img/summary_12.png" width="600"></p>
+<div id="convert-annotation-data-columns" class="section level2">
+<h2 class="hasAnchor">
+<a href="#convert-annotation-data-columns" class="anchor"></a>Convert Annotation Data Columns</h2>
+<p>For plotting, annotations that contain character values are interpreted as factors and will be displayed with discrete colors. Numeric annotations will be plotted with a continuous color bar. To change a numeric value to a factor, select the annotation column and change the “Field Type” from numeric to factor.</p>
+</div>
+<div id="replace-annotation-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#replace-annotation-data" class="anchor"></a>Replace Annotation Data</h2>
+<p>To modify the annotation data frame, download the annotation data using the “Download Annotation Data” button, modify the data using a text editor or Excel, save the data as a .csv file, and re-upload the data in the “Upload and replace the annotation data” field.</p>
+</div>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -146,8 +254,8 @@
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
-##  [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.15   
-##  [9] stringi_1.1.6   rmarkdown_1.8   knitr_1.20      stringr_1.3.0  
+##  [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.17     Rcpp_0.12.15   
+##  [9] stringi_1.1.6   rmarkdown_1.9   knitr_1.20      stringr_1.3.0  
 ## [13] digest_0.6.15   evaluate_0.10.1</code></pre>
 </div>
 </div>
@@ -159,7 +267,32 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#maits-example">MAITS Example</a></li>
+      <li><a href="#data-summary-table">Data summary table</a></li>
+      <li>
+<a href="#filtering">Filtering</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#cutoffs">Cutoffs</a></li>
+      <li><a href="#delete-outliers">Delete Outliers</a></li>
+      <li><a href="#reset">Reset</a></li>
+      <li><a href="#filter-samples-by-annotation">Filter samples by annotation</a></li>
+      <li><a href="#filter-genes-by-feature-annotation">Filter genes by feature annotation</a></li>
+      <li><a href="#convert-gene-annotations">Convert gene annotations</a></li>
+      <li><a href="#delete-an-annotation-column">Delete an annotation column</a></li>
+      <li><a href="#randomly-subset">Randomly Subset</a></li>
+      <li><a href="#download-sctkexperiment">Download SCtkExperiment</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#assay-details">Assay Details</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#available-assays-and-reduceddim-data">Available Assays and reducedDim Data</a></li>
+      <li><a href="#add-and-delete-assays-and-reduceddim-data">Add and Delete Assays and reducedDim Data</a></li>
+      </ul>
+</li>
+      <li>
+<a href="#annotation-data">Annotation Data</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#convert-annotation-data-columns">Convert Annotation Data Columns</a></li>
+      <li><a href="#replace-annotation-data">Replace Annotation Data</a></li>
+      </ul>
+</li>
       <li><a href="#session-info">Session info</a></li>
       </ul>
 </div>

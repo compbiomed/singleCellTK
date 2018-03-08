@@ -117,15 +117,29 @@
     
     
 <div class="contents">
+<div class="figure">
+<img src="img/dr_01.png">
+</div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Intro</p>
+<p>Use the dimensionality reduction and clustering tab to visualize scRNA-Seq data, identify potential batch effects, and cluster data for downstream analysis. The data used for analysis in this tab is stored in the reducedDim slot of the SingleCellExperiment object. If PCA or t-SNE data is not pre-computed, it will run automatically and the results will be stored inside the object. For large datasets, PCA and t-SNE can take a long time, so pre-computing this data is recommended. If you wish to re-run PCA or t-SNE, you can click the “Re-run” button and the data will be replaced.</p>
 </div>
-<div id="maits-example" class="section level1">
+<div id="visualization" class="section level1">
 <h1 class="hasAnchor">
-<a href="#maits-example" class="anchor"></a>MAITS Example</h1>
-<p>MAITS intro</p>
+<a href="#visualization" class="anchor"></a>Visualization</h1>
+<div class="figure">
+<img src="img/dr_02.png">
+</div>
+<p>Currently, the SCTK supports visualization of PCA scatterplots, t-SNE scatterplots, and a dendrogram of clustering from hierarchical clustering. For PCA and t-SNE, the points in the scatterplot can be colored and shaped by the columns of annotation data available in the underlying object. In addition, points can be colored by individual gene expression values</p>
+</div>
+<div id="clustering" class="section level1">
+<h1 class="hasAnchor">
+<a href="#clustering" class="anchor"></a>Clustering</h1>
+<div class="figure">
+<img src="img/dr_03.png">
+</div>
+<p>It is also possible to cluster the data using <a href="https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/K-Means">K-Means</a> or <a href="https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/CLARA">Clara</a>. Choose the data to use for clustering, the clustering algorithm, the number of clusters, and a name for the clustered data. The clustering results will be stored in the annotation data frame and be available on the other tabs.</p>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -146,8 +160,8 @@
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] compiler_3.4.3  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
-##  [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.16     Rcpp_0.12.15   
-##  [9] stringi_1.1.6   rmarkdown_1.8   knitr_1.20      stringr_1.3.0  
+##  [5] tools_3.4.3     htmltools_0.3.6 yaml_2.1.17     Rcpp_0.12.15   
+##  [9] stringi_1.1.6   rmarkdown_1.9   knitr_1.20      stringr_1.3.0  
 ## [13] digest_0.6.15   evaluate_0.10.1</code></pre>
 </div>
 </div>
@@ -159,7 +173,8 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#maits-example">MAITS Example</a></li>
+      <li><a href="#visualization">Visualization</a></li>
+      <li><a href="#clustering">Clustering</a></li>
       <li><a href="#session-info">Session info</a></li>
       </ul>
 </div>

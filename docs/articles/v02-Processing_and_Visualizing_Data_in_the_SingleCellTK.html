@@ -149,8 +149,8 @@ maits_sce &lt;-<span class="st"> </span><span class="kw"><a href="../reference/c
 <a href="#summarizetable" class="anchor"></a>summarizeTable</h2>
 <p>You can get summary metrics with the <code>summarizeTable</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_sce, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>))</code></pre></div>
-<div id="htmlwidget-9ec0d4e83d43b285cebf" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9ec0d4e83d43b285cebf">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,17867,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>Typically, these summary statistics would be run on a “counts” matrix, but here we have log(tpm) values so the average number of reads per cell is calculated from the normalized values instead of raw counts.</p>
+<div id="htmlwidget-0c3cbb939ea6a97c185e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0c3cbb939ea6a97c185e">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[96,16302,17867,6833,5,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>Typically, these summary statistics would be run on a “counts” matrix, but here we have log(tpm) values so the average number of reads per cell is calculated from the normalized values instead of raw counts.</p>
 </div>
 <div id="filtering-by-annotation" class="section level2">
 <h2 class="hasAnchor">
@@ -175,8 +175,8 @@ maits_sce &lt;-<span class="st"> </span><span class="kw"><a href="../reference/c
 ## TRUE 
 ##   74</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/DT/topics/datatable">datatable</a></span>(<span class="kw"><a href="../reference/summarizeTable.html">summarizeTable</a></span>(maits_subset, <span class="dt">use_assay =</span> <span class="st">"logtpm"</span>))</code></pre></div>
-<div id="htmlwidget-c404c15c4ed957ab97b6" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c404c15c4ed957ab97b6">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,16292,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a413f0da492d685d42f4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a413f0da492d685d42f4">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["Number of Samples","Number of Genes","Average number of reads per cell","Average number of genes per cell","Samples with &lt;1700 detected genes","Genes with no expression across all samples"],[74,16302,16292,7539,0,157]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Metric<\/th>\n      <th>Value<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="visualization" class="section level2">
 <h2 class="hasAnchor">
@@ -367,7 +367,7 @@ maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
 ##  [3] graph_1.56.0               annotate_1.56.1           
 ##  [5] XML_3.98-1.10              org.Hs.eg.db_3.5.0        
 ##  [7] AnnotationDbi_1.40.0       DT_0.4                    
-##  [9] singleCellTK_0.4.6         SingleCellExperiment_1.0.0
+##  [9] singleCellTK_0.4.7         SingleCellExperiment_1.0.0
 ## [11] MAST_1.4.1                 SummarizedExperiment_1.8.1
 ## [13] DelayedArray_0.4.1         matrixStats_0.53.1        
 ## [15] Biobase_2.38.0             GenomicRanges_1.30.3      
@@ -377,10 +377,10 @@ maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
 ## loaded via a namespace (and not attached):
 ##  [1] splines_3.4.3          bit64_0.9-7            jsonlite_1.5          
 ##  [4] shiny_1.0.5            blob_1.1.0             GenomeInfoDbData_1.0.0
-##  [7] yaml_2.1.16            pillar_1.2.1           RSQLite_2.0           
+##  [7] yaml_2.1.17            pillar_1.2.1           RSQLite_2.0           
 ## [10] backports_1.1.2        lattice_0.20-35        limma_3.34.9          
 ## [13] digest_0.6.15          RColorBrewer_1.1-2     XVector_0.18.0        
-## [16] colorspace_1.3-2       htmltools_0.3.6        httpuv_1.3.5          
+## [16] colorspace_1.3-2       htmltools_0.3.6        httpuv_1.3.6.2        
 ## [19] Matrix_1.2-12          plyr_1.8.4             pkgconfig_2.0.1       
 ## [22] GetoptLong_0.1.6       genefilter_1.60.0      zlibbioc_1.24.0       
 ## [25] xtable_1.8-2           scales_0.5.0           Rtsne_0.13            
@@ -393,8 +393,8 @@ maits_subset &lt;-<span class="st"> </span><span class="kw"><a href="../referenc
 ## [46] compiler_3.4.3         rlang_0.2.0            grid_3.4.3            
 ## [49] RCurl_1.95-4.10        rjson_0.2.15           htmlwidgets_1.0       
 ## [52] circlize_0.4.3         crosstalk_1.0.0        bitops_1.0-6          
-## [55] labeling_0.3           rmarkdown_1.8          gtable_0.2.0          
-## [58] abind_1.4-5            DBI_0.7                reshape2_1.4.3        
+## [55] labeling_0.3           rmarkdown_1.9          gtable_0.2.0          
+## [58] abind_1.4-5            DBI_0.8                reshape2_1.4.3        
 ## [61] R6_2.2.2               knitr_1.20             bit_1.1-12            
 ## [64] shinythemes_1.1.1      rprojroot_1.3-2        shape_1.4.4           
 ## [67] stringi_1.1.6          sva_3.26.0             Rcpp_0.12.15          
