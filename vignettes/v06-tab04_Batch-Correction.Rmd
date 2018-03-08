@@ -25,13 +25,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+![](img/batch_01.png)
+
 # Introduction
 
 Intro
-
-# Example
-
-example
 
 # Session info {.unnumbered}
 
