@@ -324,6 +324,7 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$convertGenes, {
+    req(vals$counts)
     withBusyIndicatorServer("convertGenes", {
       vals$counts <- convert_gene_ids(inSCESet = vals$counts,
                                       in_symbol = input$orgFromCol,
@@ -468,7 +469,11 @@ shinyServer(function(input, output, session) {
       colData(vals$counts)[, input$annotModifyChoice] <- as.factor(colData(vals$counts)[, input$annotModifyChoice])
     } else if (input$annotTypeSelect == "numeric" & is.factor(colData(vals$counts)[, input$annotModifyChoice])){
       f <- colData(vals$counts)[, input$annotModifyChoice]
-      colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
+      if(any(is.na(as.numeric(levels(f))[f]))){
+        shinyalert("Error!", "Cannot convert to numeric.", type = "error")
+      } else {
+        colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
+      }
     }
   })
 
