@@ -22,7 +22,8 @@
 #' data.
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel.
+#' controlLevel. For DESeq2, choose "anova" to perform DESeq2 in LRT mode
+#' comparing the model with condition to a model without condition.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #'
@@ -39,6 +40,9 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, clusterRow=TRUE, clusterCol=TRUE,
                      levelofinterest=NULL, analysis_type=NULL, controlLevel=NULL){
+  for (i in c(condition, covariates)){
+    colData(inSCESet)[,i] <- droplevels(colData(inSCESet)[,i])
+  }
   if(length(condition) == 1){
     in.condition <- droplevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
   } else if (diffexmethod != "ANOVA"){
@@ -166,7 +170,8 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' two labels. Required
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel (see below).
+#' controlLevel (see below). Choose "anova" to perform DESeq2 in LRT mode
+#' comparing the model with condition to a model without condition.
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
 #' @param controlLevel If the condition has more than two labels, controlLevel
@@ -203,6 +208,8 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
       if(is.null(levelofinterest) || is.null(controlLevel)){
         stop("You must specify a level of interest and a control level for contrast analysis.")
       }
+    } else if (analysis_type == "anova"){
+      message("anova like DESeq2")
     } else {
       stop("Invalid analysis type: ", analysis_type)
     }
@@ -215,22 +222,35 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                                         design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
-  dds <- DESeq2::DESeq(dds)
+  if (analysis_type == "anova"){
+    if(is.null(covariates)){
+      dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
+    } else {
+      dds <- DESeq2::DESeq(dds, test = "LRT",
+                           reduced = stats::as.formula(paste0("~",
+                                                              c(covariates),
+                                                              collapse = "+")))
+    }
+  } else {
+    dds <- DESeq2::DESeq(dds)
+  }
+
   if(is.null(levelofinterest) && is.null(controlLevel)){
-    res <- DESeq2::results(dds, contrast = c(condition,
-                                             levels(annot_data[,condition])[2],
-                                             levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef = 2)
+    if (analysis_type == "anova"){
+      res <- DESeq2::results(dds)
+    } else {
+      res <- DESeq2::results(dds, contrast = c(condition,
+                                               levels(annot_data[,condition])[2],
+                                               levels(annot_data[,condition])[1]))
+    }
   } else if(is.null(controlLevel)){
     res <- DESeq2::results(dds, contrast = c(condition,
                                              levelofinterest,
                                              levels(annot_data[,condition])[1]))
-    res <- DESeq2::lfcShrink(dds, coef = which(levels(annot_data[,condition]) == levelofinterest))
   } else {
     res <- DESeq2::results(dds, contrast = c(condition,
                                              levelofinterest,
                                              controlLevel))
-    res <- DESeq2::lfcShrink(dds, coef = which(levels(SingleCellExperiment::colData(inSCESet)[, c(condition)]) == levelofinterest))
   }
 
   return(data.frame(res))
