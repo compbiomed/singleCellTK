@@ -43,7 +43,8 @@ data.}
 
 \item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
 other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel.}
+controlLevel. For DESeq2, choose "anova" to perform DESeq2 in LRT mode
+comparing the model with condition to a model without condition.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}
