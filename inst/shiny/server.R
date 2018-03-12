@@ -1206,7 +1206,7 @@ shinyServer(function(input, output, session) {
                main = "Number of dected genes by sequencing depth")
           lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
                   seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
-          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.25)})~
+          lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.75)})~
                   seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$MinEffectDone <- renderPlot({
@@ -1267,7 +1267,7 @@ shinyServer(function(input, output, session) {
                main = "Number of dected genes by cell number")
           lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
                   seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
-          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.25)})~
+          lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.75)})~
                   seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
         output$MinEffectCells <- renderPlot({
