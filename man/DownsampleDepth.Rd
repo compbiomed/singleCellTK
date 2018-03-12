@@ -9,8 +9,8 @@ DownsampleDepth(originalData, minCount = 10, minCells = 3,
   maxDepth = 1e+07, realLabels, depthResolution = 10, iterations = 10)
 }
 \arguments{
-\item{originalData}{Matrix. The original raw readcount matrix. When used
-within the Shiny app, this will be assay(SCEsetObject, "counts").}
+\item{originalData}{SCtkExperiment. The SCtkExperiment object storing all
+assay data from the shiny app.}
 
 \item{minCount}{Numeric. The minimum number of reads found for a gene to be
 considered detected.}
@@ -20,9 +20,8 @@ least 1 read in for it to be considered detected.}
 
 \item{maxDepth}{Numeric. The highest number of total reads to be simulated.}
 
-\item{realLabels}{Factor. The condition labels for differential expression.
-If only two factors present, will default to t-test. If multiple factors,
-will default to ANOVA.}
+\item{realLabels}{Character. The name of the condition of interest. Must match
+a name from sample data.}
 
 \item{depthResolution}{Numeric. How many different read depth should the
 script simulate? Will simulate a number of experimental designs ranging from
