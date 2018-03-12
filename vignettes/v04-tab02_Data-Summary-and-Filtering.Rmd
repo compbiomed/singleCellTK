@@ -25,13 +25,142 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+![](img/summary_01.png)
+
 # Introduction
 
-Intro
+The data summary and filtering tab provides several summary statistics and ways
+to filter your data. The summary statistics and filtering are performed on the
+selected assay, which can be changed using the "Select Assay" drop-down.
 
-# MAITS Example
+# Data summary table
 
-MAITS intro
+<img src="img/summary_02.png" width="400">
+
+The summary table provides several summary statistics about your data including:
+
+* The number of samples
+* The number of genes
+* The average number of reads per cell
+* The average number of genes per cell
+* Samples with fewer than the selected cutoff expressed genes
+* Genes with no expression across all samples
+
+# Filtering
+
+Several filtering options are available
+
+## Cutoffs
+
+<img src="img/summary_03.png" width="400">
+
+Data can be filtered by user selected cutoff values including:
+
+* Remove genes with no expression across all samples. These genes are uninformative
+* Minimum detected genes per sample. Samples with few expressed genes could indicate an empty well.
+* Percent low gene expression. This filter will remove the genes with the least expression in the dataset
+
+When you have set the cutoff filters to the desired level, you can filter data
+with the "Filter Data" button.
+
+## Delete Outliers
+
+If there are specific cells that should be excluded from the dataset, you can
+select them and they will be removed when "Filter Data" is clicked.
+
+## Reset
+
+The SCTK saves a copy of the originally uploaded data, which can be restored by
+clicking the "Reset" button.
+
+## Filter samples by annotation
+
+<img src="img/summary_04.png" width="400">
+
+Data stored in the annotation data frame can be used for sample filtering.
+Choose a column from the annotation data frame, the values from this column to
+keep, and click "Filter."
+
+## Filter genes by feature annotation
+
+<img src="img/summary_05.png" width="400">
+
+Similarly, gene annotations can be used to filter genes. Select a column from
+the row data frame and the values to keep and click "Filter."
+
+## Convert gene annotations
+
+<img src="img/summary_06.png" width="400">
+
+The SCTK can use annotation data from Bioconductor annotation packages such as 
+[org.Hs.eg.db](https://www.bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html) to convert gene annotations between standard annotation types such as Entrez
+gene ids, Ensembl gene ids, or gene symbols. By default, these packages are not
+installed, so you will need to manually install the package for your appropriate
+organism. Instructions for installation can be found on the
+[Bioconductor website](https://www.bioconductor.org/install/#install-bioconductor-packages)
+
+## Delete an annotation column
+
+<img src="img/summary_07.png" width="400">
+
+You can remove an unnecessary or unwanted annotation column by selecting it and
+clicking the "Delete Column" button.
+
+## Randomly Subset
+
+<img src="img/summary_08.png" width="400">
+
+If you are working with a large dataset, you may want to randomly subset the
+data for exploratory analysis. Specify the number of samples that you wish to
+keep in the subset data frame and click the "Subset Data" button.
+
+## Download SCtkExperiment
+
+<img src="img/summary_09.png" width="400">
+
+To export the SCtkExperiment object from the SCTK, you can download the object
+in RDS format by clicking the "Download SCtkExperiment" button. This file can
+be loaded into the R console for downstream analysis.
+
+# Assay Details
+
+The assay details tab describes the available assays and reduced dimensionality
+data and allows the user to modify the SCTK experiment object
+
+## Available Assays and reducedDim Data
+
+<img src="img/summary_10.png" width="400">
+
+The assays and reduced dimension data listed on this tab are stored in the
+underlying SCTK experiment object and are available on the tabs in the app.
+
+## Add and Delete Assays and reducedDim Data
+
+<img src="img/summary_11.png" width="200">
+
+If a count matrix is available, users can add a log(counts), CPM (counts per
+million), and log(CPM) matrix directly through the app. Users can also delete
+unwanted assays or reducedDim objects on this tab
+
+# Annotation Data
+
+The annotation tab displays the annotation matrix.
+
+<img src="img/summary_12.png" width="600">
+
+## Convert Annotation Data Columns
+
+For plotting, annotations that contain character values are interpreted as
+factors and will be displayed with discrete colors. Numeric annotations will be
+plotted with a continuous color bar. To change a numeric value to a factor,
+select the annotation column and change the "Field Type" from numeric to factor.
+
+## Replace Annotation Data
+
+To modify the annotation data frame, download the annotation data using the
+"Download Annotation Data" button, modify the data using a text editor or Excel,
+save the data as a .csv file, and re-upload the data in the "Upload and replace
+the annotation data" field.
 
 # Session info {.unnumbered}
 
