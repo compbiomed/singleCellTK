@@ -1,16 +1,15 @@
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData Matrix. The original raw readcount matrix. When used
-#' within the Shiny app, this will be assay(SCEsetObject, "counts").
+#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' assay data from the shiny app.
 #' @param minCount Numeric. The minimum number of reads found for a gene to be
 #' considered detected.
 #' @param minCells Numeric. The minimum number of cells a gene must have at
 #' least 1 read in for it to be considered detected.
 #' @param maxDepth Numeric. The highest number of total reads to be simulated.
-#' @param realLabels Factor. The condition labels for differential expression.
-#' If only two factors present, will default to t-test. If multiple factors,
-#' will default to ANOVA.
+#' @param realLabels Character. The name of the condition of interest. Must match
+#' a name from sample data.
 #' @param depthResolution Numeric. How many different read depth should the
 #' script simulate? Will simulate a number of experimental designs ranging from
 #' 10 reads to maxReadDepth, with logarithmic spacing.
@@ -63,8 +62,8 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData Matrix. The original raw readcount matrix. When used
-#' within the Shiny app, this will be assay(SCEsetObject, "counts").
+#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' assay data from the shiny app.
 #' @param minCountDetec Numeric. The minimum number of reads found for a gene to
 #' be considered detected.
 #' @param minCellsDetec Numeric. The minimum number of cells a gene must have at
@@ -73,9 +72,9 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #' the smallest simulated dataset.
 #' @param maxCellnum Numeric. The maximum number of virtual cells to include in
 #' the largest simulated dataset
-#' @param realLabels Factor. The condition labels for differential expression.
-#' If only two factors present, will default to t-test. If multiple factors,
-#' will default to ANOVA.
+#' @param realLabels Character. The name of the condition of interest. Must match
+#' a name from sample data. If only two factors present in the corresponding
+#' colData, will default to t-test. If multiple factors, will default to ANOVA.
 #' @param depthResolution Numeric. How many different read depth should the
 #' script simulate? Will simulate a number of experimental designs ranging from
 #' 10 reads to maxReadDepth, with logarithmic spacing.
@@ -194,11 +193,15 @@ subDiffEx <- function(tempData){
 
 #' Returns significance data from a snapshot.
 #'
-#' @param originalData TODO: document
-#' @param realLabels TODO: document
-#' @param totalReads TODO: document
-#' @param cells TODO: document
-#' @param iterations TODO: document
+#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' assay data from the shiny app.
+#' @param realLabels Character. The name of the condition of interest. Must match
+#' a name from sample data.
+#' @param totalReads Numeric. The total number of reads in the simulated
+#' dataset, to be split between all simulated cells.
+#' @param cells Numeric. The number of virtual cells to simulate.
+#' @param iterations Numeric. How many times should each experimental design be
+#' simulated.
 #'
 #' @return A matrix of significance information from a snapshot
 #' @export
@@ -274,7 +277,7 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #'
 subDiffEx_anova <- function(countMatrix, condition){
   mod <- stats::model.matrix(~as.factor(condition))
-  mod0 <- stats::model.matrix(~1, data = condition)
+  mod0 <- stats::model.matrix(~1, data = as.factor(condition))
   dat <- log2(countMatrix + 1)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
@@ -288,7 +291,7 @@ subDiffEx_anova <- function(countMatrix, condition){
                        t(mod0))
   rss1 <- resid ^ 2 %*% rep(1, n)
   rss0 <- resid0 ^ 2 %*% rep(1, n)
-  fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
+  fstats <- ((rss0 - rss1) / (df1 - df0)) / ((rss1+1e-50) / (n - df1))
   p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   return(stats::p.adjust(p, method = "fdr"))
 }
