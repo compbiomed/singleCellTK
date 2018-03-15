@@ -2,7 +2,7 @@
 % Please edit documentation in R/GSVA.R
 \name{GSVA_plot}
 \alias{GSVA_plot}
-\title{GSVA_sce}
+\title{GSVA_plot}
 \usage{
 GSVA_plot(SCEdata, gsva_data, plot_type, condition = NULL)
 }

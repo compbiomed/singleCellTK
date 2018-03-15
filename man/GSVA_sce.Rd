@@ -13,11 +13,13 @@ GSVA_sce(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...)
 "logcounts"}
 
 \item{pathway_source}{The pathway source if "Manual Input", the pathway_names
-should be rowData annotations that are logical vectors. If, "MSigDB c2 (Human, Entrez ID only)",
+should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
+Entrez ID only)",
 the pathway_names should be pathways from MSigDB c2 or "ALL" to run on all
 available pathways.}
 
-\item{pathway_names}{List of pathway names to run, depending on pathway_source
+\item{pathway_names}{List of pathway names to run, depending on
+pathway_source
 parameter.}
 
 \item{...}{Parameters to pass to gsva}

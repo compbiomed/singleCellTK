@@ -8,10 +8,12 @@
 #' @param use_assay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #' @param pathway_source The pathway source if "Manual Input", the pathway_names
-#' should be rowData annotations that are logical vectors. If, "MSigDB c2 (Human, Entrez ID only)",
+#' should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
+#' Entrez ID only)",
 #' the pathway_names should be pathways from MSigDB c2 or "ALL" to run on all
 #' available pathways.
-#' @param pathway_names List of pathway names to run, depending on pathway_source
+#' @param pathway_names List of pathway names to run, depending on
+#' pathway_source
 #' parameter.
 #' @param ... Parameters to pass to gsva
 #' 
@@ -22,15 +24,9 @@
 GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...){
   if (pathway_source == "Manual Input"){
     #expecting logical vector
-    if (!all(SingleCellExperiment::rowData(SCEdata)[, pathway_names] %in% c(1, 0))){
-      stop("ERROR: malformed biomarker annotation")
-    } else {
-      biomarker <- list()
-      for (i in pathway_names){
-        biomarker[[i]] <- rownames(SCEdata)[SingleCellExperiment::rowData(SCEdata)[, i] == 1]
-      }
-      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), biomarker, ...)
-    }
+    biomarker <- lapply(pathway_names, function(x) rownames(SCEdata)[SingleCellExperiment::rowData(SCEdata)[, x] == 1])
+    gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), biomarker, ...)
+    rownames(gsva_res) <- pathway_names
   } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
     utils::data("c2BroadSets", package = "GSVAdata", envir = .myenv)
     c2BroadSets <- .myenv$c2BroadSets
@@ -47,7 +43,7 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
   return(gsva_res)
 }
 
-#' GSVA_sce
+#' GSVA_plot
 #'
 #' Plot GSVA results.
 #'
