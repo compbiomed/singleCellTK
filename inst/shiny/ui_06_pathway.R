@@ -13,7 +13,7 @@ shiny_panel_pathway <- fluidPage(
         selectInput("pathwayPlotVar",
                     "Select Condition(s) of interest for plot:", clusterChoice,
                     multiple = TRUE),
-        radioButtons("pathwayOutPlot", "Plot Type:", c("Violin", "Heatmap")),
+        radioButtons("pathwayOutPlot", "Plot Type:", c("Heatmap", "Violin")),
         withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
         tags$hr(),
         h3("Save pathway results:"),

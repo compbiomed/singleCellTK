@@ -1155,15 +1155,20 @@ shinyServer(function(input, output, session) {
       if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
         tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))], , drop = F]
       } else {
-        tempgsvares <- vals$gsva_res
+        tempgsvares <- vals$gsva_res[1:input$pickNtopPaths, , drop = F]
       }
       if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
+        GSVA_plot(SCEdata = vals$counts,
+                  gsva_data = tempgsvares,
+                  plot_type = input$pathwayOutPlot,
+                  condition = input$pathwayPlotVar)
+      } else if (input$pathwayOutPlot == "Heatmap"){
+        GSVA_plot(SCEdata = vals$counts,
+                  gsva_data = tempgsvares,
+                  plot_type = input$pathwayOutPlot,
+                  condition = input$pathwayPlotVar)
       }
-      GSVA_plot(SCEdata = vals$counts,
-                gsva_data = tempgsvares,
-                plot_type = input$pathwayOutPlot,
-                condition = input$pathwayPlotVar)
     }
   })
 
@@ -1171,7 +1176,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$savePathway, {
     if (!(is.null(vals$gsva_res))){
       if (all(colnames(vals$counts) == colnames(vals$gsva_res))){
-        colData(vals$counts) <- cbind(colData(vals$counts), data.frame(t(vals$gsva_res)))
+        #if we have limma results
+        if(!(is.null(vals$gsva_limma))){
+          tempdf <- DataFrame(t(vals$gsva_res[vals$gsva_limma$Pathway[1:input$pickNtopPaths], , drop = F]))
+        } else {
+          tempdf <- DataFrame(t(vals$gsva_res[1:input$pickNtopPaths, , drop = F]))
+        }
+        tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop=F]
+        colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
         updateColDataNames()
       }
     } else {
