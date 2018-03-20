@@ -51,11 +51,7 @@ reference:
     - subDiffEx_ttest
   - title: Data
     contents:
-    - GSE36552_sce
-    - GSE60361_subset_sce
-    - GSE66507_sce
-    - GSE73121_sce
-    - maits_sce
+    - mouse_brain_subset_sce
   - title: SCtkExperiment
     contents:
     - starts_with("SCtkExperiment")

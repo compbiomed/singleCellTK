@@ -13,17 +13,17 @@
 #' updated
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
+#' data("mouse_brain_subset_sce")
 #' #add a CPM assay
-#' assay(GSE60361_subset_sce, "cpm") <- apply(assay(GSE60361_subset_sce,
+#' assay(mouse_brain_subset_sce, "cpm") <- apply(assay(mouse_brain_subset_sce,
 #'                                                  "counts"),
 #'                                            2, function(x) {
 #'                                              x / (sum(x) / 1000000)
 #'                                            })
-#' GSE60361_subset_sce <- getPCA(GSE60361_subset_sce,
+#' mouse_brain_subset_sce <- getPCA(mouse_brain_subset_sce,
 #'                               use_assay = "cpm",
 #'                               reducedDimName = "PCA_cpm")
-#' reducedDims(GSE60361_subset_sce)
+#' reducedDims(mouse_brain_subset_sce)
 #'
 getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   if (nrow(count_data) < 500){

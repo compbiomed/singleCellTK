@@ -36,7 +36,7 @@ The filtered single cell object.
 Filter Genes and Samples from a Single Cell Object
 }
 \examples{
-data("GSE60361_subset_sce")
-GSE60361_subset_sce <- filterSCData(GSE60361_subset_sce,
+data("mouse_brain_subset_sce")
+mouse_brain_subset_sce <- filterSCData(mouse_brain_subset_sce,
                                     deletesamples="X1772063061_G11")
 }

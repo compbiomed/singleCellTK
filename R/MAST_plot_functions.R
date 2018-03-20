@@ -9,8 +9,8 @@
 #' MAST::thresholdSCRNACountMatrix
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- thresholdGenes(GSE60361_subset_sce)
+#' data("mouse_brain_subset_sce")
+#' res <- thresholdGenes(mouse_brain_subset_sce)
 #'
 thresholdGenes <- function(SCEdata, use_assay="logcounts"){
   # data preparation

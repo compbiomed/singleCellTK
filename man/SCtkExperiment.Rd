@@ -19,10 +19,10 @@ slot.
 Create a SCtkExperiment
 }
 \examples{
-data("GSE60361_subset_sce")
-counts_mat <- assay(GSE60361_subset_sce, "counts")
-sample_annot <- colData(GSE60361_subset_sce)
-row_annot <- rowData(GSE60361_subset_sce)
+data("mouse_brain_subset_sce")
+counts_mat <- assay(mouse_brain_subset_sce, "counts")
+sample_annot <- colData(mouse_brain_subset_sce)
+row_annot <- rowData(mouse_brain_subset_sce)
 newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
                          colData=sample_annot,
                          rowData=row_annot)

@@ -34,8 +34,8 @@ A PCA plot
 Use this function to plot PCA results
 }
 \examples{
-data("GSE60361_subset_sce")
-plotPCA(GSE60361_subset_sce, colorBy = "level1class",
+data("mouse_brain_subset_sce")
+plotPCA(mouse_brain_subset_sce, colorBy = "level1class",
         reducedDimName = "PCA_counts")
 
 }

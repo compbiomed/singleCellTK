@@ -17,8 +17,8 @@
 #' @return A PCA plot
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' plotPCA(GSE60361_subset_sce, colorBy = "level1class",
+#' data("mouse_brain_subset_sce")
+#' plotPCA(mouse_brain_subset_sce, colorBy = "level1class",
 #'         reducedDimName = "PCA_counts")
 #'
 plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",

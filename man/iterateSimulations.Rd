@@ -28,8 +28,8 @@ A matrix of significance information from a snapshot
 Returns significance data from a snapshot.
 }
 \examples{
-data("GSE60361_subset_sce")
-res <- iterateSimulations(GSE60361_subset_sce, realLabels = "level1class",
+data("mouse_brain_subset_sce")
+res <- iterateSimulations(mouse_brain_subset_sce, realLabels = "level1class",
                           totalReads = 1000, cells = 10, iterations = 2)
 
 }

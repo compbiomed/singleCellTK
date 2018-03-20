@@ -33,6 +33,6 @@ Get PCA variances
 Set PCA variances
 }
 \examples{
-data("GSE60361_subset_sce")
-pca_variances(GSE60361_subset_sce)
+data("mouse_brain_subset_sce")
+pca_variances(mouse_brain_subset_sce)
 }

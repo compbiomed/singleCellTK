@@ -115,8 +115,19 @@ shinyServer(function(input, output, session) {
                                    assay_name = input$inputAssayType,
                                    create_logcounts = input$createLogcounts)
       } else {
-        data(list = paste0(input$selectExampleData, "_sce"))
-        vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
+        if(input$selectExampleData == "mouse_brain_subset"){
+          data(list = paste0(input$selectExampleData, "_sce"))
+          vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
+        } else if (input$selectExampleData == "maits"){
+          data(maits, package="MAST")
+          vals$original <- createSCE(assayfile = t(maits$expressionmat),
+                                 annotfile = maits$cdat,
+                                 featurefile = maits$fdat,
+                                 assay_name = "logtpm",
+                                 inputdataframes = TRUE,
+                                 create_logcounts = FALSE)
+          rm(maits)
+        }
       }
       vals$counts <- vals$original
       updateColDataNames()
@@ -851,11 +862,11 @@ shinyServer(function(input, output, session) {
             condition = "input.selectDiffex == 'DESeq2'",
             radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
                          choiceNames = c("Biomarker (1 vs all)", "Factor of Interest vs. Control Factor",
-                                         "ANOVA"),
-                         choiceValues = c("biomarker", "contrast", "anova"))
+                                         "Entire Factor (Full/Reduced)"),
+                         choiceValues = c("biomarker", "contrast", "fullreduced"))
           ),
           conditionalPanel(
-            condition = "input.selectDiffexConditionMethod != 'anova'",
+            condition = "input.selectDiffexConditionMethod != 'fullreduced'",
             selectInput("selectDiffex_conditionofinterest",
                         "Select Factor of Interest",
                         unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))

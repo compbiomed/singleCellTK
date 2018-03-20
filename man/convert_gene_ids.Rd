@@ -29,12 +29,12 @@ conversion.
 if(requireNamespace("org.Mm.eg.db", quietly = TRUE)) {
   #convert mouse gene symbols to ensembl IDs
   library("org.Mm.eg.db")
-  sample(rownames(GSE60361_subset_sce), 50)
-  GSE60361_subset_symbol <- convert_gene_ids(inSCESet = GSE60361_subset_sce,
+  sample(rownames(mouse_brain_subset_sce), 50)
+  mouse_brain_subset_symbol <- convert_gene_ids(inSCESet = mouse_brain_subset_sce,
                                              in_symbol = "SYMBOL",
                                              out_symbol = "ENSEMBL",
                                              database = "org.Mm.eg.db")
-  sample(rownames(GSE60361_subset_symbol), 50)
+  sample(rownames(mouse_brain_subset_symbol), 50)
 }
 
 }

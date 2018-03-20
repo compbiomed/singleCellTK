@@ -14,15 +14,13 @@
 #' up to ntop genes. Required
 #' @param diffexmethod The method for performing differential expression
 #' analysis. Available options are DESeq2, limma, and ANOVA. Required
-#' @param clusterRow Cluster the rows. The default is TRUE
-#' @param clusterCol Cluster the columns. The default is TRUE
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor for condition. The differential
 #' expression results will compare the factor in levelofinterest to all other
 #' data.
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel. For DESeq2, choose "anova" to perform DESeq2 in LRT mode
+#' controlLevel. For DESeq2, choose "fullreduced" to perform DESeq2 in LRT mode
 #' comparing the model with condition to a model without condition.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
@@ -30,16 +28,16 @@
 #' @return A list of differentially expressed genes.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- scDiffEx(GSE60361_subset_sce,
+#' data("mouse_brain_subset_sce")
+#' res <- scDiffEx(mouse_brain_subset_sce,
 #'                 use_assay = "logcounts",
 #'                 "level1class",
 #'                 diffexmethod = "limma")
 #'
 scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
-                     diffexmethod, clusterRow=TRUE, clusterCol=TRUE,
-                     levelofinterest=NULL, analysis_type=NULL, controlLevel=NULL){
+                     diffexmethod, levelofinterest=NULL, analysis_type=NULL,
+                     controlLevel=NULL){
   for (i in c(condition, covariates)){
     colData(inSCESet)[,i] <- droplevels(colData(inSCESet)[,i])
   }
@@ -115,12 +113,12 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
 #' condition.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- scDiffEx(GSE60361_subset_sce,
+#' data("mouse_brain_subset_sce")
+#' res <- scDiffEx(mouse_brain_subset_sce,
 #'                 use_assay = "logcounts",
 #'                 "level1class",
 #'                 diffexmethod = "limma")
-#' plot_DiffEx(GSE60361_subset_sce, condition = "level1class",
+#' plot_DiffEx(mouse_brain_subset_sce, condition = "level1class",
 #'             geneList = rownames(res)[1:50], annotationColors = "auto")
 #'
 plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
@@ -170,7 +168,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' two labels. Required
 #' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel (see below). Choose "anova" to perform DESeq2 in LRT mode
+#' controlLevel (see below). Choose "fullreduced" to perform DESeq2 in LRT mode
 #' comparing the model with condition to a model without condition.
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
@@ -181,9 +179,9 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
+#' data("mouse_brain_subset_sce")
 #' #subset to 100 genes
-#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
 #' res <- scDiffEx_deseq2(subset, condition = "level1class")
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
@@ -208,8 +206,8 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
       if(is.null(levelofinterest) || is.null(controlLevel)){
         stop("You must specify a level of interest and a control level for contrast analysis.")
       }
-    } else if (analysis_type == "anova"){
-      message("anova like DESeq2")
+    } else if (analysis_type == "fullreduced"){
+      message("full/reduced DESeq2")
     } else {
       stop("Invalid analysis type: ", analysis_type)
     }
@@ -222,26 +220,30 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                                         design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
-  if (analysis_type == "anova"){
-    if(is.null(covariates)){
-      dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
+  if (!is.null(analysis_type)){
+    if(analysis_type == "fullreduced") {
+      if(is.null(covariates)){
+        dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
+      } else {
+        dds <- DESeq2::DESeq(dds, test = "LRT",
+                             reduced = stats::as.formula(paste0("~",
+                                                                c(covariates),
+                                                                collapse = "+")))
+      }
     } else {
-      dds <- DESeq2::DESeq(dds, test = "LRT",
-                           reduced = stats::as.formula(paste0("~",
-                                                              c(covariates),
-                                                              collapse = "+")))
+      dds <- DESeq2::DESeq(dds)
     }
   } else {
     dds <- DESeq2::DESeq(dds)
   }
 
   if(is.null(levelofinterest) && is.null(controlLevel)){
-    if (analysis_type == "anova"){
-      res <- DESeq2::results(dds)
-    } else {
+    if(length(levels(annot_data[, condition])) == 2){
       res <- DESeq2::results(dds, contrast = c(condition,
                                                levels(annot_data[,condition])[2],
                                                levels(annot_data[,condition])[1]))
+    } else if (analysis_type == "fullreduced"){
+      res <- DESeq2::results(dds)
     }
   } else if(is.null(controlLevel)){
     res <- DESeq2::results(dds, contrast = c(condition,
@@ -272,8 +274,8 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- scDiffEx_limma(GSE60361_subset_sce, condition = "level1class")
+#' data("mouse_brain_subset_sce")
+#' res <- scDiffEx_limma(mouse_brain_subset_sce, condition = "level1class")
 #'
 scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
                            levelofinterest=NULL, covariates=NULL){
@@ -324,8 +326,8 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- scDiffEx_anova(GSE60361_subset_sce, condition = "level1class")
+#' data("mouse_brain_subset_sce")
+#' res <- scDiffEx_anova(mouse_brain_subset_sce, condition = "level1class")
 #'
 scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
                            covariates=NULL){

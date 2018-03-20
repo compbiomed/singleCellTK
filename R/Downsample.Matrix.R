@@ -24,8 +24,8 @@
 #' expressed, the median effect size defaults to infinity.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' subset <- GSE60361_subset_sce[1:1000,]
+#' data("mouse_brain_subset_sce")
+#' subset <- mouse_brain_subset_sce[1:1000,]
 #' res <- DownsampleDepth(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
@@ -91,8 +91,8 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #' expressed, the median effect size defaults to infinity.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' subset <- GSE60361_subset_sce[1:1000,]
+#' data("mouse_brain_subset_sce")
+#' subset <- mouse_brain_subset_sce[1:1000,]
 #' res <- DownsampleCells(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
@@ -143,10 +143,10 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
 #' labels for each virtual cell.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
+#' data("mouse_brain_subset_sce")
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
-#'                              originalData = assay(GSE60361_subset_sce, "counts"),
-#'                              realLabels = colData(GSE60361_subset_sce)[, "level1class"])
+#'                              originalData = assay(mouse_brain_subset_sce, "counts"),
+#'                              realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 #'
 generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   cells <- sample(dim(originalData)[2], size = cells, replace = TRUE)
@@ -170,10 +170,10 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
+#' data("mouse_brain_subset_sce")
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
-#'                             originalData = assay(GSE60361_subset_sce, "counts"),
-#'                             realLabels = colData(GSE60361_subset_sce)[, "level1class"])
+#'                             originalData = assay(mouse_brain_subset_sce, "counts"),
+#'                             realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 #' tempSigDiff <- subDiffEx(res)
 #'
 subDiffEx <- function(tempData){
@@ -206,8 +206,8 @@ subDiffEx <- function(tempData){
 #' @return A matrix of significance information from a snapshot
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- iterateSimulations(GSE60361_subset_sce, realLabels = "level1class",
+#' data("mouse_brain_subset_sce")
+#' res <- iterateSimulations(mouse_brain_subset_sce, realLabels = "level1class",
 #'                           totalReads = 1000, cells = 10, iterations = 2)
 #'
 iterateSimulations <- function(originalData, realLabels, totalReads, cells,
@@ -235,8 +235,8 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' data("mouse_brain_subset_sce")
+#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
 #'                              originalData = assay(subset, "counts"),
 #'                              realLabels = colData(subset)[, "level1class"])
@@ -266,8 +266,8 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' data("mouse_brain_subset_sce")
+#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
 #'                              originalData = assay(subset, "counts"),
 #'                              realLabels = colData(subset)[, "level2class"])
@@ -308,9 +308,9 @@ subDiffEx_anova <- function(countMatrix, condition){
 #'
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' res <- calcEffectSizes(assay(GSE60361_subset_sce, "counts"),
-#'                        condition = colData(GSE60361_subset_sce)[, "level1class"])
+#' data("mouse_brain_subset_sce")
+#' res <- calcEffectSizes(assay(mouse_brain_subset_sce, "counts"),
+#'                        condition = colData(mouse_brain_subset_sce)[, "level1class"])
 #'
 calcEffectSizes <- function(countMatrix, condition){
   groups <- levels(as.factor(unlist(condition)))

@@ -23,16 +23,16 @@ t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
 SCE object.
 }
 \examples{
-data("GSE60361_subset_sce")
+data("mouse_brain_subset_sce")
 #add a CPM assay
-assay(GSE60361_subset_sce, "cpm") <- apply(assay(GSE60361_subset_sce,
+assay(mouse_brain_subset_sce, "cpm") <- apply(assay(mouse_brain_subset_sce,
                                                  "counts"),
                                            2, function(x) {
                                              x / (sum(x) / 1000000)
                                            })
-GSE60361_subset_sce <- getTSNE(GSE60361_subset_sce,
+mouse_brain_subset_sce <- getTSNE(mouse_brain_subset_sce,
                                use_assay = "cpm",
                                reducedDimName = "TSNE_cpm")
-reducedDims(GSE60361_subset_sce)
+reducedDims(mouse_brain_subset_sce)
 
 }

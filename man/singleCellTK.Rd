@@ -23,8 +23,8 @@ if(interactive()){
 
 #Load the app with a SCtkExperiment object
 if(interactive()){
-  data("GSE60361_subset_sce")
-  singleCellTK(GSE60361_subset_sce)
+  data("mouse_brain_subset_sce")
+  singleCellTK(mouse_brain_subset_sce)
 }
 
 }

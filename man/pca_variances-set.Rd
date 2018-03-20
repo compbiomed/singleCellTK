@@ -20,13 +20,13 @@ A SCtkExperiment object with the pca_variances slot set.
 Set PCA variances
 }
 \examples{
-data("GSE60361_subset_sce")
-pca_variances(GSE60361_subset_sce)
+data("mouse_brain_subset_sce")
+pca_variances(mouse_brain_subset_sce)
 #getPCA() sets the pca_variances
-newSCE <- getPCA(GSE60361_subset_sce, use_assay = "counts")
+newSCE <- getPCA(mouse_brain_subset_sce, use_assay = "counts")
 
 #alternatively, set the pca_variances directly
-pca <- prcomp(assay(GSE60361_subset_sce, "logcounts"))
+pca <- prcomp(assay(mouse_brain_subset_sce, "logcounts"))
 percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
-pca_variances(GSE60361_subset_sce) <- DataFrame(percentVar)
+pca_variances(mouse_brain_subset_sce) <- DataFrame(percentVar)
 }

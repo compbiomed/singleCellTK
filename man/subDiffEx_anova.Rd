@@ -21,8 +21,8 @@ Runs ANOVA on all genes in a simulated dataset with more than 2 conditions,
 and adjusts for FDR.
 }
 \examples{
-data("GSE60361_subset_sce")
-subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+data("mouse_brain_subset_sce")
+subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
 res <- generateSimulatedData(totalReads = 1000, cells=10,
                              originalData = assay(subset, "counts"),
                              realLabels = colData(subset)[, "level2class"])

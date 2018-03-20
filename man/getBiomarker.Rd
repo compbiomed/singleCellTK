@@ -24,6 +24,6 @@ Given a list of genes and a SCtkExperiment object, return the binary or
 continuous expression of the genes.
 }
 \examples{
-getBiomarker(GSE60361_subset_sce, gene="C1qa")
+getBiomarker(mouse_brain_subset_sce, gene="C1qa")
 
 }

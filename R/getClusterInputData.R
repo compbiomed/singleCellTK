@@ -9,8 +9,8 @@
 #' @return Cluster input data
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' getClusterInputData(GSE60361_subset_sce, "PCA Components",
+#' data("mouse_brain_subset_sce")
+#' getClusterInputData(mouse_brain_subset_sce, "PCA Components",
 #'                     use_assay = "logcounts", reducedDimName = "PCA_logcounts")
 #'
 getClusterInputData <- function(count_data, inputData, use_assay="logcounts",

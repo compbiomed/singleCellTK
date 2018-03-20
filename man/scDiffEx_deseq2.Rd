@@ -19,7 +19,7 @@ two labels. Required}
 
 \item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
 other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel (see below). Choose "anova" to perform DESeq2 in LRT mode
+controlLevel (see below). Choose "fullreduced" to perform DESeq2 in LRT mode
 comparing the model with condition to a model without condition.}
 
 \item{levelofinterest}{If the condition has more than two labels,
@@ -37,9 +37,9 @@ A data frame of gene names and adjusted p-values
 Returns a data frame of gene names and adjusted p-values
 }
 \examples{
-data("GSE60361_subset_sce")
+data("mouse_brain_subset_sce")
 #subset to 100 genes
-subset <- GSE60361_subset_sce[rownames(GSE60361_subset_sce)[order(rowSums(assay(GSE60361_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
 res <- scDiffEx_deseq2(subset, condition = "level1class")
 
 }

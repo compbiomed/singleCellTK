@@ -10,8 +10,8 @@
 #' @return A data.frame object of summary metrics.
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' summarizeTable(GSE60361_subset_sce)
+#' data("mouse_brain_subset_sce")
+#' summarizeTable(mouse_brain_subset_sce)
 #'
 summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
   return(
@@ -59,10 +59,10 @@ summarizeTable <- function(indata, use_assay="counts", expression_cutoff=1700){
 #' @return a SCtkExperiment object
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' counts_mat <- assay(GSE60361_subset_sce, "counts")
-#' sample_annot <- colData(GSE60361_subset_sce)
-#' row_annot <- rowData(GSE60361_subset_sce)
+#' data("mouse_brain_subset_sce")
+#' counts_mat <- assay(mouse_brain_subset_sce, "counts")
+#' sample_annot <- colData(mouse_brain_subset_sce)
+#' row_annot <- rowData(mouse_brain_subset_sce)
 #' newSCE <- createSCE(assayfile = counts_mat, annotfile = sample_annot, 
 #'                     featurefile = row_annot, assay_name = "counts",
 #'                     inputdataframes = TRUE, create_logcounts = TRUE)
@@ -128,8 +128,8 @@ createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
 #' @export
 #'
 #' @examples
-#' data("GSE60361_subset_sce")
-#' GSE60361_subset_sce <- filterSCData(GSE60361_subset_sce,
+#' data("mouse_brain_subset_sce")
+#' mouse_brain_subset_sce <- filterSCData(mouse_brain_subset_sce,
 #'                                     deletesamples="X1772063061_G11")
 filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
                          remove_noexpress=TRUE, remove_bottom=0.5,

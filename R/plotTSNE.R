@@ -15,8 +15,8 @@
 #' @return A t-SNE plot
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' plotTSNE(GSE60361_subset_sce, colorBy = "level1class",
+#' data("mouse_brain_subset_sce")
+#' plotTSNE(mouse_brain_subset_sce, colorBy = "level1class",
 #'          reducedDimName = "TSNE_counts")
 #'
 plotTSNE <- function(count_data, colorBy="No Color", shape="No Shape",

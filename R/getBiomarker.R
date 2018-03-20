@@ -12,7 +12,7 @@
 #' @return A data.frame of expression values
 #' @export
 #' @examples
-#' getBiomarker(GSE60361_subset_sce, gene="C1qa")
+#' getBiomarker(mouse_brain_subset_sce, gene="C1qa")
 #'
 getBiomarker <- function(count_data, gene, binary="Binary", use_assay="counts"){
   # Get sample names

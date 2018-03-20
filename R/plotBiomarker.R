@@ -17,8 +17,8 @@
 #' @return A Biomarker plot
 #' @export
 #' @examples
-#' data("GSE60361_subset_sce")
-#' plotBiomarker(GSE60361_subset_sce, gene="C1qa", shape="level1class")
+#' data("mouse_brain_subset_sce")
+#' plotBiomarker(mouse_brain_subset_sce, gene="C1qa", shape="level1class")
 #'
 plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
                           shape="No Shape", x="PC1", y="PC2",

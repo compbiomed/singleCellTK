@@ -49,12 +49,12 @@ condition.
 Plot Differential Expression
 }
 \examples{
-data("GSE60361_subset_sce")
-res <- scDiffEx(GSE60361_subset_sce,
+data("mouse_brain_subset_sce")
+res <- scDiffEx(mouse_brain_subset_sce,
                 use_assay = "logcounts",
                 "level1class",
                 diffexmethod = "limma")
-plot_DiffEx(GSE60361_subset_sce, condition = "level1class",
+plot_DiffEx(mouse_brain_subset_sce, condition = "level1class",
             geneList = rownames(res)[1:50], annotationColors = "auto")
 
 }

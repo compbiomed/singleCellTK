@@ -6,8 +6,7 @@
 \usage{
 scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
   significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
-  clusterRow = TRUE, clusterCol = TRUE, levelofinterest = NULL,
-  analysis_type = NULL, controlLevel = NULL)
+  levelofinterest = NULL, analysis_type = NULL, controlLevel = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -32,10 +31,6 @@ up to ntop genes. Required}
 \item{diffexmethod}{The method for performing differential expression
 analysis. Available options are DESeq2, limma, and ANOVA. Required}
 
-\item{clusterRow}{Cluster the rows. The default is TRUE}
-
-\item{clusterCol}{Cluster the columns. The default is TRUE}
-
 \item{levelofinterest}{If the condition has more than two labels,
 levelofinterest should contain one factor for condition. The differential
 expression results will compare the factor in levelofinterest to all other
@@ -43,7 +38,7 @@ data.}
 
 \item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
 other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel. For DESeq2, choose "anova" to perform DESeq2 in LRT mode
+controlLevel. For DESeq2, choose "fullreduced" to perform DESeq2 in LRT mode
 comparing the model with condition to a model without condition.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel
@@ -56,8 +51,8 @@ A list of differentially expressed genes.
 Create a heatmap for differential expression analysis
 }
 \examples{
-data("GSE60361_subset_sce")
-res <- scDiffEx(GSE60361_subset_sce,
+data("mouse_brain_subset_sce")
+res <- scDiffEx(mouse_brain_subset_sce,
                 use_assay = "logcounts",
                 "level1class",
                 diffexmethod = "limma")

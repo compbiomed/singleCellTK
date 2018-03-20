@@ -29,9 +29,9 @@ Generates a single simulated dataset, bootstrapping from the input counts
 matrix.
 }
 \examples{
-data("GSE60361_subset_sce")
+data("mouse_brain_subset_sce")
 res <- generateSimulatedData(totalReads = 1000, cells=10,
-                             originalData = assay(GSE60361_subset_sce, "counts"),
-                             realLabels = colData(GSE60361_subset_sce)[, "level1class"])
+                             originalData = assay(mouse_brain_subset_sce, "counts"),
+                             realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 
 }

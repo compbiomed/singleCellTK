@@ -21,7 +21,7 @@ A data.frame object of summary metrics.
 Creates a table of summary metrics from an input SCtkExperiment.
 }
 \examples{
-data("GSE60361_subset_sce")
-summarizeTable(GSE60361_subset_sce)
+data("mouse_brain_subset_sce")
+summarizeTable(mouse_brain_subset_sce)
 
 }

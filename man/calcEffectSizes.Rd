@@ -22,8 +22,8 @@ Finds the effect sizes for all genes in the original dataset, regardless of
 significance.
 }
 \examples{
-data("GSE60361_subset_sce")
-res <- calcEffectSizes(assay(GSE60361_subset_sce, "counts"),
-                       condition = colData(GSE60361_subset_sce)[, "level1class"])
+data("mouse_brain_subset_sce")
+res <- calcEffectSizes(assay(mouse_brain_subset_sce, "counts"),
+                       condition = colData(mouse_brain_subset_sce)[, "level1class"])
 
 }

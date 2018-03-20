@@ -36,7 +36,7 @@ A Biomarker plot
 Given a set of genes, return a ggplot of expression values.
 }
 \examples{
-data("GSE60361_subset_sce")
-plotBiomarker(GSE60361_subset_sce, gene="C1qa", shape="level1class")
+data("mouse_brain_subset_sce")
+plotBiomarker(mouse_brain_subset_sce, gene="C1qa", shape="level1class")
 
 }
