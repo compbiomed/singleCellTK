@@ -1,4 +1,5 @@
 language: r
+  - devel
 cache: packages
 dist: trusty
 sudo: false
