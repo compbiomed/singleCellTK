@@ -221,7 +221,7 @@ It is possible to use ComBat within the Single Cell Toolkit. This support is
 experimental, since ComBat was not designed for scRNA-Seq. Here, we will load
 the bladderbatch example data into a SingleCellExperiment object.
 
-```{r load_bladderbatch, echo=FALSE, message=FALSE}
+```{r load_bladderbatch, message=FALSE}
 library(bladderbatch)
 data(bladderdata)
 dat <- bladderEset[1:50,]

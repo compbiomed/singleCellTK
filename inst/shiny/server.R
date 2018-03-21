@@ -157,7 +157,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(getShinyOption("inputSCEset"))){
       updateGeneNames()
     }
-    if (!(is.null(vals$counts)) && ncol(vals$counts) < 50){
+    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
       temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
       colnames(temptable)[1] <- "Gene"
       temptable
@@ -365,13 +365,13 @@ shinyServer(function(input, output, session) {
   })
 
   output$assayList <- renderTable(
-    if (!is.null(vals$counts) && length(names(assays(vals$counts))) > 0){
+    if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
       data.table(assays = names(assays(vals$counts)))
     }
   )
 
   output$reducedDimsList <- renderTable(
-    if (!is.null(vals$counts) && length(names(reducedDims(vals$counts))) > 0){
+    if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
   )
@@ -652,7 +652,7 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      if (input$dimRedPlotMethod == "Dendrogram" && paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
+      if (input$dimRedPlotMethod == "Dendrogram" & paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
         data <- getClusterInputData(count_data = vals$counts,
                                     inputData = "PCA Components",
                                     use_assay = input$dimRedAssaySelect,
@@ -930,7 +930,7 @@ shinyServer(function(input, output, session) {
   annotationColors <- reactiveValues(cols = list())
 
   output$HeatmapSampleAnnotations <- renderUI({
-    if (!is.null(vals$counts) && length(input$colorBar_Condition) > 0){
+    if (!is.null(vals$counts) & length(input$colorBar_Condition) > 0){
       h <- input$colorBar_Condition
       L <- lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
       annotationColors$cols <- lapply(1:length(h),
@@ -1118,9 +1118,11 @@ shinyServer(function(input, output, session) {
   })
 
   output$selectNumTopPaths <- renderUI({
-    if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-      sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
-                  max = length(c2BroadSets), value = 25, step = 5)
+    if (!is.null(input$pathwayGeneLists)) {
+      if (input$pathwayGeneLists == "ALL" & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+        sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
+                    max = length(c2BroadSets), value = 25, step = 5)
+      }
     }
   })
 
@@ -1153,7 +1155,7 @@ shinyServer(function(input, output, session) {
 
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsva_limma)){
-      if (!is.null(input$pathwayGeneLists) && input$pathwayGeneLists == "ALL" && input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
+      if (!is.null(input$pathwayGeneLists) & input$pathwayGeneLists == "ALL" & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
         vals$gsva_limma[1:min(input$pickNtopPaths, nrow(vals$gsva_limma)), , drop = F]
       } else {
         vals$gsva_limma
@@ -1164,11 +1166,11 @@ shinyServer(function(input, output, session) {
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsva_res))){
       if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
-        tempgsvares <- vals$gsva_res[vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))], , drop = F]
+        tempgsvares <- vals$gsva_res[as.character(vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))]), , drop = F]
       } else {
         tempgsvares <- vals$gsva_res[1:input$pickNtopPaths, , drop = F]
       }
-      if (input$pathwayOutPlot == "Violin" && length(input$pathwayPlotVar) > 0){
+      if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
         GSVA_plot(SCEdata = vals$counts,
                   gsva_data = tempgsvares,

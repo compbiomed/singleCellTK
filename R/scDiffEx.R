@@ -237,7 +237,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
     dds <- DESeq2::DESeq(dds)
   }
 
-  if(is.null(levelofinterest) && is.null(controlLevel)){
+  if(is.null(levelofinterest) & is.null(controlLevel)){
     if(length(levels(annot_data[, condition])) == 2){
       res <- DESeq2::results(dds, contrast = c(condition,
                                                levels(annot_data[,condition])[2],
