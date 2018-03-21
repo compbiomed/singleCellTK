@@ -1,5 +1,5 @@
 language: r
-  - devel
+r: bioc-devel
 cache: packages
 dist: trusty
 sudo: false
