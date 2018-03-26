@@ -36,10 +36,9 @@ levelofinterest should contain one factor for condition. The differential
 expression results will compare the factor in levelofinterest to all other
 data.}
 
-\item{analysis_type}{Choose "biomarker" to compare the levelofinterest to all
-other samples. Choose "contrast" to compare the levelofinterest to a
-controlLevel. For DESeq2, choose "fullreduced" to perform DESeq2 in LRT mode
-comparing the model with condition to a model without condition.}
+\item{analysis_type}{For conditions with more than two levels, limma and
+DESeq2 can be run using multiple methods. See scDiffEx_limma() and
+scDiffEx_deseq2() for details.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}

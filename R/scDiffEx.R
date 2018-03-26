@@ -18,10 +18,9 @@
 #' levelofinterest should contain one factor for condition. The differential
 #' expression results will compare the factor in levelofinterest to all other
 #' data.
-#' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
-#' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel. For DESeq2, choose "fullreduced" to perform DESeq2 in LRT mode
-#' comparing the model with condition to a model without condition.
+#' @param analysis_type For conditions with more than two levels, limma and
+#' DESeq2 can be run using multiple methods. See scDiffEx_limma() and
+#' scDiffEx_deseq2() for details.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #'
@@ -60,6 +59,7 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
     diffex.results <- scDiffEx_limma(inSCESet = inSCESet,
                                      use_assay = use_assay,
                                      condition = condition,
+                                     analysis_type = analysis_type,
                                      levelofinterest = levelofinterest,
                                      covariates = covariates)
   }
@@ -72,17 +72,17 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-
+  ngenes <- nrow(inSCESet)
   if (usesig){
     if (length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
     }
     else{
-      newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
+      newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:min(ntop, ngenes)]]
     }
   }
   else{
-    newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:ntop]]
+    newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:min(ntop, ngenes)]]
   }
 
   return(diffex.results[newgenes, ])
@@ -191,25 +191,29 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
   annot_data <- SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE]
 
   if (length(levels(annot_data[, condition])) > 2){
-    if(analysis_type == "biomarker"){
-      if(is.null(levelofinterest)){
-        stop("You must specify a level of interest for biomarker analysis.")
-      } else {
-        annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
-                                                 levelofinterest,
-                                                 paste0("not_", levelofinterest)),
-                                          levels = c(paste0("not_", levelofinterest),
-                                                     levelofinterest))
-      }
-      controlLevel <- NULL
-    } else if (analysis_type == "contrast"){
-      if(is.null(levelofinterest) || is.null(controlLevel)){
-        stop("You must specify a level of interest and a control level for contrast analysis.")
-      }
-    } else if (analysis_type == "fullreduced"){
-      message("full/reduced DESeq2")
+    if(is.null(analysis_type)){
+      stop("You must specify an analysis type")
     } else {
-      stop("Invalid analysis type: ", analysis_type)
+      if(analysis_type == "biomarker"){
+        if(is.null(levelofinterest)){
+          stop("You must specify a level of interest for biomarker analysis.")
+        } else {
+          annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
+                                                   levelofinterest,
+                                                   paste0("not_", levelofinterest)),
+                                            levels = c(paste0("not_", levelofinterest),
+                                                       levelofinterest))
+        }
+        controlLevel <- NULL
+      } else if (analysis_type == "contrast"){
+        if(is.null(levelofinterest) || is.null(controlLevel)){
+          stop("You must specify a level of interest and a control level for contrast analysis.")
+        }
+      } else if (analysis_type == "fullreduced"){
+        message("full/reduced DESeq2")
+      } else {
+        stop("Invalid analysis type: ", analysis_type)
+      }
     }
   } else {
     levelofinterest <- NULL
@@ -267,6 +271,11 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
+#' @param analysis_type If there are more than two levels in your condition
+#' variable, select the analysis_type. Choose "biomarker" to compare the
+#' levelofinterest to all other samples. Choose "coef" to select a coefficient
+#' of interset with levelofinterest (see below). Choose "allcoef" to test if
+#' any coefficient is different from zero.
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
 #' @param covariates Additional covariates to add to the model.
@@ -278,37 +287,51 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' res <- scDiffEx_limma(mouse_brain_subset_sce, condition = "level1class")
 #'
 scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
+                           analysis_type="biomarker",
                            levelofinterest=NULL, covariates=NULL){
   condition_factor <- factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])
   if (length(levels(condition_factor)) < 2){
     stop("Problem with limma condition")
+  } else if (length(levels(condition_factor)) == 2){
+    analysis_type <- "standard"
+  } else if (is.null(analysis_type)){
+    stop("You must supply an analysis type, ", analysis_type)
+  } else if (!(analysis_type %in% c("standard", "biomarker", "coef", "allcoef"))){
+    stop("Unrecognized analysis type, ", analysis_type)
   }
-  if(is.null(covariates)) {
-    design <- stats::model.matrix(
-      stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition), drop = FALSE]))
-  } else {
-    design <- stats::model.matrix(
-      stats::as.formula(paste0("~", paste0(c(condition, covariates),
-                                           collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
-                                          drop = FALSE]))
+
+  annot_data <- data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE])
+  if(analysis_type == "biomarker"){
+    if(is.null(levelofinterest)){
+      stop("You must supply a level of interest")
+    }
+    annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
+                                             levelofinterest,
+                                             paste0("not_", levelofinterest)),
+                                      levels = c(paste0("not_", levelofinterest),
+                                                 levelofinterest))
   }
+  design <- stats::model.matrix(
+    stats::as.formula(paste0("~", paste0(c(condition, covariates), collapse = "+"))),
+    data = annot_data)
+
   fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, use_assay), design)
   ebayes <- limma::eBayes(fit)
   if (length(levels(condition_factor)) == 2){
     topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
                                 number = nrow(inSCESet))
-  } else {
-    if(is.null(levelofinterest)){
-      stop("Level of interest required.")
-    }
+  } else if (analysis_type == "biomarker") {
+    topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+                                number = nrow(inSCESet))
+  } else if (analysis_type == "coef") {
     topGenes <- limma::topTable(
       ebayes, coef = which(levels(condition_factor) == levelofinterest),
       adjust = "fdr", number = nrow(inSCESet))
+  } else if (analysis_type == "allcoef") {
+    topGenes <- limma::topTable(ebayes, adjust = "fdr", number = nrow(inSCESet))
   }
 
-  colnames(topGenes)[5] <- "padj"
+  colnames(topGenes)[which(colnames(topGenes) == "adj.P.Val")] <- "padj"
   return(topGenes)
 }
 

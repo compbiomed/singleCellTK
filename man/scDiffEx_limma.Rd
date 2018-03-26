@@ -5,7 +5,7 @@
 \title{Perform differential expression analysis with limma}
 \usage{
 scDiffEx_limma(inSCESet, use_assay = "logcounts", condition,
-  levelofinterest = NULL, covariates = NULL)
+  analysis_type = "biomarker", levelofinterest = NULL, covariates = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -15,6 +15,12 @@ scDiffEx_limma(inSCESet, use_assay = "logcounts", condition,
 \item{condition}{The name of the condition to use for differential
 expression. Must be a name of a column from colData that contains at least
 two labels. Required}
+
+\item{analysis_type}{If there are more than two levels in your condition
+variable, select the analysis_type. Choose "biomarker" to compare the
+levelofinterest to all other samples. Choose "coef" to select a coefficient
+of interset with levelofinterest (see below). Choose "allcoef" to test if
+any coefficient is different from zero.}
 
 \item{levelofinterest}{If the condition has more than two labels,
 levelofinterest should contain one factor of interest from condition.}

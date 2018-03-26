@@ -856,14 +856,12 @@ shinyServer(function(input, output, session) {
   output$selectDiffex_conditionlevelUI <- renderUI({
     req(vals$counts)
     if (length(colnames(colData(vals$counts))) > 0){
-      if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex != "ANOVA"){
+      if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex == "DESeq2"){
         tagList(
-          conditionalPanel(
-            condition = "input.selectDiffex == 'DESeq2'",
-            radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
-                         choiceNames = c("Biomarker (1 vs all)", "Factor of Interest vs. Control Factor",
-                                         "Entire Factor (Full/Reduced)"),
-                         choiceValues = c("biomarker", "contrast", "fullreduced"))
+          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
+                       choiceNames = c("Biomarker (1 vs all)", "Factor of Interest vs. Control Factor",
+                                       "Entire Factor (Full/Reduced)"),
+                       choiceValues = c("biomarker", "contrast", "fullreduced")
           ),
           conditionalPanel(
             condition = "input.selectDiffexConditionMethod != 'fullreduced'",
@@ -875,6 +873,20 @@ shinyServer(function(input, output, session) {
             condition = "input.selectDiffexConditionMethod == 'contrast' && input.selectDiffex == 'DESeq2'",
             selectInput("selectDiffex_controlcondition",
                         "Select Control Factor",
+                        unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
+          )
+        )
+      } else if (length(unique(colData(vals$counts)[, input$selectDiffex_condition])) > 2 & input$selectDiffex == "limma") {
+        tagList(
+          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
+                         choiceNames = c("Biomarker (1 vs all)", "Factor of Interest",
+                                         "Entire Factor"),
+                         choiceValues = c("biomarker", "coef", "allcoef")
+          ),
+          conditionalPanel(
+            condition = "input.selectDiffexConditionMethod != 'allcoef'",
+            selectInput("selectDiffex_conditionofinterest",
+                        "Select Factor of Interest",
                         unique(sort(colData(vals$counts)[, input$selectDiffex_condition])))
           )
         )
@@ -908,8 +920,6 @@ shinyServer(function(input, output, session) {
                                         ntop = input$selectNGenes,
                                         usesig = input$applyCutoff,
                                         diffexmethod = input$selectDiffex,
-                                        clusterRow = input$clusterRows,
-                                        clusterCol = input$clusterColumns,
                                         levelofinterest = input$selectDiffex_conditionofinterest,
                                         analysis_type = input$selectDiffexConditionMethod,
                                         controlLevel = input$selectDiffex_controlcondition)
