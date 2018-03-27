@@ -2,6 +2,8 @@ shiny_panel_diffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
+    h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v07-tab05_Differential-Expression.html",
+              "(help)", target="_blank")),
     sidebarLayout(
       sidebarPanel(
         #TODO: Remove DESeq, add edgeR, add more custom options?

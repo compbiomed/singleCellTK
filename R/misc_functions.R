@@ -96,6 +96,18 @@ createSCE <- function(assayfile=NULL, annotfile=NULL, featurefile=NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- S4Vectors::DataFrame(featurein)
   }
+  if(nrow(annotin) != ncol(countsin)){
+    stop("Different number of samples in input matrix and annotations: annot: ", nrow(annotin), ", counts: ", ncol(countsin))
+  }
+  if(nrow(featurein) != nrow(countsin)){
+    stop("Different number of samples in input matrix and feature annotation", nrow(featurein), ", counts: ", nrow(countsin))
+  }
+  if(any(rownames(annotin) != colnames(countsin))){
+    stop("Sample names in input matrix and annotation do not match!")
+  }
+  if(any(rownames(featurein) != rownames(countsin))){
+    stop("Sample names in input matrix and feature annotation do not match!")
+  }
   assaylist <- list()
   assaylist[[assay_name]] <- as.matrix(countsin)
   newassay <- SCtkExperiment(assays = assaylist,

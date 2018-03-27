@@ -2,6 +2,8 @@ shiny_panel_mast <- fluidPage(
   tags$div(
     class = "container",
     h1("MAST"),
+    h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v07-tab05_Differential-Expression.html#mast",
+              "(help)", target="_blank")),
     sidebarLayout(
       sidebarPanel(
         selectInput("mastAssay", "Select Assay:", currassays),

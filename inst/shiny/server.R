@@ -206,9 +206,9 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-    summarizeTable(indata = vals$counts,
-                   use_assay = input$filterAssaySelect,
-                   expression_cutoff = input$minDetectGene)
+    singleCellTK::summarizeTable(indata = vals$counts,
+                                 use_assay = input$filterAssaySelect,
+                                 expression_cutoff = input$minDetectGene)
   })
 
   #Filter the data based on the options
