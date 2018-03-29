@@ -5,7 +5,8 @@
 \title{Perform differential expression analysis with limma}
 \usage{
 scDiffEx_limma(inSCESet, use_assay = "logcounts", condition,
-  analysis_type = "biomarker", levelofinterest = NULL, covariates = NULL)
+  analysis_type = "biomarker", levelofinterest = NULL, covariates = NULL,
+  adjust = "fdr")
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -26,6 +27,9 @@ any coefficient is different from zero.}
 levelofinterest should contain one factor of interest from condition.}
 
 \item{covariates}{Additional covariates to add to the model.}
+
+\item{adjust}{Method for p-value correction. See options in p.adjust().
+The default is fdr.}
 }
 \value{
 A data frame of gene names and adjusted p-values

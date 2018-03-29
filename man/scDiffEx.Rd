@@ -6,7 +6,8 @@
 \usage{
 scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
   significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
-  levelofinterest = NULL, analysis_type = NULL, controlLevel = NULL)
+  levelofinterest = NULL, analysis_type = NULL, controlLevel = NULL,
+  adjust = "fdr")
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -42,6 +43,9 @@ scDiffEx_deseq2() for details.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}
+
+\item{adjust}{Method for p-value correction. See options in p.adjust().
+The default is fdr.}
 }
 \value{
 A list of differentially expressed genes.

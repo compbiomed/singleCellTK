@@ -23,6 +23,8 @@
 #' scDiffEx_deseq2() for details.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
+#' @param adjust Method for p-value correction. See options in p.adjust().
+#' The default is fdr.
 #'
 #' @return A list of differentially expressed genes.
 #' @export
@@ -36,12 +38,16 @@
 scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, levelofinterest=NULL, analysis_type=NULL,
-                     controlLevel=NULL){
+                     controlLevel=NULL, adjust = "fdr"){
   for (i in c(condition, covariates)){
-    colData(inSCESet)[,i] <- droplevels(colData(inSCESet)[,i])
+    if (is.factor(SingleCellExperiment::colData(inSCESet)[,i])){
+      SummarizedExperiment::colData(inSCESet)[,i] <- droplevels(colData(inSCESet)[,i])
+    }
   }
-  if(length(condition) == 1){
-    in.condition <- droplevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
+  if (length(condition) == 1){
+    if (is.factor(SingleCellExperiment::colData(inSCESet)[,i])){
+      in.condition <- droplevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
+    }
   } else if (diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
@@ -53,7 +59,8 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                                       analysis_type = analysis_type,
                                       levelofinterest = levelofinterest,
                                       controlLevel = controlLevel,
-                                      covariates = covariates)
+                                      covariates = covariates,
+                                      adjust = adjust)
   }
   else if (diffexmethod == "limma"){
     diffex.results <- scDiffEx_limma(inSCESet = inSCESet,
@@ -61,13 +68,15 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                                      condition = condition,
                                      analysis_type = analysis_type,
                                      levelofinterest = levelofinterest,
-                                     covariates = covariates)
+                                     covariates = covariates,
+                                     adjust = adjust)
   }
   else if (diffexmethod == "ANOVA"){
     diffex.results <- scDiffEx_anova(inSCESet = inSCESet,
                                      use_assay = use_assay,
                                      condition = condition,
-                                     covariates = covariates)
+                                     covariates = covariates,
+                                     adjust = adjust)
   }
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
@@ -175,6 +184,8 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #' @param covariates Additional covariates to add to the model.
+#' @param adjust Method for p-value correction. See options in p.adjust().
+#' The default is fdr.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
@@ -186,77 +197,77 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
                             analysis_type="biomarker", levelofinterest=NULL,
-                            controlLevel=NULL, covariates=NULL){
+                            controlLevel=NULL, covariates=NULL, adjust="fdr"){
   cnts <- SummarizedExperiment::assay(inSCESet, use_assay)
   annot_data <- SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE]
 
-  if (length(levels(annot_data[, condition])) > 2){
-    if(is.null(analysis_type)){
-      stop("You must specify an analysis type")
-    } else {
-      if(analysis_type == "biomarker"){
-        if(is.null(levelofinterest)){
-          stop("You must specify a level of interest for biomarker analysis.")
-        } else {
-          annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
-                                                   levelofinterest,
-                                                   paste0("not_", levelofinterest)),
-                                            levels = c(paste0("not_", levelofinterest),
-                                                       levelofinterest))
-        }
-        controlLevel <- NULL
-      } else if (analysis_type == "contrast"){
-        if(is.null(levelofinterest) || is.null(controlLevel)){
-          stop("You must specify a level of interest and a control level for contrast analysis.")
-        }
-      } else if (analysis_type == "fullreduced"){
-        message("full/reduced DESeq2")
-      } else {
-        stop("Invalid analysis type: ", analysis_type)
-      }
+  if (is.factor(annot_data[, c(condition)])){
+    condition_factor <- factor(annot_data[, c(condition)])
+    if (length(levels(condition_factor)) < 2){
+      stop("Problem with deseq2 condition")
+    } else if (length(levels(condition_factor)) == 2){
+      analysis_type <- "standard"
+    } else if (is.null(analysis_type)){
+      stop("You must supply an analysis type")
+    } else if (!(analysis_type %in% c("standard", "biomarker", "contrast", "fullreduced"))){
+      stop("Unrecognized analysis type, ", analysis_type)
     }
   } else {
+    analysis_type <- "standard"
+  }
+
+  if (analysis_type == "standard"){
     levelofinterest <- NULL
     controlLevel <- NULL
+  } else if (analysis_type == "biomarker"){
+    if (is.null(levelofinterest)){
+      stop("You must specify a level of interest for biomarker analysis.")
+    } else {
+      annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
+                                               levelofinterest,
+                                               paste0("not_", levelofinterest)),
+                                        levels = c(paste0("not_", levelofinterest),
+                                                   levelofinterest))
+    }
+    controlLevel <- NULL
+  } else if (analysis_type == "contrast"){
+    if (is.null(levelofinterest) || is.null(controlLevel)){
+      stop("You must specify a level of interest and a control level for contrast analysis.")
+    }
   }
 
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts, colData = annot_data,
                                         design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
-  if (!is.null(analysis_type)){
-    if(analysis_type == "fullreduced") {
-      if(is.null(covariates)){
-        dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
-      } else {
-        dds <- DESeq2::DESeq(dds, test = "LRT",
-                             reduced = stats::as.formula(paste0("~",
-                                                                c(covariates),
-                                                                collapse = "+")))
-      }
+
+  if (analysis_type == "fullreduced"){
+    if (is.null(covariates)){
+      dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
     } else {
-      dds <- DESeq2::DESeq(dds)
+      dds <- DESeq2::DESeq(dds, test = "LRT",
+                           reduced = stats::as.formula(paste0("~",
+                                                              c(covariates),
+                                                              collapse = "+")))
     }
   } else {
     dds <- DESeq2::DESeq(dds)
   }
 
-  if(is.null(levelofinterest) & is.null(controlLevel)){
-    if(length(levels(annot_data[, condition])) == 2){
-      res <- DESeq2::results(dds, contrast = c(condition,
-                                               levels(annot_data[,condition])[2],
-                                               levels(annot_data[,condition])[1]))
-    } else if (analysis_type == "fullreduced"){
-      res <- DESeq2::results(dds)
-    }
-  } else if(is.null(controlLevel)){
+  if (analysis_type == "standard"){
+    res <- DESeq2::results(dds, pAdjustMethod = adjust)
+  } else if (analysis_type == "fullreduced"){
+    res <- DESeq2::results(dds, pAdjustMethod = adjust)
+  } else if (analysis_type == "contrast") {
     res <- DESeq2::results(dds, contrast = c(condition,
                                              levelofinterest,
-                                             levels(annot_data[,condition])[1]))
+                                             controlLevel),
+                           pAdjustMethod = adjust)
   } else {
     res <- DESeq2::results(dds, contrast = c(condition,
-                                             levelofinterest,
-                                             controlLevel))
+                                            levelofinterest,
+                                            levels(annot_data[,condition])[1]),
+                          pAdjustMethod = adjust)
   }
 
   return(data.frame(res))
@@ -279,6 +290,8 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor of interest from condition.
 #' @param covariates Additional covariates to add to the model.
+#' @param adjust Method for p-value correction. See options in p.adjust().
+#' The default is fdr.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
@@ -288,21 +301,25 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #'
 scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
                            analysis_type="biomarker",
-                           levelofinterest=NULL, covariates=NULL){
-  condition_factor <- factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])
-  if (length(levels(condition_factor)) < 2){
-    stop("Problem with limma condition")
-  } else if (length(levels(condition_factor)) == 2){
+                           levelofinterest=NULL, covariates=NULL, adjust="fdr"){
+  if (is.factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])){
+    condition_factor <- factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])
+    if (length(levels(condition_factor)) < 2){
+      stop("Problem with limma condition")
+    } else if (length(levels(condition_factor)) == 2){
+      analysis_type <- "standard"
+    } else if (is.null(analysis_type)){
+      stop("You must supply an analysis type")
+    } else if (!(analysis_type %in% c("standard", "biomarker", "coef", "allcoef"))){
+      stop("Unrecognized analysis type, ", analysis_type)
+    }
+  } else {
     analysis_type <- "standard"
-  } else if (is.null(analysis_type)){
-    stop("You must supply an analysis type, ", analysis_type)
-  } else if (!(analysis_type %in% c("standard", "biomarker", "coef", "allcoef"))){
-    stop("Unrecognized analysis type, ", analysis_type)
   }
 
   annot_data <- data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE])
-  if(analysis_type == "biomarker"){
-    if(is.null(levelofinterest)){
+  if (analysis_type == "biomarker"){
+    if (is.null(levelofinterest)){
       stop("You must supply a level of interest")
     }
     annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
@@ -317,18 +334,18 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 
   fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, use_assay), design)
   ebayes <- limma::eBayes(fit)
-  if (length(levels(condition_factor)) == 2){
-    topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+  if (analysis_type == "standard"){
+    topGenes <- limma::topTable(ebayes, adjust = adjust,
                                 number = nrow(inSCESet))
   } else if (analysis_type == "biomarker") {
-    topGenes <- limma::topTable(ebayes, coef = 2, adjust = "fdr",
+    topGenes <- limma::topTable(ebayes, coef = 2, adjust = adjust,
                                 number = nrow(inSCESet))
   } else if (analysis_type == "coef") {
     topGenes <- limma::topTable(
       ebayes, coef = which(levels(condition_factor) == levelofinterest),
-      adjust = "fdr", number = nrow(inSCESet))
+      adjust = adjust, number = nrow(inSCESet))
   } else if (analysis_type == "allcoef") {
-    topGenes <- limma::topTable(ebayes, adjust = "fdr", number = nrow(inSCESet))
+    topGenes <- limma::topTable(ebayes, adjust = adjust, number = nrow(inSCESet))
   }
 
   colnames(topGenes)[which(colnames(topGenes) == "adj.P.Val")] <- "padj"
@@ -345,6 +362,8 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
 #' @param covariates Additional covariates to add to the model.
+#' @param adjust Method for p-value correction. See options in p.adjust().
+#' The default is fdr.
 #'
 #' @return A data frame of gene names and adjusted p-values
 #' @export
@@ -353,8 +372,8 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' res <- scDiffEx_anova(mouse_brain_subset_sce, condition = "level1class")
 #'
 scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
-                           covariates=NULL){
-  if(is.null(covariates)) {
+                           covariates=NULL, adjust = "fdr"){
+  if (is.null(covariates)) {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
       data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition), drop = FALSE]))
@@ -386,6 +405,6 @@ scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
   fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
   p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   results <- data.frame(row.names = rownames(dat), p.value = p,
-                        padj = stats::p.adjust(p, method = "fdr"))
+                        padj = stats::p.adjust(p, method = adjust))
   return(results)
 }

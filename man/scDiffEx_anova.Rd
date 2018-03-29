@@ -5,7 +5,7 @@
 \title{Perform ANOVA analysis}
 \usage{
 scDiffEx_anova(inSCESet, use_assay = "logcounts", condition,
-  covariates = NULL)
+  covariates = NULL, adjust = "fdr")
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -17,6 +17,9 @@ expression. Must be a name of a column from colData that contains at least
 two labels. Required}
 
 \item{covariates}{Additional covariates to add to the model.}
+
+\item{adjust}{Method for p-value correction. See options in p.adjust().
+The default is fdr.}
 }
 \value{
 A data frame of gene names and adjusted p-values

@@ -3,7 +3,7 @@ shiny_panel_cluster <- fluidPage(
     class = "container",
     h1("DR & Clustering"),
     h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
-              "(help)", target="_blank")),
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         ###  VISUALIZATION (e.g. PCA, tSNE)

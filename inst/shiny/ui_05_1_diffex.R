@@ -3,21 +3,27 @@ shiny_panel_diffex <- fluidPage(
     class = "container",
     h1("Differential Expression"),
     h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v07-tab05_Differential-Expression.html",
-              "(help)", target="_blank")),
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         #TODO: Remove DESeq, add edgeR, add more custom options?
         selectInput("diffexAssay", "Select Assay:", currassays),
-        selectInput("selectDiffex", "Select Method:", c("limma", "DESeq2",
-                                                        "ANOVA")),
+        selectInput("selectDiffex", "Select Method:", c("limma (use log values)" = "limma",
+                                                        "DESeq2 (use counts)" = "DESeq2",
+                                                        "ANOVA (use log values)" = "ANOVA")),
         uiOutput("selectDiffex_conditionUI"),
         uiOutput("selectDiffex_conditionlevelUI"),
         sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
         checkboxInput("applyCutoff", "Apply p-value Cutoff"),
         conditionalPanel(
           condition = "input.applyCutoff == true",
-          sliderInput("selectPval", "p-value cutoff:", 0.01, 0.2, 0.05),
-          selectInput("selectCorrection", "Correction Method:", c("FDR"))
+          sliderInput("selectPval", "p-value (adjusted) cutoff:", 0.01, 0.2, 0.05),
+          selectInput("selectCorrection", "Correction Method:", c("fdr", "holm",
+                                                                  "hochberg",
+                                                                  "hommel",
+                                                                  "bonferroni",
+                                                                  "BH", "BY",
+                                                                  "none"))
         ),
         withBusyIndicatorUI(actionButton("runDiffex",
                                          "Run Differential Expression")),

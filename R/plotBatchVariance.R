@@ -25,16 +25,16 @@
 plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
                               condition=NULL){
   nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
-  if(nlb <= 1){
+  if (nlb <= 1){
     batch_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
   } else {
     batch_mod <- stats::model.matrix(~as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
   }
-  if(is.null(condition)){
+  if (is.null(condition)){
     stop("condition required for now")
   } else {
     nlc <- nlevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
-    if(nlc <= 1){
+    if (nlc <= 1){
       cond_mod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
     } else {
       cond_mod <- stats::model.matrix(~as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))

@@ -4,7 +4,7 @@ shiny_panel_filter <- fluidPage(
     class = "container",
     h1("Data Summary and Filtering"),
     h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v04-tab02_Data-Summary-and-Filtering.html",
-              "(help)", target="_blank")),
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         selectInput("filterAssaySelect", "Select Assay:", currassays),
@@ -94,7 +94,7 @@ shiny_panel_filter <- fluidPage(
                 "Options",
                 wellPanel(
                   h4("Modify Annotation Data:"),
-                  selectInput("annotModifyChoice", "Select Annotation:", c('none', clusterChoice)),
+                  selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
                   uiOutput("annotModifyUI"),
                   tags$hr(),
                   downloadButton("downloadcolData", "Download Annotation Data"),

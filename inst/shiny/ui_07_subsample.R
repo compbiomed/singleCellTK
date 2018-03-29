@@ -1,6 +1,6 @@
 shiny_panel_subsample <- fluidPage(
   h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v09-tab07_Sample-Size.html",
-            "(help)", target="_blank")),
+            "(help)", target = "_blank")),
   tabsetPanel(
     tabPanel(
       "Sequencing Depth",

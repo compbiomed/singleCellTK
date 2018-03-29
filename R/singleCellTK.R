@@ -20,7 +20,7 @@
 #'
 singleCellTK <- function(inputData=NULL) {
   appDir <- system.file("shiny", package = "singleCellTK")
-  if(!is.null(inputData) & is.null(rownames(inputData))){
+  if (!is.null(inputData) & is.null(rownames(inputData))){
     stop("ERROR: No row names (gene names) found.")
   }
   shiny::shinyOptions(inputSCEset = inputData)

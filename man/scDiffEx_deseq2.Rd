@@ -6,7 +6,7 @@
 \usage{
 scDiffEx_deseq2(inSCESet, use_assay = "counts", condition,
   analysis_type = "biomarker", levelofinterest = NULL,
-  controlLevel = NULL, covariates = NULL)
+  controlLevel = NULL, covariates = NULL, adjust = "fdr")
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
@@ -29,6 +29,9 @@ levelofinterest should contain one factor of interest from condition.}
 should contain one factor from condition to use as the control.}
 
 \item{covariates}{Additional covariates to add to the model.}
+
+\item{adjust}{Method for p-value correction. See options in p.adjust().
+The default is fdr.}
 }
 \value{
 A data frame of gene names and adjusted p-values

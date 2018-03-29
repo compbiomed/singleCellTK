@@ -33,14 +33,14 @@ plotPCA <- function(count_data, colorBy="No Color", shape="No Shape", pcX="PC1",
     }
   }
   pca_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
-  if(!(pcX %in% colnames(pca_df))){
+  if (!(pcX %in% colnames(pca_df))){
     stop("pcX dimension ", pcX, " is not in the reducedDim data")
   }
-  if(!(pcY %in% colnames(pca_df))){
+  if (!(pcY %in% colnames(pca_df))){
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
 
-  if(class(count_data) == "SCtkExperiment"){
+  if (class(count_data) == "SCtkExperiment"){
     if (all(c(pcX, pcY) %in% rownames(pca_variances(count_data)))){
       #use the variances in pca_variances
       variances <- pca_variances(count_data)

@@ -41,8 +41,8 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
   depths <- floor(10 ^ (seq(0, log10(maxDepth), length.out = depthResolution)))
   cells <- dim(originalData)[2]
   effectSizes <- calcEffectSizes(originalData, realLabels)
-  for(i in 1:depthResolution){
-    for(j in 1:iterations){
+  for (i in 1:depthResolution){
+    for (j in 1:iterations){
       tempData <- generateSimulatedData(totalReads = depths[i], cells,
                                         as.matrix(originalData),
                                         realLabels = as.factor(realLabels))
@@ -108,8 +108,8 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   cellNums <- seq(minCellnum, maxCellnum, length.out = depthResolution)
   effectSizes <- calcEffectSizes(originalData, realLabels)
-  for(i in 1:depthResolution){
-    for(j in 1:iterations){
+  for (i in 1:depthResolution){
+    for (j in 1:iterations){
       tempData <- generateSimulatedData(totalReads = totalReads,
                                         cells = cellNums[i],
                                         as.matrix(originalData),
@@ -153,7 +153,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   totalReads <- floor(totalReads / length(cells))
   originalData <- t(t(originalData) / apply(originalData, 2, sum))
   output <- matrix(nrow = dim(originalData)[1], ncol = length(cells))
-  for(i in 1:length(cells)){
+  for (i in 1:length(cells)){
     output[, i] <- stats::rmultinom(1, totalReads, originalData[, cells[i]])
   }
   return(rbind(realLabels[cells], output))
@@ -179,9 +179,9 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 subDiffEx <- function(tempData){
   realLabels <- tempData[1, ]
   output <- tempData[-1, ]
-  if(length(levels(as.factor(realLabels))) > 2){
+  if (length(levels(as.factor(realLabels))) > 2){
     fdr <- subDiffEx_anova(output, realLabels)
-  } else if(length(levels(as.factor(realLabels))) == 2){
+  } else if (length(levels(as.factor(realLabels))) == 2){
     fdr <- subDiffEx_ttest(output, realLabels)
   }
   else{
@@ -215,7 +215,7 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
   originalData <- SummarizedExperiment::assay(originalData, "counts")
   sigMatrix <- matrix(nrow = dim(originalData)[1])
-  for(i in 1:iterations){
+  for (i in 1:iterations){
     tempData <- generateSimulatedData(totalReads, cells, originalData,
                                       realLabels = as.factor(realLabels))
     sigMatrix <- cbind(sigMatrix, subDiffEx(tempData))
@@ -291,7 +291,7 @@ subDiffEx_anova <- function(countMatrix, condition){
                        t(mod0))
   rss1 <- resid ^ 2 %*% rep(1, n)
   rss0 <- resid0 ^ 2 %*% rep(1, n)
-  fstats <- ((rss0 - rss1) / (df1 - df0)) / ((rss1+1e-50) / (n - df1))
+  fstats <- ((rss0 - rss1) / (df1 - df0)) / ((rss1 + 1e-50) / (n - df1))
   p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   return(stats::p.adjust(p, method = "fdr"))
 }

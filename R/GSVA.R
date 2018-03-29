@@ -59,10 +59,10 @@ GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_n
 #'
 GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
   if (plot_type == "Violin"){
-    if(nrow(gsva_data) > 49){
+    if (nrow(gsva_data) > 49){
       stop("TOO Many results for Violin Plot. Try Heatmap.")
     }
-    if(!(length(condition) > 0)){
+    if (!(length(condition) > 0)){
       stop("You must specify a condition for Violin plot")
     }
     gsva_res_t <- data.frame(t(gsva_data))

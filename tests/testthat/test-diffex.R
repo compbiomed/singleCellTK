@@ -262,3 +262,31 @@ test_that("scDiffEx and scDiffEx_anova() functions should give the same result",
                          condition = "level2class", covariates = "tissue")
   expect_equal(res, res2[rownames(res), ])
 })
+
+test_that("condition and covariates should accept numeric vectors", {
+  #deseq2
+  subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                          condition = "age", ntop = nrow(subset),
+                          usesig = FALSE, diffexmethod = "DESeq2"), NA)
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                        condition = "level1class", covariates = "age",
+                        ntop = nrow(subset), usesig = FALSE,
+                        diffexmethod = "DESeq2"), NA)
+  #limma
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                        condition = "age", ntop = nrow(subset),
+                        usesig = FALSE, diffexmethod = "limma"), NA)
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                        condition = "level1class", covariates = "age",
+                        ntop = nrow(subset), usesig = FALSE,
+                        diffexmethod = "limma"), NA)
+  #anova
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                        condition = "age", ntop = nrow(subset),
+                        usesig = FALSE, diffexmethod = "ANOVA"), NA)
+  expect_error(scDiffEx(inSCESet = subset, use_assay = "counts",
+                        condition = "level2class", covariates = "age",
+                        ntop = nrow(subset), usesig = FALSE,
+                        diffexmethod = "ANOVA"), NA)
+})

@@ -34,9 +34,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "subCovariate",
                       choices = pdata_options)
     updateSelectInput(session, "batchVarPlot",
-                      choices = c('none', pdata_options))
+                      choices = c("none", pdata_options))
     updateSelectInput(session, "conditionVarPlot",
-                      choices = c('none', pdata_options))
+                      choices = c("none", pdata_options))
     updateSelectInput(session, "combatBatchVar",
                       choices = pdata_options)
     updateSelectInput(session, "combatConditionVar",
@@ -115,11 +115,11 @@ shinyServer(function(input, output, session) {
                                    assay_name = input$inputAssayType,
                                    create_logcounts = input$createLogcounts)
       } else {
-        if(input$selectExampleData == "mouse_brain_subset"){
+        if (input$selectExampleData == "mouse_brain_subset"){
           data(list = paste0(input$selectExampleData, "_sce"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "_sce")))
         } else if (input$selectExampleData == "maits"){
-          data(maits, package="MAST")
+          data(maits, package = "MAST")
           vals$original <- createSCE(assayfile = t(maits$expressionmat),
                                  annotfile = maits$cdat,
                                  featurefile = maits$fdat,
@@ -383,13 +383,13 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("addAssay", {
         if (input$addAssayType == "logcounts"){
-          if("counts" %in% names(assays(vals$counts))){
+          if ("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
           } else {
             shinyalert("Error!", "A matrix named counts is required to calculate logcounts.", type = "error")
           }
         } else if (input$addAssayType == "cpm") {
-          if("counts" %in% names(assays(vals$counts))){
+          if ("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
           } else {
             shinyalert("Error!", "Count matrix required for cpm calculation", type = "error")
@@ -456,7 +456,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$newAnnotFile, {
     req(input$newAnnotFile)
     req(vals$counts)
-    indata <- read.csv(input$newAnnotFile$datapath, header=TRUE, row.names = 1)
+    indata <- read.csv(input$newAnnotFile$datapath, header = TRUE, row.names = 1)
     colData(vals$counts) <- DataFrame(indata)
     updateColDataNames()
   })
@@ -465,7 +465,7 @@ shinyServer(function(input, output, session) {
   output$annotModifyUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$annotModifyChoice != "none"){
-        if(is.factor(colData(vals$counts)[, input$annotModifyChoice])){
+        if (is.factor(colData(vals$counts)[, input$annotModifyChoice])){
           radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "factor")
         } else {
           radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "numeric")
@@ -476,11 +476,11 @@ shinyServer(function(input, output, session) {
 
   #update factor vs numeric for colData
   observeEvent(input$annotTypeSelect, {
-    if(input$annotTypeSelect == "factor" & !is.factor(colData(vals$counts)[, input$annotModifyChoice])){
+    if (input$annotTypeSelect == "factor" & !is.factor(colData(vals$counts)[, input$annotModifyChoice])){
       colData(vals$counts)[, input$annotModifyChoice] <- as.factor(colData(vals$counts)[, input$annotModifyChoice])
     } else if (input$annotTypeSelect == "numeric" & is.factor(colData(vals$counts)[, input$annotModifyChoice])){
       f <- colData(vals$counts)[, input$annotModifyChoice]
-      if(any(is.na(as.numeric(levels(f))[f]))){
+      if (any(is.na(as.numeric(levels(f))[f]))){
         shinyalert("Error!", "Cannot convert to numeric.", type = "error")
       } else {
         colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
@@ -716,7 +716,7 @@ shinyServer(function(input, output, session) {
 
   observe({
     if (!is.null(vals$original)){
-      if(input$dimRedPlotMethod == "PCA"){
+      if (input$dimRedPlotMethod == "PCA"){
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (!is.null(reducedDim(vals$counts, pcadimname))) {
           curr_pcs <- colnames(reducedDim(vals$counts, "PCA_counts"))
@@ -818,8 +818,8 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts) &
         !is.null(input$batchVarPlot) &
         !is.null(input$conditionVarPlot) &
-        input$batchVarPlot != 'none' &
-        input$conditionVarPlot != 'none' &
+        input$batchVarPlot != "none" &
+        input$conditionVarPlot != "none" &
         input$batchVarPlot != input$conditionVarPlot){
       plotBatchVariance(inSCESet = vals$counts,
                         use_assay = input$combatAssay,
@@ -907,7 +907,7 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runDiffex", {
         #run diffex to get gene list and pvalues
-        if(input$selectDiffex == "ANOVA"){
+        if (input$selectDiffex == "ANOVA"){
           use_covariates <- input$anovaCovariates
         } else {
           use_covariates <- input$selectDiffex_covariates
@@ -922,7 +922,8 @@ shinyServer(function(input, output, session) {
                                         diffexmethod = input$selectDiffex,
                                         levelofinterest = input$selectDiffex_conditionofinterest,
                                         analysis_type = input$selectDiffexConditionMethod,
-                                        controlLevel = input$selectDiffex_controlcondition)
+                                        controlLevel = input$selectDiffex_controlcondition,
+                                        adjust = input$selectCorrection)
         updateSelectInput(session, "colorBar_Condition", selected = input$selectDiffex_condition)
       })
     }
@@ -1150,7 +1151,7 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    if(length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsva_res))){
+    if (length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsva_res))){
       fit <- limma::lmFit(vals$gsva_res, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
       fit <- limma::eBayes(fit)
       toptableres <- limma::topTable(fit, number = nrow(vals$gsva_res))
@@ -1175,7 +1176,7 @@ shinyServer(function(input, output, session) {
 
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsva_res))){
-      if(input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
+      if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsva_limma))){
         tempgsvares <- vals$gsva_res[as.character(vals$gsva_limma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsva_limma))]), , drop = F]
       } else {
         tempgsvares <- vals$gsva_res[1:input$pickNtopPaths, , drop = F]
@@ -1200,12 +1201,12 @@ shinyServer(function(input, output, session) {
     if (!(is.null(vals$gsva_res))){
       if (all(colnames(vals$counts) == colnames(vals$gsva_res))){
         #if we have limma results
-        if(!(is.null(vals$gsva_limma))){
-          tempdf <- DataFrame(t(vals$gsva_res[vals$gsva_limma$Pathway[1:input$pickNtopPaths], , drop = F]))
+        if (!(is.null(vals$gsva_limma))){
+          tempdf <- DataFrame(t(vals$gsva_res[vals$gsva_limma$Pathway[1:input$pickNtopPaths], , drop = FALSE]))
         } else {
-          tempdf <- DataFrame(t(vals$gsva_res[1:input$pickNtopPaths, , drop = F]))
+          tempdf <- DataFrame(t(vals$gsva_res[1:input$pickNtopPaths, , drop = FALSE]))
         }
-        tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop=F]
+        tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
         colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
         updateColDataNames()
       }
@@ -1282,7 +1283,7 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("runSubsampleCells", {
-        if(input$useReadCount){
+        if (input$useReadCount){
           vals$subCells <- DownsampleCells(originalData = vals$counts,
                                            realLabels = input$select_CellNum_Condition,
                                            totalReads = sum(counts(vals$counts)),

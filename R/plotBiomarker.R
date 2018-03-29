@@ -82,7 +82,7 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
       g <- g +
         ggplot2::ggtitle(paste(gene_name, " - ", percent, "%", " cells", sep = "")) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-      if(is.null(variances)){
+      if (is.null(variances)){
         g <- g + ggplot2::labs(x = x, y = y)
       } else {
         g <- g + ggplot2::labs(x = paste0(x, " ", toString(round(variances[x,] * 100, 2)), "%"),
