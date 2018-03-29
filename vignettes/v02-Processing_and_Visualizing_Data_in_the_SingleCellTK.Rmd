@@ -211,6 +211,7 @@ gsva_res <- GSVA_sce(maits_entrez, use_assay = "logtpm",
                        "REACTOME_SCF_BETA_TRCP_MEDIATED_DEGRADATION_OF_EMI1"),
                      parallel.sz=1)
 
+set.seed(1234)
 GSVA_plot(maits_subset, gsva_res, "Violin", "condition")
 GSVA_plot(maits_subset, gsva_res, "Heatmap", "condition")
 ```
