@@ -153,7 +153,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #Render data table if there are fewer than 50 samples
-  output$contents <- renderDataTable({
+  output$contents <- DT::renderDataTable({
     if (!is.null(getShinyOption("inputSCEset"))){
       updateGeneNames()
     }
@@ -214,7 +214,7 @@ shinyServer(function(input, output, session) {
   #Filter the data based on the options
   observeEvent(input$filterData, {
     if (is.null(vals$original)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("filterData", {
@@ -240,7 +240,7 @@ shinyServer(function(input, output, session) {
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
     if (is.null(vals$original)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       vals$counts <- vals$original
@@ -259,7 +259,7 @@ shinyServer(function(input, output, session) {
   #Delete a column from the colData annotations
   observeEvent(input$deleterowDatabutton, {
     if (is.null(vals$original)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = F]
@@ -379,20 +379,20 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addAssay, {
     req(vals$counts)
     if (input$addAssayType %in% names(assays(vals$counts))){
-      shinyalert("Assay already exists!", "", type = "info")
+      shinyalert::shinyalert("Assay already exists!", "", type = "info")
     } else {
       withBusyIndicatorServer("addAssay", {
         if (input$addAssayType == "logcounts"){
           if ("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
           } else {
-            shinyalert("Error!", "A matrix named counts is required to calculate logcounts.", type = "error")
+            shinyalert::shinyalert("Error!", "A matrix named counts is required to calculate logcounts.", type = "error")
           }
         } else if (input$addAssayType == "cpm") {
           if ("counts" %in% names(assays(vals$counts))){
             assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
           } else {
-            shinyalert("Error!", "Count matrix required for cpm calculation", type = "error")
+            shinyalert::shinyalert("Error!", "Count matrix required for cpm calculation", type = "error")
           }
         } else if (input$addAssayType == "logcpm") {
           #try to calculate from cpm
@@ -402,7 +402,7 @@ shinyServer(function(input, output, session) {
           #calculate from counts
             assay(vals$counts, "logcpm") <- log2(apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) }) + 1)
           } else {
-            shinyalert("Error!", "Count matrix or cpm required for logcpm calculation", type = "error")
+            shinyalert::shinyalert("Error!", "Count matrix or cpm required for logcpm calculation", type = "error")
           }
         } else {
           stop("unsupported assay type")
@@ -415,7 +415,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$delAssay, {
     req(vals$counts)
     if (!(input$delAssayType %in% names(assays(vals$counts)))){
-      shinyalert("Error!", "Assay does not exist!", type = "error")
+      shinyalert::shinyalert("Error!", "Assay does not exist!", type = "error")
     } else {
       withBusyIndicatorServer("delAssay", {
         assay(vals$counts, input$delAssayType) <- NULL
@@ -427,7 +427,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert("Error!", "reducedDim does not exist!", type = "error")
+      shinyalert::shinyalert("Error!", "reducedDim does not exist!", type = "error")
     } else {
       withBusyIndicatorServer("delRedDim", {
         reducedDim(vals$counts, input$delRedDimType) <- NULL
@@ -481,7 +481,7 @@ shinyServer(function(input, output, session) {
     } else if (input$annotTypeSelect == "numeric" & is.factor(colData(vals$counts)[, input$annotModifyChoice])){
       f <- colData(vals$counts)[, input$annotModifyChoice]
       if (any(is.na(as.numeric(levels(f))[f]))){
-        shinyalert("Error!", "Cannot convert to numeric.", type = "error")
+        shinyalert::shinyalert("Error!", "Cannot convert to numeric.", type = "error")
       } else {
         colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
       }
@@ -583,7 +583,9 @@ shinyServer(function(input, output, session) {
           if (input$colorBy == "Gene Expression") {
             if (input$colorGeneBy == "Biomarker (from DE tab)"){
               if (input$colorGenesBiomarker == ""){
-                ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
+                ggplot() + theme_bw() +
+                  theme(plot.background = element_rect(fill = "white")) +
+                  theme(panel.border = element_rect(colour = "white"))
               } else {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
@@ -596,7 +598,9 @@ shinyServer(function(input, output, session) {
               }
             } else if (input$colorGeneBy == "Manual Input") {
               if (is.null(input$colorGenes)){
-                ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
+                ggplot() + theme_bw() +
+                  theme(plot.background = element_rect(fill = "white")) +
+                  theme(panel.border = element_rect(colour = "white"))
               } else {
                 g <- plotBiomarker(vals$counts, input$colorGenes,
                                    input$colorBinary, "PCA", input$shapeBy,
@@ -620,7 +624,10 @@ shinyServer(function(input, output, session) {
           if (input$colorBy == "Gene Expression") {
             if (input$colorGeneBy == "Biomarker (from DE tab)"){
               if (input$colorGenesBiomarker == ""){
-                ggplot() + theme_bw() + theme(plot.background = element_rect(fill = "white")) + theme(panel.border = element_rect(colour = "white"))
+                ggplot() +
+                  theme_bw() +
+                  theme(plot.background = element_rect(fill = "white")) +
+                  theme(panel.border = element_rect(colour = "white"))
               } else {
                 biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
                 rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
@@ -650,7 +657,7 @@ shinyServer(function(input, output, session) {
 
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       if (input$dimRedPlotMethod == "Dendrogram" & paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
         data <- getClusterInputData(count_data = vals$counts,
@@ -660,9 +667,9 @@ shinyServer(function(input, output, session) {
         d <- stats::dist(data)
         h <- stats::hclust(d, input$dendroDistanceMetric)
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          g <- ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size = 2)
+          g <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + geom_tiplab2(size = 2)
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          g <- ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size = 2)
+          g <- ggtree::ggtree(as.phylo(h)) + theme_tree2() + geom_tiplab(size = 2)
         } else {
           stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
         }
@@ -673,9 +680,9 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$clusterData, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else if (input$clusterName == "") {
-      shinyalert("Error!", "Cluster name required.", type = "error")
+      shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
     } else {
       withBusyIndicatorServer("clusterData", {
         currdimname <- NULL
@@ -701,7 +708,7 @@ shinyServer(function(input, output, session) {
                                       inputData = input$selectClusterInputData,
                                       use_assay = input$dimRedAssaySelect,
                                       reducedDimName = currdimname)
-          coutput <- clara(data, input$Cnumber)
+          coutput <- cluster::clara(data, input$Cnumber)
           name <- input$clusterName
           colData(vals$counts)[, paste(name)] <- factor(coutput$clustering)
           updateColDataNames()
@@ -731,7 +738,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$reRunTSNE, {
     if (is.null(vals$original)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("reRunTSNE", {
@@ -746,7 +753,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$reRunPCA, {
     if (is.null(vals$original)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("reRunPCA", {
@@ -774,14 +781,14 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$combatRun, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("combatRun", {
         if (input$batchMethod == "ComBat"){
           #check for zeros
           if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-            shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
+            shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
           } else {
             saveassayname <- gsub(" ", "_", input$combatSaveAssay)
             if (input$combatRef){
@@ -804,7 +811,7 @@ shinyServer(function(input, output, session) {
             vals$combatstatus <- "ComBat Complete"
           }
         } else {
-          shinyalert("Error!", "Unsupported Batch Correction Method", type = "error")
+          shinyalert::shinyalert("Error!", "Unsupported Batch Correction Method", type = "error")
         }
       })
     }
@@ -902,7 +909,7 @@ shinyServer(function(input, output, session) {
   #Run differential expression
   observeEvent(input$runDiffex, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("runDiffex", {
@@ -968,23 +975,24 @@ shinyServer(function(input, output, session) {
       } else {
         colors <- NULL
       }
-      draw(plot_DiffEx(inSCESet = vals$counts,
-                       use_assay = input$diffexAssay,
-                       condition = input$colorBar_Condition,
-                       geneList = rownames(vals$diffexgenelist),
-                       clusterRow = input$clusterRows,
-                       clusterCol = input$clusterColumns,
-                       displayRowLabels = input$displayHeatmapRowLabels,
-                       displayColumnLabels = input$displayHeatmapColumnLabels,
-                       displayRowDendrograms = input$displayHeatmapRowDendrograms,
-                       displayColumnDendrograms = input$displayHeatmapColumnDendrograms,
-                       annotationColors = colors,
-                       columnTitle = input$heatmapColumnsTitle))
+      ComplexHeatmap::draw(
+        plot_DiffEx(inSCESet = vals$counts,
+                    use_assay = input$diffexAssay,
+                    condition = input$colorBar_Condition,
+                    geneList = rownames(vals$diffexgenelist),
+                    clusterRow = input$clusterRows,
+                    clusterCol = input$clusterColumns,
+                    displayRowLabels = input$displayHeatmapRowLabels,
+                    displayColumnLabels = input$displayHeatmapColumnLabels,
+                    displayRowDendrograms = input$displayHeatmapRowDendrograms,
+                    displayColumnDendrograms = input$displayHeatmapColumnDendrograms,
+                    annotationColors = colors,
+                    columnTitle = input$heatmapColumnsTitle))
     }
   }, height = 600)
 
   #Create the differential expression results table
-  output$diffextable <- renderDataTable({
+  output$diffextable <- DT::renderDataTable({
     if (!is.null(vals$diffexgenelist)){
       temptable <- cbind(rownames(vals$diffexgenelist), data.frame(vals$diffexgenelist))
       colnames(temptable)[1] <- "Gene"
@@ -998,13 +1006,13 @@ shinyServer(function(input, output, session) {
       paste("diffex_results-", Sys.Date(), ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(vals$diffexgenelist, file)
+      utils::write.csv(vals$diffexgenelist, file)
     }
   )
 
   observeEvent(input$saveBiomarker, {
     if (input$biomarkerName == ""){
-      shinyalert("Error!", "Specify biomarker name.", type = "error")
+      shinyalert::shinyalert("Error!", "Specify biomarker name.", type = "error")
     } else{
       withBusyIndicatorServer("saveBiomarker", {
         biomarker_name <- gsub(" ", "_", input$biomarkerName)
@@ -1032,7 +1040,7 @@ shinyServer(function(input, output, session) {
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
@@ -1050,7 +1058,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$runThreshPlot, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("runThreshPlot", {
@@ -1094,7 +1102,7 @@ shinyServer(function(input, output, session) {
   }, height = 600)
 
   #Create the MAST results table
-  output$mastresults <- renderDataTable({
+  output$mastresults <- DT::renderDataTable({
     if (!is.null(vals$mastgenelist)){
       vals$mastgenelist
     }
@@ -1106,7 +1114,7 @@ shinyServer(function(input, output, session) {
       paste("mast_results-", Sys.Date(), ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(vals$mastgenelist, file)
+      utils::write.csv(vals$mastgenelist, file)
     }
   )
 
@@ -1139,7 +1147,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
         vals$gsva_res <- GSVA_sce(SCEdata = vals$counts,
@@ -1211,7 +1219,7 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
       }
     } else {
-      shinyalert("Error!", "Run pathway first.", type = "error")
+      shinyalert::shinyalert("Error!", "Run pathway first.", type = "error")
     }
   })
 
@@ -1221,7 +1229,7 @@ shinyServer(function(input, output, session) {
       paste("pathway_results-", Sys.Date(), ".csv", sep = "")
     },
     content = function(file) {
-      write.csv(vals$gsva_res, file)
+      utils::write.csv(vals$gsva_res, file)
     }
   )
 
@@ -1232,7 +1240,7 @@ shinyServer(function(input, output, session) {
   #Run subsampling analysis
   observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("runSubsampleDepth", {
@@ -1279,7 +1287,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("runSubsampleCells", {
@@ -1341,7 +1349,7 @@ shinyServer(function(input, output, session) {
   #Run differential power analysis
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
-      shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("runSnapshot", {

@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.6.5
+Version: 0.99.0
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
              person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
@@ -12,7 +12,9 @@ Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
     R (>= 3.5),
     SummarizedExperiment,
-    SingleCellExperiment
+    SingleCellExperiment,
+    DelayedArray,
+    Biobase
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
@@ -21,31 +23,24 @@ biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
 LazyData: TRUE
 Imports:
     ape,
-    Biobase,
-    biomaRt,
-    circlize,
     colourpicker,
+    cluster,
     ComplexHeatmap,
-    d3heatmap,
     data.table,
     DESeq2,
     DT,
-    e1071,
-    GGally,
     ggplot2,
     ggtree,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
     limma,
-    locfit,
     MAST,
     matrixStats,
     methods,
     multtest,
     plotly,
     RColorBrewer,
-    rsvd,
     Rtsne,
     S4Vectors,
     shiny,
@@ -53,8 +48,8 @@ Imports:
     sva,
     reshape2,
     AnnotationDbi,
-    DelayedArray,
-    shinyalert
+    shinyalert,
+    circlize
 RoxygenNote: 6.0.1
 Suggests:
     testthat,

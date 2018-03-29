@@ -173,3 +173,21 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
 
   return(insceset)
 }
+
+#test shiny functions
+test_functions <- function(){
+  if(interactive()){
+    res <- DT::datatable(matrix(1,2))
+    shinyjs::runExample("basic")
+    shinyalert::runExample()
+    p <- plotly::plot_ly(data = data.frame(test=c(1,2,3)),
+                         x="test", type="histogram")
+    colourpicker::runExample()
+    rt <- ape::rtree(10)
+    gt <- ggtree::ggtree(rt)
+    x <- rbind(cbind(stats::rnorm(200,0,8), stats::rnorm(200,0,8)),
+               cbind(stats::rnorm(300,50,8), stats::rnorm(300,50,8)))
+    clarax <- cluster::clara(x, 2, samples=50)
+    circlize::colorRamp2(c(1,2,3), c("red", "blue", "black"))
+  }
+}

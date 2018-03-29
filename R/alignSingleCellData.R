@@ -47,8 +47,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
                                 save_bam=FALSE, save_count_files=FALSE,
                                 isPairedEnd=FALSE) {
   if (!requireNamespace("Rsubread", quietly = TRUE)) {
-    stop("Rsubread package needed for this function to work. Please install it.",
-         call. = FALSE)
+    stop("Rsubread package needed for this function to work. ",
+         "Please install it.", call. = FALSE)
   }
 
   if (any(grepl("~", c(inputfile1, inputfile2, index_path, gtf_annotation,
@@ -193,13 +193,16 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 
   #remove any gene names with empty gene name
   if (any(rownames(countframe) == "")){
-    warning("One of the feature names is empty. This can be caused by a problem with your GTF file. The empty feature name will be removed.")
+    warning("One of the feature names is empty. This can be caused by a ",
+            "problem with your GTF file. The empty feature name will be ",
+            "removed.")
     countframe <- countframe[rownames(countframe) != "", , drop = FALSE]
   }
 
   if (!is.null(sample_annotations)){
     if (!(all(rownames(sample_annotations) == colnames(countframe)))){
-      warning("Sample annotation sample names do not match the countframe names. Sample annotations will not be added.")
+      warning("Sample annotation sample names do not match the countframe ",
+              "names. Sample annotations will not be added.")
       sample_annotations <- rsubread_stats
     } else{
       sample_annotations <- cbind(sample_annotations, rsubread_stats)
@@ -210,7 +213,8 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 
   if (!is.null(feature_annotations)){
     if (!(all(rownames(feature_annotations) == rownames(countframe)))){
-      warning("Feature annotation names do not match the countframe features. Feature annotations will not be added.")
+      warning("Feature annotation names do not match the countframe features. ",
+              "Feature annotations will not be added.")
       feature_annotations <- NULL
     }
   }
@@ -249,7 +253,9 @@ parse_rsubread_logs <- function(align_log=NULL, featurecount_log=NULL,
                                                 features)], " +", perl = TRUE))
   total_reads <- as.numeric(gsub(",", "", total_line[grep("reads",
                                                           total_line) + 2]))
-  feature_reads <- as.numeric(gsub(",", "", feature_line[grep("reads", feature_line) + 2]))
+  feature_reads <- as.numeric(gsub(",", "",
+                                   feature_line[grep("reads",
+                                                     feature_line) + 2]))
   #if not null align log
   if (!is.null(align_log)){
     #process align log

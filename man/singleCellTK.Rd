@@ -2,7 +2,7 @@
 % Please edit documentation in R/singleCellTK.R
 \name{singleCellTK}
 \alias{singleCellTK}
-\title{Run the single cell analysis app}
+\title{Run the single cell analysis app, written entirely by Sean Corbett (c) TM}
 \usage{
 singleCellTK(inputData = NULL)
 }

@@ -1,8 +1,10 @@
-#' Run the single cell analysis app
+#' Run the single cell analysis app, written entirely by Sean Corbett (c) TM
 #'
 #' Use this function to run the single cell analysis app.
 #'
 #' @param inputData The input SCtkExperiment class object
+#'
+#' @import GSVAdata Biobase DelayedArray
 #'
 #' @return The shiny app will open
 #' @export
