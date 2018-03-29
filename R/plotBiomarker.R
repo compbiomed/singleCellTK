@@ -43,9 +43,9 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     axis_df <- data.frame(SingleCellExperiment::reducedDim(count_data, reducedDimName))
   }
   if (length(gene) > 9) {
-    gene <- gene[1:9]
+    gene <- gene[seq_len(9)]
   }
-  for (i in 1:length(gene)){
+  for (i in seq_along(gene)){
     bio_df <- getBiomarker(count_data = count_data,
                            gene = gene[i],
                            binary = binary,
@@ -91,17 +91,17 @@ plotBiomarker <- function(count_data, gene, binary="Binary", visual="PCA",
     } else if (visual == "tSNE"){
       if (binary == "Binary"){
         l$expression <- ifelse(l$expression, "Yes", "No")
-        g <- ggplot2::ggplot(l, ggplot2::aes(X1, X2, label = Sample, color = expression)) +
+        g <- ggplot2::ggplot(l, ggplot2::aes_string("X1", "X2", label = "Sample", color = "expression")) +
           ggplot2::geom_point() +
           ggplot2::scale_color_manual(limits = c("Yes", "No"), values = c("blue", "grey")) +
           ggplot2::labs(color = "Expression")
       }
       else if (binary == "Continuous"){
         if (min(round(l$expression, 6)) == max(round(l$expression, 6))) {
-          g <- ggplot2::ggplot(l, ggplot2::aes(X1, X2, label = Sample)) +
+          g <- ggplot2::ggplot(l, ggplot2::aes_string("X1", "X2", label = "Sample")) +
             ggplot2::geom_point(color = "grey")
         } else{
-          g <- ggplot2::ggplot(l, ggplot2::aes(X1, X2, label = Sample, color = expression)) +
+          g <- ggplot2::ggplot(l, ggplot2::aes_string("X1", "X2", label = "Sample", color = "expression")) +
             ggplot2::scale_colour_gradient(limits = c(min(l$expression), max(l$expression)), low = "grey", high = "blue") +
             ggplot2::geom_point()
         }

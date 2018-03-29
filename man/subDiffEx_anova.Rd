@@ -22,7 +22,12 @@ and adjusts for FDR.
 }
 \examples{
 data("mouse_brain_subset_sce")
-subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#sort first 100 expressed genes
+ord <- rownames(mouse_brain_subset_sce)[
+  order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+        decreasing = TRUE)][1:100]
+#subset to those first 100 genes
+subset <- mouse_brain_subset_sce[ord, ]
 res <- generateSimulatedData(totalReads = 1000, cells=10,
                              originalData = assay(subset, "counts"),
                              realLabels = colData(subset)[, "level2class"])

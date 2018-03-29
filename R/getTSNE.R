@@ -44,7 +44,7 @@ getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
   perplexity <- floor(ncol(count_data) / 5)
   tsne_out <- Rtsne::Rtsne(t(exprs_to_plot), perplexity = perplexity,
                            initial_dims = max(50, ncol(count_data)))
-  tsne_out <- tsne_out$Y[, 1:2]
+  tsne_out <- tsne_out$Y[, c(1, 2)]
   rownames(tsne_out) <- colnames(count_data)
   SingleCellExperiment::reducedDim(count_data, reducedDimName) <- tsne_out
   return(count_data)

@@ -41,8 +41,8 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
   depths <- floor(10 ^ (seq(0, log10(maxDepth), length.out = depthResolution)))
   cells <- dim(originalData)[2]
   effectSizes <- calcEffectSizes(originalData, realLabels)
-  for (i in 1:depthResolution){
-    for (j in 1:iterations){
+  for (i in seq_len(depthResolution)){
+    for (j in seq_len(iterations)){
       tempData <- generateSimulatedData(totalReads = depths[i], cells,
                                         as.matrix(originalData),
                                         realLabels = as.factor(realLabels))
@@ -108,8 +108,8 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   cellNums <- seq(minCellnum, maxCellnum, length.out = depthResolution)
   effectSizes <- calcEffectSizes(originalData, realLabels)
-  for (i in 1:depthResolution){
-    for (j in 1:iterations){
+  for (i in seq_len(depthResolution)){
+    for (j in seq_len(iterations)){
       tempData <- generateSimulatedData(totalReads = totalReads,
                                         cells = cellNums[i],
                                         as.matrix(originalData),
@@ -144,16 +144,17 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")
-#' res <- generateSimulatedData(totalReads = 1000, cells=10,
-#'                              originalData = assay(mouse_brain_subset_sce, "counts"),
-#'                              realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
+#' res <- generateSimulatedData(
+#'          totalReads = 1000, cells=10,
+#'          originalData = assay(mouse_brain_subset_sce, "counts"),
+#'          realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 #'
 generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   cells <- sample(dim(originalData)[2], size = cells, replace = TRUE)
   totalReads <- floor(totalReads / length(cells))
   originalData <- t(t(originalData) / apply(originalData, 2, sum))
   output <- matrix(nrow = dim(originalData)[1], ncol = length(cells))
-  for (i in 1:length(cells)){
+  for (i in seq_along(cells)){
     output[, i] <- stats::rmultinom(1, totalReads, originalData[, cells[i]])
   }
   return(rbind(realLabels[cells], output))
@@ -171,9 +172,10 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")
-#' res <- generateSimulatedData(totalReads = 1000, cells=10,
-#'                             originalData = assay(mouse_brain_subset_sce, "counts"),
-#'                             realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
+#' res <- generateSimulatedData(
+#'          totalReads = 1000, cells=10,
+#'          originalData = assay(mouse_brain_subset_sce, "counts"),
+#'          realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 #' tempSigDiff <- subDiffEx(res)
 #'
 subDiffEx <- function(tempData){
@@ -215,7 +217,7 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
   originalData <- SummarizedExperiment::assay(originalData, "counts")
   sigMatrix <- matrix(nrow = dim(originalData)[1])
-  for (i in 1:iterations){
+  for (i in seq_len(iterations)){
     tempData <- generateSimulatedData(totalReads, cells, originalData,
                                       realLabels = as.factor(realLabels))
     sigMatrix <- cbind(sigMatrix, subDiffEx(tempData))
@@ -236,7 +238,12 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")
-#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' #sort first 100 expressed genes
+#' ord <- rownames(mouse_brain_subset_sce)[
+#'   order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+#'         decreasing = TRUE)][1:100]
+#' #subset to those first 100 genes
+#' subset <- mouse_brain_subset_sce[ord, ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
 #'                              originalData = assay(subset, "counts"),
 #'                              realLabels = colData(subset)[, "level1class"])
@@ -267,7 +274,12 @@ subDiffEx_ttest <- function(dataset, class.labels, test.type = "t.equalvar") {
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")
-#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' #sort first 100 expressed genes
+#' ord <- rownames(mouse_brain_subset_sce)[
+#'   order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+#'         decreasing = TRUE)][1:100]
+#' #subset to those first 100 genes
+#' subset <- mouse_brain_subset_sce[ord, ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
 #'                              originalData = assay(subset, "counts"),
 #'                              realLabels = colData(subset)[, "level2class"])
@@ -324,9 +336,9 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
   if (byBatch == FALSE){
     outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2],
                                 numSize))
-    for (j in 1:dim(datamatrix)[2]) {
+    for (j in seq_len(dim(datamatrix)[2])) {
       probs <- as.numeric(datamatrix[, j] / sum(datamatrix[, j]))
-      for (i in 1:length(probs)){
+      for (i in seq_along(probs)){
         discoveryPower <- 1 - DelayedArray::dbinom(0, size = floor(seq.int(
           from = sampleSizeRange[1],to = sampleSizeRange[2],
           length.out = numSize)), prob = probs[i])
@@ -337,10 +349,10 @@ powerCalc <- function(datamatrix, sampleSizeRange=c(1000, 10000000),
   else {
     outmat <- array(NA, dim = c(dim(datamatrix)[1], dim(datamatrix)[2],
                                 numSize))
-    for (j in 1:nlevels(batch)) {
+    for (j in seq_len(nlevels(batch))) {
       probs <- datamatrix[, which(batch == levels(batch)[j])] /
         sum(datamatrix[, which(batch == levels(batch)[j])])
-      for (i in 1:length(as.vector(probs))) {
+      for (i in seq_along(as.vector(probs))) {
         discoveryPower <- 1 - DelayedArray::dbinom(0, size = floor(seq.int(
           from = sampleSizeRange[1], to = sampleSizeRange[2],
           length.out = numSize)), prob = as.vector(probs)[i])

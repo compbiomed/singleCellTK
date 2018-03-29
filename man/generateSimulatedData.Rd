@@ -30,8 +30,9 @@ matrix.
 }
 \examples{
 data("mouse_brain_subset_sce")
-res <- generateSimulatedData(totalReads = 1000, cells=10,
-                             originalData = assay(mouse_brain_subset_sce, "counts"),
-                             realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
+res <- generateSimulatedData(
+         totalReads = 1000, cells=10,
+         originalData = assay(mouse_brain_subset_sce, "counts"),
+         realLabels = colData(mouse_brain_subset_sce)[, "level1class"])
 
 }

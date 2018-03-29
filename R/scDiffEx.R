@@ -41,7 +41,7 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
                      controlLevel=NULL, adjust = "fdr"){
   for (i in c(condition, covariates)){
     if (is.factor(SingleCellExperiment::colData(inSCESet)[,i])){
-      SummarizedExperiment::colData(inSCESet)[,i] <- droplevels(colData(inSCESet)[,i])
+      SummarizedExperiment::colData(inSCESet)[,i] <- droplevels(SummarizedExperiment::colData(inSCESet)[,i])
     }
   }
   if (length(condition) == 1){
@@ -87,11 +87,11 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
       newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
     }
     else{
-      newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:min(ntop, ngenes)]]
+      newgenes <- rownames(diffex.results)[order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
     }
   }
   else{
-    newgenes <- rownames(diffex.results)[order(diffex.results$padj)[1:min(ntop, ngenes)]]
+    newgenes <- rownames(diffex.results)[order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
   }
 
   return(diffex.results[newgenes, ])
@@ -144,7 +144,7 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
       stop("Too many levels in condition for auto coloring")
     }
     col <- list()
-    col[[condition]] <- stats::setNames(colors[1:length(cond_levels)],
+    col[[condition]] <- stats::setNames(colors[seq_along(cond_levels)],
                                         cond_levels)
     topha <- ComplexHeatmap::HeatmapAnnotation(
       df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE], col = col)
@@ -191,8 +191,12 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")
-#' #subset to 100 genes
-#' subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#' #sort first 100 expressed genes
+#' ord <- rownames(mouse_brain_subset_sce)[
+#'   order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+#'         decreasing = TRUE)][1:100]
+#' #subset to those first 100 genes
+#' subset <- mouse_brain_subset_sce[ord, ]
 #' res <- scDiffEx_deseq2(subset, condition = "level1class")
 #'
 scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,

@@ -151,12 +151,12 @@ filterSCData <- function(insceset, use_assay="counts", deletesamples=NULL,
 
   if (filter_spike){
     nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset)))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, use_assay)), decreasing = TRUE)[1:nkeeprows]
+    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, use_assay)), decreasing = TRUE)[seq_len(nkeeprows)]
   } else {
     nkeeprows <- ceiling((1 - remove_bottom) * as.numeric(nrow(insceset))) - sum(SingleCellExperiment::isSpike(insceset))
     tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, use_assay)), decreasing = TRUE)
     tokeeprow <- setdiff(tokeeprow, which(SingleCellExperiment::isSpike(insceset)))
-    tokeeprow <- tokeeprow[1:nkeeprows]
+    tokeeprow <- tokeeprow[seq_len(nkeeprows)]
     tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(insceset)))
   }
   tokeepcol <- colSums(SummarizedExperiment::assay(insceset, use_assay) != 0) >= minimum_detect_genes

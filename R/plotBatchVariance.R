@@ -56,8 +56,9 @@ plotBatchVariance <- function(inSCESet, use_assay="logcounts", batch,
                                      Condition = cond_r2, Batch = batch_r2), 5) * 100
   ex_var_m <- reshape2::melt(explained_variation)
   colnames(ex_var_m) <- c("Gene", "Model", "Value")
-  a <- ggplot2::ggplot(ex_var_m, ggplot2::aes(factor(Model), Value)) +
-    ggplot2::geom_violin(ggplot2::aes(fill = factor(Model))) +
+  ex_var_m$Model <- factor(ex_var_m$Model)
+  a <- ggplot2::ggplot(ex_var_m, ggplot2::aes_string("Model", "Value")) +
+    ggplot2::geom_violin(ggplot2::aes_string(fill = "Model")) +
     ggplot2::geom_boxplot(width = .1) +
     ggplot2::xlab("Model") +
     ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"), guide = FALSE)

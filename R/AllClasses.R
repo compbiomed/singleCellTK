@@ -31,6 +31,9 @@ setClass("SCtkExperiment",
 #'
 #' @return A SingleCellExperiment like object with an addition pca_variances
 #' slot.
+#'
+#' @import SingleCellExperiment SummarizedExperiment
+#'
 #' @export
 #' @examples
 #' data("mouse_brain_subset_sce")

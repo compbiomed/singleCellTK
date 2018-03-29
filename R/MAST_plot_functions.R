@@ -53,7 +53,7 @@ MASTviolin <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
                                      min_per_bin = 30)
   names(SummarizedExperiment::assays(SCE_new))[1] <- use_assay
   SummarizedExperiment::assay(SCE_new, "thresh") <- thres$counts_threshold
-  entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
+  entrez_to_plot <- fcHurdleSig$Gene[seq_len(min(nrow(fcHurdleSig), samplesize))]
   flat_dat <- methods::as(SCE_new[entrez_to_plot, ], "data.table")
   if (threshP){
     yvalue <- "thresh"
@@ -101,7 +101,7 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
                                            min_per_bin = 30)
   names(SummarizedExperiment::assays(SCE_new))[1] <- use_assay
   SummarizedExperiment::assay(SCE_new, "thresh") <- thres$counts_threshold
-  entrez_to_plot <- fcHurdleSig$Gene[1:min(nrow(fcHurdleSig), samplesize)]
+  entrez_to_plot <- fcHurdleSig$Gene[seq_len(min(nrow(fcHurdleSig), samplesize))]
 
   flat_dat <- methods::as(SCE_new[entrez_to_plot, ], "data.table")
 
@@ -114,8 +114,9 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
   res_data <- NULL
   for (i in unique(flat_dat$primerid)){
     resdf <- flat_dat[flat_dat$primerid == i, ]
-    resdf$lmPred <- lm(as.formula(paste0(yvalue, "~cngeneson+", variable)),
-                       data = flat_dat[flat_dat$primerid == i, ])$fitted
+    resdf$lmPred <- stats::lm(
+      stats::as.formula(paste0(yvalue, "~cngeneson+", variable)),
+      data = flat_dat[flat_dat$primerid == i, ])$fitted
     if (is.null(res_data)){
       res_data <- resdf
     } else {
@@ -129,8 +130,8 @@ MASTregression <- function(SCEdata, use_assay="logcounts", fcHurdleSig,
     ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7)
   regressionplot <- ggbase +
-    ggplot2::aes(x = cngeneson) +
-    ggplot2::geom_line(ggplot2::aes(y = lmPred), lty = 1) +
+    ggplot2::aes_string(x = "cngeneson") +
+    ggplot2::geom_line(ggplot2::aes_string(y = "lmPred"), lty = 1) +
     ggplot2::xlab("Standardized Cellular Detection Rate")
   return(regressionplot)
 }

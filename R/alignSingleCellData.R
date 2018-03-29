@@ -97,7 +97,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, index_path,
 
   #align all of the fastq files temp or outfile, get alignment metrics
   #make feature count files temp or outfile
-  for (i in 1:length(inputfile1)){
+  for (i in seq_along(inputfile1)){
     sample_name <- gsub("_1\\.fastq\\.gz$|\\.fastq\\.gz$|_1\\.fastq$|\\.fastq$|\\.bam$",
                         "",
                         basename(inputfile1[i]))

@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.6.4
+Version: 0.6.5
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
              person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
@@ -11,6 +11,7 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
     R (>= 3.5),
+    SummarizedExperiment,
     SingleCellExperiment
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
@@ -53,7 +54,6 @@ Imports:
     reshape2,
     AnnotationDbi,
     DelayedArray,
-    SummarizedExperiment,
     shinyalert
 RoxygenNote: 6.0.1
 Suggests:

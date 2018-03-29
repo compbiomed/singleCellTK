@@ -98,7 +98,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
   fcHurdleSig <-  fcHurdle[fcHurdle$fdr < p.value & abs(fcHurdle$coef) > fc_threshold & !is.nan(fcHurdle$coef), ]
   colnames(fcHurdleSig)[1] <- "Gene"
 
-  data.table::setorder(fcHurdleSig, fdr)
+  data.table::setorder(fcHurdleSig, "fdr")
 
   return(fcHurdleSig)
 }

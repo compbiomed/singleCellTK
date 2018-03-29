@@ -85,7 +85,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
       cond_levels <- unique(cond)
       if (length(cond_levels) < 8){
         col <- list()
-        col[[paste(condition, collapse = "_")]] <- stats::setNames(colors[1:length(cond_levels)], cond_levels)
+        col[[paste(condition, collapse = "_")]] <- stats::setNames(colors[seq_along(cond_levels)], cond_levels)
         conddf <- data.frame(cond, row.names = colnames(gsva_data))
         colnames(conddf) <- paste(condition, collapse = "_")
         topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,

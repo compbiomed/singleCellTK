@@ -50,7 +50,7 @@ getPCA <- function(count_data, use_assay="logcounts", reducedDimName="PCA"){
   if (class(count_data) == "SCtkExperiment"){
     pca_variances(count_data) <- S4Vectors::DataFrame(percentVar)
     rownames(pca_variances(count_data)) <- paste0(
-      "PC", 1:nrow(pca_variances(count_data)))
+      "PC", seq_len(nrow(pca_variances(count_data))))
   }
   return(count_data)
 }

@@ -41,8 +41,12 @@ Returns a data frame of gene names and adjusted p-values
 }
 \examples{
 data("mouse_brain_subset_sce")
-#subset to 100 genes
-subset <- mouse_brain_subset_sce[rownames(mouse_brain_subset_sce)[order(rowSums(assay(mouse_brain_subset_sce, "counts")), decreasing = TRUE)][1:100], ]
+#sort first 100 expressed genes
+ord <- rownames(mouse_brain_subset_sce)[
+  order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+        decreasing = TRUE)][1:100]
+#subset to those first 100 genes
+subset <- mouse_brain_subset_sce[ord, ]
 res <- scDiffEx_deseq2(subset, condition = "level1class")
 
 }
