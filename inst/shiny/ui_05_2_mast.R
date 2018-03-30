@@ -29,7 +29,7 @@ shiny_panel_mast <- fluidPage(
       mainPanel(
         tabsetPanel(
           tabPanel("Adaptive thresholding", plotOutput("threshplot")),
-          tabPanel("Results Table", dataTableOutput("mastresults")),
+          tabPanel("Results Table", DT::dataTableOutput("mastresults")),
           tabPanel("Violin Plot", plotOutput("hurdleviolin")),
           tabPanel("Linear Model", plotOutput("hurdlelm")),
           tabPanel("Heatmap", plotOutput("hurdleHeatmap"))

@@ -49,7 +49,7 @@ shiny_panel_filter <- fluidPage(
             tableOutput("summarycontents"),
             plotlyOutput("countshist"),
             plotlyOutput("geneshist"),
-            dataTableOutput("contents")
+            DT::dataTableOutput("contents")
           ),
           tabPanel(
             "Assay Details",
