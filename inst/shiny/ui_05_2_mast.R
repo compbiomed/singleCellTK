@@ -2,7 +2,7 @@ shiny_panel_mast <- fluidPage(
   tags$div(
     class = "container",
     h1("MAST"),
-    h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v07-tab05_Differential-Expression.html#mast",
+    h5(tags$a(href = "https://www.sctk.science/articles/v07-tab05_Differential-Expression.html#mast",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
@@ -29,7 +29,7 @@ shiny_panel_mast <- fluidPage(
       mainPanel(
         tabsetPanel(
           tabPanel("Adaptive thresholding", plotOutput("threshplot")),
-          tabPanel("Results Table", dataTableOutput("mastresults")),
+          tabPanel("Results Table", DT::dataTableOutput("mastresults")),
           tabPanel("Violin Plot", plotOutput("hurdleviolin")),
           tabPanel("Linear Model", plotOutput("hurdlelm")),
           tabPanel("Heatmap", plotOutput("hurdleHeatmap"))

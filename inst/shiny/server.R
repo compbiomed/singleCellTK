@@ -162,7 +162,7 @@ shinyServer(function(input, output, session) {
       colnames(temptable)[1] <- "Gene"
       temptable
     }
-  }, options = list(scrollX = TRUE))
+  }, options = list(scrollX = TRUE), rownames = FALSE)
 
   #Render histogram of read counts per cell
   output$countshist <- renderPlotly({
@@ -998,7 +998,7 @@ shinyServer(function(input, output, session) {
       colnames(temptable)[1] <- "Gene"
       temptable
     }
-  })
+  }, rownames = FALSE)
 
   # Download the differential expression results table
   output$downloadGeneList <- downloadHandler(

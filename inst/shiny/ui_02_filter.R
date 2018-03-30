@@ -3,7 +3,7 @@ shiny_panel_filter <- fluidPage(
   tags$div(
     class = "container",
     h1("Data Summary and Filtering"),
-    h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v04-tab02_Data-Summary-and-Filtering.html",
+    h5(tags$a(href = "https://www.sctk.science/articles/v04-tab02_Data-Summary-and-Filtering.html",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
@@ -49,7 +49,7 @@ shiny_panel_filter <- fluidPage(
             tableOutput("summarycontents"),
             plotlyOutput("countshist"),
             plotlyOutput("geneshist"),
-            dataTableOutput("contents")
+            DT::dataTableOutput("contents")
           ),
           tabPanel(
             "Assay Details",
