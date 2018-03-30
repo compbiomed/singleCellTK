@@ -11,14 +11,14 @@ shiny_panel_upload <- fluidPage(
       p("Filter, cluster, and analyze single cell RNA-Seq data"),
       p(
         "Need help?",
-        tags$a(href = "https://compbiomed.github.io/singleCellTK/",
+        tags$a(href = "https://www.sctk.science/",
                "Read the docs.", target = "_blank")
       )
     )
   ),
   tags$div(
     class = "container",
-    h5(tags$a(href = "https://compbiomed.github.io/singleCellTK/articles/v03-tab01_Upload.html",
+    h5(tags$a(href = "https://www.sctk.science/articles/v03-tab01_Upload.html",
               "(Upload tab help)", target = "_blank")),
     tags$div(id = "uploadAlert", alertText),
     radioButtons("uploadChoice", "Upload:",
