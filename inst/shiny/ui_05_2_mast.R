@@ -2,7 +2,7 @@ shiny_panel_mast <- fluidPage(
   tags$div(
     class = "container",
     h1("MAST"),
-    h5(tags$a(href = "https://www.sctk.science/articles/v07-tab05_Differential-Expression.html#mast",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(

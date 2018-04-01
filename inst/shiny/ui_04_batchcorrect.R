@@ -2,7 +2,7 @@ shiny_panel_batchcorrect <- fluidPage(
   tags$div(
     class = "container",
     h1("Batch Correction"),
-    h5(tags$a(href = "https://www.sctk.science/articles/v06-tab04_Batch-Correction.html",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v06-tab04_Batch-Correction.html",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(

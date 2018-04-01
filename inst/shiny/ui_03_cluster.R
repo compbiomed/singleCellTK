@@ -2,7 +2,7 @@ shiny_panel_cluster <- fluidPage(
   tags$div(
     class = "container",
     h1("DR & Clustering"),
-    h5(tags$a(href = "https://www.sctk.science/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
