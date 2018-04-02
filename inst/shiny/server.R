@@ -127,6 +127,21 @@ shinyServer(function(input, output, session) {
                                  inputdataframes = TRUE,
                                  create_logcounts = FALSE)
           rm(maits)
+        } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
+          data(fluidigm, package = "scRNAseq")
+          tempsce <- as(fluidigm, "SingleCellExperiment")
+          vals$original <- as(tempsce, "SCtkExperiment")
+          rm(fluidigm, tempsce)
+        } else if (input$selectExampleData == "th2_mahata_et_al") {
+          data(th2, package = "scRNAseq")
+          tempsce <- as(th2, "SingleCellExperiment")
+          vals$original <- as(tempsce, "SCtkExperiment")
+          rm(th2, tempsce)
+        } else if (input$selectExampleData == "allen_tasic_et_al") {
+          data(allen, package = "scRNAseq")
+          tempsce <- as(allen, "SingleCellExperiment")
+          vals$original <- as(tempsce, "SCtkExperiment")
+          rm(allen, tempsce)
         }
       }
       vals$counts <- vals$original
