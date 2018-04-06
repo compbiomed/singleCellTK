@@ -1,4 +1,4 @@
-shiny_panel_pathway <- fluidPage(
+shinyPanelPathway <- fluidPage(
   tags$div(
     class = "container",
     h1("Pathway Activity Analysis"),

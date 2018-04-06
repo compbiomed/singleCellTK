@@ -4,11 +4,11 @@
 \alias{plotTSNE}
 \title{Plot t-SNE}
 \usage{
-plotTSNE(count_data, colorBy = "No Color", shape = "No Shape",
-  reducedDimName = "TSNE", runTSNE = FALSE, use_assay = "logcounts")
+plotTSNE(countData, colorBy = "No Color", shape = "No Shape",
+  reducedDimName = "TSNE", runTSNE = FALSE, useAssay = "logcounts")
 }
 \arguments{
-\item{count_data}{A SCE object}
+\item{countData}{A SCE object}
 
 \item{colorBy}{The variable to color clusters by}
 
@@ -20,7 +20,7 @@ The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 \item{runTSNE}{Run t-SNE if the reducedDimName does not exist. the Default is
 FALSE.}
 
-\item{use_assay}{Indicate which assay to use for t-SNE if you are running it.
+\item{useAssay}{Indicate which assay to use for t-SNE if you are running it.
 Default is "counts"}
 }
 \value{
@@ -30,8 +30,8 @@ A t-SNE plot
 Use this function to plot t-SNE results
 }
 \examples{
-data("mouse_brain_subset_sce")
-plotTSNE(mouse_brain_subset_sce, colorBy = "level1class",
+data("mouseBrainSubsetSCE")
+plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
          reducedDimName = "TSNE_counts")
 
 }

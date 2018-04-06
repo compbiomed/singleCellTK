@@ -1,10 +1,10 @@
-exampleDatasets <- c("mouse_brain_subset", "maits")
+exampleDatasets <- c("mouseBrainSubset", "maits")
 if("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
 }
 
-shiny_panel_upload <- fluidPage(
+shinyPanelUpload <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
   tags$div(
@@ -76,7 +76,7 @@ shiny_panel_upload <- fluidPage(
           tags$br(),
           tags$br(),
           fileInput(
-            "annotfile", "Sample annotations (optional):",
+            "annotFile", "Sample annotations (optional):",
             accept = c(
               "text/csv", "text/comma-separated-values",
               "text/tab-separated-values", "text/plain", ".csv", ".tsv"
@@ -97,7 +97,7 @@ shiny_panel_upload <- fluidPage(
           tags$br(),
           tags$br(),
           fileInput(
-            "featurefile", "Feature annotations (optional):",
+            "featureFile", "Feature annotations (optional):",
             accept = c(
               "text/csv", "text/comma-separated-values",
               "text/tab-separated-values", "text/plain", ".csv", ".tsv"
@@ -111,7 +111,7 @@ shiny_panel_upload <- fluidPage(
       selectInput("selectExampleData", "Or, choose example data:",
                   exampleDatasets),
       conditionalPanel(
-        condition = sprintf("input['%s'] == 'mouse_brain_subset'", "selectExampleData"),
+        condition = sprintf("input['%s'] == 'mouseBrainSubset'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1126/science.aaa1934", "Mouse Brain Subset: GSE60361", target = "_blank")),
         "A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et al. Science 2015. The data was produced from cells from the mouse somatosensory cortex (S1) and hippocampus (CA1). 15 of the cells were identified as oligodendrocytes and 15 of the cell were identified as microglia.",
         tags$br(),

@@ -1,4 +1,4 @@
-shiny_panel_filter <- fluidPage(
+shinyPanelFilter <- fluidPage(
   useShinyalert(),
   tags$div(
     class = "container",

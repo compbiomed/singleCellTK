@@ -7,11 +7,11 @@
 #' identified as oligodendrocytes and 15 of the cell were identified as
 #' microglia.
 #'
-#' @name mouse_brain_subset_sce
+#' @name mouseBrainSubsetSCE
 #' @docType data
 #' @format SCtkExperiment
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
 #' @examples
-#' data("mouse_brain_subset_sce")
-"mouse_brain_subset_sce"
+#' data("mouseBrainSubsetSCE")
+"mouseBrainSubsetSCE"

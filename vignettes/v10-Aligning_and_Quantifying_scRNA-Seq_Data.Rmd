@@ -92,9 +92,9 @@ singlecellobject <- alignSingleCellData(inputfile1 = c(
   "/path/to/sample1_1.fastq.gz","/path/to/sample2_1.fastq.gz"),
   inputfile2 = c("/path/to/sample1_2.fastq.gz",
                  "/path/to/sample2_2.fastq.gz"),
-  index_path = "/path/to/genome/index",
-  gtf_annotation = "/path/to/gene/annotations.gtf",
-  sample_annotations = sample.annotation.df,
+  indexPath = "/path/to/genome/index",
+  gtfAnnotation = "/path/to/gene/annotations.gtf",
+  sampleAnnotations = sample.annotation.df,
   threads=4)
 ```
 

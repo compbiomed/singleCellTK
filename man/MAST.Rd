@@ -5,8 +5,8 @@
 \title{MAST}
 \usage{
 MAST(SCEdata, condition = NULL, interest.level = NULL,
-  freq_expressed = 0.1, fc_threshold = log2(1.5), p.value = 0.05,
-  usethresh = FALSE, use_assay = "logcounts")
+  freqExpressed = 0.1, fcThreshold = log2(1.5), p.value = 0.05,
+  useThresh = FALSE, useAssay = "logcounts")
 }
 \arguments{
 \item{SCEdata}{SCESet object}
@@ -16,17 +16,17 @@ MAST(SCEdata, condition = NULL, interest.level = NULL,
 \item{interest.level}{If the condition of interest has more than two factors,
 indicate which level should be used to compare to all other samples.}
 
-\item{freq_expressed}{Filter genes that are expressed in at least this
+\item{freqExpressed}{Filter genes that are expressed in at least this
 fraction of cells. The default is expression in 0.1 of samples.}
 
-\item{fc_threshold}{Minimum fold change for differentially expressed gene.}
+\item{fcThreshold}{Minimum fold change for differentially expressed gene.}
 
 \item{p.value}{p values for selecting the hurdle result, default is 0.05}
 
-\item{usethresh}{Use adaptive thresholding to filter genes. The default is
+\item{useThresh}{Use adaptive thresholding to filter genes. The default is
 FALSE.}
 
-\item{use_assay}{The assay to use for the MAST calculations. The default is
+\item{useAssay}{The assay to use for the MAST calculations. The default is
 "logcounts"}
 }
 \value{

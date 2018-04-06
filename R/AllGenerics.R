@@ -3,11 +3,11 @@
 #' @param x SCtkE object
 #' @param ... other parameters
 #'
-#' @exportMethod pca_variances
+#' @exportMethod pcaVariances
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' pca_variances(mouse_brain_subset_sce)
-setGeneric("pca_variances", function(x, ...) standardGeneric("pca_variances"))
+#' data("mouseBrainSubsetSCE")
+#' pcaVariances(mouseBrainSubsetSCE)
+setGeneric("pcaVariances", function(x, ...) standardGeneric("pcaVariances"))
 
 #' Set PCA variances
 #'
@@ -15,17 +15,18 @@ setGeneric("pca_variances", function(x, ...) standardGeneric("pca_variances"))
 #' @param ... other parameters
 #' @param value PCA variances DataFrame()
 #'
-#' @return A SCtkExperiment object with the pca_variances slot set.
+#' @return A SCtkExperiment object with the pcaVariances slot set.
 #'
-#' @exportMethod pca_variances<-
+#' @exportMethod pcaVariances<-
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' pca_variances(mouse_brain_subset_sce)
-#' #getPCA() sets the pca_variances
-#' newSCE <- getPCA(mouse_brain_subset_sce, use_assay = "counts")
+#' data("mouseBrainSubsetSCE")
+#' pcaVariances(mouseBrainSubsetSCE)
+#' #getPCA() sets the pcaVariances
+#' newSCE <- getPCA(mouseBrainSubsetSCE, useAssay = "counts")
 #'
-#' #alternatively, set the pca_variances directly
-#' pca <- prcomp(assay(mouse_brain_subset_sce, "logcounts"))
+#' #alternatively, set the pcaVariances directly
+#' pca <- prcomp(assay(mouseBrainSubsetSCE, "logcounts"))
 #' percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
-#' pca_variances(mouse_brain_subset_sce) <- DataFrame(percentVar)
-setGeneric("pca_variances<-", function(x, ..., value) standardGeneric("pca_variances<-"))
+#' pcaVariances(mouseBrainSubsetSCE) <- DataFrame(percentVar)
+setGeneric("pcaVariances<-",
+           function(x, ..., value) standardGeneric("pcaVariances<-"))

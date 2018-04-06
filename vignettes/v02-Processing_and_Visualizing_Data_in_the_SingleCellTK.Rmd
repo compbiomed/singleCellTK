@@ -49,12 +49,12 @@ suppressPackageStartupMessages({
 })
 
 data(maits, package="MAST")
-maits_sce <- createSCE(assayfile = t(maits$expressionmat),
-                       annotfile = maits$cdat,
-                       featurefile = maits$fdat,
-                       assay_name = "logtpm",
-                       inputdataframes = TRUE,
-                       create_logcounts = FALSE)
+maits_sce <- createSCE(assayFile = t(maits$expressionmat),
+                       annotFile = maits$cdat,
+                       featureFile = maits$fdat,
+                       assayName = "logtpm",
+                       inputDataFrames = TRUE,
+                       createLogCounts = FALSE)
 rm(maits)
 ```
 
@@ -63,7 +63,7 @@ rm(maits)
 You can get summary metrics with the `summarizeTable` function:
 
 ```{r maits_summarize}
-datatable(summarizeTable(maits_sce, use_assay = "logtpm"))
+datatable(summarizeTable(maits_sce, useAssay = "logtpm"))
 ```
 
 Typically, these summary statistics would be run on a "counts" matrix, but here
@@ -85,7 +85,7 @@ the data to include the pass filter samples
 ```{r maits_filter}
 maits_subset <- maits_sce[, colData(maits_sce)$ourfilter]
 table(colData(maits_subset)$ourfilter)
-datatable(summarizeTable(maits_subset, use_assay = "logtpm"))
+datatable(summarizeTable(maits_subset, useAssay = "logtpm"))
 ```
 
 ## Visualization
@@ -100,9 +100,9 @@ PCA and t-SNE can be added to the object with the getPCA() and getTSNE()
 functions:
 
 ```{r maits_getpcatsne}
-maits_subset <- getPCA(maits_subset, use_assay = "logtpm",
+maits_subset <- getPCA(maits_subset, useAssay = "logtpm",
                        reducedDimName = "PCA_logtpm")
-maits_subset <- getTSNE(maits_subset, use_assay = "logtpm",
+maits_subset <- getTSNE(maits_subset, useAssay = "logtpm",
                         reducedDimName = "TSNE_logtpm")
 reducedDims(maits_subset)
 ```
@@ -135,9 +135,8 @@ suppressPackageStartupMessages({
   library(org.Hs.eg.db)
 })
 maits_entrez <- maits_subset
-maits_subset <- convert_gene_ids(maits_subset, in_symbol = "ENTREZID",
-                                 out_symbol = "SYMBOL",
-                                 database = "org.Hs.eg.db")
+maits_subset <- convertGeneIDs(maits_subset, inSymbol = "ENTREZID",
+                               outSymbol = "SYMBOL", database = "org.Hs.eg.db")
 #to remove confusion for MAST about the gene name:
 rowData(maits_subset)$primerid <- NULL
 ```
@@ -156,7 +155,7 @@ First, an adaptive threshold is calculated by binning genes with similar
 expression levels.
 
 ```{r maits_thresh, fig.height=8, message=FALSE}
-thresholds <- thresholdGenes(maits_subset, use_assay = "logtpm")
+thresholds <- thresholdGenes(maits_subset, useAssay = "logtpm")
 par(mfrow = c(5, 4))
 plot(thresholds)
 par(mfrow = c(1, 1))
@@ -167,28 +166,27 @@ par(mfrow = c(1, 1))
 MAST analysis can be run with a single function
 
 ```{r maits_MAST, message=FALSE}
-mast_results <- MAST(maits_subset, condition = "condition", usethresh = TRUE,
-                     use_assay = "logtpm")
+mast_results <- MAST(maits_subset, condition = "condition", useThresh = TRUE,
+                     useAssay = "logtpm")
 ```
 
 The resulting significantly differentially expressed genes can be visualized
 using a violin plot, linear model, or heatmap:
 
 ```{r maits_violin, fig.height=8, message=FALSE}
-MASTviolin(maits_subset, use_assay = "logtpm", fcHurdleSig = mast_results,
+MASTviolin(maits_subset, useAssay = "logtpm", fcHurdleSig = mast_results,
            threshP = TRUE, variable = "condition")
 ```
 
 ```{r maits_lm, fig.height=8, message=FALSE}
-MASTregression(maits_subset, use_assay = "logtpm", fcHurdleSig = mast_results,
+MASTregression(maits_subset, useAssay = "logtpm", fcHurdleSig = mast_results,
                threshP = TRUE, variable = "condition")
 ```
 
 ```{r maits_heatmap}
-plot_DiffEx(maits_subset, use_assay = "logtpm", condition = "condition",
-                 geneList = mast_results$Gene[1:100],
-                 annotationColors = "auto",
-            displayRowLabels = FALSE, displayColumnLabels = FALSE)
+plotDiffEx(maits_subset, useAssay = "logtpm", condition = "condition",
+           geneList = mast_results$Gene[1:100], annotationColors = "auto",
+           displayRowLabels = FALSE, displayColumnLabels = FALSE)
 ```
 
 ### Pathway Activity with GSVA
@@ -198,22 +196,22 @@ Currently, the toolkit supports performing this analysis on human datasets with
 entrez IDs. Data can be visualized as a violin plot or a heatmap.
 
 ```{r maits_gsva, message=FALSE}
-gsva_res <- GSVA_sce(maits_entrez, use_assay = "logtpm",
-                     "MSigDB c2 (Human, Entrez ID only)",
-                     c("KEGG_PROTEASOME",
-                       "REACTOME_VIF_MEDIATED_DEGRADATION_OF_APOBEC3G",
-                       "REACTOME_P53_INDEPENDENT_DNA_DAMAGE_RESPONSE",
-                       "BIOCARTA_PROTEASOME_PATHWAY",
-                       "REACTOME_METABOLISM_OF_AMINO_ACIDS",
-                       "REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE",
-                       "REACTOME_CYTOSOLIC_TRNA_AMINOACYLATION",
-                       "REACTOME_STABILIZATION_OF_P53",
-                       "REACTOME_SCF_BETA_TRCP_MEDIATED_DEGRADATION_OF_EMI1"),
-                     parallel.sz=1)
+gsvaRes <- gsvaSCE(maits_entrez, useAssay = "logtpm",
+                   "MSigDB c2 (Human, Entrez ID only)",
+                   c("KEGG_PROTEASOME",
+                     "REACTOME_VIF_MEDIATED_DEGRADATION_OF_APOBEC3G",
+                     "REACTOME_P53_INDEPENDENT_DNA_DAMAGE_RESPONSE",
+                     "BIOCARTA_PROTEASOME_PATHWAY",
+                     "REACTOME_METABOLISM_OF_AMINO_ACIDS",
+                     "REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE",
+                     "REACTOME_CYTOSOLIC_TRNA_AMINOACYLATION",
+                     "REACTOME_STABILIZATION_OF_P53",
+                     "REACTOME_SCF_BETA_TRCP_MEDIATED_DEGRADATION_OF_EMI1"),
+                    parallel.sz=1)
 
 set.seed(1234)
-GSVA_plot(maits_subset, gsva_res, "Violin", "condition")
-GSVA_plot(maits_subset, gsva_res, "Heatmap", "condition")
+gsvaPlot(maits_subset, gsvaRes, "Violin", "condition")
+gsvaPlot(maits_subset, gsvaRes, "Heatmap", "condition")
 ```
 
 # Batch Effects Example
@@ -229,15 +227,15 @@ dat <- bladderEset[1:50,]
 
 pheno = pData(dat)
 edata = exprs(dat)
-bladder_sctke <- createSCE(assayfile = edata,
-                           annotfile = pheno,
-                           assay_name = "microarray",
-                           inputdataframes = TRUE,
-                           create_logcounts = FALSE)
-assay(bladder_sctke, "combat") <- ComBat_SCE(SCEdata = bladder_sctke,
-                                             batch = "batch",
-                                             use_assay = "microarray",
-                                             covariates = "cancer")
+bladder_sctke <- createSCE(assayFile = edata,
+                           annotFile = pheno,
+                           assayName = "microarray",
+                           inputDataFrames = TRUE,
+                           createLogCounts = FALSE)
+assay(bladder_sctke, "combat") <- ComBatSCE(SCEdata = bladder_sctke,
+                                            batch = "batch",
+                                            useAssay = "microarray",
+                                            covariates = "cancer")
 ```
 
 # Session info {.unnumbered}

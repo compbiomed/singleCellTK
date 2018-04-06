@@ -2,17 +2,17 @@
 #'
 #' @return A data frame of percent variation explained by each PC.
 #'
-#' @rdname pca_variances
-setMethod("pca_variances", "SCtkExperiment", function(x) x@pca_variances)
+#' @rdname pcaVariances
+setMethod("pcaVariances", "SCtkExperiment", function(x) x@pcaVariances)
 
 #' Set PCA variances
 #'
-#' @param value The DataFrame of pca_variances
+#' @param value The DataFrame of pcaVariances
 #'
-#' @return A SCtkExperiment object with the pca_variances object set.
+#' @return A SCtkExperiment object with the pcaVariances object set.
 #'
-#' @rdname pca_variances
-setReplaceMethod("pca_variances", "SCtkExperiment", function(x, value) {
-  x@pca_variances <- value
+#' @rdname pcaVariances
+setReplaceMethod("pcaVariances", "SCtkExperiment", function(x, value) {
+  x@pcaVariances <- value
   return(x)
 })

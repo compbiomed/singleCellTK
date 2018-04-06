@@ -6,10 +6,10 @@
 \title{A lightweight S4 extension to the SingleCellExperiment class to store
 additional information.}
 \arguments{
-\item{value}{The DataFrame of pca_variances}
+\item{value}{The DataFrame of pcaVariances}
 }
 \value{
-A SingleCellExperiment like object with an addition pca_variances
+A SingleCellExperiment like object with an addition pcaVariances
 slot.
 }
 \description{
@@ -19,19 +19,19 @@ additional information.
 \section{Slots}{
 
 \describe{
-\item{\code{pca_variances}}{The percent variation contained in each PCA dimension}
+\item{\code{pcaVariances}}{The percent variation contained in each PCA dimension}
 }}
 
 \examples{
-data("mouse_brain_subset_sce")
-counts_mat <- assay(mouse_brain_subset_sce, "counts")
-sample_annot <- colData(mouse_brain_subset_sce)
-row_annot <- rowData(mouse_brain_subset_sce)
+data("mouseBrainSubsetSCE")
+counts_mat <- assay(mouseBrainSubsetSCE, "counts")
+sample_annot <- colData(mouseBrainSubsetSCE)
+row_annot <- rowData(mouseBrainSubsetSCE)
 newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
                          colData=sample_annot,
                          rowData=row_annot)
-newSCE <- getPCA(newSCE, use_assay = "counts")
+newSCE <- getPCA(newSCE, useAssay = "counts")
 #View the percent variation of the PCA
-pca_variances(newSCE)
+pcaVariances(newSCE)
 
 }
