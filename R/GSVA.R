@@ -1,19 +1,17 @@
 .myenv <- new.env(parent = emptyenv())
 
-#' GSVA_sce
+#' gsvaSCE
 #'
 #' Run GSVA analysis on a SCESet object.
 #'
 #' @param SCEdata SCESet object
-#' @param use_assay The assay to use for the MAST calculations. The default is
+#' @param useAssay The assay to use for the MAST calculations. The default is
 #' "logcounts"
-#' @param pathway_source The pathway source if "Manual Input", the pathway_names
+#' @param pathwaySource The pathway source if "Manual Input", the pathwayNames
 #' should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
-#' Entrez ID only)",
-#' the pathway_names should be pathways from MSigDB c2 or "ALL" to run on all
-#' available pathways.
-#' @param pathway_names List of pathway names to run, depending on
-#' pathway_source
+#' Entrez ID only)", the pathwayNames should be pathways from MSigDB c2 or "ALL"
+#' to run on all available pathways.
+#' @param pathwayNames List of pathway names to run, depending on pathwaySource
 #' parameter.
 #' @param ... Parameters to pass to gsva
 #' 
@@ -21,72 +19,85 @@
 #' 
 #' @export
 #'
-GSVA_sce <- function(SCEdata, use_assay = "logcounts", pathway_source, pathway_names, ...){
-  if (pathway_source == "Manual Input"){
+gsvaSCE <- function(SCEdata, useAssay = "logcounts", pathwaySource,
+                     pathwayNames, ...){
+  if (pathwaySource == "Manual Input"){
     #expecting logical vector
-    biomarker <- lapply(pathway_names, function(x) rownames(SCEdata)[SingleCellExperiment::rowData(SCEdata)[, x] == 1])
-    gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), biomarker, ...)
-    rownames(gsva_res) <- pathway_names
-  } else if (pathway_source == "MSigDB c2 (Human, Entrez ID only)") {
+    biomarker <- lapply(pathwayNames, function(x) rownames(SCEdata)[
+      SingleCellExperiment::rowData(SCEdata)[, x] == 1])
+    gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, useAssay),
+                          biomarker, ...)
+    rownames(gsvaRes) <- pathwayNames
+  } else if (pathwaySource == "MSigDB c2 (Human, Entrez ID only)") {
     utils::data("c2BroadSets", package = "GSVAdata", envir = .myenv)
     c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
-    if ("ALL" %in% pathway_names) {
-      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), c2BroadSets, ...)
+    if ("ALL" %in% pathwayNames) {
+      gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, useAssay),
+                            c2BroadSets, ...)
     } else {
-      c2sub <- c2BroadSets[base::setdiff(pathway_names, "ALL")]
-      gsva_res <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, use_assay), c2sub, ...)
+      c2sub <- c2BroadSets[base::setdiff(pathwayNames, "ALL")]
+      gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(SCEdata, useAssay),
+                            c2sub, ...)
     }
   } else{
-    stop("ERROR: Unsupported gene list source ", pathway_source)
+    stop("ERROR: Unsupported gene list source ", pathwaySource)
   }
-  return(gsva_res)
+  return(gsvaRes)
 }
 
-#' GSVA_plot
+#' gsvaPlot
 #'
 #' Plot GSVA results.
 #'
 #' @param SCEdata SCESet object
-#' @param gsva_data GSVA data to plot. Required.
-#' @param plot_type The type of plot to use, "Violin" or "Heatmap". Required.
-#' @param condition The condition(s) to use for the Violin plot, or the condition(s)
-#' to add as color bars above the Heatmap. Required for Violin, optional for Heatmap.
-#' 
+#' @param gsvaData GSVA data to plot. Required.
+#' @param plotType The type of plot to use, "Violin" or "Heatmap". Required.
+#' @param condition The condition(s) to use for the Violin plot, or the
+#' condition(s) to add as color bars above the Heatmap. Required for Violin,
+#' optional for Heatmap.
+#'
 #' @return The requested plot of the GSVA results.
 #' 
 #' @export
 #'
-GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
-  if (plot_type == "Violin"){
-    if (nrow(gsva_data) > 49){
+gsvaPlot <- function(SCEdata, gsvaData, plotType, condition=NULL){
+  if (plotType == "Violin"){
+    if (nrow(gsvaData) > 49){
       stop("TOO Many results for Violin Plot. Try Heatmap.")
     }
     if (!(length(condition) > 0)){
       stop("You must specify a condition for Violin plot")
     }
-    gsva_res_t <- data.frame(t(gsva_data))
-    cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
-    gsva_res_t[, paste(condition, collapse = "_")] <- cond
-    gsva_res_flat <- reshape2::melt(gsva_res_t, id.vars = paste(condition, collapse = "_"),
+    gsvaResT <- data.frame(t(gsvaData))
+    cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition,
+                                                         drop = FALSE],
+                  1, paste, collapse = "_")
+    gsvaResT[, paste(condition, collapse = "_")] <- cond
+    gsvaResFlat <- reshape2::melt(gsvaResT, id.vars = paste(condition,
+                                                            collapse = "_"),
                                     variable.name = "pathway")
-    ggbase <- ggplot2::ggplot(gsva_res_flat, ggplot2::aes_string(x = paste(condition, collapse = "_"),
-                                                                 y = "value",
-                                                                 color = paste(condition, collapse = "_"))) +
+    ggbase <- ggplot2::ggplot(gsvaResFlat, ggplot2::aes_string(
+      x = paste(condition, collapse = "_"), y = "value",
+      color = paste(condition, collapse = "_"))) +
       ggplot2::geom_violin() +
       ggplot2::geom_jitter() +
-      ggplot2::facet_wrap(~pathway, scale = "free_y", ncol = ceiling(sqrt(nrow(gsva_data))))
+      ggplot2::facet_wrap(~pathway, scale = "free_y",
+                          ncol = ceiling(sqrt(nrow(gsvaData))))
     return(ggbase)
-  } else if (plot_type == "Heatmap"){
+  } else if (plotType == "Heatmap"){
     topha <- NULL
     if (length(condition) > 0){
       colors <- RColorBrewer::brewer.pal(8, "Set1")
-      cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition, drop = FALSE], 1, paste, collapse = "_")
-      cond_levels <- unique(cond)
-      if (length(cond_levels) < 8){
+      cond <- apply(SingleCellExperiment::colData(SCEdata)[, condition,
+                                                           drop = FALSE],
+                    1, paste, collapse = "_")
+      condLevels <- unique(cond)
+      if (length(condLevels) < 8){
         col <- list()
-        col[[paste(condition, collapse = "_")]] <- stats::setNames(colors[seq_along(cond_levels)], cond_levels)
-        conddf <- data.frame(cond, row.names = colnames(gsva_data))
+        col[[paste(condition, collapse = "_")]] <-
+          stats::setNames(colors[seq_along(condLevels)], condLevels)
+        conddf <- data.frame(cond, row.names = colnames(gsvaData))
         colnames(conddf) <- paste(condition, collapse = "_")
         topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
                                                    col = col)
@@ -94,7 +105,7 @@ GSVA_plot <- function(SCEdata, gsva_data, plot_type, condition=NULL){
         stop("Too many levels in selected condition(s)")
       }
     }
-    ComplexHeatmap::Heatmap(gsva_data, top_annotation = topha)
+    ComplexHeatmap::Heatmap(gsvaData, top_annotation = topha)
   } else {
     stop("ERROR: Unsupported plot type")
   }

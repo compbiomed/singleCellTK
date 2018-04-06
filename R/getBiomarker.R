@@ -3,22 +3,22 @@
 #' Given a list of genes and a SCtkExperiment object, return the binary or
 #' continuous expression of the genes.
 #'
-#' @param count_data A SCtkExperiment object
+#' @param countData A SCtkExperiment object
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
-#' @param use_assay Indicate which assay to use for PCA. Default is "logcounts"
+#' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
 #'
 #' @return A data.frame of expression values
 #' @export
 #' @examples
-#' getBiomarker(mouse_brain_subset_sce, gene="C1qa")
+#' getBiomarker(mouseBrainSubsetSCE, gene="C1qa")
 #'
-getBiomarker <- function(count_data, gene, binary="Binary", use_assay="counts"){
+getBiomarker <- function(countData, gene, binary="Binary", useAssay="counts"){
   # Get sample names
-  sample <- colnames(count_data)
+  sample <- colnames(countData)
   # Get counts for gene in sample
-  c <- SummarizedExperiment::assay(count_data, use_assay)[c(gene), ]
+  c <- SummarizedExperiment::assay(countData, useAssay)[c(gene), ]
   # If color scale is "yes"/"no"
   if (binary == "Binary"){
     expression <- c > 0

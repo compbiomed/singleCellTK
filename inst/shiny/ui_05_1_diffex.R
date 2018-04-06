@@ -1,4 +1,4 @@
-shiny_panel_diffex <- fluidPage(
+shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
@@ -11,8 +11,8 @@ shiny_panel_diffex <- fluidPage(
         selectInput("selectDiffex", "Select Method:", c("limma (use log values)" = "limma",
                                                         "DESeq2 (use counts)" = "DESeq2",
                                                         "ANOVA (use log values)" = "ANOVA")),
-        uiOutput("selectDiffex_conditionUI"),
-        uiOutput("selectDiffex_conditionlevelUI"),
+        uiOutput("selectDiffexConditionUI"),
+        uiOutput("selectDiffexConditionLevelUI"),
         sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
         checkboxInput("applyCutoff", "Apply p-value Cutoff"),
         conditionalPanel(
@@ -61,7 +61,7 @@ shiny_panel_diffex <- fluidPage(
                   h3("Colorbar Options"),
                   checkboxInput("displayHeatmapColorBar", "Color Bar",
                                 value = TRUE),
-                  uiOutput("colorBarCondition"),
+                  uiOutput("colorBarConditionUI"),
                   uiOutput("HeatmapSampleAnnotations")
                 )
               )

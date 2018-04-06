@@ -4,17 +4,17 @@
 \alias{getBiomarker}
 \title{getBiomarker}
 \usage{
-getBiomarker(count_data, gene, binary = "Binary", use_assay = "counts")
+getBiomarker(countData, gene, binary = "Binary", useAssay = "counts")
 }
 \arguments{
-\item{count_data}{A SCtkExperiment object}
+\item{countData}{A SCtkExperiment object}
 
 \item{gene}{gene list}
 
 \item{binary}{"Binary" for binary expression or "Continuous" for a gradient.
 Default: "Binary"}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 }
 \value{
 A data.frame of expression values
@@ -24,6 +24,6 @@ Given a list of genes and a SCtkExperiment object, return the binary or
 continuous expression of the genes.
 }
 \examples{
-getBiomarker(mouse_brain_subset_sce, gene="C1qa")
+getBiomarker(mouseBrainSubsetSCE, gene="C1qa")
 
 }

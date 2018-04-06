@@ -132,13 +132,13 @@ function:
 
 ```{r, message=FALSE}
 library(singleCellTK)
-data("mouse_brain_subset_sce")
-counts_mat <- assay(mouse_brain_subset_sce, "counts")
-sample_annot <- colData(mouse_brain_subset_sce)
-row_annot <- rowData(mouse_brain_subset_sce)
-newSCE <- createSCE(assayfile = counts_mat, annotfile = sample_annot, 
-                    featurefile = row_annot, assay_name = "counts",
-                    inputdataframes = TRUE, create_logcounts = TRUE)
+data("mouseBrainSubsetSCE")
+counts_mat <- assay(mouseBrainSubsetSCE, "counts")
+sample_annot <- colData(mouseBrainSubsetSCE)
+row_annot <- rowData(mouseBrainSubsetSCE)
+newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot, 
+                    featureFile = row_annot, assayName = "counts",
+                    inputDataFrames = TRUE, createLogCounts = TRUE)
 ```
 
 ### Loading data stored in a SingleCellExperiment object

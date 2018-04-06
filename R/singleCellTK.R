@@ -1,4 +1,4 @@
-#' Run the single cell analysis app, written entirely by Sean Corbett (c) TM
+#' Run the single cell analysis app
 #'
 #' Use this function to run the single cell analysis app.
 #'
@@ -16,8 +16,8 @@
 #'
 #' #Load the app with a SCtkExperiment object
 #' if(interactive()){
-#'   data("mouse_brain_subset_sce")
-#'   singleCellTK(mouse_brain_subset_sce)
+#'   data("mouseBrainSubsetSCE")
+#'   singleCellTK(mouseBrainSubsetSCE)
 #' }
 #'
 singleCellTK <- function(inputData=NULL) {

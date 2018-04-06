@@ -1,4 +1,4 @@
-shiny_panel_subsample <- fluidPage(
+shinyPanelSubsample <- fluidPage(
   h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v09-tab07_Sample-Size.html",
             "(help)", target = "_blank")),
   tabsetPanel(
@@ -18,7 +18,7 @@ shiny_panel_subsample <- fluidPage(
                          value = 10, min = 2, max = 10000),
             sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
             sliderInput("depthResolution", "how many values to simulate", 5, 100, 10, 5),
-            selectInput("select_ReadDepth_Condition", "Condition for diffex", c("Random", clusterChoice), selected = "Random"),
+            selectInput("selectReadDepthCondition", "Condition for diffex", c("Random", clusterChoice), selected = "Random"),
             withBusyIndicatorUI(actionButton("runSubsampleDepth", "Run subsampler"))
           )
         ),
@@ -47,7 +47,7 @@ shiny_panel_subsample <- fluidPage(
             numericInput("totalReads", "Estimated number of aligned reads",
                          value = 1000000, min = 1000, max = 1000000000),
             checkboxInput("useReadCount", "Use the same number of reads as in original dataset"),
-            selectInput("select_CellNum_Condition", "Condition for diffex", clusterChoice),
+            selectInput("selectCellNumCondition", "Condition for diffex", clusterChoice),
             numericInput("minCount", "Minimum readcount to detect gene",
                          value = 10, min = 1, max = 10000),
             numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
@@ -79,7 +79,7 @@ shiny_panel_subsample <- fluidPage(
                          value = 100, min = 2, max = 10000),
             numericInput("numReadsSnap", "How many total reads?",
                          value = 1000000, min = 1000, max = 1000000000),
-            selectInput("select_Snapshot_Condition", "Condition for diffex", clusterChoice),
+            selectInput("selectSnapshotCondition", "Condition for diffex", clusterChoice),
             numericInput("iterationsSnap", "Number of bootstrap iterations",
                          value = 10, min = 2, max = 1000),
             withBusyIndicatorUI(actionButton("runSnapshot", "Run resampling snapshot"))

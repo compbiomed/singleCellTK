@@ -32,7 +32,7 @@ numClusters <- ""
 currassays <- ""
 currreddim <- ""
 numSamples <- 30
-pcComponents_selectedY <- NULL
+pcComponentsSelectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
   numSamples <- ncol(getShinyOption("inputSCEset"))
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
@@ -40,7 +40,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   sampleChoice <- colnames(getShinyOption("inputSCEset"))
   featureChoice <- colnames(rowData(getShinyOption("inputSCEset")))
   pcComponents <- paste("PC", 1:numSamples, sep = "")
-  pcComponents_selectedY <- pcComponents[2]
+  pcComponentsSelectedY <- pcComponents[2]
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
@@ -51,14 +51,14 @@ if (!is.null(getShinyOption("inputSCEset"))){
                     </button></div>")
 }
 
-source("ui_01_upload.R", local = TRUE) #creates shiny_panel_upload variable
-source("ui_02_filter.R", local = TRUE) #creates shiny_panel_filter variable
-source("ui_03_cluster.R", local = TRUE) #creates shiny_panel_cluster variable
-source("ui_04_batchcorrect.R", local = TRUE) #creates shiny_panel_batchcorrect variable
-source("ui_05_1_diffex.R", local = TRUE) #creates shiny_panel_diffex variable
-source("ui_05_2_mast.R", local = TRUE) #creates shiny_panel_mast variable
-source("ui_06_pathway.R", local = TRUE) #creates shiny_panel_pathway variable
-source("ui_07_subsample.R", local = TRUE) #creates shiny_panel_subsample variable
+source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
+source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
+source("ui_03_cluster.R", local = TRUE) #creates shinyPanelCluster variable
+source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
+source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
+source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
+source("ui_06_pathway.R", local = TRUE) #creates shinyPanelPathway variable
+source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 
 # Define UI for application that draws a histogram
 shinyUI(
@@ -67,17 +67,17 @@ shinyUI(
     #bootstrap theme
     theme = "bootstrap.min.css",
     #Upload Tab
-    tabPanel("Upload", shiny_panel_upload),
-    tabPanel("Data Summary and Filtering", shiny_panel_filter),
-    tabPanel("DR & Clustering", shiny_panel_cluster),
-    tabPanel("Batch Correction", shiny_panel_batchcorrect),
+    tabPanel("Upload", shinyPanelUpload),
+    tabPanel("Data Summary and Filtering", shinyPanelFilter),
+    tabPanel("DR & Clustering", shinyPanelCluster),
+    tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(
       "Differential Expression",
-      tabPanel("Differential Expression", shiny_panel_diffex),
-      tabPanel("MAST", shiny_panel_mast)
+      tabPanel("Differential Expression", shinyPanelDiffex),
+      tabPanel("MAST", shinyPanelMAST)
     ),
-    tabPanel("Pathway Activity Analysis", shiny_panel_pathway),
-    tabPanel("Sample Size", shiny_panel_subsample),
+    tabPanel("Pathway Activity Analysis", shinyPanelPathway),
+    tabPanel("Sample Size", shinyPanelSubsample),
     footer = includeHTML("www/footer.html")
   )
 )

@@ -1,7 +1,7 @@
 #' Create a heatmap for differential expression analysis
 #'
 #' @param inSCESet Input SCtkExperiment object. Required
-#' @param use_assay Indicate which assay to use. Default is "logcounts"
+#' @param useAssay Indicate which assay to use. Default is "logcounts"
 #' @param condition The name of the condition to use for differential
 #' expression. Required
 #' @param covariates Additional covariates to add to the model. Currently only
@@ -18,9 +18,9 @@
 #' levelofinterest should contain one factor for condition. The differential
 #' expression results will compare the factor in levelofinterest to all other
 #' data.
-#' @param analysis_type For conditions with more than two levels, limma and
-#' DESeq2 can be run using multiple methods. See scDiffEx_limma() and
-#' scDiffEx_deseq2() for details.
+#' @param analysisType For conditions with more than two levels, limma and
+#' DESeq2 can be run using multiple methods. See scDiffExlimma() and
+#' scDiffExDESeq2() for details.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #' @param adjust Method for p-value correction. See options in p.adjust().
@@ -29,51 +29,53 @@
 #' @return A list of differentially expressed genes.
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' res <- scDiffEx(mouse_brain_subset_sce,
-#'                 use_assay = "logcounts",
+#' data("mouseBrainSubsetSCE")
+#' res <- scDiffEx(mouseBrainSubsetSCE,
+#'                 useAssay = "logcounts",
 #'                 "level1class",
 #'                 diffexmethod = "limma")
 #'
-scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
+scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
-                     diffexmethod, levelofinterest=NULL, analysis_type=NULL,
+                     diffexmethod, levelofinterest=NULL, analysisType=NULL,
                      controlLevel=NULL, adjust = "fdr"){
   for (i in c(condition, covariates)){
-    if (is.factor(SingleCellExperiment::colData(inSCESet)[,i])){
-      SummarizedExperiment::colData(inSCESet)[,i] <- droplevels(SummarizedExperiment::colData(inSCESet)[,i])
+    if (is.factor(SingleCellExperiment::colData(inSCESet)[, i])){
+      SummarizedExperiment::colData(inSCESet)[, i] <- droplevels(
+        SummarizedExperiment::colData(inSCESet)[, i])
     }
   }
   if (length(condition) == 1){
-    if (is.factor(SingleCellExperiment::colData(inSCESet)[,i])){
-      in.condition <- droplevels(as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
+    if (is.factor(SingleCellExperiment::colData(inSCESet)[, i])){
+      in.condition <- droplevels(as.factor(
+        SingleCellExperiment::colData(inSCESet)[, condition]))
     }
   } else if (diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
 
   if (diffexmethod == "DESeq2"){
-    diffex.results <- scDiffEx_deseq2(inSCESet = inSCESet,
-                                      use_assay = use_assay,
+    diffex.results <- scDiffExDESeq2(inSCESet = inSCESet,
+                                      useAssay = useAssay,
                                       condition = condition,
-                                      analysis_type = analysis_type,
+                                      analysisType = analysisType,
                                       levelofinterest = levelofinterest,
                                       controlLevel = controlLevel,
                                       covariates = covariates,
                                       adjust = adjust)
   }
   else if (diffexmethod == "limma"){
-    diffex.results <- scDiffEx_limma(inSCESet = inSCESet,
-                                     use_assay = use_assay,
+    diffex.results <- scDiffExlimma(inSCESet = inSCESet,
+                                     useAssay = useAssay,
                                      condition = condition,
-                                     analysis_type = analysis_type,
+                                     analysisType = analysisType,
                                      levelofinterest = levelofinterest,
                                      covariates = covariates,
                                      adjust = adjust)
   }
   else if (diffexmethod == "ANOVA"){
-    diffex.results <- scDiffEx_anova(inSCESet = inSCESet,
-                                     use_assay = use_assay,
+    diffex.results <- scDiffExANOVA(inSCESet = inSCESet,
+                                     useAssay = useAssay,
                                      condition = condition,
                                      covariates = covariates,
                                      adjust = adjust)
@@ -84,14 +86,17 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
   ngenes <- nrow(inSCESet)
   if (usesig){
     if (length(which(diffex.results$padj <= significance)) < ntop){
-      newgenes <- rownames(diffex.results)[which(diffex.results$padj <= significance)]
+      newgenes <- rownames(diffex.results)[
+        which(diffex.results$padj <= significance)]
     }
     else{
-      newgenes <- rownames(diffex.results)[order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
+      newgenes <- rownames(diffex.results)[
+        order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
     }
   }
   else{
-    newgenes <- rownames(diffex.results)[order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
+    newgenes <- rownames(diffex.results)[
+      order(diffex.results$padj)[seq_len(min(ntop, ngenes))]]
   }
 
   return(diffex.results[newgenes, ])
@@ -101,7 +106,7 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
 #'
 #' @param inSCESet Input data object that contains the data to be plotted.
 #' Required
-#' @param use_assay Indicate which assay to use. Default is "logcounts"
+#' @param useAssay Indicate which assay to use. Default is "logcounts"
 #' @param condition The condition used for plotting the heatmap. Required
 #' @param geneList The list of genes to put in the heatmap. Required
 #' @param clusterRow Cluster the rows. The default is TRUE
@@ -122,15 +127,15 @@ scDiffEx <- function(inSCESet, use_assay="logcounts", condition,
 #' condition.
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' res <- scDiffEx(mouse_brain_subset_sce,
-#'                 use_assay = "logcounts",
+#' data("mouseBrainSubsetSCE")
+#' res <- scDiffEx(mouseBrainSubsetSCE,
+#'                 useAssay = "logcounts",
 #'                 "level1class",
 #'                 diffexmethod = "limma")
-#' plot_DiffEx(mouse_brain_subset_sce, condition = "level1class",
+#' plotDiffEx(mouseBrainSubsetSCE, condition = "level1class",
 #'             geneList = rownames(res)[1:50], annotationColors = "auto")
 #'
-plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
+plotDiffEx <- function(inSCESet, useAssay="logcounts", condition, geneList,
                         clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
                         displayColumnLabels=TRUE, displayRowDendrograms=TRUE,
                         displayColumnDendrograms=TRUE, annotationColors=NULL,
@@ -139,30 +144,29 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
     topha <- NULL
   } else if (annotationColors == "auto") {
     colors <- RColorBrewer::brewer.pal(9, "Set1")
-    cond_levels <- unique(SingleCellExperiment::colData(inSCESet)[, condition])
-    if (length(cond_levels) > 9){
+    condLevels <- unique(SingleCellExperiment::colData(inSCESet)[, condition])
+    if (length(condLevels) > 9){
       stop("Too many levels in condition for auto coloring")
     }
     col <- list()
-    col[[condition]] <- stats::setNames(colors[seq_along(cond_levels)],
-                                        cond_levels)
+    col[[condition]] <- stats::setNames(colors[seq_along(condLevels)],
+                                        condLevels)
     topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE], col = col)
+      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE],
+      col = col)
   } else {
     topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE], col = annotationColors)
+      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE],
+      col = annotationColors)
   }
 
-  heatmap <- ComplexHeatmap::Heatmap(t(scale(t(SummarizedExperiment::assay(inSCESet, use_assay)[geneList, ]))),
-                                     name = "Expression",
-                                     column_title = columnTitle,
-                                     cluster_rows = clusterRow,
-                                     cluster_columns = clusterCol,
-                                     top_annotation = topha,
-                                     show_row_names = displayRowLabels,
-                                     show_column_names = displayColumnLabels,
-                                     show_row_dend = displayRowDendrograms,
-                                     show_column_dend = displayColumnDendrograms)
+  heatmap <- ComplexHeatmap::Heatmap(
+    t(scale(t(SummarizedExperiment::assay(inSCESet, useAssay)[geneList, ]))),
+    name = "Expression", column_title = columnTitle, cluster_rows = clusterRow,
+    cluster_columns = clusterCol, top_annotation = topha,
+    show_row_names = displayRowLabels, show_column_names = displayColumnLabels,
+    show_row_dend = displayRowDendrograms,
+    show_column_dend = displayColumnDendrograms)
   return(heatmap)
 }
 
@@ -171,11 +175,11 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCtkExperiment object. Required
-#' @param use_assay Indicate which assay to use. Default is "counts"
+#' @param useAssay Indicate which assay to use. Default is "counts"
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
-#' @param analysis_type Choose "biomarker" to compare the levelofinterest to all
+#' @param analysisType Choose "biomarker" to compare the levelofinterest to all
 #' other samples. Choose "contrast" to compare the levelofinterest to a
 #' controlLevel (see below). Choose "fullreduced" to perform DESeq2 in LRT mode
 #' comparing the model with condition to a model without condition.
@@ -190,62 +194,65 @@ plot_DiffEx <- function(inSCESet, use_assay="logcounts", condition, geneList,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
+#' data("mouseBrainSubsetSCE")
 #' #sort first 100 expressed genes
-#' ord <- rownames(mouse_brain_subset_sce)[
-#'   order(rowSums(assay(mouse_brain_subset_sce, "counts")), 
+#' ord <- rownames(mouseBrainSubsetSCE)[
+#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
 #'         decreasing = TRUE)][1:100]
 #' #subset to those first 100 genes
-#' subset <- mouse_brain_subset_sce[ord, ]
-#' res <- scDiffEx_deseq2(subset, condition = "level1class")
+#' subset <- mouseBrainSubsetSCE[ord, ]
+#' res <- scDiffExDESeq2(subset, condition = "level1class")
 #'
-scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
-                            analysis_type="biomarker", levelofinterest=NULL,
+scDiffExDESeq2 <- function(inSCESet, useAssay="counts", condition,
+                            analysisType="biomarker", levelofinterest=NULL,
                             controlLevel=NULL, covariates=NULL, adjust="fdr"){
-  cnts <- SummarizedExperiment::assay(inSCESet, use_assay)
-  annot_data <- SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE]
+  cnts <- SummarizedExperiment::assay(inSCESet, useAssay)
+  annotData <-
+    SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+                                            drop = FALSE]
 
-  if (is.factor(annot_data[, c(condition)])){
-    condition_factor <- factor(annot_data[, c(condition)])
-    if (length(levels(condition_factor)) < 2){
+  if (is.factor(annotData[, c(condition)])){
+    conditionFactor <- factor(annotData[, c(condition)])
+    if (length(levels(conditionFactor)) < 2){
       stop("Problem with deseq2 condition")
-    } else if (length(levels(condition_factor)) == 2){
-      analysis_type <- "standard"
-    } else if (is.null(analysis_type)){
+    } else if (length(levels(conditionFactor)) == 2){
+      analysisType <- "standard"
+    } else if (is.null(analysisType)){
       stop("You must supply an analysis type")
-    } else if (!(analysis_type %in% c("standard", "biomarker", "contrast", "fullreduced"))){
-      stop("Unrecognized analysis type, ", analysis_type)
+    } else if (!(analysisType %in% c("standard", "biomarker",
+                                     "contrast", "fullreduced"))){
+      stop("Unrecognized analysis type, ", analysisType)
     }
   } else {
-    analysis_type <- "standard"
+    analysisType <- "standard"
   }
 
-  if (analysis_type == "standard"){
+  if (analysisType == "standard"){
     levelofinterest <- NULL
     controlLevel <- NULL
-  } else if (analysis_type == "biomarker"){
+  } else if (analysisType == "biomarker"){
     if (is.null(levelofinterest)){
       stop("You must specify a level of interest for biomarker analysis.")
     } else {
-      annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
-                                               levelofinterest,
-                                               paste0("not_", levelofinterest)),
-                                        levels = c(paste0("not_", levelofinterest),
-                                                   levelofinterest))
+      annotData[, condition] <- factor(
+        ifelse(annotData[, condition] == levelofinterest, levelofinterest,
+               paste0("not_", levelofinterest)),
+        levels = c(paste0("not_", levelofinterest), levelofinterest))
     }
     controlLevel <- NULL
-  } else if (analysis_type == "contrast"){
+  } else if (analysisType == "contrast"){
     if (is.null(levelofinterest) || is.null(controlLevel)){
-      stop("You must specify a level of interest and a control level for contrast analysis.")
+      stop("You must specify a level of interest and a control level for ",
+           "contrast analysis.")
     }
   }
 
-  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts, colData = annot_data,
+  dds <- DESeq2::DESeqDataSetFromMatrix(countData = cnts, colData = annotData,
                                         design = stats::as.formula(
                                           paste0("~", c(condition, covariates),
                                                  collapse = "+")))
 
-  if (analysis_type == "fullreduced"){
+  if (analysisType == "fullreduced"){
     if (is.null(covariates)){
       dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
     } else {
@@ -258,11 +265,11 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
     dds <- DESeq2::DESeq(dds)
   }
 
-  if (analysis_type == "standard"){
+  if (analysisType == "standard"){
     res <- DESeq2::results(dds, pAdjustMethod = adjust)
-  } else if (analysis_type == "fullreduced"){
+  } else if (analysisType == "fullreduced"){
     res <- DESeq2::results(dds, pAdjustMethod = adjust)
-  } else if (analysis_type == "contrast") {
+  } else if (analysisType == "contrast") {
     res <- DESeq2::results(dds, contrast = c(condition,
                                              levelofinterest,
                                              controlLevel),
@@ -270,7 +277,7 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
   } else {
     res <- DESeq2::results(dds, contrast = c(condition,
                                             levelofinterest,
-                                            levels(annot_data[,condition])[1]),
+                                            levels(annotData[, condition])[1]),
                           pAdjustMethod = adjust)
   }
 
@@ -282,12 +289,12 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCtkExperiment object. Required
-#' @param use_assay Indicate which assay to use. Default is "logcounts"
+#' @param useAssay Indicate which assay to use. Default is "logcounts"
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
-#' @param analysis_type If there are more than two levels in your condition
-#' variable, select the analysis_type. Choose "biomarker" to compare the
+#' @param analysisType If there are more than two levels in your condition
+#' variable, select the analysisType. Choose "biomarker" to compare the
 #' levelofinterest to all other samples. Choose "coef" to select a coefficient
 #' of interset with levelofinterest (see below). Choose "allcoef" to test if
 #' any coefficient is different from zero.
@@ -300,56 +307,61 @@ scDiffEx_deseq2 <- function(inSCESet, use_assay="counts", condition,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' res <- scDiffEx_limma(mouse_brain_subset_sce, condition = "level1class")
+#' data("mouseBrainSubsetSCE")
+#' res <- scDiffExlimma(mouseBrainSubsetSCE, condition = "level1class")
 #'
-scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
-                           analysis_type="biomarker",
+scDiffExlimma <- function(inSCESet, useAssay="logcounts", condition,
+                           analysisType="biomarker",
                            levelofinterest=NULL, covariates=NULL, adjust="fdr"){
   if (is.factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])){
-    condition_factor <- factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])
-    if (length(levels(condition_factor)) < 2){
+    conditionFactor <- factor(
+      SingleCellExperiment::colData(inSCESet)[, c(condition)])
+    if (length(levels(conditionFactor)) < 2){
       stop("Problem with limma condition")
-    } else if (length(levels(condition_factor)) == 2){
-      analysis_type <- "standard"
-    } else if (is.null(analysis_type)){
+    } else if (length(levels(conditionFactor)) == 2){
+      analysisType <- "standard"
+    } else if (is.null(analysisType)){
       stop("You must supply an analysis type")
-    } else if (!(analysis_type %in% c("standard", "biomarker", "coef", "allcoef"))){
-      stop("Unrecognized analysis type, ", analysis_type)
+    } else if (!(analysisType %in% c("standard", "biomarker",
+                                     "coef", "allcoef"))){
+      stop("Unrecognized analysis type, ", analysisType)
     }
   } else {
-    analysis_type <- "standard"
+    analysisType <- "standard"
   }
 
-  annot_data <- data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates), drop = FALSE])
-  if (analysis_type == "biomarker"){
+  annotData <- data.frame(
+    SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+                                            drop = FALSE])
+  if (analysisType == "biomarker"){
     if (is.null(levelofinterest)){
       stop("You must supply a level of interest")
     }
-    annot_data[, condition] <- factor(ifelse(annot_data[,condition] == levelofinterest,
-                                             levelofinterest,
-                                             paste0("not_", levelofinterest)),
-                                      levels = c(paste0("not_", levelofinterest),
-                                                 levelofinterest))
+    annotData[, condition] <- factor(
+      ifelse(annotData[, condition] == levelofinterest, levelofinterest,
+             paste0("not_", levelofinterest)),
+      levels = c(paste0("not_", levelofinterest), levelofinterest))
   }
   design <- stats::model.matrix(
-    stats::as.formula(paste0("~", paste0(c(condition, covariates), collapse = "+"))),
-    data = annot_data)
+    stats::as.formula(paste0("~", paste0(c(condition, covariates),
+                                         collapse = "+"))),
+    data = annotData)
 
-  fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, use_assay), design)
+  fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, useAssay), design)
   ebayes <- limma::eBayes(fit)
-  if (analysis_type == "standard"){
+  if (analysisType == "standard"){
     topGenes <- limma::topTable(ebayes, adjust = adjust,
                                 number = nrow(inSCESet))
-  } else if (analysis_type == "biomarker") {
+  } else if (analysisType == "biomarker") {
     topGenes <- limma::topTable(ebayes, coef = 2, adjust = adjust,
                                 number = nrow(inSCESet))
-  } else if (analysis_type == "coef") {
+  } else if (analysisType == "coef") {
     topGenes <- limma::topTable(
-      ebayes, coef = which(levels(condition_factor) == levelofinterest),
+      ebayes, coef = which(levels(conditionFactor) == levelofinterest),
       adjust = adjust, number = nrow(inSCESet))
-  } else if (analysis_type == "allcoef") {
-    topGenes <- limma::topTable(ebayes, adjust = adjust, number = nrow(inSCESet))
+  } else if (analysisType == "allcoef") {
+    topGenes <- limma::topTable(ebayes, adjust = adjust,
+                                number = nrow(inSCESet))
   }
 
   colnames(topGenes)[which(colnames(topGenes) == "adj.P.Val")] <- "padj"
@@ -361,7 +373,7 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' Returns a data frame of gene names and adjusted p-values
 #'
 #' @param inSCESet Input SCtkExperiment object. Required
-#' @param use_assay Indicate which assay to use. Default is "logcounts"
+#' @param useAssay Indicate which assay to use. Default is "logcounts"
 #' @param condition The name of the condition to use for differential
 #' expression. Must be a name of a column from colData that contains at least
 #' two labels. Required
@@ -372,28 +384,32 @@ scDiffEx_limma <- function(inSCESet, use_assay="logcounts", condition,
 #' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
-#' res <- scDiffEx_anova(mouse_brain_subset_sce, condition = "level1class")
+#' data("mouseBrainSubsetSCE")
+#' res <- scDiffExANOVA(mouseBrainSubsetSCE, condition = "level1class")
 #'
-scDiffEx_anova <- function(inSCESet, use_assay="logcounts", condition,
+scDiffExANOVA <- function(inSCESet, useAssay="logcounts", condition,
                            covariates=NULL, adjust = "fdr"){
   if (is.null(covariates)) {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition), drop = FALSE]))
-    mod0 <- stats::model.matrix(~1, data = SingleCellExperiment::colData(inSCESet))
+      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition),
+                                                                drop = FALSE]))
+    mod0 <- stats::model.matrix(~1,
+                                data = SingleCellExperiment::colData(inSCESet))
   } else {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition, covariates),
                                            collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
-                                          drop = FALSE]))
+      data = data.frame(
+        SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+                                                drop = FALSE]))
     mod0 <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
-                                          drop = FALSE]))
+      data = data.frame(
+        SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+                                                drop = FALSE]))
   }
-  dat <- SummarizedExperiment::assay(inSCESet, use_assay)
+  dat <- SummarizedExperiment::assay(inSCESet, useAssay)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
   df1 <- dim(mod)[2]

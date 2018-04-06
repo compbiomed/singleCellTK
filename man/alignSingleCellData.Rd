@@ -4,10 +4,10 @@
 \alias{alignSingleCellData}
 \title{Align Single Cell RNA-Seq Data and Create a SCESet Object}
 \usage{
-alignSingleCellData(inputfile1, inputfile2 = NULL, index_path, gtf_annotation,
-  output_dir = NULL, sample_annotations = NULL,
-  feature_annotations = NULL, threads = 1, save_bam = FALSE,
-  save_count_files = FALSE, isPairedEnd = FALSE)
+alignSingleCellData(inputfile1, inputfile2 = NULL, indexPath, gtfAnnotation,
+  outputDir = NULL, sampleAnnotations = NULL, featureAnnotations = NULL,
+  threads = 1, saveBam = FALSE, saveCountFiles = FALSE,
+  isPairedEnd = FALSE)
 }
 \arguments{
 \item{inputfile1}{An input file or list of files. Files can be fastq,
@@ -18,29 +18,29 @@ endings.}
 \item{inputfile2}{If fastq files are provided in input list, a list of
 corresponding paired fastq files, if applicable.}
 
-\item{index_path}{Path to the Rsubread genome index.}
+\item{indexPath}{Path to the Rsubread genome index.}
 
-\item{gtf_annotation}{Path to the GTF gene annotation to use. This must
-correspond to the genome specified in index_path.}
+\item{gtfAnnotation}{Path to the GTF gene annotation to use. This must
+correspond to the genome specified in indexPath.}
 
-\item{output_dir}{If save_bam or save_count_files is TRUE, specify a
+\item{outputDir}{If saveBam or saveCountFiles is TRUE, specify a
 directory in which to save the output files.}
 
-\item{sample_annotations}{A data.frame of sample annotations, with samples
+\item{sampleAnnotations}{A data.frame of sample annotations, with samples
 as rows and annotations in columns. The sample names must be identical to
 and in the same order as the list of files in inputfile1. Alignment
 statistics will be added to the annotation data frame.}
 
-\item{feature_annotations}{An optional data.frame of probe annotations, with
+\item{featureAnnotations}{An optional data.frame of probe annotations, with
 probes as rows and probe annotations in columns.}
 
 \item{threads}{Number of threads to use during alignment. The default is 1.}
 
-\item{save_bam}{If TRUE, bam alignment files will be saved in the output_dir.
+\item{saveBam}{If TRUE, bam alignment files will be saved in the outputDir.
 The default is FALSE.}
 
-\item{save_count_files}{If TRUE, per sample gene count files will be saved in
-the output_dir. The default is FALSE.}
+\item{saveCountFiles}{If TRUE, per sample gene count files will be saved in
+the outputDir. The default is FALSE.}
 
 \item{isPairedEnd}{If input files are .bam, indicate whether the input bam
 files are paired end.}
@@ -58,9 +58,9 @@ singlecellobject <- alignSingleCellData(
                  "/path/to/sample2_1.fastq.gz"),
   inputfile2 = c("/path/to/sample1_2.fastq.gz",
                  "/path/to/sample2_2.fastq.gz"),
-  index_path = "/path/to/genome/index",
-  gtf_annotation = "/path/to/gene/annotations.gtf",
-  sample_annotations = sample.annotation.df,
+  indexPath = "/path/to/genome/index",
+  gtfAnnotation = "/path/to/gene/annotations.gtf",
+  sampleAnnotations = sample.annotation.df,
   threads=4)}
 
 }

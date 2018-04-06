@@ -4,12 +4,12 @@
 \alias{plotPCA}
 \title{Plot PCA}
 \usage{
-plotPCA(count_data, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
+plotPCA(countData, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
   pcY = "PC2", reducedDimName = "PCA", runPCA = FALSE,
-  use_assay = "logcounts")
+  useAssay = "logcounts")
 }
 \arguments{
-\item{count_data}{A SCE object}
+\item{countData}{A SCE object}
 
 \item{colorBy}{The variable to color clusters by}
 
@@ -25,7 +25,7 @@ The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 \item{runPCA}{Run PCA if the reducedDimName does not exist. the Default is
 FALSE.}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 }
 \value{
 A PCA plot
@@ -34,8 +34,8 @@ A PCA plot
 Use this function to plot PCA results
 }
 \examples{
-data("mouse_brain_subset_sce")
-plotPCA(mouse_brain_subset_sce, colorBy = "level1class",
+data("mouseBrainSubsetSCE")
+plotPCA(mouseBrainSubsetSCE, colorBy = "level1class",
         reducedDimName = "PCA_counts")
 
 }

@@ -4,30 +4,30 @@
 \alias{SCtkExperiment}
 \title{Create a SCtkExperiment}
 \usage{
-SCtkExperiment(..., pca_variances = S4Vectors::DataFrame())
+SCtkExperiment(..., pcaVariances = S4Vectors::DataFrame())
 }
 \arguments{
 \item{...}{SingleCellExperiment and SummarizedExperiment components}
 
-\item{pca_variances}{The percent variation contained in each PCA dimension}
+\item{pcaVariances}{The percent variation contained in each PCA dimension}
 }
 \value{
-A SingleCellExperiment like object with an addition pca_variances
+A SingleCellExperiment like object with an addition pcaVariances
 slot.
 }
 \description{
 Create a SCtkExperiment
 }
 \examples{
-data("mouse_brain_subset_sce")
-counts_mat <- assay(mouse_brain_subset_sce, "counts")
-sample_annot <- colData(mouse_brain_subset_sce)
-row_annot <- rowData(mouse_brain_subset_sce)
+data("mouseBrainSubsetSCE")
+counts_mat <- assay(mouseBrainSubsetSCE, "counts")
+sample_annot <- colData(mouseBrainSubsetSCE)
+row_annot <- rowData(mouseBrainSubsetSCE)
 newSCE <- SCtkExperiment(assays=list(counts=counts_mat),
                          colData=sample_annot,
                          rowData=row_annot)
-newSCE <- getPCA(newSCE, use_assay = "counts")
+newSCE <- getPCA(newSCE, useAssay = "counts")
 #View the percent variation of the PCA
-pca_variances(newSCE)
+pcaVariances(newSCE)
 
 }

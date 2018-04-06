@@ -5,13 +5,12 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCESet, use_assay = "logcounts", batch,
-  condition = NULL)
+plotBatchVariance(inSCESet, useAssay = "logcounts", batch, condition = NULL)
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
 \item{batch}{The column in the annotation data that corresponds to batch.
 Required}
@@ -32,7 +31,7 @@ if(requireNamespace("bladderbatch", quietly = TRUE)) {
   library(bladderbatch)
   data(bladderdata)
   dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
-  plotBatchVariance(dat, use_assay="exprs", batch="batch", condition = "cancer")
+  plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
 }
 
 }

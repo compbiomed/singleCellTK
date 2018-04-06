@@ -4,15 +4,15 @@
 \alias{scDiffEx}
 \title{Create a heatmap for differential expression analysis}
 \usage{
-scDiffEx(inSCESet, use_assay = "logcounts", condition, covariates = NULL,
+scDiffEx(inSCESet, useAssay = "logcounts", condition, covariates = NULL,
   significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
-  levelofinterest = NULL, analysis_type = NULL, controlLevel = NULL,
+  levelofinterest = NULL, analysisType = NULL, controlLevel = NULL,
   adjust = "fdr")
 }
 \arguments{
 \item{inSCESet}{Input SCtkExperiment object. Required}
 
-\item{use_assay}{Indicate which assay to use. Default is "logcounts"}
+\item{useAssay}{Indicate which assay to use. Default is "logcounts"}
 
 \item{condition}{The name of the condition to use for differential
 expression. Required}
@@ -37,9 +37,9 @@ levelofinterest should contain one factor for condition. The differential
 expression results will compare the factor in levelofinterest to all other
 data.}
 
-\item{analysis_type}{For conditions with more than two levels, limma and
-DESeq2 can be run using multiple methods. See scDiffEx_limma() and
-scDiffEx_deseq2() for details.}
+\item{analysisType}{For conditions with more than two levels, limma and
+DESeq2 can be run using multiple methods. See scDiffExlimma() and
+scDiffExDESeq2() for details.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel
 should contain one factor from condition to use as the control.}
@@ -54,9 +54,9 @@ A list of differentially expressed genes.
 Create a heatmap for differential expression analysis
 }
 \examples{
-data("mouse_brain_subset_sce")
-res <- scDiffEx(mouse_brain_subset_sce,
-                use_assay = "logcounts",
+data("mouseBrainSubsetSCE")
+res <- scDiffEx(mouseBrainSubsetSCE,
+                useAssay = "logcounts",
                 "level1class",
                 diffexmethod = "limma")
 

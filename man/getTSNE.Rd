@@ -4,12 +4,12 @@
 \alias{getTSNE}
 \title{Get t-SNE components for a SCE object}
 \usage{
-getTSNE(count_data, use_assay = "logcounts", reducedDimName = "TSNE")
+getTSNE(countData, useAssay = "logcounts", reducedDimName = "TSNE")
 }
 \arguments{
-\item{count_data}{SCE object}
+\item{countData}{SCE object}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "counts"}
 
 \item{reducedDimName}{Store the t-SNE data with this name. The default is
 TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
@@ -23,16 +23,14 @@ t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
 SCE object.
 }
 \examples{
-data("mouse_brain_subset_sce")
+data("mouseBrainSubsetSCE")
 #add a CPM assay
-assay(mouse_brain_subset_sce, "cpm") <- apply(assay(mouse_brain_subset_sce,
-                                                 "counts"),
-                                           2, function(x) {
-                                             x / (sum(x) / 1000000)
-                                           })
-mouse_brain_subset_sce <- getTSNE(mouse_brain_subset_sce,
-                               use_assay = "cpm",
+assay(mouseBrainSubsetSCE, "cpm") <- apply(
+  assay(mouseBrainSubsetSCE, "counts"), 2, function(x) {
+    x / (sum(x) / 1000000)
+  })
+mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
                                reducedDimName = "TSNE_cpm")
-reducedDims(mouse_brain_subset_sce)
+reducedDims(mouseBrainSubsetSCE)
 
 }

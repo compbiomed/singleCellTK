@@ -4,12 +4,12 @@
 \alias{plotBiomarker}
 \title{plotBiomarker}
 \usage{
-plotBiomarker(count_data, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", x = "PC1", y = "PC2", use_assay = "counts",
+plotBiomarker(countData, gene, binary = "Binary", visual = "PCA",
+  shape = "No Shape", x = "PC1", y = "PC2", useAssay = "counts",
   reducedDimName = "PCA")
 }
 \arguments{
-\item{count_data}{A SCtkExperiment object}
+\item{countData}{A SCtkExperiment object}
 
 \item{gene}{gene list}
 
@@ -24,7 +24,7 @@ Default: "Binary"}
 
 \item{y}{y coordinate for PCA}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "counts"}
 
 \item{reducedDimName}{PCA dimension name. The default is PCA.
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
@@ -36,7 +36,7 @@ A Biomarker plot
 Given a set of genes, return a ggplot of expression values.
 }
 \examples{
-data("mouse_brain_subset_sce")
-plotBiomarker(mouse_brain_subset_sce, gene="C1qa", shape="level1class")
+data("mouseBrainSubsetSCE")
+plotBiomarker(mouseBrainSubsetSCE, gene="C1qa", shape="level1class")
 
 }

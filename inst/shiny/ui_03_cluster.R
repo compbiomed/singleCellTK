@@ -1,4 +1,4 @@
-shiny_panel_cluster <- fluidPage(
+shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
     h1("DR & Clustering"),
@@ -12,7 +12,7 @@ shiny_panel_cluster <- fluidPage(
         conditionalPanel(
           condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
           selectInput("pcX", "X axis:", pcComponents),
-          selectInput("pcY", "Y axis:", pcComponents, selected = pcComponents_selectedY)
+          selectInput("pcY", "Y axis:", pcComponents, selected = pcComponentsSelectedY)
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),

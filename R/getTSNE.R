@@ -4,48 +4,46 @@
 #' t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
 #' SCE object.
 #'
-#' @param count_data SCE object
-#' @param use_assay Indicate which assay to use for PCA. Default is "counts"
+#' @param countData SCE object
+#' @param useAssay Indicate which assay to use for PCA. Default is "counts"
 #' @param reducedDimName Store the t-SNE data with this name. The default is
 #' TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
 #' @return A SCE object with the specified reducedDim updated
 #' @export
 #' @examples
-#' data("mouse_brain_subset_sce")
+#' data("mouseBrainSubsetSCE")
 #' #add a CPM assay
-#' assay(mouse_brain_subset_sce, "cpm") <- apply(assay(mouse_brain_subset_sce,
-#'                                                  "counts"),
-#'                                            2, function(x) {
-#'                                              x / (sum(x) / 1000000)
-#'                                            })
-#' mouse_brain_subset_sce <- getTSNE(mouse_brain_subset_sce,
-#'                                use_assay = "cpm",
+#' assay(mouseBrainSubsetSCE, "cpm") <- apply(
+#'   assay(mouseBrainSubsetSCE, "counts"), 2, function(x) {
+#'     x / (sum(x) / 1000000)
+#'   })
+#' mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
 #'                                reducedDimName = "TSNE_cpm")
-#' reducedDims(mouse_brain_subset_sce)
+#' reducedDims(mouseBrainSubsetSCE)
 #'
-getTSNE <- function(count_data, use_assay="logcounts", reducedDimName="TSNE"){
-  if (nrow(count_data) < 500){
-    ntop <- nrow(count_data)
+getTSNE <- function(countData, useAssay="logcounts", reducedDimName="TSNE"){
+  if (nrow(countData) < 500){
+    ntop <- nrow(countData)
   } else{
     ntop <- 500
   }
-  if (!(use_assay %in% names(SummarizedExperiment::assays(count_data)))){
-    stop(use_assay, " not in the assay list")
+  if (!(useAssay %in% names(SummarizedExperiment::assays(countData)))){
+    stop(useAssay, " not in the assay list")
   }
-  exprs_mat <- log2(SummarizedExperiment::assay(count_data, use_assay) + 1)
-  rv <- matrixStats::rowVars(exprs_mat)
-  feature_set <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
-  exprs_to_plot <- exprs_mat[feature_set, ]
-  keep_feature <- (matrixStats::rowVars(exprs_to_plot) > 0.001)
-  keep_feature[is.na(keep_feature)] <- FALSE
-  exprs_to_plot <- exprs_to_plot[keep_feature, ]
-  exprs_to_plot <- t(scale(t(exprs_to_plot)))
-  perplexity <- floor(ncol(count_data) / 5)
-  tsne_out <- Rtsne::Rtsne(t(exprs_to_plot), perplexity = perplexity,
-                           initial_dims = max(50, ncol(count_data)))
-  tsne_out <- tsne_out$Y[, c(1, 2)]
-  rownames(tsne_out) <- colnames(count_data)
-  SingleCellExperiment::reducedDim(count_data, reducedDimName) <- tsne_out
-  return(count_data)
+  exprsMat <- log2(SummarizedExperiment::assay(countData, useAssay) + 1)
+  rv <- matrixStats::rowVars(exprsMat)
+  featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
+  exprsToPlot <- exprsMat[featureSet, ]
+  keepFeature <- (matrixStats::rowVars(exprsToPlot) > 0.001)
+  keepFeature[is.na(keepFeature)] <- FALSE
+  exprsToPlot <- exprsToPlot[keepFeature, ]
+  exprsToPlot <- t(scale(t(exprsToPlot)))
+  perplexity <- floor(ncol(countData) / 5)
+  tsneOut <- Rtsne::Rtsne(t(exprsToPlot), perplexity = perplexity,
+                           initial_dims = max(50, ncol(countData)))
+  tsneOut <- tsneOut$Y[, c(1, 2)]
+  rownames(tsneOut) <- colnames(countData)
+  SingleCellExperiment::reducedDim(countData, reducedDimName) <- tsneOut
+  return(countData)
 }

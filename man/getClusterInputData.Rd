@@ -4,15 +4,15 @@
 \alias{getClusterInputData}
 \title{Get data to use as input clustering algorithms}
 \usage{
-getClusterInputData(count_data, inputData, use_assay = "logcounts",
+getClusterInputData(countData, inputData, useAssay = "logcounts",
   reducedDimName = NULL)
 }
 \arguments{
-\item{count_data}{A SCE object}
+\item{countData}{A SCE object}
 
 \item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components")}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "logcounts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
 \item{reducedDimName}{If clustering on PCA or t-SNE data, dimension name.
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
@@ -24,8 +24,8 @@ Cluster input data
 Get data to use as input clustering algorithms
 }
 \examples{
-data("mouse_brain_subset_sce")
-getClusterInputData(mouse_brain_subset_sce, "PCA Components",
-                    use_assay = "logcounts", reducedDimName = "PCA_logcounts")
+data("mouseBrainSubsetSCE")
+getClusterInputData(mouseBrainSubsetSCE, "PCA Components",
+                    useAssay = "logcounts", reducedDimName = "PCA_logcounts")
 
 }

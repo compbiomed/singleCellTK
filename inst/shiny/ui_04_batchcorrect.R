@@ -1,4 +1,4 @@
-shiny_panel_batchcorrect <- fluidPage(
+shinyPanelBatchcorrect <- fluidPage(
   tags$div(
     class = "container",
     h1("Batch Correction"),
@@ -24,7 +24,7 @@ shiny_panel_batchcorrect <- fluidPage(
                       value = FALSE),
         checkboxInput("combatRef", "Run reference batch combat:",
                       value = FALSE),
-        uiOutput("selectCombat_refbatchUI"),
+        uiOutput("selectCombatRefBatchUI"),
         textInput("combatSaveAssay", "Assay Name to Use:", value = "combat"),
         withBusyIndicatorUI(actionButton("combatRun", "Run"))
       ),

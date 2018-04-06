@@ -10,7 +10,7 @@ reference:
     contents:
     - filterSCData
     - summarizeTable
-    - convert_gene_ids
+    - convertGeneIDs
   - title: Dimensionality Reduction and Filtering
     contents:
     - getPCA
@@ -23,22 +23,22 @@ reference:
   - title: Batch Correction
     contents:
     - plotBatchVariance
-    - ComBat_SCE
+    - ComBatSCE
   - title: Differential Expression
     contents:
     - scDiffEx
-    - scDiffEx_anova
-    - scDiffEx_deseq2
-    - scDiffEx_limma
-    - plot_DiffEx
+    - scDiffExANOVA
+    - scDiffExDESeq2
+    - scDiffExlimma
+    - plotDiffEx
     - MAST
     - MASTregression
     - MASTviolin
     - thresholdGenes
   - title: Pathway Activity Analysis
     contents:
-    - GSVA_plot
-    - GSVA_sce
+    - gsvaPlot
+    - gsvaSCE
   - title: Sample Size
     contents:
     - calcEffectSizes
@@ -47,20 +47,20 @@ reference:
     - generateSimulatedData
     - iterateSimulations
     - subDiffEx
-    - subDiffEx_anova
-    - subDiffEx_ttest
+    - subDiffExANOVA
+    - subDiffExttest
   - title: Data
     contents:
-    - mouse_brain_subset_sce
+    - mouseBrainSubsetSCE
   - title: SCtkExperiment
     contents:
     - starts_with("SCtkExperiment")
     - createSCE
-    - starts_with("pca_variances")
+    - starts_with("pcaVariances")
   - title: Alignment
     contents:
     - alignSingleCellData
-    - parse_rsubread_logs
+    - parseRsubreadLogs
 
 navbar:
   title: "singleCellTK"

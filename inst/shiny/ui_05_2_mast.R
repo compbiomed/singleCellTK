@@ -1,4 +1,4 @@
-shiny_panel_mast <- fluidPage(
+shinyPanelMAST <- fluidPage(
   tags$div(
     class = "container",
     h1("MAST"),

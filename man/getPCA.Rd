@@ -4,18 +4,18 @@
 \alias{getPCA}
 \title{Get PCA components for a SCtkE object}
 \usage{
-getPCA(count_data, use_assay = "logcounts", reducedDimName = "PCA")
+getPCA(countData, useAssay = "logcounts", reducedDimName = "PCA")
 }
 \arguments{
-\item{count_data}{SCtkE object}
+\item{countData}{SCtkE object}
 
-\item{use_assay}{Indicate which assay to use for PCA. Default is "counts"}
+\item{useAssay}{Indicate which assay to use for PCA. Default is "counts"}
 
 \item{reducedDimName}{Store the PCA data with this name. The default is PCA.
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
-A SCtkE object with the specified reduecedDim and pca_variances
+A SCtkE object with the specified reduecedDim and pcaVariances
 updated
 }
 \description{
@@ -24,16 +24,16 @@ PCA based on them and stores the PCA values in the reducedDims slot of the
 SCE object.
 }
 \examples{
-data("mouse_brain_subset_sce")
+data("mouseBrainSubsetSCE")
 #add a CPM assay
-assay(mouse_brain_subset_sce, "cpm") <- apply(assay(mouse_brain_subset_sce,
+assay(mouseBrainSubsetSCE, "cpm") <- apply(assay(mouseBrainSubsetSCE,
                                                  "counts"),
                                            2, function(x) {
                                              x / (sum(x) / 1000000)
                                            })
-mouse_brain_subset_sce <- getPCA(mouse_brain_subset_sce,
-                              use_assay = "cpm",
+mouseBrainSubsetSCE <- getPCA(mouseBrainSubsetSCE,
+                              useAssay = "cpm",
                               reducedDimName = "PCA_cpm")
-reducedDims(mouse_brain_subset_sce)
+reducedDims(mouseBrainSubsetSCE)
 
 }
