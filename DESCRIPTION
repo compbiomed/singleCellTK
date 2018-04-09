@@ -60,5 +60,6 @@ Suggests:
     rmarkdown,
     org.Mm.eg.db,
     org.Hs.eg.db,
-    scRNAseq
+    scRNAseq,
+    xtable
 VignetteBuilder: knitr

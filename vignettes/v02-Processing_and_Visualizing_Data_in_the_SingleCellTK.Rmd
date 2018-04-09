@@ -45,7 +45,7 @@ We will first convert the MAST example dataset to a SCtkExperiment object.
 suppressPackageStartupMessages({
   library(MAST)
   library(singleCellTK)
-  library(DT)
+  library(xtable)
 })
 
 data(maits, package="MAST")
@@ -62,8 +62,10 @@ rm(maits)
 
 You can get summary metrics with the `summarizeTable` function:
 
-```{r maits_summarize}
-datatable(summarizeTable(maits_sce, useAssay = "logtpm"))
+```{r maits_summarize, results='asis'}
+print(xtable(summarizeTable(maits_sce, useAssay = "logtpm")),
+      type="html", include.rownames=FALSE,
+      html.table.attributes='class="table table-condensed"')
 ```
 
 Typically, these summary statistics would be run on a "counts" matrix, but here
@@ -85,7 +87,12 @@ the data to include the pass filter samples
 ```{r maits_filter}
 maits_subset <- maits_sce[, colData(maits_sce)$ourfilter]
 table(colData(maits_subset)$ourfilter)
-datatable(summarizeTable(maits_subset, useAssay = "logtpm"))
+```
+
+```{r maits_filter_table, results='asis'}
+print(xtable(summarizeTable(maits_subset, useAssay = "logtpm")),
+      type="html", include.rownames=FALSE,
+      html.table.attributes='class="table table-condensed"')
 ```
 
 ## Visualization
