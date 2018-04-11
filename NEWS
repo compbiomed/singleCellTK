@@ -1,0 +1,17 @@
+Changes in Version 0.99.3
+
+* Consistent use of camel case throughout package
+
+Changes in Version 0.6.3
+
+* Additional links to help documentation
+* Example matrices on upload page.
+
+Changes in Version 0.4.7
+
+* Ability to download/reupload annotation data frame and convert annotations to
+factors/numerics
+
+Changes in Version 0.4.5
+
+* Documentation updates to fix NOTES and pass BiocCheck

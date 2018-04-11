@@ -1,24 +1,65 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.1.0
+Version: 0.99.4
 Author: David Jenkins
+Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
+             person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
+             person(given=c("Emma"), family="Briars", email="tfaits@bu.edu", role=c("aut")),
+             person(given=c("Sebastian"), family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
+             person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut")))
 Maintainer: David Jenkins <dfj@bu.edu>
+Depends:
+    R (>= 3.5),
+    SummarizedExperiment,
+    SingleCellExperiment,
+    DelayedArray,
+    Biobase
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
+biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
+    Clustering
 LazyData: TRUE
 Imports:
-    DESeq,
+    ape,
+    colourpicker,
+    cluster,
+    ComplexHeatmap,
+    data.table,
     DESeq2,
+    DT,
+    ggplot2,
+    ggtree,
+    gridExtra,
+    GSVA (>= 1.26.0),
+    GSVAdata,
+    limma,
+    MAST,
+    matrixStats,
+    methods,
+    multtest,
+    plotly,
+    RColorBrewer,
+    Rtsne,
     S4Vectors,
     shiny,
-    scater,
-    multtest,
-    locfit,
-    ComplexHeatmap,
-    limma,
-    d3heatmap,
-    plotly,
-    ggplot2
-RoxygenNote: 5.0.1
+    shinyjs,
+    sva,
+    reshape2,
+    AnnotationDbi,
+    shinyalert,
+    circlize
+RoxygenNote: 6.0.1
+Suggests:
+    testthat,
+    Rsubread,
+    BiocStyle,
+    knitr,
+    bladderbatch,
+    rmarkdown,
+    org.Mm.eg.db,
+    org.Hs.eg.db,
+    scRNAseq,
+    xtable
+VignetteBuilder: knitr

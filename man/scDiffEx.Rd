@@ -4,15 +4,21 @@
 \alias{scDiffEx}
 \title{Create a heatmap for differential expression analysis}
 \usage{
-scDiffEx(inSCESet, condition, significance = 0.05, ntop = 500,
-  usesig = TRUE, diffexmethod, clusterRow = TRUE, clusterCol = TRUE)
+scDiffEx(inSCESet, useAssay = "logcounts", condition, covariates = NULL,
+  significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
+  levelofinterest = NULL, analysisType = NULL, controlLevel = NULL,
+  adjust = "fdr")
 }
 \arguments{
-\item{inSCESet}{Input SCESet object. Required}
+\item{inSCESet}{Input SCtkExperiment object. Required}
+
+\item{useAssay}{Indicate which assay to use. Default is "logcounts"}
 
 \item{condition}{The name of the condition to use for differential
-expression. Must be a name of a column from pData that contains two labels.
-Required}
+expression. Required}
+
+\item{covariates}{Additional covariates to add to the model. Currently only
+supported for ANOVA. Default is NULL}
 
 \item{significance}{FDR corrected significance cutoff for differentially
 expressed genes. Required}
@@ -24,7 +30,22 @@ heatmap. Required}
 up to ntop genes. Required}
 
 \item{diffexmethod}{The method for performing differential expression
-analyis. Available options are DESeq, DESeq2, and limma. Required}
+analysis. Available options are DESeq2, limma, and ANOVA. Required}
+
+\item{levelofinterest}{If the condition has more than two labels,
+levelofinterest should contain one factor for condition. The differential
+expression results will compare the factor in levelofinterest to all other
+data.}
+
+\item{analysisType}{For conditions with more than two levels, limma and
+DESeq2 can be run using multiple methods. See scDiffExlimma() and
+scDiffExDESeq2() for details.}
+
+\item{controlLevel}{If the condition has more than two labels, controlLevel
+should contain one factor from condition to use as the control.}
+
+\item{adjust}{Method for p-value correction. See options in p.adjust().
+The default is fdr.}
 }
 \value{
 A list of differentially expressed genes.
@@ -33,9 +54,10 @@ A list of differentially expressed genes.
 Create a heatmap for differential expression analysis
 }
 \examples{
-\dontrun{
-scDiffEx(newsceset_david, "age", "0.1")
-}
+data("mouseBrainSubsetSCE")
+res <- scDiffEx(mouseBrainSubsetSCE,
+                useAssay = "logcounts",
+                "level1class",
+                diffexmethod = "limma")
 
 }
-

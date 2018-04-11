@@ -1,0 +1,96 @@
+template:
+  params:
+    bootswatch: yeti
+
+reference:
+  - title: Shiny App
+    contents:
+    - singleCellTK
+  - title: Data Summary and Filtering
+    contents:
+    - filterSCData
+    - summarizeTable
+    - convertGeneIDs
+  - title: Dimensionality Reduction and Filtering
+    contents:
+    - getPCA
+    - getTSNE
+    - getBiomarker
+    - getClusterInputData
+    - plotBiomarker
+    - plotPCA
+    - plotTSNE
+  - title: Batch Correction
+    contents:
+    - plotBatchVariance
+    - ComBatSCE
+  - title: Differential Expression
+    contents:
+    - scDiffEx
+    - scDiffExANOVA
+    - scDiffExDESeq2
+    - scDiffExlimma
+    - plotDiffEx
+    - MAST
+    - MASTregression
+    - MASTviolin
+    - thresholdGenes
+  - title: Pathway Activity Analysis
+    contents:
+    - gsvaPlot
+    - gsvaSCE
+  - title: Sample Size
+    contents:
+    - calcEffectSizes
+    - DownsampleCells
+    - DownsampleDepth
+    - generateSimulatedData
+    - iterateSimulations
+    - subDiffEx
+    - subDiffExANOVA
+    - subDiffExttest
+  - title: Data
+    contents:
+    - mouseBrainSubsetSCE
+  - title: SCtkExperiment
+    contents:
+    - starts_with("SCtkExperiment")
+    - createSCE
+    - starts_with("pcaVariances")
+  - title: Alignment
+    contents:
+    - alignSingleCellData
+    - parseRsubreadLogs
+
+navbar:
+  title: "singleCellTK"
+  left:
+    - text: "Introduction to singleCellTK"
+      href: articles/v01-Introduction_to_singleCellTK.html
+    - text: "Interactive Shiny Analysis"
+      menu:
+        - text: "1: Upload"
+          href: articles/v03-tab01_Upload.html
+        - text: "2: Data Summary and Filtering"
+          href: articles/v04-tab02_Data-Summary-and-Filtering.html
+        - text: "3: Dimensionality Reduction and Clustering"
+          href: articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html
+        - text: "4: Batch Correction"
+          href: articles/v06-tab04_Batch-Correction.html
+        - text: "5: Differential Expression"
+          href: articles/v07-tab05_Differential-Expression.html
+        - text: "6: Pathway Activity Analysis"
+          href: articles/v08-tab06_Pathway-Activity-Analysis.html
+        - text: "7: Sample Size"
+          href: articles/v09-tab07_Sample-Size.html
+    - text: "Command Line Analysis"
+      menu:
+        - text: "Processing and Visualizing Data"
+          href: articles/v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
+        - text: "Aligning and Quantifying scRNA-Seq Data"
+          href: articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html
+    - text: "Reference"
+      href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/compbiomed/singleCellTK

@@ -7,7 +7,7 @@
 singleCellTK(inputData = NULL)
 }
 \arguments{
-\item{inputData}{The input SCESet class object}
+\item{inputData}{The input SCtkExperiment class object}
 }
 \value{
 The shiny app will open
@@ -15,4 +15,16 @@ The shiny app will open
 \description{
 Use this function to run the single cell analysis app.
 }
+\examples{
+#Upload data through the app
+if(interactive()){
+  singleCellTK()
+}
 
+#Load the app with a SCtkExperiment object
+if(interactive()){
+  data("mouseBrainSubsetSCE")
+  singleCellTK(mouseBrainSubsetSCE)
+}
+
+}
