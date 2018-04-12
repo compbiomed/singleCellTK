@@ -4,10 +4,10 @@
 \alias{summarizeTable}
 \title{Summarize SCtkExperiment}
 \usage{
-summarizeTable(indata, useAssay = "counts", expressionCutoff = 1700)
+summarizeTable(inSCE, useAssay = "counts", expressionCutoff = 1700)
 }
 \arguments{
-\item{indata}{Input SCtkExperiment}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{useAssay}{Indicate which assay to summarize. Default is "counts"}
 

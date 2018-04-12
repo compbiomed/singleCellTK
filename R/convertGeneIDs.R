@@ -6,7 +6,7 @@
 #' your desired annotation, and remove any duplicate annotations after
 #' conversion.
 #'
-#' @param inSCESet Input SCtkExperiment object. Required
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param inSymbol The input symbol type
 #' @param outSymbol The output symbol type
 #' @param database The org.*.eg.db database to use. The default is org.Hs.eg.db
@@ -18,15 +18,14 @@
 #'   #convert mouse gene symbols to ensembl IDs
 #'   library("org.Mm.eg.db")
 #'   sample(rownames(mouseBrainSubsetSCE), 50)
-#'   mouseBrainSubsetSymbol <- convertGeneIDs(inSCESet = mouseBrainSubsetSCE,
-#'                                               inSymbol = "SYMBOL",
-#'                                               outSymbol = "ENSEMBL",
-#'                                               database = "org.Mm.eg.db")
+#'   mouseBrainSubsetSymbol <- convertGeneIDs(inSCE = mouseBrainSubsetSCE,
+#'                                            inSymbol = "SYMBOL",
+#'                                            outSymbol = "ENSEMBL",
+#'                                            database = "org.Mm.eg.db")
 #'   sample(rownames(mouseBrainSubsetSymbol), 50)
 #' }
 #'
-convertGeneIDs <- function(inSCESet, inSymbol, outSymbol,
-                             database="org.Hs.eg.db"){
+convertGeneIDs <- function(inSCE, inSymbol, outSymbol, database="org.Hs.eg.db"){
   if (!(database %in% c("org.Ag.eg.db", "org.At.tair.db", "org.Bt.eg.db",
     "org.Ce.eg.db", "org.Cf.eg.db", "org.Dm.eg.db", "org.Dr.eg.db",
     "org.EcK12.eg.db", "org.EcSakai.eg.db", "org.Gg.eg.db", "org.Hs.eg.db",
@@ -35,7 +34,7 @@ convertGeneIDs <- function(inSCESet, inSymbol, outSymbol,
     stop("The database you want to use, ", database, ", is not supported")
   }
   if (!(database %in% as.character(grep("^org\\.",
-                                       utils::installed.packages()[, "Package"],
+                                      utils::installed.packages()[, "Package"],
                                        value = TRUE)))){
     stop("The database you want to use, ", database, ", is not installed.")
   }
@@ -44,10 +43,10 @@ convertGeneIDs <- function(inSCESet, inSymbol, outSymbol,
   }
   if (inSymbol == outSymbol){
     message("No conversion necessary.")
-    return(inSCESet)
+    return(inSCE)
   }
   indb <- get(paste(database))
-  oldids <- rownames(inSCESet)
+  oldids <- rownames(inSCE)
   if (any(duplicated(oldids)) | any(is.na(oldids))){
     stop("problem with input IDs, duplicates or NAs found")
   }
@@ -79,7 +78,7 @@ convertGeneIDs <- function(inSCESet, inSymbol, outSymbol,
   }
   message(length(oldids), " ", inSymbol, " originally, ", nrow(res), " ",
           outSymbol, "s")
-  newsce <- inSCESet[res[, inSymbol], ]
+  newsce <- inSCE[res[, inSymbol], ]
   rownames(newsce) <- res[, outSymbol]
   return(newsce)
 }

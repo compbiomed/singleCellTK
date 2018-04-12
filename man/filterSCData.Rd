@@ -4,12 +4,12 @@
 \alias{filterSCData}
 \title{Filter Genes and Samples from a Single Cell Object}
 \usage{
-filterSCData(insceset, useAssay = "counts", deletesamples = NULL,
+filterSCData(inSCE, useAssay = "counts", deletesamples = NULL,
   removeNoExpress = TRUE, removeBottom = 0.5, minimumDetectGenes = 1700,
   filterSpike = TRUE)
 }
 \arguments{
-\item{insceset}{Input single cell object, required}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{useAssay}{Indicate which assay to use for filtering. Default is
 "counts"}

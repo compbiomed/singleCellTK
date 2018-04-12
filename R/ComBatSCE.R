@@ -2,7 +2,7 @@
 #'
 #' Run ComBat on a SCtkExperiment object
 #'
-#' @param SCEdata SCtkExperiment object. Required
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param batch The name of a column in colData to use as the batch variable.
 #' Required
 #' @param useAssay The assay to use for ComBat. The default is "logcounts"
@@ -29,34 +29,34 @@
 #'   mod <- stats::model.matrix(~as.factor(cancer), data = colData(dat))
 #'
 #'   # parametric adjustment
-#'   combat_edata1 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-#'                               batch = "batch", covariates = NULL)
+#'   combat_edata1 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+#'                              batch = "batch", covariates = NULL)
 #'   assay(dat, "parametric_combat") <- combat_edata1
 #'
 #'   # non-parametric adjustment, mean-only version
-#'   combat_edata2 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-#'                               batch = "batch", par.prior = "Non-parametric",
-#'                               mean.only = TRUE, covariates = NULL)
+#'   combat_edata2 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+#'                              batch = "batch", par.prior = "Non-parametric",
+#'                              mean.only = TRUE, covariates = NULL)
 #'   assay(dat, "nonparametric_combat_meanonly") <- combat_edata2
 #'
 #'   # reference-batch version, with covariates
-#'   combat_edata3 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-#'                               batch = "batch", covariates = "cancer",
-#'                               ref.batch = 3)
+#'   combat_edata3 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+#'                              batch = "batch", covariates = "cancer",
+#'                              ref.batch = 3)
 #'   assay(dat, "refbatch_combat_wcov") <- combat_edata3
 #'   assays(dat)
 #' }
 #'
-ComBatSCE <- function(SCEdata, batch, useAssay="logcounts",
-                       par.prior="Parametric", covariates=NULL, mean.only=FALSE,
-                       ref.batch=NULL){
+ComBatSCE <- function(inSCE, batch, useAssay="logcounts",
+                      par.prior="Parametric", covariates=NULL, mean.only=FALSE,
+                      ref.batch=NULL){
 
   #prepare model matrix
   mod <- NULL
   if (length(covariates) > 0){
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(SCEdata)[, covariates,
+      data = data.frame(SingleCellExperiment::colData(inSCE)[, covariates,
                                                                drop = FALSE]))
   }
 
@@ -68,8 +68,8 @@ ComBatSCE <- function(SCEdata, batch, useAssay="logcounts",
   }
 
   resassay <-
-    sva::ComBat(dat = SummarizedExperiment::assay(SCEdata, useAssay),
-                batch = SingleCellExperiment::colData(SCEdata)[, batch],
+    sva::ComBat(dat = SummarizedExperiment::assay(inSCE, useAssay),
+                batch = SingleCellExperiment::colData(inSCE)[, batch],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
   return(resassay)

@@ -2,15 +2,17 @@
 % Please edit documentation in R/GSVA.R
 \name{gsvaSCE}
 \alias{gsvaSCE}
+\alias{gsvaPlot}
 \title{gsvaSCE}
 \usage{
-gsvaSCE(SCEdata, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
+gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
+
+gsvaPlot(inSCE, gsvaData, plotType, condition = NULL)
 }
 \arguments{
-\item{SCEdata}{SCESet object}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
-\item{useAssay}{The assay to use for the MAST calculations. The default is
-"logcounts"}
+\item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
 \item{pathwaySource}{The pathway source if "Manual Input", the pathwayNames
 should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
@@ -20,11 +22,26 @@ to run on all available pathways.}
 \item{pathwayNames}{List of pathway names to run, depending on pathwaySource
 parameter.}
 
-\item{...}{Parameters to pass to gsva}
+\item{...}{Parameters to pass to gsva()}
+
+\item{gsvaData}{GSVA data to plot. Required.}
+
+\item{plotType}{The type of plot to use, "Violin" or "Heatmap". Required.}
+
+\item{condition}{The condition(s) to use for the Violin plot, or the
+condition(s) to add as color bars above the Heatmap. Required for Violin,
+optional for Heatmap.}
 }
 \value{
-A data.frame of pathway activity scores from GSVA.
+gsvaSCE(): A data.frame of pathway activity scores from GSVA.
+
+gsvaPlot(): The requested plot of the GSVA results.
 }
 \description{
-Run GSVA analysis on a SCESet object.
+Run GSVA analysis on a SCtkExperiment object.
 }
+\section{Functions}{
+\itemize{
+\item \code{gsvaPlot}: Plot GSVA results.
+}}
+

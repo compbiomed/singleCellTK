@@ -182,12 +182,12 @@ using a violin plot, linear model, or heatmap:
 
 ```{r maits_violin, fig.height=8, message=FALSE}
 MASTviolin(maits_subset, useAssay = "logtpm", fcHurdleSig = mast_results,
-           threshP = TRUE, variable = "condition")
+           threshP = TRUE, condition = "condition")
 ```
 
 ```{r maits_lm, fig.height=8, message=FALSE}
 MASTregression(maits_subset, useAssay = "logtpm", fcHurdleSig = mast_results,
-               threshP = TRUE, variable = "condition")
+               threshP = TRUE, condition = "condition")
 ```
 
 ```{r maits_heatmap}
@@ -239,7 +239,7 @@ bladder_sctke <- createSCE(assayFile = edata,
                            assayName = "microarray",
                            inputDataFrames = TRUE,
                            createLogCounts = FALSE)
-assay(bladder_sctke, "combat") <- ComBatSCE(SCEdata = bladder_sctke,
+assay(bladder_sctke, "combat") <- ComBatSCE(inSCE = bladder_sctke,
                                             batch = "batch",
                                             useAssay = "microarray",
                                             covariates = "cancer")

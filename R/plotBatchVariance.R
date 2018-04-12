@@ -4,7 +4,7 @@
 #' Visualize the percent variation in the data that is explained by batch and
 #' condition if it is given.
 #'
-#' @param inSCESet Input SCtkExperiment object. Required
+#' @param inSCE Input SCtkExperiment object. Requireds
 #' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
 #' @param batch The column in the annotation data that corresponds to batch.
 #' Required
@@ -22,34 +22,34 @@
 #'   plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
 #' }
 #'
-plotBatchVariance <- function(inSCESet, useAssay="logcounts", batch,
+plotBatchVariance <- function(inSCE, useAssay="logcounts", batch,
                               condition=NULL){
-  nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
+  nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
   if (nlb <= 1){
-    batchMod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
+    batchMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
   } else {
     batchMod <- stats::model.matrix(
-      ~as.factor(SingleCellExperiment::colData(inSCESet)[, batch]))
+      ~as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
   }
   if (is.null(condition)){
     stop("condition required for now")
   } else {
     nlc <- nlevels(as.factor(
-      SingleCellExperiment::colData(inSCESet)[, condition]))
+      SingleCellExperiment::colData(inSCE)[, condition]))
     if (nlc <= 1){
-      condMod <- matrix(rep(1, ncol(inSCESet)), ncol = 1)
+      condMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
     } else {
       condMod <- stats::model.matrix(
-        ~as.factor(SingleCellExperiment::colData(inSCESet)[, condition]))
+        ~as.factor(SingleCellExperiment::colData(inSCE)[, condition]))
     }
   }
 
   mod <- cbind(condMod, batchMod[, -1])
 
-  condTest <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCESet, useAssay),
+  condTest <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCE, useAssay),
                                 mod, batchMod)
   batchTest <- batchqc_f.pvalue(
-    SummarizedExperiment::assay(inSCESet, useAssay), mod, condMod)
+    SummarizedExperiment::assay(inSCE, useAssay), mod, condMod)
 
   r2Full <- condTest$r2Full
   condR2 <- batchTest$r2Reduced
