@@ -106,7 +106,7 @@ each sample sequentially. To save time, you may want to perform alignment and
 feature counting on each file in a parallel computing environment and combine
 the samples to create an SCtkExperiment object. The ```alignSingleCellData()``` function
 can be run on an individual file. Once individual sample objects have been
-created, combine them using the ```mergeSCESet()``` function.
+created, combine them into a single SCtkExperiment object.
 
 ## Creating a Single Cell Object from aligned BAM reads
 

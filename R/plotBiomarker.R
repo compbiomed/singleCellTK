@@ -1,68 +1,57 @@
-#' plotBiomarker
+#' @describeIn getPCA Given a set of genes, return a ggplot of expression
+#' values.
 #'
-#' Given a set of genes, return a ggplot of expression values.
-#'
-#' @param countData A SCtkExperiment object
-#' @param gene gene list
-#' @param binary "Binary" for binary expression or "Continuous" for a gradient.
-#' Default: "Binary"
 #' @param visual Type of visualization (PCA or tSNE). Default: "PCA"
-#' @param shape visualization shape
 #' @param x x coordinate for PCA
 #' @param y y coordinate for PCA
-#' @param useAssay Indicate which assay to use for PCA. Default is "counts"
-#' @param reducedDimName PCA dimension name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
-#' @return A Biomarker plot
+#' @return plotBiomarker(): A Biomarker plot
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' plotBiomarker(mouseBrainSubsetSCE, gene="C1qa", shape="level1class")
 #'
-plotBiomarker <- function(countData, gene, binary="Binary", visual="PCA",
+plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
                           shape="No Shape", x="PC1", y="PC2",
                           useAssay="counts", reducedDimName="PCA"){
   if (shape == "No Shape"){
     shape <- NULL
   }
   if (visual == "PCA"){
-    if (is.null(SingleCellExperiment::reducedDim(countData, reducedDimName))) {
-      countData <- getPCA(countData, useAssay = useAssay,
-                          reducedDimName = reducedDimName)
+    if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
+      inSCE <- getPCA(inSCE, useAssay = useAssay,
+                      reducedDimName = reducedDimName)
     }
-    axisDf <- data.frame(SingleCellExperiment::reducedDim(countData,
+    axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                            reducedDimName))
     variances <- NULL
-    if (class(countData) == "SCtkExperiment"){
-      variances <- pcaVariances(countData)
+    if (class(inSCE) == "SCtkExperiment"){
+      variances <- pcaVariances(inSCE)
     }
   }
   if (visual == "tSNE"){
-    if (is.null(SingleCellExperiment::reducedDim(countData, reducedDimName))) {
-      countData <- getTSNE(countData, useAssay = useAssay,
-                           reducedDimName = reducedDimName)
+    if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
+      inSCE <- getTSNE(inSCE, useAssay = useAssay,
+                       reducedDimName = reducedDimName)
     }
-    axisDf <- data.frame(SingleCellExperiment::reducedDim(countData,
+    axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                            reducedDimName))
   }
   if (length(gene) > 9) {
     gene <- gene[seq_len(9)]
   }
   for (i in seq_along(gene)){
-    bioDf <- getBiomarker(countData = countData,
-                           gene = gene[i],
-                           binary = binary,
-                           useAssay = useAssay)
+    bioDf <- getBiomarker(inSCE = inSCE, gene = gene[i], binary = binary,
+                          useAssay = useAssay)
     l <- axisDf
     if (!is.null(shape)){
-      l$shape <- factor(SingleCellExperiment::colData(countData)[, shape])
+      l$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
     }
     geneName <- colnames(bioDf)[2]
     colnames(bioDf)[2] <- "expression"
     l$Sample <- as.character(bioDf$sample)
     l$expression <- bioDf$expression
-    c <- SummarizedExperiment::assay(countData, useAssay)[c(geneName), ]
+    c <- SummarizedExperiment::assay(inSCE, useAssay)[c(geneName), ]
     percent <- round(100 * sum(c > 0) / length(c), 2)
     if (visual == "PCA"){
       if (binary == "Binary"){

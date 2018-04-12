@@ -1,39 +1,33 @@
-#' Plot PCA
+#' @describeIn getPCA plot PCA results
 #'
-#' Use this function to plot PCA results
-#'
-#' @param countData A SCE object
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
 #' @param pcX User choice for the first principal component
 #' @param pcY User choice for the second principal component
-#' @param reducedDimName PCA dimension name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #' @param runPCA Run PCA if the reducedDimName does not exist. the Default is
 #' FALSE.
-#' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
-
 #'
-#' @return A PCA plot
+#' @return plotPCA(): A PCA plot
+#'
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' plotPCA(mouseBrainSubsetSCE, colorBy = "level1class",
 #'         reducedDimName = "PCA_counts")
 #'
-plotPCA <- function(countData, colorBy="No Color", shape="No Shape", pcX="PC1",
+plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
                     useAssay="logcounts"){
-  if (is.null(SingleCellExperiment::reducedDim(countData, reducedDimName))){
+  if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))){
     if (runPCA){
-      countData <- getPCA(countData, useAssay = useAssay,
-                          reducedDimName = reducedDimName)
+      inSCE <- getPCA(inSCE, useAssay = useAssay,
+                      reducedDimName = reducedDimName)
     } else {
       stop(reducedDimName,
            " dimension not found. Run getPCA() or set runPCA to TRUE.")
     }
   }
-  pcaDf <- data.frame(SingleCellExperiment::reducedDim(countData,
+  pcaDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                        reducedDimName))
   if (!(pcX %in% colnames(pcaDf))){
     stop("pcX dimension ", pcX, " is not in the reducedDim data")
@@ -42,10 +36,10 @@ plotPCA <- function(countData, colorBy="No Color", shape="No Shape", pcX="PC1",
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
 
-  if (class(countData) == "SCtkExperiment"){
-    if (all(c(pcX, pcY) %in% rownames(pcaVariances(countData)))){
+  if (class(inSCE) == "SCtkExperiment"){
+    if (all(c(pcX, pcY) %in% rownames(pcaVariances(inSCE)))){
       #use the variances in pcaVariances
-      variances <- pcaVariances(countData)
+      variances <- pcaVariances(inSCE)
       pcXlab <- paste0(
         pcX, " ", toString(round(variances[pcX, ] * 100, 2)), "%")
       pcYlab <- paste0(
@@ -68,12 +62,12 @@ plotPCA <- function(countData, colorBy="No Color", shape="No Shape", pcX="PC1",
     shape <- NULL
   }
   if (!is.null(colorBy)){
-    pcaDf$color <- SingleCellExperiment::colData(countData)[, colorBy]
+    pcaDf$color <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }
   if (!is.null(shape)){
-    pcaDf$shape <- factor(SingleCellExperiment::colData(countData)[, shape])
+    pcaDf$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
   }
-  pcaDf$Sample <- colnames(countData)
+  pcaDf$Sample <- colnames(inSCE)
   g <- ggplot2::ggplot(pcaDf, ggplot2::aes_string(pcX, pcY, label = "Sample")) +
     ggplot2::geom_point() +
     ggplot2::labs(x = pcXlab, y = pcYlab)

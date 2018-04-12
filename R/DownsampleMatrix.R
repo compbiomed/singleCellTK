@@ -162,39 +162,6 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
   return(rbind(realLabels[cells], output))
 }
 
-#' Passes the output of generateSimulatedData() to differential expression
-#' tests, picking either t-tests or ANOVA for data with only two conditions or
-#' multiple conditions, respectively.
-#'
-#' @param tempData Matrix. The output of generateSimulatedData(), where the
-#' first row contains condition labels.
-#'
-#' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
-#' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
-#' @export
-#' @examples
-#' data("mouseBrainSubsetSCE")
-#' res <- generateSimulatedData(
-#'          totalReads = 1000, cells=10,
-#'          originalData = assay(mouseBrainSubsetSCE, "counts"),
-#'          realLabels = colData(mouseBrainSubsetSCE)[, "level1class"])
-#' tempSigDiff <- subDiffEx(res)
-#'
-subDiffEx <- function(tempData){
-  realLabels <- tempData[1, ]
-  output <- tempData[-1, ]
-  if (length(levels(as.factor(realLabels))) > 2){
-    fdr <- subDiffExANOVA(output, realLabels)
-  } else if (length(levels(as.factor(realLabels))) == 2){
-    fdr <- subDiffExttest(output, realLabels)
-  }
-  else{
-    stop("Only 1 (or 0?) factor in ", levels(as.factor(realLabels)))
-  }
-  fdr[which(is.na(fdr))] <- 1
-  return(fdr)
-}
-
 #' Returns significance data from a snapshot.
 #'
 #' @param originalData SCtkExperiment. The SCtkExperiment object storing all
@@ -227,16 +194,55 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
   return(sigMatrix[, -1])
 }
 
-#' Runs t-tests on all genes in a simulated dataset with 2 conditions, and
-#' adjusts for FDR.
+#' Passes the output of generateSimulatedData() to differential expression
+#' tests, picking either t-tests or ANOVA for data with only two conditions or
+#' multiple conditions, respectively.
 #'
-#' @param dataset Matrix. A simulated counts matrix, sans labels.
+#' @param tempData Matrix. The output of generateSimulatedData(), where the
+#' first row contains condition labels.
+#'
+#' @return subDiffEx(): A vector of fdr-adjusted p-values for all genes.
+#' Nonviable results (such as for genes with 0 counts in a simulated dataset)
+#' are coerced to 1.
+#'
+#' @describeIn subDiffEx Get PCA components for a SCtkE object 
+#'
+#' @export
+#' @examples
+#' data("mouseBrainSubsetSCE")
+#' res <- generateSimulatedData(
+#'          totalReads = 1000, cells=10,
+#'          originalData = assay(mouseBrainSubsetSCE, "counts"),
+#'          realLabels = colData(mouseBrainSubsetSCE)[, "level1class"])
+#' tempSigDiff <- subDiffEx(res)
+#'
+subDiffEx <- function(tempData){
+  realLabels <- tempData[1, ]
+  output <- tempData[-1, ]
+  if (length(levels(as.factor(realLabels))) > 2){
+    fdr <- subDiffExANOVA(output, realLabels)
+  } else if (length(levels(as.factor(realLabels))) == 2){
+    fdr <- subDiffExttest(output, realLabels)
+  }
+  else{
+    stop("Only 1 (or 0?) factor in ", levels(as.factor(realLabels)))
+  }
+  fdr[which(is.na(fdr))] <- 1
+  return(fdr)
+}
+
+#' @describeIn subDiffEx Runs t-tests on all genes in a simulated dataset with 2
+#' conditions, and adjusts for FDR.
+#'
+#' @param countMatrix Matrix. A simulated counts matrix, sans labels.
 #' @param class.labels Factor. The condition labels for the simulated cells.
 #' Will be coerced into 1's and 0's.
 #' @param test.type Type of test to perform. The default is t.equalvar.
 #'
-#' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
-#' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
+#' @return subDiffExttest(): A vector of fdr-adjusted p-values for all genes.
+#' Nonviable results (such as for genes with 0 counts in a simulated dataset)
+#' are coerced to 1.
+#'
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -253,26 +259,27 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
 #' output <- res[-1, ]
 #' fdr <- subDiffExttest(output, realLabels)
 #'
-subDiffExttest <- function(dataset, class.labels, test.type = "t.equalvar") {
+subDiffExttest <- function(countMatrix, class.labels, test.type = "t.equalvar") {
   class.labels <- as.numeric(as.factor(class.labels))
   class.labels <- class.labels - 1
   class.labels[class.labels > 0] <- 1
-  tval <- multtest::mt.teststat(dataset, classlabel = class.labels,
+  tval <- multtest::mt.teststat(countMatrix, classlabel = class.labels,
                                 test = test.type, nonpara = "n")
-  df <- (ncol(dataset) - 2)
+  df <- (ncol(countMatrix) - 2)
   pval <- 2 * (1 - stats::pt(abs(tval), df))
   fdr <- stats::p.adjust(pval, method = "fdr")
   return(fdr)
 }
 
-#' Runs ANOVA on all genes in a simulated dataset with more than 2 conditions,
-#' and adjusts for FDR.
+#' @describeIn subDiffEx Runs ANOVA on all genes in a simulated dataset with
+#' more than 2 conditions, and adjusts for FDR.
 #'
-#' @param countMatrix Matrix. A simulated counts matrix, sans labels.
 #' @param condition Factor. The condition labels for the simulated cells.
 #'
-#' @return A vector of fdr-adjusted p-values for all genes. Nonviable results
-#' (such as for genes with 0 counts in a simulated dataset) are coerced to 1.
+#' @return subDiffExANOVA(): A vector of fdr-adjusted p-values for all genes.
+#' Nonviable results (such as for genes with 0 counts in a simulated dataset)
+#' are coerced to 1.
+#'
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")

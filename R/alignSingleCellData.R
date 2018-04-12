@@ -1,4 +1,4 @@
-#' Align Single Cell RNA-Seq Data and Create a SCESet Object
+#' Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object
 #'
 #' @param inputfile1 An input file or list of files. Files can be fastq,
 #' fastq.gz, or bam, but must all be of the same type. Sample names will be the
@@ -242,7 +242,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
 #' @export
 #'
 parseRsubreadLogs <- function(alignLog=NULL, featurecountLog=NULL,
-                                sampleName=NULL){
+                              sampleName=NULL){
   #process feature count log num reads and log num featured
   fFh <- file(featurecountLog, open = "r")
   features <- readLines(fFh)

@@ -11,7 +11,7 @@ reference:
     - filterSCData
     - summarizeTable
     - convertGeneIDs
-  - title: Dimensionality Reduction and Filtering
+  - title: Dimensionality Reduction and Clustering
     contents:
     - getPCA
     - getTSNE
@@ -54,8 +54,8 @@ reference:
     - mouseBrainSubsetSCE
   - title: SCtkExperiment
     contents:
-    - starts_with("SCtkExperiment")
     - createSCE
+    - starts_with("SCtkExperiment")
     - starts_with("pcaVariances")
   - title: Alignment
     contents:

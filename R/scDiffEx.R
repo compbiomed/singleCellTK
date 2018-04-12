@@ -1,11 +1,12 @@
-#' Create a heatmap for differential expression analysis
+#' Perform differential expression analysis on a SCtkExperiment object
 #'
-#' @param inSCESet Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use. Default is "logcounts"
+#' @param inSCE Input SCtkExperiment object. Requireds
+#' @param useAssay Indicate which assay to use. Default is "logcounts" for limma
+#' and ANOVA, and "counts" for DESeq2.
 #' @param condition The name of the condition to use for differential
-#' expression. Required
-#' @param covariates Additional covariates to add to the model. Currently only
-#' supported for ANOVA. Default is NULL
+#' expression. Must be a name of a column from colData that contains at least
+#' two labels. Required
+#' @param covariates Additional covariates to add to the model. Default is NULL
 #' @param significance FDR corrected significance cutoff for differentially
 #' expressed genes. Required
 #' @param ntop Number of top differentially expressed genes to display in the
@@ -16,17 +17,22 @@
 #' analysis. Available options are DESeq2, limma, and ANOVA. Required
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor for condition. The differential
-#' expression results will compare the factor in levelofinterest to all other
-#' data.
+#' expression results will use levelofinterest depending on the analysType
+#' parameter.
 #' @param analysisType For conditions with more than two levels, limma and
-#' DESeq2 can be run using multiple methods. See scDiffExlimma() and
-#' scDiffExDESeq2() for details.
+#' DESeq2 can be run using multiple methods. For DESeq2, choose "biomarker" to
+#' compare the levelofinterest to all other samples. Choose "contrast" to
+#' compare the levelofinterest to a controlLevel (see below). Choose
+#' "fullreduced" to perform DESeq2 in LRT mode. For limma, Choose "biomarker" to
+#' compare the levelofinterest to all other samples. Choose "coef" to select a
+#' coefficient of interset with levelofinterest (see below). Choose "allcoef" to
+#' test if any coefficient is different from zero.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.
 #' @param adjust Method for p-value correction. See options in p.adjust().
 #' The default is fdr.
 #'
-#' @return A list of differentially expressed genes.
+#' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -35,27 +41,27 @@
 #'                 "level1class",
 #'                 diffexmethod = "limma")
 #'
-scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
+scDiffEx <- function(inSCE, useAssay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, levelofinterest=NULL, analysisType=NULL,
                      controlLevel=NULL, adjust = "fdr"){
   for (i in c(condition, covariates)){
-    if (is.factor(SingleCellExperiment::colData(inSCESet)[, i])){
-      SummarizedExperiment::colData(inSCESet)[, i] <- droplevels(
-        SummarizedExperiment::colData(inSCESet)[, i])
+    if (is.factor(SingleCellExperiment::colData(inSCE)[, i])){
+      SummarizedExperiment::colData(inSCE)[, i] <- droplevels(
+        SummarizedExperiment::colData(inSCE)[, i])
     }
   }
   if (length(condition) == 1){
-    if (is.factor(SingleCellExperiment::colData(inSCESet)[, i])){
+    if (is.factor(SingleCellExperiment::colData(inSCE)[, i])){
       in.condition <- droplevels(as.factor(
-        SingleCellExperiment::colData(inSCESet)[, condition]))
+        SingleCellExperiment::colData(inSCE)[, condition]))
     }
   } else if (diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
 
   if (diffexmethod == "DESeq2"){
-    diffex.results <- scDiffExDESeq2(inSCESet = inSCESet,
+    diffex.results <- scDiffExDESeq2(inSCE = inSCE,
                                       useAssay = useAssay,
                                       condition = condition,
                                       analysisType = analysisType,
@@ -65,7 +71,7 @@ scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
                                       adjust = adjust)
   }
   else if (diffexmethod == "limma"){
-    diffex.results <- scDiffExlimma(inSCESet = inSCESet,
+    diffex.results <- scDiffExlimma(inSCE = inSCE,
                                      useAssay = useAssay,
                                      condition = condition,
                                      analysisType = analysisType,
@@ -74,7 +80,7 @@ scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
                                      adjust = adjust)
   }
   else if (diffexmethod == "ANOVA"){
-    diffex.results <- scDiffExANOVA(inSCESet = inSCESet,
+    diffex.results <- scDiffExANOVA(inSCE = inSCE,
                                      useAssay = useAssay,
                                      condition = condition,
                                      covariates = covariates,
@@ -83,7 +89,7 @@ scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
   else{
     stop("Unsupported differential expression method, ", diffexmethod)
   }
-  ngenes <- nrow(inSCESet)
+  ngenes <- nrow(inSCE)
   if (usesig){
     if (length(which(diffex.results$padj <= significance)) < ntop){
       newgenes <- rownames(diffex.results)[
@@ -102,96 +108,8 @@ scDiffEx <- function(inSCESet, useAssay="logcounts", condition,
   return(diffex.results[newgenes, ])
 }
 
-#' Plot Differential Expression
+#' @describeIn scDiffEx Perform differential expression analysis with DESeq2
 #'
-#' @param inSCESet Input data object that contains the data to be plotted.
-#' Required
-#' @param useAssay Indicate which assay to use. Default is "logcounts"
-#' @param condition The condition used for plotting the heatmap. Required
-#' @param geneList The list of genes to put in the heatmap. Required
-#' @param clusterRow Cluster the rows. The default is TRUE
-#' @param clusterCol Cluster the columns. The default is TRUE
-#' @param displayRowLabels Display the row labels on the heatmap. The default
-#' is TRUE.
-#' @param displayColumnLabels Display the column labels on the heatmap. The
-#' default is TRUE
-#' @param displayRowDendrograms Display the row dendrograms on the heatmap. The
-#' default is TRUE
-#' @param displayColumnDendrograms Display the column dendrograms on the
-#' heatmap. The default is TRUE.
-#' @param annotationColors Set of annotation colors for color bar. If null,
-#' no color bar is shown. default is NULL.
-#' @param columnTitle Title to be displayed at top of heatmap.
-#'
-#' @return ComplexHeatmap object for the provided geneList annotated with the
-#' condition.
-#' @export
-#' @examples
-#' data("mouseBrainSubsetSCE")
-#' res <- scDiffEx(mouseBrainSubsetSCE,
-#'                 useAssay = "logcounts",
-#'                 "level1class",
-#'                 diffexmethod = "limma")
-#' plotDiffEx(mouseBrainSubsetSCE, condition = "level1class",
-#'             geneList = rownames(res)[1:50], annotationColors = "auto")
-#'
-plotDiffEx <- function(inSCESet, useAssay="logcounts", condition, geneList,
-                        clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
-                        displayColumnLabels=TRUE, displayRowDendrograms=TRUE,
-                        displayColumnDendrograms=TRUE, annotationColors=NULL,
-                        columnTitle="Differential Expression"){
-  if (is.null(annotationColors)){
-    topha <- NULL
-  } else if (annotationColors == "auto") {
-    colors <- RColorBrewer::brewer.pal(9, "Set1")
-    condLevels <- unique(SingleCellExperiment::colData(inSCESet)[, condition])
-    if (length(condLevels) > 9){
-      stop("Too many levels in condition for auto coloring")
-    }
-    col <- list()
-    col[[condition]] <- stats::setNames(colors[seq_along(condLevels)],
-                                        condLevels)
-    topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE],
-      col = col)
-  } else {
-    topha <- ComplexHeatmap::HeatmapAnnotation(
-      df = SingleCellExperiment::colData(inSCESet)[, condition, drop = FALSE],
-      col = annotationColors)
-  }
-
-  heatmap <- ComplexHeatmap::Heatmap(
-    t(scale(t(SummarizedExperiment::assay(inSCESet, useAssay)[geneList, ]))),
-    name = "Expression", column_title = columnTitle, cluster_rows = clusterRow,
-    cluster_columns = clusterCol, top_annotation = topha,
-    show_row_names = displayRowLabels, show_column_names = displayColumnLabels,
-    show_row_dend = displayRowDendrograms,
-    show_column_dend = displayColumnDendrograms)
-  return(heatmap)
-}
-
-#' Perform differential expression analysis with DESeq2
-#'
-#' Returns a data frame of gene names and adjusted p-values
-#'
-#' @param inSCESet Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use. Default is "counts"
-#' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains at least
-#' two labels. Required
-#' @param analysisType Choose "biomarker" to compare the levelofinterest to all
-#' other samples. Choose "contrast" to compare the levelofinterest to a
-#' controlLevel (see below). Choose "fullreduced" to perform DESeq2 in LRT mode
-#' comparing the model with condition to a model without condition.
-#' @param levelofinterest If the condition has more than two labels,
-#' levelofinterest should contain one factor of interest from condition.
-#' @param controlLevel If the condition has more than two labels, controlLevel
-#' should contain one factor from condition to use as the control.
-#' @param covariates Additional covariates to add to the model.
-#' @param adjust Method for p-value correction. See options in p.adjust().
-#' The default is fdr.
-#'
-#' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -203,12 +121,12 @@ plotDiffEx <- function(inSCESet, useAssay="logcounts", condition, geneList,
 #' subset <- mouseBrainSubsetSCE[ord, ]
 #' res <- scDiffExDESeq2(subset, condition = "level1class")
 #'
-scDiffExDESeq2 <- function(inSCESet, useAssay="counts", condition,
-                            analysisType="biomarker", levelofinterest=NULL,
-                            controlLevel=NULL, covariates=NULL, adjust="fdr"){
-  cnts <- SummarizedExperiment::assay(inSCESet, useAssay)
+scDiffExDESeq2 <- function(inSCE, useAssay="counts", condition,
+                           analysisType="biomarker", levelofinterest=NULL,
+                           controlLevel=NULL, covariates=NULL, adjust="fdr"){
+  cnts <- SummarizedExperiment::assay(inSCE, useAssay)
   annotData <-
-    SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+    SingleCellExperiment::colData(inSCE)[, c(condition, covariates),
                                             drop = FALSE]
 
   if (is.factor(annotData[, c(condition)])){
@@ -284,38 +202,19 @@ scDiffExDESeq2 <- function(inSCESet, useAssay="counts", condition,
   return(data.frame(res))
 }
 
-#' Perform differential expression analysis with limma
+#' @describeIn scDiffEx Perform differential expression analysis with limma
 #'
-#' Returns a data frame of gene names and adjusted p-values
-#'
-#' @param inSCESet Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use. Default is "logcounts"
-#' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains at least
-#' two labels. Required
-#' @param analysisType If there are more than two levels in your condition
-#' variable, select the analysisType. Choose "biomarker" to compare the
-#' levelofinterest to all other samples. Choose "coef" to select a coefficient
-#' of interset with levelofinterest (see below). Choose "allcoef" to test if
-#' any coefficient is different from zero.
-#' @param levelofinterest If the condition has more than two labels,
-#' levelofinterest should contain one factor of interest from condition.
-#' @param covariates Additional covariates to add to the model.
-#' @param adjust Method for p-value correction. See options in p.adjust().
-#' The default is fdr.
-#'
-#' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- scDiffExlimma(mouseBrainSubsetSCE, condition = "level1class")
 #'
-scDiffExlimma <- function(inSCESet, useAssay="logcounts", condition,
-                           analysisType="biomarker",
-                           levelofinterest=NULL, covariates=NULL, adjust="fdr"){
-  if (is.factor(SingleCellExperiment::colData(inSCESet)[, c(condition)])){
+scDiffExlimma <- function(inSCE, useAssay="logcounts", condition,
+                          analysisType="biomarker", levelofinterest=NULL,
+                          covariates=NULL, adjust="fdr"){
+  if (is.factor(SingleCellExperiment::colData(inSCE)[, c(condition)])){
     conditionFactor <- factor(
-      SingleCellExperiment::colData(inSCESet)[, c(condition)])
+      SingleCellExperiment::colData(inSCE)[, c(condition)])
     if (length(levels(conditionFactor)) < 2){
       stop("Problem with limma condition")
     } else if (length(levels(conditionFactor)) == 2){
@@ -331,7 +230,7 @@ scDiffExlimma <- function(inSCESet, useAssay="logcounts", condition,
   }
 
   annotData <- data.frame(
-    SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+    SingleCellExperiment::colData(inSCE)[, c(condition, covariates),
                                             drop = FALSE])
   if (analysisType == "biomarker"){
     if (is.null(levelofinterest)){
@@ -347,69 +246,57 @@ scDiffExlimma <- function(inSCESet, useAssay="logcounts", condition,
                                          collapse = "+"))),
     data = annotData)
 
-  fit <- limma::lmFit(SummarizedExperiment::assay(inSCESet, useAssay), design)
+  fit <- limma::lmFit(SummarizedExperiment::assay(inSCE, useAssay), design)
   ebayes <- limma::eBayes(fit)
   if (analysisType == "standard"){
     topGenes <- limma::topTable(ebayes, adjust = adjust,
-                                number = nrow(inSCESet))
+                                number = nrow(inSCE))
   } else if (analysisType == "biomarker") {
     topGenes <- limma::topTable(ebayes, coef = 2, adjust = adjust,
-                                number = nrow(inSCESet))
+                                number = nrow(inSCE))
   } else if (analysisType == "coef") {
     topGenes <- limma::topTable(
       ebayes, coef = which(levels(conditionFactor) == levelofinterest),
-      adjust = adjust, number = nrow(inSCESet))
+      adjust = adjust, number = nrow(inSCE))
   } else if (analysisType == "allcoef") {
     topGenes <- limma::topTable(ebayes, adjust = adjust,
-                                number = nrow(inSCESet))
+                                number = nrow(inSCE))
   }
 
   colnames(topGenes)[which(colnames(topGenes) == "adj.P.Val")] <- "padj"
   return(topGenes)
 }
 
-#' Perform ANOVA analysis
+#' @describeIn scDiffEx Perform differential expression analysis with ANOVA
 #'
-#' Returns a data frame of gene names and adjusted p-values
-#'
-#' @param inSCESet Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use. Default is "logcounts"
-#' @param condition The name of the condition to use for differential
-#' expression. Must be a name of a column from colData that contains at least
-#' two labels. Required
-#' @param covariates Additional covariates to add to the model.
-#' @param adjust Method for p-value correction. See options in p.adjust().
-#' The default is fdr.
-#'
-#' @return A data frame of gene names and adjusted p-values
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- scDiffExANOVA(mouseBrainSubsetSCE, condition = "level1class")
 #'
-scDiffExANOVA <- function(inSCESet, useAssay="logcounts", condition,
-                           covariates=NULL, adjust = "fdr"){
+scDiffExANOVA <- function(inSCE, useAssay="logcounts", condition,
+                          covariates=NULL, adjust = "fdr"){
   if (is.null(covariates)) {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition), collapse = "+"))),
-      data = data.frame(SingleCellExperiment::colData(inSCESet)[, c(condition),
+      data = data.frame(SingleCellExperiment::colData(inSCE)[, c(condition),
                                                                 drop = FALSE]))
     mod0 <- stats::model.matrix(~1,
-                                data = SingleCellExperiment::colData(inSCESet))
+                                data = SingleCellExperiment::colData(inSCE))
   } else {
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(c(condition, covariates),
                                            collapse = "+"))),
       data = data.frame(
-        SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+        SingleCellExperiment::colData(inSCE)[, c(condition, covariates),
                                                 drop = FALSE]))
     mod0 <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
       data = data.frame(
-        SingleCellExperiment::colData(inSCESet)[, c(condition, covariates),
+        SingleCellExperiment::colData(inSCE)[, c(condition, covariates),
                                                 drop = FALSE]))
   }
-  dat <- SummarizedExperiment::assay(inSCESet, useAssay)
+  dat <- SummarizedExperiment::assay(inSCE, useAssay)
   n <- dim(dat)[2]
   m <- dim(dat)[1]
   df1 <- dim(mod)[2]
@@ -427,4 +314,72 @@ scDiffExANOVA <- function(inSCESet, useAssay="logcounts", condition,
   results <- data.frame(row.names = rownames(dat), p.value = p,
                         padj = stats::p.adjust(p, method = adjust))
   return(results)
+}
+
+#' Plot Differential Expression
+#'
+#' @param inSCE Input data object that contains the data to be plotted.
+#' Required
+#' @param useAssay Indicate which assay to use. Default is "logcounts"
+#' @param condition The condition used for plotting the heatmap. Required
+#' @param geneList The list of genes to put in the heatmap. Required
+#' @param clusterRow Cluster the rows. The default is TRUE
+#' @param clusterCol Cluster the columns. The default is TRUE
+#' @param displayRowLabels Display the row labels on the heatmap. The default
+#' is TRUE.
+#' @param displayColumnLabels Display the column labels on the heatmap. The
+#' default is TRUE
+#' @param displayRowDendrograms Display the row dendrograms on the heatmap. The
+#' default is TRUE
+#' @param displayColumnDendrograms Display the column dendrograms on the
+#' heatmap. The default is TRUE.
+#' @param annotationColors Set of annotation colors for color bar. If null,
+#' no color bar is shown. default is NULL.
+#' @param columnTitle Title to be displayed at top of heatmap.
+#'
+#' @return ComplexHeatmap object for the provided geneList annotated with the
+#' condition.
+#' @export
+#' @examples
+#' data("mouseBrainSubsetSCE")
+#' res <- scDiffEx(mouseBrainSubsetSCE,
+#'                 useAssay = "logcounts",
+#'                 "level1class",
+#'                 diffexmethod = "limma")
+#' plotDiffEx(mouseBrainSubsetSCE, condition = "level1class",
+#'             geneList = rownames(res)[1:50], annotationColors = "auto")
+#'
+plotDiffEx <- function(inSCE, useAssay="logcounts", condition, geneList,
+                       clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
+                       displayColumnLabels=TRUE, displayRowDendrograms=TRUE,
+                       displayColumnDendrograms=TRUE, annotationColors=NULL,
+                       columnTitle="Differential Expression"){
+  if (is.null(annotationColors)){
+    topha <- NULL
+  } else if (annotationColors == "auto") {
+    colors <- RColorBrewer::brewer.pal(9, "Set1")
+    condLevels <- unique(SingleCellExperiment::colData(inSCE)[, condition])
+    if (length(condLevels) > 9){
+      stop("Too many levels in condition for auto coloring")
+    }
+    col <- list()
+    col[[condition]] <- stats::setNames(colors[seq_along(condLevels)],
+                                        condLevels)
+    topha <- ComplexHeatmap::HeatmapAnnotation(
+      df = SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE],
+      col = col)
+  } else {
+    topha <- ComplexHeatmap::HeatmapAnnotation(
+      df = SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE],
+      col = annotationColors)
+  }
+
+  heatmap <- ComplexHeatmap::Heatmap(
+    t(scale(t(SummarizedExperiment::assay(inSCE, useAssay)[geneList, ]))),
+    name = "Expression", column_title = columnTitle, cluster_rows = clusterRow,
+    cluster_columns = clusterCol, top_annotation = topha,
+    show_row_names = displayRowLabels, show_column_names = displayColumnLabels,
+    show_row_dend = displayRowDendrograms,
+    show_column_dend = displayColumnDendrograms)
+  return(heatmap)
 }

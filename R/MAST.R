@@ -1,8 +1,8 @@
 #' MAST
 #'
-#' Run MAST analysis on a SCESet object.
+#' Run and visualize MAST analysis on a SCtkExperiment object.
 #'
-#' @param SCEdata SCESet object
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay The assay to use for the MAST calculations. The default is
 #' "logcounts"
 #' @param condition select variable (from the colData) that is used for the model.
@@ -15,10 +15,12 @@
 #' @param useThresh Use adaptive thresholding to filter genes. The default is
 #' FALSE.
 #'
-#' @return A data.frame of differentially expressed genes with p-values.
+#' @describeIn MAST Run MAST analysis.
+#'
+#' @return MAST(): A data.frame of differentially expressed genes with p-values.
 #' @export
 #'
-MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
+MAST <- function(inSCE, condition = NULL, interest.level = NULL,
                  freqExpressed = 0.1, fcThreshold=log2(1.5), p.value = 0.05,
                  useThresh=FALSE, useAssay = "logcounts"){
 
@@ -26,20 +28,20 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
     stop("specify the condition of interest")
   }
 
-  if (length(unique(SingleCellExperiment::colData(SCEdata)[, condition])) == 1) {
+  if (length(unique(SingleCellExperiment::colData(inSCE)[, condition])) == 1) {
     stop("only one level is in the condition")
   }
 
   if (is.null(interest.level) & length(
-    unique(SingleCellExperiment::colData(SCEdata)[, condition])) > 2){
+    unique(SingleCellExperiment::colData(inSCE)[, condition])) > 2){
     stop("You must specify a level of interest when more than 2 levels are in",
          " the condition")
   }
 
   # Create MAST SingleCellAssay
-  pdata <- SingleCellExperiment::colData(SCEdata)
-  expres <- SummarizedExperiment::assay(SCEdata, useAssay)
-  fdata <- SingleCellExperiment::rowData(SCEdata)
+  pdata <- SingleCellExperiment::colData(inSCE)
+  expres <- SummarizedExperiment::assay(inSCE, useAssay)
+  fdata <- SingleCellExperiment::rowData(inSCE)
   SCENew <- MAST::FromMatrix(expres, pdata, fdata)
 
   #Caculate CDR for zlm model
@@ -66,7 +68,7 @@ MAST <- function(SCEdata, condition = NULL, interest.level = NULL,
 
   # >2 levels in the condition
   if (!is.null(interest.level) &
-      length(unique(SingleCellExperiment::colData(SCEdata)[, condition])) > 2){
+      length(unique(SingleCellExperiment::colData(inSCE)[, condition])) > 2){
     levels(SummarizedExperiment::colData(SCENewSample)[, condition]) <-
       c(levels(SummarizedExperiment::colData(SCENewSample)[, condition]),
         paste0("no_", interest.level))
