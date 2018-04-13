@@ -25,7 +25,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-![](img/upload_01.png)
+![](https://i.imgur.com/ZeMg5Gh.png)
 
 # Introduction
 

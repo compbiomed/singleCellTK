@@ -25,7 +25,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-![](img/summary_01.png)
+![](https://i.imgur.com/4SgLNHS.png)
 
 # Introduction
 
@@ -35,7 +35,7 @@ selected assay, which can be changed using the "Select Assay" drop-down.
 
 # Data summary table
 
-<img src="img/summary_02.png" width="400">
+<img src="https://imgur.com/VBT0gKu.png" width="400">
 
 The summary table provides several summary statistics about your data including:
 
@@ -52,7 +52,7 @@ Several filtering options are available
 
 ## Cutoffs
 
-<img src="img/summary_03.png" width="400">
+<img src="https://imgur.com/0VWS0qP.png" width="400">
 
 Data can be filtered by user selected cutoff values including:
 
@@ -75,7 +75,7 @@ clicking the "Reset" button.
 
 ## Filter samples by annotation
 
-<img src="img/summary_04.png" width="400">
+<img src="https://imgur.com/4I8V6Um.png" width="400">
 
 Data stored in the annotation data frame can be used for sample filtering.
 Choose a column from the annotation data frame, the values from this column to
@@ -83,14 +83,14 @@ keep, and click "Filter."
 
 ## Filter genes by feature annotation
 
-<img src="img/summary_05.png" width="400">
+<img src="https://imgur.com/zUew8tj.png" width="400">
 
 Similarly, gene annotations can be used to filter genes. Select a column from
 the row data frame and the values to keep and click "Filter."
 
 ## Convert gene annotations
 
-<img src="img/summary_06.png" width="400">
+<img src="https://imgur.com/ukBNdLp.png" width="400">
 
 The SCTK can use annotation data from Bioconductor annotation packages such as 
 [org.Hs.eg.db](https://www.bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html) to convert gene annotations between standard annotation types such as Entrez
@@ -101,14 +101,14 @@ organism. Instructions for installation can be found on the
 
 ## Delete an annotation column
 
-<img src="img/summary_07.png" width="400">
+<img src="https://imgur.com/EXr0XMu.png" width="400">
 
 You can remove an unnecessary or unwanted annotation column by selecting it and
 clicking the "Delete Column" button.
 
 ## Randomly Subset
 
-<img src="img/summary_08.png" width="400">
+<img src="https://i.imgur.com/OFgutav.png" width="400">
 
 If you are working with a large dataset, you may want to randomly subset the
 data for exploratory analysis. Specify the number of samples that you wish to
@@ -116,7 +116,7 @@ keep in the subset data frame and click the "Subset Data" button.
 
 ## Download SCtkExperiment
 
-<img src="img/summary_09.png" width="400">
+<img src="https://imgur.com/WvlaNN3.png" width="400">
 
 To export the SCtkExperiment object from the SCTK, you can download the object
 in RDS format by clicking the "Download SCtkExperiment" button. This file can
@@ -129,14 +129,14 @@ data and allows the user to modify the SCTK experiment object
 
 ## Available Assays and reducedDim Data
 
-<img src="img/summary_10.png" width="400">
+<img src="https://imgur.com/XnmgJIJ.png" width="400">
 
 The assays and reduced dimension data listed on this tab are stored in the
 underlying SCTK experiment object and are available on the tabs in the app.
 
 ## Add and Delete Assays and reducedDim Data
 
-<img src="img/summary_11.png" width="200">
+<img src="https://imgur.com/39V7UrX.png" width="200">
 
 If a count matrix is available, users can add a log(counts), CPM (counts per
 million), and log(CPM) matrix directly through the app. Users can also delete
@@ -146,7 +146,7 @@ unwanted assays or reducedDim objects on this tab
 
 The annotation tab displays the annotation matrix.
 
-<img src="img/summary_12.png" width="600">
+<img src="https://imgur.com/prYLR5D.png" width="600">
 
 ## Convert Annotation Data Columns
 

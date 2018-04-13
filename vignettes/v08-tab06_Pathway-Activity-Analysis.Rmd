@@ -25,7 +25,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-![](img/pathway_01.png)
+![](https://i.imgur.com/GoWZ5Mg.png)
 
 # Introduction
 

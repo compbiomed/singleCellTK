@@ -17,7 +17,7 @@ author:
 package: singleCellTK
 output: 
   BiocStyle::html_document:
-    toc_float: true
+    toc_float: false
 vignette: >
   %\VignetteIndexEntry{1. Introduction to singleCellTK}
   %\VignetteEngine{knitr::rmarkdown}

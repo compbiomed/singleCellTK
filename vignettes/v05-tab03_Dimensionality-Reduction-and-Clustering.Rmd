@@ -25,7 +25,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-![](img/dr_01.png)
+![](https://imgur.com/hzqCQCj.png)
 
 # Introduction
 
@@ -40,7 +40,7 @@ button and the data will be replaced.
 
 # Visualization
 
-![](img/dr_02.png)
+![](https://imgur.com/laORkuY.png)
 
 Currently, the SCTK supports visualization of PCA scatterplots, t-SNE
 scatterplots, and a dendrogram of clustering from hierarchical clustering. For
@@ -50,7 +50,7 @@ points can be colored by individual gene expression values
 
 # Clustering
 
-![](img/dr_03.png)
+![](https://imgur.com/noS43Mu.png)
 
 It is also possible to cluster the data using
 [K-Means](https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/K-Means)

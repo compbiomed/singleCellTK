@@ -26,7 +26,7 @@ vignette: >
 bibliography: v06-tab04_Batch-Correction.bib
 ---
 
-![](img/batch_01.png)
+![](https://imgur.com/yYd67kz.png)
 
 # Introduction
 
@@ -45,7 +45,7 @@ the SCTK.
 
 # Plot Batch Effect
 
-<img src="img/batch_02.png" width="350">
+<img src="https://imgur.com/NOT3dsi.png" width="350">
 
 Analysis on the batch correction tab is performed on the assay selected in the
 "Select Assay" field. To visualize the batch effect present in the data, select
@@ -65,7 +65,7 @@ the "Assay Name to Use" field.
 
 ## ComBat
 
-<img src="img/batch_03.png" width="350">
+<img src="https://imgur.com/MJ8A9Bu.png" width="350">
 
 To run ComBat batch correction, select a batch annotation, add any additional
 covariates to the model, and adjust any of the ComBat parameters available. For

@@ -25,7 +25,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-![](img/diffex_01.png)
+![](https://imgur.com/F0wG77W.png)
 
 # Introduction
 
@@ -57,7 +57,7 @@ applied to the results.
 
 ## Visualization
 
-![](img/diffex_02.png)
+![](https://imgur.com/v9hEOv1.png)
 
 The resulting gene list is displayed as a table in the "Results Table" tab and
 also in a heatmap in the "Heatmap" tab, which can also be customized using the
@@ -70,7 +70,7 @@ object.
 
 # MAST
 
-![](img/diffex_04.png)
+![](https://imgur.com/78hGZ96.png)
 
 [MAST](https://www.bioconductor.org/packages/release/bioc/html/MAST.html),
 Model-based Analysis of Single-cell Transcriptomics, is a differential
@@ -83,13 +83,13 @@ annotation information provided. The results are presented in a table, violin
 plots, or visualized in a heatmap. For detailed information about MAST analysis,
 see the [MAST documentation](https://www.bioconductor.org/packages/release/bioc/html/MAST.html).
 
-![](img/diffex_05.png)
+![](https://imgur.com/MjRl0MN.png)
 
-![](img/diffex_06.png)
+![](https://imgur.com/VhfMnzS.png)
 
 # Saving a Biomarker
 
-<img src="img/diffex_03.png" width="350">
+<img src="https://imgur.com/ErIRBDH.png" width="350">
 
 After differential expression analysis has been performed, the resulting gene
 list can be downloaded or stored in the SCtkExperiment object in the gene
