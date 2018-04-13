@@ -19,7 +19,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Primer}
+  %\VignetteIndexEntry{1. Introduction to singleCellTK}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

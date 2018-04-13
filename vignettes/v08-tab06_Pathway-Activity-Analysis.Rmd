@@ -18,9 +18,9 @@ author:
 package: singleCellTK
 output: 
   BiocStyle::html_document:
-    toc_float: true
+    toc_float: false
 vignette: >
-  %\VignetteIndexEntry{Primer}
+  %\VignetteIndexEntry{8. Pathway Activity Analysis Tab}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
