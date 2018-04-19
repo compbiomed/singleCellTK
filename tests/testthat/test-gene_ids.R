@@ -9,18 +9,18 @@ test_that("gene id should fail if a bad database is given", {
 if (requireNamespace("org.Mm.eg.db", quietly = TRUE)) {
   library(org.Mm.eg.db)
   test_that("conversion of mouse brain subset should be successful", {
-    expect_equal(dim(convertGeneIDs(mouseBrainSubsetSCE,
+    expect_equal(ncol(convertGeneIDs(mouseBrainSubsetSCE,
                                     inSymbol = "SYMBOL", outSymbol = "SYMBOL",
                                     database = "org.Mm.eg.db")),
-                 c(19972, 30))
-    expect_equal(dim(convertGeneIDs(mouseBrainSubsetSCE,
+                 30)
+    expect_equal(ncol(convertGeneIDs(mouseBrainSubsetSCE,
                                     inSymbol = "SYMBOL",
                                     outSymbol = "ENSEMBL",
                                     database =  "org.Mm.eg.db")),
-                 c(18153, 30))
-    expect_equal(dim(convertGeneIDs(mouseBrainSubsetSCE,
+                 30)
+    expect_equal(ncol(convertGeneIDs(mouseBrainSubsetSCE,
                                     inSymbol = "SYMBOL",
                                     outSymbol = "ENTREZID", "org.Mm.eg.db")),
-                 c(18735, 30))
+                 30)
   })
 }
