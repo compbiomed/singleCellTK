@@ -2,7 +2,7 @@
 #'
 #' Use this function to run the single cell analysis app.
 #'
-#' @param inputData The input SCtkExperiment class object
+#' @param inSCE The input SCtkExperiment class object
 #'
 #' @import GSVAdata Biobase DelayedArray
 #'
@@ -20,11 +20,11 @@
 #'   singleCellTK(mouseBrainSubsetSCE)
 #' }
 #'
-singleCellTK <- function(inputData=NULL) {
+singleCellTK <- function(inSCE=NULL) {
   appDir <- system.file("shiny", package = "singleCellTK")
-  if (!is.null(inputData) & is.null(rownames(inputData))){
+  if (!is.null(inSCE) & is.null(rownames(inSCE))){
     stop("ERROR: No row names (gene names) found.")
   }
-  shiny::shinyOptions(inputSCEset = inputData)
+  shiny::shinyOptions(inputSCEset = inSCE)
   shiny::runApp(appDir, display.mode = "normal")
 }

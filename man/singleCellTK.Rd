@@ -4,10 +4,10 @@
 \alias{singleCellTK}
 \title{Run the single cell analysis app}
 \usage{
-singleCellTK(inputData = NULL)
+singleCellTK(inSCE = NULL)
 }
 \arguments{
-\item{inputData}{The input SCtkExperiment class object}
+\item{inSCE}{The input SCtkExperiment class object}
 }
 \value{
 The shiny app will open

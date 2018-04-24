@@ -5,10 +5,10 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCESet, useAssay = "logcounts", batch, condition = NULL)
+plotBatchVariance(inSCE, useAssay = "logcounts", batch, condition = NULL)
 }
 \arguments{
-\item{inSCESet}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input SCtkExperiment object. Requireds}
 
 \item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 

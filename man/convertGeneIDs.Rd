@@ -4,10 +4,10 @@
 \alias{convertGeneIDs}
 \title{Convert Gene IDs}
 \usage{
-convertGeneIDs(inSCESet, inSymbol, outSymbol, database = "org.Hs.eg.db")
+convertGeneIDs(inSCE, inSymbol, outSymbol, database = "org.Hs.eg.db")
 }
 \arguments{
-\item{inSCESet}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{inSymbol}{The input symbol type}
 
@@ -30,10 +30,10 @@ if(requireNamespace("org.Mm.eg.db", quietly = TRUE)) {
   #convert mouse gene symbols to ensembl IDs
   library("org.Mm.eg.db")
   sample(rownames(mouseBrainSubsetSCE), 50)
-  mouseBrainSubsetSymbol <- convertGeneIDs(inSCESet = mouseBrainSubsetSCE,
-                                              inSymbol = "SYMBOL",
-                                              outSymbol = "ENSEMBL",
-                                              database = "org.Mm.eg.db")
+  mouseBrainSubsetSymbol <- convertGeneIDs(inSCE = mouseBrainSubsetSCE,
+                                           inSymbol = "SYMBOL",
+                                           outSymbol = "ENSEMBL",
+                                           database = "org.Mm.eg.db")
   sample(rownames(mouseBrainSubsetSymbol), 50)
 }
 

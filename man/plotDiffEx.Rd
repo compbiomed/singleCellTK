@@ -4,14 +4,14 @@
 \alias{plotDiffEx}
 \title{Plot Differential Expression}
 \usage{
-plotDiffEx(inSCESet, useAssay = "logcounts", condition, geneList,
+plotDiffEx(inSCE, useAssay = "logcounts", condition, geneList,
   clusterRow = TRUE, clusterCol = TRUE, displayRowLabels = TRUE,
   displayColumnLabels = TRUE, displayRowDendrograms = TRUE,
   displayColumnDendrograms = TRUE, annotationColors = NULL,
   columnTitle = "Differential Expression")
 }
 \arguments{
-\item{inSCESet}{Input data object that contains the data to be plotted.
+\item{inSCE}{Input data object that contains the data to be plotted.
 Required}
 
 \item{useAssay}{Indicate which assay to use. Default is "logcounts"}

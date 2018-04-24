@@ -1,15 +1,8 @@
-#' Get t-SNE components for a SCE object
+#' @describeIn getPCA Get t-SNE components for a SCtkE object
 #'
-#' Selects the 500 most variable genes in the feature count, performs
-#' t-SNE based on them and stores the t-SNE values in the reducedDims slot of the
-#' SCE object.
+#' @return getTSNE(): A SCtkE object with the specified reduecedDim and
+#' pcaVariances updated
 #'
-#' @param countData SCE object
-#' @param useAssay Indicate which assay to use for PCA. Default is "counts"
-#' @param reducedDimName Store the t-SNE data with this name. The default is
-#' TSNE. The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
-#'
-#' @return A SCE object with the specified reducedDim updated
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -22,16 +15,16 @@
 #'                                reducedDimName = "TSNE_cpm")
 #' reducedDims(mouseBrainSubsetSCE)
 #'
-getTSNE <- function(countData, useAssay="logcounts", reducedDimName="TSNE"){
-  if (nrow(countData) < 500){
-    ntop <- nrow(countData)
+getTSNE <- function(inSCE, useAssay="logcounts", reducedDimName="TSNE"){
+  if (nrow(inSCE) < 500){
+    ntop <- nrow(inSCE)
   } else{
     ntop <- 500
   }
-  if (!(useAssay %in% names(SummarizedExperiment::assays(countData)))){
+  if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
-  exprsMat <- log2(SummarizedExperiment::assay(countData, useAssay) + 1)
+  exprsMat <- log2(SummarizedExperiment::assay(inSCE, useAssay) + 1)
   rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprsToPlot <- exprsMat[featureSet, ]
@@ -39,11 +32,11 @@ getTSNE <- function(countData, useAssay="logcounts", reducedDimName="TSNE"){
   keepFeature[is.na(keepFeature)] <- FALSE
   exprsToPlot <- exprsToPlot[keepFeature, ]
   exprsToPlot <- t(scale(t(exprsToPlot)))
-  perplexity <- floor(ncol(countData) / 5)
+  perplexity <- floor(ncol(inSCE) / 5)
   tsneOut <- Rtsne::Rtsne(t(exprsToPlot), perplexity = perplexity,
-                           initial_dims = max(50, ncol(countData)))
+                           initial_dims = max(50, ncol(inSCE)))
   tsneOut <- tsneOut$Y[, c(1, 2)]
-  rownames(tsneOut) <- colnames(countData)
-  SingleCellExperiment::reducedDim(countData, reducedDimName) <- tsneOut
-  return(countData)
+  rownames(tsneOut) <- colnames(inSCE)
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
+  return(inSCE)
 }

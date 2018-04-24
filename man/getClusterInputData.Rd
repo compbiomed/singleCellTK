@@ -4,11 +4,11 @@
 \alias{getClusterInputData}
 \title{Get data to use as input clustering algorithms}
 \usage{
-getClusterInputData(countData, inputData, useAssay = "logcounts",
+getClusterInputData(inSCE, inputData, useAssay = "logcounts",
   reducedDimName = NULL)
 }
 \arguments{
-\item{countData}{A SCE object}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components")}
 

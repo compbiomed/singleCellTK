@@ -1,16 +1,18 @@
-#' Get PCA components for a SCtkE object
+#' Get and plot PCA and t-SCE components for a SCtkE object
 #'
 #' Selects the 500 most variable genes in the SCE, performs
-#' PCA based on them and stores the PCA values in the reducedDims slot of the
-#' SCE object.
+#' PCA or t-SNE based on them and stores the values in the reducedDims slot of
+#' the SCE object.
+#' 
+#' @describeIn getPCA Get PCA components for a SCtkE object 
 #'
-#' @param countData SCtkE object
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use for PCA. Default is "counts"
 #' @param reducedDimName Store the PCA data with this name. The default is PCA.
 #' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
-#' @return A SCtkE object with the specified reduecedDim and pcaVariances
-#' updated
+#' @return getPCA(): A SCtkE object with the specified reduecedDim and
+#' pcaVariances updated
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -25,17 +27,17 @@
 #'                               reducedDimName = "PCA_cpm")
 #' reducedDims(mouseBrainSubsetSCE)
 #'
-getPCA <- function(countData, useAssay="logcounts", reducedDimName="PCA"){
-  if (nrow(countData) < 500){
-    ntop <- nrow(countData)
+getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
+  if (nrow(inSCE) < 500){
+    ntop <- nrow(inSCE)
   }
   else{
     ntop <- 500
   }
-  if (!(useAssay %in% names(SummarizedExperiment::assays(countData)))){
+  if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
-  exprsMat <- log2(SummarizedExperiment::assay(countData, useAssay) + 1)
+  exprsMat <- log2(SummarizedExperiment::assay(inSCE, useAssay) + 1)
   rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprsToPlot <- exprsMat[featureSet, , drop = FALSE]
@@ -46,11 +48,11 @@ getPCA <- function(countData, useAssay="logcounts", reducedDimName="PCA"){
   pca <- stats::prcomp(exprsToPlot)
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
-  SingleCellExperiment::reducedDim(countData, reducedDimName) <- pca
-  if (class(countData) == "SCtkExperiment"){
-    pcaVariances(countData) <- S4Vectors::DataFrame(percentVar)
-    rownames(pcaVariances(countData)) <- paste0(
-      "PC", seq_len(nrow(pcaVariances(countData))))
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- pca
+  if (class(inSCE) == "SCtkExperiment"){
+    pcaVariances(inSCE) <- S4Vectors::DataFrame(percentVar)
+    rownames(pcaVariances(inSCE)) <- paste0(
+      "PC", seq_len(nrow(pcaVariances(inSCE))))
   }
-  return(countData)
+  return(inSCE)
 }

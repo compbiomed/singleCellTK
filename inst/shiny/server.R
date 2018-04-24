@@ -221,7 +221,7 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-    singleCellTK::summarizeTable(indata = vals$counts,
+    singleCellTK::summarizeTable(inSCE = vals$counts,
                                  useAssay = input$filterAssaySelect,
                                  expressionCutoff = input$minDetectGene)
   })
@@ -234,7 +234,7 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("filterData", {
         deletesamples <- input$deletesamplelist
-        vals$counts <- filterSCData(insceset = vals$counts,
+        vals$counts <- filterSCData(inSCE = vals$counts,
                                     useAssay = input$filterAssaySelect,
                                     deletesamples = deletesamples,
                                     removeNoExpress = input$removeNoexpress,
@@ -352,7 +352,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$convertGenes, {
     req(vals$counts)
     withBusyIndicatorServer("convertGenes", {
-      vals$counts <- convertGeneIDs(inSCESet = vals$counts,
+      vals$counts <- convertGeneIDs(inSCE = vals$counts,
                                     inSymbol = input$orgFromCol,
                                     outSymbol = input$orgToCol,
                                     database = input$orgOrganism)
@@ -514,14 +514,14 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCA"){
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(countData = vals$counts,
+          vals$counts <- getPCA(inSCE = vals$counts,
                                 useAssay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
           updateReddimInputs()
         }
         if (!is.null(reducedDim(vals$counts, pcadimname))){
           if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotPCA(countData = vals$counts,
+            g <- singleCellTK::plotPCA(inSCE = vals$counts,
                                        colorBy = input$colorBy,
                                        shape = input$shapeBy, pcX = input$pcX,
                                        pcY = input$pcY,
@@ -540,7 +540,7 @@ shinyServer(function(input, output, session) {
       } else if (input$dimRedPlotMethod == "tSNE"){
         tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))) {
-          vals$counts <- getTSNE(countData = vals$counts,
+          vals$counts <- getTSNE(inSCE = vals$counts,
                                  useAssay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
           updateReddimInputs()
@@ -586,7 +586,7 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCA"){
         pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(countData = vals$counts,
+          vals$counts <- getPCA(inSCE = vals$counts,
                                 useAssay = input$dimRedAssaySelect,
                                 reducedDimName = pcadimname)
           updateReddimInputs()
@@ -630,7 +630,7 @@ shinyServer(function(input, output, session) {
       } else if (input$dimRedPlotMethod == "tSNE"){
         tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
         if (is.null(reducedDim(vals$counts, tsnedimname))){
-          vals$counts <- getTSNE(countData = vals$counts,
+          vals$counts <- getTSNE(inSCE = vals$counts,
                                  useAssay = input$dimRedAssaySelect,
                                  reducedDimName = tsnedimname)
           updateReddimInputs()
@@ -677,7 +677,7 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       if (input$dimRedPlotMethod == "Dendrogram" & paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
-        data <- getClusterInputData(countData = vals$counts,
+        data <- getClusterInputData(inSCE = vals$counts,
                                     inputData = "PCA Components",
                                     useAssay = input$dimRedAssaySelect,
                                     reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
@@ -721,7 +721,7 @@ shinyServer(function(input, output, session) {
                                         colnames(colData(vals$counts))),
                             selected = input$clusterName)
         } else if (input$clusteringAlgorithm == "Clara") {
-          data <- getClusterInputData(countData = vals$counts,
+          data <- getClusterInputData(inSCE = vals$counts,
                                       inputData = input$selectClusterInputData,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = currdimname)
@@ -759,7 +759,7 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("reRunTSNE", {
-        vals$counts <- getTSNE(countData = vals$counts,
+        vals$counts <- getTSNE(inSCE = vals$counts,
                                useAssay = input$dimRedAssaySelect,
                                reducedDimName = paste0("TSNE", "_",
                                                        input$dimRedAssaySelect))
@@ -774,7 +774,7 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("reRunPCA", {
-        vals$counts <- getPCA(countData = vals$counts,
+        vals$counts <- getPCA(inSCE = vals$counts,
                               useAssay = input$dimRedAssaySelect,
                               reducedDimName = paste0("PCA", "_",
                                                       input$dimRedAssaySelect))
@@ -810,7 +810,7 @@ shinyServer(function(input, output, session) {
             saveassayname <- gsub(" ", "_", input$combatSaveAssay)
             if (input$combatRef){
               assay(vals$counts, saveassayname) <-
-                ComBatSCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                ComBatSCE(inSCE = vals$counts, batch = input$combatBatchVar,
                           useAssay = input$combatAssay,
                           par.prior = input$combatParametric,
                           covariates = input$combatConditionVar,
@@ -818,7 +818,7 @@ shinyServer(function(input, output, session) {
                           ref.batch = input$combatRefBatch)
             } else {
               assay(vals$counts, saveassayname) <-
-                ComBatSCE(SCEdata = vals$counts, batch = input$combatBatchVar,
+                ComBatSCE(inSCE = vals$counts, batch = input$combatBatchVar,
                           useAssay = input$combatAssay,
                           par.prior = input$combatParametric,
                           covariates = input$combatConditionVar,
@@ -845,7 +845,7 @@ shinyServer(function(input, output, session) {
         input$batchVarPlot != "none" &
         input$conditionVarPlot != "none" &
         input$batchVarPlot != input$conditionVarPlot){
-      plotBatchVariance(inSCESet = vals$counts,
+      plotBatchVariance(inSCE = vals$counts,
                         useAssay = input$combatAssay,
                         batch = input$batchVarPlot,
                         condition = input$conditionVarPlot)
@@ -936,7 +936,7 @@ shinyServer(function(input, output, session) {
         } else {
           useCovariates <- input$selectDiffexCovariates
         }
-        vals$diffexgenelist <- scDiffEx(inSCESet = vals$counts,
+        vals$diffexgenelist <- scDiffEx(inSCE = vals$counts,
                                         useAssay = input$diffexAssay,
                                         condition = input$selectDiffexCondition,
                                         covariates = useCovariates,
@@ -993,7 +993,7 @@ shinyServer(function(input, output, session) {
         colors <- NULL
       }
       ComplexHeatmap::draw(
-        plotDiffEx(inSCESet = vals$counts,
+        plotDiffEx(inSCE = vals$counts,
                    useAssay = input$diffexAssay,
                    condition = input$colorBarCondition,
                    geneList = rownames(vals$diffexgenelist),
@@ -1061,7 +1061,7 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("runDEhurdle", {
         #run diffex to get gene list and pvalues
-        vals$mastgenelist <- MAST(SCEdata = vals$counts,
+        vals$mastgenelist <- MAST(inSCE = vals$counts,
                                   useAssay = input$mastAssay,
                                   condition = input$hurdlecondition,
                                   interest.level = input$hurdleconditionofinterest,
@@ -1080,7 +1080,7 @@ shinyServer(function(input, output, session) {
     else{
       withBusyIndicatorServer("runThreshPlot", {
         output$threshplot <- renderPlot({
-          vals$thres <- thresholdGenes(SCEdata = vals$counts,
+          vals$thres <- thresholdGenes(inSCE = vals$counts,
                                        useAssay = input$mastAssay)
           par(mfrow = c(5, 4))
           plot(vals$thres)
@@ -1092,18 +1092,18 @@ shinyServer(function(input, output, session) {
 
   output$hurdleviolin <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTviolin(SCEdata = vals$counts, useAssay = input$mastAssay,
+      MASTviolin(inSCE = vals$counts, useAssay = input$mastAssay,
                  fcHurdleSig = vals$mastgenelist,
-                 variable = input$hurdlecondition,
+                 condition = input$hurdlecondition,
                  threshP = input$useAdaptThresh)
     }
   }, height = 600)
 
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
-      MASTregression(SCEdata = vals$counts, useAssay = input$mastAssay,
+      MASTregression(inSCE = vals$counts, useAssay = input$mastAssay,
                      fcHurdleSig = vals$mastgenelist,
-                     variable = input$hurdlecondition,
+                     condition = input$hurdlecondition,
                      threshP = input$useAdaptThresh)
     }
   }, height = 600)
@@ -1166,7 +1166,7 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
-        vals$gsvaRes <- gsvaSCE(SCEdata = vals$counts,
+        vals$gsvaRes <- gsvaSCE(inSCE = vals$counts,
                                 useAssay = input$pathwayAssay,
                                 pathwaySource = input$genelistSource,
                                 pathwayNames = input$pathwayGeneLists)
@@ -1207,12 +1207,12 @@ shinyServer(function(input, output, session) {
       }
       if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
-        gsvaPlot(SCEdata = vals$counts,
+        gsvaPlot(inSCE = vals$counts,
                  gsvaData = tempgsvares,
                  plotType = input$pathwayOutPlot,
                  condition = input$pathwayPlotVar)
       } else if (input$pathwayOutPlot == "Heatmap"){
-        gsvaPlot(SCEdata = vals$counts,
+        gsvaPlot(inSCE = vals$counts,
                  gsvaData = tempgsvares,
                  plotType = input$pathwayOutPlot,
                  condition = input$pathwayPlotVar)

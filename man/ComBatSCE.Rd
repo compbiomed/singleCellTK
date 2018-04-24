@@ -4,11 +4,11 @@
 \alias{ComBatSCE}
 \title{ComBatSCE}
 \usage{
-ComBatSCE(SCEdata, batch, useAssay = "logcounts", par.prior = "Parametric",
+ComBatSCE(inSCE, batch, useAssay = "logcounts", par.prior = "Parametric",
   covariates = NULL, mean.only = FALSE, ref.batch = NULL)
 }
 \arguments{
-\item{SCEdata}{SCtkExperiment object. Required}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{batch}{The name of a column in colData to use as the batch variable.
 Required}
@@ -45,20 +45,20 @@ if(requireNamespace("bladderbatch", quietly = TRUE)) {
   mod <- stats::model.matrix(~as.factor(cancer), data = colData(dat))
 
   # parametric adjustment
-  combat_edata1 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-                              batch = "batch", covariates = NULL)
+  combat_edata1 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+                             batch = "batch", covariates = NULL)
   assay(dat, "parametric_combat") <- combat_edata1
 
   # non-parametric adjustment, mean-only version
-  combat_edata2 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-                              batch = "batch", par.prior = "Non-parametric",
-                              mean.only = TRUE, covariates = NULL)
+  combat_edata2 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+                             batch = "batch", par.prior = "Non-parametric",
+                             mean.only = TRUE, covariates = NULL)
   assay(dat, "nonparametric_combat_meanonly") <- combat_edata2
 
   # reference-batch version, with covariates
-  combat_edata3 <- ComBatSCE(SCEdata = dat, useAssay = "exprs",
-                              batch = "batch", covariates = "cancer",
-                              ref.batch = 3)
+  combat_edata3 <- ComBatSCE(inSCE = dat, useAssay = "exprs",
+                             batch = "batch", covariates = "cancer",
+                             ref.batch = 3)
   assay(dat, "refbatch_combat_wcov") <- combat_edata3
   assays(dat)
 }

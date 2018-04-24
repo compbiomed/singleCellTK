@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 0.99.4
+Version: 0.99.10
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
              person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
@@ -63,3 +63,5 @@ Suggests:
     scRNAseq,
     xtable
 VignetteBuilder: knitr
+URL: https://compbiomed.github.io/sctk_docs/
+BugReports: https://github.com/compbiomed/singleCellTK/issues

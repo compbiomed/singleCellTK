@@ -1,23 +1,19 @@
-#' thresholdGenes
+#' @describeIn MAST Identify adaptive thresholds
 #'
-#' @param SCEdata SCtkExperiment object
-#' @param useAssay The assay to use for the MAST calculations. The default is
-#' "logcounts"
-#'
-#' @return list of thresholded counts (on natural scale), thresholds, bins,
-#' densities estimated on each bin, and the original data from
+#' @return thresholdGenes(): list of thresholded counts (on natural scale),
+#' thresholds, bins, densities estimated on each bin, and the original data from
 #' MAST::thresholdSCRNACountMatrix
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- thresholdGenes(mouseBrainSubsetSCE)
 #'
-thresholdGenes <- function(SCEdata, useAssay="logcounts"){
+thresholdGenes <- function(inSCE, useAssay="logcounts"){
   # data preparation
-  expres <- SummarizedExperiment::assay(SCEdata, useAssay)
+  expres <- SummarizedExperiment::assay(inSCE, useAssay)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(SCEdata),
+  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
                               fdata)
 
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
@@ -26,28 +22,22 @@ thresholdGenes <- function(SCEdata, useAssay="logcounts"){
   return(thres)
 }
 
-#' MAST Violin
+#' @describeIn MAST Visualize MAST results using violin plots
 #'
-#' Run MAST analysis on a SCtkExperiment object.
-#'
-#' @param SCEdata SCtkExperiment object
-#' @param useAssay The assay to use for the MAST calculations. The default is
-#' "logcounts"
 #' @param fcHurdleSig The filtered result from hurdle model
 #' @param samplesize The number of most significant genes
 #' @param threshP Plot threshold values from adaptive thresholding. Default is
 #' FALSE
-#' @param variable Select the condition of interest
 #'
-#' @return A ggplot object of MAST violin plots.
+#' @return MASTviolin(): A ggplot object of MAST violin plots.
 #' @export
 #'
-MASTviolin <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
-                       samplesize = 49, threshP=FALSE, variable){
-  expres <- SummarizedExperiment::assay(SCEdata, useAssay)
+MASTviolin <- function(inSCE, useAssay="logcounts", fcHurdleSig,
+                       samplesize = 49, threshP=FALSE, condition){
+  expres <- SummarizedExperiment::assay(inSCE, useAssay)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(SCEdata),
+  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
                              fdata)
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
   thres <- MAST::thresholdSCRNACountMatrix(SummarizedExperiment::assay(SCENew),
@@ -63,8 +53,8 @@ MASTviolin <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
     yvalue <- useAssay
   }
   violinplot <- ggplot2::ggplot(flatDat,
-                                ggplot2::aes_string(x = variable, y = yvalue,
-                                                    color = variable)) +
+                                ggplot2::aes_string(x = condition, y = yvalue,
+                                                    color = condition)) +
     ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7) +
     ggplot2::geom_violin() +
@@ -72,28 +62,17 @@ MASTviolin <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
   return(violinplot)
 }
 
-#' MAST linear model
+#' @describeIn MAST Visualize MAST results using linear model plots
 #'
-#' Run MAST analysis on a SCtkExperiment object.
-#'
-#' @param SCEdata SCtkExperiment object
-#' @param useAssay The assay to use for the MAST calculations. The default is
-#' "logcounts"
-#' @param fcHurdleSig The filtered result from hurdle model
-#' @param samplesize The number of most significant genes
-#' @param threshP Plot threshold values from adaptive thresholding. Default is
-#' FALSE
-#' @param variable Select the condition of interest
-#'
-#' @return A ggplot object of MAST linear regression plots.
+#' @return MASTregression(): A ggplot object of MAST linear regression plots.
 #' @export
 #'
-MASTregression <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
-                           samplesize = 49, threshP=FALSE, variable){
-  expres <- SummarizedExperiment::assay(SCEdata, useAssay)
+MASTregression <- function(inSCE, useAssay="logcounts", fcHurdleSig,
+                           samplesize = 49, threshP=FALSE, condition){
+  expres <- SummarizedExperiment::assay(inSCE, useAssay)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
-  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(SCEdata),
+  SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
                              fdata)
   cdr2 <- colSums(SummarizedExperiment::assay(SCENew) > 0)
   SummarizedExperiment::colData(SCENew)$cngeneson <- scale(cdr2)
@@ -117,7 +96,7 @@ MASTregression <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
   for (i in unique(flatDat$primerid)){
     resdf <- flatDat[flatDat$primerid == i, ]
     resdf$lmPred <- stats::lm(
-      stats::as.formula(paste0(yvalue, "~cngeneson+", variable)),
+      stats::as.formula(paste0(yvalue, "~cngeneson+", condition)),
       data = flatDat[flatDat$primerid == i, ])$fitted
     if (is.null(resData)){
       resData <- resdf
@@ -126,9 +105,9 @@ MASTregression <- function(SCEdata, useAssay="logcounts", fcHurdleSig,
     }
   }
 
-  ggbase <- ggplot2::ggplot(resData, ggplot2::aes_string(x = variable,
+  ggbase <- ggplot2::ggplot(resData, ggplot2::aes_string(x = condition,
                                                           y = yvalue,
-                                                          color = variable)) +
+                                                          color = condition)) +
     ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7)
   regressionplot <- ggbase +

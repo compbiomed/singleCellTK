@@ -2,7 +2,7 @@
 #'
 #' Creates a table of summary metrics from an input SCtkExperiment.
 #'
-#' @param indata Input SCtkExperiment
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to summarize. Default is "counts"
 #' @param expressionCutoff Count number of samples with fewer than
 #' expressionCutoff genes. The default is 1700.
@@ -13,7 +13,7 @@
 #' data("mouseBrainSubsetSCE")
 #' summarizeTable(mouseBrainSubsetSCE)
 #'
-summarizeTable <- function(indata, useAssay="counts", expressionCutoff=1700){
+summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
   return(
     data.frame(
       "Metric" = c(
@@ -25,17 +25,17 @@ summarizeTable <- function(indata, useAssay="counts", expressionCutoff=1700){
         "Genes with no expression across all samples"
       ),
       "Value" = c(
-        ncol(indata),
-        nrow(indata),
+        ncol(inSCE),
+        nrow(inSCE),
         as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(indata, useAssay)))),
+          SummarizedExperiment::assay(inSCE, useAssay)))),
         as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(indata, useAssay) > 0))),
+          SummarizedExperiment::assay(inSCE, useAssay) > 0))),
         sum(DelayedArray::colSums(
-          SummarizedExperiment::assay(indata, useAssay) != 0) <
+          SummarizedExperiment::assay(inSCE, useAssay) != 0) <
             expressionCutoff),
         sum(DelayedArray::rowSums(
-          SummarizedExperiment::assay(indata, useAssay)) == 0)
+          SummarizedExperiment::assay(inSCE, useAssay)) == 0)
       )
     )
   )
@@ -132,7 +132,7 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 
 #' Filter Genes and Samples from a Single Cell Object
 #'
-#' @param insceset Input single cell object, required
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use for filtering. Default is
 #' "counts"
 #' @param deletesamples List of samples to delete from the object.
@@ -153,43 +153,43 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
 #'                                     deletesamples="X1772063061_G11")
-filterSCData <- function(insceset, useAssay="counts", deletesamples=NULL,
+filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
                          removeNoExpress=TRUE, removeBottom=0.5,
                          minimumDetectGenes=1700, filterSpike=TRUE){
   #delete specified samples
-  insceset <- insceset[, !(colnames(insceset) %in% deletesamples)]
+  inSCE <- inSCE[, !(colnames(inSCE) %in% deletesamples)]
 
   if (filterSpike){
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(insceset)))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, useAssay)),
+    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE)))
+    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
                        decreasing = TRUE)[seq_len(nkeeprows)]
   } else {
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(insceset))) -
-      sum(SingleCellExperiment::isSpike(insceset))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(insceset, useAssay)),
+    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE))) -
+      sum(SingleCellExperiment::isSpike(inSCE))
+    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
                        decreasing = TRUE)
     tokeeprow <- setdiff(tokeeprow,
-                         which(SingleCellExperiment::isSpike(insceset)))
+                         which(SingleCellExperiment::isSpike(inSCE)))
     tokeeprow <- tokeeprow[seq_len(nkeeprows)]
-    tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(insceset)))
+    tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(inSCE)))
   }
-  tokeepcol <- colSums(SummarizedExperiment::assay(insceset, useAssay) != 0) >=
+  tokeepcol <- colSums(SummarizedExperiment::assay(inSCE, useAssay) != 0) >=
     minimumDetectGenes
-  insceset <- insceset[tokeeprow, tokeepcol]
+  inSCE <- inSCE[tokeeprow, tokeepcol]
 
   #remove genes with no expression
   if (removeNoExpress){
     if (filterSpike){
-      insceset <- insceset[rowSums(SummarizedExperiment::assay(insceset,
+      inSCE <- inSCE[rowSums(SummarizedExperiment::assay(inSCE,
                                                               useAssay)) != 0, ]
     } else {
-      insceset <- insceset[(rowSums(
-        SummarizedExperiment::assay(insceset,useAssay)) != 0 |
-          SingleCellExperiment::isSpike(insceset)), ]
+      inSCE <- inSCE[(rowSums(
+        SummarizedExperiment::assay(inSCE, useAssay)) != 0 |
+          SingleCellExperiment::isSpike(inSCE)), ]
     }
   }
 
-  return(insceset)
+  return(inSCE)
 }
 
 #test shiny functions
