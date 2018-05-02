@@ -15,7 +15,7 @@ colourGroupInput <- function(inputId) {
 colourGroup <- function(input, output, session, heading = "", options="",
                         labels = "", value = "", ...){
   ns <- session$ns
-  ids <- reactive(sapply(options, function(option) paste(option, "inputId", sep = "_")))
+  ids <- reactive(sapply(options, function(option) make.names(paste(option, "inputId", sep = "_"),unique=TRUE)))
 
   cols <- reactive({
     if (length(options) != 0){
