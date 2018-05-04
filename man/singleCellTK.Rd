@@ -4,10 +4,13 @@
 \alias{singleCellTK}
 \title{Run the single cell analysis app}
 \usage{
-singleCellTK(inSCE = NULL)
+singleCellTK(inSCE = NULL, includeVersion = TRUE)
 }
 \arguments{
 \item{inSCE}{The input SCtkExperiment class object}
+
+\item{includeVersion}{Include the version number in the SCTK header. The
+default is TRUE.}
 }
 \value{
 The shiny app will open
