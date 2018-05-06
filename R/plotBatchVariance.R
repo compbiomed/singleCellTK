@@ -58,12 +58,13 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch,
                                      Condition = condR2,
                                      Batch = batchR2), 5) * 100
   exVarM <- reshape2::melt(explainedVariation)
-  colnames(exVarM) <- c("Gene", "Model", "Value")
+  colnames(exVarM) <- c("Gene", "Model", "Percent.Explained.Variation")
   exVarM$Model <- factor(exVarM$Model)
-  a <- ggplot2::ggplot(exVarM, ggplot2::aes_string("Model", "Value")) +
+  a <- ggplot2::ggplot(exVarM, ggplot2::aes_string("Model", "Percent.Explained.Variation")) +
     ggplot2::geom_violin(ggplot2::aes_string(fill = "Model")) +
     ggplot2::geom_boxplot(width = .1) +
     ggplot2::xlab("Model") +
+    ggplot2::ylab("Percent Explained Variation") +
     ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
                                guide = FALSE)
   return(a)

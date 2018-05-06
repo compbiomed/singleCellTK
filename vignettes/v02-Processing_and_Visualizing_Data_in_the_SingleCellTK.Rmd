@@ -63,9 +63,7 @@ rm(maits)
 You can get summary metrics with the `summarizeTable` function:
 
 ```{r maits_summarize, results='asis'}
-print(xtable(summarizeTable(maits_sce, useAssay = "logtpm")),
-      type="html", include.rownames=FALSE,
-      html.table.attributes='class="table table-condensed"')
+knitr::kable(summarizeTable(maits_sce, useAssay = "logtpm"))
 ```
 
 Typically, these summary statistics would be run on a "counts" matrix, but here
@@ -90,9 +88,7 @@ table(colData(maits_subset)$ourfilter)
 ```
 
 ```{r maits_filter_table, results='asis'}
-print(xtable(summarizeTable(maits_subset, useAssay = "logtpm")),
-      type="html", include.rownames=FALSE,
-      html.table.attributes='class="table table-condensed"')
+knitr::kable(summarizeTable(maits_subset, useAssay = "logtpm"))
 ```
 
 ## Visualization
@@ -196,6 +192,9 @@ plotDiffEx(maits_subset, useAssay = "logtpm", condition = "condition",
            displayRowLabels = FALSE, displayColumnLabels = FALSE)
 ```
 
+Among the top differentially expressed genes was interferon gamma, a cytokine
+that is known to be produced in response to stimulation.
+
 ### Pathway Activity with GSVA
 
 The singleCellTK supports pathway activity analysis using the GSVA package.
@@ -221,6 +220,10 @@ gsvaPlot(maits_subset, gsvaRes, "Violin", "condition")
 gsvaPlot(maits_subset, gsvaRes, "Heatmap", "condition")
 ```
 
+Among the top pathways that showed increased activity in the stimulated cells
+was KEGG_PROTEASOME, indicating proteasome related genes showed increased
+activity in the stimulated T cells. This pathway includes interferon gamma.
+
 # Batch Effects Example
 
 It is possible to use ComBat within the Single Cell Toolkit. This support is
@@ -230,19 +233,40 @@ the bladderbatch example data into a SingleCellExperiment object.
 ```{r load_bladderbatch, message=FALSE}
 library(bladderbatch)
 data(bladderdata)
-dat <- bladderEset[1:50,]
+dat <- bladderEset
 
-pheno = pData(dat)
-edata = exprs(dat)
+pheno <- pData(dat)
+edata <- exprs(dat)
 bladder_sctke <- createSCE(assayFile = edata,
                            annotFile = pheno,
                            assayName = "microarray",
                            inputDataFrames = TRUE,
                            createLogCounts = FALSE)
+```
+
+The plotBatchVariance() function can be used to plot the percent variation
+explained by condition and batch across the dataset.
+
+```{r plot_var_microarray, message=FALSE}
+plotBatchVariance(bladder_sctke, useAssay="microarray",
+                  batch="batch", condition = "cancer")
+```
+
+The ComBatSCE() function can then be used to correct for batch effects
+
+```{r run_combat, message=FALSE}
 assay(bladder_sctke, "combat") <- ComBatSCE(inSCE = bladder_sctke,
                                             batch = "batch",
                                             useAssay = "microarray",
                                             covariates = "cancer")
+```
+
+After batch correction, a larger percentage of the explained variation can be
+explained by the condition
+
+```{r plot_var_postcombat, message=FALSE}
+plotBatchVariance(bladder_sctke, useAssay="combat",
+                  batch="batch", condition = "cancer")
 ```
 
 # Session info {.unnumbered}

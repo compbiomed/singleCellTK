@@ -1,3 +1,16 @@
+Changes in Version 1.1.3
+
+* Changed y axis label in plotBatchVariance to "Percent Explained Variation"
+
+Changes in Version 1.1.2
+
+* Ability to hide version number in the SCTK GUI.
+
+Changes in Version 1.1.1
+
+* Fixed a bug that would cause the diffex color bar to not display when special
+characters were in the annotation.
+
 Changes in Version 0.99.3
 
 * Consistent use of camel case throughout package

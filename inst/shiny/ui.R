@@ -59,10 +59,22 @@ source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
 source("ui_06_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 
+if (is.null(getShinyOption("includeVersion"))){
+  tooltitle <- paste("Single Cell Toolkit v",
+                     packageVersion("singleCellTK"), sep = "")
+} else {
+  if(getShinyOption("includeVersion")){
+    tooltitle <- paste("Single Cell Toolkit v",
+                       packageVersion("singleCellTK"), sep = "")
+  } else {
+    tooltitle <- "Single Cell Toolkit"
+  }
+}
+
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage(
-    paste("Single Cell Toolkit v", packageVersion("singleCellTK"), sep = ""),
+    tooltitle,
     #bootstrap theme
     theme = "bootstrap.min.css",
     #Upload Tab
