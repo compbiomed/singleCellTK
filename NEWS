@@ -1,3 +1,7 @@
+Changes in Version 1.1.3
+
+* Changed y axis label in plotBatchVariance to "Percent Explained Variation"
+
 Changes in Version 1.1.2
 
 * Ability to hide version number in the SCTK GUI.
