@@ -1,5 +1,10 @@
 Changes in Version 1.1.3
 
+* Improvements to plotting, change text size and hide labels in gsva plots.
+* MAST violin and linear model plots are now more square when plotting less than 49 facets.
+
+Changes in Version 1.1.3
+
 * Changed y axis label in plotBatchVariance to "Percent Explained Variation"
 
 Changes in Version 1.1.2

@@ -56,7 +56,8 @@ MASTviolin <- function(inSCE, useAssay="logcounts", fcHurdleSig,
                                 ggplot2::aes_string(x = condition, y = yvalue,
                                                     color = condition)) +
     ggplot2::geom_jitter() +
-    ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7) +
+    ggplot2::facet_wrap(~primerid, scale = "free_y",
+                        ncol = floor(sqrt(samplesize))) +
     ggplot2::geom_violin() +
     ggplot2::ggtitle("Violin Plot")
   return(violinplot)
@@ -109,7 +110,8 @@ MASTregression <- function(inSCE, useAssay="logcounts", fcHurdleSig,
                                                           y = yvalue,
                                                           color = condition)) +
     ggplot2::geom_jitter() +
-    ggplot2::facet_wrap(~primerid, scale = "free_y", ncol = 7)
+    ggplot2::facet_wrap(~primerid, scale = "free_y",
+                        ncol = floor(sqrt(samplesize)))
   regressionplot <- ggbase +
     ggplot2::aes_string(x = "cngeneson") +
     ggplot2::geom_line(ggplot2::aes_string(y = "lmPred"), lty = 1) +

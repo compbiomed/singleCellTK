@@ -7,7 +7,8 @@
 \usage{
 gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
 
-gsvaPlot(inSCE, gsvaData, plotType, condition = NULL)
+gsvaPlot(inSCE, gsvaData, plotType, condition = NULL,
+  show_column_names = TRUE, show_row_names = TRUE, text_size = 12)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -31,6 +32,14 @@ parameter.}
 \item{condition}{The condition(s) to use for the Violin plot, or the
 condition(s) to add as color bars above the Heatmap. Required for Violin,
 optional for Heatmap.}
+
+\item{show_column_names}{Display the column labels on the heatmap. The
+default is TRUE}
+
+\item{show_row_names}{Display the row labels on the heatmap. The default
+is TRUE.}
+
+\item{text_size}{Text size for plots. The default is 12}
 }
 \value{
 gsvaSCE(): A data.frame of pathway activity scores from GSVA.
