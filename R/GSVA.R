@@ -52,12 +52,19 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' @param condition The condition(s) to use for the Violin plot, or the
 #' condition(s) to add as color bars above the Heatmap. Required for Violin,
 #' optional for Heatmap.
+#' @param show_row_names Display the row labels on the heatmap. The default
+#' is TRUE.
+#' @param show_column_names Display the column labels on the heatmap. The
+#' default is TRUE
+#' @param text_size Text size for plots. The default is 12
 #'
 #' @return gsvaPlot(): The requested plot of the GSVA results.
 #' 
 #' @export
 #'
-gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL){
+gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
+                     show_column_names = TRUE, show_row_names = TRUE,
+                     text_size = 12){
   if (plotType == "Violin"){
     if (nrow(gsvaData) > 49){
       stop("TOO Many results for Violin Plot. Try Heatmap.")
@@ -79,7 +86,8 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL){
       ggplot2::geom_violin() +
       ggplot2::geom_jitter() +
       ggplot2::facet_wrap(~pathway, scale = "free_y",
-                          ncol = ceiling(sqrt(nrow(gsvaData))))
+                          ncol = ceiling(sqrt(nrow(gsvaData)))) +
+      ggplot2::theme(strip.text.x = ggplot2::element_text(size = text_size))
     return(ggbase)
   } else if (plotType == "Heatmap"){
     topha <- NULL
@@ -101,7 +109,16 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL){
         stop("Too many levels in selected condition(s)")
       }
     }
-    ComplexHeatmap::Heatmap(gsvaData, top_annotation = topha)
+    #TODO make more customizable
+    ComplexHeatmap::draw(
+      ComplexHeatmap::Heatmap(gsvaData,
+                              row_names_gp = grid::gpar(fontsize = text_size),
+                              top_annotation = topha,
+                              show_column_names = show_column_names,
+                              show_row_names = show_row_names,
+                              name="GSVA\nscore"),
+      heatmap_legend_side = "left", annotation_legend_side = "bottom"
+    )
   } else {
     stop("ERROR: Unsupported plot type")
   }
