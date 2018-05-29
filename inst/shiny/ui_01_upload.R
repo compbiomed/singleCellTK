@@ -65,12 +65,12 @@ shinyPanelUpload <- fluidPage(
         column(width = 4,
           h4("Example sample annotation file:"),
           HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
-               <th>Annot1</th><th>…</th></tr></thead><tbody><tr class="odd">
-               <td>Cell1</td><td>a</td><td>…</td></tr><tr class="even">
-               <td>Cell2</td><td>a</td><td>…</td></tr><tr class="odd">
-               <td>Cell3</td><td>b</td><td>…</td></tr><tr class="even">
-               <td>…</td><td>…</td><td>…</td></tr><tr class="odd"><td>CellN</td>
-               <td>b</td><td>…</td></tr></tbody></table>'),
+               <th>Annot1</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
+               <td>Cell1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
+               <td>Cell2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
+               <td>Cell3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
+               <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>CellN</td>
+               <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
           tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
                  "Download an example annotation file here.", target = "_blank"),
           tags$br(),
@@ -86,12 +86,12 @@ shinyPanelUpload <- fluidPage(
         column(width = 4,
           h4("Example feature file:"),
           HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
-               <th>Annot2</th><th>…</th></tr></thead><tbody><tr class="odd">
-               <td>Gene1</td><td>a</td><td>…</td></tr><tr class="even">
-               <td>Gene2</td><td>a</td><td>…</td></tr><tr class="odd">
-               <td>Gene3</td><td>b</td><td>…</td></tr><tr class="even">
-               <td>…</td><td>…</td><td>…</td></tr><tr class="odd"><td>GeneM</td>
-               <td>b</td><td>…</td></tr></tbody></table>'),
+               <th>Annot2</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
+               <td>Gene1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
+               <td>Gene2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
+               <td>Gene3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
+               <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>GeneM</td>
+               <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
           tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
                 "Download an example feature file here.", target = "_blank"),
           tags$br(),
