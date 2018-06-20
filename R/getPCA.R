@@ -37,7 +37,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
-  exprsMat <- log2(SummarizedExperiment::assay(inSCE, useAssay) + 1)
+  exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
   rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprsToPlot <- exprsMat[featureSet, , drop = FALSE]
