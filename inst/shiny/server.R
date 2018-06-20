@@ -941,8 +941,8 @@ shinyServer(function(input, output, session) {
                                         condition = input$selectDiffexCondition,
                                         covariates = useCovariates,
                                         significance = input$selectPval,
-                                        ntop = input$selectNGenes,
-                                        usesig = input$applyCutoff,
+                                        ntop = nrow(vals$counts),
+                                        usesig = FALSE,
                                         diffexmethod = input$selectDiffex,
                                         levelofinterest = input$selectDiffexConditionOfInterest,
                                         analysisType = input$selectDiffexConditionMethod,
@@ -992,11 +992,20 @@ shinyServer(function(input, output, session) {
       } else {
         colors <- NULL
       }
+      #first, subset to the select top N genes
+      geneList <- vals$diffexgenelist[
+        seq_len(min(nrow(vals$diffexgenelist), input$selectNGenes)), ]
+      #if apply cutoff, subset to the genes that meet cutoff
+      if(input$applyCutoff){
+        geneList <- rownames(geneList)[geneList$padj <= input$selectPval]
+      } else {
+        geneList <- rownames(geneList)
+      }
       ComplexHeatmap::draw(
         plotDiffEx(inSCE = vals$counts,
                    useAssay = input$diffexAssay,
                    condition = input$colorBarCondition,
-                   geneList = rownames(vals$diffexgenelist),
+                   geneList = geneList,
                    clusterRow = input$clusterRows,
                    clusterCol = input$clusterColumns,
                    displayRowLabels = input$displayHeatmapRowLabels,

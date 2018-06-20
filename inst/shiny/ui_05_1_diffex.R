@@ -13,6 +13,10 @@ shinyPanelDiffex <- fluidPage(
                                                         "ANOVA (use log values)" = "ANOVA")),
         uiOutput("selectDiffexConditionUI"),
         uiOutput("selectDiffexConditionLevelUI"),
+        withBusyIndicatorUI(actionButton("runDiffex",
+                                         "Run Differential Expression")),
+        tags$hr(),
+        h3("Plot Options:"),
         sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
         checkboxInput("applyCutoff", "Apply p-value Cutoff"),
         conditionalPanel(
@@ -25,8 +29,7 @@ shinyPanelDiffex <- fluidPage(
                                                                   "BH", "BY",
                                                                   "none"))
         ),
-        withBusyIndicatorUI(actionButton("runDiffex",
-                                         "Run Differential Expression")),
+        tags$hr(),
         downloadButton("downloadGeneList", "Download Results"),
         h3("Save gene list as biomarker:"),
         textInput("biomarkerName", "Biomarker Name: ", value = ""),
