@@ -15,7 +15,8 @@ shinyServer(function(input, output, session) {
     combatstatus = "",
     diffexgenelist = NULL,
     gsvaRes = NULL,
-    gsvaLimma = NULL
+    gsvaLimma = NULL,
+    visplotobject = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -53,11 +54,15 @@ shinyServer(function(input, output, session) {
                       choices = pdataOptions)
     updateSelectInput(session, "annotModifyChoice",
                       choices = c("none", pdataOptions))
+    updateSelectInput(session, "visCondn",
+                      choices = c("none", pdataOptions))
   }
 
   updateGeneNames <- function(){
     selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
+                         choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "selectvisGenes",
                          choices = selectthegenes, server = TRUE)
   }
 
@@ -91,6 +96,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
+    updateSelectInput(session, "visAssaySelect", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -501,6 +507,36 @@ shinyServer(function(input, output, session) {
         colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
       }
     }
+  })
+
+  observeEvent(input$plotvis, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else{
+      withBusyIndicatorServer("plotvis",{
+        tryCatch({
+          if(input$visCondn == "none"){
+            incondition <- NULL
+          } else {
+            incondition <- input$visCondn
+          }
+          
+          vals$visplotobject <- visPlot(inSCE = vals$counts,
+                                        useAssay = input$visAssaySelect,
+                                        method =  input$visPlotMethod,
+                                        condition = incondition,
+                                        glist = input$selectvisGenes)
+        },
+        error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+    }
+  })
+
+  output$visPlot <- renderPlot({
+    req(vals$visplotobject)
+    vals$visplotobject
   })
 
   #-----------------------------------------------------------------------------
