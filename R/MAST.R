@@ -58,6 +58,9 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
   }
 
   # filter based on frequency of expression across samples
+  if (sum(MAST::freq(SCENew) > freqExpressed) <= 1){
+    stop("Not enough genes pass frequency expressed filter of 1")
+  }
   SCENewSample <- SCENew[which(MAST::freq(SCENew) > freqExpressed), ]
 
   # if the condition of interest is numeric, to change it to a factor
