@@ -68,7 +68,10 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
     SummarizedExperiment::colData(SCENewSample)[, condition] <-
       as.factor(SummarizedExperiment::colData(SCENewSample)[, condition])
   }
-
+  #Check for NAs, if true throw error
+  if (any(is.na(SingleCellExperiment::colData(inSCE)[, condition]))){
+     stop("Data has NAs, use Filter samples by annotation to fix")
+  }
   # >2 levels in the condition
   if (!is.null(interest.level) &
       length(unique(SingleCellExperiment::colData(inSCE)[, condition])) > 2){
@@ -118,7 +121,7 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
                                                     "ci.lo")]
     )
   }
-
+ 
   # Use p-value correction method, here we use fdr
   fcHurdle$fdr <- stats::p.adjust(fcHurdle$"Pr(>Chisq)", "fdr")
 
