@@ -8,47 +8,56 @@ shinyPanelFilter <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         h3("Settings:"),
+          HTML('<div class="accordion" id="filterAccordion">
+            <div class="panel" style="background-color:transparent">'),
+            # section format - accordionSelection(collapseId, accordionID, sectionTitle) from helpers.R
         
-        h4("Assay Settings"),
-        selectInput("filterAssaySelect", "Select Assay:", currassays),
-        checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
-        numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
-        numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
-        tags$hr(),
+            accordionSection("collapse-AssaySettings", "Assay Settings", "filterAccordion"),
+              selectInput("filterAssaySelect", "Select Assay:", currassays),
+              checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
+              numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
+              numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
+            HTML('</div>'),
+            
+            accordionSection("collapse-DeleteOutliers", "Delete Outliers", "filterAccordion"),
+              selectInput("deletesamplelist", "Select Samples:",
+                sampleChoice,
+                multiple = TRUE),
+              withBusyIndicatorUI(actionButton("filterData", "Filter Data")),
+              actionButton("resetData", "Reset"),
+            HTML('</div>'),
+            
+            accordionSection("collapse-FilterSamples", "Filter samples by annotation", "filterAccordion"),
+              selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
+              uiOutput("filterSampleOptions"),
+            HTML('</div>'),
+            
+            accordionSection("collapse-FilterGenes", "Filter genes by feature annotation", "filterAccordion"),
+              selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
+              uiOutput("filterFeatureOptions"),
+            HTML('</div>'),
+            
+            accordionSection("collapse-ConvertAnnotations", "Convert gene annotations", "filterAccordion"),
+              selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.", 
+                installed.packages()[, "Package"], value = TRUE))
+              ),
+              uiOutput("orgConvertColumns"),
+              withBusyIndicatorUI(actionButton("convertGenes", "Convert")),
+            HTML('</div>'),
+            
+            accordionSection("collapse-DeleteColumn", "Delete an annotation column", "filterAccordion"),
+              selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
+              actionButton("deleterowDatabutton", "Delete Column"),
+            HTML('</div>'),
+            
+            accordionSection("collapse-RandomlySubset", "Randomly Subset", "filterAccordion"),
+              numericInput("downsampleNum", "Number of samples to keep:", min = 2,
+                max = numSamples, value = numSamples, step = 1),
+              withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data")),
+            HTML('</div>'),
         
-        h4("Delete Outliers"),
-        selectInput("deletesamplelist", "Select Samples:",
-                    sampleChoice,
-                    multiple = TRUE),
-        withBusyIndicatorUI(actionButton("filterData", "Filter Data")),
-        actionButton("resetData", "Reset"),
-        tags$hr(),
-        
-        h4("Filter samples by annotation"),
-        selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
-        uiOutput("filterSampleOptions"),
-        tags$hr(),
-        
-        h4("Filter genes by feature annotation"),
-        selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
-        uiOutput("filterFeatureOptions"),
-        tags$hr(),
-        
-        h4("Convert gene annotations"),
-        selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE))),
-        uiOutput("orgConvertColumns"),
-        withBusyIndicatorUI(actionButton("convertGenes", "Convert")),
-        tags$hr(),
-        
-        h4("Delete an annotation column"),
-        selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
-        actionButton("deleterowDatabutton", "Delete Column"),
-        tags$hr(),
-        
-        h4("Randomly Subset"),
-        numericInput("downsampleNum", "Number of samples to keep:", min = 2,
-                     max = numSamples, value = numSamples, step = 1),
-        withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data")),
+          HTML('</div>
+        </div>'), 
         tags$hr(),
         downloadButton("downloadSCE", "Download SCtkExperiment")
       ),
