@@ -59,7 +59,11 @@ shinyPanelUpload <- fluidPage(
             tags$br(),
             tags$br(),
             fileInput(
-              "countsfile", "Input assay (eg. counts, required):",
+              "countsfile", 
+              HTML(
+                paste("Input assay (eg. counts, required):",
+                tags$span(style="color:red", "*", sep=""))
+              ),
               accept = c(
                 "text/csv", "text/comma-separated-values",
                 "text/tab-separated-values", "text/plain", ".csv", ".tsv"
