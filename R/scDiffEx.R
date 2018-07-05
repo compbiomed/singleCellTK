@@ -45,7 +45,11 @@ scDiffEx <- function(inSCE, useAssay="logcounts", condition,
                      covariates=NULL, significance=0.05, ntop=500, usesig=TRUE,
                      diffexmethod, levelofinterest=NULL, analysisType=NULL,
                      controlLevel=NULL, adjust = "fdr"){
-  for (i in c(condition, covariates)){
+#Check for NAs, if true throw error
+  if (any(is.na(SingleCellExperiment::colData(inSCE)[, condition]))){
+     stop("Data has NAs, use Filter samples by annotation to fix")
+  } 
+ for (i in c(condition, covariates)){
     if (is.factor(SingleCellExperiment::colData(inSCE)[, i])){
       SummarizedExperiment::colData(inSCE)[, i] <- droplevels(
         SummarizedExperiment::colData(inSCE)[, i])

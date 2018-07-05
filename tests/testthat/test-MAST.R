@@ -7,7 +7,7 @@ maits_sce <- createSCE(assayFile = t(maits$expressionmat),
                        assayName = "logtpm",
                        inputDataFrames = TRUE,
                        createLogCounts = FALSE)
-rm(maits)
+
 library(scRNAseq)
 
 data(allen, package = "scRNAseq")
@@ -16,7 +16,7 @@ tempsce <- as(allen, "SingleCellExperiment")
 
 original <- as(tempsce, "SCtkExperiment")
 
-rm(allen, tempsce)
+
 assay(original, "counts") <- assay(original, "tophat_counts")
 assay(original, "logcounts") <- log2(assay(original, "counts")+1)
 assay(original, "tophat_counts") <- NULL

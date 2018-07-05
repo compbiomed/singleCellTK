@@ -1,4 +1,17 @@
+
 context("differential expression tests")
+library("scRNAseq")
+
+data(allen, package = "scRNAseq")
+
+tempsce <- as(allen, "SingleCellExperiment")
+
+original <- as(tempsce, "SCtkExperiment")
+
+rm(tempsce)
+assay(original, "counts") <- assay(original, "tophat_counts")
+assay(original, "logcounts") <- log2(assay(original, "counts")+1)
+assay(original, "tophat_counts") <- NULL
 
 test_that("scDiffEx and scDiffExlimma() functions should give the same result", {
   #limma
@@ -289,4 +302,7 @@ test_that("condition and covariates should accept numeric vectors", {
                         condition = "level2class", covariates = "age",
                         ntop = nrow(subset), usesig = FALSE,
                         diffexmethod = "ANOVA"), NA)
+})
+test_that("NA's should thow proper error message",{
+  expect_error(scDiffEx(original, useAssay = "logcounts", "Primary.Type"),"Data has NAs, use Filter samples by annotation to fix")
 })
