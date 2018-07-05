@@ -133,8 +133,11 @@ shinyPanelUpload <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
-      selectInput("selectExampleData", "Or, choose example data:",
-                  exampleDatasets),
+      h3("Choose Example Dataset:"),
+      selectInput("selectExampleData", 
+        label=NULL,
+        exampleDatasets
+      ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'mouseBrainSubset'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1126/science.aaa1934", "Mouse Brain Subset: GSE60361", target = "_blank")),
