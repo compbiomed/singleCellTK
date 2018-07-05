@@ -70,11 +70,17 @@ shinyPanelUpload <- fluidPage(
               )
             )
           ),
-          selectInput("inputAssayType", "Input Assay Type:", c("counts",
-                                                               "normcounts",
-                                                               "logcounts",
-                                                               "cpm", "logcpm",
-                                                               "tpm", "logtpm")),
+          h4("Input Assay Type:"),
+          selectInput("inputAssayType", 
+            label=NULL, 
+            c(
+              "counts",
+              "normcounts",
+              "logcounts",
+              "cpm", "logcpm",
+              "tpm", "logtpm"
+            )
+          ),
           checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
