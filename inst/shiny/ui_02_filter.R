@@ -17,7 +17,6 @@ shinyPanelFilter <- fluidPage(
             HTML('<div class="accordion" id="filterAccordion">
               <div class="panel" style="background-color:transparent">'),
                 # section format - accordionSelection(collapseId, accordionID, sectionTitle) from helpers.R
-            
                 HTML(accordionSection("collapse-AssaySettings", "Assay Settings", "filterAccordion")),
                   selectInput("filterAssaySelect", "Select Assay:", currassays),
                   checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
