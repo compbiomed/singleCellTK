@@ -65,9 +65,16 @@ shinyPanelFilter <- fluidPage(
         tabsetPanel(
           tabPanel(
             "Data Summary",
+            h4("Summary Contents:"),
             tableOutput("summarycontents"),
+            tags$hr(),
+            h4("Counts Histogram:"),
             plotlyOutput("countshist"),
+            tags$hr(),
+            h4("Genes Histogram:"),
             plotlyOutput("geneshist"),
+            tags$hr(),
+            h4("Data Table:"),
             DT::dataTableOutput("contents")
           ),
           tabPanel(
