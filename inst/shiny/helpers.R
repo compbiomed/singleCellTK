@@ -94,7 +94,7 @@ appCSS <- "
 #       HTML('</div>
 #     </div>')
 accordionSection <- function(collapseId, panelTitle, accordionId) {
-  HTML(
+  return(
     paste(
       '<button type="button" class="btn btn-default btn-block" 
         data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',

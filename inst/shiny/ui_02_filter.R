@@ -12,14 +12,14 @@ shinyPanelFilter <- fluidPage(
             <div class="panel" style="background-color:transparent">'),
             # section format - accordionSelection(collapseId, accordionID, sectionTitle) from helpers.R
         
-            accordionSection("collapse-AssaySettings", "Assay Settings", "filterAccordion"),
+            HTML(accordionSection("collapse-AssaySettings", "Assay Settings", "filterAccordion")),
               selectInput("filterAssaySelect", "Select Assay:", currassays),
               checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
               numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
               numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
             HTML('</div>'),
             
-            accordionSection("collapse-DeleteOutliers", "Delete Outliers", "filterAccordion"),
+            HTML(accordionSection("collapse-DeleteOutliers", "Delete Outliers", "filterAccordion")),
               selectInput("deletesamplelist", "Select Samples:",
                 sampleChoice,
                 multiple = TRUE),
@@ -27,17 +27,17 @@ shinyPanelFilter <- fluidPage(
               actionButton("resetData", "Reset"),
             HTML('</div>'),
             
-            accordionSection("collapse-FilterSamples", "Filter samples by annotation", "filterAccordion"),
+            HTML(accordionSection("collapse-FilterSamples", "Filter samples by annotation", "filterAccordion")),
               selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
               uiOutput("filterSampleOptions"),
             HTML('</div>'),
             
-            accordionSection("collapse-FilterGenes", "Filter genes by feature annotation", "filterAccordion"),
+            HTML(accordionSection("collapse-FilterGenes", "Filter genes by feature annotation", "filterAccordion")),
               selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
               uiOutput("filterFeatureOptions"),
             HTML('</div>'),
             
-            accordionSection("collapse-ConvertAnnotations", "Convert gene annotations", "filterAccordion"),
+            HTML(accordionSection("collapse-ConvertAnnotations", "Convert gene annotations", "filterAccordion")),
               selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.", 
                 installed.packages()[, "Package"], value = TRUE))
               ),
@@ -45,12 +45,12 @@ shinyPanelFilter <- fluidPage(
               withBusyIndicatorUI(actionButton("convertGenes", "Convert")),
             HTML('</div>'),
             
-            accordionSection("collapse-DeleteColumn", "Delete an annotation column", "filterAccordion"),
+            HTML(accordionSection("collapse-DeleteColumn", "Delete an annotation column", "filterAccordion")),
               selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
               actionButton("deleterowDatabutton", "Delete Column"),
             HTML('</div>'),
             
-            accordionSection("collapse-RandomlySubset", "Randomly Subset", "filterAccordion"),
+            HTML(accordionSection("collapse-RandomlySubset", "Randomly Subset", "filterAccordion")),
               numericInput("downsampleNum", "Number of samples to keep:", min = 2,
                 max = numSamples, value = numSamples, step = 1),
               withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data")),
