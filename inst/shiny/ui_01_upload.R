@@ -20,14 +20,23 @@ shinyPanelUpload <- fluidPage(
       )
     )
   ),
+  tags$br(),
   tags$div(
     class = "container",
+    h1("Upload"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
-              "(Upload tab help)", target = "_blank")),
+      "(help)", target = "_blank")),
+    tags$hr(),
     tags$div(id = "uploadAlert", alertText),
-    radioButtons("uploadChoice", "Upload:",
-                 c("Files" = "files",
-                   "Example data" = "example")),
+    h3("Choose File source:"),
+    radioButtons("uploadChoice", 
+      label=NULL,
+      c(
+        "Files" = "files",
+        "Example data" = "example"
+      )
+    ),
+    tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
       h3("Upload data in tab separated text format:"),
       fluidRow(
