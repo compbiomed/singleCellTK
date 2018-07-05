@@ -87,9 +87,9 @@ appCSS <- "
 #     HTML('<div class="accordion" id="myAccordion">
 #       <div class="panel">'),
 
-#         accordionSection("1","2","myAccordion"),
+#         HTML(accordionSection("1","2","myAccordion")),
 #           # panel content code,
-#         HTML('</div>')
+#         HTML('</div>'),
 
 #       HTML('</div>
 #     </div>')
