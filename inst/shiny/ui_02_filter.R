@@ -2,7 +2,7 @@ shinyPanelFilter <- fluidPage(
   useShinyalert(),
   tags$div(
     class = "container",
-    h1("Data Summary and Filtering"),
+    h1("Data Summary & Filtering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v04-tab02_Data-Summary-and-Filtering.html",
               "(help)", target = "_blank")),
     sidebarLayout(
