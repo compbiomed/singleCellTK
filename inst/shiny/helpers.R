@@ -81,3 +81,27 @@ appCSS <- "
   color: red;
 }
 "
+
+# Accordion - formatting for collapsible section in an accordion
+# Use example:
+#     HTML('<div class="accordion" id="myAccordion">
+#       <div class="panel">'),
+
+#         accordionSection("1","2","myAccordion"),
+#           # panel content code,
+#         HTML('</div>')
+
+#       HTML('</div>
+#     </div>')
+accordionSection <- function(collapseId, panelTitle, accordionId) {
+  HTML(
+    paste(
+      '<button type="button" class="btn btn-default btn-block" 
+        data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
+        panelTitle, 
+      '</button>
+      <div id="', collapseId, '" class="collapse">',
+      sep=""
+    )
+  )
+}
