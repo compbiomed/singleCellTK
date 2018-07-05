@@ -1,5 +1,5 @@
 exampleDatasets <- c("mouseBrainSubset", "maits")
-if("scRNAseq" %in% rownames(installed.packages())){
+if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
 }

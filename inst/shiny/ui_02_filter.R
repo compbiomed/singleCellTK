@@ -137,8 +137,7 @@ shinyPanelFilter <- fluidPage(
             )
           )
         )
-      ),
-      position = "left"
+      )
     )
   )
 )

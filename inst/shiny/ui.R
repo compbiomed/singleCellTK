@@ -63,7 +63,7 @@ if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
                      packageVersion("singleCellTK"), sep = "")
 } else {
-  if(getShinyOption("includeVersion")){
+  if (getShinyOption("includeVersion")){
     tooltitle <- paste("Single Cell Toolkit v",
                        packageVersion("singleCellTK"), sep = "")
   } else {

@@ -22,7 +22,7 @@ scatterplot, or heatmap. Required}
 A visualization plot
 }
 \description{
-Given a plotting method with condition and gene list, return 
+Given a plotting method with condition and gene list, return
 the respective visualization plot(s).
 }
 \examples{
