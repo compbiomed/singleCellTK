@@ -96,12 +96,12 @@ appCSS <- "
 accordionSection <- function(collapseId, panelTitle, accordionId) {
   return(
     paste(
-      '<button type="button" class="btn btn-default btn-block" 
-        data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
-        panelTitle, 
+      '<button type="button" class="btn btn-default btn-block" ',
+        'data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
+        panelTitle,
       '</button>
       <div id="', collapseId, '" class="collapse">',
-      sep=""
+      sep = ""
     )
   )
 }
