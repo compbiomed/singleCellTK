@@ -70,7 +70,7 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
   }
   #Check for NAs, if true throw error
   if (any(is.na(SingleCellExperiment::colData(inSCE)[, condition]))){
-     stop("Data has NAs, use Filter samples by annotation to fix")
+     stop("Annotation data has NA values. Filter them to continue.")
   }
   # >2 levels in the condition
   if (!is.null(interest.level) &
