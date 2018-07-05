@@ -65,7 +65,7 @@ shinyPanelDiffex <- fluidPage(
                   checkboxInput("displayHeatmapColorBar", "Color Bar",
                                 value = TRUE),
                   uiOutput("colorBarConditionUI"),
-                  uiOutput("HeatmapSampleAnnotations")
+                  uiOutput("heatmapSampleAnnotations")
                 )
               )
             )
