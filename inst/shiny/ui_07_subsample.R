@@ -24,8 +24,8 @@ shinyPanelSubsample <- fluidPage(
         ),
         column(8,
           tabsetPanel(
-            tabPanel("Genes Detected", plotOutput("DepthDone")),
-            tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectDone")),
+            tabPanel("Genes Detected", plotOutput("depthDone")),
+            tabPanel("Minimum Detectable Effect Size", plotOutput("minEffectDone")),
             tabPanel("Number of Diffex Genes", plotOutput("sigNumDone"))
           )
         )
@@ -62,8 +62,8 @@ shinyPanelSubsample <- fluidPage(
         ),
         column(8,
           tabsetPanel(
-            tabPanel("Genes Detected", plotOutput("CellsDone")),
-            tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCells")),
+            tabPanel("Genes Detected", plotOutput("cellsDone")),
+            tabPanel("Minimum Detectable Effect Size", plotOutput("minEffectCells")),
             tabPanel("Number of Diffex Genes", plotOutput("sigNumCells"))
           )
         )

@@ -50,14 +50,17 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
 
   if (useThresh){
     SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-    thresh <- MAST::thresholdSCRNACountMatrix(
-      SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)
+    invisible(utils::capture.output(thresh <- MAST::thresholdSCRNACountMatrix(
+      SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
     SummarizedExperiment::assays(SCENew) <-
       list(thresh = thresh$counts_threshold,
            tpm = SummarizedExperiment::assay(SCENew))
   }
 
   # filter based on frequency of expression across samples
+  if (sum(MAST::freq(SCENew) > freqExpressed) <= 1){
+    stop("Not enough genes pass frequency expressed filter of 1")
+  }
   SCENewSample <- SCENew[which(MAST::freq(SCENew) > freqExpressed), ]
 
   # if the condition of interest is numeric, to change it to a factor
@@ -65,7 +68,10 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
     SummarizedExperiment::colData(SCENewSample)[, condition] <-
       as.factor(SummarizedExperiment::colData(SCENewSample)[, condition])
   }
-
+  #Check for NAs, if true throw error
+  if (any(is.na(SingleCellExperiment::colData(inSCE)[, condition]))){
+     stop("Data has NAs, use Filter samples by annotation to fix")
+  }
   # >2 levels in the condition
   if (!is.null(interest.level) &
       length(unique(SingleCellExperiment::colData(inSCE)[, condition])) > 2){

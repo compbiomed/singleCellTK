@@ -13,9 +13,9 @@
 #' @param pathwayNames List of pathway names to run, depending on pathwaySource
 #' parameter.
 #' @param ... Parameters to pass to gsva()
-#' 
+#'
 #' @return gsvaSCE(): A data.frame of pathway activity scores from GSVA.
-#' 
+#'
 #' @export
 #'
 gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
@@ -59,7 +59,7 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' @param text_size Text size for plots. The default is 12
 #'
 #' @return gsvaPlot(): The requested plot of the GSVA results.
-#' 
+#'
 #' @export
 #'
 gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
@@ -116,7 +116,7 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                               top_annotation = topha,
                               show_column_names = show_column_names,
                               show_row_names = show_row_names,
-                              name="GSVA\nscore"),
+                              name = "GSVA\nscore"),
       heatmap_legend_side = "left", annotation_legend_side = "bottom"
     )
   } else {
