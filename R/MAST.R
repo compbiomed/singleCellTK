@@ -50,7 +50,7 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
 
   if (useThresh){
     SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-    invisible(capture_output(thresh <- MAST::thresholdSCRNACountMatrix(
+    invisible(capture.output(thresh <- MAST::thresholdSCRNACountMatrix(
       SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
     SummarizedExperiment::assays(SCENew) <-
       list(thresh = thresh$counts_threshold,

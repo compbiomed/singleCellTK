@@ -17,7 +17,7 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
                               fdata)
 
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-  invisible(capture_output(thres <- MAST::thresholdSCRNACountMatrix(
+  invisible(capture.output(thres <- MAST::thresholdSCRNACountMatrix(
     SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
   return(thres)
 }
@@ -40,7 +40,7 @@ MASTviolin <- function(inSCE, useAssay="logcounts", fcHurdleSig,
   SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
                              fdata)
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-  invisible(capture_output(thres <- MAST::thresholdSCRNACountMatrix(
+  invisible(capture.output(thres <- MAST::thresholdSCRNACountMatrix(
     SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
   names(SummarizedExperiment::assays(SCENew))[1] <- useAssay
   SummarizedExperiment::assay(SCENew, "thresh") <- thres$counts_threshold
@@ -78,7 +78,7 @@ MASTregression <- function(inSCE, useAssay="logcounts", fcHurdleSig,
   cdr2 <- colSums(SummarizedExperiment::assay(SCENew) > 0)
   SummarizedExperiment::colData(SCENew)$cngeneson <- scale(cdr2)
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-  invisible(capture_output(thres <- MAST::thresholdSCRNACountMatrix(
+  invisible(capture.output(thres <- MAST::thresholdSCRNACountMatrix(
     SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
   names(SummarizedExperiment::assays(SCENew))[1] <- useAssay
   SummarizedExperiment::assay(SCENew, "thresh") <- thres$counts_threshold
