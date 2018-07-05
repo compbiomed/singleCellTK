@@ -58,6 +58,9 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
   }
 
   # filter based on frequency of expression across samples
+  if (sum(MAST::freq(SCENew) > freqExpressed) <= 1){
+    stop("Not enough genes pass frequency expressed filter of 1")
+  }
   SCENewSample <- SCENew[which(MAST::freq(SCENew) > freqExpressed), ]
 
   # if the condition of interest is numeric, to change it to a factor
@@ -65,7 +68,10 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
     SummarizedExperiment::colData(SCENewSample)[, condition] <-
       as.factor(SummarizedExperiment::colData(SCENewSample)[, condition])
   }
-
+  #Check for NAs, if true throw error
+  if (any(is.na(SingleCellExperiment::colData(inSCE)[, condition]))){
+     stop("Data has NAs, use Filter samples by annotation to fix")
+  }
   # >2 levels in the condition
   if (!is.null(interest.level) &
       length(unique(SingleCellExperiment::colData(inSCE)[, condition])) > 2){
@@ -115,7 +121,7 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
                                                     "ci.lo")]
     )
   }
-
+ 
   # Use p-value correction method, here we use fdr
   fcHurdle$fdr <- stats::p.adjust(fcHurdle$"Pr(>Chisq)", "fdr")
 
