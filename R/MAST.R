@@ -50,8 +50,8 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
 
   if (useThresh){
     SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
-    thresh <- MAST::thresholdSCRNACountMatrix(
-      SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)
+    invisible(capture_output(thresh <- MAST::thresholdSCRNACountMatrix(
+      SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
     SummarizedExperiment::assays(SCENew) <-
       list(thresh = thresh$counts_threshold,
            tpm = SummarizedExperiment::assay(SCENew))
@@ -121,7 +121,7 @@ MAST <- function(inSCE, condition = NULL, interest.level = NULL,
                                                     "ci.lo")]
     )
   }
- 
+
   # Use p-value correction method, here we use fdr
   fcHurdle$fdr <- stats::p.adjust(fcHurdle$"Pr(>Chisq)", "fdr")
 
