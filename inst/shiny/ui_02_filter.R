@@ -65,44 +65,50 @@ shinyPanelFilter <- fluidPage(
         tabsetPanel(
           tabPanel(
             "Data Summary",
-            h4("Summary Contents:"),
-            tableOutput("summarycontents"),
-            tags$hr(),
-            h4("Counts Histogram:"),
-            plotlyOutput("countshist"),
-            tags$hr(),
-            h4("Genes Histogram:"),
-            plotlyOutput("geneshist"),
-            tags$hr(),
-            h4("Data Table:"),
-            DT::dataTableOutput("contents")
+            wellPanel( 
+              style="background-color:transparent",
+              h4("Summary Contents:"),
+              tableOutput("summarycontents"),
+              tags$hr(),
+              h4("Counts Histogram:"),
+              plotlyOutput("countshist"),
+              tags$hr(),
+              h4("Genes Histogram:"),
+              plotlyOutput("geneshist"),
+              tags$hr(),
+              h4("Data Table:"),
+              DT::dataTableOutput("contents")
+            )
           ),
           tabPanel(
             "Assay Details",
-            br(),
-            fluidRow(
-              sidebarLayout(
-                sidebarPanel(
-                  h4("Assay Options:"),
-                  selectInput("addAssayType", "Add Assay Type:", c("logcounts",
-                              "cpm", "logcpm")),
-                  withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
-                  selectInput("delAssayType", "Delete Assay Type:", currassays),
-                  withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
-                  tags$hr(),
-                  h4("reducedDim Options:"),
-                  selectInput("delRedDimType", "Delete reducedDim:", currreddim),
-                  withBusyIndicatorUI(actionButton("delRedDim", "Delete reducedDim"))
-                ),
-                mainPanel(
-                  fluidRow(
-                    column(6,
-                           h4("Available Assays:"),
-                           tableOutput("assayList")
-                    ),
-                    column(6,
-                           h4("Available Reduced Dims:"),
-                           tableOutput("reducedDimsList")
+            wellPanel(  
+              style="background-color:transparent",
+              br(),
+              fluidRow(
+                sidebarLayout(
+                  sidebarPanel(
+                    h4("Assay Options:"),
+                    selectInput("addAssayType", "Add Assay Type:", c("logcounts",
+                                "cpm", "logcpm")),
+                    withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
+                    selectInput("delAssayType", "Delete Assay Type:", currassays),
+                    withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
+                    tags$hr(),
+                    h4("reducedDim Options:"),
+                    selectInput("delRedDimType", "Delete reducedDim:", currreddim),
+                    withBusyIndicatorUI(actionButton("delRedDim", "Delete reducedDim"))
+                  ),
+                  mainPanel(
+                    fluidRow(
+                      column(6,
+                             h4("Available Assays:"),
+                             tableOutput("assayList")
+                      ),
+                      column(6,
+                             h4("Available Reduced Dims:"),
+                             tableOutput("reducedDimsList")
+                      )
                     )
                   )
                 )
@@ -111,26 +117,29 @@ shinyPanelFilter <- fluidPage(
           ),
           tabPanel(
             "Annotation Data",
-            tabsetPanel(
-              tabPanel(
-                "Data",
-                DT::dataTableOutput("colDataDataFrame")
-              ),
-              tabPanel(
-                "Options",
-                wellPanel(
-                  h4("Modify Annotation Data:"),
-                  selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-                  uiOutput("annotModifyUI"),
-                  tags$hr(),
-                  downloadButton("downloadcolData", "Download Annotation Data"),
-                  tags$hr(),
-                  fileInput(
-                    "newAnnotFile", "Upload and replace annotation data:",
-                    accept = c(
-                      "text/csv",
-                      "text/comma-separated-values",
-                      ".csv"
+            wellPanel( 
+              style="background-color:transparent",
+              tabsetPanel(
+                tabPanel(
+                  "Data",
+                  DT::dataTableOutput("colDataDataFrame")
+                ),
+                tabPanel(
+                  "Options",
+                  wellPanel(
+                    h4("Modify Annotation Data:"),
+                    selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
+                    uiOutput("annotModifyUI"),
+                    tags$hr(),
+                    downloadButton("downloadcolData", "Download Annotation Data"),
+                    tags$hr(),
+                    fileInput(
+                      "newAnnotFile", "Upload and replace annotation data:",
+                      accept = c(
+                        "text/csv",
+                        "text/comma-separated-values",
+                        ".csv"
+                      )
                     )
                   )
                 )
