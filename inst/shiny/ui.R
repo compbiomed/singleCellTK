@@ -79,8 +79,8 @@ shinyUI(
     theme = "bootstrap.min.css",
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
-    tabPanel("Data Summary and Filtering", shinyPanelFilter),
-    tabPanel("DR & Clustering", shinyPanelCluster),
+    tabPanel("Data Summary & Filtering", shinyPanelFilter),
+    tabPanel("Visualization & Clustering", shinyPanelCluster),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(
       "Differential Expression",
