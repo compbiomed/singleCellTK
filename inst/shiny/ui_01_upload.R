@@ -8,7 +8,7 @@ shinyPanelUpload <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
   tags$div(
-    class = "jumbotron",
+    class = "jumbotron", style="background-color:#ededed",
     tags$div(
       class = "container",
       h1("Single Cell Toolkit"),
