@@ -67,7 +67,7 @@ tempSigDiff <- subDiffEx(res)
 data("mouseBrainSubsetSCE")
 #sort first 100 expressed genes
 ord <- rownames(mouseBrainSubsetSCE)[
-  order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
+  order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
         decreasing = TRUE)][1:100]
 #subset to those first 100 genes
 subset <- mouseBrainSubsetSCE[ord, ]
@@ -81,7 +81,7 @@ fdr <- subDiffExttest(output, realLabels)
 data("mouseBrainSubsetSCE")
 #sort first 100 expressed genes
 ord <- rownames(mouseBrainSubsetSCE)[
-  order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
+  order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
         decreasing = TRUE)][1:100]
 # subset to those first 100 genes
 subset <- mouseBrainSubsetSCE[ord, ]

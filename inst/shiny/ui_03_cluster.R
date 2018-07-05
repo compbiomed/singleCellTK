@@ -1,7 +1,7 @@
 shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
-    h1("DR & Clustering"),
+    h1("Visualization & Clustering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
               "(help)", target = "_blank")),
     sidebarLayout(
@@ -20,7 +20,7 @@ shinyPanelCluster <- fluidPage(
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
             #radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")), #TODO: implement biomarker color by
-            radioButtons("colorGeneBy", "Gene list:", c("Manual Input")),
+            radioButtons("colorGeneBy", "Gene list:", "Manual Input"),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
               selectizeInput(

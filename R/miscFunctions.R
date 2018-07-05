@@ -68,7 +68,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' counts_mat <- assay(mouseBrainSubsetSCE, "counts")
 #' sample_annot <- colData(mouseBrainSubsetSCE)
 #' row_annot <- rowData(mouseBrainSubsetSCE)
-#' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot, 
+#' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
 #'

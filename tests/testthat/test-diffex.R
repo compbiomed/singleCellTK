@@ -200,7 +200,7 @@ test_that("scDiffEx and scDiffExDESeq2() functions should give the same result",
   res2 <- scDiffExDESeq2(inSCE = subset, useAssay = "counts",
                           condition = "level2class",
                           analysisType = "contrast",
-                          levelofinterest = "Oligo6",controlLevel = "Oligo5")
+                          levelofinterest = "Oligo6", controlLevel = "Oligo5")
   expect_equal(res, res2[rownames(res), ])
   #biomarker, covariates
   res <- scDiffEx(inSCE = subset,
@@ -216,7 +216,7 @@ test_that("scDiffEx and scDiffExDESeq2() functions should give the same result",
   res2 <- scDiffExDESeq2(inSCE = subset, useAssay = "counts",
                           condition = "level2class", covariates = "tissue",
                           analysisType = "contrast",
-                          levelofinterest = "Oligo6",controlLevel = "Oligo5")
+                          levelofinterest = "Oligo6", controlLevel = "Oligo5")
   expect_equal(res, res2[rownames(res), ])
   #full-reduced, no covariates
   res <- scDiffEx(inSCE = subset, useAssay = "counts",

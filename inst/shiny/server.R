@@ -15,7 +15,8 @@ shinyServer(function(input, output, session) {
     combatstatus = "",
     diffexgenelist = NULL,
     gsvaRes = NULL,
-    gsvaLimma = NULL
+    gsvaLimma = NULL,
+    visplotobject = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -53,11 +54,15 @@ shinyServer(function(input, output, session) {
                       choices = pdataOptions)
     updateSelectInput(session, "annotModifyChoice",
                       choices = c("none", pdataOptions))
+    updateSelectInput(session, "visCondn",
+                      choices = c("none", pdataOptions))
   }
 
   updateGeneNames <- function(){
     selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
+                         choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "selectvisGenes",
                          choices = selectthegenes, server = TRUE)
   }
 
@@ -91,6 +96,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
+    updateSelectInput(session, "visAssaySelect", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -277,7 +283,7 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
-      colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = F]
+      colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = FALSE]
       updateColDataNames()
     }
   })
@@ -502,6 +508,35 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+
+  observeEvent(input$plotvis, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else{
+      withBusyIndicatorServer("plotvis", {
+        tryCatch({
+          if (input$visCondn == "none"){
+            incondition <- NULL
+          } else {
+            incondition <- input$visCondn
+          }
+          vals$visplotobject <- visPlot(inSCE = vals$counts,
+                                        useAssay = input$visAssaySelect,
+                                        method =  input$visPlotMethod,
+                                        condition = incondition,
+                                        glist = input$selectvisGenes)
+        },
+        error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+    }
+  })
+
+  output$visPlot <- renderPlot({
+    req(vals$visplotobject)
+    vals$visplotobject
+  }, height = 600)
 
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -955,7 +990,7 @@ shinyServer(function(input, output, session) {
 
   output$colorBarConditionUI <- renderUI({
     if (is.null(vals$counts)){
-      selectInput("colorBarCondition", "Select Condition", c())
+      selectInput("colorBarCondition", "Select Condition", NULL)
     } else {
       selectInput("colorBarCondition", "Select Condition",
                   colnames(colData(vals$counts)), multiple = TRUE)
@@ -964,7 +999,7 @@ shinyServer(function(input, output, session) {
 
   annotationColors <- reactiveValues(cols = list())
 
-  output$HeatmapSampleAnnotations <- renderUI({
+  output$heatmapSampleAnnotations <- renderUI({
     if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
       h <- input$colorBarCondition
       L <- lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
@@ -1142,13 +1177,13 @@ shinyServer(function(input, output, session) {
     if (input$genelistSource == "Manual Input"){
       if (!is.null(vals$counts)){
         selectizeInput("pathwayGeneLists", "Select Gene List(s):",
-                       colnames(rowData(vals$counts)), multiple = T)
+                       colnames(rowData(vals$counts)), multiple = TRUE)
       } else {
         h4("Note: upload data.")
       }
     } else {
       selectInput("pathwayGeneLists", "Select Gene List(s):",
-                  c("ALL", names(c2BroadSets)), multiple = T)
+                  c("ALL", names(c2BroadSets)), multiple = TRUE)
     }
   })
 
@@ -1191,7 +1226,7 @@ shinyServer(function(input, output, session) {
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsvaLimma)){
       if (!is.null(input$pathwayGeneLists) & input$pathwayGeneLists == "ALL" & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        vals$gsvaLimma[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma)), , drop = F]
+        vals$gsvaLimma[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma)), , drop = FALSE]
       } else {
         vals$gsvaLimma
       }
@@ -1201,12 +1236,12 @@ shinyServer(function(input, output, session) {
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsvaRes))){
       if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsvaLimma))){
-        tempgsvares <- vals$gsvaRes[as.character(vals$gsvaLimma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma))]), , drop = F]
+        tempgsvares <- vals$gsvaRes[as.character(vals$gsvaLimma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma))]), , drop = FALSE]
       } else {
-        tempgsvares <- vals$gsvaRes[1:input$pickNtopPaths, , drop = F]
+        tempgsvares <- vals$gsvaRes[1:input$pickNtopPaths, , drop = FALSE]
       }
       if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
-        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = F]
+        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = FALSE]
         gsvaPlot(inSCE = vals$counts,
                  gsvaData = tempgsvares,
                  plotType = input$pathwayOutPlot,
@@ -1269,7 +1304,7 @@ shinyServer(function(input, output, session) {
                                          depthResolution = input$depthResolution,
                                          iterations = input$iterations)
 
-        output$DepthDone <- renderPlot({
+        output$depthDone <- renderPlot({
           plot(apply(vals$subDepth[, , 1], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
                lwd = 4, xlab = "log10(Total read counts)", ylab = "Number of detected genes",
@@ -1279,7 +1314,7 @@ shinyServer(function(input, output, session) {
           lines(apply(vals$subDepth[, , 1], 2, function(x){quantile(x, 0.75)})~
                   seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
-        output$MinEffectDone <- renderPlot({
+        output$minEffectDone <- renderPlot({
           plot(apply(vals$subDepth[, , 2], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
                lwd = 4, xlab = "log10(Total read counts)", ylab = "Average significant effect size",
@@ -1331,7 +1366,7 @@ shinyServer(function(input, output, session) {
                                            depthResolution = input$depthResolution,
                                            iterations = input$iterations)
         }
-        output$CellsDone <- renderPlot({
+        output$cellsDone <- renderPlot({
           plot(apply(vals$subCells[, , 1], 2, median)~
                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
                lwd = 4, xlab = "Number of virtual cells", ylab = "Number of detected genes",
@@ -1341,7 +1376,7 @@ shinyServer(function(input, output, session) {
           lines(apply(vals$subCells[, , 1], 2, function(x){quantile(x, 0.75)})~
                   seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
-        output$MinEffectCells <- renderPlot({
+        output$minEffectCells <- renderPlot({
           plot(apply(vals$subCells[, , 2], 2, median)~
                  seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution),
                lwd = 4, xlab = "Number of virtual cells", ylab = "Average significant effect size",

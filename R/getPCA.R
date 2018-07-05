@@ -3,8 +3,8 @@
 #' Selects the 500 most variable genes in the SCE, performs
 #' PCA or t-SNE based on them and stores the values in the reducedDims slot of
 #' the SCE object.
-#' 
-#' @describeIn getPCA Get PCA components for a SCtkE object 
+#'
+#' @describeIn getPCA Get PCA components for a SCtkE object
 #'
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use for PCA. Default is "counts"

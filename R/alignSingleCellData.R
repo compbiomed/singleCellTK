@@ -49,7 +49,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
   if (!requireNamespace("Rsubread", quietly = TRUE)) {
     stop("The Rsubread package is required to align data with this function. ",
          "Install Rsubread to continue. NOTE: Rsubread is not supported on ",
-         "Windows." , call. = FALSE)
+         "Windows.", call. = FALSE)
   }
 
   if (any(grepl("~", c(inputfile1, inputfile2, indexPath, gtfAnnotation,

@@ -1,5 +1,5 @@
 exampleDatasets <- c("mouseBrainSubset", "maits")
-if("scRNAseq" %in% rownames(installed.packages())){
+if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
 }
@@ -8,7 +8,7 @@ shinyPanelUpload <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
   tags$div(
-    class = "jumbotron",
+    class = "jumbotron", style = "background-color:#ededed",
     tags$div(
       class = "container",
       h1("Single Cell Toolkit"),
@@ -20,87 +20,103 @@ shinyPanelUpload <- fluidPage(
       )
     )
   ),
+  tags$br(),
   tags$div(
     class = "container",
+    h1("Upload"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
-              "(Upload tab help)", target = "_blank")),
+      "(help)", target = "_blank")),
+    tags$hr(),
     tags$div(id = "uploadAlert", alertText),
-    radioButtons("uploadChoice", "Upload:",
-                 c("Files" = "files",
-                   "Example data" = "example")),
+    h3("Choose data source:"),
+    radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
+                                                 "Use example data" = "example")
+    ),
+    tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
       h3("Upload data in tab separated text format:"),
       fluidRow(
         column(width = 4,
-          h4("Example count file:"),
-          HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
-               <th>Cell1</th><th>Cell2</th><th>&#x2026;</th><th>CellN</th>
-               </tr></thead><tbody><tr class="odd"><td>Gene1</td><td>0</td>
-               <td>0</td><td>&#x2026;</td><td>0</td></tr><tr class="even">
-               <td>Gene2</td><td>5</td><td>6</td><td>&#x2026;</td><td>0</td>
-               </tr><tr class="odd"><td>Gene3</td><td>4</td><td>3</td>
-               <td>&#x2026;</td><td>8</td></tr><tr class="even">
-               <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td>
-               <td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd">
-               <td>GeneM</td><td>10</td><td>10</td><td>&#x2026;</td><td>10</td>
-               </tr></tbody></table>'),
-          tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
-                 "Download an example count file here.", target = "_blank"),
-          tags$br(),
-          tags$br(),
-          fileInput(
-            "countsfile", "Input assay (eg. counts, required):",
-            accept = c(
-              "text/csv", "text/comma-separated-values",
-              "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+          wellPanel(
+            h4("Example count file:"),
+            HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
+                 <th>Cell1</th><th>Cell2</th><th>&#x2026;</th><th>CellN</th>
+                 </tr></thead><tbody><tr class="odd"><td>Gene1</td><td>0</td>
+                 <td>0</td><td>&#x2026;</td><td>0</td></tr><tr class="even">
+                 <td>Gene2</td><td>5</td><td>6</td><td>&#x2026;</td><td>0</td>
+                 </tr><tr class="odd"><td>Gene3</td><td>4</td><td>3</td>
+                 <td>&#x2026;</td><td>8</td></tr><tr class="even">
+                 <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td>
+                 <td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd">
+                 <td>GeneM</td><td>10</td><td>10</td><td>&#x2026;</td><td>10</td>
+                 </tr></tbody></table>'),
+            tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
+                   "Download an example count file here.", target = "_blank"),
+            tags$br(),
+            tags$br(),
+            fileInput(
+              "countsfile",
+              HTML(
+                paste("Input assay (eg. counts, required):",
+                tags$span(style = "color:red", "*", sep = ""))
+              ),
+              accept = c(
+                "text/csv", "text/comma-separated-values",
+                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+              )
             )
           ),
-          selectInput("inputAssayType", "Input Assay Type:", c("counts",
-                                                               "normcounts",
-                                                               "logcounts",
-                                                               "cpm", "logcpm",
-                                                               "tpm", "logtpm")),
-          checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
+          h4("Input Assay Type:"),
+          selectInput("inputAssayType", label = NULL,
+                      c("counts", "normcounts", "logcounts", "cpm",
+                        "logcpm", "tpm", "logtpm")
+          ),
+          checkboxInput("createLogcounts",
+                        "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
-          h4("Example sample annotation file:"),
-          HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
-               <th>Annot1</th><th>…</th></tr></thead><tbody><tr class="odd">
-               <td>Cell1</td><td>a</td><td>…</td></tr><tr class="even">
-               <td>Cell2</td><td>a</td><td>…</td></tr><tr class="odd">
-               <td>Cell3</td><td>b</td><td>…</td></tr><tr class="even">
-               <td>…</td><td>…</td><td>…</td></tr><tr class="odd"><td>CellN</td>
-               <td>b</td><td>…</td></tr></tbody></table>'),
-          tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
-                 "Download an example annotation file here.", target = "_blank"),
-          tags$br(),
-          tags$br(),
-          fileInput(
-            "annotFile", "Sample annotations (optional):",
-            accept = c(
-              "text/csv", "text/comma-separated-values",
-              "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+          wellPanel(
+            h4("Example sample annotation file:"),
+            HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
+                 <th>Annot1</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
+                 <td>Cell1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
+                 <td>Cell2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
+                 <td>Cell3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
+                 <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>CellN</td>
+                 <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
+            tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                   "Download an example annotation file here.", target = "_blank"),
+            tags$br(),
+            tags$br(),
+            fileInput(
+              "annotFile", "Sample annotations (optional):",
+              accept = c(
+                "text/csv", "text/comma-separated-values",
+                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+              )
             )
           )
         ),
         column(width = 4,
-          h4("Example feature file:"),
-          HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
-               <th>Annot2</th><th>…</th></tr></thead><tbody><tr class="odd">
-               <td>Gene1</td><td>a</td><td>…</td></tr><tr class="even">
-               <td>Gene2</td><td>a</td><td>…</td></tr><tr class="odd">
-               <td>Gene3</td><td>b</td><td>…</td></tr><tr class="even">
-               <td>…</td><td>…</td><td>…</td></tr><tr class="odd"><td>GeneM</td>
-               <td>b</td><td>…</td></tr></tbody></table>'),
-          tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
-                "Download an example feature file here.", target = "_blank"),
-          tags$br(),
-          tags$br(),
-          fileInput(
-            "featureFile", "Feature annotations (optional):",
-            accept = c(
-              "text/csv", "text/comma-separated-values",
-              "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+          wellPanel(
+            h4("Example feature file:"),
+            HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
+               <th>Annot2</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
+                 <td>Gene1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
+                 <td>Gene2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
+                 <td>Gene3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
+                 <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>GeneM</td>
+                 <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
+            tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                  "Download an example feature file here.", target = "_blank"),
+            tags$br(),
+            tags$br(),
+            fileInput(
+              "featureFile", "Feature annotations (optional):",
+              accept = c(
+                "text/csv", "text/comma-separated-values",
+                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+              )
             )
           )
         )
@@ -108,8 +124,9 @@ shinyPanelUpload <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
-      selectInput("selectExampleData", "Or, choose example data:",
-                  exampleDatasets),
+      h3("Choose Example Dataset:"),
+      selectInput("selectExampleData", label = NULL, exampleDatasets
+      ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'mouseBrainSubset'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1126/science.aaa1934", "Mouse Brain Subset: GSE60361", target = "_blank")),

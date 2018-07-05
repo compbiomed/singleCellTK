@@ -205,7 +205,7 @@ iterateSimulations <- function(originalData, realLabels, totalReads, cells,
 #' Nonviable results (such as for genes with 0 counts in a simulated dataset)
 #' are coerced to 1.
 #'
-#' @describeIn subDiffEx Get PCA components for a SCtkE object 
+#' @describeIn subDiffEx Get PCA components for a SCtkE object
 #'
 #' @export
 #' @examples
@@ -248,7 +248,7 @@ subDiffEx <- function(tempData){
 #' data("mouseBrainSubsetSCE")
 #' #sort first 100 expressed genes
 #' ord <- rownames(mouseBrainSubsetSCE)[
-#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
+#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
 #'         decreasing = TRUE)][1:100]
 #' #subset to those first 100 genes
 #' subset <- mouseBrainSubsetSCE[ord, ]
@@ -285,7 +285,7 @@ subDiffExttest <- function(countMatrix, class.labels, test.type = "t.equalvar") 
 #' data("mouseBrainSubsetSCE")
 #' #sort first 100 expressed genes
 #' ord <- rownames(mouseBrainSubsetSCE)[
-#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
+#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
 #'         decreasing = TRUE)][1:100]
 #' # subset to those first 100 genes
 #' subset <- mouseBrainSubsetSCE[ord, ]
