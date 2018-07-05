@@ -20,7 +20,7 @@ shinyPanelCluster <- fluidPage(
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
             #radioButtons("colorGeneBy", "Gene list:", c("Manual Input", "Biomarker (from DE tab)")), #TODO: implement biomarker color by
-            radioButtons("colorGeneBy", "Gene list:", c("Manual Input")),
+            radioButtons("colorGeneBy", "Gene list:", "Manual Input"),
             conditionalPanel(
               condition = sprintf("input['%s'] == 'Manual Input'", "colorGeneBy"),
               selectizeInput(

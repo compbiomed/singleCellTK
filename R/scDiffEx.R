@@ -51,12 +51,7 @@ scDiffEx <- function(inSCE, useAssay="logcounts", condition,
         SummarizedExperiment::colData(inSCE)[, i])
     }
   }
-  if (length(condition) == 1){
-    if (is.factor(SingleCellExperiment::colData(inSCE)[, i])){
-      in.condition <- droplevels(as.factor(
-        SingleCellExperiment::colData(inSCE)[, condition]))
-    }
-  } else if (diffexmethod != "ANOVA"){
+  if (length(condition) != 1 & diffexmethod != "ANOVA"){
     stop("Only submit one condition for this method.")
   }
 
@@ -115,7 +110,7 @@ scDiffEx <- function(inSCE, useAssay="logcounts", condition,
 #' data("mouseBrainSubsetSCE")
 #' #sort first 100 expressed genes
 #' ord <- rownames(mouseBrainSubsetSCE)[
-#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")), 
+#'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
 #'         decreasing = TRUE)][1:100]
 #' #subset to those first 100 genes
 #' subset <- mouseBrainSubsetSCE[ord, ]
