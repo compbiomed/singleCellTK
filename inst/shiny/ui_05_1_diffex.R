@@ -7,10 +7,11 @@ shinyPanelDiffex <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         #TODO: Remove DESeq, add edgeR, add more custom options?
+        tags$h4("Settings:"),
         selectInput("diffexAssay", "Select Assay:", currassays),
-        selectInput("selectDiffex", "Select Method:", c("limma (use log values)" = "limma",
-                                                        "DESeq2 (use counts)" = "DESeq2",
-                                                        "ANOVA (use log values)" = "ANOVA")),
+        selectInput("selectDiffex", "Select Method:", 
+          c("limma (use log values)" = "limma", "DESeq2 (use counts)" = "DESeq2", "ANOVA (use log values)" = "ANOVA")
+        ),
         uiOutput("selectDiffexConditionUI"),
         uiOutput("selectDiffexConditionLevelUI"),
         sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
@@ -18,17 +19,15 @@ shinyPanelDiffex <- fluidPage(
         conditionalPanel(
           condition = "input.applyCutoff == true",
           sliderInput("selectPval", "p-value (adjusted) cutoff:", 0.01, 0.2, 0.05),
-          selectInput("selectCorrection", "Correction Method:", c("fdr", "holm",
-                                                                  "hochberg",
-                                                                  "hommel",
-                                                                  "bonferroni",
-                                                                  "BH", "BY",
-                                                                  "none"))
+          selectInput("selectCorrection", "Correction Method:", 
+            c("fdr", "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "none")
+          )
         ),
-        withBusyIndicatorUI(actionButton("runDiffex",
-                                         "Run Differential Expression")),
+        withBusyIndicatorUI(actionButton("runDiffex", "Run Differential Expression")),
+        tags$hr(),
         downloadButton("downloadGeneList", "Download Results"),
-        h3("Save gene list as biomarker:"),
+        tags$hr(),
+        h4("Save gene list as biomarker:"),
         textInput("biomarkerName", "Biomarker Name: ", value = ""),
         withBusyIndicatorUI(actionButton("saveBiomarker", "Save Biomarker"))
       ),
