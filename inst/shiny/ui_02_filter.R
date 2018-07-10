@@ -138,29 +138,6 @@ shinyPanelFilter <- fluidPage(
             )
           )
         )
-      ),
-      tabPanel(
-        "Visualize",
-        wellPanel(
-          br(),
-          fluidRow(
-            sidebarLayout(
-              sidebarPanel(
-                h4("Visualization Options:"),
-                selectInput("visAssaySelect", "Select Assay:", currassays),
-                selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
-                selectInput("visCondn", "Condition:", c(clusterChoice)),
-                selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE),
-                withBusyIndicatorUI(actionButton("plotvis", "Plot"))
-              ),
-              mainPanel(
-                fluidRow(
-                  plotOutput("visPlot")
-                )
-              )
-            )
-          )
-        )
       )
     )
   )
