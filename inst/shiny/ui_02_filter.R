@@ -10,7 +10,6 @@ shinyPanelFilter <- fluidPage(
       tabPanel(
         "Data Summary",
         wellPanel(
-          br(),
           sidebarLayout(
             sidebarPanel(
               h3("Settings:"),
@@ -87,21 +86,18 @@ shinyPanelFilter <- fluidPage(
       tabPanel(
         "Assay Details",
         wellPanel(
-          br(),
-          fluidRow(
-            sidebarLayout(
-              sidebarPanel(
-                h4("Assay Options:"),
-                selectInput("addAssayType", "Add Assay Type:", c("logcounts",
-                                                                 "cpm", "logcpm")),
-                withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
-                selectInput("delAssayType", "Delete Assay Type:", currassays),
-                withBusyIndicatorUI(actionButton("delAssay", "Delete Assay"))
-              ),
-              mainPanel(
-                h4("Available Assays:"),
-                tableOutput("assayList")
-              )
+          sidebarLayout(
+            sidebarPanel(
+              h3("Assay Options:"),
+              selectInput("addAssayType", "Add Assay Type:", c("logcounts",
+                                                               "cpm", "logcpm")),
+              withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
+              selectInput("delAssayType", "Delete Assay Type:", currassays),
+              withBusyIndicatorUI(actionButton("delAssay", "Delete Assay"))
+            ),
+            mainPanel(
+              h4("Available Assays:"),
+              tableOutput("assayList")
             )
           )
         )
@@ -109,32 +105,27 @@ shinyPanelFilter <- fluidPage(
       tabPanel(
         "Annotation Data",
         wellPanel(
-          br(),
-          fluidRow(
-            tabsetPanel(
-              tabPanel(
-                "Data",
-                DT::dataTableOutput("colDataDataFrame")
-              ),
-              tabPanel(
-                "Options",
-                 wellPanel(
-                  h4("Modify Annotation Data:"),
-                  selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-                  uiOutput("annotModifyUI"),
-                  tags$hr(),
-                  downloadButton("downloadcolData", "Download Annotation Data"),
-                  tags$hr(),
-                  fileInput(
-                    "newAnnotFile", "Upload and replace annotation data:",
-                    accept = c(
-                      "text/csv",
-                      "text/comma-separated-values",
-                      ".csv"
-                    )
-                  )
+          sidebarLayout(
+            sidebarPanel(
+              h3("Modify Annotation Data:"),
+              selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
+              uiOutput("annotModifyUI"),
+              tags$hr(),
+              downloadButton("downloadcolData", "Download Annotation Data"),
+              tags$hr(),
+              fileInput(
+                "newAnnotFile", "Upload and replace annotation data:",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  ".csv"
                 )
               )
+            ),
+            mainPanel(
+              tags$h4("Data:"),
+              tags$br(),
+              DT::dataTableOutput("colDataDataFrame")
             )
           )
         )
