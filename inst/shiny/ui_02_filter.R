@@ -96,23 +96,11 @@ shinyPanelFilter <- fluidPage(
                                                                  "cpm", "logcpm")),
                 withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
                 selectInput("delAssayType", "Delete Assay Type:", currassays),
-                withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
-                tags$hr(),
-                h4("reducedDim Options:"),
-                selectInput("delRedDimType", "Delete reducedDim:", currreddim),
-                withBusyIndicatorUI(actionButton("delRedDim", "Delete reducedDim"))
+                withBusyIndicatorUI(actionButton("delAssay", "Delete Assay"))
               ),
               mainPanel(
-                fluidRow(
-                  column(6,
-                         h4("Available Assays:"),
-                         tableOutput("assayList")
-                  ),
-                  column(6,
-                         h4("Available Reduced Dims:"),
-                         tableOutput("reducedDimsList")
-                  )
-                )
+                h4("Available Assays:"),
+                tableOutput("assayList")
               )
             )
           )
