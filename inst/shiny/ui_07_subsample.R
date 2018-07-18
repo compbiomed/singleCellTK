@@ -53,7 +53,7 @@ shinyPanelSubsample <- fluidPage(
                          value = 10, min = 1, max = 10000),
             numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
                          value = 3, min = 1, max = 100000),
-            numericInput("depthResolution", "How many dataset sizes to simulate",
+            numericInput("depthResolution", "Number of dataset sizes to simulate",
                          value = 10, min = 1, max = 100),
             withBusyIndicatorUI(actionButton("runSubsampleCells", "Run resampler"))
           ),
