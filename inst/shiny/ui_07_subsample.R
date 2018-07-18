@@ -18,7 +18,7 @@ shinyPanelSubsample <- fluidPage(
                          label = "Number of bootstrap iterations.",
                          value = 10, min = 2, max = 10000),
             sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
-            sliderInput("depthResolution", "how many values to simulate", 5, 100, 10, 5),
+            sliderInput("depthResolution", "Number of values to simulate", 5, 100, 10, 5),
             selectInput("selectReadDepthCondition", "Condition for diffex", c("Random", clusterChoice), selected = "Random"),
             withBusyIndicatorUI(actionButton("runSubsampleDepth", "Run subsampler"))
           )
