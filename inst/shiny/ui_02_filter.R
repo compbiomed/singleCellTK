@@ -106,7 +106,6 @@ shinyPanelFilter <- fluidPage(
                   )
                 )
               ),
-              
               tags$hr(),
               downloadButton("downloadSCE", "Download SCtkExperiment")
             ),
