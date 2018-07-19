@@ -21,10 +21,7 @@ shinyPanelFilter <- fluidPage(
             # collapse open by default
             tags$div( id="collapse1",
               wellPanel(
-                selectInput("filterAssaySelect", "Select Assay:", currassays),
-                checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
-                numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
-                numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100)
+                selectInput("filterAssaySelect", "Select Assay:", currassays)
               )
             ),
             # Section 2 - Delete Outliers
@@ -32,6 +29,9 @@ shinyPanelFilter <- fluidPage(
             shinyjs::hidden(
               tags$div( id="collapse2",
                 wellPanel(
+                  checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
+                  numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
+                  numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
                   selectInput("deletesamplelist", "Select Samples:", sampleChoice, multiple = TRUE),
                   fluidRow(
                     column(6, withBusyIndicatorUI(actionButton("filterData", "Filter Data"))),
