@@ -13,21 +13,34 @@ shinyPanelFilter <- fluidPage(
           br(),
           fluidRow(
           sidebarPanel(
-            h3("Settings:"),
+            fluidRow(
+              column(5,
+                h3("Settings:")
+              ),
+              column(3,
+                br(),
+                actionButton("f_hideAllSections", "Hide All")
+              ),
+              column(3,
+                br(),
+                actionButton("f_showAllSections", "Show All")
+              )
+            ),
+            br(),
             
             # SHINYJS ACCORDION --------------------------
             # Section 1 - Assay Settings
-            actionButton("button1", "Assay Settings"),
-            # collapse open by default
-            tags$div( id="collapse1",
+            actionButton("f_button1", "Assay Settings"),
+            # open by default
+            tags$div( id="f_collapse1",
               wellPanel(
                 selectInput("filterAssaySelect", "Select Assay:", currassays)
               )
             ),
             # Section 2 - Delete Outliers
-            actionButton("button2", "Delete Outliers"),
+            actionButton("f_button2", "Delete Outliers"),
             shinyjs::hidden(
-              tags$div( id="collapse2",
+              tags$div( id="f_collapse2",
                 wellPanel(
                   checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
                   numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
@@ -41,9 +54,9 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             # Section 3 - Filter Samples by Annotation
-            actionButton("button3", "Filter Samples by Annotation"),
+            actionButton("f_button3", "Filter Samples by Annotation"),
             shinyjs::hidden(
-              tags$div( id="collapse3",
+              tags$div( id="f_collapse3",
                 wellPanel(
                   selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
                   uiOutput("filterSampleOptions")
@@ -51,9 +64,9 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             # Section 4 - Filter Genes by Feature Annotation
-            actionButton("button4", "Filter Genes by Feature Annotation"),
+            actionButton("f_button4", "Filter Genes by Feature Annotation"),
             shinyjs::hidden(
-              tags$div( id="collapse4",
+              tags$div( id="f_collapse4",
                 wellPanel(
                   selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
                   uiOutput("filterFeatureOptions")
@@ -61,9 +74,9 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             # Section 5 - Convert Gene Annotations
-            actionButton("button5", "Convert Gene Annotations"),
+            actionButton("f_button5", "Convert Gene Annotations"),
             shinyjs::hidden(
-              tags$div( id="collapse5",
+              tags$div( id="f_collapse5",
                 wellPanel(  
                   selectInput("orgOrganism", "Select Organism:", 
                     as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE))
@@ -74,9 +87,9 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             # Section 6 - Delete an Annotation Column
-            actionButton("button6", "Delete an Annotation Column"),
+            actionButton("f_button6", "Delete an Annotation Column"),
             shinyjs::hidden(
-              tags$div( id="collapse6",
+              tags$div( id="f_collapse6",
                 wellPanel(
                   selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
                   actionButton("deleterowDatabutton", "Delete Column")
@@ -84,9 +97,9 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             # Section 7 - Randomly Subset
-            actionButton("button7", "Randomly Subset"),
+            actionButton("f_button7", "Randomly Subset"),
             shinyjs::hidden(
-              tags$div( id="collapse7",
+              tags$div( id="f_collapse7",
                 wellPanel(
                   numericInput("downsampleNum", "Number of samples to keep:", min = 2,
                                max = numSamples, value = numSamples, step = 1),
@@ -94,72 +107,6 @@ shinyPanelFilter <- fluidPage(
                 )
               )
             ),
-            
-            # # HTML ACCORDION -----------------------------
-            # HTML('<div class="accordion" id="filterAccordion">
-            #   <div class="panel" style="background-color:transparent">'),
-            #     # section format - accordionSelection(collapseId, accordionID, sectionTitle) from helpers.R
-            #     HTML(accordionSection("collapse-AssaySettings", "Assay Settings", "filterAccordion")),
-            #       wellPanel(  
-            #         selectInput("filterAssaySelect", "Select Assay:", currassays),
-            #         checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
-            #         numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
-            #         numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100)
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-DeleteOutliers", "Delete Outliers", "filterAccordion")),
-            #       wellPanel(  
-            #         selectInput("deletesamplelist", "Select Samples:",
-            #           sampleChoice,
-            #           multiple = TRUE),
-            #         fluidRow(
-            #           column(6, withBusyIndicatorUI(actionButton("filterData", "Filter Data"))),
-            #           column(6, actionButton("resetData", "Reset"))
-            #         )
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-FilterSamples", "Filter samples by annotation", "filterAccordion")),
-            #       wellPanel(
-            #         selectInput("filteredSample", "Select Annotation:", c("none", clusterChoice)),
-            #         uiOutput("filterSampleOptions")
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-FilterGenes", "Filter genes by feature annotation", "filterAccordion")),
-            #       wellPanel(
-            #         selectInput("filteredFeature", "Select Feature:", c("none", featureChoice)),
-            #         uiOutput("filterFeatureOptions")
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-ConvertAnnotations", "Convert gene annotations", "filterAccordion")),
-            #       wellPanel(  
-            #         selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.",
-            #           installed.packages()[, "Package"], value = TRUE))),
-            #         uiOutput("orgConvertColumns"),
-            #         withBusyIndicatorUI(actionButton("convertGenes", "Convert"))
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-DeleteColumn", "Delete an annotation column", "filterAccordion")),
-            #       wellPanel(
-            #         selectInput("deleterowdatacolumn", "Annotation Column:", clusterChoice),
-            #         actionButton("deleterowDatabutton", "Delete Column")
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #     HTML(accordionSection("collapse-RandomlySubset", "Randomly Subset", "filterAccordion")),
-            #       wellPanel(
-            #         numericInput("downsampleNum", "Number of samples to keep:", min = 2,
-            #           max = numSamples, value = numSamples, step = 1),
-            #         withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data"))
-            #       ),
-            #     HTML('</div>'),
-            # 
-            #   HTML('</div>
-            # </div>'),
             
             tags$hr(),
             downloadButton("downloadSCE", "Download SCtkExperiment")
