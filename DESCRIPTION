@@ -49,7 +49,8 @@ Imports:
     reshape2,
     AnnotationDbi,
     shinyalert,
-    circlize
+    circlize,
+    enrichR
 RoxygenNote: 6.0.1
 Suggests:
     testthat,
