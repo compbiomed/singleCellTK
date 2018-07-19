@@ -16,7 +16,8 @@ shinyServer(function(input, output, session) {
     diffexgenelist = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
-    visplotobject = NULL
+    visplotobject = NULL,
+    enrichRes = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -64,6 +65,8 @@ shinyServer(function(input, output, session) {
                          choices = selectthegenes, server = TRUE)
     updateSelectizeInput(session, "selectvisGenes",
                          choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "enrichGenes",
+                         choices = selectthegenes, server = TRUE)
   }
 
   updateFeatureAnnots <- function(){
@@ -97,6 +100,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
+    updateSelectInput(session, "enrichAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -1284,6 +1288,72 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  #-----------------------------------------------------------------------------
+  # Page 6.2 : Enrichment Analysis - EnrichR
+  #-----------------------------------------------------------------------------
+  
+  observeEvent(input$enrichRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("enrichRun", {
+        enrDatabases <- enrichR::listEnrichrDbs()$libraryName
+        tryCatch({
+          if(is.null(input$enrichDb)){
+            dbs <- enrDatabases
+            } else {
+              if(input$enrichDb == "ALL"){
+                dbs <- enrDatabases
+              } else{
+                dbs <- input$enrichDb
+                }
+            }
+          count_db <- length(dbs)
+          shiny::withProgress(message = "Running... this will take a while",
+                               value = 0, {
+                                vals$enrichRes <- NULL
+                                for (i in 1:count_db) {
+                                  incProgress(1/count_db, detail = paste("Querying db: ", dbs[i]))
+                                  vals$enrichRes <- rbind(vals$enrichRes, 
+                                                          enrichRSCE(inSCE = vals$counts,
+                                                          useAssay = input$enrichAssay,
+                                                          glist = input$enrichGenes,
+                                                          db = dbs[i]))
+                                  Sys.sleep(0.25)
+                                  }
+                                }
+                              )
+          }, error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+      }
+    })
+  
+  output$enrichTable <- DT::renderDataTable({
+    req(vals$enrichRes)
+    vals$enrichRes
+  }, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
+  
+  isResult <- reactive(is.null(vals$enrichRes))
+  observe({
+    if (isResult()) {
+      shinyjs::disable("downloadEnrichR")
+    } else {
+      shinyjs::enable("downloadEnrichR")
+    }
+  })
+  
+  output$downloadEnrichR <- downloadHandler(
+    filename = function() {
+      paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      utils::write.csv(vals$enrichRes, file)
+    },
+    contentType = "text/csv"
+  )
+  
   #-----------------------------------------------------------------------------
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------
