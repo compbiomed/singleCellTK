@@ -27,7 +27,7 @@ shinyPanelFilter <- fluidPage(
               ),
               br(),
               
-              # SHINYJS ACCORDION --------------------------
+              # SHINYJS COLLAPSE --------------------------
               # Section 1 - Assay Settings
               actionButton("f_button1", "Assay Settings"),
               # open by default
