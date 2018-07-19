@@ -174,21 +174,23 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   
   #Sidebar buttons functionality - not an accordion
-  shinyjs::onclick("button1", shinyjs::toggle(id="collapse1"), add=TRUE)
-  shinyjs::onclick("button2", shinyjs::toggle(id="collapse2"), add=TRUE)
-  shinyjs::onclick("button3", shinyjs::toggle(id="collapse3"), add=TRUE)
-  shinyjs::onclick("button4", shinyjs::toggle(id="collapse4"), add=TRUE)
-  shinyjs::onclick("button5", shinyjs::toggle(id="collapse5"), add=TRUE)
-  shinyjs::onclick("button6", shinyjs::toggle(id="collapse6"), add=TRUE)
-  shinyjs::onclick("button7", shinyjs::toggle(id="collapse7"), add=TRUE)
+  shinyjs::onclick("f_hideAllSections", allSections("hide",c(paste("f_collapse",1:7,sep=""))), add=TRUE)
+  shinyjs::onclick("f_showAllSections", allSections("show",c(paste("f_collapse",1:7,sep=""))), add=TRUE)
+  shinyjs::onclick("f_button1", shinyjs::toggle(id="f_collapse1", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button2", shinyjs::toggle(id="f_collapse2", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button3", shinyjs::toggle(id="f_collapse3", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button4", shinyjs::toggle(id="f_collapse4", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button5", shinyjs::toggle(id="f_collapse5", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button6", shinyjs::toggle(id="f_collapse6", anim=TRUE), add=TRUE)
+  shinyjs::onclick("f_button7", shinyjs::toggle(id="f_collapse7", anim=TRUE), add=TRUE)
   #Button styling
-  shinyjs::addClass(id="button1",class="btn-block")
-  shinyjs::addClass(id="button2",class="btn-block")
-  shinyjs::addClass(id="button3",class="btn-block")
-  shinyjs::addClass(id="button4",class="btn-block")
-  shinyjs::addClass(id="button5",class="btn-block")
-  shinyjs::addClass(id="button6",class="btn-block")
-  shinyjs::addClass(id="button7",class="btn-block")
+  shinyjs::addClass(id="f_button1",class="btn-block")
+  shinyjs::addClass(id="f_button2",class="btn-block")
+  shinyjs::addClass(id="f_button3",class="btn-block")
+  shinyjs::addClass(id="f_button4",class="btn-block")
+  shinyjs::addClass(id="f_button5",class="btn-block")
+  shinyjs::addClass(id="f_button6",class="btn-block")
+  shinyjs::addClass(id="f_button7",class="btn-block")
   
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
