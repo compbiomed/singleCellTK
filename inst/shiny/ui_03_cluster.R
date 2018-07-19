@@ -18,36 +18,42 @@ shinyPanelCluster <- fluidPage(
             id="c-collapse-run", class="collapse",
             wellPanel(
               fluidRow(
-                column(4,
-                  tags$h4("Select:"),
-                  selectInput("dimRedAssaySelect", "Assay:", currassays),
-                  # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                  selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE")),
-                  tags$br(),
-                  ## BUTTONS NEED REPLACING:
-                  ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
-                  tags$br(),
-                  conditionalPanel(
-                    condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
-                    withBusyIndicatorUI(actionButton("reRunTSNE", "Run"))
-                  ),
-                  conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
-                    withBusyIndicatorUI(actionButton("reRunPCA", "Run"))
-                  )
-                ),
-                column(4,
-                  tags$h4("DR Options:"),
-                  ## NOT LINKED UP
-                  textInput("dimRedNameInput", "reducedDim Name:", ""),
-                  tags$br(),
-                  HTML('<button type="button" class="btn btn-default btn-block" 
-                    data-toggle="collapse" data-target="#c-collapse-run-options">
-                    View More Options</button>'
-                  ),
-                  tags$div(
-                    id="c-collapse-run-options", class="collapse",
-                    tags$p("Content coming soon.")
+                column(8,
+                  wellPanel(  
+                    fluidRow(
+                      column(6,
+                        tags$h4("Select:"),
+                        selectInput("dimRedAssaySelect", "Assay:", currassays),
+                        # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
+                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE")),
+                        tags$br(),
+                        ## BUTTONS NEED REPLACING:
+                        ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
+                        tags$br(),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
+                          withBusyIndicatorUI(actionButton("reRunTSNE", "Run"))
+                        ),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
+                          withBusyIndicatorUI(actionButton("reRunPCA", "Run"))
+                        )
+                      ),
+                      column(6,
+                        tags$h4("DR Options:"),
+                        ## NOT LINKED UP
+                        textInput("dimRedNameInput", "reducedDim Name:", ""),
+                        tags$br(),
+                        HTML('<button type="button" class="btn btn-default btn-block" 
+                          data-toggle="collapse" data-target="#c-collapse-run-options">
+                          View More Options</button>'
+                        ),
+                        tags$div(
+                          id="c-collapse-run-options", class="collapse",
+                          tags$p("Content coming soon.")
+                        )
+                      )
+                    )
                   )
                 ),
                 column(4,
