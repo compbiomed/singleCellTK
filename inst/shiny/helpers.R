@@ -105,3 +105,17 @@ accordionSection <- function(collapseId, panelTitle, accordionId) {
     )
   )
 }
+
+# show or hide all collapses in a list
+allSections <- function(action, collapseList) {
+  if(action == "hide"){
+    for (i in collapseList){
+      shinyjs::hide(i, anim=TRUE)
+    }
+  }
+  else if(action == "show"){
+    for (i in collapseList){
+      shinyjs::show(i, anim=TRUE)
+    }
+  }
+}
