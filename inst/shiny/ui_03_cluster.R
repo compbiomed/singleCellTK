@@ -9,13 +9,11 @@ shinyPanelCluster <- fluidPage(
       tabPanel(
         "Dimensionality Reduction",
         wellPanel(
-          
-          # ---- Run New Dimensional Reduction
-          HTML('<button type="button" class="btn btn-default btn-block" 
-            data-toggle="collapse" data-target="#c-collapse-run">
-            Run New Dimensional Reduction</button>'),
-          tags$div( 
-            id="c-collapse-run", class="collapse",
+          # SHINYJS COLLAPSE --------------------------
+          # Section 1 - Assay Settings
+          actionButton("c_button1", "Run New Dimensional Reduction"),
+          # open by default
+          tags$div( id="c_collapse1",
             wellPanel(
               fluidRow(
                 column(8,
@@ -76,12 +74,10 @@ shinyPanelCluster <- fluidPage(
             )
           ),
           
-          # ---- Visualize
-          HTML('<button type="button" class="btn btn-default btn-block" 
-            data-toggle="collapse" data-target="#c-collapse-visualize">
-            Visualize</button>'),
-          tags$div(
-            id="c-collapse-visualize", class="collapse",
+          # Section 2 - Visualize
+          actionButton("c_button2", "Visualize"),
+          # open by default
+          tags$div( id="c_collapse2",
             wellPanel(
               sidebarLayout(
                 sidebarPanel(
@@ -151,12 +147,10 @@ shinyPanelCluster <- fluidPage(
             )
           ), 
           
-          # ---- Clustering
-          HTML('<button type="button" class="btn btn-default btn-block" 
-            data-toggle="collapse" data-target="#c-collapse-cluster">
-            Clustering (optional)</button>'),
-          tags$div(
-            id="c-collapse-cluster", class="collapse",
+          # Section 3 - Clustering
+          actionButton("c_button3", "Clustering (optional)"),
+          # open by default
+          tags$div( id="c_collapse3",
             wellPanel(
               # CLUSTERING --> VISUALIZATION
               fluidRow(
