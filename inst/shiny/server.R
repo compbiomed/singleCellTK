@@ -172,7 +172,24 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
-
+  
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("button1", shinyjs::toggle(id="collapse1"), add=TRUE)
+  shinyjs::onclick("button2", shinyjs::toggle(id="collapse2"), add=TRUE)
+  shinyjs::onclick("button3", shinyjs::toggle(id="collapse3"), add=TRUE)
+  shinyjs::onclick("button4", shinyjs::toggle(id="collapse4"), add=TRUE)
+  shinyjs::onclick("button5", shinyjs::toggle(id="collapse5"), add=TRUE)
+  shinyjs::onclick("button6", shinyjs::toggle(id="collapse6"), add=TRUE)
+  shinyjs::onclick("button7", shinyjs::toggle(id="collapse7"), add=TRUE)
+  #Button styling
+  shinyjs::addClass(id="button1",class="btn-block")
+  shinyjs::addClass(id="button2",class="btn-block")
+  shinyjs::addClass(id="button3",class="btn-block")
+  shinyjs::addClass(id="button4",class="btn-block")
+  shinyjs::addClass(id="button5",class="btn-block")
+  shinyjs::addClass(id="button6",class="btn-block")
+  shinyjs::addClass(id="button7",class="btn-block")
+  
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     if (!is.null(getShinyOption("inputSCEset"))){
