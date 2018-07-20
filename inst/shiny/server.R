@@ -191,6 +191,11 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id="f_button5",class="btn-block")
   shinyjs::addClass(id="f_button6",class="btn-block")
   shinyjs::addClass(id="f_button7",class="btn-block")
+  shinyjs::addClass(id="filterData",class="btn-block")
+  shinyjs::addClass(id="resetData",class="btn-block")
+  shinyjs::addClass(id="convertGenes",class="btn-block",)
+  shinyjs::addClass(id="deleterowDatabutton",class="btn-block")
+  shinyjs::addClass(id="downsampleGo",class="btn-block")
   
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
