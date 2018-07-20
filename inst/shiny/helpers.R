@@ -30,6 +30,33 @@ withBusyIndicatorUI <- function(button) {
   )
 }
 
+# does the same thing as above, but put the animation inside the button label
+actionButtonBusy <- function(buttonId, buttonTitle) {
+  tags$div(
+    `data-for-btn`=buttonId,
+    actionButton(
+      buttonId, 
+      tags$div(
+        buttonTitle,
+        tags$span( class = "btn-loading-container", style="float:right",
+          hidden(
+            img(src = "ajax-loader-bar.gif", class = "btn-loading-indicator"),
+            icon("check", class = "btn-done-indicator")
+          )
+        )
+      )
+    ),
+    hidden(
+      div(class = "btn-err",
+          div(icon("exclamation-circle"),
+              tags$b("Error: "),
+              span(class = "btn-err-msg")
+          )
+      )
+    )
+  )
+}
+
 # Call this function from the server with the button id that is clicked and the
 # expression to run when the button is clicked
 withBusyIndicatorServer <- function(buttonId, expr) {
