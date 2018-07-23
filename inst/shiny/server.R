@@ -108,6 +108,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delRedDimType", choices = currreddim)
   }
 
+  updateEnrichDB <- function(){
+    enrDB <- enrichR::listEnrichrDbs()$libraryName
+    updateSelectInput(session, "enrichDb", choices = enrDB)
+  }
+  
   # Close app on quit
   session$onSessionEnded(stopApp)
 
@@ -252,8 +257,11 @@ shinyServer(function(input, output, session) {
                                     minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
         vals$diffexgenelist <- NULL
         vals$gsvaRes <- NULL
+        vals$enrichRes <- NULL
+        vals$visplotobject <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
+        updateEnrichDB()
         if (!is.null(input$deletesamplelist)){
           updateSelectInput(session, "deletesamplelist",
                             choices = colnames(vals$counts))
@@ -273,11 +281,15 @@ shinyServer(function(input, output, session) {
                         choices = colnames(vals$counts))
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
+     
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
       updateAssayInputs()
       updateGeneNames()
+      updateEnrichDB()
     }
   })
 
@@ -380,6 +392,15 @@ shinyServer(function(input, output, session) {
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
   })
+  
+  isAssayResult <- reactive(is.null(vals$counts))
+  observe({
+    if (isAssayResult()) {
+      shinyjs::disable("downloadSCE")
+    } else {
+      shinyjs::enable("downloadSCE")
+    }
+  })
 
   output$downloadSCE <- downloadHandler(
     filename <- function() {
@@ -467,6 +488,15 @@ shinyServer(function(input, output, session) {
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
 
+  isColDataResult <- reactive(is.null(vals$counts))
+  observe({
+    if (isColDataResult()) {
+      shinyjs::disable("downloadcolData")
+    } else {
+      shinyjs::enable("downloadcolData")
+    }
+  })
+  
   #download colData
   output$downloadcolData <- downloadHandler(
     filename = function() {
@@ -1055,6 +1085,15 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, rownames = FALSE)
+  
+  isDiffExResult <- reactive(is.null(vals$diffexgenelist))
+  observe({
+    if (isDiffExResult()) {
+      shinyjs::disable("downloadGeneList")
+    } else {
+      shinyjs::enable("downloadGeneList")
+    }
+  })
 
   # Download the differential expression results table
   output$downloadGeneList <- downloadHandler(
@@ -1163,6 +1202,15 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  isMastGeneListResult <- reactive(is.null(vals$mastgenelist))
+  observe({
+    if (isMastGeneListResult()) {
+      shinyjs::disable("downloadHurdleResult")
+    } else {
+      shinyjs::enable("downloadHurdleResult")
+    }
+  })
+  
   #download mast results
   output$downloadHurdleResult <- downloadHandler(
     filename = function() {
@@ -1278,6 +1326,15 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  isPathwayResult <- reactive(is.null(vals$gsvaRes))
+  observe({
+    if (isPathwayResult()) {
+      shinyjs::disable("downloadPathway")
+    } else {
+      shinyjs::enable("downloadPathway")
+    }
+  })
+  
   #download mast results
   output$downloadPathway <- downloadHandler(
     filename = function() {
@@ -1309,7 +1366,7 @@ shinyServer(function(input, output, session) {
                 }
             }
           count_db <- length(dbs)
-          shiny::withProgress(message = "Running... this will take a while",
+          shiny::withProgress(message = "Running... this may take a while",
                                value = 0, {
                                 vals$enrichRes <- NULL
                                 for (i in 1:count_db) {
@@ -1319,7 +1376,7 @@ shinyServer(function(input, output, session) {
                                                           useAssay = input$enrichAssay,
                                                           glist = input$enrichGenes,
                                                           db = dbs[i]))
-                                  Sys.sleep(0.25)
+                                 # Sys.sleep(0.25)
                                   }
                                 }
                               )
