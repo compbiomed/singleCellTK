@@ -10,7 +10,7 @@ shinyPanelEnrichR <- fluidPage(
         selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB), multiple = TRUE),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
         br(),
-        downloadButton("downloadEnrichR","Download results")
+        downloadButton("downloadEnrichR", "Download results")
       ),
       mainPanel(
         tabsetPanel(

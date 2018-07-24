@@ -45,7 +45,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
     countsData <- data.frame(SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE])
     if (!is.null(condition)){
       annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
-      if(any(is.na(annotData[, condition]))){
+      if (any(is.na(annotData[, condition]))){
         stop("Annotation data has NA values. Filter them to continue.")
       }
     } else{

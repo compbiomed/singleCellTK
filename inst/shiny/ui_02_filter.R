@@ -1,3 +1,15 @@
+orgpkgs <- c("Anopheles" = "org.Ag.eg.db", "Arabidopsis" = "org.At.tair.db",
+             "Bovine" = "org.Bt.eg.db", "Worm" = "org.Ce.eg.db",
+             "Canine" = "org.Cf.eg.db", "Fly" = "org.Dm.eg.db",
+             "Zebrafish" = "org.Dr.eg.db",
+             "E coli strain K12" = "org.EcK12.eg.db",
+             "E coli strain Sakai" = "org.EcSakai.eg.db",
+             "Chicken" = "org.Gg.eg.db", "Human" = "org.Hs.eg.db",
+             "Mouse" = "org.Mm.eg.db", "Rhesus" = "org.Mmu.eg.db",
+             "Malaria" = "org.Pf.plasmo.db", "Chimp" = "org.Pt.eg.db",
+             "Rat" = "org.Rn.eg.db", "Yeast" = "org.Sc.sgd.db",
+             "Pig" = "org.Ss.eg.db", "Xenopus" = "org.Xl.eg.db")
+
 shinyPanelFilter <- fluidPage(
   useShinyalert(),
   tags$div(
@@ -31,7 +43,10 @@ shinyPanelFilter <- fluidPage(
           uiOutput("filterFeatureOptions"),
           tags$hr(),
           h3("Convert gene annotations"),
-          selectInput("orgOrganism", "Select Organism:", as.character(grep("^org\\.", installed.packages()[, "Package"], value = TRUE))),
+          selectInput("orgOrganism", "Select Organism:",
+                      orgpkgs[orgpkgs %in% as.character(
+                        grep("^org\\.", installed.packages()[, "Package"],
+                             value = TRUE))]),
           uiOutput("orgConvertColumns"),
           withBusyIndicatorUI(actionButton("convertGenes", "Convert")),
           tags$hr(),

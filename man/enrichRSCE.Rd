@@ -3,7 +3,7 @@
 \name{enrichRSCE}
 \alias{enrichRSCE}
 \title{enrichR
-Given a list of genes this function runs the enrichR() to perform Gene 
+Given a list of genes this function runs the enrichR() to perform Gene
 enrichment}
 \usage{
 enrichRSCE(inSCE, useAssay, glist, db = NULL)
@@ -18,15 +18,16 @@ enrichRSCE(inSCE, useAssay, glist, db = NULL)
 \item{db}{selected database name from the enrichR database list.}
 }
 \value{
-enrichRSCE(): returns a data.frame of enrichment terms overlapping in the respective 
-databases along with p-values, z-scores etc.,
+enrichRSCE(): returns a data.frame of enrichment terms overlapping in
+the respective databases along with p-values, z-scores etc.,
 }
 \description{
 enrichR
-Given a list of genes this function runs the enrichR() to perform Gene 
+Given a list of genes this function runs the enrichR() to perform Gene
 enrichment
 }
 \examples{
-enrichRSCE(mouseBrainSubsetSCE,"counts","Cmtm5","GO_Cellular_Component_2017")
+enrichRSCE(mouseBrainSubsetSCE, "counts", "Cmtm5",
+           "GO_Cellular_Component_2017")
 
 }

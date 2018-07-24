@@ -112,7 +112,7 @@ shinyServer(function(input, output, session) {
     enrDB <- enrichR::listEnrichrDbs()$libraryName
     updateSelectInput(session, "enrichDb", choices = enrDB)
   }
-  
+
   # Close app on quit
   session$onSessionEnded(stopApp)
 
@@ -184,6 +184,7 @@ shinyServer(function(input, output, session) {
 
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
+    req(vals$counts)
     if (!is.null(getShinyOption("inputSCEset"))){
       updateGeneNames()
     }
@@ -283,7 +284,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaRes <- NULL
       vals$enrichRes <- NULL
       vals$visplotobject <- NULL
-     
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -392,7 +392,8 @@ shinyServer(function(input, output, session) {
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
   })
-  
+
+  #disable the downloadSCE button if no object is loaded
   isAssayResult <- reactive(is.null(vals$counts))
   observe({
     if (isAssayResult()) {
@@ -410,17 +411,19 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
   })
 
-  output$assayList <- renderTable(
+  output$assayList <- renderTable({
+    req(vals$counts)
     if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
       data.table(assays = names(assays(vals$counts)))
     }
-  )
+  })
 
-  output$reducedDimsList <- renderTable(
+  output$reducedDimsList <- renderTable({
+    req(vals$counts)
     if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
-  )
+  })
 
   observeEvent(input$addAssay, {
     req(vals$counts)
@@ -488,6 +491,7 @@ shinyServer(function(input, output, session) {
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
 
+  #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))
   observe({
     if (isColDataResult()) {
@@ -496,7 +500,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadcolData")
     }
   })
-  
+
   #download colData
   output$downloadcolData <- downloadHandler(
     filename = function() {
@@ -1085,7 +1089,8 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, rownames = FALSE)
-  
+
+  #disable downloadGeneList button if the result is not null
   isDiffExResult <- reactive(is.null(vals$diffexgenelist))
   observe({
     if (isDiffExResult()) {
@@ -1202,6 +1207,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #disable mast dowload button if the mastgenelist data is null
   isMastGeneListResult <- reactive(is.null(vals$mastgenelist))
   observe({
     if (isMastGeneListResult()) {
@@ -1210,7 +1216,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadHurdleResult")
     }
   })
-  
+
   #download mast results
   output$downloadHurdleResult <- downloadHandler(
     filename = function() {
@@ -1326,6 +1332,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #disable downloadPathway button if the pathway data doesn't exist
   isPathwayResult <- reactive(is.null(vals$gsvaRes))
   observe({
     if (isPathwayResult()) {
@@ -1334,7 +1341,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadPathway")
     }
   })
-  
+
   #download mast results
   output$downloadPathway <- downloadHandler(
     filename = function() {
@@ -1348,7 +1355,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
-  
+
   observeEvent(input$enrichRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -1356,42 +1363,43 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("enrichRun", {
         enrDatabases <- enrichR::listEnrichrDbs()$libraryName
         tryCatch({
-          if(is.null(input$enrichDb)){
+          if (is.null(input$enrichDb)){
             dbs <- enrDatabases
-            } else {
-              if(input$enrichDb == "ALL"){
-                dbs <- enrDatabases
-              } else{
-                dbs <- input$enrichDb
-                }
+          } else {
+            if (input$enrichDb == "ALL"){
+              dbs <- enrDatabases
+            } else{
+              dbs <- input$enrichDb
             }
+          }
           count_db <- length(dbs)
-          shiny::withProgress(message = "Running... this may take a while",
-                               value = 0, {
-                                vals$enrichRes <- NULL
-                                for (i in 1:count_db) {
-                                  incProgress(1/count_db, detail = paste("Querying db: ", dbs[i]))
-                                  vals$enrichRes <- rbind(vals$enrichRes, 
-                                                          enrichRSCE(inSCE = vals$counts,
-                                                          useAssay = input$enrichAssay,
-                                                          glist = input$enrichGenes,
-                                                          db = dbs[i]))
-                                 # Sys.sleep(0.25)
-                                  }
-                                }
-                              )
-          }, error = function(e){
+          shiny::withProgress(
+            message = "Running... this may take a while",
+            value = 0, {
+              vals$enrichRes <- NULL
+              for (i in 1:count_db) {
+                incProgress(1 / count_db, detail = paste("Querying db: ", dbs[i]))
+                vals$enrichRes <- rbind(vals$enrichRes,
+                                        enrichRSCE(inSCE = vals$counts,
+                                                   useAssay = input$enrichAssay,
+                                                   glist = input$enrichGenes,
+                                                   db = dbs[i]))
+              }
+            }
+          )
+        }, error = function(e){
           shinyalert::shinyalert("Error!", e$message, type = "error")
         })
       })
-      }
-    })
-  
+    }
+  })
+
   output$enrichTable <- DT::renderDataTable({
     req(vals$enrichRes)
     vals$enrichRes
   }, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
-  
+
+  #disable the downloadEnrichR button if the result doesn't exist
   isResult <- reactive(is.null(vals$enrichRes))
   observe({
     if (isResult()) {
@@ -1400,7 +1408,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadEnrichR")
     }
   })
-  
+
   output$downloadEnrichR <- downloadHandler(
     filename = function() {
       paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
@@ -1410,7 +1418,7 @@ shinyServer(function(input, output, session) {
     },
     contentType = "text/csv"
   )
-  
+
   #-----------------------------------------------------------------------------
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------
