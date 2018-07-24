@@ -182,6 +182,39 @@ shinyServer(function(input, output, session) {
   # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
 
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("f_hideAllSections", allSections(
+    "hide", c(paste("f_collapse", 1:7, sep = ""))), add = TRUE)
+  shinyjs::onclick("f_showAllSections", allSections(
+    "show", c(paste("f_collapse", 1:7, sep = ""))), add = TRUE)
+  shinyjs::onclick("f_button1", shinyjs::toggle(id = "f_collapse1",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button2", shinyjs::toggle(id = "f_collapse2",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button3", shinyjs::toggle(id = "f_collapse3",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button4", shinyjs::toggle(id = "f_collapse4",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button5", shinyjs::toggle(id = "f_collapse5",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button6", shinyjs::toggle(id = "f_collapse6",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button7", shinyjs::toggle(id = "f_collapse7",
+                                                anim = TRUE), add = TRUE)
+  #Button styling
+  shinyjs::addClass(id = "f_button1", class = "btn-block")
+  shinyjs::addClass(id = "f_button2", class = "btn-block")
+  shinyjs::addClass(id = "f_button3", class = "btn-block")
+  shinyjs::addClass(id = "f_button4", class = "btn-block")
+  shinyjs::addClass(id = "f_button5", class = "btn-block")
+  shinyjs::addClass(id = "f_button6", class = "btn-block")
+  shinyjs::addClass(id = "f_button7", class = "btn-block")
+  shinyjs::addClass(id = "filterData", class = "btn-block")
+  shinyjs::addClass(id = "resetData", class = "btn-block")
+  shinyjs::addClass(id = "convertGenes", class = "btn-block")
+  shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
+  shinyjs::addClass(id = "downsampleGo", class = "btn-block")
+
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     req(vals$counts)

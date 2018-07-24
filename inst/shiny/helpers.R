@@ -30,6 +30,33 @@ withBusyIndicatorUI <- function(button) {
   )
 }
 
+# does the same thing as above, but put the animation inside the button label
+actionButtonBusy <- function(buttonId, buttonTitle) {
+  tags$div(
+    `data-for-btn` = buttonId,
+    actionButton(
+      buttonId,
+      tags$div(
+        buttonTitle,
+        tags$span( class = "btn-loading-container", style = "float:right",
+          hidden(
+            img(src = "ajax-loader-bar.gif", class = "btn-loading-indicator"),
+            icon("check", class = "btn-done-indicator")
+          )
+        )
+      )
+    ),
+    hidden(
+      div(class = "btn-err",
+          div(icon("exclamation-circle"),
+              tags$b("Error: "),
+              span(class = "btn-err-msg")
+          )
+      )
+    )
+  )
+}
+
 # Call this function from the server with the button id that is clicked and the
 # expression to run when the button is clicked
 withBusyIndicatorServer <- function(buttonId, expr) {
@@ -81,3 +108,41 @@ appCSS <- "
   color: red;
 }
 "
+
+# Accordion - formatting for collapsible section in an accordion
+# Use example:
+#     HTML('<div class="accordion" id="myAccordion">
+#       <div class="panel">'),
+
+#         HTML(accordionSection("1","2","myAccordion")),
+#           # panel content code,
+#         HTML('</div>'),
+
+#       HTML('</div>
+#     </div>')
+accordionSection <- function(collapseId, panelTitle, accordionId) {
+  return(
+    paste(
+      '<button type="button" class="btn btn-default btn-block" ',
+        'data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
+        panelTitle,
+      '</button>
+      <div id="', collapseId, '" class="collapse">',
+      sep = ""
+    )
+  )
+}
+
+# show or hide all collapses in a list
+allSections <- function(action, collapseList) {
+  if (action == "hide"){
+    for (i in collapseList){
+      shinyjs::hide(i, anim = TRUE)
+    }
+  }
+  else if (action == "show"){
+    for (i in collapseList){
+      shinyjs::show(i, anim = TRUE)
+    }
+  }
+}

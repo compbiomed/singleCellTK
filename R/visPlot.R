@@ -112,8 +112,8 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
         stop("Barplot doesn't require a condition, use scatterplot or boxplot instead")
       }
     } else if (method == "heatmap"){
-      zeroSum <- which(rowSds(SummarizedExperiment::assay(inSCE, useAssay)
-                             [glist, , drop = FALSE]) == 0)
+      zeroSum <- which(matrixStats::rowSds(
+        SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE]) == 0)
       if (length(zeroSum) != 0){
         stop("Gene ", paste(glist[zeroSum], collapse = ","), " has zero variance, please filter and continue.")
       }
