@@ -16,7 +16,8 @@ shinyServer(function(input, output, session) {
     diffexgenelist = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
-    visplotobject = NULL
+    visplotobject = NULL,
+    enrichRes = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -64,6 +65,8 @@ shinyServer(function(input, output, session) {
                          choices = selectthegenes, server = TRUE)
     updateSelectizeInput(session, "selectvisGenes",
                          choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "enrichGenes",
+                         choices = selectthegenes, server = TRUE)
   }
 
   updateFeatureAnnots <- function(){
@@ -97,11 +100,17 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
+    updateSelectInput(session, "enrichAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
     updateSelectInput(session, "delRedDimType", choices = currreddim)
+  }
+
+  updateEnrichDB <- function(){
+    enrDB <- enrichR::listEnrichrDbs()$libraryName
+    updateSelectInput(session, "enrichDb", choices = enrDB)
   }
 
   # Close app on quit
@@ -173,8 +182,42 @@ shinyServer(function(input, output, session) {
   # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
 
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("f_hideAllSections", allSections(
+    "hide", c(paste("f_collapse", 1:7, sep = ""))), add = TRUE)
+  shinyjs::onclick("f_showAllSections", allSections(
+    "show", c(paste("f_collapse", 1:7, sep = ""))), add = TRUE)
+  shinyjs::onclick("f_button1", shinyjs::toggle(id = "f_collapse1",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button2", shinyjs::toggle(id = "f_collapse2",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button3", shinyjs::toggle(id = "f_collapse3",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button4", shinyjs::toggle(id = "f_collapse4",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button5", shinyjs::toggle(id = "f_collapse5",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button6", shinyjs::toggle(id = "f_collapse6",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("f_button7", shinyjs::toggle(id = "f_collapse7",
+                                                anim = TRUE), add = TRUE)
+  #Button styling
+  shinyjs::addClass(id = "f_button1", class = "btn-block")
+  shinyjs::addClass(id = "f_button2", class = "btn-block")
+  shinyjs::addClass(id = "f_button3", class = "btn-block")
+  shinyjs::addClass(id = "f_button4", class = "btn-block")
+  shinyjs::addClass(id = "f_button5", class = "btn-block")
+  shinyjs::addClass(id = "f_button6", class = "btn-block")
+  shinyjs::addClass(id = "f_button7", class = "btn-block")
+  shinyjs::addClass(id = "filterData", class = "btn-block")
+  shinyjs::addClass(id = "resetData", class = "btn-block")
+  shinyjs::addClass(id = "convertGenes", class = "btn-block")
+  shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
+  shinyjs::addClass(id = "downsampleGo", class = "btn-block")
+
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
+    req(vals$counts)
     if (!is.null(getShinyOption("inputSCEset"))){
       updateGeneNames()
     }
@@ -248,8 +291,11 @@ shinyServer(function(input, output, session) {
                                     minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
         vals$diffexgenelist <- NULL
         vals$gsvaRes <- NULL
+        vals$enrichRes <- NULL
+        vals$visplotobject <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
+        updateEnrichDB()
         if (!is.null(input$deletesamplelist)){
           updateSelectInput(session, "deletesamplelist",
                             choices = colnames(vals$counts))
@@ -269,11 +315,14 @@ shinyServer(function(input, output, session) {
                         choices = colnames(vals$counts))
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
       updateAssayInputs()
       updateGeneNames()
+      updateEnrichDB()
     }
   })
 
@@ -377,6 +426,16 @@ shinyServer(function(input, output, session) {
     vals$gsvaRes <- NULL
   })
 
+  #disable the downloadSCE button if no object is loaded
+  isAssayResult <- reactive(is.null(vals$counts))
+  observe({
+    if (isAssayResult()) {
+      shinyjs::disable("downloadSCE")
+    } else {
+      shinyjs::enable("downloadSCE")
+    }
+  })
+
   output$downloadSCE <- downloadHandler(
     filename <- function() {
       paste("SCE-", Sys.Date(), ".rds", sep = "")
@@ -385,17 +444,19 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
   })
 
-  output$assayList <- renderTable(
+  output$assayList <- renderTable({
+    req(vals$counts)
     if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
       data.table(assays = names(assays(vals$counts)))
     }
-  )
+  })
 
-  output$reducedDimsList <- renderTable(
+  output$reducedDimsList <- renderTable({
+    req(vals$counts)
     if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
-  )
+  })
 
   observeEvent(input$addAssay, {
     req(vals$counts)
@@ -462,6 +523,16 @@ shinyServer(function(input, output, session) {
       data.frame(colData(vals$counts))
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
+
+  #disable downloadcolData button if the data is not present
+  isColDataResult <- reactive(is.null(vals$counts))
+  observe({
+    if (isColDataResult()) {
+      shinyjs::disable("downloadcolData")
+    } else {
+      shinyjs::enable("downloadcolData")
+    }
+  })
 
   #download colData
   output$downloadcolData <- downloadHandler(
@@ -1052,6 +1123,16 @@ shinyServer(function(input, output, session) {
     }
   }, rownames = FALSE)
 
+  #disable downloadGeneList button if the result is not null
+  isDiffExResult <- reactive(is.null(vals$diffexgenelist))
+  observe({
+    if (isDiffExResult()) {
+      shinyjs::disable("downloadGeneList")
+    } else {
+      shinyjs::enable("downloadGeneList")
+    }
+  })
+
   # Download the differential expression results table
   output$downloadGeneList <- downloadHandler(
     filename = function() {
@@ -1156,6 +1237,16 @@ shinyServer(function(input, output, session) {
   output$mastresults <- DT::renderDataTable({
     if (!is.null(vals$mastgenelist)){
       vals$mastgenelist
+    }
+  })
+
+  #disable mast dowload button if the mastgenelist data is null
+  isMastGeneListResult <- reactive(is.null(vals$mastgenelist))
+  observe({
+    if (isMastGeneListResult()) {
+      shinyjs::disable("downloadHurdleResult")
+    } else {
+      shinyjs::enable("downloadHurdleResult")
     }
   })
 
@@ -1274,6 +1365,16 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #disable downloadPathway button if the pathway data doesn't exist
+  isPathwayResult <- reactive(is.null(vals$gsvaRes))
+  observe({
+    if (isPathwayResult()) {
+      shinyjs::disable("downloadPathway")
+    } else {
+      shinyjs::enable("downloadPathway")
+    }
+  })
+
   #download mast results
   output$downloadPathway <- downloadHandler(
     filename = function() {
@@ -1282,6 +1383,73 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       utils::write.csv(vals$gsvaRes, file)
     }
+  )
+
+  #-----------------------------------------------------------------------------
+  # Page 6.2 : Enrichment Analysis - EnrichR
+  #-----------------------------------------------------------------------------
+
+  observeEvent(input$enrichRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("enrichRun", {
+        enrDatabases <- enrichR::listEnrichrDbs()$libraryName
+        tryCatch({
+          if (is.null(input$enrichDb)){
+            dbs <- enrDatabases
+          } else {
+            if (input$enrichDb == "ALL"){
+              dbs <- enrDatabases
+            } else{
+              dbs <- input$enrichDb
+            }
+          }
+          count_db <- length(dbs)
+          shiny::withProgress(
+            message = "Running... this may take a while",
+            value = 0, {
+              vals$enrichRes <- NULL
+              for (i in 1:count_db) {
+                incProgress(1 / count_db, detail = paste("Querying db: ", dbs[i]))
+                vals$enrichRes <- rbind(vals$enrichRes,
+                                        enrichRSCE(inSCE = vals$counts,
+                                                   useAssay = input$enrichAssay,
+                                                   glist = input$enrichGenes,
+                                                   db = dbs[i]))
+              }
+            }
+          )
+        }, error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+    }
+  })
+
+  output$enrichTable <- DT::renderDataTable({
+    req(vals$enrichRes)
+    vals$enrichRes
+  }, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
+
+  #disable the downloadEnrichR button if the result doesn't exist
+  isResult <- reactive(is.null(vals$enrichRes))
+  observe({
+    if (isResult()) {
+      shinyjs::disable("downloadEnrichR")
+    } else {
+      shinyjs::enable("downloadEnrichR")
+    }
+  })
+
+  output$downloadEnrichR <- downloadHandler(
+    filename = function() {
+      paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      utils::write.csv(vals$enrichRes, file)
+    },
+    contentType = "text/csv"
   )
 
   #-----------------------------------------------------------------------------

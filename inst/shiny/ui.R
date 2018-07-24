@@ -14,6 +14,10 @@ library(ape)
 library(GSVA)
 library(GSVAdata)
 library(shinyalert)
+library(enrichR)
+library(matrixStats)
+library(Biobase)
+library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
 
@@ -30,6 +34,7 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 numSamples <- 30
 pcComponentsSelectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
@@ -57,6 +62,7 @@ source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect var
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
 source("ui_06_pathway.R", local = TRUE) #creates shinyPanelPathway variable
+source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 
 if (is.null(getShinyOption("includeVersion"))){
@@ -87,7 +93,11 @@ shinyUI(
       tabPanel("Differential Expression", shinyPanelDiffex),
       tabPanel("MAST", shinyPanelMAST)
     ),
-    tabPanel("Pathway Activity Analysis", shinyPanelPathway),
+    navbarMenu(
+      "Enrichment Analysis",
+      tabPanel("GSVA", shinyPanelPathway),
+      tabPanel("EnrichR", shinyPanelEnrichR)
+    ),
     tabPanel("Sample Size", shinyPanelSubsample),
     footer = includeHTML("www/footer.html")
   )
