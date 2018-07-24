@@ -17,7 +17,8 @@ shinyServer(function(input, output, session) {
     gsvaRes = NULL,
     gsvaLimma = NULL,
     visplotobject = NULL,
-    enrichRes = NULL
+    enrichRes = NULL,
+    cres = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -609,6 +610,49 @@ shinyServer(function(input, output, session) {
     vals$visplotobject
   }, height = 600)
 
+  
+  #-----------------------------------------------------------------------------
+  # Page 3: Celda
+  #-----------------------------------------------------------------------------
+  
+  # observeEvent(input$runCelda, {
+  #   vals$cres <- celda(counts = assays(vals$counts)$counts,
+  #     model = "celda_CG", K = 5, L = 10,
+  #     max.iter = 10, cores = 1, nchains = 1)
+  # })
+  # 
+  # output$celdaPlot <- renderPlot({
+  #   model <- vals$cres$res.list[[1]]
+  #   z <- model$z
+  #   y <- model$y
+  #   norm.counts <- normalizeCounts(assays(vals$counts)$counts,
+  #     scale.factor = 1e6)
+  #   g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
+  #     normalize = NULL, color_scheme = "divergent", cluster_gene = TRUE, 
+  #     cluster_cell = TRUE)
+  #   print(g)
+  #   })
+  
+  celdaRes <- eventReactive(input$runCelda, {
+    celda(counts = assays(vals$counts)$counts,
+      model = "celda_CG", K = 5, L = 10,
+      max.iter = 10, cores = 1, nchains = 1)
+  })
+  
+  output$celdaPlot <- renderPlot({
+    model <- celdaRes()$res.list[[1]]
+    z <- model$z
+    y <- model$y
+    norm.counts <- normalizeCounts(assays(vals$counts)$counts,
+      scale.factor = 1e6)
+    g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
+      normalize = NULL, color_scheme = "divergent", cluster_gene = TRUE,
+      cluster_cell = TRUE)
+    print(g)
+  })
+  
+  
+  
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
