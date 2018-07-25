@@ -24,6 +24,9 @@ getTSNE <- function(inSCE, useAssay="logcounts", reducedDimName="TSNE"){
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
+  if(!is.matrix(exprsMat)){
+    stop("Input matrix ", useAssay, " is not a matrix")
+  }
   exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
   rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]

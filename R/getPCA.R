@@ -30,15 +30,17 @@
 getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   if (nrow(inSCE) < 500){
     ntop <- nrow(inSCE)
-  }
-  else{
+  } else{
     ntop <- 500
   }
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
   exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
-  rv <- matrixStats::rowVars(exprsMat)
+  if(!is.matrix(exprsMat)){
+    stop("Input matrix ", useAssay, " is not a matrix")
+  }
+  rv <- matrixStats::rowVars(matrix(exprsMat))
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprsToPlot <- exprsMat[featureSet, , drop = FALSE]
   exprsToPlot <- scale(t(exprsToPlot))
