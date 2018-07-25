@@ -58,8 +58,8 @@ if (!is.null(getShinyOption("inputSCEset"))){
 
 source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
 source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
-source("ui_03_1_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_03_cluster.R", local = TRUE) #creates shinyPanelCluster variable
+source("ui_03_2_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
@@ -88,8 +88,8 @@ shinyUI(
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
     tabPanel("Data Summary & Filtering", shinyPanelFilter),
-    tabPanel("Celda", shinyPanelCelda),
     tabPanel("Visualization & Clustering", shinyPanelCluster),
+    tabPanel("Celda", shinyPanelCelda),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(
       "Differential Expression",

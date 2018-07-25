@@ -102,6 +102,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
+    updateSelectInput(session, "celdaAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -610,17 +611,17 @@ shinyServer(function(input, output, session) {
     vals$visplotobject
   }, height = 600)
 
-  
+
   #-----------------------------------------------------------------------------
   # Page 3: Celda
   #-----------------------------------------------------------------------------
-  
+
   # observeEvent(input$runCelda, {
   #   vals$cres <- celda(counts = assays(vals$counts)$counts,
   #     model = "celda_CG", K = 5, L = 10,
   #     max.iter = 10, cores = 1, nchains = 1)
   # })
-  # 
+  #
   # output$celdaPlot <- renderPlot({
   #   model <- vals$cres$res.list[[1]]
   #   z <- model$z
@@ -628,31 +629,85 @@ shinyServer(function(input, output, session) {
   #   norm.counts <- normalizeCounts(assays(vals$counts)$counts,
   #     scale.factor = 1e6)
   #   g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
-  #     normalize = NULL, color_scheme = "divergent", cluster_gene = TRUE, 
+  #     normalize = NULL, color_scheme = "divergent", cluster_gene = TRUE,
   #     cluster_cell = TRUE)
   #   print(g)
   #   })
   
-  celdaRes <- eventReactive(input$runCelda, {
-    celda(counts = assays(vals$counts)$counts,
-      model = "celda_CG", K = 5, L = 10,
-      max.iter = 10, cores = 1, nchains = 1)
-  })
+  shinyjs::onclick("celdaBasicSet",
+    shinyjs::toggle(id = "celdaCollapse1",
+      anim = TRUE), add = TRUE)
+  shinyjs::onclick("celdaAdvSet",
+    shinyjs::toggle(id = "celdaCollapse2",
+      anim = TRUE), add = TRUE)
   
+  shinyjs::addClass(id = "celdaBasicSet", class = "btn-block")
+  shinyjs::addClass(id = "celdaAdvSet", class = "btn-block")
+  
+  celdaRes <- eventReactive(input$runCelda, {
+    withBusyIndicatorServer("runCelda", {
+      if (input$celdaModel == "celda_C") {
+        celda(counts = assay(vals$counts, input$celdaAssay),
+          model = "celda_C",
+          K = input$cellClusterC,
+          alpha = input$celdaAlpha,
+          beta = input$celdaBeta,
+          max.iter = input$celdaMaxIter,
+          stop.iter = input$celdaStopIter,
+          split.on.iter = input$celdaSplitIter,
+          nchains = input$celdaNChains,
+          cores = input$celdaCores,
+          seed = input$celdaSeed)
+        
+      } else if (input$celdaModel == "celda_G") {
+        celda(counts = assay(vals$counts, input$celdaAssay),
+          model = "celda_G",
+          L = input$geneModuleG,
+          beta = input$celdaBeta,
+          delta = input$celdaDelta,
+          gamma = input$celdaGamma,
+          max.iter = input$celdaMaxIter,
+          stop.iter = input$celdaStopIter,
+          split.on.iter = input$celdaSplitIter,
+          nchains = input$celdaNChains,
+          cores = input$celdaCores,
+          seed = input$celdaSeed)
+          
+      } else if (input$celdaModel == "celda_CG") {
+        celda(counts = assay(vals$counts, input$celdaAssay),
+          model = "celda_CG",
+          K = input$cellClusterCG,
+          L = input$geneModuleCG,
+          alpha = input$celdaAlpha,
+          beta = input$celdaBeta,
+          delta = input$celdaDelta,
+          gamma = input$celdaGamma,
+          max.iter = input$celdaMaxIter,
+          stop.iter = input$celdaStopIter,
+          split.on.iter = input$celdaSplitIter,
+          nchains = input$celdaNChains,
+          cores = input$celdaCores,
+          seed = input$celdaSeed)
+      }
+    })
+  })
+
+
   output$celdaPlot <- renderPlot({
     model <- celdaRes()$res.list[[1]]
     z <- model$z
     y <- model$y
-    norm.counts <- normalizeCounts(assays(vals$counts)$counts,
-      scale.factor = 1e6)
+    norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+      input$celdaAssay),
+      scale.factor = 1e6))
     g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
       normalize = NULL, color_scheme = "divergent", cluster_gene = TRUE,
       cluster_cell = TRUE)
-    print(g)
+    g
   })
-  
-  
-  
+
+
+
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
