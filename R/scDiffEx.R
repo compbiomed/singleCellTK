@@ -356,10 +356,11 @@ plotDiffEx <- function(inSCE, useAssay="logcounts", condition, geneList,
   if (is.null(annotationColors)){
     topha <- NULL
   } else if (annotationColors == "auto") {
-    colors <- RColorBrewer::brewer.pal(9, "Set1")
     condLevels <- unique(SingleCellExperiment::colData(inSCE)[, condition])
     if (length(condLevels) > 9){
-      stop("Too many levels in condition for auto coloring")
+      colors <- distinctColors(length(condLevels))
+    } else {
+      colors <- RColorBrewer::brewer.pal(9, "Set1")
     }
     col <- list()
     col[[condition]] <- stats::setNames(colors[seq_along(condLevels)],
