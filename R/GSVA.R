@@ -92,22 +92,22 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
   } else if (plotType == "Heatmap"){
     topha <- NULL
     if (length(condition) > 0){
-      colors <- RColorBrewer::brewer.pal(8, "Set1")
       cond <- apply(SingleCellExperiment::colData(inSCE)[, condition,
                                                            drop = FALSE],
                     1, paste, collapse = "_")
       condLevels <- unique(cond)
-      if (length(condLevels) < 8){
-        col <- list()
-        col[[paste(condition, collapse = "_")]] <-
-          stats::setNames(colors[seq_along(condLevels)], condLevels)
-        conddf <- data.frame(cond, row.names = colnames(gsvaData))
-        colnames(conddf) <- paste(condition, collapse = "_")
-        topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
-                                                   col = col)
+      if (length(condLevels) > 9){
+        colors <- distinctColors(length(condLevels))
       } else {
-        stop("Too many levels in selected condition(s)")
+        colors <- RColorBrewer::brewer.pal(9, "Set1")
       }
+      col <- list()
+      col[[paste(condition, collapse = "_")]] <-
+        stats::setNames(colors[seq_along(condLevels)], condLevels)
+      conddf <- data.frame(cond, row.names = colnames(gsvaData))
+      colnames(conddf) <- paste(condition, collapse = "_")
+      topha <- ComplexHeatmap::HeatmapAnnotation(df = conddf,
+                                                 col = col)
     }
     #TODO make more customizable
     ComplexHeatmap::draw(
