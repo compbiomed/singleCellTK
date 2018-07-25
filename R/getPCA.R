@@ -40,7 +40,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   if(!is.matrix(exprsMat)){
     stop("Input matrix ", useAssay, " is not a matrix")
   }
-  rv <- matrixStats::rowVars(matrix(exprsMat))
+  rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
   exprsToPlot <- exprsMat[featureSet, , drop = FALSE]
   exprsToPlot <- scale(t(exprsToPlot))
