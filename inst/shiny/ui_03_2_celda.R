@@ -130,7 +130,9 @@ shinyPanelCelda <- fluidPage(
             ),
           tags$hr(),
           withBusyIndicatorUI(actionButton(inputId = "runCelda",
-            label = "Run celda"))
+            label = "Run celda")),
+          tags$hr(),
+          downloadButton("downloadSCECelda", "Download SCtkExperiment")
         ),
         mainPanel(
           conditionalPanel(

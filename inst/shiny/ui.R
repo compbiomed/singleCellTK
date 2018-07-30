@@ -88,8 +88,11 @@ shinyUI(
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
     tabPanel("Data Summary & Filtering", shinyPanelFilter),
-    tabPanel("Visualization & Clustering", shinyPanelCluster),
-    tabPanel("Celda", shinyPanelCelda),
+    navbarMenu(
+      "Visualization & Clustering",
+      tabPanel("Dimension Reduction", shinyPanelCluster),
+      tabPanel("Celda", shinyPanelCelda)
+    ),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(
       "Differential Expression",
