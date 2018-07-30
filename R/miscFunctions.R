@@ -192,6 +192,57 @@ filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
   return(inSCE)
 }
 
+#' Generate a distinct palette for coloring different clusters
+#'
+#' @param n Integer; Number of colors to generate
+#' @param hues Character vector of R colors available from the colors()
+#' function. These will be used as the base colors for the clustering scheme.
+#' Different saturations and values (i.e. darkness) will be generated for each
+#' hue.
+#' @param saturation.range Numeric vector of length 2 with values between 0 and
+#' 1. Default: c(0.25, 1)
+#' @param value.range Numeric vector of length 2 with values between 0 and 1.
+#' Default: c(0.5, 1)
+#' @return A vector of distinct colors that have been converted to  HEX from
+#' HSV.
+#' @export
+distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
+                                        "yellow", "purple", "green", "magenta"),
+                           saturation.range = c(0.7, 1),
+                           value.range = c(0.7, 1)) {
+  #Adapted from compbiomed/celda, thanks to all celda developers
+  if (!(all(hues %in% grDevices::colors()))) {
+    stop("Only color names listed in the 'color'",
+         " function can be used in 'hues'")
+  }
+
+  ## Convert R colors to RGB and then to HSV color format
+  hues.hsv <- grDevices::rgb2hsv(grDevices::col2rgb(hues))
+
+  ## Calculate all combination of saturation/value pairs
+  ## Note that low saturation with low value (i.e. high darkness) is too dark
+  ## for all hues
+  ## Likewise, high saturation with high value (i.e. low darkness) is hard to
+  ## distinguish
+  ## Therefore, saturation and value are set to be anticorrelated
+  num.vs <- ceiling(n / length(hues))
+  s <- seq(from = saturation.range[1], to = saturation.range[2],
+           length = num.vs)
+  v <- seq(from = value.range[2], to = value.range[1], length = num.vs)
+
+  ## Create all combination of hues with saturation/value pairs
+  new.hsv <- c()
+  for (i in 1:num.vs) {
+    temp <- rbind(hues.hsv[1, ], s[i], v[i])
+    new.hsv <- cbind(new.hsv, temp)
+  }
+
+  ## Convert to hex
+  col <- grDevices::hsv(new.hsv[1, ], new.hsv[2, ], new.hsv[3, ])
+
+  return(col[1:n])
+}
+
 #test shiny functions
 .testFunctions <- function(){
   if (interactive()){
