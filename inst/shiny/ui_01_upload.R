@@ -16,7 +16,7 @@ shinyPanelUpload <- fluidPage(
       p(
         "Need help?",
         tags$a(href = "https://compbiomed.github.io/sctk_docs/",
-        "Read the docs.", target = "_blank")
+               "Read the docs.", target = "_blank")
       )
     )
   ),
@@ -29,8 +29,8 @@ shinyPanelUpload <- fluidPage(
     tags$hr(),
     tags$div(id = "uploadAlert", alertText),
     h3("Choose data source:"),
-    radioButtons("uploadChoice", label = NULL,
-      c("Upload files" = "files", "Use example data" = "example")
+    radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
+                                                 "Use example data" = "example")
     ),
     tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
@@ -54,29 +54,25 @@ shinyPanelUpload <- fluidPage(
                    "Download an example count file here.", target = "_blank"),
             tags$br(),
             tags$br(),
-            fluidRow(
-              column(7,
-                fileInput(
-                  "countsfile",
-                  HTML(
-                    paste("Input assay:",
-                    tags$span(style = "color:red", "*"))
-                  ),
-                  accept = c(
-                    "text/csv", "text/comma-separated-values",
-                    "text/tab-separated-values", "text/plain", ".csv", ".tsv"
-                  )
-                )
+            fileInput(
+              "countsfile",
+              HTML(
+                paste("Input assay (eg. counts, required):",
+                tags$span(style = "color:red", "*", sep = ""))
               ),
-              column(5,
-                selectInput("inputAssayType", label = "Input Assay Type:",
-                  c("counts", "normcounts", "logcounts", "cpm",
-                    "logcpm", "tpm", "logtpm")
-                )
+              accept = c(
+                "text/csv", "text/comma-separated-values",
+                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
               )
-            ),
-            checkboxInput("createLogcounts", "Also create log2 input assay on upload", value = TRUE)
-          )
+            )
+          ),
+          h4("Input Assay Type:"),
+          selectInput("inputAssayType", label = NULL,
+                      c("counts", "normcounts", "logcounts", "cpm",
+                        "logcpm", "tpm", "logtpm")
+          ),
+          checkboxInput("createLogcounts",
+                        "Also create log2 input assay on upload", value = TRUE)
         ),
         column(width = 4,
           wellPanel(
@@ -93,13 +89,12 @@ shinyPanelUpload <- fluidPage(
             tags$br(),
             tags$br(),
             fileInput(
-              "annotFile", "Sample annotations (optional)*:",
+              "annotFile", "Sample annotations (optional):",
               accept = c(
                 "text/csv", "text/comma-separated-values",
                 "text/tab-separated-values", "text/plain", ".csv", ".tsv"
               )
-            ),
-            tags$p("*Notes")
+            )
           )
         ),
         column(width = 4,
@@ -117,13 +112,12 @@ shinyPanelUpload <- fluidPage(
             tags$br(),
             tags$br(),
             fileInput(
-              "featureFile", "Feature annotations (optional)*:",
+              "featureFile", "Feature annotations (optional):",
               accept = c(
                 "text/csv", "text/comma-separated-values",
                 "text/tab-separated-values", "text/plain", ".csv", ".tsv"
               )
-            ),
-            tags$p("*Notes")
+            )
           )
         )
       )
