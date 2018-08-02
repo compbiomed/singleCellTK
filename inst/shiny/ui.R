@@ -20,6 +20,7 @@ library(Biobase)
 library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
+library(shinycssloaders)
 
 source("helpers.R")
 source("colourGroupInput.R")

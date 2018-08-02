@@ -1,4 +1,3 @@
-library(shinycssloaders)
 shinyPanelEnrichR <- fluidPage(
   tags$div(
     class = "container",
@@ -42,7 +41,7 @@ shinyPanelEnrichR <- fluidPage(
         # conditionalPanel(
         #   condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice")
         # ),
-        selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB), 
+        selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB),
                        multiple = TRUE),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
         br(),

@@ -2,7 +2,7 @@
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output, session) {
+shinyServer (function (input, output, session) {
 
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
@@ -1388,12 +1388,13 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
+
   enrichRfile <- reactive(read.csv(input$enrFile$datapath,
                                    header = input$header,
                                    sep = input$sep,
                                    quote = input$quote,
                                    row.names = 1))
-  
+
   dbs <- reactive({
     enrDatabases <- enrichR::listEnrichrDbs()$libraryName
     if (is.null(input$enrichDb)){
@@ -1406,24 +1407,19 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
   count_db <- reactive(length(dbs()))
-  
-  observeEvent(input$enrichRun, {
+  observeEvent (input$enrichRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      withBusyIndicatorServer("enrichRun", {
-        tryCatch({
+      withBusyIndicatorServer ("enrichRun", {
+        tryCatch ({
           if (input$geneListChoice == "selectGenes"){
             genes <- input$enrichGenes
           } else if (input$geneListChoice == "geneFile"){
             req(input$enrFile)
             genes <- rownames(enrichRfile())
-          } 
-          # else {
-          #   
-          # }
+          }
           vals$enrichRes <- enrichRSCE(inSCE = vals$counts,
                                        useAssay = input$enrichAssay,
                                        glist = genes,
@@ -1434,25 +1430,24 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   output$enrTabs <- renderUI({
     req(vals$enrichRes)
     nTabs <- count_db()
-    # create tabPanel with datatable in it
+    #create tabPanel with datatable in it
     myTabs <- lapply(seq_len((nTabs)), function(i) {
       tabPanel(paste0(dbs()[i]),
                DT::dataTableOutput(paste0(dbs()[i])))
     })
     do.call(tabsetPanel, myTabs)
   })
-  
+
   enrResults <- reactive(vals$enrichRes[, c(1:10)] %>%
                            mutate(Database_selected =
                                     paste0("<a href='", vals$enrichRes[, 11],
                                            "' target='_blank'>",
                                            vals$enrichRes[, 1], "</a>")))
-  
-  # create datatables
+  #create datatables
   observe({
     req(vals$enrichRes)
     lapply(seq_len(length(dbs())), function(i){
@@ -1461,9 +1456,9 @@ shinyServer(function(input, output, session) {
           enr <- enrResults()[which(vals$enrichRes[, 1] %in% dbs()[i]), ]
         }, escape = FALSE, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
       })
-    })  
+    })
   })
-  
+
   #disable the downloadEnrichR button if the result doesn't exist
   isResult <- reactive(is.null(vals$enrichRes))
   observe({
@@ -1473,7 +1468,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadEnrichR")
     }
   })
-  
+
   output$downloadEnrichR <- downloadHandler(
     filename = function() {
       paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
@@ -1483,7 +1478,7 @@ shinyServer(function(input, output, session) {
     },
     contentType = "text/csv"
   )
-  
+
   #-----------------------------------------------------------------------------
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------

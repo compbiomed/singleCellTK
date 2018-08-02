@@ -52,7 +52,6 @@ Imports:
     shinyalert,
     circlize,
     enrichR,
-    Biobase,
     shinycssloaders
 RoxygenNote: 6.0.1
 Suggests:
