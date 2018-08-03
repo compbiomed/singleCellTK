@@ -101,6 +101,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
+    updateSelectInput(session, "celdaAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -609,8 +610,9 @@ shinyServer(function(input, output, session) {
     vals$visplotobject
   }, height = 600)
 
+
   #-----------------------------------------------------------------------------
-  # Page 3: DR & Clustering
+  # Page 3.1: DR & Clustering
   #-----------------------------------------------------------------------------
 
   output$clusterPlot <- renderPlotly({
@@ -888,6 +890,116 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+
+  #-----------------------------------------------------------------------------
+  # Page 3.2: Celda
+  #-----------------------------------------------------------------------------
+
+  shinyjs::onclick("celdaBasicSet",
+                   shinyjs::toggle(id = "celdaCollapse1",
+                                   anim = TRUE), add = TRUE)
+  shinyjs::onclick("celdaAdvSet",
+                   shinyjs::toggle(id = "celdaCollapse2",
+                                   anim = TRUE), add = TRUE)
+
+  shinyjs::addClass(id = "celdaBasicSet", class = "btn-block")
+  shinyjs::addClass(id = "celdaAdvSet", class = "btn-block")
+
+  celdaRes <- eventReactive(input$runCelda, {
+    withBusyIndicatorServer("runCelda", {
+      if (input$celdaModel == "celda_C") {
+        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+                      model = "celda_C",
+                      K = input$cellClusterC,
+                      alpha = input$celdaAlpha,
+                      beta = input$celdaBeta,
+                      max.iter = input$celdaMaxIter,
+                      stop.iter = input$celdaStopIter,
+                      split.on.iter = input$celdaSplitIter,
+                      nchains = input$celdaNChains,
+                      cores = input$celdaCores,
+                      seed = input$celdaSeed)
+        colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+        updateColDataNames()
+        cres
+
+      } else if (input$celdaModel == "celda_G") {
+        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+                      model = "celda_G",
+                      L = input$geneModuleG,
+                      beta = input$celdaBeta,
+                      delta = input$celdaDelta,
+                      gamma = input$celdaGamma,
+                      max.iter = input$celdaMaxIter,
+                      stop.iter = input$celdaStopIter,
+                      split.on.iter = input$celdaSplitIter,
+                      nchains = input$celdaNChains,
+                      cores = input$celdaCores,
+                      seed = input$celdaSeed)
+        rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+        updateFeatureAnnots()
+        cres
+
+      } else if (input$celdaModel == "celda_CG") {
+        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+                      model = "celda_CG",
+                      K = input$cellClusterCG,
+                      L = input$geneModuleCG,
+                      alpha = input$celdaAlpha,
+                      beta = input$celdaBeta,
+                      delta = input$celdaDelta,
+                      gamma = input$celdaGamma,
+                      max.iter = input$celdaMaxIter,
+                      stop.iter = input$celdaStopIter,
+                      split.on.iter = input$celdaSplitIter,
+                      nchains = input$celdaNChains,
+                      cores = input$celdaCores,
+                      seed = input$celdaSeed)
+        colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+        rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+        updateColDataNames()
+        updateFeatureAnnots()
+        cres
+      }
+    })
+  })
+
+  output$celdaPlot <- renderPlot({
+    model <- celdaRes()$res.list[[1]]
+
+    # add celda labels to colData and rowData of sctke object
+    # use column name "celdaCellCluster" and "celdaGeneModule" for now,
+    # need update when celda outputs sce objects so it matches
+
+    z <- model$z
+    y <- model$y
+    norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+                                                 input$celdaAssay),
+                                           scale.factor = 1e6))
+    g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
+                            normalize = NULL, color_scheme = "divergent",
+                            cluster_gene = TRUE,
+                            cluster_cell = TRUE)
+    g
+  })
+
+  #disable the downloadSCECelda button if no object is loaded
+  isAssayResultCelda <- reactive(is.null(vals$counts))
+  observe({
+    if (isAssayResultCelda()) {
+      shinyjs::disable("downloadSCECelda")
+    } else {
+      shinyjs::enable("downloadSCECelda")
+    }
+  })
+
+  output$downloadSCECelda <- downloadHandler(
+    filename <- function() {
+      paste("SCE-", Sys.Date(), ".rds", sep = "")
+    },
+    content <- function(file) {
+      saveRDS(vals$counts, file)
+    })
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
