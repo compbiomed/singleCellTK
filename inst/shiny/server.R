@@ -2,7 +2,7 @@
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
 # Define server logic required to draw a histogram
-shinyServer (function (input, output, session) {
+shinyServer(function(input, output, session) {
 
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
