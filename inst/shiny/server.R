@@ -891,7 +891,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda
   #-----------------------------------------------------------------------------
@@ -965,7 +964,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-
   output$celdaPlot <- renderPlot({
     model <- celdaRes()$res.list[[1]]
 
@@ -1002,7 +1000,6 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$counts, file)
     })
-
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
