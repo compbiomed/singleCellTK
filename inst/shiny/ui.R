@@ -21,6 +21,7 @@ library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
 library(celda)
+library(shinycssloaders)
 
 source("helpers.R")
 source("colourGroupInput.R")
