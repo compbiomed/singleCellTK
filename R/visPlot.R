@@ -45,8 +45,15 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
     countsData <- data.frame(SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE])
     if (!is.null(condition)){
       annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
-      if(any(is.na(annotData[, condition]))){
-        stop("Annotation data has NA values. Filter them to continue.")
+      if (any(is.na(annotData[, condition]))){
+        if (method == "heatmap" && is.factor(annotData[, condition])){
+          #change NA to empty string for heatmap
+          annotData[, condition] <- as.character(annotData[, condition])
+          annotData[, condition][is.na(annotData[, condition])] <- ''
+          annotData[, condition] <- factor(annotData[, condition])
+        } else {
+          stop("Annotation data has NA values. Filter them to continue.")
+        }
       }
     } else{
       #condition required for boxplot or scatterplot
@@ -112,8 +119,8 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
         stop("Barplot doesn't require a condition, use scatterplot or boxplot instead")
       }
     } else if (method == "heatmap"){
-      zeroSum <- which(rowSds(SummarizedExperiment::assay(inSCE, useAssay)
-                             [glist, , drop = FALSE]) == 0)
+      zeroSum <- which(matrixStats::rowSds(
+        SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE]) == 0)
       if (length(zeroSum) != 0){
         stop("Gene ", paste(glist[zeroSum], collapse = ","), " has zero variance, please filter and continue.")
       }
@@ -123,10 +130,11 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
                                 column_title = "Differential Expression")
       } else{
         annData <- annotData[, condition]
-        colors <- RColorBrewer::brewer.pal(9, "Set1")
         condLevels <- unique(annotData[, condition])
         if (length(condLevels) > 9){
-          stop("Too many levels in condition for auto coloring")
+          colors <- distinctColors(length(condLevels))
+        } else {
+          colors <- RColorBrewer::brewer.pal(9, "Set1")
         }
         if (is.factor(annData)){
           col <- list()
@@ -134,7 +142,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
                                               condLevels)
           topha <- ComplexHeatmap::HeatmapAnnotation(
             df = annotData[, condition, drop = FALSE], col = col)
-        } else{
+        } else if (is.numeric(annData)) {
           col <- list()
           col[[condition]] <- circlize::colorRamp2(c(min(annotData[, condition]),
                                                      max(annotData[, condition])),
@@ -142,6 +150,9 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
           topha <- ComplexHeatmap::HeatmapAnnotation(
             df = annotData[, condition, drop = FALSE],
             col = col)
+        } else {
+          stop("Data doesn't appear to be a factor or numeric type. Verify the",
+               "annotation data.")
         }
         ComplexHeatmap::draw(
           ComplexHeatmap::Heatmap(
