@@ -110,7 +110,11 @@ shinyServer(function(input, output, session) {
   }
 
   updateEnrichDB <- function(){
-    enrDB <- enrichR::listEnrichrDbs()$libraryName
+    if (internetConnection){
+      enrDB <- enrichR::listEnrichrDbs()$libraryName  
+    } else {
+      enrDB <- ""
+    }
     updateSelectInput(session, "enrichDb", choices = enrDB)
   }
 
@@ -1508,7 +1512,11 @@ shinyServer(function(input, output, session) {
                                    row.names = 1))
 
   dbs <- reactive({
-    enrDatabases <- enrichR::listEnrichrDbs()$libraryName
+    if (internetConnection){
+      enrDatabases <- enrichR::listEnrichrDbs()$libraryName  
+    } else {
+      enrDatabases <- ""
+    }
     if (is.null(input$enrichDb)){
       dbs <- enrDatabases
     } else {

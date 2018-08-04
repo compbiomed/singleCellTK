@@ -27,6 +27,9 @@ source("helpers.R")
 source("colourGroupInput.R")
 data("c2BroadSets")
 
+#test internet connection for enrichR connectivity
+internetConnection <- suppressWarnings(Biobase::testBioCConnection())
+
 clusterChoice <- ""
 sampleChoice <- ""
 featureChoice <- ""
@@ -36,7 +39,11 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
-enrichedDB <- enrichR::listEnrichrDbs()$libraryName
+if (internetConnection){
+  enrichedDB <- enrichR::listEnrichrDbs()$libraryName  
+} else {
+  enrichedDB <- ""
+}
 numSamples <- 30
 pcComponentsSelectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
