@@ -111,7 +111,7 @@ shinyServer(function(input, output, session) {
 
   updateEnrichDB <- function(){
     if (internetConnection){
-      enrDB <- enrichR::listEnrichrDbs()$libraryName  
+      enrDB <- enrichR::listEnrichrDbs()$libraryName
     } else {
       enrDB <- ""
     }
@@ -922,7 +922,7 @@ shinyServer(function(input, output, session) {
       cm <- assay(vals$counts, input$celdaAssay)
     }
     # And each row/column of the count matrix must have at least one count
-    if (sum(rowSums(cm) == 0) > 1 | sum(colSums(cm) == 0) > 1) {
+    if (sum(rowSums(cm) == 0) >= 1 | sum(colSums(cm) == 0) >= 1) {
       shinyalert::shinyalert("Error!",
         "Each row and column of the count matrix must have at least one count.
         Filter the data first.",
@@ -1566,7 +1566,7 @@ shinyServer(function(input, output, session) {
 
   dbs <- reactive({
     if (internetConnection){
-      enrDatabases <- enrichR::listEnrichrDbs()$libraryName  
+      enrDatabases <- enrichR::listEnrichrDbs()$libraryName
     } else {
       enrDatabases <- ""
     }
