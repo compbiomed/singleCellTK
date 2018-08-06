@@ -110,7 +110,11 @@ shinyServer(function(input, output, session) {
   }
 
   updateEnrichDB <- function(){
-    enrDB <- enrichR::listEnrichrDbs()$libraryName
+    if (internetConnection){
+      enrDB <- enrichR::listEnrichrDbs()$libraryName  
+    } else {
+      enrDB <- ""
+    }
     updateSelectInput(session, "enrichDb", choices = enrDB)
   }
 
@@ -1554,37 +1558,45 @@ shinyServer(function(input, output, session) {
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
 
-  observeEvent(input$enrichRun, {
+  enrichRfile <- reactive(read.csv(input$enrFile$datapath,
+                                   header = input$header,
+                                   sep = input$sep,
+                                   quote = input$quote,
+                                   row.names = 1))
+
+  dbs <- reactive({
+    if (internetConnection){
+      enrDatabases <- enrichR::listEnrichrDbs()$libraryName  
+    } else {
+      enrDatabases <- ""
+    }
+    if (is.null(input$enrichDb)){
+      dbs <- enrDatabases
+    } else {
+      if (any(input$enrichDb %in% "ALL")){
+        dbs <- enrDatabases
+      } else {
+        dbs <- input$enrichDb
+      }
+    }
+  })
+  count_db <- reactive(length(dbs()))
+  observeEvent (input$enrichRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      withBusyIndicatorServer("enrichRun", {
-        enrDatabases <- enrichR::listEnrichrDbs()$libraryName
-        tryCatch({
-          if (is.null(input$enrichDb)){
-            dbs <- enrDatabases
-          } else {
-            if (input$enrichDb == "ALL"){
-              dbs <- enrDatabases
-            } else{
-              dbs <- input$enrichDb
-            }
+      withBusyIndicatorServer ("enrichRun", {
+        tryCatch ({
+          if (input$geneListChoice == "selectGenes"){
+            genes <- input$enrichGenes
+          } else if (input$geneListChoice == "geneFile"){
+            req(input$enrFile)
+            genes <- rownames(enrichRfile())
           }
-          count_db <- length(dbs)
-          shiny::withProgress(
-            message = "Running... this may take a while",
-            value = 0, {
-              vals$enrichRes <- NULL
-              for (i in 1:count_db) {
-                incProgress(1 / count_db, detail = paste("Querying db: ", dbs[i]))
-                vals$enrichRes <- rbind(vals$enrichRes,
-                                        enrichRSCE(inSCE = vals$counts,
-                                                   useAssay = input$enrichAssay,
-                                                   glist = input$enrichGenes,
-                                                   db = dbs[i]))
-              }
-            }
-          )
+          vals$enrichRes <- enrichRSCE(inSCE = vals$counts,
+                                       useAssay = input$enrichAssay,
+                                       glist = genes,
+                                       db = dbs())
         }, error = function(e){
           shinyalert::shinyalert("Error!", e$message, type = "error")
         })
@@ -1592,10 +1604,33 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$enrichTable <- DT::renderDataTable({
+  output$enrTabs <- renderUI({
     req(vals$enrichRes)
-    vals$enrichRes
-  }, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
+    nTabs <- count_db()
+    #create tabPanel with datatable in it
+    myTabs <- lapply(seq_len((nTabs)), function(i) {
+      tabPanel(paste0(dbs()[i]),
+               DT::dataTableOutput(paste0(dbs()[i])))
+    })
+    do.call(tabsetPanel, myTabs)
+  })
+
+  enrResults <- reactive(vals$enrichRes[, c(1:10)] %>%
+                           mutate(Database_selected =
+                                    paste0("<a href='", vals$enrichRes[, 11],
+                                           "' target='_blank'>",
+                                           vals$enrichRes[, 1], "</a>")))
+  #create datatables
+  observe({
+    req(vals$enrichRes)
+    lapply(seq_len(length(dbs())), function(i){
+      output[[paste0(dbs()[i])]] <- DT::renderDataTable({
+        DT::datatable({
+          enr <- enrResults()[which(vals$enrichRes[, 1] %in% dbs()[i]), ]
+        }, escape = FALSE, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
+      })
+    })
+  })
 
   #disable the downloadEnrichR button if the result doesn't exist
   isResult <- reactive(is.null(vals$enrichRes))
