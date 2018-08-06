@@ -907,83 +907,133 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "celdaAdvSet", class = "btn-block")
 
   celdaRes <- eventReactive(input$runCelda, {
-    withBusyIndicatorServer("runCelda", {
-      if (input$celdaModel == "celda_C") {
-        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-                      model = "celda_C",
-                      K = input$cellClusterC,
-                      alpha = input$celdaAlpha,
-                      beta = input$celdaBeta,
-                      max.iter = input$celdaMaxIter,
-                      stop.iter = input$celdaStopIter,
-                      split.on.iter = input$celdaSplitIter,
-                      nchains = input$celdaNChains,
-                      cores = input$celdaCores,
-                      seed = input$celdaSeed)
-        colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
-        updateColDataNames()
-        cres
+    # is there an error or not
+    errorFlag <- FALSE
 
-      } else if (input$celdaModel == "celda_G") {
-        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-                      model = "celda_G",
-                      L = input$geneModuleG,
-                      beta = input$celdaBeta,
-                      delta = input$celdaDelta,
-                      gamma = input$celdaGamma,
-                      max.iter = input$celdaMaxIter,
-                      stop.iter = input$celdaStopIter,
-                      split.on.iter = input$celdaSplitIter,
-                      nchains = input$celdaNChains,
-                      cores = input$celdaCores,
-                      seed = input$celdaSeed)
-        rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
-        updateFeatureAnnots()
-        cres
+    if (is.null(vals$counts)) {
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      errorFlag <- TRUE
+    } else {
+      # selected count matrix
+      cm <- assay(vals$counts, input$celdaAssay)
+    }
+    # And each row/column of the count matrix must have at least one count
+    if (sum(rowSums(cm) == 0) > 1 | sum(colSums(cm) == 0) > 1) {
+      shinyalert::shinyalert("Error!",
+        "Each row and column of the count matrix must have at least one count.
+        Filter the data first.",
+        type = "error")
+      errorFlag <- TRUE
+    }
 
-      } else if (input$celdaModel == "celda_CG") {
-        cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-                      model = "celda_CG",
-                      K = input$cellClusterCG,
-                      L = input$geneModuleCG,
-                      alpha = input$celdaAlpha,
-                      beta = input$celdaBeta,
-                      delta = input$celdaDelta,
-                      gamma = input$celdaGamma,
-                      max.iter = input$celdaMaxIter,
-                      stop.iter = input$celdaStopIter,
-                      split.on.iter = input$celdaSplitIter,
-                      nchains = input$celdaNChains,
-                      cores = input$celdaCores,
-                      seed = input$celdaSeed)
-        colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
-        rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
-        updateColDataNames()
-        updateFeatureAnnots()
-        cres
-      }
-    })
+    # Ensure that number of genes / cells is never more than
+    # the number of requested clusters for each
+    if (!is.null(input$cellClusterC) && ncol(cm) < input$cellClusterC) {
+      shinyalert::shinyalert("Error!",
+        "Number of cells (columns) in count matrix must be >= K",
+        type = "error")
+      errorFlag <- TRUE
+    }
+    if (!is.null(input$geneModuleG) && nrow(cm) < input$geneModuleG) {
+      shinyalert::shinyalert("Error!",
+        "Number of genes (rows) in count matrix must be >= L",
+        type = "error")
+      errorFlag <- TRUE
+    }
+    if (!is.null(input$geneModuleCG) && nrow(cm) < input$geneModuleCG) {
+      shinyalert::shinyalert("Error!",
+        "Number of genes (rows) in count matrix must be >= L",
+        type = "error")
+      errorFlag <- TRUE
+    }
+    if (!is.null(input$cellClusterCG) && ncol(cm) < input$cellClusterCG) {
+      shinyalert::shinyalert("Error!",
+        "Number of cells (columns) in count matrix must be >= K",
+        type = "error")
+      errorFlag <- TRUE
+    }
+    if (errorFlag == TRUE) {
+      stop()
+    } else {
+
+      withBusyIndicatorServer("runCelda", {
+        if (input$celdaModel == "celda_C") {
+          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+            model = "celda_C",
+            K = input$cellClusterC,
+            alpha = input$celdaAlpha,
+            beta = input$celdaBeta,
+            max.iter = input$celdaMaxIter,
+            stop.iter = input$celdaStopIter,
+            split.on.iter = input$celdaSplitIter,
+            nchains = input$celdaNChains,
+            cores = input$celdaCores,
+            seed = input$celdaSeed)
+          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+          updateColDataNames()
+          cres
+
+        } else if (input$celdaModel == "celda_G") {
+          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+            model = "celda_G",
+            L = input$geneModuleG,
+            beta = input$celdaBeta,
+            delta = input$celdaDelta,
+            gamma = input$celdaGamma,
+            max.iter = input$celdaMaxIter,
+            stop.iter = input$celdaStopIter,
+            split.on.iter = input$celdaSplitIter,
+            nchains = input$celdaNChains,
+            cores = input$celdaCores,
+            seed = input$celdaSeed)
+          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+          updateFeatureAnnots()
+          cres
+
+        } else if (input$celdaModel == "celda_CG") {
+          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
+            model = "celda_CG",
+            K = input$cellClusterCG,
+            L = input$geneModuleCG,
+            alpha = input$celdaAlpha,
+            beta = input$celdaBeta,
+            delta = input$celdaDelta,
+            gamma = input$celdaGamma,
+            max.iter = input$celdaMaxIter,
+            stop.iter = input$celdaStopIter,
+            split.on.iter = input$celdaSplitIter,
+            nchains = input$celdaNChains,
+            cores = input$celdaCores,
+            seed = input$celdaSeed)
+          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+          updateColDataNames()
+          updateFeatureAnnots()
+          cres
+        }
+      })
+    }
   })
 
 
   output$celdaPlot <- renderPlot({
-    model <- celdaRes()$res.list[[1]]
+      model <- celdaRes()$res.list[[1]]
 
-    # add celda labels to colData and rowData of sctke object
-    # use column name "celdaCellCluster" and "celdaGeneModule" for now,
-    # need update when celda outputs sce objects so it matches
+      # add celda labels to colData and rowData of sctke object
+      # use column name "celdaCellCluster" and "celdaGeneModule" for now,
+      # need update when celda outputs sce objects so it matches
 
-    z <- model$z
-    y <- model$y
-    norm.counts <- isolate(normalizeCounts(assay(vals$counts,
-                                                 input$celdaAssay),
-                                           scale.factor = 1e6))
-    g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
-                            normalize = NULL, color_scheme = "divergent",
-                            cluster_gene = TRUE,
-                            cluster_cell = TRUE)
-    g
-  })
+      z <- model$z
+      y <- model$y
+      norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+        input$celdaAssay),
+        scale.factor = 1e6))
+      g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
+        normalize = NULL, color_scheme = "divergent",
+        cluster_gene = TRUE,
+        cluster_cell = TRUE)
+      g
+  }, height = 600)
 
   #disable the downloadSCECelda button if no object is loaded
   isAssayResultCelda <- reactive(is.null(vals$counts))
