@@ -1,3 +1,15 @@
+orgpkgs <- c("Anopheles" = "org.Ag.eg.db", "Arabidopsis" = "org.At.tair.db",
+             "Bovine" = "org.Bt.eg.db", "Worm" = "org.Ce.eg.db",
+             "Canine" = "org.Cf.eg.db", "Fly" = "org.Dm.eg.db",
+             "Zebrafish" = "org.Dr.eg.db",
+             "E coli strain K12" = "org.EcK12.eg.db",
+             "E coli strain Sakai" = "org.EcSakai.eg.db",
+             "Chicken" = "org.Gg.eg.db", "Human" = "org.Hs.eg.db",
+             "Mouse" = "org.Mm.eg.db", "Rhesus" = "org.Mmu.eg.db",
+             "Malaria" = "org.Pf.plasmo.db", "Chimp" = "org.Pt.eg.db",
+             "Rat" = "org.Rn.eg.db", "Yeast" = "org.Sc.sgd.db",
+             "Pig" = "org.Ss.eg.db", "Xenopus" = "org.Xl.eg.db")
+
 shinyPanelFilter <- fluidPage(
   useShinyalert(),
   tags$div(
@@ -5,7 +17,6 @@ shinyPanelFilter <- fluidPage(
     h1("Data Summary & Filtering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v04-tab02_Data-Summary-and-Filtering.html",
               "(help)", target = "_blank")),
-
     tabsetPanel(
       tabPanel(
         "Data Summary",
@@ -26,12 +37,12 @@ shinyPanelFilter <- fluidPage(
                 )
               ),
               br(),
-              
               # SHINYJS COLLAPSE --------------------------
               # Section 1 - Assay Settings
               actionButton("f_button1", "Assay Settings"),
               # open by default
               tags$div( id="f_collapse1",
+              br(),
                 wellPanel(
                   selectInput("filterAssaySelect", "Select Assay:", currassays)
                 )
@@ -39,7 +50,7 @@ shinyPanelFilter <- fluidPage(
               # Section 2 - Delete Outliers
               actionButton("f_button2", "Delete Outliers"),
               shinyjs::hidden(
-                tags$div( id="f_collapse2",
+                tags$div(id = "f_collapse2",
                   wellPanel(
                     checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
                     numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
