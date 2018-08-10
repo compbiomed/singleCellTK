@@ -371,6 +371,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$counts[, filter]
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
       updateNumSamples()
     })
   })
@@ -418,6 +420,8 @@ shinyServer(function(input, output, session) {
       updateGeneNames()
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
     })
   })
 
@@ -428,6 +432,8 @@ shinyServer(function(input, output, session) {
     updateGeneNames()
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
+    vals$enrichRes <- NULL
+    vals$visplotobject <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded

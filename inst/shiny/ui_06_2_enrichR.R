@@ -18,10 +18,18 @@ shinyPanelEnrichR <- fluidPage(
         conditionalPanel(
           condition = sprintf("input['%s'] == 'geneFile'", "geneListChoice"),
           fileInput("enrFile",
-                    tags$b(tags$i("Please upload a file with only gene names(Entrez Gene Symbols)")),
+                    tags$b(tags$i("Please upload a file with only gene names or Entrez Gene Symbols")),
                     accept = c("text/csv", "text/comma-separated-values",
                                "text/tab-separated-values", "text/plain", ".csv", ".tsv")
           ),
+          tags$a(href = "https://drive.google.com/open?id=1iJZ6H_G2brbeww9B0dA5seMyYUZYyFrU",
+                 "Download an example file with gene names here.", target = "_blank"
+          ),
+          br(),
+          tags$a(href = "https://drive.google.com/open?id=1BLrwW0uMi2pxsX0m1zJrlOTnBLkIiOhk",
+                 "Download an example file with Entrez ids here.", target = "_blank"
+          ),
+          br(),
           tags$b(tags$i("Options:")),
           # Input: Checkbox if file has header ----
           checkboxInput("header", "Header", TRUE),
