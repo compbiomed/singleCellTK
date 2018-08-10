@@ -110,7 +110,7 @@ shinyServer(function(input, output, session) {
 
   updateEnrichDB <- function(){
     if (internetConnection){
-      enrDB <- enrichR::listEnrichrDbs()$libraryName  
+      enrDB <- enrichR::listEnrichrDbs()$libraryName
     } else {
       enrDB <- ""
     }
@@ -371,6 +371,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$counts[, filter]
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
       updateNumSamples()
     })
   })
@@ -418,6 +420,8 @@ shinyServer(function(input, output, session) {
       updateGeneNames()
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
+      vals$enrichRes <- NULL
+      vals$visplotobject <- NULL
     })
   })
 
@@ -428,6 +432,8 @@ shinyServer(function(input, output, session) {
     updateGeneNames()
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
+    vals$enrichRes <- NULL
+    vals$visplotobject <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -1401,7 +1407,7 @@ shinyServer(function(input, output, session) {
 
   dbs <- reactive({
     if (internetConnection){
-      enrDatabases <- enrichR::listEnrichrDbs()$libraryName  
+      enrDatabases <- enrichR::listEnrichrDbs()$libraryName
     } else {
       enrDatabases <- ""
     }
