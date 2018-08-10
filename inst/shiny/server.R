@@ -1,6 +1,8 @@
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 
+internetConnection <- suppressWarnings(Biobase::testBioCConnection())
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
