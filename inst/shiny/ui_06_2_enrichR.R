@@ -7,9 +7,10 @@ shinyPanelEnrichR <- fluidPage(
       sidebarPanel(
         selectInput("enrichAssay", "Select Assay", currassays),
         h3("Choose data source:"),
-        radioButtons("geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
-                                                       "Upload file" = "geneFile",
-                                                       "Biomarker" = "biomarker")
+        radioButtons(
+          "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
+                                            "Upload file" = "geneFile",
+                                            "Biomarker" = "biomarker")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
@@ -17,10 +18,12 @@ shinyPanelEnrichR <- fluidPage(
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'geneFile'", "geneListChoice"),
-          fileInput("enrFile",
-                    tags$b(tags$i("Please upload a file with only gene names or Entrez Gene Symbols")),
-                    accept = c("text/csv", "text/comma-separated-values",
-                               "text/tab-separated-values", "text/plain", ".csv", ".tsv")
+          fileInput(
+            "enrFile",
+            tags$b(tags$i("Please upload a file with only gene names or Entrez Gene Symbols")),
+            accept = c("text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain",
+                       ".csv", ".tsv")
           ),
           tags$a(href = "https://drive.google.com/open?id=1iJZ6H_G2brbeww9B0dA5seMyYUZYyFrU",
                  "Download an example file with gene names here.", target = "_blank"

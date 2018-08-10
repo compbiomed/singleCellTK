@@ -39,7 +39,7 @@ numClusters <- ""
 currassays <- ""
 currreddim <- ""
 if (internetConnection){
-  enrichedDB <- enrichR::listEnrichrDbs()$libraryName  
+  enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 } else {
   enrichedDB <- ""
 }
