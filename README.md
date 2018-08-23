@@ -4,14 +4,36 @@
 
 ## Installation
 
-singleCellTK is under development. You can install the development version from github:
+### Release Version
+
+You can download the release version of the Single Cell Toolkit in
+[Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
+
+```r
+source("https://bioconductor.org/biocLite.R")
+biocLite("singleCellTK")
+```
+
+### Devel Version
+
+You can download the development version of the Single Cell Toolkit in
+[Bioconductor v3.8](https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html)
+or from this repository:
 
 ```r
 # install.packages("devtools")
 devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
 ```
-> Note: Some package dependencies require Bioconductor v3.6,
-> https://bioconductor.org/install/
+
+### R 3.4 Version
+
+If you are still running an earlier version of R instead of 3.5, you can install
+the following version from this repository:
+
+```r
+# install.packages("devtools")
+devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
+```
 
 #### Troubleshooting Installation
 

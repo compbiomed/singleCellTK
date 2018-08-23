@@ -39,7 +39,7 @@ numClusters <- ""
 currassays <- ""
 currreddim <- ""
 if (internetConnection){
-  enrichedDB <- enrichR::listEnrichrDbs()$libraryName  
+  enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 } else {
   enrichedDB <- ""
 }
@@ -69,7 +69,7 @@ source("ui_03_cluster.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
-source("ui_06_pathway.R", local = TRUE) #creates shinyPanelPathway variable
+source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 
