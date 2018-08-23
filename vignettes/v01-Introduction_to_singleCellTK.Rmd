@@ -37,15 +37,12 @@ and downstream analysis.
 
 # Installation
 
-> Note: Some package dependencies require Bioconductor v3.6,
-> https://bioconductor.org/install/
+You can download the release version of the Single Cell Toolkit in
+[Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
 
-singleCellTK is under development. You can install the development version from
-github:
-
-```{r eval=FALSE}
-# install.packages("devtools")
-devtools::install_github("compbiomed/singleCellTK")
+```r
+source("https://bioconductor.org/biocLite.R")
+biocLite("singleCellTK")
 ```
 
 ## Troubleshooting Installation
@@ -61,15 +58,15 @@ source("https://bioconductor.org/biocLite.R")
 biocVersion()
 ```
 
-If the version number is not 3.6 or higher, you must upgrade Bioconductor to
+If the version number is not 3.7 or higher, you must upgrade Bioconductor to
 install the toolkit:
 
 ```{r eval=FALSE}
 biocLite("BiocUpgrade")
 ```
 
-After you install Bioconductor 3.6 or higher, you should be able to install the
-toolkit using ```devtools::install_github("compbiomed/singleCellTK")```. If you
+After you install Bioconductor 3.7 or higher, you should be able to install the
+toolkit using ```biocLite("singleCellTK")```. If you
 still encounter an error, ensure your Bioconductor packages are up to date by
 running the following command.
 
@@ -87,7 +84,7 @@ biocLite()
 Then, try to install the toolkit again:
 
 ```{r eval=FALSE}
-devtools::install_github("compbiomed/singleCellTK")
+biocLite("singleCellTK")
 ```
 
 If you still encounter an error, please [contact us](mailto:dfj@bu.edu) and we'd be happy to help.
@@ -159,7 +156,7 @@ categories: interactive analysis and R console analysis.
 
 * [Upload Tab](https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html)
 * [Data Summary and Filtering Tab](https://compbiomed.github.io/sctk_docs/articles/v04-tab02_Data-Summary-and-Filtering.html)
-* [Dimensionality Reduction and Filtering Tab](https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html)
+* [Visualization and Clustering Tab](https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Visualization-and-Clustering.html)
 * [Batch Correction Tab](https://compbiomed.github.io/sctk_docs/articles/v06-tab04_Batch-Correction.html)
 * [Differential Expression Tab](https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html)
 * [Pathway Activity Analysis Tab](https://compbiomed.github.io/sctk_docs/articles/v08-tab06_Pathway-Activity-Analysis.html)

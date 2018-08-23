@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.1.17
+Version: 1.1.18
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
              person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
@@ -53,7 +53,7 @@ Imports:
     circlize,
     enrichR,
     shinycssloaders
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Suggests:
     testthat,
     Rsubread,

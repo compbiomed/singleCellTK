@@ -13,15 +13,15 @@ scDiffEx(inSCE, useAssay = "logcounts", condition, covariates = NULL,
   adjust = "fdr")
 
 scDiffExDESeq2(inSCE, useAssay = "counts", condition,
-  analysisType = "biomarker", levelofinterest = NULL, controlLevel = NULL,
-  covariates = NULL, adjust = "fdr")
+  analysisType = "biomarker", levelofinterest = NULL,
+  controlLevel = NULL, covariates = NULL, adjust = "fdr")
 
 scDiffExlimma(inSCE, useAssay = "logcounts", condition,
-  analysisType = "biomarker", levelofinterest = NULL, covariates = NULL,
-  adjust = "fdr")
+  analysisType = "biomarker", levelofinterest = NULL,
+  covariates = NULL, adjust = "fdr")
 
-scDiffExANOVA(inSCE, useAssay = "logcounts", condition, covariates = NULL,
-  adjust = "fdr")
+scDiffExANOVA(inSCE, useAssay = "logcounts", condition,
+  covariates = NULL, adjust = "fdr")
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Requireds}
