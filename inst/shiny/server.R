@@ -238,7 +238,7 @@ shinyServer(function(input, output, session) {
   #Render histogram of read counts per cell
   output$countshist <- renderPlotly({
     if (!(is.null(vals$counts))){
-      f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
+      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
       x <- list(title = "Reads per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
       plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
@@ -252,7 +252,7 @@ shinyServer(function(input, output, session) {
   #Render histogram of genes detected per cell
   output$geneshist <- renderPlotly({
     if (!(is.null(vals$counts))){
-      f <- list(family = "Courier New, monospace", size = 18, color = "#7f7f7f")
+      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
       x <- list(title = "Genes detected per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
       plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
@@ -1220,8 +1220,8 @@ shinyServer(function(input, output, session) {
                                         condition = input$selectDiffexCondition,
                                         covariates = useCovariates,
                                         significance = input$selectPval,
-                                        ntop = input$selectNGenes,
-                                        usesig = input$applyCutoff,
+                                        ntop = nrow(vals$counts),
+                                        usesig = FALSE,
                                         diffexmethod = input$selectDiffex,
                                         levelofinterest = input$selectDiffexConditionOfInterest,
                                         analysisType = input$selectDiffexConditionMethod,
@@ -1271,11 +1271,20 @@ shinyServer(function(input, output, session) {
       } else {
         colors <- NULL
       }
+      #first, subset to the select top N genes
+      geneList <- vals$diffexgenelist[
+        seq_len(min(nrow(vals$diffexgenelist), input$selectNGenes)), ]
+      #if apply cutoff, subset to the genes that meet cutoff
+      if(input$applyCutoff){
+        geneList <- rownames(geneList)[geneList$padj <= input$selectPval]
+      } else {
+        geneList <- rownames(geneList)
+      }
       ComplexHeatmap::draw(
         plotDiffEx(inSCE = vals$counts,
                    useAssay = input$diffexAssay,
                    condition = input$colorBarCondition,
-                   geneList = rownames(vals$diffexgenelist),
+                   geneList = geneList,
                    clusterRow = input$clusterRows,
                    clusterCol = input$clusterColumns,
                    displayRowLabels = input$displayHeatmapRowLabels,
