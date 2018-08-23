@@ -73,8 +73,8 @@ navbar:
           href: articles/v03-tab01_Upload.html
         - text: "2: Data Summary and Filtering"
           href: articles/v04-tab02_Data-Summary-and-Filtering.html
-        - text: "3: Dimensionality Reduction and Clustering"
-          href: articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html
+        - text: "3: Visualization and Clustering"
+          href: articles/v05-tab03_Visualization-and-Clustering.html
         - text: "4: Batch Correction"
           href: articles/v06-tab04_Batch-Correction.html
         - text: "5: Differential Expression"

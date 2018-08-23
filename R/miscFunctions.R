@@ -113,7 +113,9 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
          nrow(featurein), ", counts: ", nrow(countsin))
   }
   if (any(rownames(annotin) != colnames(countsin))){
-    stop("Sample names in input matrix and annotation do not match!")
+    stop("Sample names in input matrix and annotation do not match!\nExample: ",
+         rownames(annotin)[rownames(annotin) != colnames(countsin)][1], " vs. ",
+         colnames(countsin)[rownames(annotin) != colnames(countsin)][1])
   }
   if (any(rownames(featurein) != rownames(countsin))){
     stop("Sample names in input matrix and feature annotation do not match!")
