@@ -1275,7 +1275,7 @@ shinyServer(function(input, output, session) {
       geneList <- vals$diffexgenelist[
         seq_len(min(nrow(vals$diffexgenelist), input$selectNGenes)), ]
       #if apply cutoff, subset to the genes that meet cutoff
-      if(input$applyCutoff){
+      if (input$applyCutoff){
         geneList <- rownames(geneList)[geneList$padj <= input$selectPval]
       } else {
         geneList <- rownames(geneList)
