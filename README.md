@@ -11,7 +11,7 @@ You can download the release version of the Single Cell Toolkit in
 
 ```r
 if (!requireNamespace("BiocManager", quietly=TRUE))
-    install.packages("BiocManager")
+  install.packages("BiocManager")
 BiocManager::install("singleCellTK")
 ```
 
@@ -23,7 +23,7 @@ or from this repository:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
+devtools::install_github("compbiomed/singleCellTK")
 ```
 
 ### R 3.4 Version
@@ -47,14 +47,14 @@ below to check the version of Bioconductor that is installed:
 ```r
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
-biocVersion()
+BiocManager::version()
 ```
 
 If the version number is not 3.6 or higher, you must upgrade Bioconductor to
 install the toolkit:
 
 ```r
-BiocManager::install("BiocUpgrade")
+BiocManager::install()
 ```
 
 After you install Bioconductor 3.6 or higher, you should be able to install the
@@ -63,7 +63,7 @@ still encounter an error, ensure your Bioconductor packages are up to date by
 running the following command.
 
 ```r
-biocValid()
+BiocManager::valid()
 ```
 
 If the command above does not return `TRUE`, run the following command to

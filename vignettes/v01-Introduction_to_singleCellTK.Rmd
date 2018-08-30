@@ -56,15 +56,15 @@ below to check the version of Bioconductor that is installed:
 
 ```{r eval=FALSE}
 if (!requireNamespace("BiocManager", quietly=TRUE))
-    install.packages("BiocManager")
-biocVersion()
+  install.packages("BiocManager")
+BiocManager::version()
 ```
 
 If the version number is not 3.7 or higher, you must upgrade Bioconductor to
 install the toolkit:
 
 ```{r eval=FALSE}
-BiocManager::install("BiocUpgrade")
+BiocManager::install()
 ```
 
 After you install Bioconductor 3.7 or higher, you should be able to install the
@@ -73,7 +73,7 @@ still encounter an error, ensure your Bioconductor packages are up to date by
 running the following command.
 
 ```{r eval=FALSE}
-biocValid()
+BiocManager::valid()
 ```
 
 If the command above does not return ```TRUE```, run the following command to
