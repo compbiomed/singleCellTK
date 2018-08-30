@@ -10,8 +10,9 @@ You can download the release version of the Single Cell Toolkit in
 [Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
 
 ```r
-source("https://bioconductor.org/biocLite.R")
-biocLite("singleCellTK")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("singleCellTK")
 ```
 
 ### Devel Version
@@ -44,7 +45,8 @@ singleCellTK. If you encounter an error during installation, use the commands
 below to check the version of Bioconductor that is installed:
 
 ```r
-source("https://bioconductor.org/biocLite.R")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 biocVersion()
 ```
 
@@ -52,7 +54,7 @@ If the version number is not 3.6 or higher, you must upgrade Bioconductor to
 install the toolkit:
 
 ```r
-biocLite("BiocUpgrade")
+BiocManager::install("BiocUpgrade")
 ```
 
 After you install Bioconductor 3.6 or higher, you should be able to install the
@@ -68,7 +70,7 @@ If the command above does not return `TRUE`, run the following command to
 update your R packages:
 
 ```r
-biocLite()
+BiocManager::install()
 ```
 
 Then, try to install the toolkit again:
