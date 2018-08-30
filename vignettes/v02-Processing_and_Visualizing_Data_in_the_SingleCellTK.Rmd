@@ -150,7 +150,7 @@ MAST is a popular package for performing differential expression analysis on
 scRNA-Seq data that models the effect of dropouts using a bimodal distribution
 and by including the cellular detection rate into the differential expression
 model. Functions in the toolkit allow you to perform this analysis on a
-SCtkExperiemnt object.
+SCtkExperiment object.
 
 ### Adaptive Thresholding
 
