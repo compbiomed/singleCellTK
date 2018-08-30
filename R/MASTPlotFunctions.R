@@ -114,6 +114,7 @@ MASTregression <- function(inSCE, useAssay="logcounts", fcHurdleSig,
   regressionplot <- ggbase +
     ggplot2::aes_string(x = "cngeneson") +
     ggplot2::geom_line(ggplot2::aes_string(y = "lmPred"), lty = 1) +
-    ggplot2::xlab("Standardized Cellular Detection Rate")
+    ggplot2::xlab("Standardized Cellular Detection Rate") +
+    ggplot2::ggtitle("Linear Model Plot")
   return(regressionplot)
 }

@@ -1,6 +1,6 @@
 #' Perform differential expression analysis on a SCtkExperiment object
 #'
-#' @param inSCE Input SCtkExperiment object. Requireds
+#' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use. Default is "logcounts" for limma
 #' and ANOVA, and "counts" for DESeq2.
 #' @param condition The name of the condition to use for differential
@@ -17,7 +17,7 @@
 #' analysis. Available options are DESeq2, limma, and ANOVA. Required
 #' @param levelofinterest If the condition has more than two labels,
 #' levelofinterest should contain one factor for condition. The differential
-#' expression results will use levelofinterest depending on the analysType
+#' expression results will use levelofinterest depending on the analysisType
 #' parameter.
 #' @param analysisType For conditions with more than two levels, limma and
 #' DESeq2 can be run using multiple methods. For DESeq2, choose "biomarker" to
@@ -25,7 +25,7 @@
 #' compare the levelofinterest to a controlLevel (see below). Choose
 #' "fullreduced" to perform DESeq2 in LRT mode. For limma, Choose "biomarker" to
 #' compare the levelofinterest to all other samples. Choose "coef" to select a
-#' coefficient of interset with levelofinterest (see below). Choose "allcoef" to
+#' coefficient of interest with levelofinterest (see below). Choose "allcoef" to
 #' test if any coefficient is different from zero.
 #' @param controlLevel If the condition has more than two labels, controlLevel
 #' should contain one factor from condition to use as the control.

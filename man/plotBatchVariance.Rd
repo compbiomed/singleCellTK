@@ -9,7 +9,7 @@ plotBatchVariance(inSCE, useAssay = "logcounts", batch,
   condition = NULL)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Requireds}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
