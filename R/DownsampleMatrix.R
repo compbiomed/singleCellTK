@@ -134,7 +134,7 @@ DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
 #'
 #' @param totalReads Numeric. The total number of reads in the simulated
 #' dataset, to be split between all simulated cells.
-#' @param originalData Matrix. The original raw readcount matrix. When used
+#' @param originalData Matrix. The original raw read count matrix. When used
 #' within the Shiny app, this will be assay(SCEsetObject, "counts").
 #' @param cells Numeric. The number of virtual cells to simulate.
 #' @param realLabels Factor. The condition labels for differential expression.
