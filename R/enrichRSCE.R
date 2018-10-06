@@ -10,11 +10,9 @@
 #' @return enrichRSCE(): returns a data.frame of enrichment terms overlapping in
 #' the respective databases along with p-values, z-scores etc.,
 #' @export
-#'
 #' @examples
 #' enrichRSCE(mouseBrainSubsetSCE, "counts", "Cmtm5",
 #'            "GO_Cellular_Component_2017")
-#'
 enrichRSCE <- function(inSCE, useAssay, glist, db = NULL){
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection
@@ -55,15 +53,15 @@ enrichRSCE <- function(inSCE, useAssay, glist, db = NULL){
                                                  fill = TRUE,
                                                  idcol = "Database_selected"))
     temp_db <- enrichR::listEnrichrDbs()
-    enriched$link <- sapply(enriched$Database_selected, function(x){
+    enriched$link <- vapply(enriched$Database_selected, function(x){
       temp_db$link[which(temp_db$libraryName %in% x)]
-    })
+    }, FUN.VALUE = character(1))
 
     #sort the results based on p-values
     enriched <- enriched[base::order(enriched$P.value, decreasing = FALSE), ]
 
     #round the numeric values to their 7th digit
-    nums <- base::vapply(enriched, is.numeric, FUN.VALUE = logical(1))
+    nums <- vapply(enriched, is.numeric, FUN.VALUE = logical(1))
       enriched[, nums] <- base::round(enriched[, nums], digits = 7)
   }
   return(enriched)

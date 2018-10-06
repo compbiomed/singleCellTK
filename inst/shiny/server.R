@@ -99,7 +99,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "diffexAssay", choices = currassays)
     updateSelectInput(session, "mastAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
-    updateSelectInput(session, "delAssayType", choices = currassays)
+    updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
@@ -470,58 +470,72 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$addAssay, {
+  observeEvent(input$modifyAssay, {
     req(vals$counts)
-    if (input$addAssayType %in% names(assays(vals$counts))){
-      shinyalert::shinyalert("Assay already exists!", "", type = "info")
-    } else {
-      withBusyIndicatorServer("addAssay", {
-        if (input$addAssayType == "logcounts"){
-          if ("counts" %in% names(assays(vals$counts))){
-            assay(vals$counts, "logcounts") <- log2(assay(vals$counts, "counts") + 1)
-          } else {
-            shinyalert::shinyalert("Error!", "A matrix named counts is required to calculate logcounts.", type = "error")
-          }
-        } else if (input$addAssayType == "cpm") {
-          if ("counts" %in% names(assays(vals$counts))){
-            assay(vals$counts, "cpm") <- apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) })
-          } else {
-            shinyalert::shinyalert("Error!", "Count matrix required for cpm calculation", type = "error")
-          }
-        } else if (input$addAssayType == "logcpm") {
-          #try to calculate from cpm
-          if ("cpm" %in% names(assays(vals$counts))){
-            assay(vals$counts, "logcpm") <- log2(assay(vals$counts, "cpm") + 1)
-          } else if ("counts" %in% names(assays(vals$counts))){
-          #calculate from counts
-            assay(vals$counts, "logcpm") <- log2(apply(assay(vals$counts, "counts"), 2, function(x) { x / (sum(x) / 1000000) }) + 1)
-          } else {
-            shinyalert::shinyalert("Error!", "Count matrix or cpm required for logcpm calculation", type = "error")
-          }
+    withBusyIndicatorServer("modifyAssay", {
+      if (input$assayModifyAction == "log") {
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
+          shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname == "") {
+          shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
+          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
+                                 type = "error")
         } else {
-          stop("unsupported assay type")
+          assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+          updateAssayInputs()
         }
-        updateAssayInputs()
-      })
-    }
-  })
-
-  observeEvent(input$delAssay, {
-    req(vals$counts)
-    if (!(input$delAssayType %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "Assay does not exist!", type = "error")
-    } else {
-      withBusyIndicatorServer("delAssay", {
-        assay(vals$counts, input$delAssayType) <- NULL
-        updateAssayInputs()
-      })
-    }
+      } else if (input$assayModifyAction == "cpm") {
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
+          shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname == "") {
+          shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
+          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
+                                 type = "error")
+        } else {
+          assay(vals$counts, input$modifyAssayOutname) <- apply(assay(vals$counts, input$modifyAssaySelect), 2, function(x) { x / (sum(x) / 1000000) })
+          updateAssayInputs()
+        }
+      } else if (input$assayModifyAction == "rename") {
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
+          shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname == "") {
+          shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
+          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
+                                 type = "error")
+        } else {
+          assay(vals$counts, input$modifyAssayOutname) <- assay(vals$counts, input$modifyAssaySelect)
+          assay(vals$counts, input$modifyAssaySelect) <- NULL
+          updateAssayInputs()
+        }
+      } else if (input$assayModifyAction == "delete") {
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
+          shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else {
+          assay(vals$counts, input$modifyAssaySelect) <- NULL
+          updateAssayInputs()
+        }
+      } else {
+        shinyalert::shinyalert("Error!", "Assay Modify Action Does Not Exist!",
+                               type = "error")
+      }
+    })
   })
 
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert::shinyalert("Error!", "reducedDim does not exist!", type = "error")
+      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
+                             type = "error")
     } else {
       withBusyIndicatorServer("delRedDim", {
         reducedDim(vals$counts, input$delRedDimType) <- NULL

@@ -7,7 +7,6 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- thresholdGenes(mouseBrainSubsetSCE)
-#'
 thresholdGenes <- function(inSCE, useAssay="logcounts"){
   # data preparation
   expres <- SummarizedExperiment::assay(inSCE, useAssay)
@@ -31,7 +30,6 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
 #'
 #' @return MASTviolin(): A ggplot object of MAST violin plots.
 #' @export
-#'
 MASTviolin <- function(inSCE, useAssay="logcounts", fcHurdleSig,
                        samplesize = 49, threshP=FALSE, condition){
   expres <- SummarizedExperiment::assay(inSCE, useAssay)
@@ -67,7 +65,6 @@ MASTviolin <- function(inSCE, useAssay="logcounts", fcHurdleSig,
 #'
 #' @return MASTregression(): A ggplot object of MAST linear regression plots.
 #' @export
-#'
 MASTregression <- function(inSCE, useAssay="logcounts", fcHurdleSig,
                            samplesize = 49, threshP=FALSE, condition){
   expres <- SummarizedExperiment::assay(inSCE, useAssay)
