@@ -27,7 +27,6 @@
 #'
 #' @return Object to import into the shiny app.
 #' @export
-#'
 #' @examples
 #' \dontrun{
 #' singlecellobject <- alignSingleCellData(
@@ -39,7 +38,6 @@
 #'   gtfAnnotation = "/path/to/gene/annotations.gtf",
 #'   sampleAnnotations = sample.annotation.df,
 #'   threads=4)}
-#'
 alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
                                 gtfAnnotation, outputDir=NULL,
                                 sampleAnnotations=NULL,
@@ -240,7 +238,6 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
 #' @return A single line of a data frame with alignment and feature count
 #' information
 #' @export
-#'
 parseRsubreadLogs <- function(alignLog=NULL, featurecountLog=NULL,
                               sampleName=NULL){
   #process feature count log num reads and log num featured

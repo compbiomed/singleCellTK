@@ -148,11 +148,20 @@ shinyPanelFilter <- fluidPage(
             sidebarLayout(
               sidebarPanel(
                 h4("Assay Options:"),
-                selectInput("addAssayType", "Add Assay Type:", c("logcounts",
-                                                                 "cpm", "logcpm")),
-                withBusyIndicatorUI(actionButton("addAssay", "Add Assay")),
-                selectInput("delAssayType", "Delete Assay Type:", currassays),
-                withBusyIndicatorUI(actionButton("delAssay", "Delete Assay")),
+                selectInput("assayModifyAction", "Assay Actions:",
+                            c("Log Transform"="log", "Create CPM"="cpm",
+                              "Rename"="rename", "Delete"="delete")),
+                conditionalPanel(
+                  condition = "input.assayModifyAction == 'cpm'",
+                  h5("Select a count assay to use for CPM calculation:")
+                ),
+                selectInput("modifyAssaySelect", "Select Assay:", currassays),
+                conditionalPanel(
+                  condition = "input.assayModifyAction != 'delete'",
+                  textInput("modifyAssayOutname", "Assay Name", "",
+                            placeholder = "What should the assay be called?")
+                ),
+                withBusyIndicatorUI(actionButton("modifyAssay", "Run")),
                 tags$hr(),
                 h4("reducedDim Options:"),
                 selectInput("delRedDimType", "Delete reducedDim:", currreddim),

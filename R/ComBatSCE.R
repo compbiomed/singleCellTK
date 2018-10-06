@@ -63,8 +63,11 @@ ComBatSCE <- function(inSCE, batch, useAssay="logcounts",
   #prepare parametric
   if (par.prior == "Parametric"){
     par.prior <- TRUE
-  } else {
+  } else if (par.prior == "Non-parametric") {
     par.prior <- FALSE
+  } else {
+    stop("Invalid option given to par.prior. Accepted values are Parametric",
+         " and Non-parametric.")
   }
 
   resassay <-
