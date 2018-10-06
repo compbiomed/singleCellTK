@@ -135,7 +135,7 @@ shinyServer(function(input, output, session) {
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType,
                                    createLogCounts = input$createLogcounts)
-      } else {
+      } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
@@ -164,23 +164,36 @@ shinyServer(function(input, output, session) {
           vals$original <- as(tempsce, "SCtkExperiment")
           rm(allen, tempsce)
         }
+      } else if (input$uploadChoice == "rds") {
+        importedrds <- readRDS(input$rdsFile$datapath)
+        if (methods::is(importedrds, "SummarizedExperiment")) {
+          vals$original <- importedrds
+        } else {
+          vals$original <- NULL
+        }
       }
-      vals$counts <- vals$original
-      updateColDataNames()
-      updateNumSamples()
-      updateAssayInputs()
-      updateGeneNames()
-      updateReddimInputs()
-      updateSelectInput(session, "deletesamplelist",
-                        choices = colnames(vals$counts))
-      insertUI(
-        selector = "#uploadAlert",
-        ## wrap element in a div with id for ease of removal
-        ui = tags$div(class = "alert alert-success alert-dismissible", HTML("<span \
-                      class='glyphicon glyphicon-ok' aria-hidden='true'></span> \
-                      Successfully Uploaded! <button type='button' class='close' \
-                      data-dismiss='alert'>&times;</button>"))
-      )
+      if (!is.null(vals$original)) {
+        vals$counts <- vals$original
+        updateColDataNames()
+        updateNumSamples()
+        updateAssayInputs()
+        updateGeneNames()
+        updateReddimInputs()
+        updateSelectInput(session, "deletesamplelist",
+                          choices = colnames(vals$counts))
+        insertUI(
+          selector = "#uploadAlert",
+          ## wrap element in a div with id for ease of removal
+          ui = tags$div(
+            class = "alert alert-success alert-dismissible",
+            HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
+                  </span> Successfully Uploaded! <button type='button' \
+                  class='close' data-dismiss='alert'>&times;</button>"))
+        )
+      } else {
+        shinyalert::shinyalert("Error!", "The data upload failed!",
+                               type = "error")
+      }
     })
   })
 
