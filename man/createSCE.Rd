@@ -44,5 +44,4 @@ row_annot <- rowData(mouseBrainSubsetSCE)
 newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
                     featureFile = row_annot, assayName = "counts",
                     inputDataFrames = TRUE, createLogCounts = TRUE)
-
 }

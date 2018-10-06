@@ -5,7 +5,8 @@
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay The assay to use for the MAST calculations. The default is
 #' "logcounts"
-#' @param condition select variable (from the colData) that is used for the model.
+#' @param condition select variable (from the colData) that is used for the
+#' model.
 #' @param interest.level If the condition of interest has more than two factors,
 #' indicate which level should be used to compare to all other samples.
 #' @param freqExpressed Filter genes that are expressed in at least this
@@ -19,7 +20,6 @@
 #'
 #' @return MAST(): A data.frame of differentially expressed genes with p-values.
 #' @export
-#'
 MAST <- function(inSCE, condition = NULL, interest.level = NULL,
                  freqExpressed = 0.1, fcThreshold=log2(1.5), p.value = 0.05,
                  useThresh=FALSE, useAssay = "logcounts"){

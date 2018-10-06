@@ -29,3 +29,6 @@ HSV.
 \description{
 Generate a distinct palette for coloring different clusters
 }
+\examples{
+distinctColors(10)
+}

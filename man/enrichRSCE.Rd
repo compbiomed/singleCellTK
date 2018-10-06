@@ -29,5 +29,4 @@ enrichment
 \examples{
 enrichRSCE(mouseBrainSubsetSCE, "counts", "Cmtm5",
            "GO_Cellular_Component_2017")
-
 }

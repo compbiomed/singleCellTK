@@ -22,7 +22,8 @@ MASTregression(inSCE, useAssay = "logcounts", fcHurdleSig,
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
 
-\item{condition}{select variable (from the colData) that is used for the model.}
+\item{condition}{select variable (from the colData) that is used for the
+model.}
 
 \item{interest.level}{If the condition of interest has more than two factors,
 indicate which level should be used to compare to all other samples.}
@@ -75,5 +76,4 @@ Run and visualize MAST analysis on a SCtkExperiment object.
 \examples{
 data("mouseBrainSubsetSCE")
 res <- thresholdGenes(mouseBrainSubsetSCE)
-
 }

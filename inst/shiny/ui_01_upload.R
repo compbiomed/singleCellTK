@@ -30,6 +30,7 @@ shinyPanelUpload <- fluidPage(
     tags$div(id = "uploadAlert", alertText),
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
+                                                 "Upload SCtkExperiment RDS File" = "rds",
                                                  "Use example data" = "example")
     ),
     tags$hr(),
@@ -125,8 +126,7 @@ shinyPanelUpload <- fluidPage(
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
       h3("Choose Example Dataset:"),
-      selectInput("selectExampleData", label = NULL, exampleDatasets
-      ),
+      selectInput("selectExampleData", label = NULL, exampleDatasets),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'mouseBrainSubset'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1126/science.aaa1934", "Mouse Brain Subset: GSE60361", target = "_blank")),
@@ -161,6 +161,13 @@ shinyPanelUpload <- fluidPage(
         "Subset of 379 cells from the mouse visual cortex. (data loaded from scRNASeq package)",
         tags$br(),
         tags$br()
+      )
+    ),
+    conditionalPanel(
+      condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
+      h3("Choose an RDS file that contains a SCtkExperiment Object:"),
+      fileInput(
+        "rdsFile", "SCtkExperiment RDS file:", accept = c(".rds", ".RDS")
       )
     ),
     withBusyIndicatorUI(
