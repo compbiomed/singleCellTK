@@ -149,8 +149,8 @@ shinyPanelFilter <- fluidPage(
               sidebarPanel(
                 h4("Assay Options:"),
                 selectInput("assayModifyAction", "Assay Actions:",
-                            c("Log Transform"="log", "Create CPM"="cpm",
-                              "Rename"="rename", "Delete"="delete")),
+                            c("Log Transform" = "log", "Create CPM" = "cpm",
+                              "Rename" = "rename", "Delete" = "delete")),
                 conditionalPanel(
                   condition = "input.assayModifyAction == 'cpm'",
                   h5("Select a count assay to use for CPM calculation:")
