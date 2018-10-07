@@ -28,6 +28,6 @@ the respective visualization plot(s).
 \examples{
 visPlot(mouseBrainSubsetSCE, "logcounts", "boxplot", "level1class", "C1qa")
 visPlot(mouseBrainSubsetSCE, "counts", "scatterplot", "age", "Cmtm5")
-visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class"
+visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
         c("Cmtm5", "C1qa"))
 }
