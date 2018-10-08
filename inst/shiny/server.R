@@ -652,6 +652,17 @@ shinyServer(function(input, output, session) {
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
 
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("c_button1", shinyjs::toggle(id = "c_collapse1",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "c_button1", class = "btn-block")
+  shinyjs::addClass(id = "c_button2", class = "btn-block")
+  shinyjs::addClass(id = "c_button3", class = "btn-block")
+
   output$clusterPlot <- renderPlotly({
     if (is.null(vals$counts)){
       plotly::ggplotly(ggplot2::ggplot())
