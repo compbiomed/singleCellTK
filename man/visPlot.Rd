@@ -4,7 +4,8 @@
 \alias{visPlot}
 \title{visPlot}
 \usage{
-visPlot(inSCE, useAssay, method, condition, glist)
+visPlot(inSCE, useAssay, method, condition, glist, facetWrap = FALSE,
+  ScaleHMap = TRUE)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -17,6 +18,10 @@ scatterplot, or heatmap. Required}
 \item{condition}{colData annotation of the experiment. Required}
 
 \item{glist}{selected genes for visualization. Required}
+
+\item{facetWrap}{facet wrap according to genes for boxplot, scatterplot and barplot. Default is FALSE. Optional}
+
+\item{ScaleHMap}{scale heatmap expression values. Default is TRUE. Optional}
 }
 \value{
 A visualization plot

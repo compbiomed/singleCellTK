@@ -58,7 +58,7 @@ shinyPanelFilter <- fluidPage(
                   selectInput("deletesamplelist", "Select Samples:", sampleChoice, multiple = TRUE),
                   fluidRow(
                     column(6, withBusyIndicatorUI(actionButton("filterData", "Filter Data"))),
-                    column(6, actionButton("resetData", "Reset"))
+                    column(6, actionButton("resetData", "Reset All"))
                   )
                 )
               )
@@ -119,7 +119,7 @@ shinyPanelFilter <- fluidPage(
               )
             ),
             tags$hr(),
-            downloadButton("downloadSCE", "Download SCtkExperiment")
+            downloadButton("downloadSCE", "Download SCtkExperiment(.rds)")
             ),
             mainPanel(
               wellPanel(
@@ -217,13 +217,14 @@ shinyPanelFilter <- fluidPage(
                 h4("Visualization Options:"),
                 selectInput("visAssaySelect", "Select Assay:", currassays),
                 selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
-                selectInput("visCondn", "Condition:", c(clusterChoice)),
+                selectInput("visCondn", "Condition:", c("none", clusterChoice)),
                 selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE),
+                uiOutput("visOptions"),
                 withBusyIndicatorUI(actionButton("plotvis", "Plot"))
               ),
               mainPanel(
                 fluidRow(
-                  plotOutput("visPlot")
+                  plotOutput("visPlot", height = '600px')
                 )
               )
             )
