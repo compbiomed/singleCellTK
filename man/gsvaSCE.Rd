@@ -70,7 +70,7 @@ maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
 rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
 res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-               parallel.sz = 0)
+               parallel.sz = 1)
 #Create a small example to run
 utils::data(maits, package = "MAST")
 utils::data(c2BroadSets, package = "GSVAdata")
@@ -85,7 +85,7 @@ maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
 rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
 res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-               parallel.sz = 0)
+               parallel.sz = 1)
 gsvaPlot(inSCE = maitsSCE, gsvaData = res,
          plotType = "Violin", condition = "condition")
 }
