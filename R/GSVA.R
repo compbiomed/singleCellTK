@@ -19,7 +19,7 @@
 #' utils::data(c2BroadSets, package = "GSVAdata")
 #' maitslogtpm <- t(maits$expressionmat)
 #' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
-#'                  geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
 #' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
 #' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
 #' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
@@ -80,7 +80,7 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' utils::data(c2BroadSets, package = "GSVAdata")
 #' maitslogtpm <- t(maits$expressionmat)
 #' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
-#'                  geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
 #' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
 #' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
 #' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,

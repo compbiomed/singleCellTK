@@ -222,7 +222,7 @@ shinyPanelCluster <- fluidPage(
         )
       ),
       tabPanel(
-        "Dendrogram",
+        title = "Dendrogram", id = "dendrogram",
         wellPanel(
         tags$br(),
           tags$p("Work in progress - Need to move dendrogram functionality over from DR tab.")
