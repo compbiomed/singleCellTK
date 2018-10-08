@@ -27,7 +27,7 @@ rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
 test_that("GSVA Works", {
   expect_is(gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
                     pathwaySource = "Manual Input",
-                    pathwayNames = "testbiomarker"),
+                    pathwayNames = "testbiomarker", parallel.sz = 1),
             "matrix")
   expect_is(gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
                     pathwaySource = "MSigDB c2 (Human, Entrez ID only)",

@@ -27,7 +27,8 @@
 #'                       inputDataFrames = TRUE, createLogCounts = FALSE)
 #' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
 #' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker")
+#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+#'                parallel.sz = 0)
 gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
                     pathwayNames, ...){
   if (pathwaySource == "Manual Input"){
@@ -88,7 +89,8 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #'                       inputDataFrames = TRUE, createLogCounts = FALSE)
 #' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
 #' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker")
+#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+#'                parallel.sz = 0)
 #' gsvaPlot(inSCE = maitsSCE, gsvaData = res,
 #'          plotType = "Violin", condition = "condition")
 gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
