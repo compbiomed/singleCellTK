@@ -4,7 +4,7 @@
 \alias{visPlot}
 \title{visPlot}
 \usage{
-visPlot(inSCE, useAssay, method, condition, glist, facetWrap = FALSE,
+visPlot(inSCE, useAssay, method, condition, glist, facetWrap = TRUE,
   scaleHMap = TRUE)
 }
 \arguments{

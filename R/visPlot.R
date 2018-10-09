@@ -21,7 +21,7 @@
 #' visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
 #'         c("Cmtm5", "C1qa"))
 visPlot <- function(inSCE, useAssay, method, condition, glist,
-                    facetWrap = FALSE, scaleHMap = TRUE) {
+                    facetWrap = TRUE, scaleHMap = TRUE) {
   if (!(class(inSCE) == "SingleCellExperiment" | class(inSCE) == "SCtkExperiment")){
     stop("Please use a singleCellTK or a SCtkExperiment object")
   }
@@ -79,11 +79,11 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
             ggplot2::geom_boxplot(width = .1) +
             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
             ggplot2::xlab(condition) +
-            ggplot2::ylab(useAssay) +
+            ggplot2::ylab(useAssay)
             ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
                                        guide = FALSE)
           if (facetWrap) {
-            ggplotObj + ggplot2::facet_wrap("Genes")
+            ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
           } else {
             ggplotObj
           }
@@ -106,7 +106,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
             ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
                                        guide = FALSE)
           if (facetWrap) {
-            ggplotObj + ggplot2::facet_wrap("Genes")
+            ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
           } else {
             ggplotObj
           }
@@ -127,7 +127,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
           ggplot2::ylab(useAssay) +
           ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"))
         if (facetWrap) {
-          ggplotObj + ggplot2::facet_wrap("Genes")
+          ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
         } else {
           ggplotObj
         }
