@@ -3,17 +3,16 @@
 #' enrichment
 #'
 #' @param inSCE Input SCtkExperiment object. Required
-#' @param useAssay The assay to use in the enrichment analysis. Required
 #' @param glist selected genes for enrichment analysis using enrichR(). Required
-#' @param db selected database name from the enrichR database list.
+#' @param db selected database name from the enrichR database list. if NULL then
+#' enrichR will be run on all the available databases on the enrichR database.
 #'
 #' @return enrichRSCE(): returns a data.frame of enrichment terms overlapping in
 #' the respective databases along with p-values, z-scores etc.,
 #' @export
 #' @examples
-#' enrichRSCE(mouseBrainSubsetSCE, "counts", "Cmtm5",
-#'            "GO_Cellular_Component_2017")
-enrichRSCE <- function(inSCE, useAssay, glist, db = NULL){
+#' enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017")
+enrichRSCE <- function(inSCE, glist, db = NULL){
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection
   if (!internetConnection){
@@ -25,11 +24,6 @@ enrichRSCE <- function(inSCE, useAssay, glist, db = NULL){
   if (!(class(inSCE) == "SingleCellExperiment" |
         class(inSCE) == "SCtkExperiment")){
     stop("Please use a singleCellTK or a SCtkExperiment object")
-  }
-
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
   }
 
   #test for gene list existing
