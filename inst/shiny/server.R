@@ -120,7 +120,7 @@ shinyServer(function(input, output, session) {
     } else {
       enrDB <- ""
     }
-    updateSelectInput(session, "enrichDb", choices = enrDB)
+    updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
 
   # Close app on quit
@@ -668,11 +668,11 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       if (input$visPlotMethod != "heatmap") {
         tagList(
-          checkboxInput("visFWrap", "Facet wrap", value = FALSE)
+          checkboxInput("visFWrap", "Plot genes individually?", value = TRUE)
         )
       } else {
         tagList(
-          checkboxInput("visScaleHMap", "Scale expression values?", value = FALSE)
+          checkboxInput("visScaleHMap", "Scale expression values?", value = TRUE)
         )
       }
     }
@@ -1349,7 +1349,6 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("saveResults", {
         ResultsName <- gsub(" ", "_", input$ResultsName)
-        # req(input$ResultsName)
         if (length(myValues$dList) >= 1) {
           if (anyDuplicated(myValues$dList)) {
             shinyalert::shinyalert("Error", "name already exists. Please use a unique result name",
@@ -1368,7 +1367,6 @@ shinyServer(function(input, output, session) {
                           diffex = vals$diffexgenelist,
                           name = input$ResultsName,
                           method = input$selectDiffex)
-        #updateFeatureAnnots()
       })
     }
   })
@@ -1398,8 +1396,7 @@ shinyServer(function(input, output, session) {
       rownames(df1) <- rownames(vals$counts)[as.integer(diffexRow)]
       vals$diffexgenelist <- df1
       vals$diffexheatmapplot <- NULL
-    }
-    updateFeatureAnnots()
+      }
     })
 
   #save biomarker in rowData() wrt name and conditions.
