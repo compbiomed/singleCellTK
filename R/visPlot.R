@@ -9,8 +9,11 @@
 #' scatterplot, or heatmap. Required
 #' @param condition colData annotation of the experiment. Required
 #' @param glist selected genes for visualization. Required
-#' @param facetWrap facet wrap according to genes for boxplot, scatterplot and barplot. Default is FALSE. Optional
+#' @param facetWrap facet wrap according to genes for boxplot, scatterplot and
+#' barplot. Default is FALSE. Optional
 #' @param scaleHMap scale heatmap expression values. Default is TRUE. Optional
+#' @param convertFactor If the condition is not a factor, convert it to a factor
+#' before plotting. The default is FALSE
 #'
 #' @return A visualization plot
 #'
@@ -21,9 +24,9 @@
 #' visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
 #'         c("Cmtm5", "C1qa"))
 visPlot <- function(inSCE, useAssay, method, condition, glist,
-                    facetWrap = TRUE, scaleHMap = TRUE) {
-  if (!(class(inSCE) == "SingleCellExperiment" | class(inSCE) == "SCtkExperiment")){
-    stop("Please use a singleCellTK or a SCtkExperiment object")
+                    facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
   }
   #test for assay existing
   if (!all(useAssay %in% names(assays(inSCE)))){
@@ -47,7 +50,14 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
   } else {
     countsData <- data.frame(SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE])
     if (!is.null(condition)){
-      annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
+      if (class(inSCE) == "SummarizedExperiment") {
+        annotData <- data.frame(SummarizedExperiment::colData(inSCE)[, condition, drop = FALSE])
+      } else {
+        annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
+      }
+      if (convertFactor) {
+        annotData[, condition] <- as.factor(annotData[, condition])
+      }
       if (any(is.na(annotData[, condition]))){
         if (method == "heatmap" && is.factor(annotData[, condition])){
           #change NA to empty string for heatmap
@@ -79,7 +89,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
             ggplot2::geom_boxplot(width = .1) +
             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
             ggplot2::xlab(condition) +
-            ggplot2::ylab(useAssay)
+            ggplot2::ylab(useAssay) +
             ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
                                        guide = FALSE)
           if (facetWrap) {
