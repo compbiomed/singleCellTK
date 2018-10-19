@@ -3,6 +3,7 @@
 #'
 #' @param originalData SCtkExperiment. The SCtkExperiment object storing all
 #' assay data from the shiny app.
+#' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCount Numeric. The minimum number of reads found for a gene to be
 #' considered detected.
 #' @param minCells Numeric. The minimum number of cells a gene must have at
@@ -30,11 +31,11 @@
 #'                        realLabels = "level1class",
 #'                        iterations=2)
 #'
-DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
+DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, minCells = 3,
                             maxDepth = 10000000, realLabels,
                             depthResolution = 10, iterations = 10){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, "counts")
+  originalData <- SummarizedExperiment::assay(originalData, useAssay)
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -65,6 +66,7 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #'
 #' @param originalData SCtkExperiment. The SCtkExperiment object storing all
 #' assay data from the shiny app.
+#' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCountDetec Numeric. The minimum number of reads found for a gene to
 #' be considered detected.
 #' @param minCellsDetec Numeric. The minimum number of cells a gene must have at
@@ -98,12 +100,12 @@ DownsampleDepth <- function(originalData, minCount = 10, minCells = 3,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
 #'
-DownsampleCells <- function(originalData, minCountDetec = 10, minCellsDetec = 3,
+DownsampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
                             minCellnum = 10, maxCellnum = 1000, realLabels,
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, "counts")
+  originalData <- SummarizedExperiment::assay(originalData, useAssay)
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -166,6 +168,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #'
 #' @param originalData SCtkExperiment. The SCtkExperiment object storing all
 #' assay data from the shiny app.
+#' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param realLabels Character. The name of the condition of interest. Must match
 #' a name from sample data.
 #' @param totalReads Numeric. The total number of reads in the simulated
@@ -181,10 +184,10 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #' res <- iterateSimulations(mouseBrainSubsetSCE, realLabels = "level1class",
 #'                           totalReads = 1000, cells = 10, iterations = 2)
 #'
-iterateSimulations <- function(originalData, realLabels, totalReads, cells,
+iterateSimulations <- function(originalData, useAssay = "counts", realLabels, totalReads, cells,
                                iterations){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, "counts")
+  originalData <- SummarizedExperiment::assay(originalData, useAssay)
   sigMatrix <- matrix(nrow = dim(originalData)[1])
   for (i in seq_len(iterations)){
     tempData <- generateSimulatedData(totalReads, cells, originalData,
