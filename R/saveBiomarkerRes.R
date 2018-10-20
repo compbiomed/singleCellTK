@@ -25,7 +25,7 @@
 #'                 usesig = FALSE,
 #'                 diffexmethod = "limma")
 #'sceObj <- saveDiffExResults(mouseBrainSubsetSCE, res, "Limma_Level1class", "limma")
-#'bioMarkRes <- saveBiomarkerRes(sceObj, res, "bioMarker", "limma", logFC = 0, pVal = 0.05)
+#'bioMarkRes <- saveBiomarkerRes(sceObj, res, "bioMarker", "limma", logFC = 4, pVal = 0.05)
 
 saveBiomarkerRes <- function(inSCE, diffex, biomarkerName, method, ntop = 25, logFC = NULL, pVal = NULL) {
   if (!(class(inSCE) == "SingleCellExperiment" | class(inSCE) == "SCtkExperiment")) {
@@ -50,38 +50,32 @@ saveBiomarkerRes <- function(inSCE, diffex, biomarkerName, method, ntop = 25, lo
     diffex <- data.frame(diffex)
   }
   bmRes <- NULL
-  if (method == "limma"){
-    if (!is.null(pVal) & !is.null(logFC)) {
-      bmRes <- diffex[which((diffex[, 1] <= logFC) & (diffex[, 5] <= pVal)), ]
-    } else if (!is.null(pVal)) {
-      bmRes <- diffex[(diffex[, 5] <= pVal), ][seq_len(ntop), ]
-    } else if (!is.null(logFC)) {
-      bmRes <- diffex[(diffex[, 1] <= logFC), ][seq_len(ntop), ]
-    } else {
-      bmRes <- diffex[seq_len(ntop), ]
-    }
-  } else if (method == "DESeq2") {
-    if (!is.null(pVal) & !is.null(logFC)) {
-      bmRes <- diffex[which((diffex[, 2] <= logFC) & (diffex[, 6] <= pVal)), ][seq_len(ntop), ]
-    } else if (!is.null(pVal)) {
-      bmRes <- diffex[(diffex[, 6] <= pVal), ][seq_len(ntop), ]
-    } else if (!is.null(logFC)) {
-      bmRes <- diffex[(diffex[, 2] <= logFC), ][seq_len(ntop), ]
-    } else {
-      bmRes <- diffex[seq_len(ntop), ]
-    }
+  pvalIndex <- which(grepl("*padj*", colnames(diffex)))
+  logFCIndex <- which(grepl("*log*", colnames(diffex)))
+  if (length(logFCIndex) == 0) {
+    logFCIndex <- 1
+  }
+  
+  if (method == 'ANOVA' & !is.null(logFC)) {
+    stop("logFC is not applicable for ANOVA")
   } else {
     if (!is.null(pVal) & !is.null(logFC)) {
-      #bmRes <- diffex[which((diffex[, 2] <= logFC) & (diffex[, 6] <= pVal)), ][seq_len(ntop), ]
-      stop("logFC is not applicable for ANOVA")
+      bmRes <- diffex[(diffex[, logFCIndex] <= logFC) & (diffex[, pvalIndex] <= pVal), ]
     } else if (!is.null(pVal)) {
-      bmRes <- diffex[(diffex[, 2] <= pVal), ][seq_len(ntop), ]
+      bmRes <- diffex[(diffex[, pvalIndex] <= pVal), ]
     } else if (!is.null(logFC)) {
-      #bmRes <- diffex[(diffex[, 2] <= logFC), ][seq_len(ntop), ]
-      stop("logFC is not applicable for ANOVA")
-    } else {
-      bmRes <- diffex[seq_len(ntop), ]
+      bmRes <- diffex[(diffex[, logFCIndex] <= logFC), ]
     }
+  }
+  
+  if (is.null(bmRes)) {
+    bmRes <- diffex
+  }
+  
+  if (nrow(bmRes) < ntop) {
+    bmRes <- bmRes[seq_len(nrow(bmRes)), ]
+  } else {
+    bmRes <- bmRes[seq_len(ntop), ]
   }
   rowData(inSCE)[, biomarkerName] <- ifelse(rownames(inSCE) %in% rownames(bmRes), 1, 0)
   return(inSCE)
