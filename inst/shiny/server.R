@@ -107,6 +107,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
+    updateSelectInput(session, "depthAssay", choices = currassays)
+    updateSelectInput(session, "cellsAssay", choices = currassays)
+    updateSelectInput(session, "snapshotAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -1809,11 +1812,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
         vals$subDepth <- DownsampleDepth(originalData = vals$counts,
+                                         useAssay = input$depthAssay,
                                          minCount = input$minCount,
                                          minCells = input$minCells,
                                          maxDepth = 10 ^ input$maxDepth,
@@ -1857,14 +1859,13 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
         if (input$useReadCount){
           vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
-                                           totalReads = sum(counts(vals$counts)),
+                                           totalReads = sum(SummarizedExperiment::assay(vals$counts, input$cellsAssay)),
                                            minCellnum = input$minCellNum,
                                            maxCellnum = input$maxCellNum,
                                            minCountDetec = input$minCount,
@@ -1874,6 +1875,7 @@ shinyServer(function(input, output, session) {
         }
         else{
           vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = input$totalReads,
                                            minCellnum = input$minCellNum,
@@ -1920,16 +1922,15 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSnapshot", {
         vals$snapshot <- iterateSimulations(originalData = vals$counts,
+                                            useAssay = input$snapshotAssay,
                                             realLabels = input$selectSnapshotCondition,
                                             totalReads = input$numReadsSnap,
                                             cells = input$numCellsSnap,
                                             iterations = input$iterationsSnap)
-        vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[, input$selectSnapshotCondition])
+        vals$effectSizes <- calcEffectSizes(countMatrix = SummarizedExperiment::assay(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
         output$Snaplot <- renderPlot({
           plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
