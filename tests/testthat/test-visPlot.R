@@ -4,7 +4,7 @@ context("check for conditions to visualize plots")
 test_that("Should fail when the object supplied is not a sctk/ sctkexperiment object", {
   expect_error(visPlot(matrix(1:100), "counts", "boxplot", NULL,
                        c("Cmtm5", "C1qa")),
-               "Please use a singleCellTK or a SCtkExperiment object")
+               "Please use a SingleCellExperiment or a SCtkExperiment object")
 })
 
 test_that("Should fail when no condition is provided", {
