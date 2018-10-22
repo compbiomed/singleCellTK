@@ -68,7 +68,7 @@ BiocManager::install()
 ```
 
 After you install Bioconductor 3.7 or higher, you should be able to install the
-toolkit using ```biocLite("singleCellTK")```. If you
+toolkit using ```BiocManager::install("singleCellTK")```. If you
 still encounter an error, ensure your Bioconductor packages are up to date by
 running the following command.
 
