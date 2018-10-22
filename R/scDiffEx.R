@@ -334,6 +334,7 @@ scDiffExANOVA <- function(inSCE, useAssay="logcounts", condition,
 #' heatmap. The default is TRUE.
 #' @param annotationColors Set of annotation colors for color bar. If null,
 #' no color bar is shown. default is NULL.
+#' @param scaleExpression Row scale the heatmap values. The default is TRUE.
 #' @param columnTitle Title to be displayed at top of heatmap.
 #'
 #' @return ComplexHeatmap object for the provided geneList annotated with the
@@ -352,10 +353,14 @@ plotDiffEx <- function(inSCE, useAssay="logcounts", condition, geneList,
                        clusterRow=TRUE, clusterCol=TRUE, displayRowLabels=TRUE,
                        displayColumnLabels=TRUE, displayRowDendrograms=TRUE,
                        displayColumnDendrograms=TRUE, annotationColors=NULL,
+                       scaleExpression=TRUE,
                        columnTitle="Differential Expression"){
   if (is.null(annotationColors)){
     topha <- NULL
   } else if (annotationColors == "auto") {
+    if (length(condition) != 1) {
+      stop("Only one condition may be used for auto coloring.")
+    }
     condLevels <- unique(SingleCellExperiment::colData(inSCE)[, condition])
     if (length(condLevels) > 9){
       colors <- distinctColors(length(condLevels))
@@ -373,10 +378,16 @@ plotDiffEx <- function(inSCE, useAssay="logcounts", condition, geneList,
       df = SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE],
       col = annotationColors)
   }
+  heatmapkey <- useAssay
+  heatdata <- SummarizedExperiment::assay(inSCE, useAssay)[geneList, ]
+  if (scaleExpression){
+    heatdata <- t(scale(t(heatdata)))
+    heatmapkey <- paste("Scaled", heatmapkey, sep = "\n")
+  }
 
   heatmap <- ComplexHeatmap::Heatmap(
-    t(scale(t(SummarizedExperiment::assay(inSCE, useAssay)[geneList, ]))),
-    name = "Expression", column_title = columnTitle, cluster_rows = clusterRow,
+    heatdata,
+    name = heatmapkey, column_title = columnTitle, cluster_rows = clusterRow,
     cluster_columns = clusterCol, top_annotation = topha,
     show_row_names = displayRowLabels, show_column_names = displayColumnLabels,
     show_row_dend = displayRowDendrograms,
