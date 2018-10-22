@@ -43,5 +43,5 @@ res <- scDiffEx(mouseBrainSubsetSCE,
                 usesig = FALSE,
                 diffexmethod = "limma")
 sceObj <- saveDiffExResults(mouseBrainSubsetSCE, res, "Limma_Level1class", "limma")
-bioMarkRes <- saveBiomarkerRes(sceObj, res, "bioMarker", "limma", logFC = 0, pVal = 0.05)
+bioMarkRes <- saveBiomarkerRes(sceObj, res, "bioMarker", "limma", logFC = 4, pVal = 0.05)
 }

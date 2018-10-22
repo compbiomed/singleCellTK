@@ -48,7 +48,8 @@ shinyPanelDiffex <- fluidPage(
           tags$div(
             id = "de2",
             wellPanel(
-              sliderInput("selectNGenes", "Display Top N Genes:", 5, 500, 500, 5),
+              numericInput("selectNGenes", "Enter Top N Genes value:", value = 500),
+              uiOutput("diffexNgenes"),
               checkboxInput("applyCutoff", "Apply p-value Cutoff"),
               conditionalPanel(
                 condition = "input.applyCutoff == true",
@@ -57,7 +58,8 @@ shinyPanelDiffex <- fluidPage(
               checkboxInput("applylogFCCutoff", "Apply logFC Cutoff"),
               conditionalPanel(
                 condition = "input.applylogFCCutoff == true",
-                sliderInput("selectlogFCDiffex", "Select logFC cutoff", -4, +4, +0, 0.5),
+                numericInput("selectlogFCDiffex", "Select logFC cutoff", value = 2, step = 0.5),
+                uiOutput("logFCDiffexRange"),
                 checkboxInput("applyAbslogFCDiffex", "absolute logFC value")
               ),
               checkboxInput("applyScaleDiffex", "Scale Expression values?"),
@@ -133,7 +135,8 @@ shinyPanelDiffex <- fluidPage(
             id = "de5",
             wellPanel(
               textInput("ResultsName", "Name of Result: ", value = ""),
-              withBusyIndicatorUI(actionButton("saveResults", "Save Results"))
+              withBusyIndicatorUI(actionButton("saveResults", "Save Results")),
+              uiOutput("saveDiffResultsNote")
             )
           )
         ),
@@ -142,7 +145,8 @@ shinyPanelDiffex <- fluidPage(
           tags$div(
             id = "de7",
             wellPanel(
-              sliderInput("selectBioNGenes", "Select Top N Genes:", 5, 500, 500, 5),
+              numericInput("selectBioNGenes", "Enter top N Genes:", value = 100),
+              uiOutput("BioNgenes"),
               checkboxInput("applyBioCutoff1", "Apply p-value Cutoff"),
               conditionalPanel(
                 condition = "input.applyBioCutoff1 == true",
@@ -151,7 +155,8 @@ shinyPanelDiffex <- fluidPage(
               checkboxInput("applyBioCutoff2", "Apply logFC Cutoff"),
               conditionalPanel(
                 condition = "input.applyBioCutoff2 == true",
-                sliderInput("selectlogFC", "Select logFC cutoff", -4, +4, +0, 0.5),
+                numericInput("selectlogFC", "Select logFC cutoff", value = 2, step = 0.5),
+                uiOutput("logFCBioRange"),
                 checkboxInput("applyAbslogFC", "absolute logFC value")
               ),
               textInput("biomarkerName", "Biomarker Name: ", value = ""),
