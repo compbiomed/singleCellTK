@@ -55,7 +55,7 @@ saveBiomarkerRes <- function(inSCE, diffex, biomarkerName, method, ntop = 25, lo
   if (length(logFCIndex) == 0) {
     logFCIndex <- 1
   }
-  
+
   if (method == 'ANOVA' & !is.null(logFC)) {
     stop("logFC is not applicable for ANOVA")
   } else {
@@ -67,11 +67,11 @@ saveBiomarkerRes <- function(inSCE, diffex, biomarkerName, method, ntop = 25, lo
       bmRes <- diffex[(diffex[, logFCIndex] <= logFC), ]
     }
   }
-  
+
   if (is.null(bmRes)) {
     bmRes <- diffex
   }
-  
+
   if (nrow(bmRes) < ntop) {
     bmRes <- bmRes[seq_len(nrow(bmRes)), ]
   } else {
