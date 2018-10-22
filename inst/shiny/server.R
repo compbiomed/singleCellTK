@@ -5,11 +5,11 @@ internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-
+  
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
   #-----------------------------------------------------------------------------
-
+  
   #reactive values object
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
@@ -25,7 +25,7 @@ shinyServer(function(input, output, session) {
     diffexFilterRes = NULL,
     absLogFCDiffex = NULL
   )
-
+  
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "visCondn",
                       choices = c("none", pdataOptions))
   }
-
+  
   updateGeneNames <- function(){
     selectthegenes <- rownames(vals$counts)
     updateSelectizeInput(session, "colorGenes",
@@ -74,12 +74,12 @@ shinyServer(function(input, output, session) {
     updateSelectizeInput(session, "enrichGenes",
                          choices = selectthegenes, server = TRUE)
   }
-
+  
   updateFeatureAnnots <- function(){
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", colnames(rowData(vals$counts))))
   }
-
+  
   updateNumSamples <- function(){
     numsamples <- ncol(vals$counts)
     updateSelectInput(session, "Knumber",
@@ -95,7 +95,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
-
+  
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
@@ -111,12 +111,12 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
   }
-
+  
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
     updateSelectInput(session, "delRedDimType", choices = currreddim)
   }
-
+  
   updateEnrichDB <- function(){
     if (internetConnection){
       enrDB <- enrichR::listEnrichrDbs()$libraryName
@@ -125,14 +125,14 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
-
+  
   # Close app on quit
   session$onSessionEnded(stopApp)
-
+  
   #-----------------------------------------------------------------------------
   # Page 1: Upload
   #-----------------------------------------------------------------------------
-
+  
   #Upload data through shiny app
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
@@ -149,11 +149,11 @@ shinyServer(function(input, output, session) {
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
           vals$original <- createSCE(assayFile = t(maits$expressionmat),
-                                 annotFile = maits$cdat,
-                                 featureFile = maits$fdat,
-                                 assayName = "logtpm",
-                                 inputDataFrames = TRUE,
-                                 createLogCounts = FALSE)
+                                     annotFile = maits$cdat,
+                                     featureFile = maits$fdat,
+                                     assayName = "logtpm",
+                                     inputDataFrames = TRUE,
+                                     createLogCounts = FALSE)
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -214,11 +214,11 @@ shinyServer(function(input, output, session) {
       vals$absLogFCDiffex <- NULL
     })
   })
-
+  
   #-----------------------------------------------------------------------------
   # Page 2: Data Summary and Filtering
   #-----------------------------------------------------------------------------
-
+  
   #Sidebar buttons functionality - not an accordion
   shinyjs::onclick("f_hideAllSections", allSections(
     "hide", c(paste("f_collapse", 1:7, sep = ""))), add = TRUE)
@@ -251,7 +251,7 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "convertGenes", class = "btn-block")
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
-
+  
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     req(vals$counts)
@@ -264,7 +264,7 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, options = list(scrollX = TRUE), rownames = FALSE)
-
+  
   #Render histogram of read counts per cell
   output$countshist <- renderPlotly({
     if (!(is.null(vals$counts))){
@@ -272,13 +272,13 @@ shinyServer(function(input, output, session) {
       x <- list(title = "Reads per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
       plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-              type = "histogram") %>%
+                      type = "histogram") %>%
         plotly::layout(xaxis = x, yaxis = y)
     } else {
       plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
     }
   })
-
+  
   #Render histogram of genes detected per cell
   output$geneshist <- renderPlotly({
     if (!(is.null(vals$counts))){
@@ -286,13 +286,13 @@ shinyServer(function(input, output, session) {
       x <- list(title = "Genes detected per cell", titlefont = f)
       y <- list(title = "Number of cells", titlefont = f)
       plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                        function(x) sum(x > 0)), type = "histogram") %>%
+                                function(x) sum(x > 0)), type = "histogram") %>%
         plotly::layout(xaxis = x, yaxis = y)
     } else {
       plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-      }
+    }
   })
-
+  
   #random downsample of samples
   observeEvent(input$downsampleGo, {
     req(vals$counts)
@@ -311,7 +311,7 @@ shinyServer(function(input, output, session) {
       vals$absLogFCDiffex <- NULL
     })
   })
-
+  
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
@@ -319,7 +319,7 @@ shinyServer(function(input, output, session) {
                                  useAssay = input$filterAssaySelect,
                                  expressionCutoff = input$minDetectGene)
   })
-
+  
   #Filter the data based on the options
   observeEvent(input$filterData, {
     if (is.null(vals$original)){
@@ -354,7 +354,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
     if (is.null(vals$original)){
@@ -382,7 +382,7 @@ shinyServer(function(input, output, session) {
       updateEnrichDB()
     }
   })
-
+  
   #Delete a column from the colData annotations
   observeEvent(input$deleterowDatabutton, {
     if (is.null(vals$original)){
@@ -393,7 +393,7 @@ shinyServer(function(input, output, session) {
       updateColDataNames()
     }
   })
-
+  
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
       if (input$filteredSample != "none")({
@@ -401,11 +401,11 @@ shinyServer(function(input, output, session) {
           L <- vector("list", 3)
           L[[1]] <- renderText("Select samples to keep")
           L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                        list(checkboxGroupInput("filterSampleChoices",
-                                            label = NULL,
-                                            choices = unique(colData(vals$counts)[, input$filteredSample]))),
-                        tags$h5(tags$i("Note: the Reset button is in 'Delete Outliers' tab above."))
-                             )
+                              list(checkboxGroupInput("filterSampleChoices",
+                                                      label = NULL,
+                                                      choices = unique(colData(vals$counts)[, input$filteredSample]))),
+                              tags$h5(tags$i("Note: the Reset button is in 'Delete Outliers' tab above."))
+          )
           L[[3]] <- list(withBusyIndicatorUI(actionButton("runFilterSample", "Filter")))
           return(L)
         } else {
@@ -417,7 +417,7 @@ shinyServer(function(input, output, session) {
       }
     })
   })
-
+  
   #Filter the selected samples
   observeEvent(input$runFilterSample, {
     withBusyIndicatorServer("runFilterSample", {
@@ -436,7 +436,7 @@ shinyServer(function(input, output, session) {
       updateNumSamples()
     })
   })
-
+  
   observeEvent(input$filteredFeature, {
     output$filterFeatureOptions <- renderUI({
       if (input$filteredFeature != "none")({
@@ -444,9 +444,9 @@ shinyServer(function(input, output, session) {
           L <- vector("list", 3)
           L[[1]] <- renderText("Select features to keep")
           L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                             list(checkboxGroupInput("filterFeatureChoices",
-                                                     label = NULL,
-                                                     choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
+                              list(checkboxGroupInput("filterFeatureChoices",
+                                                      label = NULL,
+                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
           L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
           return(L)
         } else {
@@ -458,7 +458,7 @@ shinyServer(function(input, output, session) {
       }
     })
   })
-
+  
   observeEvent(input$orgOrganism, {
     library(input$orgOrganism, character.only = TRUE)
     indb <- get(paste(input$orgOrganism))
@@ -469,7 +469,7 @@ shinyServer(function(input, output, session) {
       )
     })
   })
-
+  
   observeEvent(input$convertGenes, {
     req(vals$counts)
     withBusyIndicatorServer("convertGenes", {
@@ -486,7 +486,7 @@ shinyServer(function(input, output, session) {
       vals$diffexFilterRes <- NULL
     })
   })
-
+  
   #Filter the selected features
   observeEvent(input$runFilterFeature, {
     filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
@@ -499,7 +499,7 @@ shinyServer(function(input, output, session) {
     vals$diffexheatmapplot <- NULL
     vals$diffexFilterRes <- NULL
   })
-
+  
   #disable the downloadSCE button if no object is loaded
   isAssayResult <- reactive(is.null(vals$counts))
   observe({
@@ -509,29 +509,29 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadSCE")
     }
   })
-
+  
   output$downloadSCE <- downloadHandler(
     filename <- function() {
       paste("SCE-", Sys.Date(), ".rds", sep = "")
     },
     content <- function(file) {
       saveRDS(vals$counts, file)
-  })
-
+    })
+  
   output$assayList <- renderTable({
     req(vals$counts)
     if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
       data.table(assays = names(assays(vals$counts)))
     }
   })
-
+  
   output$reducedDimsList <- renderTable({
     req(vals$counts)
     if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
   })
-
+  
   observeEvent(input$modifyAssay, {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
@@ -592,7 +592,7 @@ shinyServer(function(input, output, session) {
       }
     })
   })
-
+  
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
@@ -605,13 +605,13 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
-
+  
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))
   observe({
@@ -621,7 +621,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadcolData")
     }
   })
-
+  
   #download colData
   output$downloadcolData <- downloadHandler(
     filename = function() {
@@ -631,7 +631,7 @@ shinyServer(function(input, output, session) {
       write.csv(data.frame(colData(vals$counts)), file)
     }
   )
-
+  
   #upload and replace colData
   observeEvent(input$newAnnotFile, {
     req(input$newAnnotFile)
@@ -640,7 +640,7 @@ shinyServer(function(input, output, session) {
     colData(vals$counts) <- DataFrame(indata)
     updateColDataNames()
   })
-
+  
   #render UI for factor vs numeric
   output$annotModifyUI <- renderUI({
     if (!is.null(vals$counts)){
@@ -653,7 +653,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #update factor vs numeric for colData
   observeEvent(input$annotTypeSelect, {
     if (input$annotTypeSelect == "factor" & !is.factor(colData(vals$counts)[, input$annotModifyChoice])){
@@ -705,16 +705,16 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$visPlot <- renderPlot({
     req(vals$visplotobject)
     vals$visplotobject
   }, height = 600)
-
+  
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
   #-----------------------------------------------------------------------------
-
+  
   output$clusterPlot <- renderPlotly({
     if (is.null(vals$counts)){
       plotly::ggplotly(ggplot2::ggplot())
@@ -774,7 +774,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
     if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
@@ -787,7 +787,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   output$geneExpressionPlot <- renderPlot({
     if (is.null(vals$counts)){
     } else {
@@ -879,7 +879,7 @@ shinyServer(function(input, output, session) {
       }
     }
   }, height = 600)
-
+  
   output$treePlot <- renderPlot({
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -902,7 +902,7 @@ shinyServer(function(input, output, session) {
       }
     }
   }, height = 600)
-
+  
   observeEvent(input$clusterData, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -945,7 +945,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   observe({
     if (!is.null(vals$original)){
       if (input$dimRedPlotMethod == "PCA"){
@@ -960,7 +960,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   observeEvent(input$reRunTSNE, {
     if (is.null(vals$original)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -975,7 +975,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   observeEvent(input$reRunPCA, {
     if (is.null(vals$original)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -990,11 +990,11 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
   #-----------------------------------------------------------------------------
-
+  
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){
@@ -1003,7 +1003,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   observeEvent(input$combatRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -1041,11 +1041,11 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$combatStatus <- renderUI({
     h2(vals$combatstatus)
   })
-
+  
   output$combatBoxplot <- renderPlot({
     if (!is.null(vals$counts) &
         !is.null(input$batchVarPlot) &
@@ -1059,7 +1059,7 @@ shinyServer(function(input, output, session) {
                         condition = input$conditionVarPlot)
     }
   }, height = 600)
-
+  
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
@@ -1095,7 +1095,7 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "diffex5", class = "btn-block")
   shinyjs::addClass(id = "diffex6", class = "btn-block")
   shinyjs::addClass(id = "diffex7", class = "btn-block")
-
+  
   output$selectDiffexConditionUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$selectDiffex == "ANOVA") {
@@ -1115,7 +1115,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #For conditions with more than two factors, select the factor of interest
   output$selectDiffexConditionLevelUI <- renderUI({
     req(vals$counts)
@@ -1143,9 +1143,9 @@ shinyServer(function(input, output, session) {
       } else if (length(unique(colData(vals$counts)[, input$selectDiffexCondition])) > 2 & input$selectDiffex == "limma") {
         tagList(
           radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
-                         choiceNames = c("Biomarker (1 vs all)", "Factor of Interest",
-                                         "Entire Factor"),
-                         choiceValues = c("biomarker", "coef", "allcoef")
+                       choiceNames = c("Biomarker (1 vs all)", "Factor of Interest",
+                                       "Entire Factor"),
+                       choiceValues = c("biomarker", "coef", "allcoef")
           ),
           conditionalPanel(
             condition = "input.selectDiffexConditionMethod != 'allcoef'",
@@ -1162,7 +1162,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #Run differential expression
   observeEvent(input$runDiffex, {
     if (is.null(vals$counts)){
@@ -1192,7 +1192,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$colorBarConditionUI <- renderUI({
     if (is.null(vals$counts)){
       selectInput("colorBarCondition", "Select Condition", NULL)
@@ -1201,9 +1201,9 @@ shinyServer(function(input, output, session) {
                   colnames(colData(vals$counts)), multiple = TRUE)
     }
   })
-
+  
   annotationColors <- reactiveValues(cols = list())
-
+  
   output$heatmapSampleAnnotations <- renderUI({
     if (!is.null(input$colorBarCondition)) {
       if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
@@ -1222,91 +1222,136 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
+  output$diffexNgenes <- renderUI({
+    req(vals$diffexgenelist)
+    HTML(paste(em("Max genes: "), nrow(vals$diffexgenelist), sep = ""))
+  })
+  
+  output$logFCDiffexRange <- renderUI({
+    req(vals$diffexgenelist)
+    if (input$selectDiffex != 'ANOVA') {
+      logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
+      if (length(logFCIndex) == 0) {
+        #for DESeq2 with more than 1 covariate, choose the first column
+        logFCIndex <- 1
+      }
+      minlogFC <- paste(em("Min logFC : "), round(min(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
+      maxlogFC <- paste(em("Max logFC : "), round(max(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
+      HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
+    }
+  })
+  
   #Plot the differential expression results
   observeEvent(input$runPlotDiffex, {
     req(vals$diffexgenelist)
     withBusyIndicatorServer("runPlotDiffex", {
-      #logFC or abs(logFC)
-      if (input$applylogFCCutoff == TRUE) {
-        vals$absLogFCDiffex <- abs(input$selectlogFCDiffex)
-      } else {
-        vals$absLogFCDiffex <- input$selectlogFCDiffex
-      }
-      #p-Val and logFc cutoff
-      if (input$applyCutoff == TRUE & input$applylogFCCutoff == TRUE) {
-        if (input$selectDiffex == 'ANOVA') {
-          #vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 2] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-          stop("logFC is not applicable for ANOVA")
+      tryCatch ({
+        #logFC or abs(logFC)
+        if (input$applyAbslogFCDiffex == TRUE) {
+          vals$absLogFCDiffex <- abs(input$selectlogFCDiffex)
         } else {
-          if (input$selectDiffex == 'DESeq2') {
-            vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 6] <= input$selectPval & vals$diffexgenelist[, 2] <= input$selectlogFCDiffex), ][seq_len(input$selectNGenes), ]
+          vals$absLogFCDiffex <- input$selectlogFCDiffex
+        }
+        #for convenience, index logFC and p-val columns for all the methods
+        pvalIndex <- which(grepl("*padj*", colnames(vals$diffexgenelist)))
+        logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
+        if (input$selectNGenes > nrow(vals$diffexgenelist)) {
+          stop("Max value exceeded for Input.")
+        }
+        
+        #p-Val and logFC cutoff
+        if (input$applyCutoff == TRUE & input$applylogFCCutoff == TRUE) {
+          if (input$selectDiffex == 'ANOVA') {
+            stop("logFC is not applicable for ANOVA")
           } else {
-            vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 5] <= input$selectPval & vals$diffexgenelist[, 1] <= input$selectlogFCDiffex), ][seq_len(input$selectNGenes), ]
-          }
-        }
-      }
-      #p-Val cutoff
-      else if (input$applyCutoff == TRUE) {
-        if (input$selectDiffex == 'DESeq2') {
-          vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 6] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-        } else if (input$selectDiffex == 'limma') {
-          vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 5] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-        } else {
-          vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 2] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-        }
-      }
-      #logFC cutoff
-      else if (input$applylogFCCutoff == TRUE) {
-        if (input$selectDiffex == 'DESeq2') {
-          vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 2] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-        } else if (input$selectDiffex == 'limma') {
-          vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 1] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-        } else {
-          #vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, 2] <= input$selectPval), ][seq_len(input$selectNGenes), ]
-          stop("logFC is not applicable for ANOVA")
-        }
-      }
-      else {
-        vals$diffexFilterRes <- vals$diffexgenelist[seq_len(input$selectNGenes), ]
-      }
-      #run plotDiffex
-      if (!is.null(vals$diffexgenelist)){
-        if (input$displayHeatmapColorBar){
-          if (is.null(input$colorBarCondition)){
-            colors <- NULL
-          } else {
-            colors <- lapply(annotationColors$cols, function(col) col())
-            names(colors) <- input$colorBarCondition
-            if (is.null(colors[[length(colors)]][[1]])){
-              colors <- NULL
+            if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
+              vals$diffexFilterRes <- vals$diffexgenelist
+              stop("the min/least p-value in the results is greater than the selected p-val range")
+            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+              vals$diffexFilterRes <- vals$diffexgenelist
+              stop("the min/least logFC in the results is greater than the selected logFC range")
+            } else {
+              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
+                                                              vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
             }
           }
-        } else {
-          colors <- NULL
         }
-        vals$diffexheatmapplot <- plotDiffEx(inSCE = vals$counts,
-                     useAssay = input$diffexAssay,
-                     condition = input$colorBarCondition,
-                     geneList = rownames(vals$diffexFilterRes),
-                     clusterRow = input$clusterRows,
-                     clusterCol = input$clusterColumns,
-                     displayRowLabels = input$displayHeatmapRowLabels,
-                     displayColumnLabels = input$displayHeatmapColumnLabels,
-                     displayRowDendrograms = input$displayHeatmapRowDendrograms,
-                     displayColumnDendrograms = input$displayHeatmapColumnDendrograms,
-                     annotationColors = colors,
-                     scaleExpression = input$applyScaleDiffex,
-                     columnTitle = input$heatmapColumnsTitle)
-      }
+        #p-Val cutoff
+        else if (input$applyCutoff == TRUE) {
+          if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
+            vals$diffexFilterRes <- vals$diffexgenelist
+            stop("the min/least p-value in the results is greater than the selected p-val range")
+          } else {
+            vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
+          }
+        }
+        #logFC cutoff
+        else if (input$applylogFCCutoff == TRUE) {
+          if (input$selectDiffex == 'ANOVA') {
+            stop("logFC is not applicable for ANOVA")
+          } else  {
+            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+              vals$diffexFilterRes <- vals$diffexgenelist
+              stop("the min/least logFC in the results is greater than the selected logFC range")
+            } else {
+              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+            }
+          }
+        }
+        if (is.null(vals$diffexFilterRes)){
+          vals$diffexFilterRes <- vals$diffexgenelist
+        }
+        rowLengthFiltered <- nrow(vals$diffexFilterRes)
+        if (rowLengthFiltered == 0) {
+          stop("You've got 0 genes after filtering.. adjust your filters accordingly")
+        }
+        
+        if (rowLengthFiltered < input$selectNGenes) {
+          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(rowLengthFiltered), ]
+        } else {
+          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(input$selectNGenes), ]
+        }
+        #run plotDiffex
+        if (!is.null(vals$diffexgenelist)){
+          if (input$displayHeatmapColorBar){
+            if (is.null(input$colorBarCondition)){
+              colors <- NULL
+            } else {
+              colors <- lapply(annotationColors$cols, function(col) col())
+              names(colors) <- input$colorBarCondition
+              if (is.null(colors[[length(colors)]][[1]])){
+                colors <- NULL
+              }
+            }
+          } else {
+            colors <- NULL
+          }
+          vals$diffexheatmapplot <- plotDiffEx(inSCE = vals$counts,
+                                               useAssay = input$diffexAssay,
+                                               condition = input$colorBarCondition,
+                                               geneList = rownames(vals$diffexFilterRes),
+                                               clusterRow = input$clusterRows,
+                                               clusterCol = input$clusterColumns,
+                                               displayRowLabels = input$displayHeatmapRowLabels,
+                                               displayColumnLabels = input$displayHeatmapColumnLabels,
+                                               displayRowDendrograms = input$displayHeatmapRowDendrograms,
+                                               displayColumnDendrograms = input$displayHeatmapColumnDendrograms,
+                                               annotationColors = colors,
+                                               scaleExpression = input$applyScaleDiffex,
+                                               columnTitle = input$heatmapColumnsTitle)
+        }
+      }, error = function(e){
+        shinyalert::shinyalert("Error!", e$message, type = "error")
+      })
     })
   })
-
+  
   output$diffPlot <- renderPlot({
     req(vals$diffexheatmapplot)
     ComplexHeatmap::draw(vals$diffexheatmapplot)
   }, height = 600)
-
+  
   #Create the differential expression results table
   output$diffextable <- DT::renderDataTable({
     if (!is.null(vals$diffexgenelist)){
@@ -1315,7 +1360,7 @@ shinyServer(function(input, output, session) {
       temptable
     }
   }, rownames = FALSE)
-
+  
   #disable downloadGeneList button if the result is not null
   isDiffExResult <- reactive(is.null(vals$diffexgenelist))
   observe({
@@ -1325,7 +1370,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadGeneList")
     }
   })
-
+  
   #create custom name for the results
   customName <- reactive(paste(input$selectDiffexCondition, input$selectDiffex, sep = "_"))
   # Download the differential expression results table
@@ -1339,12 +1384,12 @@ shinyServer(function(input, output, session) {
       utils::write.csv(results, file)
     }
   )
-
+  
   #reactive list to store names of results given by the user.
   myValues <- reactiveValues(
-   index = 0
+    index = 0
   )
-
+  
   #save results wrt to custom name
   observeEvent(input$saveResults, {
     if (input$ResultsName == ""){
@@ -1367,41 +1412,59 @@ shinyServer(function(input, output, session) {
           names(myValues$dList)[myValues$index] <- ResultsName
         }
         vals$counts <- saveDiffExResults(inSCE = vals$counts,
-                          diffex = vals$diffexgenelist,
-                          name = input$ResultsName,
-                          method = input$selectDiffex)
+                                         diffex = vals$diffexgenelist,
+                                         name = input$ResultsName,
+                                         method = input$selectDiffex)
       })
     }
   })
-
+  
   #dynamically create a list of names of the results
   output$savedRes <- renderUI({
     if (!is.null(vals$counts)) {
       selectizeInput("savedDiffExResults", "Select available results",
-                            choices = myValues$dList)
+                     choices = myValues$dList)
     }
   })
-
+  
+  output$saveDiffResultsNote <- renderUI({
+    req(vals$diffexgenelist)
+    HTML(paste(em("Note: Use a unique name to save results each time.")))
+  })
+  
   #load specific result according to users' input
   observeEvent(input$loadResults, {
-    req(vals$diffexgenelist)
     if (!is.null(input$savedDiffExResults)) {
       df <- data.frame(rowData(vals$counts))
-      listColNames <- colnames(rowData(vals$counts))
-      named <- input$savedDiffExResults
-      df1 <- df[, grepl(paste(named, "*"), listColNames)]
-      if (input$selectDiffex == 'ANOVA') {
-        df1 <- df1[order(df1[, 2], decreasing = FALSE), ]
-      } else {
-        df1 <- df1[order(df1[, 5], decreasing = FALSE), ]
-      }
-      diffexRow <- rownames(df1)[seq_len(nrow(df1))]
-      rownames(df1) <- rownames(vals$counts)[as.integer(diffexRow)]
-      vals$diffexgenelist <- df1
+      listColNames <- names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == FALSE))
+      #selected_cols <- names(df[, grepl(input$savedDiffExResults, listColNames, fixed = TRUE )])
+      selected_cols <- sub(listColNames, "_", input$savedDiffExResults, fixed = TRUE)
+      str_match <- unique(sub("^_[^_]+_$", "_", selected_cols, fixed = TRUE))
+      df <- df[, grepl(str_match, listColNames)]
+      diffexRow <- rownames(df)[seq_len(nrow(df))]
+      rownames(df) <- rownames(vals$counts)[as.integer(diffexRow)]
+      vals$diffexgenelist <- df
       vals$diffexheatmapplot <- NULL
+    }
+  })
+  output$BioNgenes <- renderUI({
+    req(vals$diffexgenelist)
+    HTML(paste(em("Max genes: "), nrow(vals$diffexgenelist), sep = ""))
+  })
+  
+  output$logFCBioRange <- renderUI({
+    req(vals$diffexgenelist)
+    if (input$selectDiffex != 'ANOVA') {
+      logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
+      if (length(logFCIndex)) {
+        #for DESeq2 with more than 1 covariate, choose the first column
+        logFCIndex <- 1
       }
-    })
-
+      minlogFC <- paste(em("Min logFC : "), round(min(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
+      maxlogFC <- paste(em("Max logFC : "), round(max(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
+      HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
+    }
+  })
   #save biomarker in rowData() wrt name and conditions.
   observeEvent(input$saveBiomarker, {
     if (input$biomarkerName == ""){
@@ -1419,7 +1482,10 @@ shinyServer(function(input, output, session) {
         } else {
           vals$absLogFC <- input$selectlogFC
         }
-         if (input$applyBioCutoff1 == TRUE & input$applyBioCutoff2 == TRUE) {
+        if (input$selectBioNGenes > nrow(vals$diffexgenelist)) {
+          stop("Max value exceeded for Input.")
+        }
+        if (input$applyBioCutoff1 == TRUE & input$applyBioCutoff2 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
                                           diffex = vals$diffexgenelist,
                                           biomarkerName = biomarkerName,
@@ -1429,41 +1495,48 @@ shinyServer(function(input, output, session) {
                                           pVal = input$selectAdjPVal)
         } else if (input$applyBioCutoff1 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                    diffex = vals$diffexgenelist,
-                                    biomarkerName = biomarkerName,
-                                    method = input$selectDiffex,
-                                    ntop = input$selectBioNGenes,
-                                    logFC = NULL,
-                                    pVal = input$selectAdjPVal)
+                                          diffex = vals$diffexgenelist,
+                                          biomarkerName = biomarkerName,
+                                          method = input$selectDiffex,
+                                          ntop = input$selectBioNGenes,
+                                          logFC = NULL,
+                                          pVal = input$selectAdjPVal)
         } else if (input$applyBioCutoff2 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                    diffex = vals$diffexgenelist,
-                                    biomarkerName = biomarkerName,
-                                    method = input$selectDiffex,
-                                    ntop = input$selectBioNGenes,
-                                    logFC = vals$absLogFC,
-                                    pVal = NULL)
+                                          diffex = vals$diffexgenelist,
+                                          biomarkerName = biomarkerName,
+                                          method = input$selectDiffex,
+                                          ntop = input$selectBioNGenes,
+                                          logFC = vals$absLogFC,
+                                          pVal = NULL)
         } else {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                    diffex = vals$diffexgenelist,
-                                    biomarkerName = input$biomarkerName,
-                                    method = input$selectDiffex,
-                                    ntop = input$selectBioNGenes,
-                                    logFC = NULL,
-                                    pVal = NULL)
+                                          diffex = vals$diffexgenelist,
+                                          biomarkerName = input$biomarkerName,
+                                          method = input$selectDiffex,
+                                          ntop = input$selectBioNGenes,
+                                          logFC = NULL,
+                                          pVal = NULL)
         }
-        updateFeatureAnnots()
       })
     }
   })
-
-  # output$bioMarkerNote <- renderUI({
-  # number of genes saved})
-
+  
+  observe({
+    output$bioMarkerNote <- renderUI({
+      req(vals$counts)
+      req(isolate(input$biomarkerName))
+      countBioGenes <- count(rowData(vals$counts)[, input$biomarkerName] == 1)
+      isolate({
+        HTML(paste("Saved ", countBioGenes, " genes after applying the selected filter(s)", sep = ""))
+      })
+    })
+  })
+  
   #-----------------------------------------------------------------------------
   # Page 5.2: MAST
   #-----------------------------------------------------------------------------
-
+  
   #For conditions with more than two factors, select the factor of interest
   output$hurdleconditionofinterestUI <- renderUI({
     if (!is.null(vals$counts)){
@@ -1474,7 +1547,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #Run MAST differential expression
   observeEvent(input$runDEhurdle, {
     if (is.null(vals$counts)){
@@ -1493,7 +1566,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   observeEvent(input$runThreshPlot, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -1510,7 +1583,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$hurdleviolin <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
       MASTviolin(inSCE = vals$counts, useAssay = input$mastAssay,
@@ -1519,7 +1592,7 @@ shinyServer(function(input, output, session) {
                  threshP = input$useAdaptThresh)
     }
   }, height = 600)
-
+  
   output$hurdlelm <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
       MASTregression(inSCE = vals$counts, useAssay = input$mastAssay,
@@ -1528,7 +1601,7 @@ shinyServer(function(input, output, session) {
                      threshP = input$useAdaptThresh)
     }
   }, height = 600)
-
+  
   output$hurdleHeatmap <- renderPlot({
     if (!(is.null(vals$mastgenelist))){
       draw(plotDiffEx(vals$counts, useAssay = input$mastAssay,
@@ -1537,14 +1610,14 @@ shinyServer(function(input, output, session) {
                       annotationColors = "auto", columnTitle = "MAST"))
     }
   }, height = 600)
-
+  
   #Create the MAST results table
   output$mastresults <- DT::renderDataTable({
     if (!is.null(vals$mastgenelist)){
       vals$mastgenelist
     }
   })
-
+  
   #disable mast dowload button if the mastgenelist data is null
   isMastGeneListResult <- reactive(is.null(vals$mastgenelist))
   observe({
@@ -1554,7 +1627,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadHurdleResult")
     }
   })
-
+  
   #download mast results
   output$downloadHurdleResult <- downloadHandler(
     filename = function() {
@@ -1564,11 +1637,11 @@ shinyServer(function(input, output, session) {
       utils::write.csv(vals$mastgenelist, file)
     }
   )
-
+  
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------
-
+  
   output$selectPathwayGeneLists <- renderUI({
     if (input$genelistSource == "Manual Input"){
       if (!is.null(vals$counts)){
@@ -1584,7 +1657,7 @@ shinyServer(function(input, output, session) {
                   c("ALL", names(c2BroadSets)), multiple = TRUE)
     }
   })
-
+  
   output$selectNumTopPaths <- renderUI({
     if (!is.null(input$pathwayGeneLists)) {
       if ("ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
@@ -1593,7 +1666,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -1606,7 +1679,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   observe({
     if (length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsvaRes))){
       fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
@@ -1620,7 +1693,7 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
     }
   })
-
+  
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsvaLimma)){
       if (!is.null(input$pathwayGeneLists) & "ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
@@ -1630,7 +1703,7 @@ shinyServer(function(input, output, session) {
       }
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
-
+  
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsvaRes))){
       if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsvaLimma))){
@@ -1654,7 +1727,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   #save pathawy activity results in the colData
   observeEvent(input$savePathway, {
     if (!(is.null(vals$gsvaRes))){
@@ -1673,7 +1746,7 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Run pathway first.", type = "error")
     }
   })
-
+  
   #disable downloadPathway button if the pathway data doesn't exist
   isPathwayResult <- reactive(is.null(vals$gsvaRes))
   observe({
@@ -1683,7 +1756,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadPathway")
     }
   })
-
+  
   #download mast results
   output$downloadPathway <- downloadHandler(
     filename = function() {
@@ -1693,11 +1766,11 @@ shinyServer(function(input, output, session) {
       utils::write.csv(vals$gsvaRes, file)
     }
   )
-
+  
   #-----------------------------------------------------------------------------
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
-
+  
   enrichRfile <- reactive(read.csv(input$enrFile$datapath,
                                    header = input$header,
                                    sep = input$sep,
@@ -1706,8 +1779,8 @@ shinyServer(function(input, output, session) {
   output$enrBioGenes <- renderUI({
     if (!is.null(vals$counts)) {
       selectInput("selEnrBioGenes", "Select Gene List(s):",
-                     names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
-      }
+                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
+    }
   })
   dbs <- reactive({
     if (internetConnection){
@@ -1749,7 +1822,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   output$enrTabs <- renderUI({
     req(vals$enrichRes)
     nTabs <- length(dbs())
@@ -1761,7 +1834,7 @@ shinyServer(function(input, output, session) {
     })
     do.call(tabsetPanel, myTabs)
   })
-
+  
   # enrResults <- reactive(vals$enrichRes[, c(1:10)] %>%
   #                          mutate(Database_selected =
   #                                   paste0("<a href='", vals$enrichRes[, 11],
@@ -1783,7 +1856,7 @@ shinyServer(function(input, output, session) {
       })
     })
   })
-
+  
   #disable the downloadEnrichR button if the result doesn't exist
   isResult <- reactive(is.null(vals$enrichRes))
   observe({
@@ -1793,7 +1866,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadEnrichR")
     }
   })
-
+  
   output$downloadEnrichR <- downloadHandler(
     filename = function() {
       paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
@@ -1803,11 +1876,11 @@ shinyServer(function(input, output, session) {
     },
     contentType = "text/csv"
   )
-
+  
   #-----------------------------------------------------------------------------
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------
-
+  
   #Run subsampling analysis
   observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
@@ -1822,7 +1895,7 @@ shinyServer(function(input, output, session) {
                                          realLabels = input$selectReadDepthCondition,
                                          depthResolution = input$depthResolution,
                                          iterations = input$iterations)
-
+        
         output$depthDone <- renderPlot({
           plot(apply(vals$subDepth[, , 1], 2, median)~
                  seq(from = 0, to = input$maxDepth, length.out = input$depthResolution),
@@ -1855,7 +1928,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -1917,7 +1990,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   #Run differential power analysis
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
