@@ -1,10 +1,19 @@
+Changes in Version 1.1.26 (2018-10-23)
+
+* New UI design for the Differential Expression tab.
+* New UI design for the Data Summary & Filtering tab.
+* Support for additional assay modification including log transforming any assay and renaming assays.
+* New function visPlot for creating scatterplots, boxplots, heatmaps, and barplots for custom gene sets.
+* The Downsample tab now works on a generic counts matrix
+* You can upload a SCtkExperiment object or a SingleCellExperiment object saved in an RDS file on the Upload tab.
+* Differential Expression results can now be saved in the rowData of the object and loaded for later analysis.
+* Improved ability to save a biomarker based on user options.
+* The Differential Expression plot is not automatically created, for more user control with large datasets.
+
 Changes in Version 1.1.3
 
 * Improvements to plotting, change text size and hide labels in gsva plots.
 * MAST violin and linear model plots are now more square when plotting less than 49 facets.
-
-Changes in Version 1.1.3
-
 * Changed y axis label in plotBatchVariance to "Percent Explained Variation"
 
 Changes in Version 1.1.2
