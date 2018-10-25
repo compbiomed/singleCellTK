@@ -23,7 +23,8 @@ shinyServer(function(input, output, session) {
     absLogFC = NULL,
     diffexheatmapplot = NULL,
     diffexFilterRes = NULL,
-    absLogFCDiffex = NULL
+    absLogFCDiffex = NULL,
+    diffexBmName = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -1403,13 +1404,13 @@ shinyServer(function(input, output, session) {
                                    type = "error")
           } else {
             myValues$index <- myValues$index + 1
-            myValues$dList[myValues$index] <- isolate(input$ResultsName)
-            names(myValues$dList)[myValues$index] <- ResultsName
+            #myValues$dList[myValues$index] <- isolate(input$ResultsName)
+            myValues$dList[myValues$index] <- ResultsName
           }
         } else {
           myValues$index <- myValues$index + 1
-          myValues$dList[myValues$index] <- isolate(input$ResultsName)
-          names(myValues$dList)[myValues$index] <- ResultsName
+          #myValues$dList[myValues$index] <- isolate(input$ResultsName)
+          myValues$dList[myValues$index] <- ResultsName
         }
         vals$counts <- saveDiffExResults(inSCE = vals$counts,
                                          diffex = vals$diffexgenelist,
@@ -1422,6 +1423,12 @@ shinyServer(function(input, output, session) {
   #dynamically create a list of names of the results
   output$savedRes <- renderUI({
     if (!is.null(vals$counts)) {
+      if (is.null(myValues$dList)) {
+        savedObjResults <- gsub("_padj$", "", colnames(rowData(vals$counts))[grepl("_padj$", colnames(rowData(vals$counts)))])
+        #myValues$index <- myValues$index + 1
+        myValues$index <- length(savedObjResults)
+        myValues$dList[seq_len(myValues$index)] <- savedObjResults[seq_len(myValues$index)]
+      }
       selectizeInput("savedDiffExResults", "Select available results",
                      choices = myValues$dList)
     }
@@ -1436,17 +1443,23 @@ shinyServer(function(input, output, session) {
   observeEvent(input$loadResults, {
     if (!is.null(input$savedDiffExResults)) {
       df <- data.frame(rowData(vals$counts))
-      listColNames <- names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == FALSE))
-      #selected_cols <- names(df[, grepl(input$savedDiffExResults, listColNames, fixed = TRUE )])
+      #extract all columns except biomarker columns by checking for unique values == 2
+      listColNames <- names(which(apply(df, 2, function(a) length(unique(a)) == 2) == FALSE))
+      #arrange your df according to these extracted names
+      df <- df[, listColNames]
+      #select columns based on the saved result selected
       selected_cols <- sub(listColNames, "_", input$savedDiffExResults, fixed = TRUE)
-      str_match <- unique(sub("^_[^_]+_$", "_", selected_cols, fixed = TRUE))
-      df <- df[, grepl(str_match, listColNames)]
+      #now choose the unique result
+      str_match <- unique(sub("^_[^_]+_$", "", selected_cols, fixed = TRUE))
+      df <- df[, which(grepl(paste0(str_match, "_"), listColNames) == TRUE)]
       diffexRow <- rownames(df)[seq_len(nrow(df))]
       rownames(df) <- rownames(vals$counts)[as.integer(diffexRow)]
+      colnames(df) <- gsub(paste0(str_match, "_"), "", colnames(df))
       vals$diffexgenelist <- df
       vals$diffexheatmapplot <- NULL
     }
   })
+
   output$BioNgenes <- renderUI({
     req(vals$diffexgenelist)
     HTML(paste(em("Max genes: "), nrow(vals$diffexgenelist), sep = ""))
@@ -1518,6 +1531,7 @@ shinyServer(function(input, output, session) {
                                           logFC = NULL,
                                           pVal = NULL)
         }
+        vals$diffexBmName <- TRUE
       })
     }
   })
@@ -1526,10 +1540,13 @@ shinyServer(function(input, output, session) {
     output$bioMarkerNote <- renderUI({
       req(vals$counts)
       req(isolate(input$biomarkerName))
-      countBioGenes <- count(rowData(vals$counts)[, input$biomarkerName] == 1)
-      isolate({
-        HTML(paste("Saved ", countBioGenes, " genes after applying the selected filter(s)", sep = ""))
-      })
+      if (vals$diffexBmName) {
+        isolate({
+          biomarkerName <- gsub(" ", "_", input$biomarkerName)
+          countBioGenes <- count(rowData(vals$counts)[, biomarkerName] == 1)
+          HTML(paste("Saved ", countBioGenes, " genes after applying the selected filter(s)", sep = ""))
+        })
+      }
     })
   })
 
@@ -1835,11 +1852,6 @@ shinyServer(function(input, output, session) {
     do.call(tabsetPanel, myTabs)
   })
 
-  # enrResults <- reactive(vals$enrichRes[, c(1:10)] %>%
-  #                          mutate(Database_selected =
-  #                                   paste0("<a href='", vals$enrichRes[, 11],
-  #                                          "' target='_blank'>",
-  #                                          vals$enrichRes[, 1], "</a>")))
   #create datatables
   observe({
     req(vals$enrichRes)
