@@ -213,6 +213,8 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -310,6 +312,8 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -345,6 +349,9 @@ shinyServer(function(input, output, session) {
         vals$absLogFC <- NULL
         vals$diffexFilterRes <- NULL
         vals$absLogFCDiffex <- NULL
+        vals$absLogFCDiffex <- NULL
+        vals$diffexBmName <- NULL
+        myValues$dList <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -375,6 +382,10 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
+      vals$diffexFilterRes <- NULL
+      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -434,6 +445,8 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
       updateNumSamples()
     })
   })
@@ -485,6 +498,9 @@ shinyServer(function(input, output, session) {
       vals$visplotobject <- NULL
       vals$diffexheatmapplot <- NULL
       vals$diffexFilterRes <- NULL
+      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -499,6 +515,9 @@ shinyServer(function(input, output, session) {
     vals$visplotobject <- NULL
     vals$diffexheatmapplot <- NULL
     vals$diffexFilterRes <- NULL
+    vals$absLogFCDiffex <- NULL
+    vals$diffexBmName <- NULL
+    myValues$dList <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -1260,7 +1279,6 @@ shinyServer(function(input, output, session) {
         if (input$selectNGenes > nrow(vals$diffexgenelist)) {
           stop("Max value exceeded for Input.")
         }
-
         #p-Val and logFC cutoff
         if (input$applyCutoff == TRUE & input$applylogFCCutoff == TRUE) {
           if (input$selectDiffex == 'ANOVA') {
@@ -1307,7 +1325,6 @@ shinyServer(function(input, output, session) {
         if (rowLengthFiltered == 0) {
           stop("You've got 0 genes after filtering.. adjust your filters accordingly")
         }
-
         if (rowLengthFiltered < input$selectNGenes) {
           vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(rowLengthFiltered), ]
         } else {
@@ -1448,7 +1465,7 @@ shinyServer(function(input, output, session) {
       #arrange your df according to these extracted names
       df <- df[, listColNames]
       #select columns based on the saved result selected
-      selected_cols <- sub(listColNames, "_", input$savedDiffExResults, fixed = TRUE)
+      selected_cols <- sub(listColNames[1], "_", input$savedDiffExResults, fixed = TRUE)
       #now choose the unique result
       str_match <- unique(sub("^_[^_]+_$", "", selected_cols, fixed = TRUE))
       df <- df[, which(grepl(paste0(str_match, "_"), listColNames) == TRUE)]
@@ -1478,6 +1495,7 @@ shinyServer(function(input, output, session) {
       HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
     }
   })
+
   #save biomarker in rowData() wrt name and conditions.
   observeEvent(input$saveBiomarker, {
     if (input$biomarkerName == ""){
