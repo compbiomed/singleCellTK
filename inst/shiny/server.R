@@ -22,7 +22,6 @@ shinyServer(function(input, output, session) {
     enrichRes = NULL,
     absLogFC = NULL,
     diffexheatmapplot = NULL,
-    diffexFilterRes = NULL,
     absLogFCDiffex = NULL,
     diffexBmName = NULL
   )
@@ -211,7 +210,6 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$absLogFC <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
@@ -310,7 +308,6 @@ shinyServer(function(input, output, session) {
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
       vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
@@ -347,7 +344,6 @@ shinyServer(function(input, output, session) {
         vals$visplotobject <- NULL
         vals$enrichRes <- NULL
         vals$absLogFC <- NULL
-        vals$diffexFilterRes <- NULL
         vals$absLogFCDiffex <- NULL
         vals$absLogFCDiffex <- NULL
         vals$diffexBmName <- NULL
@@ -380,9 +376,6 @@ shinyServer(function(input, output, session) {
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
       vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
-      vals$absLogFCDiffex <- NULL
-      vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
@@ -443,7 +436,6 @@ shinyServer(function(input, output, session) {
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
       vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
@@ -497,7 +489,6 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$visplotobject <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$diffexFilterRes <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
@@ -514,7 +505,6 @@ shinyServer(function(input, output, session) {
     vals$enrichRes <- NULL
     vals$visplotobject <- NULL
     vals$diffexheatmapplot <- NULL
-    vals$diffexFilterRes <- NULL
     vals$absLogFCDiffex <- NULL
     vals$diffexBmName <- NULL
     myValues$dList <- NULL
@@ -1285,13 +1275,13 @@ shinyServer(function(input, output, session) {
             stop("logFC is not applicable for ANOVA")
           } else {
             if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least p-value in the results is greater than the selected p-val range")
             } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
                                                               vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
             }
           }
@@ -1299,10 +1289,10 @@ shinyServer(function(input, output, session) {
         #p-Val cutoff
         else if (input$applyCutoff == TRUE) {
           if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-            vals$diffexFilterRes <- vals$diffexgenelist
+            diffexFilterRes <- vals$diffexgenelist
             stop("the min/least p-value in the results is greater than the selected p-val range")
           } else {
-            vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
+            diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
           }
         }
         #logFC cutoff
@@ -1311,24 +1301,26 @@ shinyServer(function(input, output, session) {
             stop("logFC is not applicable for ANOVA")
           } else  {
             if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
             }
           }
+        } else {
+          diffexFilterRes <- vals$diffexgenelist
         }
-        if (is.null(vals$diffexFilterRes)){
-          vals$diffexFilterRes <- vals$diffexgenelist
+        if (is.null(diffexFilterRes)){
+          diffexFilterRes <- vals$diffexgenelist
         }
-        rowLengthFiltered <- nrow(vals$diffexFilterRes)
+        rowLengthFiltered <- nrow(diffexFilterRes)
         if (rowLengthFiltered == 0) {
           stop("You've got 0 genes after filtering.. adjust your filters accordingly")
         }
         if (rowLengthFiltered < input$selectNGenes) {
-          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(rowLengthFiltered), ]
+          diffexFilterRes <- diffexFilterRes[seq_len(rowLengthFiltered), ]
         } else {
-          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(input$selectNGenes), ]
+          diffexFilterRes <- diffexFilterRes[seq_len(input$selectNGenes), ]
         }
         #run plotDiffex
         if (!is.null(vals$diffexgenelist)){
@@ -1348,7 +1340,7 @@ shinyServer(function(input, output, session) {
           vals$diffexheatmapplot <- plotDiffEx(inSCE = vals$counts,
                                                useAssay = input$diffexAssay,
                                                condition = input$colorBarCondition,
-                                               geneList = rownames(vals$diffexFilterRes),
+                                               geneList = rownames(diffexFilterRes),
                                                clusterRow = input$clusterRows,
                                                clusterCol = input$clusterColumns,
                                                displayRowLabels = input$displayHeatmapRowLabels,
