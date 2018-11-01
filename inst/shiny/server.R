@@ -782,7 +782,7 @@ shinyServer(function(input, output, session) {
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-          data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
+          data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                      Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
         }
       }
@@ -1210,9 +1210,9 @@ shinyServer(function(input, output, session) {
       if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
         if (all(input$colorBarCondition %in% colnames(colData(vals$counts)))) {
           h <- input$colorBarCondition
-          L <- lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
+          L <- lapply(seq_along(h), function(i) colourGroupInput(paste0("colorGroup", i)))
           annotationColors$cols <- lapply(
-            1:length(h),
+            seq_along(h),
             function(i) {
               callModule(colourGroup, paste0("colorGroup", i), heading = h[i],
                          options = unique(unlist(colData(vals$counts)[, h[i]])))

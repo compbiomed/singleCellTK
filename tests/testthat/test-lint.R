@@ -1,4 +1,4 @@
-if (requireNamespace("lintr", quietly = TRUE)) {
+if (requireNamespace("lintr", quietly = TRUE) & packageVersion("lintr") >= "1.0.2.9000") {
   context("lints")
   test_that("Package Style", {
     lintr::expect_lint_free(linters = c(lintr::trailing_whitespace_linter,
@@ -9,6 +9,7 @@ if (requireNamespace("lintr", quietly = TRUE)) {
                                         lintr::closed_curly_linter,
                                         lintr::assignment_linter,
                                         lintr::commas_linter,
+                                        lintr::seq_linter,
                                         lintr::spaces_left_parentheses_linter))
   })
 }
