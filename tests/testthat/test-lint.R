@@ -1,5 +1,5 @@
 if (requireNamespace("lintr", quietly = TRUE)) {
-  if(packageVersion("lintr") >= "1.0.2.9000") {
+  if (packageVersion("lintr") >= "1.0.2.9000") {
     context("lints")
     test_that("Package Style", {
       lintr::expect_lint_free(linters = c(lintr::trailing_whitespace_linter,
