@@ -20,9 +20,7 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
-    absLogFC = NULL,
     diffexheatmapplot = NULL,
-    absLogFCDiffex = NULL,
     diffexBmName = NULL
   )
 
@@ -208,9 +206,7 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
     })
@@ -307,8 +303,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
     })
@@ -343,9 +337,6 @@ shinyServer(function(input, output, session) {
         vals$gsvaLimma <- NULL
         vals$visplotobject <- NULL
         vals$enrichRes <- NULL
-        vals$absLogFC <- NULL
-        vals$absLogFCDiffex <- NULL
-        vals$absLogFCDiffex <- NULL
         vals$diffexBmName <- NULL
         myValues$dList <- NULL
         #Refresh things for the clustering tab
@@ -375,8 +366,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
       #Refresh things for the clustering tab
@@ -435,8 +424,6 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
       updateNumSamples()
@@ -489,7 +476,6 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$visplotobject <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       myValues$dList <- NULL
     })
@@ -505,7 +491,6 @@ shinyServer(function(input, output, session) {
     vals$enrichRes <- NULL
     vals$visplotobject <- NULL
     vals$diffexheatmapplot <- NULL
-    vals$absLogFCDiffex <- NULL
     vals$diffexBmName <- NULL
     myValues$dList <- NULL
   })
@@ -1259,9 +1244,9 @@ shinyServer(function(input, output, session) {
       tryCatch ({
         #logFC or abs(logFC)
         if (input$applyAbslogFCDiffex == TRUE) {
-          vals$absLogFCDiffex <- abs(input$selectlogFCDiffex)
+          absLogFCDiffex <- abs(input$selectlogFCDiffex)
         } else {
-          vals$absLogFCDiffex <- input$selectlogFCDiffex
+          absLogFCDiffex <- input$selectlogFCDiffex
         }
         #for convenience, index logFC and p-val columns for all the methods
         pvalIndex <- which(grepl("*padj*", colnames(vals$diffexgenelist)))
@@ -1277,12 +1262,12 @@ shinyServer(function(input, output, session) {
             if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least p-value in the results is greater than the selected p-val range")
-            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
               diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
-                                                              vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+                                                         vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
         }
@@ -1300,11 +1285,11 @@ shinyServer(function(input, output, session) {
           if (input$selectDiffex == 'ANOVA') {
             stop("logFC is not applicable for ANOVA")
           } else  {
-            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
         } else {
@@ -1501,9 +1486,9 @@ shinyServer(function(input, output, session) {
                                  type = "error")
         }
         if (input$applyAbslogFC == TRUE) {
-          vals$absLogFC <- abs(input$selectlogFC)
+          absLogFC <- abs(input$selectlogFC)
         } else {
-          vals$absLogFC <- input$selectlogFC
+          absLogFC <- input$selectlogFC
         }
         if (input$selectBioNGenes > nrow(vals$diffexgenelist)) {
           stop("Max value exceeded for Input.")
@@ -1514,7 +1499,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = input$selectAdjPVal)
         } else if (input$applyBioCutoff1 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
@@ -1530,7 +1515,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = NULL)
         } else {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
