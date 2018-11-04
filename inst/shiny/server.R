@@ -1406,16 +1406,13 @@ shinyServer(function(input, output, session) {
         ResultsName <- gsub(" ", "_", input$ResultsName)
         if (length(myValues$dList) >= 1) {
           if (anyDuplicated(myValues$dList)) {
-            shinyalert::shinyalert("Error", "name already exists. Please use a unique result name",
-                                   type = "error")
+            stop("name already exists. Please use a unique result name")
           } else {
             myValues$index <- myValues$index + 1
-            #myValues$dList[myValues$index] <- isolate(input$ResultsName)
             myValues$dList[myValues$index] <- ResultsName
           }
         } else {
           myValues$index <- myValues$index + 1
-          #myValues$dList[myValues$index] <- isolate(input$ResultsName)
           myValues$dList[myValues$index] <- ResultsName
         }
         vals$counts <- saveDiffExResults(inSCE = vals$counts,
@@ -1431,7 +1428,6 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)) {
       if (is.null(myValues$dList)) {
         savedObjResults <- gsub("_padj$", "", colnames(rowData(vals$counts))[grepl("_padj$", colnames(rowData(vals$counts)))])
-        #myValues$index <- myValues$index + 1
         myValues$index <- length(savedObjResults)
         myValues$dList[seq_len(myValues$index)] <- savedObjResults[seq_len(myValues$index)]
       }
@@ -1453,14 +1449,15 @@ shinyServer(function(input, output, session) {
       listColNames <- names(which(apply(df, 2, function(a) length(unique(a)) == 2) == FALSE))
       #arrange your df according to these extracted names
       df <- df[, listColNames]
-      #select columns based on the saved result selected
-      selected_cols <- sub(listColNames[1], "_", input$savedDiffExResults, fixed = TRUE)
-      #now choose the unique result
-      str_match <- unique(sub("^_[^_]+_$", "", selected_cols, fixed = TRUE))
-      df <- df[, which(grepl(paste0(str_match, "_"), listColNames) == TRUE)]
-      diffexRow <- rownames(df)[seq_len(nrow(df))]
-      rownames(df) <- rownames(vals$counts)[as.integer(diffexRow)]
-      colnames(df) <- gsub(paste0(str_match, "_"), "", colnames(df))
+      #find all columns matching with the user's input.
+      #sub() here is used to extract columns with user defined inputs
+      df <- df[, which(sub("_[^_]+$", "", listColNames) == input$savedDiffExResults)]
+      #remove the saved results names from columns
+      colnames(df) <- gsub(paste0(input$savedDiffExResults, "_"), "", colnames(df))
+      filterCol <- colnames(df)[grepl("padj$", colnames(df))]
+      #order the padj column to get the top significant genes
+      orderedRows <- rownames(df)[order(df[, filterCol])[seq_len(nrow(df))]]
+      df <- df[orderedRows, ]
       vals$diffexgenelist <- df
       vals$diffexheatmapplot <- NULL
     }
