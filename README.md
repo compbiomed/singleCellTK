@@ -1,17 +1,43 @@
-[![Build Status](https://travis-ci.org/compbiomed/singleCellTK.svg?branch=master)](https://travis-ci.org/compbiomed/singleCellTK)
-
 # Single Cell TK
+
+[![Travis build status](https://travis-ci.org/compbiomed/singleCellTK.svg?branch=master)](https://travis-ci.org/compbiomed/singleCellTK)
+[![codecov](https://codecov.io/gh/compbiomed/singleCellTK/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/singleCellTK)
+[![BioC status](https://www.bioconductor.org/shields/build/release/bioc/singleCellTK.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/singleCellTK)
+[![lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 ## Installation
 
-singleCellTK is under development. You can install the development version from github:
+### Release Version
+
+You can download the release version of the Single Cell Toolkit in
+[Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
+
+```r
+if (!requireNamespace("BiocManager", quietly=TRUE))
+  install.packages("BiocManager")
+BiocManager::install("singleCellTK")
+```
+
+### Devel Version
+
+You can download the development version of the Single Cell Toolkit in
+[Bioconductor v3.8](https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html)
+or from this repository:
+
+```r
+# install.packages("devtools")
+devtools::install_github("compbiomed/singleCellTK")
+```
+
+### R 3.4 Version
+
+If you are still running an earlier version of R instead of 3.5, you can install
+the following version from this repository:
 
 ```r
 # install.packages("devtools")
 devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
 ```
-> Note: Some package dependencies require Bioconductor v3.6,
-> https://bioconductor.org/install/
 
 #### Troubleshooting Installation
 
@@ -22,15 +48,16 @@ singleCellTK. If you encounter an error during installation, use the commands
 below to check the version of Bioconductor that is installed:
 
 ```r
-source("https://bioconductor.org/biocLite.R")
-biocVersion()
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::version()
 ```
 
 If the version number is not 3.6 or higher, you must upgrade Bioconductor to
 install the toolkit:
 
 ```r
-biocLite("BiocUpgrade")
+BiocManager::install()
 ```
 
 After you install Bioconductor 3.6 or higher, you should be able to install the
@@ -39,14 +66,14 @@ still encounter an error, ensure your Bioconductor packages are up to date by
 running the following command.
 
 ```r
-biocValid()
+BiocManager::valid()
 ```
 
 If the command above does not return `TRUE`, run the following command to
 update your R packages:
 
 ```r
-biocLite()
+BiocManager::install()
 ```
 
 Then, try to install the toolkit again:

@@ -5,12 +5,15 @@
 \title{Estimate numbers of detected genes, significantly differentially expressed
 genes, and median significant effect size}
 \usage{
-DownsampleDepth(originalData, minCount = 10, minCells = 3,
-  maxDepth = 1e+07, realLabels, depthResolution = 10, iterations = 10)
+DownsampleDepth(originalData, useAssay = "counts", minCount = 10,
+  minCells = 3, maxDepth = 1e+07, realLabels, depthResolution = 10,
+  iterations = 10)
 }
 \arguments{
 \item{originalData}{SCtkExperiment. The SCtkExperiment object storing all
 assay data from the shiny app.}
+
+\item{useAssay}{Character. The name of the assay to be used for subsampling.}
 
 \item{minCount}{Numeric. The minimum number of reads found for a gene to be
 considered detected.}

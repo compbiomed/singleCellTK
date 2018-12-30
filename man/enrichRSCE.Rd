@@ -6,16 +6,15 @@
 Given a list of genes this function runs the enrichR() to perform Gene
 enrichment}
 \usage{
-enrichRSCE(inSCE, useAssay, glist, db = NULL)
+enrichRSCE(inSCE, glist, db = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
 
-\item{useAssay}{The assay to use in the enrichment analysis. Required}
-
 \item{glist}{selected genes for enrichment analysis using enrichR(). Required}
 
-\item{db}{selected database name from the enrichR database list.}
+\item{db}{selected database name from the enrichR database list. if NULL then
+enrichR will be run on all the available databases on the enrichR database.}
 }
 \value{
 enrichRSCE(): returns a data.frame of enrichment terms overlapping in
@@ -27,7 +26,5 @@ Given a list of genes this function runs the enrichR() to perform Gene
 enrichment
 }
 \examples{
-enrichRSCE(mouseBrainSubsetSCE, "counts", "Cmtm5",
-           "GO_Cellular_Component_2017")
-
+enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017")
 }

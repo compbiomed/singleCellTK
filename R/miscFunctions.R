@@ -71,7 +71,6 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-#'
 createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
@@ -113,7 +112,9 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
          nrow(featurein), ", counts: ", nrow(countsin))
   }
   if (any(rownames(annotin) != colnames(countsin))){
-    stop("Sample names in input matrix and annotation do not match!")
+    stop("Sample names in input matrix and annotation do not match!\nExample: ",
+         rownames(annotin)[rownames(annotin) != colnames(countsin)][1], " vs. ",
+         colnames(countsin)[rownames(annotin) != colnames(countsin)][1])
   }
   if (any(rownames(featurein) != rownames(countsin))){
     stop("Sample names in input matrix and feature annotation do not match!")
@@ -148,7 +149,6 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #'
 #' @return The filtered single cell object.
 #' @export
-#'
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
@@ -206,6 +206,8 @@ filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
 #' @return A vector of distinct colors that have been converted to  HEX from
 #' HSV.
 #' @export
+#' @examples
+#' distinctColors(10)
 distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
                                         "yellow", "purple", "green", "magenta"),
                            saturation.range = c(0.7, 1),
@@ -232,7 +234,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 
   ## Create all combination of hues with saturation/value pairs
   new.hsv <- c()
-  for (i in 1:num.vs) {
+  for (i in seq_len(num.vs)) {
     temp <- rbind(hues.hsv[1, ], s[i], v[i])
     new.hsv <- cbind(new.hsv, temp)
   }
@@ -240,7 +242,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   ## Convert to hex
   col <- grDevices::hsv(new.hsv[1, ], new.hsv[2, ], new.hsv[3, ])
 
-  return(col[1:n])
+  return(col[seq_len(n)])
 }
 
 #test shiny functions
@@ -254,6 +256,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     colourpicker::runExample()
     rt <- ape::rtree(10)
     gt <- ggtree::ggtree(rt)
+    shinycssloaders::withSpinner(shiny::plotOutput("my_plot"))
     x <- rbind(cbind(stats::rnorm(200, 0, 8), stats::rnorm(200, 0, 8)),
                cbind(stats::rnorm(300, 50, 8), stats::rnorm(300, 50, 8)))
     clarax <- cluster::clara(x, 2, samples = 50)

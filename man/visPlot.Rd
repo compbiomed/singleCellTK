@@ -4,7 +4,8 @@
 \alias{visPlot}
 \title{visPlot}
 \usage{
-visPlot(inSCE, useAssay, method, condition, glist)
+visPlot(inSCE, useAssay, method, condition, glist, facetWrap = TRUE,
+  scaleHMap = TRUE, convertFactor = FALSE)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -17,6 +18,14 @@ scatterplot, or heatmap. Required}
 \item{condition}{colData annotation of the experiment. Required}
 
 \item{glist}{selected genes for visualization. Required}
+
+\item{facetWrap}{facet wrap according to genes for boxplot, scatterplot and
+barplot. Default is FALSE. Optional}
+
+\item{scaleHMap}{scale heatmap expression values. Default is TRUE. Optional}
+
+\item{convertFactor}{If the condition is not a factor, convert it to a factor
+before plotting. The default is FALSE}
 }
 \value{
 A visualization plot
@@ -26,7 +35,8 @@ Given a plotting method with condition and gene list, return
 the respective visualization plot(s).
 }
 \examples{
-visPlot(mouseBrainSubsetSCE,"logcounts","boxplot","level1class","C1qa")
-visPlot(mouseBrainSubsetSCE,"counts","scatterplot","age","Cmtm5")
-visPlot(mouseBrainSubsetSCE,"counts","heatmap", "level1class",c("Cmtm5","C1qa"))
+visPlot(mouseBrainSubsetSCE, "logcounts", "boxplot", "level1class", "C1qa")
+visPlot(mouseBrainSubsetSCE, "counts", "scatterplot", "age", "Cmtm5")
+visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
+        c("Cmtm5", "C1qa"))
 }

@@ -13,18 +13,18 @@ scDiffEx(inSCE, useAssay = "logcounts", condition, covariates = NULL,
   adjust = "fdr")
 
 scDiffExDESeq2(inSCE, useAssay = "counts", condition,
-  analysisType = "biomarker", levelofinterest = NULL, controlLevel = NULL,
-  covariates = NULL, adjust = "fdr")
+  analysisType = "biomarker", levelofinterest = NULL,
+  controlLevel = NULL, covariates = NULL, adjust = "fdr")
 
 scDiffExlimma(inSCE, useAssay = "logcounts", condition,
-  analysisType = "biomarker", levelofinterest = NULL, covariates = NULL,
-  adjust = "fdr")
+  analysisType = "biomarker", levelofinterest = NULL,
+  covariates = NULL, adjust = "fdr")
 
-scDiffExANOVA(inSCE, useAssay = "logcounts", condition, covariates = NULL,
-  adjust = "fdr")
+scDiffExANOVA(inSCE, useAssay = "logcounts", condition,
+  covariates = NULL, adjust = "fdr")
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Requireds}
+\item{inSCE}{Input SCtkExperiment object. Required}
 
 \item{useAssay}{Indicate which assay to use. Default is "logcounts" for limma
 and ANOVA, and "counts" for DESeq2.}
@@ -49,7 +49,7 @@ analysis. Available options are DESeq2, limma, and ANOVA. Required}
 
 \item{levelofinterest}{If the condition has more than two labels,
 levelofinterest should contain one factor for condition. The differential
-expression results will use levelofinterest depending on the analysType
+expression results will use levelofinterest depending on the analysisType
 parameter.}
 
 \item{analysisType}{For conditions with more than two levels, limma and
@@ -58,7 +58,7 @@ compare the levelofinterest to all other samples. Choose "contrast" to
 compare the levelofinterest to a controlLevel (see below). Choose
 "fullreduced" to perform DESeq2 in LRT mode. For limma, Choose "biomarker" to
 compare the levelofinterest to all other samples. Choose "coef" to select a
-coefficient of interset with levelofinterest (see below). Choose "allcoef" to
+coefficient of interest with levelofinterest (see below). Choose "allcoef" to
 test if any coefficient is different from zero.}
 
 \item{controlLevel}{If the condition has more than two labels, controlLevel

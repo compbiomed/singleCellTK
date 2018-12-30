@@ -1,15 +1,15 @@
 shinyPanelEnrichR <- fluidPage(
   tags$div(
     class = "container",
-    h1("Gene Enrichment Analysis using enrichR"),
+    h1("Gene Set Enrichment Analysis using enrichR"),
     h5(tags$a(href = "", "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        selectInput("enrichAssay", "Select Assay", currassays),
         h3("Choose data source:"),
-        radioButtons("geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
-                                                       "Upload file" = "geneFile",
-                                                       "Biomarker" = "biomarker")
+        radioButtons(
+          "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
+                                            "Upload file" = "geneFile",
+                                            "Biomarker" = "biomarker")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
@@ -17,38 +17,67 @@ shinyPanelEnrichR <- fluidPage(
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'geneFile'", "geneListChoice"),
-          fileInput("enrFile",
-                    tags$b(tags$i("Please upload a file with only gene names(Entrez Gene Symbols)")),
-                    accept = c("text/csv", "text/comma-separated-values",
-                               "text/tab-separated-values", "text/plain", ".csv", ".tsv")
+          fileInput(
+            "enrFile",
+            tags$b(tags$i("Please upload a file with only gene names or Entrez Gene Symbols")),
+            accept = c("text/csv", "text/comma-separated-values",
+                       "text/tab-separated-values", "text/plain",
+                       ".csv", ".tsv")
           ),
-          tags$b(tags$i("Options:")),
-          # Input: Checkbox if file has header ----
-          checkboxInput("header", "Header", TRUE),
-          # Input: Select separator ----
-          radioButtons("sep", "Separator",
-                       choices = c(Comma = ",",
-                                   Semicolon = ";",
-                                   Tab = "\t"),
-                       selected = ","),
-          # Input: Select quotes ----
-          radioButtons("quote", "Quote",
-                       choices = c(None = "",
-                                   "Double Quote" = '"',
-                                   "Single Quote" = "'"),
-                       selected = '""')
+          tags$b(tags$i("Sample files:")),
+          br(),
+          tags$a(href = "https://drive.google.com/open?id=1iJZ6H_G2brbeww9B0dA5seMyYUZYyFrU",
+                 "Gene Names", target = "_blank"
+          ),
+          HTML('&nbsp;'),
+          HTML('&nbsp;'),
+          HTML('&nbsp;'),
+          tags$a(href = "https://drive.google.com/open?id=1BLrwW0uMi2pxsX0m1zJrlOTnBLkIiOhk",
+                 "Entrez ids", target = "_blank"
+          ),
+          br(),
+          tags$div(
+            tags$b(tags$i("Options:")),
+            # Input: Checkbox if file has header ----
+            fluidRow(
+              column(width = 1,
+                     checkboxInput("header", "Header", value = TRUE)
+              ),
+              # Input: Select separator ----
+              column(width = 1,
+                     offset = 2,
+                     radioButtons("sep", "Separator",
+                                  choices = c(Comma = ",",
+                                              Semicolon = ";",
+                                              Tab = "\t"),
+                                  selected = ",")
+              ),
+              # Input: Select quotes ----
+              column(width = 1,
+                     offset = 3,
+                     radioButtons("quote", "Quote",
+                                  choices = c(None = "",
+                                              "Double Quote" = '"',
+                                              "Single Quote" = "'"),
+                                  selected = '""')
+              )
+            )
+          )
         ),
-        # conditionalPanel(
-        #   condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice")
-        # ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice"),
+          uiOutput("enrBioGenes")
+        ),
         selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB),
                        multiple = TRUE),
+        tags$b(tags$i("Note:")),
+                      tags$i("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will significant amount of time."),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
         br(),
         downloadButton("downloadEnrichR", "Download results")
       ),
       mainPanel(
-        uiOutput("enrTabs") %>% shinycssloaders::withSpinner()
+        uiOutput("enrTabs")
       )
     )
   )

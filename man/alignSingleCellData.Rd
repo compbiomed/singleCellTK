@@ -4,10 +4,10 @@
 \alias{alignSingleCellData}
 \title{Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object}
 \usage{
-alignSingleCellData(inputfile1, inputfile2 = NULL, indexPath, gtfAnnotation,
-  outputDir = NULL, sampleAnnotations = NULL, featureAnnotations = NULL,
-  threads = 1, saveBam = FALSE, saveCountFiles = FALSE,
-  isPairedEnd = FALSE)
+alignSingleCellData(inputfile1, inputfile2 = NULL, indexPath,
+  gtfAnnotation, outputDir = NULL, sampleAnnotations = NULL,
+  featureAnnotations = NULL, threads = 1, saveBam = FALSE,
+  saveCountFiles = FALSE, isPairedEnd = FALSE)
 }
 \arguments{
 \item{inputfile1}{An input file or list of files. Files can be fastq,
@@ -62,5 +62,4 @@ singlecellobject <- alignSingleCellData(
   gtfAnnotation = "/path/to/gene/annotations.gtf",
   sampleAnnotations = sample.annotation.df,
   threads=4)}
-
 }

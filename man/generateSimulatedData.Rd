@@ -13,7 +13,7 @@ dataset, to be split between all simulated cells.}
 
 \item{cells}{Numeric. The number of virtual cells to simulate.}
 
-\item{originalData}{Matrix. The original raw readcount matrix. When used
+\item{originalData}{Matrix. The original raw read count matrix. When used
 within the Shiny app, this will be assay(SCEsetObject, "counts").}
 
 \item{realLabels}{Factor. The condition labels for differential expression.

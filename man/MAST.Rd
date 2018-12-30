@@ -7,22 +7,23 @@
 \alias{MASTregression}
 \title{MAST}
 \usage{
-MAST(inSCE, condition = NULL, interest.level = NULL, freqExpressed = 0.1,
-  fcThreshold = log2(1.5), p.value = 0.05, useThresh = FALSE,
-  useAssay = "logcounts")
+MAST(inSCE, condition = NULL, interest.level = NULL,
+  freqExpressed = 0.1, fcThreshold = log2(1.5), p.value = 0.05,
+  useThresh = FALSE, useAssay = "logcounts")
 
 thresholdGenes(inSCE, useAssay = "logcounts")
 
 MASTviolin(inSCE, useAssay = "logcounts", fcHurdleSig, samplesize = 49,
   threshP = FALSE, condition)
 
-MASTregression(inSCE, useAssay = "logcounts", fcHurdleSig, samplesize = 49,
-  threshP = FALSE, condition)
+MASTregression(inSCE, useAssay = "logcounts", fcHurdleSig,
+  samplesize = 49, threshP = FALSE, condition)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
 
-\item{condition}{select variable (from the colData) that is used for the model.}
+\item{condition}{select variable (from the colData) that is used for the
+model.}
 
 \item{interest.level}{If the condition of interest has more than two factors,
 indicate which level should be used to compare to all other samples.}
@@ -75,5 +76,4 @@ Run and visualize MAST analysis on a SCtkExperiment object.
 \examples{
 data("mouseBrainSubsetSCE")
 res <- thresholdGenes(mouseBrainSubsetSCE)
-
 }

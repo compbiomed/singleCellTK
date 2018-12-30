@@ -17,7 +17,6 @@
 #' @return gsvaSCE(): A data.frame of pathway activity scores from GSVA.
 #'
 #' @export
-#'
 gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
                     pathwayNames, ...){
   if (pathwaySource == "Manual Input"){
@@ -61,7 +60,6 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' @return gsvaPlot(): The requested plot of the GSVA results.
 #'
 #' @export
-#'
 gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                      show_column_names = TRUE, show_row_names = TRUE,
                      text_size = 12){

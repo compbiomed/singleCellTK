@@ -8,6 +8,7 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
+            selectInput("depthAssay", "Select Assay:", currassays),
             numericInput("minCount", "Minimum readcount to detect gene",
                          value = 10, min = 1, max = 10000),
             numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
@@ -37,6 +38,7 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
+            selectInput("cellsAssay", "Select Assay:", currassays),
             numericInput("minCellNum", "Minimum number of cells to simulate",
                          value = 10, min = 1, max = 10000),
             numericInput("maxCellNum", "Maximum number of cells to simulate",
@@ -75,6 +77,7 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
+            selectInput("snapshotAssay", "Select Assay:", currassays),
             numericInput("numCellsSnap", "How many simulated cells?",
                          value = 100, min = 2, max = 10000),
             numericInput("numReadsSnap", "How many total reads?",
