@@ -1052,55 +1052,54 @@ shinyServer(function(input, output, session) {
 
       withBusyIndicatorServer("runCelda", {
         if (input$celdaModel == "celda_C") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_C",
+          cres <- celda_C(counts = assay(vals$counts, input$celdaAssay),
             K = input$cellClusterC,
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
-            max.iter = input$celdaMaxIter,
+            algorithm = input$celdaAlgorithm,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
           updateColDataNames()
           cres
 
         } else if (input$celdaModel == "celda_G") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_G",
+          cres <- celda_G(counts = assay(vals$counts, input$celdaAssay),
             L = input$geneModuleG,
             beta = input$celdaBeta,
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
-            max.iter = input$celdaMaxIter,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
           updateFeatureAnnots()
           cres
 
         } else if (input$celdaModel == "celda_CG") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_CG",
+          cres <- celda_CG(counts = assay(vals$counts, input$celdaAssay),
             K = input$cellClusterCG,
             L = input$geneModuleCG,
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
-            max.iter = input$celdaMaxIter,
+            algorithm = input$celdaAlgorithm,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
-          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
+          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
           updateColDataNames()
           updateFeatureAnnots()
           cres
@@ -1110,22 +1109,26 @@ shinyServer(function(input, output, session) {
   })
 
   output$celdaPlot <- renderPlot({
-      model <- celdaRes()$res.list[[1]]
+    #model <- celdaRes()$res.list[[1]]
 
-      # add celda labels to colData and rowData of sctke object
-      # use column name "celdaCellCluster" and "celdaGeneModule" for now,
-      # need update when celda outputs sce objects so it matches
+    # add celda labels to colData and rowData of sctke object
+    # use column name "celdaCellCluster" and "celdaGeneModule" for now,
+    # need update when celda outputs sce objects so it matches
 
-      z <- model$z
-      y <- model$y
-      norm.counts <- isolate(normalizeCounts(assay(vals$counts,
-        input$celdaAssay),
-        scale.factor = 1e6))
-      g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
-        normalize = NULL, color_scheme = "divergent",
-        cluster_gene = TRUE,
-        cluster_cell = TRUE)
-      g
+    # z <- celdaRes()@clusters$z
+    # y <- celdaRes()@clusters$y
+    # norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+    #   input$celdaAssay),
+    #   normalize = "cpm"))
+    model <- celdaRes()
+    g <- celdaHeatmap(counts = assay(vals$counts,
+      input$celdaAssay),
+      celda.mod = model)
+      # z = z, y = y,
+      # normalize = NULL, color_scheme = "divergent",
+      # cluster_gene = TRUE,
+      # cluster_cell = TRUE)
+    g
   }, height = 600)
 
   #disable the downloadSCECelda button if no object is loaded

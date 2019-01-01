@@ -2,7 +2,7 @@ shinyPanelCelda <- fluidPage(
   tags$div(
     class = "container",
     h1("celda: CEllular Latent Dirichlet Allocation"),
-    h5(tags$a(href = "https://github.com/compbiomed/celda",
+    h5(tags$a(href = "https://github.com/campbio/celda",
               "(help)", target = "_blank")),
     fluidRow(
       sidebarLayout(
@@ -60,8 +60,17 @@ shinyPanelCelda <- fluidPage(
             tags$div(id = "celdaCollapse2",
               wellPanel(
                 conditionalPanel(
-                  condition = sprintf("input['%s'] == 'celda_C' || input['%s'] ==
-                    'celda_CG'", "celdaModel", "celdaModel"),
+                  condition = sprintf("input['%s'] == 'celda_C' ||
+                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
+                  selectInput("celdaAlgorithm",
+                    "Select Algorithm:",
+                    list("Expectation Maximization" = "EM",
+                      "Gibbs Sampling" = "Gibbs"),
+                    selected = "Expectation Maximization")
+                ),
+                conditionalPanel(
+                  condition = sprintf("input['%s'] == 'celda_C' ||
+                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
                   numericInput("celdaAlpha",
                     label = "Alpha",
                     value = 1,
@@ -74,8 +83,8 @@ shinyPanelCelda <- fluidPage(
                   min = 0.00000001,
                   max = 100000),
                 conditionalPanel(
-                  condition = sprintf("input['%s'] == 'celda_G' || input['%s'] ==
-                    'celda_CG'", "celdaModel", "celdaModel"),
+                  condition = sprintf("input['%s'] == 'celda_G' ||
+                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
                   numericInput("celdaDelta",
                     label = "Delta:",
                     value = 1,
@@ -113,12 +122,12 @@ shinyPanelCelda <- fluidPage(
                   min = 1,
                   max = 100000,
                   step = 1),
-                numericInput("celdaCores",
-                  label = "Number of Cores to use for parallel Gibbs Sampling:",
-                  value = 1,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
+                # numericInput("celdaCores",
+                #   label = "Number of Cores used for parallel computing:",
+                #   value = 1,
+                #   min = 1,
+                #   max = 100000,
+                #   step = 1),
                 numericInput("celdaSeed",
                   label = "Base Seed For Random Number Generation:",
                   value = 12345,
