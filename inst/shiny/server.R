@@ -687,6 +687,14 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+
+  output$visBioGenes <- renderUI({
+    if (!is.null(vals$counts)) {
+      selectInput("selVisBioGenes", "Select Gene List(s):",
+                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
+    }
+  })
+
   observeEvent(input$plotvis, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -698,11 +706,16 @@ shinyServer(function(input, output, session) {
           } else {
             incondition <- input$visCondn
           }
+          if (input$visGeneList == "selVisRadioGenes"){
+            visGList <- input$selectvisGenes
+          } else  {
+            visGList <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selVisBioGenes] == 1]
+          }
           vals$visplotobject <- visPlot(inSCE = vals$counts,
                                         useAssay = input$visAssaySelect,
                                         method =  input$visPlotMethod,
                                         condition = incondition,
-                                        glist = input$selectvisGenes,
+                                        glist =  visGList,
                                         facetWrap = input$visFWrap,
                                         scaleHMap = input$visScaleHMap)
         },
@@ -1404,8 +1417,8 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("saveResults", {
         ResultsName <- gsub(" ", "_", input$ResultsName)
-        if (length(myValues$dList) >= 1) {
-          if (anyDuplicated(myValues$dList)) {
+        if (!is.null(myValues$dList)) {
+          if (unique(myValues$dList) == ResultsName) {
             stop("name already exists. Please use a unique result name")
           } else {
             myValues$index <- myValues$index + 1

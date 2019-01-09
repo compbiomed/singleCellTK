@@ -227,7 +227,20 @@ shinyPanelFilter <- fluidPage(
                 selectInput("visAssaySelect", "Select Assay:", currassays),
                 selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
                 selectInput("visCondn", "Condition:", c("none", clusterChoice)),
-                selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE),
+                h3("Choose data source:"),
+                radioButtons(
+                  "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
+                                                    "Saved top genes" = "visBiomarker")
+                ),
+                conditionalPanel(
+                  condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
+                  selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
+                ),
+                conditionalPanel(
+                  helpText("To use this, first run Differential expression and save top genes."),
+                  condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
+                  uiOutput("visBioGenes")
+                ),
                 uiOutput("visOptions"),
                 withBusyIndicatorUI(actionButton("plotvis", "Plot"))
               ),

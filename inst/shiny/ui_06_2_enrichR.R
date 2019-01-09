@@ -9,7 +9,7 @@ shinyPanelEnrichR <- fluidPage(
         radioButtons(
           "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
                                             "Upload file" = "geneFile",
-                                            "Biomarker" = "biomarker")
+                                            "Saved top genes" = "biomarker")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
@@ -65,6 +65,7 @@ shinyPanelEnrichR <- fluidPage(
           )
         ),
         conditionalPanel(
+          helpText("To use this, first run Differential expression and save top genes."),
           condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice"),
           uiOutput("enrBioGenes")
         ),
