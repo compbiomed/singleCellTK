@@ -20,10 +20,7 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
-    absLogFC = NULL,
     diffexheatmapplot = NULL,
-    diffexFilterRes = NULL,
-    absLogFCDiffex = NULL,
     diffexBmName = NULL
   )
 
@@ -210,10 +207,9 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$diffexFilterRes <- NULL
-      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -308,9 +304,8 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
-      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -343,9 +338,8 @@ shinyServer(function(input, output, session) {
         vals$gsvaLimma <- NULL
         vals$visplotobject <- NULL
         vals$enrichRes <- NULL
-        vals$absLogFC <- NULL
-        vals$diffexFilterRes <- NULL
-        vals$absLogFCDiffex <- NULL
+        vals$diffexBmName <- NULL
+        myValues$dList <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -373,9 +367,8 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
-      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -432,9 +425,8 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
-      vals$absLogFC <- NULL
-      vals$diffexFilterRes <- NULL
-      vals$absLogFCDiffex <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
       updateNumSamples()
     })
   })
@@ -485,7 +477,8 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$visplotobject <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$diffexFilterRes <- NULL
+      vals$diffexBmName <- NULL
+      myValues$dList <- NULL
     })
   })
 
@@ -499,7 +492,8 @@ shinyServer(function(input, output, session) {
     vals$enrichRes <- NULL
     vals$visplotobject <- NULL
     vals$diffexheatmapplot <- NULL
-    vals$diffexFilterRes <- NULL
+    vals$diffexBmName <- NULL
+    myValues$dList <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -783,7 +777,7 @@ shinyServer(function(input, output, session) {
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-          data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
+          data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                      Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
         }
       }
@@ -1058,55 +1052,54 @@ shinyServer(function(input, output, session) {
 
       withBusyIndicatorServer("runCelda", {
         if (input$celdaModel == "celda_C") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_C",
+          cres <- celda_C(counts = assay(vals$counts, input$celdaAssay),
             K = input$cellClusterC,
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
-            max.iter = input$celdaMaxIter,
+            algorithm = input$celdaAlgorithm,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
           updateColDataNames()
           cres
 
         } else if (input$celdaModel == "celda_G") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_G",
+          cres <- celda_G(counts = assay(vals$counts, input$celdaAssay),
             L = input$geneModuleG,
             beta = input$celdaBeta,
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
-            max.iter = input$celdaMaxIter,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
           updateFeatureAnnots()
           cres
 
         } else if (input$celdaModel == "celda_CG") {
-          cres <- celda(counts = assay(vals$counts, input$celdaAssay),
-            model = "celda_CG",
+          cres <- celda_CG(counts = assay(vals$counts, input$celdaAssay),
             K = input$cellClusterCG,
             L = input$geneModuleCG,
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
-            max.iter = input$celdaMaxIter,
+            algorithm = input$celdaAlgorithm,
             stop.iter = input$celdaStopIter,
+            max.iter = input$celdaMaxIter,
             split.on.iter = input$celdaSplitIter,
-            nchains = input$celdaNChains,
-            cores = input$celdaCores,
-            seed = input$celdaSeed)
-          colData(vals$counts)$celdaCellCluster <- cres$res.list[[1]]$z
-          rowData(vals$counts)$celdaGeneModule <- cres$res.list[[1]]$y
+            seed = input$celdaSeed,
+            nchains = input$celdaNChains)
+            #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
+          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
           updateColDataNames()
           updateFeatureAnnots()
           cres
@@ -1116,22 +1109,26 @@ shinyServer(function(input, output, session) {
   })
 
   output$celdaPlot <- renderPlot({
-      model <- celdaRes()$res.list[[1]]
+    #model <- celdaRes()$res.list[[1]]
 
-      # add celda labels to colData and rowData of sctke object
-      # use column name "celdaCellCluster" and "celdaGeneModule" for now,
-      # need update when celda outputs sce objects so it matches
+    # add celda labels to colData and rowData of sctke object
+    # use column name "celdaCellCluster" and "celdaGeneModule" for now,
+    # need update when celda outputs sce objects so it matches
 
-      z <- model$z
-      y <- model$y
-      norm.counts <- isolate(normalizeCounts(assay(vals$counts,
-        input$celdaAssay),
-        scale.factor = 1e6))
-      g <- renderCeldaHeatmap(counts = norm.counts, z = z, y = y,
-        normalize = NULL, color_scheme = "divergent",
-        cluster_gene = TRUE,
-        cluster_cell = TRUE)
-      g
+    # z <- celdaRes()@clusters$z
+    # y <- celdaRes()@clusters$y
+    # norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+    #   input$celdaAssay),
+    #   normalize = "cpm"))
+    model <- celdaRes()
+    g <- celdaHeatmap(counts = assay(vals$counts,
+      input$celdaAssay),
+      celda.mod = model)
+      # z = z, y = y,
+      # normalize = NULL, color_scheme = "divergent",
+      # cluster_gene = TRUE,
+      # cluster_cell = TRUE)
+    g
   }, height = 600)
 
   #disable the downloadSCECelda button if no object is loaded
@@ -1370,9 +1367,9 @@ shinyServer(function(input, output, session) {
       if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
         if (all(input$colorBarCondition %in% colnames(colData(vals$counts)))) {
           h <- input$colorBarCondition
-          L <- lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
+          L <- lapply(seq_along(h), function(i) colourGroupInput(paste0("colorGroup", i)))
           annotationColors$cols <- lapply(
-            1:length(h),
+            seq_along(h),
             function(i) {
               callModule(colourGroup, paste0("colorGroup", i), heading = h[i],
                          options = unique(unlist(colData(vals$counts)[, h[i]])))
@@ -1410,9 +1407,9 @@ shinyServer(function(input, output, session) {
       tryCatch ({
         #logFC or abs(logFC)
         if (input$applyAbslogFCDiffex == TRUE) {
-          vals$absLogFCDiffex <- abs(input$selectlogFCDiffex)
+          absLogFCDiffex <- abs(input$selectlogFCDiffex)
         } else {
-          vals$absLogFCDiffex <- input$selectlogFCDiffex
+          absLogFCDiffex <- input$selectlogFCDiffex
         }
         #for convenience, index logFC and p-val columns for all the methods
         pvalIndex <- which(grepl("*padj*", colnames(vals$diffexgenelist)))
@@ -1420,31 +1417,30 @@ shinyServer(function(input, output, session) {
         if (input$selectNGenes > nrow(vals$diffexgenelist)) {
           stop("Max value exceeded for Input.")
         }
-
         #p-Val and logFC cutoff
         if (input$applyCutoff == TRUE & input$applylogFCCutoff == TRUE) {
           if (input$selectDiffex == 'ANOVA') {
             stop("logFC is not applicable for ANOVA")
           } else {
             if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least p-value in the results is greater than the selected p-val range")
-            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
-                                                              vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
+                                                         vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
         }
         #p-Val cutoff
         else if (input$applyCutoff == TRUE) {
           if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-            vals$diffexFilterRes <- vals$diffexgenelist
+            diffexFilterRes <- vals$diffexgenelist
             stop("the min/least p-value in the results is greater than the selected p-val range")
           } else {
-            vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
+            diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
           }
         }
         #logFC cutoff
@@ -1452,26 +1448,27 @@ shinyServer(function(input, output, session) {
           if (input$selectDiffex == 'ANOVA') {
             stop("logFC is not applicable for ANOVA")
           } else  {
-            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
-              vals$diffexFilterRes <- vals$diffexgenelist
+            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
+              diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              vals$diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
+        } else {
+          diffexFilterRes <- vals$diffexgenelist
         }
-        if (is.null(vals$diffexFilterRes)){
-          vals$diffexFilterRes <- vals$diffexgenelist
+        if (is.null(diffexFilterRes)){
+          diffexFilterRes <- vals$diffexgenelist
         }
-        rowLengthFiltered <- nrow(vals$diffexFilterRes)
+        rowLengthFiltered <- nrow(diffexFilterRes)
         if (rowLengthFiltered == 0) {
           stop("You've got 0 genes after filtering.. adjust your filters accordingly")
         }
-
         if (rowLengthFiltered < input$selectNGenes) {
-          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(rowLengthFiltered), ]
+          diffexFilterRes <- diffexFilterRes[seq_len(rowLengthFiltered), ]
         } else {
-          vals$diffexFilterRes <- vals$diffexFilterRes[seq_len(input$selectNGenes), ]
+          diffexFilterRes <- diffexFilterRes[seq_len(input$selectNGenes), ]
         }
         #run plotDiffex
         if (!is.null(vals$diffexgenelist)){
@@ -1491,7 +1488,7 @@ shinyServer(function(input, output, session) {
           vals$diffexheatmapplot <- plotDiffEx(inSCE = vals$counts,
                                                useAssay = input$diffexAssay,
                                                condition = input$colorBarCondition,
-                                               geneList = rownames(vals$diffexFilterRes),
+                                               geneList = rownames(diffexFilterRes),
                                                clusterRow = input$clusterRows,
                                                clusterCol = input$clusterColumns,
                                                displayRowLabels = input$displayHeatmapRowLabels,
@@ -1608,7 +1605,7 @@ shinyServer(function(input, output, session) {
       #arrange your df according to these extracted names
       df <- df[, listColNames]
       #select columns based on the saved result selected
-      selected_cols <- sub(listColNames, "_", input$savedDiffExResults, fixed = TRUE)
+      selected_cols <- sub(listColNames[1], "_", input$savedDiffExResults, fixed = TRUE)
       #now choose the unique result
       str_match <- unique(sub("^_[^_]+_$", "", selected_cols, fixed = TRUE))
       df <- df[, which(grepl(paste0(str_match, "_"), listColNames) == TRUE)]
@@ -1638,6 +1635,7 @@ shinyServer(function(input, output, session) {
       HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
     }
   })
+
   #save biomarker in rowData() wrt name and conditions.
   observeEvent(input$saveBiomarker, {
     if (input$biomarkerName == ""){
@@ -1651,9 +1649,9 @@ shinyServer(function(input, output, session) {
                                  type = "error")
         }
         if (input$applyAbslogFC == TRUE) {
-          vals$absLogFC <- abs(input$selectlogFC)
+          absLogFC <- abs(input$selectlogFC)
         } else {
-          vals$absLogFC <- input$selectlogFC
+          absLogFC <- input$selectlogFC
         }
         if (input$selectBioNGenes > nrow(vals$diffexgenelist)) {
           stop("Max value exceeded for Input.")
@@ -1664,7 +1662,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = input$selectAdjPVal)
         } else if (input$applyBioCutoff1 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
@@ -1680,7 +1678,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = NULL)
         } else {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
