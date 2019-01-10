@@ -26,6 +26,11 @@ shinyServer(function(input, output, session) {
     diffexBmName = NULL
   )
 
+  #reactive list to store names of results given by the user.
+  diffExValues <- reactiveValues(
+    index = 0
+  )
+
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
@@ -209,7 +214,7 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
-      myValues$dList <- NULL
+      diffExValues$diffExList <- NULL
     })
   })
 
@@ -307,7 +312,7 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
-      myValues$dList <- NULL
+      diffExValues$diffExList <- NULL
     })
   })
 
@@ -344,7 +349,7 @@ shinyServer(function(input, output, session) {
         vals$absLogFCDiffex <- NULL
         vals$absLogFCDiffex <- NULL
         vals$diffexBmName <- NULL
-        myValues$dList <- NULL
+        diffExValues$diffExList <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -375,7 +380,7 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
-      myValues$dList <- NULL
+      diffExValues$diffExList <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -435,7 +440,7 @@ shinyServer(function(input, output, session) {
       vals$absLogFC <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
-      myValues$dList <- NULL
+      diffExValues$diffExList <- NULL
       updateNumSamples()
     })
   })
@@ -488,7 +493,7 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
-      myValues$dList <- NULL
+      diffExValues$diffExList <- NULL
     })
   })
 
@@ -504,7 +509,7 @@ shinyServer(function(input, output, session) {
     vals$diffexheatmapplot <- NULL
     vals$absLogFCDiffex <- NULL
     vals$diffexBmName <- NULL
-    myValues$dList <- NULL
+    diffExValues$diffExList <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -1405,11 +1410,6 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #reactive list to store names of results given by the user.
-  myValues <- reactiveValues(
-    index = 0
-  )
-
   #save results wrt to custom name
   observeEvent(input$saveResults, {
     if (input$ResultsName == ""){
@@ -1417,21 +1417,25 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("saveResults", {
         ResultsName <- gsub(" ", "_", input$ResultsName)
-        if (!is.null(myValues$dList)) {
-          if (unique(myValues$dList) == ResultsName) {
-            stop("name already exists. Please use a unique result name")
+        if (!is.null(diffExValues$diffExList)) {
+          if (ResultsName %in% diffExValues$diffExList) {
+            shinyalert::shinyalert("Error!", "name already exists. Please use a unique result name", type = "error")
           } else {
-            myValues$index <- myValues$index + 1
-            myValues$dList[myValues$index] <- ResultsName
+            diffExValues$index <- diffExValues$index + 1
+            diffExValues$diffExList[diffExValues$index] <- ResultsName
+            vals$counts <- saveDiffExResults(inSCE = vals$counts,
+                                             diffex = vals$diffexgenelist,
+                                             name = input$ResultsName,
+                                             method = input$selectDiffex)
           }
         } else {
-          myValues$index <- myValues$index + 1
-          myValues$dList[myValues$index] <- ResultsName
+          diffExValues$index <- diffExValues$index + 1
+          diffExValues$diffExList[diffExValues$index] <- ResultsName
+          vals$counts <- saveDiffExResults(inSCE = vals$counts,
+                                           diffex = vals$diffexgenelist,
+                                           name = input$ResultsName,
+                                           method = input$selectDiffex)
         }
-        vals$counts <- saveDiffExResults(inSCE = vals$counts,
-                                         diffex = vals$diffexgenelist,
-                                         name = input$ResultsName,
-                                         method = input$selectDiffex)
       })
     }
   })
@@ -1439,13 +1443,13 @@ shinyServer(function(input, output, session) {
   #dynamically create a list of names of the results
   output$savedRes <- renderUI({
     if (!is.null(vals$counts)) {
-      if (is.null(myValues$dList)) {
+      if (is.null(diffExValues$diffExList)) {
         savedObjResults <- gsub("_padj$", "", colnames(rowData(vals$counts))[grepl("_padj$", colnames(rowData(vals$counts)))])
-        myValues$index <- length(savedObjResults)
-        myValues$dList[seq_len(myValues$index)] <- savedObjResults[seq_len(myValues$index)]
+        diffExValues$index <- length(savedObjResults)
+        diffExValues$diffExList[seq_len(diffExValues$index)] <- savedObjResults[seq_len(diffExValues$index)]
       }
       selectizeInput("savedDiffExResults", "Select available results",
-                     choices = myValues$dList)
+                     choices = diffExValues$diffExList)
     }
   })
 
