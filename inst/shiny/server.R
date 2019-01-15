@@ -20,9 +20,7 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
-    absLogFC = NULL,
     diffexheatmapplot = NULL,
-    absLogFCDiffex = NULL,
     diffexBmName = NULL
   )
 
@@ -112,6 +110,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
+    updateSelectInput(session, "depthAssay", choices = currassays)
+    updateSelectInput(session, "cellsAssay", choices = currassays)
+    updateSelectInput(session, "snapshotAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -210,9 +211,7 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
     })
@@ -309,8 +308,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
     })
@@ -345,9 +342,6 @@ shinyServer(function(input, output, session) {
         vals$gsvaLimma <- NULL
         vals$visplotobject <- NULL
         vals$enrichRes <- NULL
-        vals$absLogFC <- NULL
-        vals$absLogFCDiffex <- NULL
-        vals$absLogFCDiffex <- NULL
         vals$diffexBmName <- NULL
         diffExValues$diffExList <- NULL
         #Refresh things for the clustering tab
@@ -377,8 +371,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
       #Refresh things for the clustering tab
@@ -437,8 +429,6 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
-      vals$absLogFC <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
       updateNumSamples()
@@ -491,7 +481,6 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$visplotobject <- NULL
       vals$diffexheatmapplot <- NULL
-      vals$absLogFCDiffex <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
     })
@@ -507,7 +496,6 @@ shinyServer(function(input, output, session) {
     vals$enrichRes <- NULL
     vals$visplotobject <- NULL
     vals$diffexheatmapplot <- NULL
-    vals$absLogFCDiffex <- NULL
     vals$diffexBmName <- NULL
     diffExValues$diffExList <- NULL
   })
@@ -715,6 +703,10 @@ shinyServer(function(input, output, session) {
             visGList <- input$selectvisGenes
           } else  {
             visGList <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selVisBioGenes] == 1]
+            #if Gene list > 25 choose the top 25 which is ordered according to p-val
+            if (length(visGList) > 25) {
+              visGList <- visGList[1:25]
+            }
           }
           vals$visplotobject <- visPlot(inSCE = vals$counts,
                                         useAssay = input$visAssaySelect,
@@ -806,7 +798,7 @@ shinyServer(function(input, output, session) {
     } else{
       if (input$dimRedPlotMethod == "PCA") {
         if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-          data.frame(PC = paste("PC", 1:ncol(vals$counts), sep = ""),
+          data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                      Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
         }
       }
@@ -1234,9 +1226,9 @@ shinyServer(function(input, output, session) {
       if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
         if (all(input$colorBarCondition %in% colnames(colData(vals$counts)))) {
           h <- input$colorBarCondition
-          L <- lapply(1:length(h), function(i) colourGroupInput(paste0("colorGroup", i)))
+          L <- lapply(seq_along(h), function(i) colourGroupInput(paste0("colorGroup", i)))
           annotationColors$cols <- lapply(
-            1:length(h),
+            seq_along(h),
             function(i) {
               callModule(colourGroup, paste0("colorGroup", i), heading = h[i],
                          options = unique(unlist(colData(vals$counts)[, h[i]])))
@@ -1274,9 +1266,9 @@ shinyServer(function(input, output, session) {
       tryCatch ({
         #logFC or abs(logFC)
         if (input$applyAbslogFCDiffex == TRUE) {
-          vals$absLogFCDiffex <- abs(input$selectlogFCDiffex)
+          absLogFCDiffex <- abs(input$selectlogFCDiffex)
         } else {
-          vals$absLogFCDiffex <- input$selectlogFCDiffex
+          absLogFCDiffex <- input$selectlogFCDiffex
         }
         #for convenience, index logFC and p-val columns for all the methods
         pvalIndex <- which(grepl("*padj*", colnames(vals$diffexgenelist)))
@@ -1292,12 +1284,12 @@ shinyServer(function(input, output, session) {
             if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least p-value in the results is greater than the selected p-val range")
-            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
               diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
-                                                              vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+                                                         vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
         }
@@ -1315,11 +1307,11 @@ shinyServer(function(input, output, session) {
           if (input$selectDiffex == 'ANOVA') {
             stop("logFC is not applicable for ANOVA")
           } else  {
-            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > vals$absLogFCDiffex) {
+            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
               diffexFilterRes <- vals$diffexgenelist
               stop("the min/least logFC in the results is greater than the selected logFC range")
             } else {
-              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= vals$absLogFCDiffex), ]
+              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
             }
           }
         } else {
@@ -1512,9 +1504,9 @@ shinyServer(function(input, output, session) {
                                  type = "error")
         }
         if (input$applyAbslogFC == TRUE) {
-          vals$absLogFC <- abs(input$selectlogFC)
+          absLogFC <- abs(input$selectlogFC)
         } else {
-          vals$absLogFC <- input$selectlogFC
+          absLogFC <- input$selectlogFC
         }
         if (input$selectBioNGenes > nrow(vals$diffexgenelist)) {
           stop("Max value exceeded for Input.")
@@ -1525,7 +1517,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = input$selectAdjPVal)
         } else if (input$applyBioCutoff1 == TRUE) {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
@@ -1541,7 +1533,7 @@ shinyServer(function(input, output, session) {
                                           biomarkerName = biomarkerName,
                                           method = input$selectDiffex,
                                           ntop = input$selectBioNGenes,
-                                          logFC = vals$absLogFC,
+                                          logFC = absLogFC,
                                           pVal = NULL)
         } else {
           vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
@@ -1918,11 +1910,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSubsampleDepth, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
         vals$subDepth <- DownsampleDepth(originalData = vals$counts,
+                                         useAssay = input$depthAssay,
                                          minCount = input$minCount,
                                          minCells = input$minCells,
                                          maxDepth = 10 ^ input$maxDepth,
@@ -1966,14 +1957,13 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSubsampleCells, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
         if (input$useReadCount){
           vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
-                                           totalReads = sum(counts(vals$counts)),
+                                           totalReads = sum(SummarizedExperiment::assay(vals$counts, input$cellsAssay)),
                                            minCellnum = input$minCellNum,
                                            maxCellnum = input$maxCellNum,
                                            minCountDetec = input$minCount,
@@ -1983,6 +1973,7 @@ shinyServer(function(input, output, session) {
         }
         else{
           vals$subCells <- DownsampleCells(originalData = vals$counts,
+                                           useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = input$totalReads,
                                            minCellnum = input$minCellNum,
@@ -2029,16 +2020,15 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (!("counts" %in% names(assays(vals$counts)))){
-      shinyalert::shinyalert("Error!", "An assay named counts is required for this function.", type = "error")
     } else{
       withBusyIndicatorServer("runSnapshot", {
         vals$snapshot <- iterateSimulations(originalData = vals$counts,
+                                            useAssay = input$snapshotAssay,
                                             realLabels = input$selectSnapshotCondition,
                                             totalReads = input$numReadsSnap,
                                             cells = input$numCellsSnap,
                                             iterations = input$iterationsSnap)
-        vals$effectSizes <- calcEffectSizes(countMatrix = counts(vals$counts), condition = colData(vals$counts)[, input$selectSnapshotCondition])
+        vals$effectSizes <- calcEffectSizes(countMatrix = SummarizedExperiment::assay(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
         output$Snaplot <- renderPlot({
           plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
