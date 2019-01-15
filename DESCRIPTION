@@ -21,7 +21,7 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
-    Clustering
+    Clustering, ImmunoOncology
 LazyData: TRUE
 Imports:
     ape,

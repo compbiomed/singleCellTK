@@ -21,6 +21,7 @@ library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
 library(shinycssloaders)
+library(shinythemes)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -89,8 +90,7 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
   navbarPage(
     tooltitle,
-    #bootstrap theme
-    theme = "bootstrap.min.css",
+    theme = shinytheme("flatly"),
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
     tabPanel("Data Summary & Filtering", shinyPanelFilter),
