@@ -1828,6 +1828,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+
   #count_db <- reactive(length(dbs()))
   observeEvent (input$enrichRun, {
     if (is.null(vals$counts)){
@@ -1855,11 +1856,12 @@ shinyServer(function(input, output, session) {
 
   output$enrTabs <- renderUI({
     req(vals$enrichRes)
-    nTabs <- length(dbs())
+    isoDbs <- isolate(dbs())
+    nTabs <- length(isoDbs)
     #create tabPanel with datatable in it
     myTabs <- lapply(seq_len((nTabs)), function(i) {
-      tabPanel(paste0(isolate(dbs()[i])),
-               DT::dataTableOutput(paste0(isolate(dbs()[i])))
+      tabPanel(paste0(isoDbs[i]),
+               DT::dataTableOutput(paste0(isoDbs[i]))
       )
     })
     do.call(tabsetPanel, myTabs)
