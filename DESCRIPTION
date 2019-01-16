@@ -53,7 +53,8 @@ Imports:
     shinyalert,
     circlize,
     enrichR,
-    shinycssloaders
+    shinycssloaders,
+    shinythemes
 RoxygenNote: 6.1.0
 Suggests:
     testthat,
