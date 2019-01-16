@@ -71,8 +71,7 @@ shinyPanelEnrichR <- fluidPage(
         ),
         selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB),
                        multiple = TRUE),
-        tags$b(tags$i("Note:")),
-                      tags$i("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will significant amount of time."),
+        helpText("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will take significant amount of time."),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
         br(),
         downloadButton("downloadEnrichR", "Download results")
