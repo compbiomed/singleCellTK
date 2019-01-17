@@ -9,7 +9,7 @@ shinyPanelEnrichR <- fluidPage(
         radioButtons(
           "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
                                             "Upload file" = "geneFile",
-                                            "Biomarker" = "biomarker")
+                                            "Saved top genes" = "biomarker")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
@@ -65,13 +65,13 @@ shinyPanelEnrichR <- fluidPage(
           )
         ),
         conditionalPanel(
+          helpText("To use this, first run Differential expression and save top genes."),
           condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice"),
           uiOutput("enrBioGenes")
         ),
         selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB),
                        multiple = TRUE),
-        tags$b(tags$i("Note:")),
-                      tags$i("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will significant amount of time."),
+        helpText("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will take significant amount of time."),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
         br(),
         downloadButton("downloadEnrichR", "Download results")

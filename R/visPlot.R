@@ -8,7 +8,7 @@
 #' @param method Visualization method. Available options are boxplot,
 #' scatterplot, or heatmap. Required
 #' @param condition colData annotation of the experiment. Required
-#' @param glist selected genes for visualization. Required
+#' @param glist selected genes for visualization. Maximum 25 genes. Required
 #' @param facetWrap facet wrap according to genes for boxplot, scatterplot and
 #' barplot. Default is FALSE. Optional
 #' @param scaleHMap scale heatmap expression values. Default is TRUE. Optional
@@ -82,7 +82,7 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
                                variable.name = "Genes", value.name = "assay")
     }
     if (method == "boxplot"){
-      if (length(glist) <= 16 & !is.null(condition)){
+      if (length(glist) <= 25){
         if (is.factor(annotData[, condition])){
           ggplotObj <- ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
             ggplot2::geom_violin(ggplot2::aes_string(fill = condition)) +
@@ -101,12 +101,10 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
           stop("Boxplot requires condition to be a factor, use scatterplot instead")
         }
       } else{
-        stop("Maximum limit of genes reached. Please enter 16 or less genes.")
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
       }
     } else if (method == "scatterplot"){
-      if (is.null(condition)){
-        stop("Scatterplot requires a condition, use barplot as an alternative")
-      } else{
+      if (length(glist) <= 25){
         if (!is.factor(annotData[, condition])){
           ggplotObj <- ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
             ggplot2::geom_point(ggplot2::aes_string(col = "Genes")) +
@@ -120,12 +118,14 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
           } else {
             ggplotObj
           }
-        } else{
+        } else {
           stop("Scatterplot requires a condition to be continuous, use boxplot as an alternative")
         }
+      } else {
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
       }
     } else if (method == "barplot"){
-      if (is.null(condition)){
+      if (length(glist) <= 25){
         scDF <- data.frame(t(countsData))
         scDF$sample <- rownames(scDF)
         meltDF <- reshape2::melt(scDF, id.vars = "sample", variable.name = "Genes",
@@ -135,14 +135,14 @@ visPlot <- function(inSCE, useAssay, method, condition, glist,
           ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
           ggplot2::xlab("Sample") +
           ggplot2::ylab(useAssay) +
-          ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"))
+          ggplot2::scale_fill_manual(values = distinctColors(length(glist)))
         if (facetWrap) {
-          ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
+          ggplotObj + ggplot2::facet_grid("Genes", scales = 'free')
         } else {
           ggplotObj
         }
       } else{
-        stop("Barplot doesn't require a condition, use scatterplot or boxplot instead")
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
       }
     } else if (method == "heatmap"){
       zeroSum <- which(matrixStats::rowSds(
