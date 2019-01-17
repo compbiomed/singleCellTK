@@ -5,6 +5,8 @@
 #' @param inSCE The input SCtkExperiment class object
 #' @param includeVersion Include the version number in the SCTK header. The
 #' default is TRUE.
+#' @param theme The bootswatch theme to use for the singleCellTK UI. The default
+#' is 'flatly'.
 #'
 #' @import GSVAdata Biobase DelayedArray
 #'
@@ -22,12 +24,13 @@
 #'   singleCellTK(mouseBrainSubsetSCE)
 #' }
 #'
-singleCellTK <- function(inSCE=NULL, includeVersion=TRUE) {
+singleCellTK <- function(inSCE=NULL, includeVersion=TRUE, theme='flatly') {
   appDir <- system.file("shiny", package = "singleCellTK")
   if (!is.null(inSCE) & is.null(rownames(inSCE))){
     stop("ERROR: No row names (gene names) found.")
   }
   shiny::shinyOptions(inputSCEset = inSCE)
   shiny::shinyOptions(includeVersion = includeVersion)
+  shiny::shinyOptions(theme = theme)
   shiny::runApp(appDir, display.mode = "normal")
 }
