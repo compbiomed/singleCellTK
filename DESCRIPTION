@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.3.2
+Version: 1.3.4
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre")),
              person(given=c("Tyler"), family="Faits", email="tfaits@bu.edu", role=c("aut")),
@@ -22,7 +22,7 @@ Description: Run common single cell analysis directly through your browser
 License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
-    Clustering
+    Clustering, ImmunoOncology
 LazyData: TRUE
 Imports:
     ape,
@@ -55,8 +55,9 @@ Imports:
     circlize,
     enrichR,
     celda,
-    shinycssloaders
-RoxygenNote: 6.1.0
+    shinycssloaders,
+    shinythemes
+RoxygenNote: 6.1.1
 Suggests:
     testthat,
     Rsubread,
