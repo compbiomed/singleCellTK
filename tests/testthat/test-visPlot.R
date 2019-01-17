@@ -42,13 +42,14 @@ test_that("Should fail when the condition is not a factor for boxplot", {
                "Boxplot requires condition to be a factor, use scatterplot instead")
 })
 
-test_that("Should fail when there are more than 16 genes for boxplot", {
+test_that("Should fail when there are more than 25 genes for boxplot", {
   expect_error(visPlot(mouseBrainSubsetSCE, "counts", "boxplot", "age",
                        c("Tspan12", "Tshz1", "Fnbp1l",
       "Adamts15", "Cldn12", "Rxfp1", "2310042E22Rik", "Sema3c", "Jam2",
       "Apbb1ip", "Frem2", "BC005764", "Deptor", "C130030K03Rik", "Klhl13",
-      "Tnfaip8l3", "Cmtm5")),
-      "Maximum limit of genes reached. Please enter 16 or less genes.")
+      "Tnfaip8l3", "Cmtm5", "Ascl1", "Atp1b2", "Tmem132e", "Prkar2b", "Necab1",
+      "Nr2f2", "Stmn1-rs1", "Shisa9", "Sub1", "Vat1l")),
+      "Maximum limit of genes reached. Please enter 25 or less genes.")
 })
 
 test_that("Should fail when the condition is a factor for scatterplot", {
@@ -61,12 +62,6 @@ test_that("Should fail when the condition is NULL for scatterplot", {
   expect_error(visPlot(mouseBrainSubsetSCE, "logcounts", "scatterplot", NULL,
                        c("Cmtm5", "C1qa")),
                "Please supply a condition")
-})
-
-test_that("Should fail when a condition is supplied for barplot", {
-  expect_error(visPlot(mouseBrainSubsetSCE, "logcounts", "barplot", "age",
-                       c("Cmtm5", "C1qa")),
-               "Barplot doesn't require a condition, use scatterplot or boxplot instead")
 })
 
 test_that("Should fail when the input genes supplied for a heatmap has a sum of zero counts", {

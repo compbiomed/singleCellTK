@@ -4,13 +4,16 @@
 \alias{singleCellTK}
 \title{Run the single cell analysis app}
 \usage{
-singleCellTK(inSCE = NULL, includeVersion = TRUE)
+singleCellTK(inSCE = NULL, includeVersion = TRUE, theme = "flatly")
 }
 \arguments{
 \item{inSCE}{The input SCtkExperiment class object}
 
 \item{includeVersion}{Include the version number in the SCTK header. The
 default is TRUE.}
+
+\item{theme}{The bootswatch theme to use for the singleCellTK UI. The default
+is 'flatly'.}
 }
 \value{
 The shiny app will open
