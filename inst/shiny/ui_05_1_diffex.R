@@ -48,7 +48,7 @@ shinyPanelDiffex <- fluidPage(
           tags$div(
             id = "de2",
             wellPanel(
-              numericInput("selectNGenes", "Enter Top N Genes value:", value = 500),
+              numericInput("selectNGenes", "Enter Top 'N' Genes value:", value = 500),
               uiOutput("diffexNgenes"),
               checkboxInput("applyCutoff", "Apply p-value Cutoff"),
               conditionalPanel(
@@ -62,7 +62,7 @@ shinyPanelDiffex <- fluidPage(
                 uiOutput("logFCDiffexRange"),
                 checkboxInput("applyAbslogFCDiffex", "absolute logFC value")
               ),
-              checkboxInput("applyScaleDiffex", "Scale Expression values?"),
+              checkboxInput("applyScaleDiffex", "Scale Expression values?", value = TRUE),
               br(),
               actionButton("diffex3", "Options"),
               tags$div(
@@ -122,30 +122,27 @@ shinyPanelDiffex <- fluidPage(
             )
           )
         ),
-        actionButton("diffex4", "Download Results table"),
-        shinyjs::hidden(
-          tags$div(
-            id = "de4",
-            wellPanel(downloadButton("downloadGeneList", "Download(.csv)"))
-          )
-        ),
         actionButton("diffex5", "Save Results"),
         shinyjs::hidden(
           tags$div(
             id = "de5",
             wellPanel(
-              textInput("ResultsName", "Name of Result: ", value = ""),
+              helpText("Save results in rowData() of a sctk object to use it in a current session or download the sctk object for future use"),
+              textInput("ResultsName", "Name : ", value = ""),
               withBusyIndicatorUI(actionButton("saveResults", "Save Results")),
               uiOutput("saveDiffResultsNote")
             )
           )
         ),
-        actionButton("diffex7", "Save gene list as biomarker"),
+        #this section was previously called 'biomarker'
+        actionButton("diffex7", "Save top 'N' significant genes"),
         shinyjs::hidden(
           tags$div(
             id = "de7",
             wellPanel(
-              numericInput("selectBioNGenes", "Enter top N Genes:", value = 100),
+             helpText("Save these to be used in enrichment analysis, visualise and filtering gene annotation"),
+              br(),
+              numericInput("selectBioNGenes", "Enter Top 'N' Genes value: ", value = 100),
               uiOutput("BioNgenes"),
               checkboxInput("applyBioCutoff1", "Apply p-value Cutoff"),
               conditionalPanel(
@@ -159,10 +156,17 @@ shinyPanelDiffex <- fluidPage(
                 uiOutput("logFCBioRange"),
                 checkboxInput("applyAbslogFC", "absolute logFC value")
               ),
-              textInput("biomarkerName", "Biomarker Name: ", value = ""),
+              textInput("biomarkerName", "Name : ", value = ""),
               withBusyIndicatorUI(actionButton("saveBiomarker", "Save Biomarker")),
               uiOutput("bioMarkerNote")
             )
+          )
+        ),
+        actionButton("diffex4", "Download Results table"),
+        shinyjs::hidden(
+          tags$div(
+            id = "de4",
+            wellPanel(downloadButton("downloadGeneList", "Download(.csv)"))
           )
         )
       ),
