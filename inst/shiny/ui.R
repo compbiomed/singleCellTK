@@ -64,7 +64,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
                     </button></div>")
 }
 
-if(is.null(getShinyOption("theme"))){
+if (is.null(getShinyOption("theme"))){
   shinyTheme <- "flatly"
 } else {
   shinyTheme <- getShinyOption("theme")

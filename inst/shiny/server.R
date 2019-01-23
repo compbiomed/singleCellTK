@@ -1870,15 +1870,16 @@ shinyServer(function(input, output, session) {
   #create datatables
   observe({
     req(vals$enrichRes)
+    isoDbs <- isolate(dbs())
     enrResults <- vals$enrichRes[, c(1:10)] %>%
       mutate(Database_selected =
                paste0("<a href='", vals$enrichRes[, 11],
                       "' target='_blank'>",
                       vals$enrichRes[, 1], "</a>"))
-    lapply(seq_len(length(dbs())), function(i){
-      output[[paste0(dbs()[i])]] <- DT::renderDataTable({
+    lapply(seq_len(length(isoDbs)), function(i){
+      output[[paste0(isoDbs[i])]] <- DT::renderDataTable({
         DT::datatable({
-          enr <- enrResults[which(vals$enrichRes[, 1] %in% dbs()[i]), ]
+          enr <- enrResults[which(vals$enrichRes[, 1] %in% isoDbs[i]), ]
         }, escape = FALSE, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
       })
     })
