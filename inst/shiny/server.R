@@ -21,7 +21,10 @@ shinyServer(function(input, output, session) {
     visplotobject = NULL,
     enrichRes = NULL,
     diffexheatmapplot = NULL,
-    diffexBmName = NULL
+    diffexBmName = NULL,
+    celdaMod = NULL,
+    celdaList = NULL,
+    celdaListAll = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -106,6 +109,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
     updateSelectInput(session, "celdaAssay", choices = currassays)
+    updateSelectInput(session, "celdaAssayGS", choices = currassays)
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
@@ -991,33 +995,43 @@ shinyServer(function(input, output, session) {
   # Page 3.2: Celda
   #-----------------------------------------------------------------------------
 
+  # run celda model
+
+  # onclick buttons
   shinyjs::onclick("celdaBasicSet",
                    shinyjs::toggle(id = "celdaCollapse1",
                                    anim = TRUE), add = TRUE)
   shinyjs::onclick("celdaAdvSet",
                    shinyjs::toggle(id = "celdaCollapse2",
                                    anim = TRUE), add = TRUE)
-
   shinyjs::addClass(id = "celdaBasicSet", class = "btn-block")
   shinyjs::addClass(id = "celdaAdvSet", class = "btn-block")
 
-  celdaRes <- eventReactive(input$runCelda, {
+  shinyjs::onclick("celdaBasicSetGS",
+    shinyjs::toggle(id = "celdaCollapseGS1",
+      anim = TRUE), add = TRUE)
+  shinyjs::onclick("celdaAdvSetGS",
+    shinyjs::toggle(id = "celdaCollapseGS2",
+      anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "celdaBasicSetGS", class = "btn-block")
+  shinyjs::addClass(id = "celdaAdvSetGS", class = "btn-block")
+
+
+  observeEvent(input$runCelda, {
     # is there an error or not
-    errorFlag <- FALSE
     if (is.null(vals$counts)) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-      errorFlag <- TRUE
     } else {
       # selected count matrix
       cm <- assay(vals$counts, input$celdaAssay)
     }
+
     # And each row/column of the count matrix must have at least one count
     if (sum(rowSums(cm) == 0) >= 1 | sum(colSums(cm) == 0) >= 1) {
       shinyalert::shinyalert("Error!",
         "Each row and column of the count matrix must have at least one count.
         Filter the data first.",
         type = "error")
-      errorFlag <- TRUE
     }
 
     # Ensure that number of genes / cells is never more than
@@ -1026,33 +1040,30 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!",
         "Number of cells (columns) in count matrix must be >= K",
         type = "error")
-      errorFlag <- TRUE
     }
+
     if (!is.null(input$geneModuleG) && nrow(cm) < input$geneModuleG) {
       shinyalert::shinyalert("Error!",
         "Number of genes (rows) in count matrix must be >= L",
         type = "error")
-      errorFlag <- TRUE
     }
+
     if (!is.null(input$geneModuleCG) && nrow(cm) < input$geneModuleCG) {
       shinyalert::shinyalert("Error!",
         "Number of genes (rows) in count matrix must be >= L",
         type = "error")
-      errorFlag <- TRUE
     }
+
     if (!is.null(input$cellClusterCG) && ncol(cm) < input$cellClusterCG) {
       shinyalert::shinyalert("Error!",
         "Number of cells (columns) in count matrix must be >= K",
         type = "error")
-      errorFlag <- TRUE
-    }
-    if (errorFlag == TRUE) {
-      stop()
     } else {
 
       withBusyIndicatorServer("runCelda", {
         if (input$celdaModel == "celda_C") {
-          cres <- celda_C(counts = assay(vals$counts, input$celdaAssay),
+          vals$celdaMod <- celda_C(counts = assay(vals$counts,
+            input$celdaAssay),
             K = input$cellClusterC,
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
@@ -1062,13 +1073,13 @@ shinyServer(function(input, output, session) {
             split.on.iter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
-            #cores = input$celdaCores)
-          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
+          #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
           updateColDataNames()
-          cres
 
         } else if (input$celdaModel == "celda_G") {
-          cres <- celda_G(counts = assay(vals$counts, input$celdaAssay),
+          vals$celdaMod <- celda_G(counts = assay(vals$counts,
+            input$celdaAssay),
             L = input$geneModuleG,
             beta = input$celdaBeta,
             delta = input$celdaDelta,
@@ -1078,13 +1089,13 @@ shinyServer(function(input, output, session) {
             split.on.iter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
-            #cores = input$celdaCores)
-          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
+          #cores = input$celdaCores)
+          rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
           updateFeatureAnnots()
-          cres
 
         } else if (input$celdaModel == "celda_CG") {
-          cres <- celda_CG(counts = assay(vals$counts, input$celdaAssay),
+          vals$celdaMod <- celda_CG(counts = assay(vals$counts,
+            input$celdaAssay),
             K = input$cellClusterCG,
             L = input$geneModuleCG,
             alpha = input$celdaAlpha,
@@ -1097,39 +1108,52 @@ shinyServer(function(input, output, session) {
             split.on.iter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
-            #cores = input$celdaCores)
-          colData(vals$counts)$celdaCellCluster <- cres@clusters$z
-          rowData(vals$counts)$celdaGeneModule <- cres@clusters$y
+          #cores = input$celdaCores)
+          colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
+          rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
           updateColDataNames()
           updateFeatureAnnots()
-          cres
         }
       })
     }
   })
 
-  output$celdaPlot <- renderPlot({
-    #model <- celdaRes()$res.list[[1]]
+  # show celda heatmap
+  observeEvent(input$renderHeatmap, {
+    #celdaHeatmap <- eventReactive(input$showHeatmap, {
 
-    # add celda labels to colData and rowData of sctke object
-    # use column name "celdaCellCluster" and "celdaGeneModule" for now,
-    # need update when celda outputs sce objects so it matches
+    # is there an error or not
+    if (is.null(vals$celdaMod)) {
+      shinyalert::shinyalert("Error!",
+        "Celda Model Not Found.",
+        type = "error")
+    } else {
 
-    # z <- celdaRes()@clusters$z
-    # y <- celdaRes()@clusters$y
-    # norm.counts <- isolate(normalizeCounts(assay(vals$counts,
-    #   input$celdaAssay),
-    #   normalize = "cpm"))
-    model <- celdaRes()
-    g <- celdaHeatmap(counts = assay(vals$counts,
-      input$celdaAssay),
-      celda.mod = model)
-      # z = z, y = y,
-      # normalize = NULL, color_scheme = "divergent",
-      # cluster_gene = TRUE,
-      # cluster_cell = TRUE)
-    g
-  }, height = 600)
+      withBusyIndicatorServer("renderHeatmap",
+        output$celdaHeatmap <- renderPlot({
+          #model <- celdaRes()$res.list[[1]]
+
+          # add celda labels to colData and rowData of sctke object
+          # use column name "celdaCellCluster" and "celdaGeneModule" for now,
+          # need update when celda outputs sce objects so it matches
+
+          # z <- celdaRes()@clusters$z
+          # y <- celdaRes()@clusters$y
+          # norm.counts <- isolate(normalizeCounts(assay(vals$counts,
+          #   input$celdaAssay),
+          #   normalize = "cpm"))
+          g <- celdaHeatmap(counts = assay(vals$counts,
+            input$celdaAssay),
+            celda.mod = vals$celdaMod)
+          # z = z, y = y,
+          # normalize = NULL, color_scheme = "divergent",
+          # cluster_gene = TRUE,
+          # cluster_cell = TRUE)
+          g
+        }, height = 600)
+      )}
+  })
+
 
   #disable the downloadSCECelda button if no object is loaded
   isAssayResultCelda <- reactive(is.null(vals$counts))
@@ -1143,11 +1167,223 @@ shinyServer(function(input, output, session) {
 
   output$downloadSCECelda <- downloadHandler(
     filename <- function() {
-      paste("SCE-", Sys.Date(), ".rds", sep = "")
+      paste("SCE_", Sys.Date(), ".rds", sep = "")
     },
     content <- function(file) {
       saveRDS(vals$counts, file)
     })
+
+
+  # celda grid search
+  observeEvent(input$runCeldaGS, {
+    # is there an error or not
+    if (is.null(vals$counts)) {
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      # selected count matrix
+      cm <- assay(vals$counts, input$celdaAssay)
+    }
+
+    # And each row/column of the count matrix must have at least one count
+    if (sum(rowSums(cm) == 0) >= 1 | sum(colSums(cm) == 0) >= 1) {
+      shinyalert::shinyalert("Error!",
+        "Each row and column of the count matrix must have at least one count.
+        Filter the data first.",
+        type = "error")
+    }
+
+    # Ensure that number of genes / cells is never more than
+    # the number of requested clusters for each
+    if (!is.null(input$gsRangeK) && ncol(cm) < max(input$gsRangeK)) {
+      shinyalert::shinyalert("Error!",
+        "Number of cells (columns) in count matrix must be >= K",
+        type = "error")
+    }
+
+    if (!is.null(input$gsRangeL) && nrow(cm) < max(input$gsRangeL)) {
+      shinyalert::shinyalert("Error!",
+        "Number of genes (rows) in count matrix must be >= L",
+        type = "error")
+    }
+
+    if (!is.null(input$gsRangeKcg) && ncol(cm) < max(input$gsRangeKcg)) {
+      shinyalert::shinyalert("Error!",
+        "Number of cells (columns) in count matrix must be >= K",
+        type = "error")
+    }
+
+    if (!is.null(input$gsRangeLcg) && nrow(cm) < max(input$gsRangeLcg)) {
+      shinyalert::shinyalert("Error!",
+        "Number of genes (rows) in count matrix must be >= L",
+        type = "error")
+    }
+
+    withBusyIndicatorServer("runCeldaGS", {
+      if (input$celdaModelGS == "celda_C") {
+        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
+          input$celdaAssay),
+          model = input$celdaModelGS,
+          params.test = list(K = seq(input$GSRangeK[1],
+            input$GSRangeK[2],
+            input$interK)),
+          max.iter = input$celdaMaxIterGS,
+          nchains = input$celdaNChainsGS,
+          cores = input$celdaCoresGS,
+          best.only = TRUE)
+          #verbose = input$celdaGSVerbose)
+
+        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+          "K",
+          vals$celdaList@run.params[["K"]],
+          sep = "_")
+
+        if (is.null(vals$celdaListAll)) {
+          vals$celdaListAll <- list(vals$celdaList@res.list)
+          names(vals$celdaListAll) <- paste(input$celdaModelGS,
+            "K", input$GSRangeK[1],
+            input$GSRangeK[2],
+            input$interK,
+            sep = "_")
+        } else {
+          vals$celdaListAll[[paste(input$celdaModelGS,
+            "K", input$GSRangeK[1],
+            input$GSRangeK[2],
+            input$interK,
+            sep = "_")]] <- vals$celdaList@res.list
+        }
+
+      } else if (input$celdaModelGS == "celda_G") {
+        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
+          input$celdaAssay),
+          model = input$celdaModelGS,
+          params.test = list(L = seq(input$GSRangeL[1],
+            input$GSRangeL[2],
+            input$interL)),
+          max.iter = input$celdaMaxIterGS,
+          nchains = input$celdaNChainsGS,
+          cores = input$celdaCoresGS,
+          best.only = TRUE)
+          #verbose = input$celdaGSVerbose)
+
+        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+          "L",
+          vals$celdaList@run.params[["L"]],
+          sep = "_")
+
+        if (is.null(vals$celdaListAll)) {
+          vals$celdaListAll <- list(vals$celdaList@res.list)
+          names(vals$celdaListAll) <- paste(input$celdaModelGS,
+            "L", input$GSRangeL[1],
+            input$GSRangeL[2],
+            input$interL,
+            sep = "_")
+        } else {
+          vals$celdaListAll[[paste(input$celdaModelGS,
+            "L", input$GSRangeL[1],
+            input$GSRangeL[2],
+            input$interL,
+            sep = "_")]] <- vals$celdaList@res.list
+        }
+
+      } else if (input$celdaModelGS == "celda_CG") {
+        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
+          input$celdaAssay),
+          model = input$celdaModelGS,
+          params.test = list(K = seq(input$GSRangeKCG[1],
+            input$GSRangeKCG[2],
+            input$interKCG),
+            L = seq(input$GSRangeLCG[1],
+              input$GSRangeLCG[2],
+              input$interLCG)),
+          max.iter = input$celdaMaxIterGS,
+          nchains = input$celdaNChainsGS,
+          cores = input$celdaCoresGS,
+          best.only = TRUE)
+          #verbose = input$celdaGSVerbose)
+
+        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+          "K",
+          vals$celdaList@run.params[["K"]],
+          "L",
+          vals$celdaList@run.params[["L"]],
+          sep = "_")
+
+        if (is.null(vals$celdaListAll)) {
+          vals$celdaListAll <- list(vals$celdaList@res.list)
+          names(vals$celdaListAll) <- paste(input$celdaModelGS,
+            "K", input$GSRangeKCG[1],
+            input$GSRangeKCG[2],
+            input$interKCG,
+            "L", input$GSRangeLCG[1],
+            input$GSRangeLCG[2],
+            input$interLCG,
+            sep = "_")
+        } else {
+          vals$celdaListAll[[paste(input$celdaModelGS,
+            "K", input$GSRangeKCG[1],
+            input$GSRangeKCG[2],
+            input$interKCG,
+            "L", input$GSRangeLCG[1],
+            input$GSRangeLCG[2],
+            input$interLCG,
+            sep = "_")]] <- vals$celdaList@res.list
+        }
+      }
+
+      # if (!is.null(vals$celdaListAll)) {
+      #   updateSelectInput(session, "celdaSelectGS",
+      #     choices = vals$celdaListAll)
+      # }
+
+    })
+  })
+
+
+  # show celda perplexity plot
+  observeEvent(input$renderPerplexityPlot, {
+    # is there an error or not
+    if (is.null(vals$celdaList)) {
+      shinyalert::shinyalert("Error!",
+        "Celda List Not Found.",
+        type = "error")
+    } else {
+      withBusyIndicatorServer("renderPerplexityPlot", {
+        vals$celdaList <- resamplePerplexity(counts = assay(vals$counts,
+          input$celdaAssay),
+          celda.list = vals$celdaList)
+        output$celdaPerplexityPlot <- renderPlot({
+          g <- plotGridSearchPerplexity(celda.list = vals$celdaList)
+          # z = z, y = y,
+          # normalize = NULL, color_scheme = "divergent",
+          # cluster_gene = TRUE,
+          # cluster_cell = TRUE)
+          g
+        }, height = 600)
+      })}
+  })
+
+
+  # download all celda lists
+  # disable the downloadCeldaList button if no celda list is present
+  isAssayResultCelda <- reactive(is.null(vals$celdaListAll))
+  observe({
+    if (isAssayResultCelda()) {
+      shinyjs::disable("downloadAllCeldaList")
+    } else {
+      shinyjs::enable("downloadAllCeldaList")
+    }
+  })
+
+  output$downloadCeldaList <- downloadHandler(
+    filename <- function() {
+      paste("Celda_All_Lists_", Sys.Date(), ".rds", sep = "")
+    },
+    content <- function(file) {
+      saveRDS(vals$celdaListAll, file)
+    })
+
+
+
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction

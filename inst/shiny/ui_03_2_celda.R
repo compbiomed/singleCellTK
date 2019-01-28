@@ -1,159 +1,333 @@
 shinyPanelCelda <- fluidPage(
+  useShinyalert(),
   tags$div(
     class = "container",
     h1("celda: CEllular Latent Dirichlet Allocation"),
     h5(tags$a(href = "https://github.com/campbio/celda",
-              "(help)", target = "_blank")),
-    fluidRow(
-      sidebarLayout(
-        sidebarPanel(
-          # SHINYJS ACCORDION --------------------------
-          # Section 1 - Basic Settings
-          actionButton("celdaBasicSet", "Basic Settings"),
-          # open by default
-          tags$div(id = "celdaCollapse1",
-            wellPanel(
-              selectInput("celdaAssay", "Select Assay:", currassays),
-              selectInput("celdaModel",
-                "Select Celda Model:",
-                c("celda_C", "celda_G", "celda_CG"),
-                selected = "celda_CG"),
-              # c("celda_C"),
-              # selected = "celda_C"),
-              conditionalPanel(
-                condition = sprintf("input['%s'] == 'celda_C'", "celdaModel"),
-                numericInput("cellClusterC",
-                  label = "Number of Cell Clusters (K):",
-                  value = 2,
-                  min = 1,
-                  max = 100000,
-                  step = 1)
-              ),
-              conditionalPanel(
-                condition = sprintf("input['%s'] == 'celda_G'", "celdaModel"),
-                numericInput("geneModuleG",
-                  label = "Number of Gene Modules (L):",
-                  value = 2,
-                  min = 1,
-                  max = 100000,
-                  step = 1)
-              ),
-              conditionalPanel(
-                condition = sprintf("input['%s'] == 'celda_CG'", "celdaModel"),
-                numericInput("cellClusterCG",
-                  label = "Number of Cell Clusters (K):",
-                  value = 2,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
-                numericInput("geneModuleCG",
-                  label = "Number of Gene Modules (L):",
-                  value = 2,
-                  min = 1,
-                  max = 100000,
-                  step = 1))
-            )
-          ),
-          # Section 2 - Advanced Settings
-          actionButton("celdaAdvSet", "Advanced Settings"),
-          shinyjs::hidden(
-            tags$div(id = "celdaCollapse2",
-              wellPanel(
-                conditionalPanel(
-                  condition = sprintf("input['%s'] == 'celda_C' ||
-                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                  selectInput("celdaAlgorithm",
-                    "Select Algorithm:",
-                    list("Expectation Maximization" = "EM",
-                      "Gibbs Sampling" = "Gibbs"),
-                    selected = "Expectation Maximization")
+      "(help)", target = "_blank")),
+    tabsetPanel(
+      tabPanel(
+        "Celda Clustering",
+        wellPanel(
+          br(),
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                # SHINYJS ACCORDION --------------------------
+                # Section 1 - Basic Settings
+                actionButton("celdaBasicSet", "Basic Settings"),
+                # open by default
+                tags$div(id = "celdaCollapse1",
+                  wellPanel(
+                    selectInput("celdaAssay", "Select Assay:",
+                      currassays),
+                    selectInput("celdaModel",
+                      "Select Celda Model:",
+                      c("celda_C", "celda_G", "celda_CG"),
+                      selected = "celda_CG"),
+                    # c("celda_C"),
+                    # selected = "celda_C"),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_C'",
+                        "celdaModel"),
+                      numericInput("cellClusterC",
+                        label = "Number of Cell Clusters (K):",
+                        value = 2,
+                        min = 1,
+                        max = 100000,
+                        step = 1)
+                    ),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_G'",
+                        "celdaModel"),
+                      numericInput("geneModuleG",
+                        label = "Number of Gene Modules (L):",
+                        value = 2,
+                        min = 1,
+                        max = 100000,
+                        step = 1)
+                    ),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_CG'",
+                        "celdaModel"),
+                      numericInput("cellClusterCG",
+                        label = "Number of Cell Clusters (K):",
+                        value = 2,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("geneModuleCG",
+                        label = "Number of Gene Modules (L):",
+                        value = 2,
+                        min = 1,
+                        max = 100000,
+                        step = 1))
+                  )
                 ),
-                conditionalPanel(
-                  condition = sprintf("input['%s'] == 'celda_C' ||
+                # Section 2 - Advanced Settings
+                actionButton("celdaAdvSet", "Advanced Settings"),
+                shinyjs::hidden(
+                  tags$div(id = "celdaCollapse2",
+                    wellPanel(
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'celda_C' ||
                   input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                  numericInput("celdaAlpha",
-                    label = "Alpha",
-                    value = 1,
-                    min = 0.00000001,
-                    max = 100000)
-                  ),
-                numericInput("celdaBeta",
-                  label = "Beta",
-                  value = 1,
-                  min = 0.00000001,
-                  max = 100000),
-                conditionalPanel(
-                  condition = sprintf("input['%s'] == 'celda_G' ||
+                        selectInput("celdaAlgorithm",
+                          "Select Algorithm:",
+                          list("Expectation Maximization" = "EM",
+                            "Gibbs Sampling" = "Gibbs"),
+                          selected = "Expectation Maximization")
+                      ),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'celda_C' ||
                   input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                  numericInput("celdaDelta",
-                    label = "Delta:",
-                    value = 1,
-                    min = 0.00000001,
-                    max = 100000),
-                  numericInput("celdaGamma",
-                    label = "Gamma:",
-                    value = 1,
-                    min = 0.00000001,
-                    max = 100000)
-                  ),
-                numericInput("celdaMaxIter",
-                  label = "Maximum Number of Iterations:",
-                  value = 200,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
-                numericInput("celdaStopIter",
-                  label = "Number of Converging Iterations for Gibbs sampler to
+                        numericInput("celdaAlpha",
+                          label = "Alpha",
+                          value = 1,
+                          min = 0.00000001,
+                          max = 100000)
+                      ),
+                      numericInput("celdaBeta",
+                        label = "Beta",
+                        value = 1,
+                        min = 0.00000001,
+                        max = 100000),
+                      conditionalPanel(
+                        condition = sprintf("input['%s'] == 'celda_G' ||
+                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
+                        numericInput("celdaDelta",
+                          label = "Delta:",
+                          value = 1,
+                          min = 0.00000001,
+                          max = 100000),
+                        numericInput("celdaGamma",
+                          label = "Gamma:",
+                          value = 1,
+                          min = 0.00000001,
+                          max = 100000)
+                      ),
+                      numericInput("celdaMaxIter",
+                        label = "Maximum Number of Iterations:",
+                        value = 200,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaStopIter",
+                        label = "Number of Converging Iterations for Gibbs sampler to
                   stop:",
-                  value = 10,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
-                numericInput("celdaSplitIter",
-                  label = "Split on Every This Number of Iteration:",
-                  value = 10,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
-                numericInput("celdaNChains",
-                  label = "Number of Gibbs Sampling chains to run for every K/L
-                  combination:",
-                  value = 1,
-                  min = 1,
-                  max = 100000,
-                  step = 1),
-                # numericInput("celdaCores",
-                #   label = "Number of Cores used for parallel computing:",
-                #   value = 1,
-                #   min = 1,
-                #   max = 100000,
-                #   step = 1),
-                numericInput("celdaSeed",
-                  label = "Base Seed For Random Number Generation:",
-                  value = 12345,
-                  min = 1,
-                  max = 100000,
-                  step = 1)
+                        value = 10,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaSplitIter",
+                        label = "Split on Every This Number of Iteration:",
+                        value = 10,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaNChains",
+                        label = "Number of random cluster initializations
+                        for every K/L combination:",
+                        value = 3,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      # numericInput("celdaCores",
+                      #   label = "Number of Cores used for parallel computing:",
+                      #   value = 1,
+                      #   min = 1,
+                      #   max = 100000,
+                      #   step = 1),
+                      numericInput("celdaSeed",
+                        label = "Base Seed For Random Number Generation:",
+                        value = 12345,
+                        min = 1,
+                        max = 100000,
+                        step = 1)
+                    )
+                  )
+                ),
+                tags$hr(),
+                withBusyIndicatorUI(actionButton(inputId = "runCelda",
+                  label = "Run Celda")),
+                withBusyIndicatorUI(actionButton(inputId = "renderHeatmap",
+                  label = "Render Heatmap")),
+                tags$hr(),
+                downloadButton("downloadSCECelda", "Download SCtkExperiment")
+              ),
+              mainPanel(
+                conditionalPanel(
+                  condition = sprintf("input['%s'] ==
+                  'celda_C' || input['%s'] ==
+                    'celda_G' || input['%s'] == 'celda_CG'",
+                    "celdaModel",
+                    "celdaModel",
+                    "celdaModel"),
+                  plotOutput("celdaHeatmap", height = "600px")
                 )
               )
-            ),
-          tags$hr(),
-          withBusyIndicatorUI(actionButton(inputId = "runCelda",
-            label = "Run celda")),
-          tags$hr(),
-          downloadButton("downloadSCECelda", "Download SCtkExperiment")
-        ),
-        mainPanel(
-          conditionalPanel(
-            condition = sprintf("input['%s'] == 'celda_C' || input['%s'] ==
-              'celda_G' || input['%s'] == 'celda_CG'",
-              "celdaModel",
-              "celdaModel",
-              "celdaModel"),
-            plotOutput("celdaPlot", height = "600px")
+            )
+          )
+        )
+      ),
+      tabPanel(
+        "Celda Grid Search",
+        wellPanel(
+          br(),
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                # SHINYJS ACCORDION --------------------------
+                # Section 1 - Basic Settings
+                actionButton("celdaBasicSetGS", "Basic Settings"),
+                # open by default
+                tags$div(id = "celdaCollapseGS1",
+                  wellPanel(
+                    selectInput("celdaAssayGS", "Select Assay:",
+                      currassays),
+                    selectInput("celdaModelGS",
+                      "Select Celda Model:",
+                      c("celda_C", "celda_G", "celda_CG"),
+                      selected = "celda_CG"),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_C'",
+                        "celdaModelGS"),
+
+                      sliderInput("GSRangeK",
+                        "Range of Cell Clusters (K):",
+                        min = 2, max = 200,
+                        value = c(2, 10),
+                        step = 1),
+
+                      numericInput("interK",
+                        label = "Cell Cluster Search Interval:",
+                        value = 2,
+                        min = 1,
+                        max = 200,
+                        step = 1)
+                    ),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_G'",
+                        "celdaModelGS"),
+                      sliderInput("GSRangeL", "Range of Gene Modules (L):",
+                        min = 2, max = 200,
+                        value = c(2, 10),
+                        step = 1),
+                      numericInput("interL",
+                        label = "Gene module Search Interval:",
+                        value = 2,
+                        min = 1,
+                        max = 200,
+                        step = 1)
+                    ),
+                    conditionalPanel(
+                      condition = sprintf("input['%s'] == 'celda_CG'",
+                        "celdaModelGS"),
+                      sliderInput("GSRangeKCG",
+                        "Range of Cell Clusters (K):",
+                        min = 2, max = 200,
+                        value = c(2, 10),
+                        step = 1),
+                      numericInput("interKCG",
+                        label = "Cell Cluster Search Interval:",
+                        value = 2,
+                        min = 1,
+                        max = 200,
+                        step = 1),
+                      sliderInput("GSRangeLCG", "Range of Gene Modules (L):",
+                        min = 2, max = 200,
+                        value = c(2, 10),
+                        step = 1),
+                      numericInput("interLCG",
+                        label = "Gene module Search Interval:",
+                        value = 2,
+                        min = 1,
+                        max = 200,
+                        step = 1)
+                    )
+                    # selectInput("celdaGSVerbose", "Verbose:",
+                    #   c(TRUE, FALSE),
+                    #   selected = FALSE
+                    # )
+                  )
+                ),
+                # Section 2 - Advanced Settings
+                actionButton("celdaAdvSetGS", "Advanced Settings"),
+                shinyjs::hidden(
+                  tags$div(id = "celdaCollapseGS2",
+                    wellPanel(
+                      numericInput("celdaMaxIterGS",
+                        label = "Maximum Number of Iterations:",
+                        value = 200,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaNChainsGS",
+                        label = "Number of Random Cluster Initializations
+                          For Every K/L Combination:",
+                        value = 3,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaCoresGS",
+                        label = "Number of Cores To Use For
+                          Parallel Estimation of Chains:",
+                        value = 1,
+                        min = 1,
+                        max = 100000,
+                        step = 1),
+                      numericInput("celdaSeedGS",
+                        label = "Base Seed For Random Number Generation:",
+                        value = 12345,
+                        min = 1,
+                        max = 100000,
+                        step = 1)
+                    )
+                  )
+                ),
+                tags$hr(),
+                withBusyIndicatorUI(actionButton(inputId = "runCeldaGS",
+                  label = "Run Celda Grid Search")),
+                # selectInput("celdaSelectGS",
+                #   "Select Celda Model:",
+                #   NULL),
+                tags$hr(),
+                withBusyIndicatorUI(actionButton(
+                  inputId = "renderPerplexityPlot",
+                  label = "Render Perplexity Plot")),
+                tags$hr(),
+                downloadButton("downloadAllCeldaLists",
+                  "Download All Celda Lists")
+              ),
+              mainPanel(
+                conditionalPanel(
+                  condition = sprintf("input['%s'] ==
+                  'celda_C' || input['%s'] ==
+                    'celda_G' || input['%s'] == 'celda_CG'",
+                    "celdaModel",
+                    "celdaModel",
+                    "celdaModel"),
+                  plotOutput("celdaPerplexityPlot", height = "600px")
+                )
+              )
             )
           )
         )
       )
+      # tabPanel(
+      #   "Visualize",
+      #   wellPanel(
+      #     br(),
+      #     fluidRow(
+      #       tabsetPanel(
+      #         tabPanel("t-SNE"),
+      #         tabPanel("Probability Map")
+      #       )
+      #     )
+      #   )
+      # )
     )
   )
+)
+
+
