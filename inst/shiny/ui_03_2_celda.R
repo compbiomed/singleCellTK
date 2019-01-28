@@ -192,16 +192,16 @@ shinyPanelCelda <- fluidPage(
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'celda_C'",
                         "celdaModelGS"),
-
+                      
                       sliderInput("GSRangeK",
                         "Range of Cell Clusters (K):",
                         min = 2, max = 200,
                         value = c(2, 10),
                         step = 1),
-
+                      
                       numericInput("interK",
-                        label = "Cell Cluster Search Interval:",
-                        value = 2,
+                        label = "Cell Cluster Increment Step Size:",
+                        value = 1,
                         min = 1,
                         max = 200,
                         step = 1)
@@ -214,8 +214,8 @@ shinyPanelCelda <- fluidPage(
                         value = c(2, 10),
                         step = 1),
                       numericInput("interL",
-                        label = "Gene module Search Interval:",
-                        value = 2,
+                        label = "Gene Module Search Increment Step Size:",
+                        value = 1,
                         min = 1,
                         max = 200,
                         step = 1)
@@ -229,8 +229,8 @@ shinyPanelCelda <- fluidPage(
                         value = c(2, 10),
                         step = 1),
                       numericInput("interKCG",
-                        label = "Cell Cluster Search Interval:",
-                        value = 2,
+                        label = "Cell Cluster Search Increment Step Size:",
+                        value = 1,
                         min = 1,
                         max = 200,
                         step = 1),
@@ -239,8 +239,8 @@ shinyPanelCelda <- fluidPage(
                         value = c(2, 10),
                         step = 1),
                       numericInput("interLCG",
-                        label = "Gene module Search Interval:",
-                        value = 2,
+                        label = "Gene module Search Increment Step Size:",
+                        value = 1,
                         min = 1,
                         max = 200,
                         step = 1)
@@ -288,13 +288,19 @@ shinyPanelCelda <- fluidPage(
                 tags$hr(),
                 withBusyIndicatorUI(actionButton(inputId = "runCeldaGS",
                   label = "Run Celda Grid Search")),
-                # selectInput("celdaSelectGS",
-                #   "Select Celda Model:",
-                #   NULL),
-                tags$hr(),
                 withBusyIndicatorUI(actionButton(
                   inputId = "renderPerplexityPlot",
                   label = "Render Perplexity Plot")),
+                tags$hr(),
+                selectInput("celdaSelectGSList",
+                  "Select Celda Grid Search List:",
+                  NULL),
+                selectInput("celdaSelectGSMod",
+                  "Select Celda Model:",
+                  NULL),
+                withBusyIndicatorUI(actionButton(
+                  inputId = "confirmCeldaModel",
+                  label = "Confirm Selection")),
                 tags$hr(),
                 downloadButton("downloadAllCeldaLists",
                   "Download All Celda Lists")
@@ -313,19 +319,71 @@ shinyPanelCelda <- fluidPage(
             )
           )
         )
+      ),
+      tabPanel(
+        "Visualize",
+        wellPanel(
+          fluidRow(
+            tabsetPanel(
+              tabPanel("t-SNE",
+                wellPanel(
+                  fluidRow(
+                    sidebarLayout(
+                      sidebarPanel(
+                        # SHINYJS ACCORDION --------------------------
+                        # Settings
+                        actionButton("celdatSNESet", "Settings"),
+                        # closed by default
+                        #shinyjs::hidden(
+                          tags$div(id = "celdaCollapsetSNE",
+                            wellPanel(
+                              selectInput("celdaAssay", "Select Assay:",
+                                currassays),
+                              
+                              numericInput("celdatSNEmaxCells",
+                                label =
+                                  "Max.cells: Maximum number of cells to plot",
+                                value = 25000,
+                                min = 1,
+                                step = 1),
+                              
+                              numericInput("celdatSNEminClusterSize",
+                                label =
+                                  "Min.cluster.size: Do not subsample cell
+                              clusters below this threshold",
+                                value = 100,
+                                min = 1,
+                                step = 1),
+                              
+                              numericInput("celdatSNEPerplexity",
+                                label =
+                                  "Perplexity: ",
+                                value = 20),
+                              
+                              numericInput("celdatSNEmaxIter",
+                                label =
+                                  "Max.iter: Maximum number of iterations in
+                              tSNE generation",
+                                value = 2500),
+                              
+                              numericInput("celdatSNESeed",
+                                label =
+                                  "Seed: ",
+                                value = 12345)
+                            )
+                          )
+                        #)
+                      ), mainPanel(
+                        plotOutput("celdatSNEPlot", height = "600px")
+                      )
+                    )
+                  )
+                )
+              ), tabPanel("Probability Map")
+            )
+          )
+        )
       )
-      # tabPanel(
-      #   "Visualize",
-      #   wellPanel(
-      #     br(),
-      #     fluidRow(
-      #       tabsetPanel(
-      #         tabPanel("t-SNE"),
-      #         tabPanel("Probability Map")
-      #       )
-      #     )
-      #   )
-      # )
     )
   )
 )

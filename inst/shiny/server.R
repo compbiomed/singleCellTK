@@ -24,7 +24,8 @@ shinyServer(function(input, output, session) {
     diffexBmName = NULL,
     celdaMod = NULL,
     celdaList = NULL,
-    celdaListAll = NULL
+    celdaListAll = NULL,
+    celdaListAllNames = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -1015,6 +1016,11 @@ shinyServer(function(input, output, session) {
       anim = TRUE), add = TRUE)
   shinyjs::addClass(id = "celdaBasicSetGS", class = "btn-block")
   shinyjs::addClass(id = "celdaAdvSetGS", class = "btn-block")
+  
+  shinyjs::onclick("celdatSNESet",
+    shinyjs::toggle(id = "celdaCollapsetSNE",
+      anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
 
 
   observeEvent(input$runCelda, {
@@ -1244,12 +1250,19 @@ shinyServer(function(input, output, session) {
             input$GSRangeK[2],
             input$interK,
             sep = "_")
+          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
             "K", input$GSRangeK[1],
             input$GSRangeK[2],
             input$interK,
             sep = "_")]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[paste(input$celdaModelGS,
+            "K", input$GSRangeK[1],
+            input$GSRangeK[2],
+            input$interK,
+            sep = "_")]] <- names(vals$celdaList@res.list)
         }
 
       } else if (input$celdaModelGS == "celda_G") {
@@ -1277,12 +1290,19 @@ shinyServer(function(input, output, session) {
             input$GSRangeL[2],
             input$interL,
             sep = "_")
+          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
             "L", input$GSRangeL[1],
             input$GSRangeL[2],
             input$interL,
             sep = "_")]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[paste(input$celdaModelGS,
+            "L", input$GSRangeL[1],
+            input$GSRangeL[2],
+            input$interL,
+            sep = "_")]] <- names(vals$celdaList@res.list)
         }
 
       } else if (input$celdaModelGS == "celda_CG") {
@@ -1318,6 +1338,8 @@ shinyServer(function(input, output, session) {
             input$GSRangeLCG[2],
             input$interLCG,
             sep = "_")
+          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
             "K", input$GSRangeKCG[1],
@@ -1327,15 +1349,27 @@ shinyServer(function(input, output, session) {
             input$GSRangeLCG[2],
             input$interLCG,
             sep = "_")]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[paste(input$celdaModelGS,
+            "K", input$GSRangeKCG[1],
+            input$GSRangeKCG[2],
+            input$interKCG,
+            "L", input$GSRangeLCG[1],
+            input$GSRangeLCG[2],
+            input$interLCG,
+            sep = "_")]] <- names(vals$celdaList@res.list)
         }
       }
 
-      # if (!is.null(vals$celdaListAll)) {
-      #   updateSelectInput(session, "celdaSelectGS",
-      #     choices = vals$celdaListAll)
-      # }
-
+      if (!is.null(vals$celdaListAll)) {
+        updateSelectInput(session, "celdaSelectGSList",
+          choices = names(vals$celdaListAllNames))
+      }
     })
+  })
+  
+  observeEvent(input$celdaSelectGSList, {
+    updateSelectInput(session, "celdaSelectGSMod",
+      choices = vals$celdaListAllNames[[input$celdaSelectGSList]])
   })
 
 
@@ -1361,22 +1395,57 @@ shinyServer(function(input, output, session) {
         }, height = 600)
       })}
   })
-
+  
+  # Confirm celda model
+  # disable the Confirm Selection button if no celda list is present
+  isCeldaModelSelected <- reactive(is.null(vals$celdaListAll))
+  observe({
+    if (isCeldaModelSelected()) {
+      shinyjs::disable("confirmCeldaModel")
+    } else {
+      shinyjs::enable("confirmCeldaModel")
+    }
+  })
+  
+  
+  observeEvent(input$confirmCeldaModel, {
+    withBusyIndicatorServer("confirmCeldaModel", {
+      vals$celdaMod <- vals$celdaListAll[[
+        input$celdaSelectGSList]][[input$celdaSelectGSMod]]
+      # update data annotations
+      if (paste(strsplit(input$celdaSelectGSMod,
+        "_")[[1]][1:2], collapse  = "_") == "celda_C") {
+        colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
+        updateColDataNames()
+      } else if (paste(strsplit(input$celdaSelectGSMod,
+        "_")[[1]][1:2], collapse  = "_") == "celda_G") {
+        rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
+        updateFeatureAnnots()
+      } else if (paste(strsplit(input$celdaSelectGSMod,
+        "_")[[1]][1:2], collapse  = "_") == "celda_CG") {
+        colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
+        rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
+        updateColDataNames()
+        updateFeatureAnnots()
+      }
+    })
+  })
+  
 
   # download all celda lists
   # disable the downloadCeldaList button if no celda list is present
-  isAssayResultCelda <- reactive(is.null(vals$celdaListAll))
+  isAssayResultCeldaList <- reactive(is.null(vals$celdaListAll))
   observe({
-    if (isAssayResultCelda()) {
-      shinyjs::disable("downloadAllCeldaList")
+    if (isAssayResultCeldaList()) {
+      shinyjs::disable("downloadAllCeldaLists")
     } else {
-      shinyjs::enable("downloadAllCeldaList")
+      shinyjs::enable("downloadAllCeldaLists")
     }
   })
 
-  output$downloadCeldaList <- downloadHandler(
+  output$downloadAllCeldaLists <- downloadHandler(
     filename <- function() {
-      paste("Celda_All_Lists_", Sys.Date(), ".rds", sep = "")
+      paste("All_Celda_Lists_", Sys.Date(), ".rds", sep = "")
     },
     content <- function(file) {
       saveRDS(vals$celdaListAll, file)
