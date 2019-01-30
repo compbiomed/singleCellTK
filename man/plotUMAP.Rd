@@ -31,5 +31,5 @@ Plot UMAP results either on already run results or run first and then plot.
 \examples{
 plotUMAP(mouseBrainSubsetSCE, shape = "No Shape", reducedDimName = "UMAP",
          runUMAP = TRUE, useAssay = "counts")
-         
+
 }
