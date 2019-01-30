@@ -54,7 +54,8 @@ Imports:
     circlize,
     enrichR,
     shinycssloaders,
-    shinythemes
+    shinythemes,
+    umap
 RoxygenNote: 6.1.1
 Suggests:
     testthat,

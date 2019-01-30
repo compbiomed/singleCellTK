@@ -22,6 +22,7 @@ library(SingleCellExperiment)
 library(singleCellTK)
 library(shinycssloaders)
 library(shinythemes)
+library(umap)
 
 source("helpers.R")
 source("colourGroupInput.R")
