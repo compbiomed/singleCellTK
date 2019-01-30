@@ -332,54 +332,138 @@ shinyPanelCelda <- fluidPage(
                       sidebarPanel(
                         # SHINYJS ACCORDION --------------------------
                         # Settings
-                        actionButton("celdatSNESet", "Settings"),
+                        #actionButton("celdatSNESet", "Settings"),
                         # closed by default
                         #shinyjs::hidden(
-                          tags$div(id = "celdaCollapsetSNE",
-                            wellPanel(
-                              selectInput("celdaAssay", "Select Assay:",
-                                currassays),
-                              
-                              numericInput("celdatSNEmaxCells",
-                                label =
-                                  "Max.cells: Maximum number of cells to plot",
-                                value = 25000,
-                                min = 1,
-                                step = 1),
-                              
-                              numericInput("celdatSNEminClusterSize",
-                                label =
-                                  "Min.cluster.size: Do not subsample cell
+                        #tags$div(id = "celdaCollapsetSNE",
+                        #wellPanel(
+                        selectInput("celdaAssaytSNE", "Select Assay:",
+                          currassays),
+                        
+                        numericInput("celdatSNEmaxCells",
+                          label =
+                            "Max.cells: Maximum number of cells to
+                                plot",
+                          value = 25000,
+                          min = 1,
+                          step = 1),
+                        
+                        numericInput("celdatSNEminClusterSize",
+                          label =
+                            "Min.cluster.size: Do not subsample cell
                               clusters below this threshold",
-                                value = 100,
-                                min = 1,
-                                step = 1),
-                              
-                              numericInput("celdatSNEPerplexity",
-                                label =
-                                  "Perplexity: ",
-                                value = 20),
-                              
-                              numericInput("celdatSNEmaxIter",
-                                label =
-                                  "Max.iter: Maximum number of iterations in
+                          value = 100,
+                          min = 1,
+                          step = 1),
+                        
+                        numericInput("celdatSNEPerplexity",
+                          label =
+                            "Perplexity: ",
+                          value = 20),
+                        
+                        numericInput("celdatSNEmaxIter",
+                          label =
+                            "Max.iter: Maximum number of iterations in
                               tSNE generation",
-                                value = 2500),
-                              
-                              numericInput("celdatSNESeed",
-                                label =
-                                  "Seed: ",
-                                value = 12345)
-                            )
-                          )
+                          value = 2500),
+                        
+                        numericInput("celdatSNESeed",
+                          label =
+                            "Seed: ",
+                          value = 12345),
                         #)
+                        #),
+                        #)
+                        tags$hr(),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "runCeldatSNE",
+                          label = "Run Celda t-SNE")),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "renderCeldatSNEByCellCluster",
+                          label = "Render Celda t-SNE plot colored by
+                          cell cluster")),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "renderCeldatSNEModule",
+                          label = "Render Celda t-SNE plot colored by
+                          module probabilities")),
+                        br(),
+                        selectInput("celdatSNEFeature", "Select Feature:",
+                          NULL, multiple = TRUE),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "renderCeldatSNEFeature",
+                          label = "Render Celda t-SNE plot colored by
+                          Gene feature expression"))
                       ), mainPanel(
-                        plotOutput("celdatSNEPlot", height = "600px")
+                        plotOutput("celdatSNECellClusterPlot",
+                          height = "600px"),
+                        plotOutput("celdatSNEModulePlot",
+                          height = "600px"),
+                        plotOutput("celdatSNEFeaturePlot",
+                          height = "600px")
                       )
                     )
                   )
                 )
-              ), tabPanel("Probability Map")
+              ), tabPanel("Probability Map",
+                wellPanel(
+                  fluidRow(
+                    sidebarLayout(
+                      sidebarPanel(
+                        selectInput("celdaAssayProbabilityMap",
+                          "Select Assay:",
+                          currassays),
+                        tags$hr(),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "renderCeldaProbabilityMap",
+                          label = "Render Celda Celda Probability Map"))
+                      ), mainPanel(
+                        plotOutput("celdaProbabilityMapPlot",
+                          height = "600px")
+                      )
+                    )
+                  )
+                )
+              ),
+              tabPanel("Module Heatmap",
+                wellPanel(
+                  fluidRow(
+                    sidebarLayout(
+                      sidebarPanel(
+                        selectInput("celdaAssayModuleHeatmap",
+                          "Select Assay:",
+                          currassays),
+                        selectInput("celdaFeatureModule",
+                          "Select Feature Modules:",
+                          NULL,
+                          multiple = TRUE),
+                        numericInput("celdaModuleTopCells",
+                          "top.cells: Number of cells with the highest and
+                          lowest probabilities for modules to include in
+                          the heatmap",
+                          value = 100,
+                          min = 1,
+                          step = 1),
+                        selectInput("celdaFeatureModuleNormalize",
+                          "Normalize: Whether to normalize the columns of
+                          'counts'",
+                          choices = c(TRUE, FALSE),
+                          selected = TRUE),
+                        selectInput("celdaModuleFeatureNames",
+                          "Show Feature Names:",
+                          choices = c(TRUE, FALSE),
+                          selected = TRUE),
+                        tags$hr(),
+                        withBusyIndicatorUI(actionButton(
+                          inputId = "renderCeldaModuleHeatmap",
+                          label = "Render Celda Module Heatmap"))
+                      ), mainPanel(
+                        plotOutput("celdaModuleHeatmapPlot",
+                          height = "600px")
+                      )
+                    )
+                  )
+                )
+              )
             )
           )
         )

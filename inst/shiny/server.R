@@ -25,7 +25,9 @@ shinyServer(function(input, output, session) {
     celdaMod = NULL,
     celdaList = NULL,
     celdaListAll = NULL,
-    celdaListAllNames = NULL
+    celdaListAllNames = NULL,
+    celdatSNE = NULL,
+    celdaModuleFeature = NULL
   )
 
   #Update all of the columns that depend on pvals columns
@@ -111,6 +113,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "enrichAssay", choices = currassays)
     updateSelectInput(session, "celdaAssay", choices = currassays)
     updateSelectInput(session, "celdaAssayGS", choices = currassays)
+    updateSelectInput(session, "celdaAssaytSNE", choices = currassays)
+    updateSelectInput(session, "celdaAssayProbabilityMap",
+      choices = currassays)
+    updateSelectInput(session, "celdaAssayModuleHeatmap",
+      choices = currassays)
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
@@ -996,8 +1003,6 @@ shinyServer(function(input, output, session) {
   # Page 3.2: Celda
   #-----------------------------------------------------------------------------
 
-  # run celda model
-
   # onclick buttons
   shinyjs::onclick("celdaBasicSet",
                    shinyjs::toggle(id = "celdaCollapse1",
@@ -1017,12 +1022,13 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "celdaBasicSetGS", class = "btn-block")
   shinyjs::addClass(id = "celdaAdvSetGS", class = "btn-block")
   
-  shinyjs::onclick("celdatSNESet",
-    shinyjs::toggle(id = "celdaCollapsetSNE",
-      anim = TRUE), add = TRUE)
-  shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
+  # shinyjs::onclick("celdatSNESet",
+  #   shinyjs::toggle(id = "celdaCollapsetSNE",
+  #     anim = TRUE), add = TRUE)
+  # shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
 
 
+  # celda clustering tab
   observeEvent(input$runCelda, {
     # is there an error or not
     if (is.null(vals$counts)) {
@@ -1098,6 +1104,9 @@ shinyServer(function(input, output, session) {
           #cores = input$celdaCores)
           rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
           updateFeatureAnnots()
+          # update feature modules in module heatmap panel
+          updateSelectInput(session, "celdaFeatureModule",
+            choices = seq_len(vals$celdaMod@params$L))
 
         } else if (input$celdaModel == "celda_CG") {
           vals$celdaMod <- celda_CG(counts = assay(vals$counts,
@@ -1119,10 +1128,28 @@ shinyServer(function(input, output, session) {
           rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
           updateColDataNames()
           updateFeatureAnnots()
+          # update feature modules in module heatmap panel
+          updateSelectInput(session, "celdaFeatureModule",
+            choices = seq_len(vals$celdaMod@params$L))
+          updateSelectInput(session, "celdatSNEFeature",
+            choices = vals$celdaMod@names$row)
         }
       })
     }
   })
+  
+  # disable the renderCeldaHeatmap button if no celda model is present
+  isCeldaModelPresent <- reactive(is.null(vals$celdaMod))
+  observe({
+    if (isCeldaModelPresent()) {
+      shinyjs::disable("renderHeatmap")
+    } else {
+      shinyjs::enable("renderHeatmap")
+    }
+  })
+  
+  
+  
 
   # show celda heatmap
   observeEvent(input$renderHeatmap, {
@@ -1137,24 +1164,9 @@ shinyServer(function(input, output, session) {
 
       withBusyIndicatorServer("renderHeatmap",
         output$celdaHeatmap <- renderPlot({
-          #model <- celdaRes()$res.list[[1]]
-
-          # add celda labels to colData and rowData of sctke object
-          # use column name "celdaCellCluster" and "celdaGeneModule" for now,
-          # need update when celda outputs sce objects so it matches
-
-          # z <- celdaRes()@clusters$z
-          # y <- celdaRes()@clusters$y
-          # norm.counts <- isolate(normalizeCounts(assay(vals$counts,
-          #   input$celdaAssay),
-          #   normalize = "cpm"))
           g <- celdaHeatmap(counts = assay(vals$counts,
             input$celdaAssay),
             celda.mod = vals$celdaMod)
-          # z = z, y = y,
-          # normalize = NULL, color_scheme = "divergent",
-          # cluster_gene = TRUE,
-          # cluster_cell = TRUE)
           g
         }, height = 600)
       )}
@@ -1180,14 +1192,14 @@ shinyServer(function(input, output, session) {
     })
 
 
-  # celda grid search
+  # celda grid search tab
   observeEvent(input$runCeldaGS, {
     # is there an error or not
     if (is.null(vals$counts)) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       # selected count matrix
-      cm <- assay(vals$counts, input$celdaAssay)
+      cm <- assay(vals$counts, input$celdaAssayGS)
     }
 
     # And each row/column of the count matrix must have at least one count
@@ -1227,7 +1239,7 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("runCeldaGS", {
       if (input$celdaModelGS == "celda_C") {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssay),
+          input$celdaAssayGS),
           model = input$celdaModelGS,
           params.test = list(K = seq(input$GSRangeK[1],
             input$GSRangeK[2],
@@ -1267,7 +1279,7 @@ shinyServer(function(input, output, session) {
 
       } else if (input$celdaModelGS == "celda_G") {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssay),
+          input$celdaAssayGS),
           model = input$celdaModelGS,
           params.test = list(L = seq(input$GSRangeL[1],
             input$GSRangeL[2],
@@ -1307,7 +1319,7 @@ shinyServer(function(input, output, session) {
 
       } else if (input$celdaModelGS == "celda_CG") {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssay),
+          input$celdaAssayGS),
           model = input$celdaModelGS,
           params.test = list(K = seq(input$GSRangeKCG[1],
             input$GSRangeKCG[2],
@@ -1383,14 +1395,10 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("renderPerplexityPlot", {
         vals$celdaList <- resamplePerplexity(counts = assay(vals$counts,
-          input$celdaAssay),
+          input$celdaAssayGS),
           celda.list = vals$celdaList)
         output$celdaPerplexityPlot <- renderPlot({
           g <- plotGridSearchPerplexity(celda.list = vals$celdaList)
-          # z = z, y = y,
-          # normalize = NULL, color_scheme = "divergent",
-          # cluster_gene = TRUE,
-          # cluster_cell = TRUE)
           g
         }, height = 600)
       })}
@@ -1398,9 +1406,9 @@ shinyServer(function(input, output, session) {
   
   # Confirm celda model
   # disable the Confirm Selection button if no celda list is present
-  isCeldaModelSelected <- reactive(is.null(vals$celdaListAll))
+  isCeldaModelListPresent <- reactive(is.null(vals$celdaListAll))
   observe({
-    if (isCeldaModelSelected()) {
+    if (isCeldaModelListPresent()) {
       shinyjs::disable("confirmCeldaModel")
     } else {
       shinyjs::enable("confirmCeldaModel")
@@ -1427,11 +1435,140 @@ shinyServer(function(input, output, session) {
         rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
         updateColDataNames()
         updateFeatureAnnots()
+        updateSelectInput(session, "celdatSNEFeature",
+          choices = vals$celdaMod@names$row)
       }
+      # update feature modules in module heatmap panel
+      updateSelectInput(session, "celdaFeatureModule",
+        choices = seq_len(vals$celdaMod@params$L))
     })
   })
   
-
+  # Visualize tab
+  # tSNE sub-panel
+  # disable the runCeldatSNE button if no celda model is present
+  observe({
+    if (isCeldaModelPresent()) {
+      shinyjs::disable("runCeldatSNE")
+    } else {
+      shinyjs::enable("runCeldatSNE")
+    }
+  })
+  
+  # run celda tSNE
+  observeEvent(input$runCeldatSNE, {
+    withBusyIndicatorServer("runCeldatSNE", {
+      vals$celdatSNE <- celdaTsne(counts = assay(vals$counts,
+        input$celdaAssaytSNE),
+        celda.mod = vals$celdaMod,
+        max.cells = input$celdatSNEmaxCells,
+        min.cluster.size = input$celdatSNEminClusterSize,
+        perplexity = input$celdatSNEPerplexity,
+        max.iter = input$celdatSNEmaxIter,
+        seed = input$celdatSNESeed)
+    })
+  })
+  
+  # disable the renderCeldatSNE button if no celda tSNE result is present
+  isCeldatSNEResult <- reactive(is.null(vals$celdatSNE))
+  observe({
+    if (isCeldatSNEResult()) {
+      shinyjs::disable("renderCeldatSNEByCellCluster")
+      shinyjs::disable("renderCeldatSNEModule")
+      shinyjs::disable("renderCeldatSNEFeature")
+    } else {
+      shinyjs::enable("renderCeldatSNEByCellCluster")
+      shinyjs::enable("renderCeldatSNEModule")
+      shinyjs::enable("renderCeldatSNEFeature")
+    }
+  })
+  
+  # show celda tSNE colored by cell cluster
+  observeEvent(input$renderCeldatSNEByCellCluster, {
+      withBusyIndicatorServer("renderCeldatSNEByCellCluster",
+        output$celdatSNECellClusterPlot <- renderPlot({
+          g <- plotDimReduceCluster(
+            dim1 = vals$celdatSNE[,1], 
+            dim2 = vals$celdatSNE[,2], 
+            cluster = clusters(vals$celdaMod)$z)
+          g}, height = 600)
+      )}
+  )
+  
+  # show celda tSNE colored by module probabilities
+  observeEvent(input$renderCeldatSNEModule, {
+    withBusyIndicatorServer("renderCeldatSNEModule",
+      output$celdatSNEModulePlot <- renderPlot({
+        g <- plotDimReduceModule(
+          dim1 = vals$celdatSNE[,1], 
+          dim2 = vals$celdatSNE[,2],
+          counts = assay(vals$counts, input$celdaAssaytSNE),
+          celda.mod = vals$celdaMod)
+        g}, height = 600)
+    )}
+  )
+  
+  # show celda tSNE colored by feature expression
+  observeEvent(input$renderCeldatSNEFeature, {
+    withBusyIndicatorServer("renderCeldatSNEFeature",
+      output$celdatSNEFeaturePlot <- renderPlot({
+        g <- plotDimReduceFeature(
+          dim1 = vals$celdatSNE[,1], 
+          dim2 = vals$celdatSNE[,2],
+          counts = assay(vals$counts, input$celdaAssaytSNE),
+          features = input$celdatSNEFeature)
+        g}, height = 600)
+    )}
+  )
+  
+  # Probability Map sub-panel
+  # disable the renderCeldaProbabilityMap button if no celda model is present
+  observe({
+    if (isCeldaModelPresent()) {
+      shinyjs::disable("renderCeldaProbabilityMap")
+    } else {
+      shinyjs::enable("renderCeldaProbabilityMap")
+    }
+  })
+  
+  # show celda Probability Map
+  observeEvent(input$renderCeldaProbabilityMap, {
+    withBusyIndicatorServer("renderCeldaProbabilityMap",
+      output$celdaProbabilityMapPlot <- renderPlot({
+        g <- celdaProbabilityMap(counts = assay(vals$counts,
+          input$celdaAssayProbabilityMap),
+          celda.mod = vals$celdaMod)
+        g}, height = 600)
+    )}
+  )
+  
+  
+  # Module Heatmap sub-panel
+  # disable the renderCeldaModuleHeatmap button if no celda model is present
+  observe({
+    if (isCeldaModelPresent()) {
+      shinyjs::disable("renderCeldaModuleHeatmap")
+    } else {
+      shinyjs::enable("renderCeldaModuleHeatmap")
+    }
+  })
+  
+  # show celda Module Heatmap
+  observeEvent(input$renderCeldaModuleHeatmap, {
+    withBusyIndicatorServer("renderCeldaModuleHeatmap",
+      output$celdaModuleHeatmapPlot <- renderPlot({
+        g <- moduleHeatmap(counts = assay(vals$counts,
+          input$celdaAssayModuleHeatmap),
+          celda.mod = vals$celdaMod,
+          feature.module = as.integer(input$celdaFeatureModule),
+          top.cells = input$celdaModuleTopCells,
+          normalize = as.logical(input$celdaFeatureModuleNormalize),
+          show_featurenames = as.logical(input$celdaModuleFeatureNames))
+        g}, height = 600)
+    )}
+  )
+  
+  
   # download all celda lists
   # disable the downloadCeldaList button if no celda list is present
   isAssayResultCeldaList <- reactive(is.null(vals$celdaListAll))
@@ -1450,8 +1587,6 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$celdaListAll, file)
     })
-
-
 
 
   #-----------------------------------------------------------------------------
