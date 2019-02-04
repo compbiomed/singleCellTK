@@ -10,11 +10,11 @@ getClusterInputData(inSCE, inputData, useAssay = "logcounts",
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
 
-\item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components")}
+\item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components", "UMAP Components")}
 
 \item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
-\item{reducedDimName}{If clustering on PCA or t-SNE data, dimension name.
+\item{reducedDimName}{If clustering on PCA, t-SNE or UMAP data, dimension name.
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{

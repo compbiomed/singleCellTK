@@ -4,7 +4,7 @@
 \alias{singleCellTK}
 \title{Run the single cell analysis app}
 \usage{
-singleCellTK(inSCE = NULL, includeVersion = TRUE, theme = "flatly")
+singleCellTK(inSCE = NULL, includeVersion = TRUE, theme = "yeti")
 }
 \arguments{
 \item{inSCE}{The input SCtkExperiment class object}
