@@ -8,14 +8,14 @@ shinyPanelCluster <- fluidPage(
       sidebarPanel(
         ###  VISUALIZATION (e.g. PCA, tSNE)
         selectInput("dimRedAssaySelect", "Select Assay:", currassays),
-        selectInput("dimRedPlotMethod", "Visualization Method:", c("PCA", "tSNE", "Dendrogram")),
+        selectInput("dimRedPlotMethod", "Visualization Method:", c("PCA", "tSNE", "UMAP", "Dendrogram")),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
           selectInput("pcX", "X axis:", pcComponents),
           selectInput("pcY", "Y axis:", pcComponents, selected = pcComponentsSelectedY)
         ),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
           selectInput("colorBy", "Color points by:", c("No Color", "Gene Expression", clusterChoice)),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
@@ -41,18 +41,22 @@ shinyPanelCluster <- fluidPage(
           conditionalPanel(
             condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
             withBusyIndicatorUI(actionButton("reRunPCA", "Re-run PCA"))
+          ),
+          conditionalPanel(
+            condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
+            withBusyIndicatorUI(actionButton("reRunUMAP", "Re-run UMAP"))
           )
         ),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
           radioButtons("booleanCluster", "Cluster Data?", c("Yes", "No"), selected = "No")
         ),
         # CLUSTERING --> VISUALIZATION
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Yes'", "booleanCluster"),
-          selectInput("selectClusterInputData", "Data to Cluster:", c("PCA Components", "tSNE Components")),
+          selectInput("selectClusterInputData", "Data to Cluster:", c("PCA Components", "tSNE Components", "UMAP Components")),
           conditionalPanel(
-            condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' ", "dimRedPlotMethod", "dimRedPlotMethod"),
+            condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
             radioButtons("clusteringAlgorithm", "Select Clustering Algorithm:", c("K-Means", "Clara"))
           ),
           ##----------------------------------#
@@ -99,7 +103,7 @@ shinyPanelCluster <- fluidPage(
           )
         ),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
             conditionalPanel(
@@ -109,7 +113,7 @@ shinyPanelCluster <- fluidPage(
           )
         ),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+          condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
             plotOutput("geneExpressionPlot", height = "600px")
