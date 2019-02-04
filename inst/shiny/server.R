@@ -785,6 +785,28 @@ shinyServer(function(input, output, session) {
         } else {
           plotly::ggplotly(ggplot2::ggplot() + ggplot2::geom_point())
         }
+      } else if (input$dimRedPlotMethod == "UMAP"){
+        umapdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, umapdimname))) {
+          vals$counts <- getUMAP(inSCE = vals$counts,
+                                 useAssay = input$dimRedAssaySelect,
+                                 reducedDimName = umapdimname)
+          updateReddimInputs()
+        }
+        if (!is.null(reducedDim(vals$counts, umapdimname))){
+          if (input$colorBy != "Gene Expression") {
+            g <- singleCellTK::plotUMAP(vals$counts, input$colorBy, input$shapeBy,
+                                        useAssay = input$dimRedAssaySelect,
+                                        reducedDimName = umapdimname)
+          } else if (input$colorGenes == ""){
+            g <- singleCellTK::plotUMAP(vals$counts, "No Color", "No Shape",
+                                        useAssay = input$dimRedAssaySelect,
+                                        reducedDimName = umapdimname)
+          }
+          plotly::ggplotly(g)
+        } else {
+          plotly::ggplotly(ggplot2::ggplot() + ggplot2::geom_point())
+        }
       } else{
         plotly::ggplotly(ggplot2::ggplot() + ggplot2::theme_bw() +
                            ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
@@ -894,6 +916,47 @@ shinyServer(function(input, output, session) {
             }
           }
         }
+      } else if (input$dimRedPlotMethod == "UMAP"){
+        umapdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
+        if (is.null(reducedDim(vals$counts, umapdimname))){
+          vals$counts <- getUMAP(inSCE = vals$counts,
+                                 useAssay = input$dimRedAssaySelect,
+                                 reducedDimName = umapdimname)
+          updateReddimInputs()
+        }
+        if (!is.null(reducedDim(vals$counts, umapdimname))){
+          if (input$colorBy == "Gene Expression") {
+            if (input$colorGeneBy == "Biomarker (from DE tab)"){
+              if (input$colorGenesBiomarker == ""){
+                ggplot2::ggplot() +
+                  ggplot2::theme_bw() +
+                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
+                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
+              } else {
+                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
+                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
+                biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
+                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
+                                   "UMAP", input$shapeBy,
+                                   useAssay = input$dimRedAssaySelect,
+                                   reducedDimName = umapdimname)
+                g
+              }
+            } else if (input$colorGeneBy == "Manual Input") {
+              if (is.null(input$colorGenes)){
+                ggplot2::ggplot() + ggplot2::theme_bw() +
+                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
+                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
+              } else {
+                g <- plotBiomarker(vals$counts, input$colorGenes,
+                                   input$colorBinary, "UMAP", input$shapeBy,
+                                   useAssay = input$dimRedAssaySelect,
+                                   reducedDimName = umapdimname)
+                g
+              }
+            }
+          }
+        }
       }
     }
   }, height = 600)
@@ -933,6 +996,8 @@ shinyServer(function(input, output, session) {
           currdimname <- paste0("PCA", "_", input$dimRedAssaySelect)
         } else if (input$selectClusterInputData == "tSNE Components") {
           currdimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
+        } else if (input$selectClusterInputData == "UMAP Components") {
+          currdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
         }
         if (input$clusteringAlgorithm == "K-Means"){
           data <- getClusterInputData(vals$counts, input$selectClusterInputData,
@@ -988,6 +1053,21 @@ shinyServer(function(input, output, session) {
         vals$counts <- getTSNE(inSCE = vals$counts,
                                useAssay = input$dimRedAssaySelect,
                                reducedDimName = paste0("TSNE", "_",
+                                                       input$dimRedAssaySelect))
+        updateReddimInputs()
+      })
+    }
+  })
+
+  observeEvent(input$reRunUMAP, {
+    if (is.null(vals$original)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    }
+    else{
+      withBusyIndicatorServer("reRunUMAP", {
+        vals$counts <- getUMAP(inSCE = vals$counts,
+                               useAssay = input$dimRedAssaySelect,
+                               reducedDimName = paste0("UMAP", "_",
                                                        input$dimRedAssaySelect))
         updateReddimInputs()
       })
@@ -2033,15 +2113,16 @@ shinyServer(function(input, output, session) {
   #create datatables
   observe({
     req(vals$enrichRes)
+    isoDbs <- isolate(dbs())
     enrResults <- vals$enrichRes[, c(1:10)] %>%
       mutate(Database_selected =
                paste0("<a href='", vals$enrichRes[, 11],
                       "' target='_blank'>",
                       vals$enrichRes[, 1], "</a>"))
-    lapply(seq_len(length(dbs())), function(i){
-      output[[paste0(dbs()[i])]] <- DT::renderDataTable({
+    lapply(seq_len(length(isoDbs)), function(i){
+      output[[paste0(isoDbs[i])]] <- DT::renderDataTable({
         DT::datatable({
-          enr <- enrResults[which(vals$enrichRes[, 1] %in% dbs()[i]), ]
+          enr <- enrResults[which(vals$enrichRes[, 1] %in% isoDbs[i]), ]
         }, escape = FALSE, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
       })
     })

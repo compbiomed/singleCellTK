@@ -134,9 +134,10 @@ shinyPanelFilter <- fluidPage(
                 plotlyOutput("geneshist"),
                 tags$hr(),
                 h4("Data Table:"),
+                helpText("Note: Shows table only if samples < 50"),
                 DT::dataTableOutput("contents")
+                )
               )
-            )
           )
         )
       ),

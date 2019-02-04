@@ -23,6 +23,7 @@ library(singleCellTK)
 library(celda)
 library(shinycssloaders)
 library(shinythemes)
+library(umap)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -65,7 +66,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
                     </button></div>")
 }
 
-if(is.null(getShinyOption("theme"))){
+if (is.null(getShinyOption("theme"))){
   shinyTheme <- "flatly"
 } else {
   shinyTheme <- getShinyOption("theme")

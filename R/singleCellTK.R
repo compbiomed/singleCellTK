@@ -24,7 +24,7 @@
 #'   singleCellTK(mouseBrainSubsetSCE)
 #' }
 #'
-singleCellTK <- function(inSCE=NULL, includeVersion=TRUE, theme='flatly') {
+singleCellTK <- function(inSCE=NULL, includeVersion=TRUE, theme='yeti') {
   appDir <- system.file("shiny", package = "singleCellTK")
   if (!is.null(inSCE) & is.null(rownames(inSCE))){
     stop("ERROR: No row names (gene names) found.")
