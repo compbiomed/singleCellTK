@@ -22,7 +22,7 @@ shinyPanelCluster <- fluidPage(
                         tags$h4("Select:"),
                         selectInput("dimRedAssaySelect", "Assay:", currassays),
                         # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE")),
+                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "Dendrogram")),
                         tags$br(),
                         ## BUTTONS NEED REPLACING:
                         ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
@@ -200,29 +200,47 @@ shinyPanelCluster <- fluidPage(
             )
           )
         )
-      ),
+      )
+      ,
       tabPanel(
         "Gene Visualization",
         wellPanel(
-          sidebarLayout(
-            sidebarPanel(
-              h4("Visualization Options:"),
-              selectInput("visAssaySelect", "Select Assay:", currassays),
-              selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
-              selectInput("visCondn", "Condition:", c(clusterChoice)),
-              selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE),
-              withBusyIndicatorUI(actionButton("plotvis", "Plot"))
-            ),
-            mainPanel(
-              fluidRow(
-                plotOutput("visPlot")
+          br(),
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                h4("Visualization Options:"),
+                selectInput("visAssaySelect", "Select Assay:", currassays),
+                selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
+                selectInput("visCondn", "Condition:", c("none", clusterChoice)),
+                h3("Choose data source:"),
+                radioButtons(
+                  "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
+                                                 "Saved top genes" = "visBiomarker")
+                ),
+                conditionalPanel(
+                  condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
+                  selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
+                ),
+                conditionalPanel(
+                  helpText("To use this, first run Differential expression and save top genes."),
+                  condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
+                  uiOutput("visBioGenes")
+                ),
+                uiOutput("visOptions"),
+                withBusyIndicatorUI(actionButton("plotvis", "Plot"))
+              ),
+              mainPanel(
+                fluidRow(
+                  plotOutput("visPlot", height = '600px')
+                )
               )
             )
           )
         )
       ),
       tabPanel(
-        title = "Dendrogram", id = "dendrogram",
+        title = "Dendrogram",
         wellPanel(
         tags$br(),
           tags$p("Work in progress - Need to move dendrogram functionality over from DR tab.")

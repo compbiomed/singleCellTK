@@ -172,7 +172,6 @@ shinyPanelDiffex <- fluidPage(
       ),
       mainPanel(
         tabsetPanel(
-          id = "dataset",
           tabPanel(
             "Results Table",
             DT::dataTableOutput("diffextable")
