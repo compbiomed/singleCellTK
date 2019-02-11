@@ -8,7 +8,7 @@ plotDiffEx(inSCE, useAssay = "logcounts", condition, geneList,
   clusterRow = TRUE, clusterCol = TRUE, displayRowLabels = TRUE,
   displayColumnLabels = TRUE, displayRowDendrograms = TRUE,
   displayColumnDendrograms = TRUE, annotationColors = NULL,
-  columnTitle = "Differential Expression")
+  scaleExpression = TRUE, columnTitle = "Differential Expression")
 }
 \arguments{
 \item{inSCE}{Input data object that contains the data to be plotted.
@@ -38,6 +38,8 @@ heatmap. The default is TRUE.}
 
 \item{annotationColors}{Set of annotation colors for color bar. If null,
 no color bar is shown. default is NULL.}
+
+\item{scaleExpression}{Row scale the heatmap values. The default is TRUE.}
 
 \item{columnTitle}{Title to be displayed at top of heatmap.}
 }

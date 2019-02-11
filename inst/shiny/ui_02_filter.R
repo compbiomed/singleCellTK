@@ -116,9 +116,10 @@ shinyPanelFilter <- fluidPage(
                     withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data"))
                   )
                 )
-              ),
-              tags$hr(),
-              downloadButton("downloadSCE", "Download SCtkExperiment")
+              )
+            ),
+            tags$hr(),
+            downloadButton("downloadSCE", "Download SCtkExperiment(.rds)")
             ),
             mainPanel(
               wellPanel(
@@ -133,9 +134,10 @@ shinyPanelFilter <- fluidPage(
                 plotlyOutput("geneshist"),
                 tags$hr(),
                 h4("Data Table:"),
+                helpText("Note: Shows table only if samples < 50"),
                 DT::dataTableOutput("contents")
+                )
               )
-            )
           )
         )
       ),

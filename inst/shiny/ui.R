@@ -21,6 +21,8 @@ library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
 library(shinycssloaders)
+library(shinythemes)
+library(umap)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -63,6 +65,12 @@ if (!is.null(getShinyOption("inputSCEset"))){
                     </button></div>")
 }
 
+if (is.null(getShinyOption("theme"))){
+  shinyTheme <- "flatly"
+} else {
+  shinyTheme <- getShinyOption("theme")
+}
+
 source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
 source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
 source("ui_03_cluster.R", local = TRUE) #creates shinyPanelCluster variable
@@ -89,8 +97,7 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
   navbarPage(
     tooltitle,
-    #bootstrap theme
-    theme = "bootstrap.min.css",
+    theme = shinytheme(shinyTheme),
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
     tabPanel("Data Summary & Filtering", shinyPanelFilter),

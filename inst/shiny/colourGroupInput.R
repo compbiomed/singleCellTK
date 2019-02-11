@@ -19,7 +19,7 @@ colourGroup <- function(input, output, session, heading = "", options="",
 
   cols <- reactive({
     if (length(options) != 0){
-      sapply(1:length(options), function(i) {
+      sapply(seq_along(options), function(i) {
         if (!is.null(input[[as.character(ids()[i])]])){
           setNames(input[[as.character(ids()[i])]], options[i])
         }
@@ -40,7 +40,7 @@ colourGroup <- function(input, output, session, heading = "", options="",
   output$colorChoosers <- renderUI({
     if (length(options) != 0){
       L <- vector("list", length(options))
-      for (i in 1:length(L)){
+      for (i in seq_along(L)){
         if (is.null(input[[as.character(ids()[i])]])) {
           color <- palette()[(i %% length(palette())) + 1]
         } else {

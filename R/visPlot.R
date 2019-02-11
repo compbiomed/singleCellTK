@@ -8,7 +8,12 @@
 #' @param method Visualization method. Available options are boxplot,
 #' scatterplot, or heatmap. Required
 #' @param condition colData annotation of the experiment. Required
-#' @param glist selected genes for visualization. Required
+#' @param glist selected genes for visualization. Maximum 25 genes. Required
+#' @param facetWrap facet wrap according to genes for boxplot, scatterplot and
+#' barplot. Default is FALSE. Optional
+#' @param scaleHMap scale heatmap expression values. Default is TRUE. Optional
+#' @param convertFactor If the condition is not a factor, convert it to a factor
+#' before plotting. The default is FALSE
 #'
 #' @return A visualization plot
 #'
@@ -18,9 +23,10 @@
 #' visPlot(mouseBrainSubsetSCE, "counts", "scatterplot", "age", "Cmtm5")
 #' visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
 #'         c("Cmtm5", "C1qa"))
-visPlot <- function(inSCE, useAssay, method, condition, glist) {
-  if (!(class(inSCE) == "SingleCellExperiment" | class(inSCE) == "SCtkExperiment")){
-    stop("Please use a singleCellTK or a SCtkExperiment object")
+visPlot <- function(inSCE, useAssay, method, condition, glist,
+                    facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
   }
   #test for assay existing
   if (!all(useAssay %in% names(assays(inSCE)))){
@@ -41,10 +47,17 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
   #Main condition: check if the gene list is provided
   if (is.null(glist)){
     stop("gene list is required")
-  } else{
+  } else {
     countsData <- data.frame(SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE])
     if (!is.null(condition)){
-      annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
+      if (class(inSCE) == "SummarizedExperiment") {
+        annotData <- data.frame(SummarizedExperiment::colData(inSCE)[, condition, drop = FALSE])
+      } else {
+        annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])
+      }
+      if (convertFactor) {
+        annotData[, condition] <- as.factor(annotData[, condition])
+      }
       if (any(is.na(annotData[, condition]))){
         if (method == "heatmap" && is.factor(annotData[, condition])){
           #change NA to empty string for heatmap
@@ -61,62 +74,75 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
         stop("Please supply a condition")
       }
     }
-
-    #transforming the data into a data.frame
+     #transforming the data into a data.frame
     if (!(method == "barplot" | method == "heatmap")){
       expDF <- cbind.data.frame(t(countsData), annotData)
       expDF$sample <- rownames(expDF)
       meltDF <- reshape2::melt(expDF, id.vars = c(condition, "sample"),
                                variable.name = "Genes", value.name = "assay")
     }
-
     if (method == "boxplot"){
-      if (length(glist) <= 16 & !is.null(condition)){
+      if (length(glist) <= 25){
         if (is.factor(annotData[, condition])){
-          ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
-          ggplot2::geom_violin(ggplot2::aes_string(fill = condition)) +
-          ggplot2::geom_boxplot(width = .1) +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-          ggplot2::facet_wrap("Genes") +
-          ggplot2::xlab(condition) +
-          ggplot2::ylab(useAssay) +
-          ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
-                                     guide = FALSE)
-        } else{
-          stop("Boxplot requires condition to be a factor, use scatterplot instead")
-        }
-      } else{
-        stop("Maximum limit of genes reached. Please enter 16 or less genes.")
-      }
-    } else if (method == "scatterplot"){
-      if (is.null(condition)){
-        stop("Scatterplot requires a condition, use barplot as an alternative")
-      } else{
-        if (!is.factor(annotData[, condition])){
-          ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
-            ggplot2::geom_point(ggplot2::aes_string(col = "Genes")) +
+          ggplotObj <- ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
+            ggplot2::geom_violin(ggplot2::aes_string(fill = condition)) +
+            ggplot2::geom_boxplot(width = .1) +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
             ggplot2::xlab(condition) +
             ggplot2::ylab(useAssay) +
             ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
                                        guide = FALSE)
+          if (facetWrap) {
+            ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
+          } else {
+            ggplotObj
+          }
         } else{
+          stop("Boxplot requires condition to be a factor, use scatterplot instead")
+        }
+      } else{
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
+      }
+    } else if (method == "scatterplot"){
+      if (length(glist) <= 25){
+        if (!is.factor(annotData[, condition])){
+          ggplotObj <- ggplot2::ggplot(meltDF, ggplot2::aes_string(x = condition, y = "assay")) +
+            ggplot2::geom_point(ggplot2::aes_string(col = "Genes")) +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+            ggplot2::xlab(condition) +
+            ggplot2::ylab(useAssay) +
+            ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
+                                       guide = FALSE)
+          if (facetWrap) {
+            ggplotObj + ggplot2::facet_wrap("Genes", scales = 'free')
+          } else {
+            ggplotObj
+          }
+        } else {
           stop("Scatterplot requires a condition to be continuous, use boxplot as an alternative")
         }
+      } else {
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
       }
     } else if (method == "barplot"){
-      if (is.null(condition)){
+      if (length(glist) <= 25){
         scDF <- data.frame(t(countsData))
         scDF$sample <- rownames(scDF)
         meltDF <- reshape2::melt(scDF, id.vars = "sample", variable.name = "Genes",
-                                value.name = "assay")
-        ggplot2::ggplot(meltDF, ggplot2::aes_string(x = "sample", y = "assay")) +
-         ggplot2::geom_bar(stat = "identity", position = "dodge", ggplot2::aes_string(fill = "Genes")) +
-         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-         ggplot2::xlab("Sample") +
-         ggplot2::ylab(useAssay) +
-         ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"))
+                                 value.name = "assay")
+        ggplotObj <- ggplot2::ggplot(meltDF, ggplot2::aes_string(x = "sample", y = "assay")) +
+          ggplot2::geom_bar(stat = "identity", position = "dodge", ggplot2::aes_string(fill = "Genes")) +
+          ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
+          ggplot2::xlab("Sample") +
+          ggplot2::ylab(useAssay) +
+          ggplot2::scale_fill_manual(values = distinctColors(length(glist)))
+        if (facetWrap) {
+          ggplotObj + ggplot2::facet_grid("Genes", scales = 'free')
+        } else {
+          ggplotObj
+        }
       } else{
-        stop("Barplot doesn't require a condition, use scatterplot or boxplot instead")
+        stop("Maximum limit of genes reached. Please enter 25 or less genes.")
       }
     } else if (method == "heatmap"){
       zeroSum <- which(matrixStats::rowSds(
@@ -154,10 +180,16 @@ visPlot <- function(inSCE, useAssay, method, condition, glist) {
           stop("Data doesn't appear to be a factor or numeric type. Verify the",
                "annotation data.")
         }
+        heatmapkey <- useAssay
+        heatdata <- SummarizedExperiment::assay(inSCE, useAssay)[glist, ]
+        if (scaleHMap){
+          heatdata <- t(scale(t(heatdata)))
+          heatmapkey <- paste("Scaled", heatmapkey, sep = "\n")
+        }
         ComplexHeatmap::draw(
           ComplexHeatmap::Heatmap(
-            t(scale(t(countsData[glist, ]))),
-            name = "Expression", column_title = "Differential Expression",
+            heatdata,
+            name = heatmapkey, column_title = "Differential Expression",
             cluster_rows = TRUE, cluster_columns = TRUE, top_annotation = topha,
             show_row_names = TRUE, show_column_names = TRUE,
             show_row_dend = TRUE,
