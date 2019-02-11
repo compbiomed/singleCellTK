@@ -593,19 +593,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$delRedDim, {
-    req(vals$counts)
-    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
-                             type = "error")
-    } else {
-      withBusyIndicatorServer("delRedDim", {
-        reducedDim(vals$counts, input$delRedDimType) <- NULL
-        updateReddimInputs()
-      })
-    }
-  })
-
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
@@ -688,49 +675,33 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$plotvis, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else{
-      withBusyIndicatorServer("plotvis", {
-        tryCatch({
-          if (input$visCondn == "none"){
-            incondition <- NULL
-          } else {
-            incondition <- input$visCondn
-          }
-          if (input$visGeneList == "selVisRadioGenes"){
-            visGList <- input$selectvisGenes
-          } else  {
-            visGList <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selVisBioGenes] == 1]
-            #if Gene list > 25 choose the top 25 which is ordered according to p-val
-            if (length(visGList) > 25) {
-              visGList <- visGList[1:25]
-            }
-          }
-          vals$visplotobject <- visPlot(inSCE = vals$counts,
-                                        useAssay = input$visAssaySelect,
-                                        method =  input$visPlotMethod,
-                                        condition = incondition,
-                                        glist =  visGList,
-                                        facetWrap = input$visFWrap,
-                                        scaleHMap = input$visScaleHMap)
-        },
-        error = function(e){
-          shinyalert::shinyalert("Error!", e$message, type = "error")
-        })
+  #-----------------------------------------------------------------------------
+  # Page 3: Visualization & Clustering
+  #-----------------------------------------------------------------------------
+
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("c_button1", shinyjs::toggle(id = "c_collapse1",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "c_button1", class = "btn-block")
+  shinyjs::addClass(id = "c_button2", class = "btn-block")
+  shinyjs::addClass(id = "c_button3", class = "btn-block")
+
+  observeEvent(input$delRedDim, {
+    req(vals$counts)
+    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
+      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
+                             type = "error")
+    } else {
+      withBusyIndicatorServer("delRedDim", {
+        reducedDim(vals$counts, input$delRedDimType) <- NULL
+        updateReddimInputs()
       })
     }
   })
-
-  output$visPlot <- renderPlot({
-    req(vals$visplotobject)
-    vals$visplotobject
-  }, height = 600)
-
-  #-----------------------------------------------------------------------------
-  # Page 3: DR & Clustering
-  #-----------------------------------------------------------------------------
 
   output$clusterPlot <- renderPlotly({
     if (is.null(vals$counts)){
@@ -1087,6 +1058,35 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+
+  observeEvent(input$plotvis, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else{
+      withBusyIndicatorServer("plotvis", {
+        tryCatch({
+          if (input$visCondn == "none"){
+            incondition <- NULL
+          } else {
+            incondition <- input$visCondn
+          }
+          vals$visplotobject <- visPlot(inSCE = vals$counts,
+                                        useAssay = input$visAssaySelect,
+                                        method =  input$visPlotMethod,
+                                        condition = incondition,
+                                        glist = input$selectvisGenes)
+        },
+        error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+    }
+  })
+
+  output$visPlot <- renderPlot({
+    req(vals$visplotobject)
+    vals$visplotobject
+  }, height = 600)
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
