@@ -193,56 +193,90 @@ shinyPanelCelda <- fluidPage(
                       condition = sprintf("input['%s'] == 'celda_C'",
                         "celdaModelGS"),
                       
-                      sliderInput("GSRangeK",
-                        "Range of Cell Clusters (K):",
-                        min = 2, max = 200,
-                        value = c(2, 10),
+                      h4("Range of Cell Clusters (K):"),
+                      
+                      numericInput("GSRangeKlow",
+                        "Lower bound:",
+                        value = 2,
+                        min = 2,
+                        step = 1),
+                      
+                      numericInput("GSRangeKup",
+                        "Upper bound:",
+                        value = 4,
+                        min = 2,
                         step = 1),
                       
                       numericInput("interK",
                         label = "Cell Cluster Increment Step Size:",
                         value = 1,
                         min = 1,
-                        max = 200,
                         step = 1)
                     ),
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'celda_G'",
                         "celdaModelGS"),
-                      sliderInput("GSRangeL", "Range of Gene Modules (L):",
-                        min = 2, max = 200,
-                        value = c(2, 10),
+                      
+                      h4("Range of Gene Modules (L):"),
+                      
+                      numericInput("GSRangeLlow",
+                        "Lower bound:",
+                        value = 2,
+                        min = 2,
+                        step = 1),
+                      
+                      numericInput("GSRangeLup",
+                        "Upper bound:",
+                        value = 4,
+                        min = 2,
                         step = 1),
                       numericInput("interL",
                         label = "Gene Module Search Increment Step Size:",
                         value = 1,
                         min = 1,
-                        max = 200,
                         step = 1)
                     ),
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'celda_CG'",
                         "celdaModelGS"),
-                      sliderInput("GSRangeKCG",
-                        "Range of Cell Clusters (K):",
-                        min = 2, max = 200,
-                        value = c(2, 10),
+                      h4("Range of Cell Clusters (K):"),
+                      
+                      numericInput("GSRangeKCGlow",
+                        "Lower bound:",
+                        value = 2,
+                        min = 2,
                         step = 1),
+                      
+                      numericInput("GSRangeKCGup",
+                        "Upper bound:",
+                        value = 4,
+                        min = 2,
+                        step = 1),
+                      
                       numericInput("interKCG",
                         label = "Cell Cluster Search Increment Step Size:",
                         value = 1,
                         min = 1,
-                        max = 200,
                         step = 1),
-                      sliderInput("GSRangeLCG", "Range of Gene Modules (L):",
-                        min = 2, max = 200,
-                        value = c(2, 10),
+                      
+                      h4("Range of Gene Modules (L):"),
+                      
+                      numericInput("GSRangeLCGlow",
+                        "Lower bound:",
+                        value = 2,
+                        min = 2,
                         step = 1),
+                      
+                      numericInput("GSRangeLCGup",
+                        "Upper bound:",
+                        value = 4,
+                        min = 2,
+                        step = 1),
+                      
                       numericInput("interLCG",
                         label = "Gene module Search Increment Step Size:",
                         value = 1,
                         min = 1,
-                        max = 200,
                         step = 1)
                     )
                     # selectInput("celdaGSVerbose", "Verbose:",

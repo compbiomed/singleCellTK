@@ -1148,8 +1148,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  
-  
 
   # show celda heatmap
   observeEvent(input$renderHeatmap, {
@@ -1212,28 +1210,42 @@ shinyServer(function(input, output, session) {
 
     # Ensure that number of genes / cells is never more than
     # the number of requested clusters for each
-    if (!is.null(input$gsRangeK) && ncol(cm) < max(input$gsRangeK)) {
-      shinyalert::shinyalert("Error!",
-        "Number of cells (columns) in count matrix must be >= K",
-        type = "error")
+    if (input$celdaModelGS == "celda_C") {
+      if (!is.null(input$GSRangeKlow) &&
+          !is.null(input$GSRangeKup) &&
+          ncol(cm) < input$GSRangeKup) {
+        shinyalert::shinyalert("Error!",
+          "Number of cells (columns) in count matrix must be >= K",
+          type = "error")
+      }
     }
 
-    if (!is.null(input$gsRangeL) && nrow(cm) < max(input$gsRangeL)) {
-      shinyalert::shinyalert("Error!",
-        "Number of genes (rows) in count matrix must be >= L",
-        type = "error")
+    if (input$celdaModelGS == "celda_G") {
+      if (!is.null(input$GSRangeLlow) &&
+          !is.null(input$GSRangeLup) &&
+          nrow(cm) < input$GSRangeLup) {
+        shinyalert::shinyalert("Error!",
+          "Number of genes (rows) in count matrix must be >= L",
+          type = "error")
+      }
     }
-
-    if (!is.null(input$gsRangeKcg) && ncol(cm) < max(input$gsRangeKcg)) {
-      shinyalert::shinyalert("Error!",
-        "Number of cells (columns) in count matrix must be >= K",
-        type = "error")
-    }
-
-    if (!is.null(input$gsRangeLcg) && nrow(cm) < max(input$gsRangeLcg)) {
-      shinyalert::shinyalert("Error!",
-        "Number of genes (rows) in count matrix must be >= L",
-        type = "error")
+    
+    if (input$celdaModelGS == "celda_CG") {
+      if (!is.null(input$GSRangeKCGlow) &&
+          !is.null(input$GSRangeKCGup) &&
+          ncol(cm) < input$GSRangeKCGup) {
+        shinyalert::shinyalert("Error!",
+          "Number of cells (columns) in count matrix must be >= K",
+          type = "error")
+      }
+      
+      if (!is.null(input$GSRangeLCGlow) &&
+          !is.null(input$GSRangeLCGup) &&
+          nrow(cm) < input$GSRangeLCGup) {
+        shinyalert::shinyalert("Error!",
+          "Number of genes (rows) in count matrix must be >= L",
+          type = "error")
+      }
     }
 
     withBusyIndicatorServer("runCeldaGS", {
@@ -1241,8 +1253,8 @@ shinyServer(function(input, output, session) {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(K = seq(input$GSRangeK[1],
-            input$GSRangeK[2],
+          params.test = list(K = seq(input$GSRangeKlow,
+            input$GSRangeKup,
             input$interK)),
           max.iter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
@@ -1258,21 +1270,21 @@ shinyServer(function(input, output, session) {
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
           names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "K", input$GSRangeK[1],
-            input$GSRangeK[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interK,
             sep = "_")
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
-            "K", input$GSRangeK[1],
-            input$GSRangeK[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interK,
             sep = "_")]] <- vals$celdaList@res.list
           vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "K", input$GSRangeK[1],
-            input$GSRangeK[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interK,
             sep = "_")]] <- names(vals$celdaList@res.list)
         }
@@ -1281,8 +1293,8 @@ shinyServer(function(input, output, session) {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(L = seq(input$GSRangeL[1],
-            input$GSRangeL[2],
+          params.test = list(L = seq(input$GSRangeLlow,
+            input$GSRangeLup,
             input$interL)),
           max.iter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
@@ -1298,21 +1310,21 @@ shinyServer(function(input, output, session) {
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
           names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "L", input$GSRangeL[1],
-            input$GSRangeL[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interL,
             sep = "_")
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
-            "L", input$GSRangeL[1],
-            input$GSRangeL[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interL,
             sep = "_")]] <- vals$celdaList@res.list
           vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "L", input$GSRangeL[1],
-            input$GSRangeL[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interL,
             sep = "_")]] <- names(vals$celdaList@res.list)
         }
@@ -1321,11 +1333,11 @@ shinyServer(function(input, output, session) {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(K = seq(input$GSRangeKCG[1],
-            input$GSRangeKCG[2],
+          params.test = list(K = seq(input$GSRangeKCGlow,
+            input$GSRangeKCGup,
             input$interKCG),
-            L = seq(input$GSRangeLCG[1],
-              input$GSRangeLCG[2],
+            L = seq(input$GSRangeLCGlow,
+              input$GSRangeLCGup,
               input$interLCG)),
           max.iter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
@@ -1343,30 +1355,30 @@ shinyServer(function(input, output, session) {
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
           names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "K", input$GSRangeKCG[1],
-            input$GSRangeKCG[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interKCG,
-            "L", input$GSRangeLCG[1],
-            input$GSRangeLCG[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interLCG,
             sep = "_")
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
           vals$celdaListAll[[paste(input$celdaModelGS,
-            "K", input$GSRangeKCG[1],
-            input$GSRangeKCG[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interKCG,
-            "L", input$GSRangeLCG[1],
-            input$GSRangeLCG[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interLCG,
             sep = "_")]] <- vals$celdaList@res.list
           vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "K", input$GSRangeKCG[1],
-            input$GSRangeKCG[2],
+            "K", min(vals$celdaList@run.params[["K"]]),
+            max(vals$celdaList@run.params[["K"]]),
             input$interKCG,
-            "L", input$GSRangeLCG[1],
-            input$GSRangeLCG[2],
+            "L", min(vals$celdaList@run.params[["L"]]),
+            max(vals$celdaList@run.params[["L"]]),
             input$interLCG,
             sep = "_")]] <- names(vals$celdaList@res.list)
         }
