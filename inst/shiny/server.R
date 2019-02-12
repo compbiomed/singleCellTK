@@ -1266,27 +1266,22 @@ shinyServer(function(input, output, session) {
           "K",
           vals$celdaList@run.params[["K"]],
           sep = "_")
+        cgsName <- paste0(input$celdaModelGS,
+          "_K=",
+          min(vals$celdaList@run.params[["K"]]),
+          "to",
+          max(vals$celdaList@run.params[["K"]]),
+          "step",
+          input$interK)
 
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
-          names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interK,
-            sep = "_")
+          names(vals$celdaListAll) <- cgsName
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interK,
-            sep = "_")]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interK,
-            sep = "_")]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
         }
 
       } else if (input$celdaModelGS == "celda_G") {
@@ -1306,27 +1301,22 @@ shinyServer(function(input, output, session) {
           "L",
           vals$celdaList@run.params[["L"]],
           sep = "_")
+        cgsName <- paste0(input$celdaModelGS,
+          "_L=",
+          min(vals$celdaList@run.params[["L"]]),
+          "to",
+          max(vals$celdaList@run.params[["L"]]),
+          "step",
+          input$interL)
 
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
-          names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interL,
-            sep = "_")
+          names(vals$celdaListAll) <- cgsName
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[paste(input$celdaModelGS,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interL,
-            sep = "_")]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interL,
-            sep = "_")]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
         }
 
       } else if (input$celdaModelGS == "celda_CG") {
@@ -1351,36 +1341,28 @@ shinyServer(function(input, output, session) {
           "L",
           vals$celdaList@run.params[["L"]],
           sep = "_")
+        cgsName <- paste0(input$celdaModelGS,
+          "_K=",
+          min(vals$celdaList@run.params[["K"]]),
+          "to",
+          max(vals$celdaList@run.params[["K"]]),
+          "step",
+          input$interKCG,
+          "_L=",
+          min(vals$celdaList@run.params[["L"]]),
+          "to",
+          max(vals$celdaList@run.params[["L"]]),
+          "step",
+          input$interLCG)
 
         if (is.null(vals$celdaListAll)) {
           vals$celdaListAll <- list(vals$celdaList@res.list)
-          names(vals$celdaListAll) <- paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interKCG,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interLCG,
-            sep = "_")
+          names(vals$celdaListAll) <- cgsName
           vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interKCG,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interLCG,
-            sep = "_")]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[paste(input$celdaModelGS,
-            "K", min(vals$celdaList@run.params[["K"]]),
-            max(vals$celdaList@run.params[["K"]]),
-            input$interKCG,
-            "L", min(vals$celdaList@run.params[["L"]]),
-            max(vals$celdaList@run.params[["L"]]),
-            input$interLCG,
-            sep = "_")]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
         }
       }
 
@@ -1434,15 +1416,15 @@ shinyServer(function(input, output, session) {
         input$celdaSelectGSList]][[input$celdaSelectGSMod]]
       # update data annotations
       if (paste(strsplit(input$celdaSelectGSMod,
-        "_")[[1]][1:2], collapse  = "_") == "celda_C") {
+        "_")[[1]][seq(2)], collapse  = "_") == "celda_C") {
         colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
         updateColDataNames()
       } else if (paste(strsplit(input$celdaSelectGSMod,
-        "_")[[1]][1:2], collapse  = "_") == "celda_G") {
+        "_")[[1]][seq(2)], collapse  = "_") == "celda_G") {
         rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
         updateFeatureAnnots()
       } else if (paste(strsplit(input$celdaSelectGSMod,
-        "_")[[1]][1:2], collapse  = "_") == "celda_CG") {
+        "_")[[1]][seq(2)], collapse  = "_") == "celda_CG") {
         colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
         rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
         updateColDataNames()

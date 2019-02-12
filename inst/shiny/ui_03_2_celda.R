@@ -414,19 +414,16 @@ shinyPanelCelda <- fluidPage(
                           label = "Run Celda t-SNE")),
                         withBusyIndicatorUI(actionButton(
                           inputId = "renderCeldatSNEByCellCluster",
-                          label = "Render Celda t-SNE plot colored by
-                          cell cluster")),
+                          label = "Render cell cluster t-SNE plot")),
                         withBusyIndicatorUI(actionButton(
                           inputId = "renderCeldatSNEModule",
-                          label = "Render Celda t-SNE plot colored by
-                          module probabilities")),
+                          label = "Render module probability t-SNE plot")),
                         br(),
                         selectInput("celdatSNEFeature", "Select Feature:",
                           NULL, multiple = TRUE),
                         withBusyIndicatorUI(actionButton(
                           inputId = "renderCeldatSNEFeature",
-                          label = "Render Celda t-SNE plot colored by
-                          Gene feature expression"))
+                          label = "Render Gene expression t-SNE plot"))
                       ), mainPanel(
                         plotOutput("celdatSNECellClusterPlot",
                           height = "600px"),
@@ -449,7 +446,7 @@ shinyPanelCelda <- fluidPage(
                         tags$hr(),
                         withBusyIndicatorUI(actionButton(
                           inputId = "renderCeldaProbabilityMap",
-                          label = "Render Celda Celda Probability Map"))
+                          label = "Render Celda Probability Map"))
                       ), mainPanel(
                         plotOutput("celdaProbabilityMapPlot",
                           height = "600px")
