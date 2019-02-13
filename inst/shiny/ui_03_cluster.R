@@ -22,11 +22,15 @@ shinyPanelCluster <- fluidPage(
                         tags$h4("Select:"),
                         selectInput("dimRedAssaySelect", "Assay:", currassays),
                         # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "Dendrogram")),
+                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "UMAP", "Dendrogram")),
                         tags$br(),
                         ## BUTTONS NEED REPLACING:
                         ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
                         tags$br(),
+                        conditionalPanel(
+                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
+                          withBusyIndicatorUI(actionButton("reRunUMAP", "Run"))
+                        ),
                         conditionalPanel(
                           condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
                           withBusyIndicatorUI(actionButton("reRunTSNE", "Run"))
@@ -119,7 +123,7 @@ shinyPanelCluster <- fluidPage(
                     )
                   ),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod","dimRedPlotMethod", "dimRedPlotMethod"),
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
                       conditionalPanel(
@@ -129,7 +133,7 @@ shinyPanelCluster <- fluidPage(
                     )
                   ),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
                       plotOutput("geneExpressionPlot", height = "600px")
@@ -151,9 +155,9 @@ shinyPanelCluster <- fluidPage(
               fluidRow(
                 column(6,
                   tags$h4("Data to Cluster:"),
-                  selectInput("selectClusterInputData", label = NULL, c("PCA Components", "tSNE Components")),
+                  selectInput("selectClusterInputData", label = NULL, c("PCA Components", "tSNE Components", "UMAP Components")),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' ", "dimRedPlotMethod", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP' ", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
                     tags$h4("Select Clustering Algorithm:"),
                     radioButtons("clusteringAlgorithm", label = NULL, c("K-Means", "Clara"))
                   )
@@ -200,8 +204,7 @@ shinyPanelCluster <- fluidPage(
             )
           )
         )
-      )
-      ,
+      ),
       tabPanel(
         "Gene Visualization",
         wellPanel(

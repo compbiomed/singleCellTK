@@ -667,66 +667,6 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  output$visOptions <- renderUI({
-    if (!is.null(vals$counts)){
-      if (input$visPlotMethod != "heatmap") {
-        tagList(
-          checkboxInput("visFWrap", "Plot genes individually?", value = TRUE)
-        )
-      } else {
-        tagList(
-          checkboxInput("visScaleHMap", "Scale expression values?", value = TRUE)
-        )
-      }
-    }
-  })
-  
-  output$visBioGenes <- renderUI({
-    if (!is.null(vals$counts)) {
-      selectInput("selVisBioGenes", "Select Gene List(s):",
-                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
-    }
-  })
-  
-  observeEvent(input$plotvis, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else{
-      withBusyIndicatorServer("plotvis", {
-        tryCatch({
-          if (input$visCondn == "none"){
-            incondition <- NULL
-          } else {
-            incondition <- input$visCondn
-          }
-          if (input$visGeneList == "selVisRadioGenes"){
-            visGList <- input$selectvisGenes
-          } else  {
-            visGList <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selVisBioGenes] == 1]
-            #if Gene list > 25 choose the top 25 which is ordered according to p-val
-            if (length(visGList) > 25) {
-              visGList <- visGList[1:25]
-            }
-          }
-          vals$visplotobject <- visPlot(inSCE = vals$counts,
-                                        useAssay = input$visAssaySelect,
-                                        method =  input$visPlotMethod,
-                                        condition = incondition,
-                                        glist =  visGList,
-                                        facetWrap = input$visFWrap,
-                                        scaleHMap = input$visScaleHMap)
-        },
-        error = function(e){
-          shinyalert::shinyalert("Error!", e$message, type = "error")
-        })
-      })
-    }
-  })
-  
-  output$visPlot <- renderPlot({
-    req(vals$visplotobject)
-    vals$visplotobject
-  }, height = 600)
   
   #-----------------------------------------------------------------------------
   # Page 3: DR & Clustering
@@ -1111,7 +1051,68 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  #Gene visualization
+  output$visOptions <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$visPlotMethod != "heatmap") {
+        tagList(
+          checkboxInput("visFWrap", "Plot genes individually?", value = TRUE)
+        )
+      } else {
+        tagList(
+          checkboxInput("visScaleHMap", "Scale expression values?", value = TRUE)
+        )
+      }
+    }
+  })
   
+  output$visBioGenes <- renderUI({
+    if (!is.null(vals$counts)) {
+      selectInput("selVisBioGenes", "Select Gene List(s):",
+                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
+    }
+  })
+  
+  observeEvent(input$plotvis, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else{
+      withBusyIndicatorServer("plotvis", {
+        tryCatch({
+          if (input$visCondn == "none"){
+            incondition <- NULL
+          } else {
+            incondition <- input$visCondn
+          }
+          if (input$visGeneList == "selVisRadioGenes"){
+            visGList <- input$selectvisGenes
+          } else  {
+            visGList <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selVisBioGenes] == 1]
+            #if Gene list > 25 choose the top 25 which is ordered according to p-val
+            if (length(visGList) > 25) {
+              visGList <- visGList[1:25]
+            }
+          }
+          vals$visplotobject <- visPlot(inSCE = vals$counts,
+                                        useAssay = input$visAssaySelect,
+                                        method =  input$visPlotMethod,
+                                        condition = incondition,
+                                        glist =  visGList,
+                                        facetWrap = input$visFWrap,
+                                        scaleHMap = input$visScaleHMap)
+        },
+        error = function(e){
+          shinyalert::shinyalert("Error!", e$message, type = "error")
+        })
+      })
+    }
+  })
+  
+  output$visPlot <- renderPlot({
+    req(vals$visplotobject)
+    vals$visplotobject
+  }, height = 600)
+
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
   #-----------------------------------------------------------------------------

@@ -21,8 +21,7 @@ shinyPanelFilter <- fluidPage(
       tabPanel(
         "Data Summary",
         wellPanel(
-          br(),
-          fluidRow(
+          sidebarLayout(
             sidebarPanel(
               fluidRow(
                 column(5,
@@ -38,11 +37,12 @@ shinyPanelFilter <- fluidPage(
                 )
               ),
               br(),
-              # SHINYJS ACCORDION --------------------------
+              # SHINYJS COLLAPSE --------------------------
               # Section 1 - Assay Settings
               actionButton("f_button1", "Assay Settings"),
               # open by default
               tags$div(id = "f_collapse1",
+                       br(),
                        wellPanel(
                          selectInput("filterAssaySelect", "Select Assay:", currassays)
                        )
@@ -162,21 +162,13 @@ shinyPanelFilter <- fluidPage(
                   textInput("modifyAssayOutname", "Assay Name", "",
                             placeholder = "What should the assay be called?")
                 ),
-                withBusyIndicatorUI(actionButton("modifyAssay", "Run")),
-                tags$hr(),
-                h4("reducedDim Options:"),
-                selectInput("delRedDimType", "Delete reducedDim:", currreddim),
-                withBusyIndicatorUI(actionButton("delRedDim", "Delete reducedDim"))
+                withBusyIndicatorUI(actionButton("modifyAssay", "Run"))
               ),
               mainPanel(
                 fluidRow(
-                  column(6,
+                  column(12,
                          h4("Available Assays:"),
                          tableOutput("assayList")
-                  ),
-                  column(6,
-                         h4("Available Reduced Dims:"),
-                         tableOutput("reducedDimsList")
                   )
                 )
               )
@@ -187,32 +179,27 @@ shinyPanelFilter <- fluidPage(
       tabPanel(
         "Annotation Data",
         wellPanel(
-          br(),
-          fluidRow(
-            tabsetPanel(
-              tabPanel(
-                "Data",
-                DT::dataTableOutput("colDataDataFrame")
-              ),
-              tabPanel(
-                "Options",
-                wellPanel(
-                  h4("Modify Annotation Data:"),
-                  selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-                  uiOutput("annotModifyUI"),
-                  tags$hr(),
-                  downloadButton("downloadcolData", "Download Annotation Data"),
-                  tags$hr(),
-                  fileInput(
-                    "newAnnotFile", "Upload and replace annotation data:",
-                    accept = c(
-                      "text/csv",
-                      "text/comma-separated-values",
-                      ".csv"
-                    )
-                  )
-                )
+          sidebarLayout(
+            sidebarPanel(
+          h4("Modify Annotation Data:"),
+          selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
+          uiOutput("annotModifyUI"),
+          tags$hr(),
+          downloadButton("downloadcolData", "Download Annotation Data"),
+          tags$hr(),
+          fileInput(
+            "newAnnotFile", "Upload and replace annotation data:",
+            accept = c(
+              "text/csv",
+              "text/comma-separated-values",
+              ".csv"
               )
+            )
+          ),
+          mainPanel(
+            tags$h4("Annotation data(colData):"),
+            tags$br(),
+            DT::dataTableOutput("colDataDataFrame")
             )
           )
         )
