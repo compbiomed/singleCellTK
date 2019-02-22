@@ -22,27 +22,13 @@ shinyPanelCluster <- fluidPage(
                         tags$h4("Select:"),
                         selectInput("dimRedAssaySelect", "Assay:", currassays),
                         # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "UMAP", "Dendrogram")),
+                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "UMAP")),
                         tags$br(),
-                        ## BUTTONS NEED REPLACING:
-                        ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
-                        tags$br(),
-                        conditionalPanel(
-                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
-                          withBusyIndicatorUI(actionButton("reRunUMAP", "Run"))
-                        ),
-                        conditionalPanel(
-                          condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
-                          withBusyIndicatorUI(actionButton("reRunTSNE", "Run"))
-                        ),
-                        conditionalPanel(
-                          condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
-                          withBusyIndicatorUI(actionButton("reRunPCA", "Run"))
-                        )
+                        withBusyIndicatorUI(actionButton("runDimred", "Run"))
                       ),
                       column(6,
                         tags$h4("DR Options:"),
-                        ## NOT LINKED UP
+                        ## NOT LINKED UP -- LINKED NOW
                         textInput("dimRedNameInput", "reducedDim Name:", ""),
                         tags$br(),
                         HTML('<button type="button" class="btn btn-default btn-block"
@@ -51,7 +37,17 @@ shinyPanelCluster <- fluidPage(
                         ),
                         tags$div(
                           id = "c-collapse-run-options", class = "collapse",
-                          tags$p("Content coming soon.")
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
+                            sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 100),
+                            sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
+                            numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
+                          ),
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
+                            sliderInput("iterTSNE", "# of iterations", min = 100, max = 2000, value = 500),
+                            sliderInput("perplexityTSNE", "Perplexity paramter", min = 5, max = 50, value = 5)
+                          )
                         )
                       )
                     )
@@ -85,7 +81,8 @@ shinyPanelCluster <- fluidPage(
                 sidebarPanel(
                   tags$h3("Visualization Settings:"),
                   ## NOT LINKED UP
-                  selectInput("usingReducedDims", "Select Reduced Dimension Data:", ""),
+                  uiOutput("usingReducedDims"),
+                  #selectInput("usingReducedDims", "Select Reduced Dimension Data:", currreddim),
                   tags$h4("Axis Settings"),
                   selectInput("pcX", "X Axis:", pcComponents),
                   selectInput("pcY", "Y Axis:", pcComponents, selected = pcComponentsSelectedY),
@@ -109,39 +106,24 @@ shinyPanelCluster <- fluidPage(
                   ),
                   selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
                   ## NOT LINKED UP
-                  selectInput("sizeBy", "Size points by:", c("No Sizing", clusterChoice)),
+                  ##selectInput("sizeBy", "Size points by:", c("No Sizing", clusterChoice)),
                   tags$hr(),
-                  ## NOT LINKED UP
                   withBusyIndicatorUI(actionButton("cUpdatePlot", "Update Plot"))
                 ),
                 mainPanel(
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
-                    conditionalPanel(
-                      condition = sprintf("input['%s'] == 'Hierarchical' || input['%s'] == 'Phylogenetic Tree'", "clusteringAlgorithmD", "clusteringAlgorithmD"),
-                      plotOutput("treePlot")
-                    )
-                  ),
-                  conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod","dimRedPlotMethod", "dimRedPlotMethod"),
-                    conditionalPanel(
-                      condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
-                      conditionalPanel(
                         condition = sprintf("input['%s'] != 'Gene Expression'", "colorBy"),
                         plotlyOutput("clusterPlot", height = "600px")
-                      )
-                    )
-                  ),
+                        ),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP'", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
-                    conditionalPanel(
                       condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
-                      plotOutput("geneExpressionPlot", height = "600px")
-                    )
-                  ),
+                      plotOutput("geneExpPlot", height = "600px")
+                    ),
+                  #plotlyOutput("clusterPlot", height = "600px"),
                   tags$hr(),
-                  tags$h4("PC Table:"),
-                  tableOutput("pctable")
+                  # tags$h4("PC Table:"),
+                  # tableOutput("pctable")
+                  uiOutput("pctable")
                 )
               )
             )

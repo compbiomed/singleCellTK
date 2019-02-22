@@ -14,7 +14,8 @@ getBiomarker(inSCE, gene, binary = "Binary", useAssay = "counts")
 
 getPCA(inSCE, useAssay = "logcounts", reducedDimName = "PCA")
 
-getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE")
+getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
+  n_iterations = 1000, perplexity = NULL)
 
 plotBiomarker(inSCE, gene, binary = "Binary", visual = "PCA",
   shape = "No Shape", x = "PC1", y = "PC2", useAssay = "counts",
@@ -40,6 +41,10 @@ Default: "Binary"}
 \item{reducedDimName}{Store the PCA data with this name. The default is PCA.
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 
+\item{n_iterations}{maximum iterations. Default is 1000}
+
+\item{perplexity}{perplexity parameter. Default is 5}
+
 \item{visual}{Type of visualization (PCA or tSNE). Default: "PCA"}
 
 \item{shape}{Shape of the points}
@@ -59,6 +64,12 @@ FALSE.}
 
 \item{runTSNE}{Run t-SNE if the reducedDimName does not exist. the Default is
 FALSE.}
+
+\item{inSCE}{Input SCtkExperiment object. Required}
+
+\item{useAssay}{Indicate which assay to use. The default is "logcounts".}
+
+\item{reducedDimName}{a name to store the results of the dimension reductions}
 }
 \value{
 getBiomarker(): A data.frame of expression values
@@ -66,7 +77,7 @@ getBiomarker(): A data.frame of expression values
 getPCA(): A SCtkE object with the specified reduecedDim and
 pcaVariances updated
 
-getTSNE(): A SCtkE object with the specified reduecedDim and
+getTSNE(): A SCtkE object with the specified reducedDim and
 pcaVariances updated
 
 plotBiomarker(): A Biomarker plot
