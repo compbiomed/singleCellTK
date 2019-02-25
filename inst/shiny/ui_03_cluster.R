@@ -148,26 +148,23 @@ shinyPanelCluster <- fluidPage(
                   ##----------------------------------#
                   # K-Means
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'K-Means'", "clusteringAlgorithm"),
                     tags$h4("Number of Clusters (k):"),
                     selectInput("Knumber", label = NULL, numClusters)
                   ),
                   ##----------------------------------#
                   # Clara
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'Clara' && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'Clara'", "clusteringAlgorithm"),
                     tags$h4("Number of Clusters:"),
                     selectInput("Cnumber", label = NULL, numClusters)
                   ),
                   ##----------------------------------#
                   # K-Means and Clara
                   conditionalPanel(
-                    condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
-                    conditionalPanel(
                       condition = sprintf("input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "clusteringAlgorithm", "clusteringAlgorithm"),
                       tags$h4("Name of Clusters:"),
                       textInput("clusterName", label = NULL, value = "clusters")
-                    )
                   )
                   ##----------------------------------#
                   ## Input other clustering algorithms here
@@ -175,7 +172,7 @@ shinyPanelCluster <- fluidPage(
                 )
               ),
               conditionalPanel(
-                condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
+                condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
                 withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
               ),
               conditionalPanel(
