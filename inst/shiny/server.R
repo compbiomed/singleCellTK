@@ -744,7 +744,7 @@ shinyServer(function(input, output, session) {
                                    useAssay = input$dimRedAssaySelect,
                                    reducedDimName = input$usingReducedDims,
                                    runPCA = FALSE)
-      } 
+      }
       } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
         if (input$colorBy != "Gene Expression") {
           vals$dimRedPlot <- singleCellTK::plotTSNE(inSCE = vals$counts,
@@ -765,7 +765,7 @@ shinyServer(function(input, output, session) {
           }
         }
       })
-  
+
   observe({
     output$geneExpPlot <- renderPlot({
     if (input$colorGeneBy == "Manual Input") {
@@ -796,7 +796,7 @@ shinyServer(function(input, output, session) {
       }
       })
     })
-  
+
   output$clusterPlot <- renderPlotly({
     req(vals$dimRedPlot)
     plotly::ggplotly(vals$dimRedPlot)
@@ -810,13 +810,6 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("clusterData", {
         currdimname <- input$usingReducedDims
-        # if (input$selectClusterInputData == "PCA Components") {
-        #   currdimname <- paste0("PCA", "_", input$dimRedAssaySelect)
-        # } else if (input$selectClusterInputData == "tSNE Components") {
-        #   currdimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
-        # } else if (input$selectClusterInputData == "UMAP Components") {
-        #   currdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
-        # }
         if (input$clusteringAlgorithm == "K-Means"){
           data <- getClusterInputData(vals$counts, input$selectClusterInputData,
                                       useAssay = input$dimRedAssaySelect,
@@ -846,9 +839,9 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
-  
-    output$pctable <- renderTable({
+
+  #TODO: this doesn't work with multiple pca dims
+  output$pctable <- renderTable({
       if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
       } else{
        # HTML(tags$h4("PC Table:"))
@@ -860,8 +853,6 @@ shinyServer(function(input, output, session) {
         }
       }
     })
-  #TODO: this doesn't work with multiple pca dims
-  
 
   #Gene visualization
   output$visOptions <- renderUI({
@@ -924,29 +915,44 @@ shinyServer(function(input, output, session) {
     req(vals$visplotobject)
     vals$visplotobject
   }, height = 600)
-  
-  output$treePlot <- renderPlot({
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      if (input$dimRedPlotMethod == "Dendrogram" & paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
+
+  output$dendroRedDim <- renderUI({
+    selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
+  })
+
+  observeEvent(input$dendroPlot, {
+    withBusyIndicatorServer(input$dendroPlot, {
+      if (is.null(vals$counts)){
+        shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      } else {
+        if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+          comp <- "PCA Components"
+        } else  if (grepl(pattern = "TSNE_", x = input$usingReducedDims)) {
+          comp <- "TSNE Components"
+        } else {
+          comp <- "UMAP Components"
+        }
         data <- getClusterInputData(inSCE = vals$counts,
-                                    inputData = "PCA Components",
+                                    inputData = comp,
                                     useAssay = input$dimRedAssaySelect,
-                                    reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
+                                    reducedDimName = input$usingReducedDims)
         d <- stats::dist(data)
         h <- stats::hclust(d, input$dendroDistanceMetric)
         if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          g <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
+          vals$dendrogram <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
         } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          g <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
+          vals$dendrogram <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
         } else {
           stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
         }
-        g
+        vals$dendrogram
       }
-    }
-  }, height = 600)
+    })
+  })
+    output$treePlot <- renderPlot({
+      req(vals$dendrogram)
+      vals$dendrogram
+    }, height = 600)
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction

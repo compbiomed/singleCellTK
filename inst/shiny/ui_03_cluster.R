@@ -119,10 +119,7 @@ shinyPanelCluster <- fluidPage(
                       condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
                       plotOutput("geneExpPlot", height = "600px")
                     ),
-                  #plotlyOutput("clusterPlot", height = "600px"),
                   tags$hr(),
-                  # tags$h4("PC Table:"),
-                  # tableOutput("pctable")
                   uiOutput("pctable")
                 )
               )
@@ -174,11 +171,6 @@ shinyPanelCluster <- fluidPage(
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
                 withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
-              ),
-              conditionalPanel(
-                condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
-                radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected = "Hierarchical"),
-                selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"))
               )
             )
           )
@@ -224,8 +216,22 @@ shinyPanelCluster <- fluidPage(
       tabPanel(
         title = "Dendrogram",
         wellPanel(
-        tags$br(),
-          tags$p("Work in progress - Need to move dendrogram functionality over from DR tab.")
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                tags$h4("Options:"),
+                uiOutput("dendroRedDim"),
+                radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected = "Hierarchical"),
+                selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")),
+                withBusyIndicatorUI(actionButton("dendroPlot", "Plot"))
+              ),
+              mainPanel(
+                fluidRow(
+                  plotOutput("treePlot", height = '600px')
+                )
+              )
+            )
+          )
         )
       )
     )
