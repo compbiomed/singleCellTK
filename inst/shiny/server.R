@@ -21,7 +21,10 @@ shinyServer(function(input, output, session) {
     visplotobject = NULL,
     enrichRes = NULL,
     diffexheatmapplot = NULL,
-    diffexBmName = NULL
+    diffexBmName = NULL,
+    dimRedPlot = NULL,
+    dimRedPlot_geneExp = NULL,
+    dendrogram = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -214,6 +217,9 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -310,6 +316,9 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -344,6 +353,9 @@ shinyServer(function(input, output, session) {
         vals$enrichRes <- NULL
         vals$diffexBmName <- NULL
         diffExValues$diffExList <- NULL
+        vals$dimRedPlot <- NULL
+        vals$dimRedPlot_geneExp <- NULL
+        vals$dendrogram <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -373,6 +385,9 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -431,6 +446,9 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
       updateNumSamples()
     })
   })
@@ -483,6 +501,9 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -498,6 +519,9 @@ shinyServer(function(input, output, session) {
     vals$diffexheatmapplot <- NULL
     vals$diffexBmName <- NULL
     diffExValues$diffExList <- NULL
+    vals$dimRedPlot <- NULL
+    vals$dimRedPlot_geneExp <- NULL
+    vals$dendrogram <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -669,7 +693,6 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "c_button1", class = "btn-block")
   shinyjs::addClass(id = "c_button2", class = "btn-block")
   shinyjs::addClass(id = "c_button3", class = "btn-block")
-
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
@@ -842,16 +865,15 @@ shinyServer(function(input, output, session) {
 
   #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
-      if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
-      } else{
+      if (!is.null(vals$counts)){
        # HTML(tags$h4("PC Table:"))
-        if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
-          if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-            data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
-                       Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
+          if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+            if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
+              data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
+                         Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
+            }
           }
         }
-      }
     })
 
   #Gene visualization
@@ -916,6 +938,7 @@ shinyServer(function(input, output, session) {
     vals$visplotobject
   }, height = 600)
 
+  #Dendrogram
   output$dendroRedDim <- renderUI({
     selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
   })
