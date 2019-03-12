@@ -731,7 +731,7 @@ shinyServer(function(input, output, session) {
                                          useAssay = input$dimRedAssaySelect,
                                          reducedDimName = tsnedimname,
                                          perplexity = input$perplexityTSNE,
-                                         n_iterations = iterTSNE)
+                                         n_iterations = input$iterTSNE)
                   updateReddimInputs()
                 }
               } else {

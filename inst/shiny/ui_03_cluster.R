@@ -6,6 +6,43 @@ shinyPanelCluster <- fluidPage(
               "(help)", target = "_blank")),
     tabsetPanel(
       tabPanel(
+        "Gene Visualization",
+        wellPanel(
+          br(),
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                h4("Visualization Options:"),
+                selectInput("visAssaySelect", "Select Assay:", currassays),
+                selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
+                selectInput("visCondn", "Condition:", c("none", clusterChoice)),
+                h3("Choose data source:"),
+                radioButtons(
+                  "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
+                                                 "Saved top genes" = "visBiomarker")
+                ),
+                conditionalPanel(
+                  condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
+                  selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
+                ),
+                conditionalPanel(
+                  helpText("To use this, first run Differential expression and save top genes."),
+                  condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
+                  uiOutput("visBioGenes")
+                ),
+                uiOutput("visOptions"),
+                withBusyIndicatorUI(actionButton("plotvis", "Plot"))
+              ),
+              mainPanel(
+                fluidRow(
+                  plotOutput("visPlot", height = '600px')
+                )
+              )
+            )
+          )
+        )
+      ),
+      tabPanel(
         "Dimensionality Reduction",
         wellPanel(
           # SHINYJS COLLAPSE --------------------------
@@ -171,43 +208,6 @@ shinyPanelCluster <- fluidPage(
               conditionalPanel(
                 condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
                 withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
-              )
-            )
-          )
-        )
-      ),
-      tabPanel(
-        "Gene Visualization",
-        wellPanel(
-          br(),
-          fluidRow(
-            sidebarLayout(
-              sidebarPanel(
-                h4("Visualization Options:"),
-                selectInput("visAssaySelect", "Select Assay:", currassays),
-                selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
-                selectInput("visCondn", "Condition:", c("none", clusterChoice)),
-                h3("Choose data source:"),
-                radioButtons(
-                  "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
-                                                 "Saved top genes" = "visBiomarker")
-                ),
-                conditionalPanel(
-                  condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
-                  selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
-                ),
-                conditionalPanel(
-                  helpText("To use this, first run Differential expression and save top genes."),
-                  condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
-                  uiOutput("visBioGenes")
-                ),
-                uiOutput("visOptions"),
-                withBusyIndicatorUI(actionButton("plotvis", "Plot"))
-              ),
-              mainPanel(
-                fluidRow(
-                  plotOutput("visPlot", height = '600px')
-                )
               )
             )
           )
