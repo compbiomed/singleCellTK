@@ -42,6 +42,8 @@ shinyServer(function(input, output, session) {
                       choices = c("No Shape", pdataOptions))
     updateSelectInput(session, "selectDiffexCondition",
                       choices = pdataOptions)
+    updateSelectInput(session, "selectBiomarkerCondition",
+                      choices = pdataOptions)
     updateSelectInput(session, "subCovariate",
                       choices = pdataOptions)
     updateSelectInput(session, "batchVarPlot",
@@ -75,6 +77,8 @@ shinyServer(function(input, output, session) {
     updateSelectizeInput(session, "selectvisGenes",
                          choices = selectthegenes, server = TRUE)
     updateSelectizeInput(session, "enrichGenes",
+                         choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "biomarkerGenes",
                          choices = selectthegenes, server = TRUE)
   }
 
@@ -113,6 +117,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
+    updateSelectInput(session, "BiomarkerAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -157,7 +162,9 @@ shinyServer(function(input, output, session) {
                                      assayName = "logtpm",
                                      inputDataFrames = TRUE,
                                      createLogCounts = FALSE)
-          rm(maits)
+          if (exists("maits")){
+            rm(maits)
+          }
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
           tempsce <- as(fluidigm, "SingleCellExperiment")
@@ -2098,7 +2105,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
+  
   #Run differential power analysis
   observeEvent(input$runSnapshot, {
     if (is.null(vals$counts)){
@@ -2119,4 +2126,112 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  
+  
+  #-----------------------------------------------------------------------------
+  # Page 8: Biomarker
+  #-----------------------------------------------------------------------------
+  
+  output$biomarkerBioGenes <- renderUI({
+    if (!is.null(vals$counts)) {
+      selectInput("selBiomarkerBioGenes", "Select Gene List(s):",
+                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
+    }
+  })
+  
+  
+  output$selectBiomarkerConditionUI <- renderUI({
+     if (!is.null(vals$counts)){
+       categorical_vars <- colnames(colData(vals$counts))
+       annotData <- SingleCellExperiment::colData(vals$counts)
+       index_cate <- c()
+       for (i in seq(length(annotData))){
+         var_vec <- as.character(annotData[i][[1]])
+         if (length(unique(var_vec)) > 1 & length(unique(var_vec))/length(var_vec) < 0.5){
+           index_cate <- c(index_cate, i)
+         }
+       }
+       categorical_vars <- categorical_vars[index_cate]
+       selectInput("selectBiomarkerCondition", 
+                       "Select Condition:",
+                       categorical_vars, 
+                       multiple = FALSE)
+     }
+  })
+
+  # For conditions with more than two factors, select the factor of interest
+  output$selectBiomarkerConditionLevelUI <- renderUI({
+    req(vals$counts)
+    if (length(colnames(colData(vals$counts))) > 0){
+      if (length(unique(colData(vals$counts)[, input$selectBiomarkerCondition])) > 2){
+        tagList(
+          radioButtons("selectBiomarkerConditionMethod", "Select target levels:",
+                       choiceNames = c("1 vs all", "1 vs 1"),
+                       choiceValues = c("1va", "1v1")
+          ),
+          conditionalPanel(
+            condition = "input.selectBiomarkerConditionMethod == '1va'",
+            selectInput("selectBiomarkerCondition1va",
+                        "Select ONLY 1 level",
+                        unique(sort(colData(vals$counts)[, input$selectBiomarkerCondition])))
+          ),
+          conditionalPanel(
+            condition = "input.selectBiomarkerConditionMethod == '1v1'",
+            selectInput("selectBiomarkerCondition1v1",
+                        "Select ONLY 2 levels",
+                        unique(sort(colData(vals$counts)[, input$selectBiomarkerCondition])),
+                        multiple = TRUE)
+          )
+        )
+      }
+    }
+  })
+  
+
+  observeEvent(input$goButtonBiomarker, {
+    withBusyIndicatorServer("goButtonBiomarker", {
+      
+      
+      if (input$geneListChoiceBiomarker == "selectGenes"){
+          genes_selected <- input$biomarkerGenes
+      } else if (input$geneListChoiceBiomarker == "topGenes"){
+          genes_selected <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selBiomarkerBioGenes] == 1]
+      }
+      
+      
+     biomarker.vals <- reactiveValues(
+      biomarker.list = findBiomarker(inSCE = vals$counts,
+                                     condition = input$selectBiomarkerCondition,
+                                     useAssay = input$BiomarkerAssay,
+                                     gene_subset = genes_selected,
+                                     nfolds = input$num.cv.nfolds,
+                                     nrepeats = input$num.biomarker.run,
+                                     seed = 99,
+                                     percent_top_biomarker = input$percent_top_biomarker,
+                                     model_name = input$select_model_biomarker,
+                                     level_selected_1va = input$selectBiomarkerCondition1va,
+                                     level_selected_1v1 = input$selectBiomarkerCondition1v1
+                                     )
+     )
+      output$biomarker_list <- renderTable({
+        biomarker.vals$biomarker.list$biomarker
+      })
+      output$importance_plot <- renderPlot({
+         biomarker.vals$biomarker.list$importance_plot
+      })
+      output$roc_plot <- renderPlot({
+       biomarker.vals$biomarker.list$roc_plot
+      })
+    })
+  })
 })
+
+
+
+
+
+ 
+
+
+
+

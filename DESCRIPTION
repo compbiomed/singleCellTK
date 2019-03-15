@@ -8,6 +8,7 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
              person(given=c("Mohammed", "Muzamil"), family="Khan", email="mmkhan@bu.edu", role=c("aut")),
              person(given="Emma", family="Briars", email="ebriars@bu.edu", role=c("aut")),
              person(given="Sebastian", family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
+             person(given="Yue", family="Zhao", email="yuezh@bu.edu", role=c("aut")),
              person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut")))
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
@@ -55,7 +56,13 @@ Imports:
     enrichR,
     shinycssloaders,
     shinythemes,
-    umap
+    umap,
+    glmnet,
+    ranger,
+    caret,
+    plotROC,
+    forcats,
+    DMwR
 RoxygenNote: 6.1.1
 Suggests:
     testthat,

@@ -23,6 +23,12 @@ library(singleCellTK)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
+library(caret)
+library(glmnet)
+library(ranger)
+library(plotROC)
+library(forcats)
+library(DMwR)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -80,6 +86,7 @@ source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
+source("ui_08_biomarker.R", local = TRUE) #creates shinyPanelBiomarker variable
 
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
@@ -114,6 +121,7 @@ shinyUI(
       tabPanel("EnrichR", shinyPanelEnrichR)
     ),
     tabPanel("Sample Size", shinyPanelSubsample),
+    tabPanel("Biomarker", shinyPanelBiomarker),
     footer = includeHTML("www/footer.html")
   )
 )
