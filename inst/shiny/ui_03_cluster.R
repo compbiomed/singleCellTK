@@ -6,6 +6,43 @@ shinyPanelCluster <- fluidPage(
               "(help)", target = "_blank")),
     tabsetPanel(
       tabPanel(
+        "Gene Visualization",
+        wellPanel(
+          br(),
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                h4("Visualization Options:"),
+                selectInput("visAssaySelect", "Select Assay:", currassays),
+                selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
+                selectInput("visCondn", "Condition:", c("none", clusterChoice)),
+                h3("Choose data source:"),
+                radioButtons(
+                  "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
+                                                 "Saved top genes" = "visBiomarker")
+                ),
+                conditionalPanel(
+                  condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
+                  selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
+                ),
+                conditionalPanel(
+                  helpText("To use this, first run Differential expression and save top genes."),
+                  condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
+                  uiOutput("visBioGenes")
+                ),
+                uiOutput("visOptions"),
+                withBusyIndicatorUI(actionButton("plotvis", "Plot"))
+              ),
+              mainPanel(
+                fluidRow(
+                  plotOutput("visPlot", height = '600px')
+                )
+              )
+            )
+          )
+        )
+      ),
+      tabPanel(
         "Dimensionality Reduction",
         wellPanel(
           # SHINYJS COLLAPSE --------------------------
@@ -22,23 +59,13 @@ shinyPanelCluster <- fluidPage(
                         tags$h4("Select:"),
                         selectInput("dimRedAssaySelect", "Assay:", currassays),
                         # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE")),
+                        selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "UMAP")),
                         tags$br(),
-                        ## BUTTONS NEED REPLACING:
-                        ## these are just the old "re-run" buttons moved up & re-labeled to look like 1 button
-                        tags$br(),
-                        conditionalPanel(
-                          condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
-                          withBusyIndicatorUI(actionButton("reRunTSNE", "Run"))
-                        ),
-                        conditionalPanel(
-                          condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
-                          withBusyIndicatorUI(actionButton("reRunPCA", "Run"))
-                        )
+                        withBusyIndicatorUI(actionButton("runDimred", "Run"))
                       ),
                       column(6,
                         tags$h4("DR Options:"),
-                        ## NOT LINKED UP
+                        ## NOT LINKED UP -- LINKED NOW
                         textInput("dimRedNameInput", "reducedDim Name:", ""),
                         tags$br(),
                         HTML('<button type="button" class="btn btn-default btn-block"
@@ -47,7 +74,17 @@ shinyPanelCluster <- fluidPage(
                         ),
                         tags$div(
                           id = "c-collapse-run-options", class = "collapse",
-                          tags$p("Content coming soon.")
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
+                            sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 100),
+                            sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
+                            numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
+                          ),
+                          conditionalPanel(
+                            condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
+                            sliderInput("iterTSNE", "# of iterations", min = 100, max = 2000, value = 500),
+                            sliderInput("perplexityTSNE", "Perplexity paramter", min = 5, max = 50, value = 5)
+                          )
                         )
                       )
                     )
@@ -81,7 +118,8 @@ shinyPanelCluster <- fluidPage(
                 sidebarPanel(
                   tags$h3("Visualization Settings:"),
                   ## NOT LINKED UP
-                  selectInput("usingReducedDims", "Select Reduced Dimension Data:", ""),
+                  uiOutput("usingReducedDims"),
+                  #selectInput("usingReducedDims", "Select Reduced Dimension Data:", currreddim),
                   tags$h4("Axis Settings"),
                   selectInput("pcX", "X Axis:", pcComponents),
                   selectInput("pcY", "Y Axis:", pcComponents, selected = pcComponentsSelectedY),
@@ -105,39 +143,21 @@ shinyPanelCluster <- fluidPage(
                   ),
                   selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
                   ## NOT LINKED UP
-                  selectInput("sizeBy", "Size points by:", c("No Sizing", clusterChoice)),
+                  ##selectInput("sizeBy", "Size points by:", c("No Sizing", clusterChoice)),
                   tags$hr(),
-                  ## NOT LINKED UP
                   withBusyIndicatorUI(actionButton("cUpdatePlot", "Update Plot"))
                 ),
                 mainPanel(
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
-                    conditionalPanel(
-                      condition = sprintf("input['%s'] == 'Hierarchical' || input['%s'] == 'Phylogenetic Tree'", "clusteringAlgorithmD", "clusteringAlgorithmD"),
-                      plotOutput("treePlot")
-                    )
-                  ),
-                  conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
-                    conditionalPanel(
-                      condition = sprintf("input['%s'] == 'No' || input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "booleanCluster", "clusteringAlgorithm", "clusteringAlgorithm"),
-                      conditionalPanel(
                         condition = sprintf("input['%s'] != 'Gene Expression'", "colorBy"),
                         plotlyOutput("clusterPlot", height = "600px")
-                      )
-                    )
-                  ),
+                        ),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE'", "dimRedPlotMethod", "dimRedPlotMethod"),
-                    conditionalPanel(
                       condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
-                      plotOutput("geneExpressionPlot", height = "600px")
-                    )
-                  ),
+                      plotOutput("geneExpPlot", height = "600px")
+                    ),
                   tags$hr(),
-                  tags$h4("PC Table:"),
-                  tableOutput("pctable")
+                  uiOutput("pctable")
                 )
               )
             )
@@ -151,9 +171,9 @@ shinyPanelCluster <- fluidPage(
               fluidRow(
                 column(6,
                   tags$h4("Data to Cluster:"),
-                  selectInput("selectClusterInputData", label = NULL, c("PCA Components", "tSNE Components")),
+                  selectInput("selectClusterInputData", label = NULL, c("PCA Components", "tSNE Components", "UMAP Components")),
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' ", "dimRedPlotMethod", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'PCA' || input['%s'] == 'tSNE' || input['%s'] == 'UMAP' ", "dimRedPlotMethod", "dimRedPlotMethod", "dimRedPlotMethod"),
                     tags$h4("Select Clustering Algorithm:"),
                     radioButtons("clusteringAlgorithm", label = NULL, c("K-Means", "Clara"))
                   )
@@ -162,26 +182,23 @@ shinyPanelCluster <- fluidPage(
                   ##----------------------------------#
                   # K-Means
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'K-Means'  && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'K-Means'", "clusteringAlgorithm"),
                     tags$h4("Number of Clusters (k):"),
                     selectInput("Knumber", label = NULL, numClusters)
                   ),
                   ##----------------------------------#
                   # Clara
                   conditionalPanel(
-                    condition = sprintf("input['%s'] == 'Clara' && input['%s'] != 'Dendrogram'", "clusteringAlgorithm", "dimRedPlotMethod"),
+                    condition = sprintf("input['%s'] == 'Clara'", "clusteringAlgorithm"),
                     tags$h4("Number of Clusters:"),
                     selectInput("Cnumber", label = NULL, numClusters)
                   ),
                   ##----------------------------------#
                   # K-Means and Clara
                   conditionalPanel(
-                    condition = sprintf("input['%s'] != 'Dendrogram'", "dimRedPlotMethod"),
-                    conditionalPanel(
                       condition = sprintf("input['%s'] == 'Clara' || input['%s'] == 'K-Means'", "clusteringAlgorithm", "clusteringAlgorithm"),
                       tags$h4("Name of Clusters:"),
                       textInput("clusterName", label = NULL, value = "clusters")
-                    )
                   )
                   ##----------------------------------#
                   ## Input other clustering algorithms here
@@ -189,45 +206,76 @@ shinyPanelCluster <- fluidPage(
                 )
               ),
               conditionalPanel(
-                condition = sprintf("input['%s'] != 'Dendrogram' && input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "dimRedPlotMethod", "clusteringAlgorithm", "clusteringAlgorithm"),
+                condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
                 withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
-              ),
-              conditionalPanel(
-                condition = sprintf("input['%s'] == 'Dendrogram'", "dimRedPlotMethod"),
+              )
+            )
+          )
+        )
+      ),
+      tabPanel(
+        title = "Dendrogram",
+        wellPanel(
+          fluidRow(
+            sidebarLayout(
+              sidebarPanel(
+                tags$h4("Options:"),
+                uiOutput("dendroRedDim"),
                 radioButtons("clusteringAlgorithmD", "Select Clustering Algorithm:", c("Hierarchical", "Phylogenetic Tree"), selected = "Hierarchical"),
-                selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"))
+                selectInput("dendroDistanceMetric", "Select Distance Metric:", c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid")),
+                withBusyIndicatorUI(actionButton("dendroPlot", "Plot"))
+              ),
+              mainPanel(
+                fluidRow(
+                  plotOutput("treePlot", height = '600px')
+                )
               )
             )
           )
-        )
-      ),
-      tabPanel(
-        "Gene Visualization",
-        wellPanel(
-          sidebarLayout(
-            sidebarPanel(
-              h4("Visualization Options:"),
-              selectInput("visAssaySelect", "Select Assay:", currassays),
-              selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
-              selectInput("visCondn", "Condition:", c(clusterChoice)),
-              selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE),
-              withBusyIndicatorUI(actionButton("plotvis", "Plot"))
-            ),
-            mainPanel(
-              fluidRow(
-                plotOutput("visPlot")
-              )
-            )
-          )
-        )
-      ),
-      tabPanel(
-        title = "Dendrogram", id = "dendrogram",
-        wellPanel(
-        tags$br(),
-          tags$p("Work in progress - Need to move dendrogram functionality over from DR tab.")
         )
       )
     )
   )
 )
+
+
+
+#Dendrogram
+output$dendroRedDim <- renderUI({
+  selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
+})
+
+observeEvent(input$dendroPlot, {
+  withBusyIndicatorServer(input$dendroPlot, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+        comp <- "PCA Components"
+      } else  if (grepl(pattern = "TSNE_", x = input$usingReducedDims)) {
+        comp <- "TSNE Components"
+      } else {
+        comp <- "UMAP Components"
+      }
+      data <- getClusterInputData(inSCE = vals$counts,
+                                  inputData = comp,
+                                  useAssay = input$dimRedAssaySelect,
+                                  reducedDimName = input$usingReducedDims)
+      d <- stats::dist(data)
+      h <- stats::hclust(d, input$dendroDistanceMetric)
+      if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
+        vals$dendrogram <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
+      } else if (input$clusteringAlgorithmD == "Hierarchical") {
+        vals$dendrogram <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
+      } else {
+        stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
+      }
+      vals$dendrogram
+    }
+  })
+})
+output$treePlot <- renderPlot({
+  req(vals$dendrogram)
+  vals$dendrogram
+}, height = 600)
+
