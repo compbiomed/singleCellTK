@@ -1,12 +1,11 @@
+#' Run t-SNE dimensionality reduction method on the assay data.
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reductions
 #' @param n_iterations maximum iterations. Default is 1000
 #' @param perplexity perplexity parameter. Default is 5
 #'
-#' @describeIn getPCA Get t-SNE components for a SCtkE object
-#'
-#' @return getTSNE(): A SCtkE object with the specified reducedDim and
+#' @return A SCtkE object with the specified reducedDim and
 #' pcaVariances updated
 #'
 #' @export

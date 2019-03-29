@@ -106,7 +106,7 @@ shinyUI(
     navbarMenu(
       "Visualization & Clustering",
       tabPanel("Genewise Visualization", shinyPanelVis),
-      tabPanel("Samplewise", shinyPanelCluster)
+      tabPanel("Samplewise Vis & Clustering", shinyPanelCluster)
     ),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(

@@ -167,9 +167,8 @@ shinyPanelCluster <- fluidPage(
                  ),
                  conditionalPanel(
                    condition = sprintf("input['%s'] == 'K-Means' || input['%s'] == 'Clara'", "clusteringAlgorithm", "clusteringAlgorithm"),
-                   withBusyIndicatorUI(actionButton("clusterData", "Cluster Data"))
-                   #,uiOutput("clusterHelpText")
-                   ,helpText("To visualize this, run any clustering method here -> scroll up (visualize) and select your saved cluster name in plot by shape/color.")
+                   withBusyIndicatorUI(actionButton("clusterData", "Cluster Data")),
+                   helpText("To visualize this, run any clustering method here -> scroll up (visualize) and select your saved cluster name in plot by shape/color.")
                  )
                )
               )

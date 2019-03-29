@@ -898,9 +898,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$clusterHelpText <- renderUI({
-    
-  })
   observeEvent(input$plotvis, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")

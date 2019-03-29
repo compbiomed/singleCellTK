@@ -71,7 +71,8 @@ Suggests:
     org.Hs.eg.db,
     scRNAseq,
     xtable,
-    spelling
+    spelling,
+    GSEABase
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
