@@ -30,7 +30,7 @@ getClusterInputData <- function(inSCE, inputData, useAssay="logcounts",
     if (is.null(reducedDimName)){
       stop("You must supply a tSNE dim name")
     }
-    if (is.null(SingleCellExperiment::reducedDim(inSCE, "TSNE"))) {
+    if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
       inSCE <- getTSNE(inSCE, useAssay = useAssay,
                            reducedDimName = reducedDimName)
     }
@@ -39,7 +39,7 @@ getClusterInputData <- function(inSCE, inputData, useAssay="logcounts",
     if (is.null(reducedDimName)){
       stop("You must supply a UMAP dim name")
     }
-    if (is.null(SingleCellExperiment::reducedDim(inSCE, "UMAP"))) {
+    if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
       inSCE <- getUMAP(inSCE, useAssay = useAssay,
                        reducedDimName = reducedDimName)
     }
