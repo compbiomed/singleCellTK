@@ -111,7 +111,7 @@ shinyPanelDiffex <- fluidPage(
                             value = "Differential Expression"),
                   tags$hr(),
                   h3("Colorbar Options"),
-                  checkboxInput("displayHeatmapColorBar", "Color Bar",
+                  checkboxInput("displayHeatmapColorBar", "Display Color Bar",
                                 value = TRUE),
                   uiOutput("colorBarConditionUI"),
                   uiOutput("heatmapSampleAnnotations")
@@ -172,7 +172,6 @@ shinyPanelDiffex <- fluidPage(
       ),
       mainPanel(
         tabsetPanel(
-          id = "dataset",
           tabPanel(
             "Results Table",
             DT::dataTableOutput("diffextable")

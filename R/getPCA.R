@@ -1,17 +1,15 @@
-#' Get and plot PCA and t-SCE components for a SCtkE object
+#' Get and plot PCA components for a SCtkE object
 #'
 #' Selects the 500 most variable genes in the SCE, performs
-#' PCA or t-SNE based on them and stores the values in the reducedDims slot of
+#' PCA based on them and stores the values in the reducedDims slot of
 #' the SCE object.
-#'
-#' @describeIn getPCA Get PCA components for a SCtkE object
 #'
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use for PCA. Default is "counts"
 #' @param reducedDimName Store the PCA data with this name. The default is PCA.
 #' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
 #'
-#' @return getPCA(): A SCtkE object with the specified reduecedDim and
+#' @return A SCtkE object with the specified reducedDim and
 #' pcaVariances updated
 #' @export
 #' @examples

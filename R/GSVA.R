@@ -1,7 +1,5 @@
 .myenv <- new.env(parent = emptyenv())
 
-#' gsvaSCE
-#'
 #' Run GSVA analysis on a SCtkExperiment object.
 #'
 #' @param inSCE Input SCtkExperiment object. Required
@@ -15,8 +13,22 @@
 #' @param ... Parameters to pass to gsva()
 #'
 #' @return gsvaSCE(): A data.frame of pathway activity scores from GSVA.
-#'
 #' @export
+#' @examples
+#' utils::data(maits, package = "MAST")
+#' utils::data(c2BroadSets, package = "GSVAdata")
+#' maitslogtpm <- t(maits$expressionmat)
+#' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
+#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+#' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
+#' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
+#' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
+#'                       featureFile = maitsfeatures, assayName = "logtpm",
+#'                       inputDataFrames = TRUE, createLogCounts = FALSE)
+#' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
+#' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
+#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+#'                parallel.sz = 1)
 gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
                     pathwayNames, ...){
   if (pathwaySource == "Manual Input"){
@@ -46,6 +58,8 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 
 #' @describeIn gsvaSCE Plot GSVA results.
 #'
+#' Plot GSVA Results
+#'
 #' @param gsvaData GSVA data to plot. Required.
 #' @param plotType The type of plot to use, "Violin" or "Heatmap". Required.
 #' @param condition The condition(s) to use for the Violin plot, or the
@@ -60,12 +74,31 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' @return gsvaPlot(): The requested plot of the GSVA results.
 #'
 #' @export
+#'
+#' @examples
+#' #Create a small example to run
+#' utils::data(maits, package = "MAST")
+#' utils::data(c2BroadSets, package = "GSVAdata")
+#' maitslogtpm <- t(maits$expressionmat)
+#' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
+#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+#' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
+#' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
+#' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
+#'                       featureFile = maitsfeatures, assayName = "logtpm",
+#'                       inputDataFrames = TRUE, createLogCounts = FALSE)
+#' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
+#' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
+#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+#'                parallel.sz = 1)
+#' gsvaPlot(inSCE = maitsSCE, gsvaData = res,
+#'          plotType = "Violin", condition = "condition")
 gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                      show_column_names = TRUE, show_row_names = TRUE,
                      text_size = 12){
   if (plotType == "Violin"){
     if (nrow(gsvaData) > 49){
-      stop("TOO Many results for Violin Plot. Try Heatmap.")
+      stop("Too Many results for Violin Plot. Try Heatmap.")
     }
     if (!(length(condition) > 0)){
       stop("You must specify a condition for Violin plot")
@@ -108,7 +141,7 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                                                  col = col)
     }
     #TODO make more customizable
-    ComplexHeatmap::draw(
+    return(ComplexHeatmap::draw(
       ComplexHeatmap::Heatmap(gsvaData,
                               row_names_gp = grid::gpar(fontsize = text_size),
                               top_annotation = topha,
@@ -116,7 +149,7 @@ gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                               show_row_names = show_row_names,
                               name = "GSVA\nscore"),
       heatmap_legend_side = "left", annotation_legend_side = "bottom"
-    )
+    ))
   } else {
     stop("ERROR: Unsupported plot type")
   }

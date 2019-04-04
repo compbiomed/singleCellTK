@@ -3,7 +3,7 @@
 \name{gsvaSCE}
 \alias{gsvaSCE}
 \alias{gsvaPlot}
-\title{gsvaSCE}
+\title{Run GSVA analysis on a SCtkExperiment object.}
 \usage{
 gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
 
@@ -52,5 +52,40 @@ Run GSVA analysis on a SCtkExperiment object.
 \section{Functions}{
 \itemize{
 \item \code{gsvaPlot}: Plot GSVA results.
+
+Plot GSVA Results
 }}
 
+\examples{
+utils::data(maits, package = "MAST")
+utils::data(c2BroadSets, package = "GSVAdata")
+maitslogtpm <- t(maits$expressionmat)
+genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) \%in\%
+                 GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+maitslogtpm <- maitslogtpm[rownames(maitslogtpm) \%in\% genesToSubset, ]
+maitsfeatures <- maits$fdat[rownames(maits$fdat) \%in\% genesToSubset, ]
+maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
+                      featureFile = maitsfeatures, assayName = "logtpm",
+                      inputDataFrames = TRUE, createLogCounts = FALSE)
+rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
+res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
+               pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+               parallel.sz = 1)
+#Create a small example to run
+utils::data(maits, package = "MAST")
+utils::data(c2BroadSets, package = "GSVAdata")
+maitslogtpm <- t(maits$expressionmat)
+genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) \%in\%
+                 GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
+maitslogtpm <- maitslogtpm[rownames(maitslogtpm) \%in\% genesToSubset, ]
+maitsfeatures <- maits$fdat[rownames(maits$fdat) \%in\% genesToSubset, ]
+maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
+                      featureFile = maitsfeatures, assayName = "logtpm",
+                      inputDataFrames = TRUE, createLogCounts = FALSE)
+rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
+res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
+               pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
+               parallel.sz = 1)
+gsvaPlot(inSCE = maitsSCE, gsvaData = res,
+         plotType = "Violin", condition = "condition")
+}
