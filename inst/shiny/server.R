@@ -21,7 +21,10 @@ shinyServer(function(input, output, session) {
     visplotobject = NULL,
     enrichRes = NULL,
     diffexheatmapplot = NULL,
-    diffexBmName = NULL
+    diffexBmName = NULL,
+    dimRedPlot = NULL,
+    dimRedPlot_geneExp = NULL,
+    dendrogram = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -197,9 +200,9 @@ shinyServer(function(input, output, session) {
           ui = tags$div(
             class = "alert alert-success alert-dismissible",
             HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
-                  </span> Successfully Uploaded! <button type='button' \
-                  class='close' data-dismiss='alert'>&times;</button>"))
-        )
+                 </span> Successfully Uploaded! <button type='button' \
+                 class='close' data-dismiss='alert'>&times;</button>"))
+            )
       } else {
         shinyalert::shinyalert("Error!", "The data upload failed!",
                                type = "error")
@@ -214,6 +217,9 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -310,6 +316,9 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -344,6 +353,9 @@ shinyServer(function(input, output, session) {
         vals$enrichRes <- NULL
         vals$diffexBmName <- NULL
         diffExValues$diffExList <- NULL
+        vals$dimRedPlot <- NULL
+        vals$dimRedPlot_geneExp <- NULL
+        vals$dendrogram <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -373,6 +385,9 @@ shinyServer(function(input, output, session) {
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -431,6 +446,9 @@ shinyServer(function(input, output, session) {
       vals$gsvaLimma <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
       updateNumSamples()
     })
   })
@@ -483,6 +501,9 @@ shinyServer(function(input, output, session) {
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
+      vals$dimRedPlot <- NULL
+      vals$dimRedPlot_geneExp <- NULL
+      vals$dendrogram <- NULL
     })
   })
 
@@ -498,6 +519,9 @@ shinyServer(function(input, output, session) {
     vals$diffexheatmapplot <- NULL
     vals$diffexBmName <- NULL
     diffExValues$diffExList <- NULL
+    vals$dimRedPlot <- NULL
+    vals$dimRedPlot_geneExp <- NULL
+    vals$dendrogram <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -593,19 +617,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$delRedDim, {
-    req(vals$counts)
-    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
-                             type = "error")
-    } else {
-      withBusyIndicatorServer("delRedDim", {
-        reducedDim(vals$counts, input$delRedDimType) <- NULL
-        updateReddimInputs()
-      })
-    }
-  })
-
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
@@ -667,6 +678,206 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+
+  #-----------------------------------------------------------------------------
+  # Page 3: DR & Clustering
+  #-----------------------------------------------------------------------------
+
+  #Sidebar buttons functionality - not an accordion
+  shinyjs::onclick("c_button1", shinyjs::toggle(id = "c_collapse1",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",
+                                                anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "c_button1", class = "btn-block")
+  shinyjs::addClass(id = "c_button2", class = "btn-block")
+  shinyjs::addClass(id = "c_button3", class = "btn-block")
+  observeEvent(input$delRedDim, {
+    req(vals$counts)
+    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
+      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
+                             type = "error")
+    } else {
+      withBusyIndicatorServer("delRedDim", {
+        reducedDim(vals$counts, input$delRedDimType) <- NULL
+        updateReddimInputs()
+      })
+    }
+  })
+
+  observeEvent(input$runDimred, {
+    if (!is.null(vals$counts)){
+      withBusyIndicatorServer("runDimred", {
+        if (input$dimRedNameInput == ""){
+          shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
+        } #check for named entered and if its a duplicate
+        else if (!is.null(input$dimRedNameInput)){
+          if (input$dimRedNameInput %in% names(reducedDims(vals$counts))){
+            shinyalert::shinyalert("Error", "Name already exists!", type = "error")
+          } else {
+            if (input$dimRedPlotMethod == "PCA"){
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                pcadimname <- paste0("PCA", "_", input$dimRedNameInput)
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = pcadimname)
+                updateReddimInputs()
+              }
+            } else if (input$dimRedPlotMethod == "tSNE"){
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                tsnedimname <- paste0("TSNE", "_", input$dimRedNameInput)
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = tsnedimname,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+                updateReddimInputs()
+              }
+            } else {
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                umapdimname <- paste0("UMAP", "_", input$dimRedNameInput)
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = umapdimname,
+                                       n_neighbors = input$neighborsUMAP,
+                                       n_iterations = input$iterUMAP,
+                                       alpha = input$alphaUMAP
+                )
+                updateReddimInputs()
+              }
+            }
+          }
+        }
+      })
+    }
+  })
+
+  output$usingReducedDims <- renderUI({
+    req(vals$counts)
+    selectInput("usingReducedDims", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
+  })
+
+  observeEvent(input$cUpdatePlot, {
+    if (grepl(pattern = "PCA_", x = input$usingReducedDims)){
+      if (input$colorBy != "Gene Expression") {
+        vals$dimRedPlot <- singleCellTK::plotPCA(inSCE = vals$counts,
+                                   colorBy = input$colorBy,
+                                   shape = input$shapeBy, pcX = input$pcX,
+                                   pcY = input$pcY,
+                                   useAssay = input$dimRedAssaySelect,
+                                   reducedDimName = input$usingReducedDims,
+                                   runPCA = FALSE)
+      }
+    } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
+      if (input$colorBy != "Gene Expression") {
+        vals$dimRedPlot <- singleCellTK::plotTSNE(inSCE = vals$counts,
+                                                 colorBy = input$colorBy,
+                                                 shape = input$shapeBy,
+                                                 useAssay = input$dimRedAssaySelect,
+                                                 reducedDimName = input$usingReducedDims,
+                                                 runTSNE = FALSE)
+      }
+    } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
+      if (input$colorBy != "Gene Expression") {
+        vals$dimRedPlot <- singleCellTK::plotUMAP(inSCE = vals$counts,
+                                                 colorBy = input$colorBy,
+                                                 shape = input$shapeBy,
+                                                 useAssay = input$dimRedAssaySelect,
+                                                 reducedDimName = input$usingReducedDims,
+                                                 runUMAP = FALSE)
+      }
+    }
+  })
+
+  observe({
+    output$geneExpPlot <- renderPlot({
+    if (input$colorGeneBy == "Manual Input") {
+      if (is.null(input$colorGenes)){
+        ggplot2::ggplot() + ggplot2::theme_bw() +
+          ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
+          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
+      } else if (grepl(pattern = "PCA_", x = input$usingReducedDims)){
+        vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
+                                                               input$colorBinary, "PCA", input$shapeBy,
+                                                               input$pcX, input$pcY,
+                                                               useAssay = input$dimRedAssaySelect,
+                                                               reducedDimName = input$usingReducedDims)
+        vals$dimRedPlot_geneExp
+      } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
+        vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
+                                                               input$colorBinary, "tSNE", input$shapeBy,
+                                                               useAssay = input$dimRedAssaySelect,
+                                                               reducedDimName = input$usingReducedDims)
+        vals$dimRedPlot_geneExp
+      } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
+        vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
+                                                               input$colorBinary, "UMAP", input$shapeBy,
+                                                               useAssay = input$dimRedAssaySelect,
+                                                               reducedDimName = input$usingReducedDims)
+        vals$dimRedPlot_geneExp
+      }
+      }
+      })
+    })
+
+  output$clusterPlot <- renderPlotly({
+    req(vals$dimRedPlot)
+    plotly::ggplotly(vals$dimRedPlot)
+  })
+
+  observeEvent(input$clusterData, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else if (input$clusterName == "") {
+      shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
+    } else {
+      withBusyIndicatorServer("clusterData", {
+        currdimname <- input$usingReducedDims
+        if (input$clusteringAlgorithm == "K-Means"){
+          data <- getClusterInputData(vals$counts, input$selectClusterInputData,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = currdimname)
+          koutput <- kmeans(data, input$Knumber)
+          name <- input$clusterName
+          colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
+          updateColDataNames()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        } else if (input$clusteringAlgorithm == "Clara") {
+          data <- getClusterInputData(inSCE = vals$counts,
+                                      inputData = input$selectClusterInputData,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = currdimname)
+          coutput <- cluster::clara(data, input$Cnumber)
+          name <- input$clusterName
+          colData(vals$counts)[, paste(name)] <- factor(coutput$clustering)
+          updateColDataNames()
+          updateSelectInput(session, "colorBy",
+                            choices = c("No Color", "Gene Expression",
+                                        colnames(colData(vals$counts))),
+                            selected = input$clusterName)
+        }
+      })
+    }
+  })
+
+  #TODO: this doesn't work with multiple pca dims
+  output$pctable <- renderTable({
+      if (!is.null(vals$counts)){
+       # HTML(tags$h4("PC Table:"))
+          if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+            if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
+              data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
+                         Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
+            }
+          }
+        }
+    })
+
+  #Gene visualization
   output$visOptions <- renderUI({
     if (!is.null(vals$counts)){
       if (input$visPlotMethod != "heatmap") {
@@ -727,366 +938,6 @@ shinyServer(function(input, output, session) {
     req(vals$visplotobject)
     vals$visplotobject
   }, height = 600)
-
-  #-----------------------------------------------------------------------------
-  # Page 3: DR & Clustering
-  #-----------------------------------------------------------------------------
-
-  output$clusterPlot <- renderPlotly({
-    if (is.null(vals$counts)){
-      plotly::ggplotly(ggplot2::ggplot())
-    } else{
-      if (input$dimRedPlotMethod == "PCA"){
-        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(inSCE = vals$counts,
-                                useAssay = input$dimRedAssaySelect,
-                                reducedDimName = pcadimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, pcadimname))){
-          if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotPCA(inSCE = vals$counts,
-                                       colorBy = input$colorBy,
-                                       shape = input$shapeBy, pcX = input$pcX,
-                                       pcY = input$pcY,
-                                       useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = pcadimname)
-          } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotPCA(vals$counts, "No Color", "No Shape",
-                                       input$pcX, input$pcY,
-                                       useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = pcadimname)
-          }
-          plotly::ggplotly(g)
-        } else {
-          plotly::ggplotly(ggplot2::ggplot() + ggplot2::geom_point())
-        }
-      } else if (input$dimRedPlotMethod == "tSNE"){
-        tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, tsnedimname))) {
-          vals$counts <- getTSNE(inSCE = vals$counts,
-                                 useAssay = input$dimRedAssaySelect,
-                                 reducedDimName = tsnedimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, tsnedimname))){
-          if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotTSNE(vals$counts, input$colorBy, input$shapeBy,
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = tsnedimname)
-          } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotTSNE(vals$counts, "No Color", "No Shape",
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = tsnedimname)
-          }
-          plotly::ggplotly(g)
-        } else {
-          plotly::ggplotly(ggplot2::ggplot() + ggplot2::geom_point())
-        }
-      } else if (input$dimRedPlotMethod == "UMAP"){
-        umapdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, umapdimname))) {
-          vals$counts <- getUMAP(inSCE = vals$counts,
-                                 useAssay = input$dimRedAssaySelect,
-                                 reducedDimName = umapdimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, umapdimname))){
-          if (input$colorBy != "Gene Expression") {
-            g <- singleCellTK::plotUMAP(vals$counts, input$colorBy, input$shapeBy,
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = umapdimname)
-          } else if (input$colorGenes == ""){
-            g <- singleCellTK::plotUMAP(vals$counts, "No Color", "No Shape",
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = umapdimname)
-          }
-          plotly::ggplotly(g)
-        } else {
-          plotly::ggplotly(ggplot2::ggplot() + ggplot2::geom_point())
-        }
-      } else{
-        plotly::ggplotly(ggplot2::ggplot() + ggplot2::theme_bw() +
-                           ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white")))
-      }
-    }
-  })
-
-  #TODO: this doesn't work with multiple pca dims
-  output$pctable <- renderTable({
-    if (is.null(vals$counts) | !(class(vals$counts) == "SCtkExperiment")){
-    } else{
-      if (input$dimRedPlotMethod == "PCA") {
-        if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-          data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
-                     Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
-        }
-      }
-    }
-  })
-
-  output$geneExpressionPlot <- renderPlot({
-    if (is.null(vals$counts)){
-    } else {
-      if (input$dimRedPlotMethod == "PCA"){
-        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, pcadimname))) {
-          vals$counts <- getPCA(inSCE = vals$counts,
-                                useAssay = input$dimRedAssaySelect,
-                                reducedDimName = pcadimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, pcadimname))){
-          if (is.null(input$colorBy)) {
-            return()
-          }
-          if (input$colorBy == "Gene Expression") {
-            if (input$colorGeneBy == "Biomarker (from DE tab)"){
-              if (input$colorGenesBiomarker == ""){
-                ggplot2::ggplot() + ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
-                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
-                biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
-                                   "PCA", input$shapeBy, input$pcX, input$pcY,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = pcadimname)
-                g
-              }
-            } else if (input$colorGeneBy == "Manual Input") {
-              if (is.null(input$colorGenes)){
-                ggplot2::ggplot() + ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes,
-                                   input$colorBinary, "PCA", input$shapeBy,
-                                   input$pcX, input$pcY,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = pcadimname)
-                g
-              }
-            }
-          }
-        }
-      } else if (input$dimRedPlotMethod == "tSNE"){
-        tsnedimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, tsnedimname))){
-          vals$counts <- getTSNE(inSCE = vals$counts,
-                                 useAssay = input$dimRedAssaySelect,
-                                 reducedDimName = tsnedimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, tsnedimname))){
-          if (input$colorBy == "Gene Expression") {
-            if (input$colorGeneBy == "Biomarker (from DE tab)"){
-              if (input$colorGenesBiomarker == ""){
-                ggplot2::ggplot() +
-                  ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
-                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
-                biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
-                                   "tSNE", input$shapeBy,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = tsnedimname)
-                g
-              }
-            } else if (input$colorGeneBy == "Manual Input") {
-              if (is.null(input$colorGenes)){
-                ggplot2::ggplot() + ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes,
-                                   input$colorBinary, "tSNE", input$shapeBy,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = tsnedimname)
-                g
-              }
-            }
-          }
-        }
-      } else if (input$dimRedPlotMethod == "UMAP"){
-        umapdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
-        if (is.null(reducedDim(vals$counts, umapdimname))){
-          vals$counts <- getUMAP(inSCE = vals$counts,
-                                 useAssay = input$dimRedAssaySelect,
-                                 reducedDimName = umapdimname)
-          updateReddimInputs()
-        }
-        if (!is.null(reducedDim(vals$counts, umapdimname))){
-          if (input$colorBy == "Gene Expression") {
-            if (input$colorGeneBy == "Biomarker (from DE tab)"){
-              if (input$colorGenesBiomarker == ""){
-                ggplot2::ggplot() +
-                  ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                biomarkers <- data.frame(eval(parse(text = paste("rowData(vals$counts)[,'", input$colorGenesBiomarker, "']", sep = ""))))
-                rownames(biomarkers) <- rowData(vals$counts)[, "Gene"]
-                biomarkers <- rownames(subset(biomarkers, biomarkers[, 1] == 1))
-                g <- plotBiomarker(vals$counts, biomarkers, input$colorBinary,
-                                   "UMAP", input$shapeBy,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = umapdimname)
-                g
-              }
-            } else if (input$colorGeneBy == "Manual Input") {
-              if (is.null(input$colorGenes)){
-                ggplot2::ggplot() + ggplot2::theme_bw() +
-                  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-                  ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-              } else {
-                g <- plotBiomarker(vals$counts, input$colorGenes,
-                                   input$colorBinary, "UMAP", input$shapeBy,
-                                   useAssay = input$dimRedAssaySelect,
-                                   reducedDimName = umapdimname)
-                g
-              }
-            }
-          }
-        }
-      }
-    }
-  }, height = 600)
-
-  output$treePlot <- renderPlot({
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      if (input$dimRedPlotMethod == "Dendrogram" & paste0("PCA", "_", input$dimRedAssaySelect) %in% names(reducedDims(vals$counts))){
-        data <- getClusterInputData(inSCE = vals$counts,
-                                    inputData = "PCA Components",
-                                    useAssay = input$dimRedAssaySelect,
-                                    reducedDimName = paste0("PCA", "_", input$dimRedAssaySelect))
-        d <- stats::dist(data)
-        h <- stats::hclust(d, input$dendroDistanceMetric)
-        if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-          g <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
-        } else if (input$clusteringAlgorithmD == "Hierarchical") {
-          g <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
-        } else {
-          stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
-        }
-        g
-      }
-    }
-  }, height = 600)
-
-  observeEvent(input$clusterData, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else if (input$clusterName == "") {
-      shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
-    } else {
-      withBusyIndicatorServer("clusterData", {
-        currdimname <- NULL
-        if (input$selectClusterInputData == "PCA Components") {
-          currdimname <- paste0("PCA", "_", input$dimRedAssaySelect)
-        } else if (input$selectClusterInputData == "tSNE Components") {
-          currdimname <- paste0("TSNE", "_", input$dimRedAssaySelect)
-        } else if (input$selectClusterInputData == "UMAP Components") {
-          currdimname <- paste0("UMAP", "_", input$dimRedAssaySelect)
-        }
-        if (input$clusteringAlgorithm == "K-Means"){
-          data <- getClusterInputData(vals$counts, input$selectClusterInputData,
-                                      useAssay = input$dimRedAssaySelect,
-                                      reducedDimName = currdimname)
-          koutput <- kmeans(data, input$Knumber)
-          name <- input$clusterName
-          colData(vals$counts)[, paste(name)] <- factor(koutput$cluster)
-          updateColDataNames()
-          updateSelectInput(session, "colorBy",
-                            choices = c("No Color", "Gene Expression",
-                                        colnames(colData(vals$counts))),
-                            selected = input$clusterName)
-        } else if (input$clusteringAlgorithm == "Clara") {
-          data <- getClusterInputData(inSCE = vals$counts,
-                                      inputData = input$selectClusterInputData,
-                                      useAssay = input$dimRedAssaySelect,
-                                      reducedDimName = currdimname)
-          coutput <- cluster::clara(data, input$Cnumber)
-          name <- input$clusterName
-          colData(vals$counts)[, paste(name)] <- factor(coutput$clustering)
-          updateColDataNames()
-          updateSelectInput(session, "colorBy",
-                            choices = c("No Color", "Gene Expression",
-                                        colnames(colData(vals$counts))),
-                            selected = input$clusterName)
-        }
-      })
-    }
-  })
-
-  observe({
-    if (!is.null(vals$original)){
-      if (input$dimRedPlotMethod == "PCA"){
-        pcadimname <- paste0("PCA", "_", input$dimRedAssaySelect)
-        if (!is.null(reducedDim(vals$counts, pcadimname))) {
-          currPcs <- colnames(reducedDim(vals$counts, "PCA_counts"))
-          updateSelectInput(session, "pcX", choices = currPcs,
-                            selected = currPcs[1])
-          updateSelectInput(session, "pcY", choices = currPcs,
-                            selected = currPcs[2])
-        }
-      }
-    }
-  })
-
-  observeEvent(input$reRunTSNE, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("reRunTSNE", {
-        vals$counts <- getTSNE(inSCE = vals$counts,
-                               useAssay = input$dimRedAssaySelect,
-                               reducedDimName = paste0("TSNE", "_",
-                                                       input$dimRedAssaySelect))
-        updateReddimInputs()
-      })
-    }
-  })
-
-  observeEvent(input$reRunUMAP, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("reRunUMAP", {
-        vals$counts <- getUMAP(inSCE = vals$counts,
-                               useAssay = input$dimRedAssaySelect,
-                               reducedDimName = paste0("UMAP", "_",
-                                                       input$dimRedAssaySelect))
-        updateReddimInputs()
-      })
-    }
-  })
-
-  observeEvent(input$reRunPCA, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("reRunPCA", {
-        vals$counts <- getPCA(inSCE = vals$counts,
-                              useAssay = input$dimRedAssaySelect,
-                              reducedDimName = paste0("PCA", "_",
-                                                      input$dimRedAssaySelect))
-        updateReddimInputs()
-      })
-    }
-  })
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
@@ -2119,4 +1970,4 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-})
+  })

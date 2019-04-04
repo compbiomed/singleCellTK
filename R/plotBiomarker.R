@@ -1,11 +1,18 @@
-#' @describeIn getPCA Given a set of genes, return a ggplot of expression
+#' Given a set of genes, return a ggplot of expression
 #' values.
-#'
-#' @param visual Type of visualization (PCA or tSNE). Default: "PCA"
+#' @param visual Type of visualization (PCA, tSNE or UMAP). Default: "PCA"
 #' @param x x coordinate for PCA
 #' @param y y coordinate for PCA
+#' @param inSCE Input SCtkExperiment object. Required
+#' @param gene genelist to run the method on.
+#' @param binary binary/continuous color for the expression.
+#' @param shape shape parameter for the ggplot.
+#' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param reducedDimName a name to store the results of the dimension reduction
+#' coordinates obtained from this method. This is stored in the SingleCellExperiment
+#' object in the reducedDims slot. Required.
 #'
-#' @return plotBiomarker(): A Biomarker plot
+#' @return A Biomarker plot
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")

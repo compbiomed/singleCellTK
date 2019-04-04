@@ -1,6 +1,11 @@
-#' @describeIn getPCA Get t-SNE components for a SCtkE object
+#' Run t-SNE dimensionality reduction method on the assay data.
+#' @param inSCE Input SCtkExperiment object. Required
+#' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param reducedDimName a name to store the results of the dimension reductions
+#' @param n_iterations maximum iterations. Default is 1000
+#' @param perplexity perplexity parameter. Default is 5
 #'
-#' @return getTSNE(): A SCtkE object with the specified reduecedDim and
+#' @return A SCtkE object with the specified reducedDim and
 #' pcaVariances updated
 #'
 #' @export
@@ -15,7 +20,8 @@
 #'                                reducedDimName = "TSNE_cpm")
 #' reducedDims(mouseBrainSubsetSCE)
 #'
-getTSNE <- function(inSCE, useAssay="logcounts", reducedDimName="TSNE"){
+getTSNE <- function(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
+                    n_iterations = 1000, perplexity = NULL){
   if (nrow(inSCE) < 500){
     ntop <- nrow(inSCE)
   } else{
@@ -35,9 +41,11 @@ getTSNE <- function(inSCE, useAssay="logcounts", reducedDimName="TSNE"){
   keepFeature[is.na(keepFeature)] <- FALSE
   exprsToPlot <- exprsToPlot[keepFeature, ]
   exprsToPlot <- t(scale(t(exprsToPlot)))
-  perplexity <- floor(ncol(inSCE) / 5)
+  if (is.null(perplexity)){
+    perplexity <- floor(ncol(inSCE) / 5)
+  }
   tsneOut <- Rtsne::Rtsne(t(exprsToPlot), perplexity = perplexity,
-                           initial_dims = max(50, ncol(inSCE)))
+                           initial_dims = max(50, ncol(inSCE)), max_iter = n_iterations)
   tsneOut <- tsneOut$Y[, c(1, 2)]
   rownames(tsneOut) <- colnames(inSCE)
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut

@@ -1,13 +1,17 @@
-#' @describeIn getPCA plot PCA results
-#'
+#' Plot PCA run data from its components.
 #' @param colorBy The variable to color clusters by
 #' @param shape Shape of the points
 #' @param pcX User choice for the first principal component
 #' @param pcY User choice for the second principal component
 #' @param runPCA Run PCA if the reducedDimName does not exist. the Default is
 #' FALSE.
+#' @param inSCE Input SCTKExperiment object. Required.
+#' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param reducedDimName a name to store the results of the dimension reduction
+#' coordinates obtained from this method. This is stored in the SingleCellExperiment
+#' object in the reducedDims slot. Required.
 #'
-#' @return plotPCA(): A PCA plot
+#' @return A PCA plot
 #'
 #' @export
 #' @examples
