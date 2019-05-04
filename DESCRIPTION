@@ -67,6 +67,7 @@ Suggests:
     Rsubread,
     BiocStyle,
     knitr,
+    lintr,
     bladderbatch,
     rmarkdown,
     org.Mm.eg.db,
