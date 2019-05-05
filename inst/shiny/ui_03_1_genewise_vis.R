@@ -21,6 +21,7 @@ shinyPanelVis <- fluidPage(
           ),
         conditionalPanel(
           helpText("To use this, first run Differential expression and save top genes."),
+          helpText("Note: currently selects first 'n' genes from the list"),
           condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
           uiOutput("visBioGenes")
           ),
