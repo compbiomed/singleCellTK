@@ -6,6 +6,8 @@ warnings_are_errors: true
 bioc_required: true
 before_install:
 - Rscript -e 'update.packages(ask = FALSE)'
+r_build_args: "--no-build-vignettes"
+r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
 r_github_packages:
 - jimhester/lintr
 notifications:
