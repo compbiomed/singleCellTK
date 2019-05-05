@@ -50,6 +50,7 @@ Imports:
     S4Vectors,
     shiny,
     shinyjs,
+    shinyBS,
     sva,
     reshape2,
     AnnotationDbi,
