@@ -2,7 +2,7 @@ language: r
 cache: packages
 dist: trusty
 sudo: false
-warnings_are_errors: true
+warnings_are_errors: false
 bioc_required: true
 before_install:
 - Rscript -e 'update.packages(ask = FALSE)'
