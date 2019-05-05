@@ -23,7 +23,7 @@
 #' visPlot(mouseBrainSubsetSCE, "counts", "scatterplot", "age", "Cmtm5")
 #' visPlot(mouseBrainSubsetSCE, "counts", "heatmap", "level1class",
 #'         c("Cmtm5", "C1qa"))
-visPlot <- function(inSCE, useAssay, method, condition, glist,
+visPlot <- function(inSCE, useAssay, method, condition = NULL, glist,
                     facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE) {
   if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
     stop("Please use a SingleCellExperiment or a SCtkExperiment object")

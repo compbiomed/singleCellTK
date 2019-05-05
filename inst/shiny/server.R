@@ -716,45 +716,46 @@ shinyServer(function(input, output, session) {
         else if (!is.null(input$dimRedNameInput)){
           if (input$dimRedNameInput %in% names(reducedDims(vals$counts))){
             shinyalert::shinyalert("Error", "Name already exists!", type = "error")
+          } else {
+            if (input$dimRedPlotMethod == "PCA"){
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                pcadimname <- paste0("PCA", "_", input$dimRedNameInput)
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = pcadimname)
+                updateReddimInputs()
+              }
+            } else if (input$dimRedPlotMethod == "tSNE"){
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                tsnedimname <- paste0("TSNE", "_", input$dimRedNameInput)
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = tsnedimname,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+                updateReddimInputs()
+              }
             } else {
-              if (input$dimRedPlotMethod == "PCA"){
-                if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
-                  pcadimname <- paste0("PCA", "_", input$dimRedNameInput)
-                  vals$counts <- getPCA(inSCE = vals$counts,
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = pcadimname)
-                  updateReddimInputs()
-                }
-              } else if (input$dimRedPlotMethod == "tSNE"){
-                if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
-                  tsnedimname <- paste0("TSNE", "_", input$dimRedNameInput)
-                  vals$counts <- getTSNE(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = tsnedimname,
-                                         perplexity = input$perplexityTSNE,
-                                         n_iterations = input$iterTSNE)
-                  updateReddimInputs()
-                }
-              } else {
-                if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
-                  umapdimname <- paste0("UMAP", "_", input$dimRedNameInput)
-                  vals$counts <- getUMAP(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = umapdimname,
-                                         n_neighbors = input$neighborsUMAP,
-                                         n_iterations = input$iterUMAP,
-                                         alpha = input$alphaUMAP
-                  )
-                  updateReddimInputs()
-                }
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+                umapdimname <- paste0("UMAP", "_", input$dimRedNameInput)
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = umapdimname,
+                                       n_neighbors = input$neighborsUMAP,
+                                       n_iterations = input$iterUMAP,
+                                       alpha = input$alphaUMAP
+                )
+                updateReddimInputs()
               }
             }
           }
-        })
-      }
+        }
+      })
+    }
   })
 
   output$usingReducedDims <- renderUI({
+    req(vals$counts)
     selectInput("usingReducedDims", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
   })
 
@@ -769,26 +770,26 @@ shinyServer(function(input, output, session) {
                                    reducedDimName = input$usingReducedDims,
                                    runPCA = FALSE)
       }
-      } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
-        if (input$colorBy != "Gene Expression") {
-          vals$dimRedPlot <- singleCellTK::plotTSNE(inSCE = vals$counts,
-                                                   colorBy = input$colorBy,
-                                                   shape = input$shapeBy,
-                                                   useAssay = input$dimRedAssaySelect,
-                                                   reducedDimName = input$usingReducedDims,
-                                                   runTSNE = FALSE)
-        }
-      } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
-          if (input$colorBy != "Gene Expression") {
-            vals$dimRedPlot <- singleCellTK::plotUMAP(inSCE = vals$counts,
-                                                     colorBy = input$colorBy,
-                                                     shape = input$shapeBy,
-                                                     useAssay = input$dimRedAssaySelect,
-                                                     reducedDimName = input$usingReducedDims,
-                                                     runUMAP = FALSE)
-          }
-        }
-      })
+    } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
+      if (input$colorBy != "Gene Expression") {
+        vals$dimRedPlot <- singleCellTK::plotTSNE(inSCE = vals$counts,
+                                                 colorBy = input$colorBy,
+                                                 shape = input$shapeBy,
+                                                 useAssay = input$dimRedAssaySelect,
+                                                 reducedDimName = input$usingReducedDims,
+                                                 runTSNE = FALSE)
+      }
+    } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
+      if (input$colorBy != "Gene Expression") {
+        vals$dimRedPlot <- singleCellTK::plotUMAP(inSCE = vals$counts,
+                                                 colorBy = input$colorBy,
+                                                 shape = input$shapeBy,
+                                                 useAssay = input$dimRedAssaySelect,
+                                                 reducedDimName = input$usingReducedDims,
+                                                 runUMAP = FALSE)
+      }
+    }
+  })
 
   observe({
     output$geneExpPlot <- renderPlot({

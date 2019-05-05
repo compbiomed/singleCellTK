@@ -10,7 +10,7 @@
 ### Release Version
 
 You can download the release version of the Single Cell Toolkit in
-[Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
+[Bioconductor v3.9](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
 
 ```r
 if (!requireNamespace("BiocManager", quietly=TRUE))
@@ -21,7 +21,7 @@ BiocManager::install("singleCellTK")
 ### Devel Version
 
 You can download the development version of the Single Cell Toolkit in
-[Bioconductor v3.8](https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html)
+[Bioconductor v3.10](https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html)
 or from this repository:
 
 ```r
@@ -31,7 +31,7 @@ devtools::install_github("compbiomed/singleCellTK")
 
 ### R 3.4 Version
 
-If you are still running an earlier version of R instead of 3.5, you can install
+If you are still running an earlier version of R than 3.5, you can install
 the following version from this repository:
 
 ```r
@@ -89,8 +89,7 @@ we'd be happy to help.
 
 To contribute to singleCellTK, follow these steps:
 
-__Note__: singleCellTK is developed to eventually be added to bioconductor. The current
-version of bioconductor works best with R >= 3.3.1 
+__Note__: Development of the singleCellTK is done using the latest version of R.
 
 1. Fork the repo using the "Fork" button above.
 2. Download a local copy of your forked repository "```git clone https://github.com/{username}/singleCellTK.git```"
