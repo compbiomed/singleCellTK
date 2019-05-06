@@ -657,6 +657,7 @@ shinyServer(function(input, output, session) {
   output$annotModifyUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$annotModifyChoice != "none"){
+        HTML(paste("clicking on selected radio button option modifies the selected condition's data in the backend."))
         if (is.factor(colData(vals$counts)[, input$annotModifyChoice])){
           radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "factor")
         } else {
@@ -676,6 +677,14 @@ shinyServer(function(input, output, session) {
         shinyalert::shinyalert("Error!", "Cannot convert to numeric.", type = "error")
       } else {
         colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
+      }
+    }
+  })
+
+  output$annotModifyUIHelpText <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$annotModifyChoice != "none"){
+        HTML(paste(tags$h5("Note: Clicking on selected radio button option modifies the selected condition's data in the backend.")))
       }
     }
   })

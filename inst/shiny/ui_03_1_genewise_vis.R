@@ -10,6 +10,7 @@ shinyPanelVis <- fluidPage(
         selectInput("visAssaySelect", "Select Assay:", currassays),
         selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
         selectInput("visCondn", "Condition:", c("none", clusterChoice)),
+        helpText("To convert the condition to a factor or a numeric value, Go to Data Summary tab -> Annotation data -> Select condition -> select Field type as 'factor' or 'numeric' accordingly"),
         h3("Choose data source:"),
         radioButtons(
           "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
