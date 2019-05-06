@@ -116,7 +116,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
-    updateSelectInput(session, "BiomarkerAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
