@@ -4,8 +4,8 @@
 \alias{visPlot}
 \title{visPlot}
 \usage{
-visPlot(inSCE, useAssay, method, condition, glist, facetWrap = TRUE,
-  scaleHMap = TRUE, convertFactor = FALSE)
+visPlot(inSCE, useAssay, method, condition = NULL, glist,
+  facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
