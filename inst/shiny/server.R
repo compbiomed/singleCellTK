@@ -656,6 +656,7 @@ shinyServer(function(input, output, session) {
   output$annotModifyUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$annotModifyChoice != "none"){
+        HTML(paste("clicking on selected radio button option modifies the selected condition's data in the backend."))
         if (is.factor(colData(vals$counts)[, input$annotModifyChoice])){
           radioButtons("annotTypeSelect", "Field Type:", choices = c("factor", "numeric"), selected = "factor")
         } else {
@@ -675,6 +676,14 @@ shinyServer(function(input, output, session) {
         shinyalert::shinyalert("Error!", "Cannot convert to numeric.", type = "error")
       } else {
         colData(vals$counts)[, input$annotModifyChoice] <- as.numeric(levels(f))[f]
+      }
+    }
+  })
+
+  output$annotModifyUIHelpText <- renderUI({
+    if (!is.null(vals$counts)){
+      if (input$annotModifyChoice != "none"){
+        HTML(paste(tags$h5("Note: Clicking on selected radio button option modifies the selected condition's data in the backend.")))
       }
     }
   })
@@ -759,7 +768,7 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$cUpdatePlot, {
-    if (grepl(pattern = "PCA_", x = input$usingReducedDims)){
+    if (grepl(pattern = "PCA*", x = input$usingReducedDims)){
       if (input$colorBy != "Gene Expression") {
         vals$dimRedPlot <- singleCellTK::plotPCA(inSCE = vals$counts,
                                    colorBy = input$colorBy,
@@ -769,7 +778,7 @@ shinyServer(function(input, output, session) {
                                    reducedDimName = input$usingReducedDims,
                                    runPCA = FALSE)
       }
-    } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
+    } else if (grepl(pattern = "TSNE*", x = input$usingReducedDims)){
       if (input$colorBy != "Gene Expression") {
         vals$dimRedPlot <- singleCellTK::plotTSNE(inSCE = vals$counts,
                                                  colorBy = input$colorBy,
@@ -778,7 +787,7 @@ shinyServer(function(input, output, session) {
                                                  reducedDimName = input$usingReducedDims,
                                                  runTSNE = FALSE)
       }
-    } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
+    } else if (grepl(pattern = "UMAP*", x = input$usingReducedDims)){
       if (input$colorBy != "Gene Expression") {
         vals$dimRedPlot <- singleCellTK::plotUMAP(inSCE = vals$counts,
                                                  colorBy = input$colorBy,
@@ -797,20 +806,20 @@ shinyServer(function(input, output, session) {
         ggplot2::ggplot() + ggplot2::theme_bw() +
           ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
           ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-      } else if (grepl(pattern = "PCA_", x = input$usingReducedDims)){
+      } else if (grepl(pattern = "PCA*", x = input$usingReducedDims)){
         vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
                                                                input$colorBinary, "PCA", input$shapeBy,
                                                                input$pcX, input$pcY,
                                                                useAssay = input$dimRedAssaySelect,
                                                                reducedDimName = input$usingReducedDims)
         vals$dimRedPlot_geneExp
-      } else if (grepl(pattern = "TSNE_", x = input$usingReducedDims)){
+      } else if (grepl(pattern = "TSNE*", x = input$usingReducedDims)){
         vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
                                                                input$colorBinary, "tSNE", input$shapeBy,
                                                                useAssay = input$dimRedAssaySelect,
                                                                reducedDimName = input$usingReducedDims)
         vals$dimRedPlot_geneExp
-      } else if (grepl(pattern = "UMAP_", x = input$usingReducedDims)){
+      } else if (grepl(pattern = "UMAP*", x = input$usingReducedDims)){
         vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(vals$counts, input$colorGenes,
                                                                input$colorBinary, "UMAP", input$shapeBy,
                                                                useAssay = input$dimRedAssaySelect,
@@ -868,7 +877,7 @@ shinyServer(function(input, output, session) {
   output$pctable <- renderTable({
       if (!is.null(vals$counts)){
        # HTML(tags$h4("PC Table:"))
-          if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+          if (grepl(pattern = "PCA*", x = input$usingReducedDims)) {
             if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
               data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                          Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
@@ -1970,4 +1979,4 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  })
+})

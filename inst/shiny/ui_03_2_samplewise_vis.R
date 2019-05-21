@@ -25,7 +25,7 @@ shinyPanelCluster <- fluidPage(
                               column(6,
                                      tags$h4("DR Options:"),
                                      textInput("dimRedNameInput", "reducedDim Name:", ""),
-                                     #helpText("Name stored as: method_reducedDim Name"),
+                                     helpText("Name stored as: method_(user specified reducedDim Name)"),
                                      shinyBS::bsTooltip(id = "dimRedNameInput", title = "Name stored as: method_reducedDim Name", placement = "right", trigger = "focus"),
                                      tags$br(),
                                      HTML('<button type="button" class="btn btn-default btn-block"
