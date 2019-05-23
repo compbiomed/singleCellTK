@@ -65,8 +65,10 @@ test_that("getBiomarker", {
 })
 
 test_that("plotBiomarker", {
-  expect_silent(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
-                              c("Tspan12", "Tshz1"), binary = "Continuous"))
-  expect_silent(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
-                              c("Tspan12"), binary = "Continuous"))
+  expect_is(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
+                              c("Tspan12", "Tshz1"), binary = "Continuous"),
+                "NULL")
+  expect_is(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
+                              c("Tspan12"), binary = "Continuous"),
+                "NULL")
 })

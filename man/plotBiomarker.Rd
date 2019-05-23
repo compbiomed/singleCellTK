@@ -6,8 +6,7 @@
 values.}
 \usage{
 plotBiomarker(inSCE, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", x = "PC1", y = "PC2", useAssay = "counts",
-  reducedDimName = "PCA")
+  shape = "No Shape", useAssay = "counts", reducedDimName = "PCA")
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -19,10 +18,6 @@ plotBiomarker(inSCE, gene, binary = "Binary", visual = "PCA",
 \item{visual}{Type of visualization (PCA, tSNE or UMAP). Default: "PCA"}
 
 \item{shape}{shape parameter for the ggplot.}
-
-\item{x}{x coordinate for PCA}
-
-\item{y}{y coordinate for PCA}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 

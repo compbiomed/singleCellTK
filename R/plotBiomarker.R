@@ -47,7 +47,7 @@ plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
   }
   axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                         reducedDimName))
-  if(!is.null(colnames(axisDf))) {
+  if (!is.null(colnames(axisDf))) {
     x <- colnames(axisDf)[1]
     y <- colnames(axisDf)[2]
   } else {
@@ -120,11 +120,11 @@ plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
       }
       else if (binary == "Continuous"){
         if (min(round(l$expression, 6)) == max(round(l$expression, 6))) {
-          g <- ggplot2::ggplot(l, ggplot2::aes_string(x=x, y=y,
+          g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y,
                                                       label = "Sample")) +
             ggplot2::geom_point(color = "grey")
         } else{
-          g <- ggplot2::ggplot(l, ggplot2::aes_string(x=x, y=y,
+          g <- ggplot2::ggplot(l, ggplot2::aes_string(x, y,
                                                       label = "Sample",
                                                       color = "expression")) +
             ggplot2::scale_colour_gradient(limits = c(min(l$expression),
