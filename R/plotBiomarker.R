@@ -1,8 +1,7 @@
 #' Given a set of genes, return a ggplot of expression
 #' values.
+#'
 #' @param visual Type of visualization (PCA, tSNE or UMAP). Default: "PCA"
-#' @param x x coordinate for PCA
-#' @param y y coordinate for PCA
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param gene genelist to run the method on.
 #' @param binary binary/continuous color for the expression.
@@ -19,16 +18,8 @@
 #' plotBiomarker(mouseBrainSubsetSCE, gene="C1qa", shape="level1class")
 #'
 plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
-                          shape="No Shape", x="PC1", y="PC2",
+                          shape="No Shape",
                           useAssay="counts", reducedDimName="PCA"){
-  if(!is.null(colnames(reducedDim(inSCE, reducedDimName)))) {
-    x <- colnames(reducedDim(inSCE, reducedDimName))[1]
-    y <- colnames(reducedDim(inSCE, reducedDimName))[2]
-  } else {
-    colnames(reducedDim(inSCE, reducedDimName)) <- c("Comp1", "Comp2")
-    x <- colnames(reducedDim(inSCE, reducedDimName))[1]
-    y <- colnames(reducedDim(inSCE, reducedDimName))[2]
-  }
   if (shape == "No Shape"){
     shape <- NULL
   }
@@ -37,8 +28,6 @@ plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
       inSCE <- getPCA(inSCE, useAssay = useAssay,
                       reducedDimName = reducedDimName)
     }
-    axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
-                                                           reducedDimName))
     variances <- NULL
     if (class(inSCE) == "SCtkExperiment"){
       variances <- pcaVariances(inSCE)
@@ -49,18 +38,24 @@ plotBiomarker <- function(inSCE, gene, binary="Binary", visual="PCA",
       inSCE <- getTSNE(inSCE, useAssay = useAssay,
                        reducedDimName = reducedDimName)
     }
-    axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
-                                                           reducedDimName))
-    print(axisDf)
   }
   if (visual == "UMAP"){
     if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
       inSCE <- getUMAP(inSCE, useAssay = useAssay,
                        reducedDimName = reducedDimName)
     }
-    axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
-                                                          reducedDimName))
   }
+  axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
+                                                        reducedDimName))
+  if(!is.null(colnames(axisDf))) {
+    x <- colnames(axisDf)[1]
+    y <- colnames(axisDf)[2]
+  } else {
+    colnames(axisDf) <- c("Comp1", "Comp2")
+    x <- colnames(axisDf)[1]
+    y <- colnames(axisDf)[2]
+  }
+  print(axisDf)
   if (length(gene) > 9) {
     gene <- gene[seq_len(9)]
   }
