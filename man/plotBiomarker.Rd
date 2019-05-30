@@ -5,8 +5,9 @@
 \title{Given a set of genes, return a ggplot of expression
 values.}
 \usage{
-plotBiomarker(inSCE, gene, binary = "Binary", visual = "PCA",
-  shape = "No Shape", useAssay = "counts", reducedDimName = "PCA")
+plotBiomarker(inSCE, gene, binary = "Binary", shape = "No Shape",
+  useAssay = "counts", reducedDimName = "PCA", comp1 = NULL,
+  comp2 = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -15,15 +16,17 @@ plotBiomarker(inSCE, gene, binary = "Binary", visual = "PCA",
 
 \item{binary}{binary/continuous color for the expression.}
 
-\item{visual}{Type of visualization (PCA, tSNE or UMAP). Default: "PCA"}
-
 \item{shape}{shape parameter for the ggplot.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
-\item{reducedDimName}{a name to store the results of the dimension reduction
+\item{reducedDimName}{the name which has stored the results of the dimension reduction
 coordinates obtained from this method. This is stored in the SingleCellExperiment
 object in the reducedDims slot. Required.}
+
+\item{comp1}{label for x-axis}
+
+\item{comp2}{label for y-axis}
 }
 \value{
 A Biomarker plot
@@ -34,6 +37,6 @@ values.
 }
 \examples{
 data("mouseBrainSubsetSCE")
-plotBiomarker(mouseBrainSubsetSCE, gene="C1qa", shape="level1class")
+plotBiomarker(mouseBrainSubsetSCE, gene="C1qa", shape="level1class", reducedDimName="TSNE_counts")
 
 }
