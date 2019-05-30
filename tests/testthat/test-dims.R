@@ -67,10 +67,10 @@ test_that("getBiomarker", {
 test_that("plotBiomarker", {
   expect_is(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
                           c("Tspan12", "Tshz1"), binary = "Continuous",
-                          reducedDimName="TSNE_counts"),
+                          reducedDimName = "TSNE_counts"),
                 "NULL")
   expect_error(plotBiomarker(mouseBrainSubsetSCE[1:100, ],
                           c("Tspan12"), binary = "Continuous",
-                          reducedDimName="TSNE"),
+                          reducedDimName = "TSNE"),
             "Please supply a correct reducedDimName")
 })
