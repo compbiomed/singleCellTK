@@ -184,6 +184,7 @@ shinyPanelFilter <- fluidPage(
           h4("Modify Annotation Data:"),
           selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
           uiOutput("annotModifyUI"),
+          uiOutput("annotModifyUIHelpText"),
           tags$hr(),
           downloadButton("downloadcolData", "Download Annotation Data"),
           tags$hr(),
