@@ -46,6 +46,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   keepFeature[is.na(keepFeature)] <- FALSE
   exprsToPlot <- exprsToPlot[, keepFeature]
   pca <- stats::prcomp(exprsToPlot)
+  #colnames(pc) <- paste("PC", seq_along(1:ncol(inSCE)), sep = "")
   percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
   pca <- pca$x
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- pca
@@ -56,3 +57,4 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   }
   return(inSCE)
 }
+

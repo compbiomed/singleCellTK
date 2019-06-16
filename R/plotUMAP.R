@@ -33,6 +33,8 @@ plotUMAP <- function(inSCE, colorBy = "No Color", shape = "No Shape",
   if (ncol(UMAPDf) > 2){
     warning("More than two UMAP dimensions. Using the first two.")
   }
+  colnames(UMAPDf)[1] <- "UMAP1"
+  colnames(UMAPDf)[2] <- "UMAP2"
   xdim <- colnames(UMAPDf)[1]
   ydim <- colnames(UMAPDf)[2]
   if (colorBy == "No Color"){
