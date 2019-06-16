@@ -34,6 +34,8 @@ plotTSNE <- function(inSCE, colorBy="No Color", shape="No Shape",
   if (ncol(tsneDf) > 2){
     warning("More than two t-SNE dimensions. Using the first two.")
   }
+  colnames(tsneDf)[1] <- "tSNE1"
+  colnames(tsneDf)[2] <- "tSNE2"
   xdim <- colnames(tsneDf)[1]
   ydim <- colnames(tsneDf)[2]
   if (colorBy == "No Color"){
