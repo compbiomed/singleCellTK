@@ -25,8 +25,6 @@ shinyPanelCluster <- fluidPage(
                               column(6,
                                      tags$h4("DR Options:"),
                                      textInput("dimRedNameInput", "reducedDim Name:", ""),
-                                     #helpText("Name stored as: method_reducedDim Name"),
-                                     shinyBS::bsTooltip(id = "dimRedNameInput", title = "Name stored as: method_reducedDim Name", placement = "right", trigger = "focus"),
                                      tags$br(),
                                      HTML('<button type="button" class="btn btn-default btn-block"
                                           data-toggle="collapse" data-target="#c-collapse-run-options">
@@ -95,15 +93,21 @@ shinyPanelCluster <- fluidPage(
                            "colorGenes", label = "Select Gene(s):", NULL, multiple = TRUE
                          )
                        ),
-                       conditionalPanel(
-                         condition = sprintf("input['%s'] == 'Biomarker (from DE tab)'", "colorGeneBy"),
-                         textInput("colorGenesBiomarker", "Enter Name of Gene List:", "")
-                       ),
+                       # conditionalPanel(
+                       #   condition = sprintf("input['%s'] == 'Biomarker (from DE tab)'", "colorGeneBy"),
+                       #   textInput("colorGenesBiomarker", "Enter Name of Gene List:", "")
+                       # ),
                        radioButtons("colorBinary", "Color scale:", c("Binary", "Continuous"), selected = "Continuous")
                      ),
                      selectInput("shapeBy", "Shape points by:", c("No Shape", clusterChoice)),
                      ## NOT LINKED UP
                      ##selectInput("sizeBy", "Size points by:", c("No Sizing", clusterChoice)),
+                     checkboxInput("axisNames", "Customise axis labels?"),
+                     conditionalPanel(
+                       condition = "input.axisNames == true",
+                       textInput("dimRedAxis1", "Axis Name 1:", ""),
+                       textInput("dimRedAxis2", "Axis Name 2:", "")
+                    ),
                      tags$hr(),
                      withBusyIndicatorUI(actionButton("cUpdatePlot", "Update Plot"))
                    ),
@@ -116,6 +120,7 @@ shinyPanelCluster <- fluidPage(
                        condition = sprintf("input['%s'] == 'Gene Expression'", "colorBy"),
                        plotOutput("geneExpPlot", height = "600px")
                      ),
+                     #plotlyOutput("clusterPlot", height = "600px"),
                      tags$hr(),
                      uiOutput("pctable")
                    )

@@ -41,6 +41,7 @@ getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
     rownames(umap_results$layout) <- colnames(inSCE)
   }
   umap_results <- umap_results$layout
+  colnames(umap_results) <- c("UMAP1", "UMAP2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
   return(inSCE)
 }

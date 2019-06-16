@@ -48,6 +48,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
                            initial_dims = max(50, ncol(inSCE)), max_iter = n_iterations)
   tsneOut <- tsneOut$Y[, c(1, 2)]
   rownames(tsneOut) <- colnames(inSCE)
+  colnames(tsneOut) <- c("tSNE1", "tSNE2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
   return(inSCE)
 }
