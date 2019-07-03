@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
     celdaListAll = NULL,
     celdaListAllNames = NULL,
     celdatSNE = NULL,
-    celdaModuleFeature = NULL
+    celdaModuleFeature = NULL,
     dimRedPlot = NULL,
     dimRedPlot_geneExp = NULL,
     dendrogram = NULL
@@ -1038,9 +1038,9 @@ shinyServer(function(input, output, session) {
             alpha = input$celdaAlpha,
             beta = input$celdaBeta,
             algorithm = input$celdaAlgorithm,
-            stop.iter = input$celdaStopIter,
-            max.iter = input$celdaMaxIter,
-            split.on.iter = input$celdaSplitIter,
+            stopIter = input$celdaStopIter,
+            maxIter = input$celdaMaxIter,
+            splitOnIter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
           #cores = input$celdaCores)
@@ -1054,9 +1054,9 @@ shinyServer(function(input, output, session) {
             beta = input$celdaBeta,
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
-            stop.iter = input$celdaStopIter,
-            max.iter = input$celdaMaxIter,
-            split.on.iter = input$celdaSplitIter,
+            stopIter = input$celdaStopIter,
+            maxIter = input$celdaMaxIter,
+            splitOnIter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
           #cores = input$celdaCores)
@@ -1076,9 +1076,9 @@ shinyServer(function(input, output, session) {
             delta = input$celdaDelta,
             gamma = input$celdaGamma,
             algorithm = input$celdaAlgorithm,
-            stop.iter = input$celdaStopIter,
-            max.iter = input$celdaMaxIter,
-            split.on.iter = input$celdaSplitIter,
+            stopIter = input$celdaStopIter,
+            maxIter = input$celdaMaxIter,
+            splitOnIter = input$celdaSplitIter,
             seed = input$celdaSeed,
             nchains = input$celdaNChains)
           #cores = input$celdaCores)
@@ -1122,7 +1122,7 @@ shinyServer(function(input, output, session) {
         output$celdaHeatmap <- renderPlot({
           g <- celdaHeatmap(counts = assay(vals$counts,
             input$celdaAssay),
-            celda.mod = vals$celdaMod)
+            celdaMod = vals$celdaMod)
           g
         }, height = 600)
       )}
@@ -1211,116 +1211,116 @@ shinyServer(function(input, output, session) {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(K = seq(input$GSRangeKlow,
+          paramsTest = list(K = seq(input$GSRangeKlow,
             input$GSRangeKup,
             input$interK)),
-          max.iter = input$celdaMaxIterGS,
+          maxIter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
           cores = input$celdaCoresGS,
-          best.only = TRUE)
+          bestOnly = TRUE)
           #verbose = input$celdaGSVerbose)
 
-        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
           "K",
-          vals$celdaList@run.params[["K"]],
+          vals$celdaList@runParams[["K"]],
           sep = "_")
         cgsName <- paste0(input$celdaModelGS,
           "_K=",
-          min(vals$celdaList@run.params[["K"]]),
+          min(vals$celdaList@runParams[["K"]]),
           "to",
-          max(vals$celdaList@run.params[["K"]]),
+          max(vals$celdaList@runParams[["K"]]),
           "step",
           input$interK)
 
         if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@res.list)
+          vals$celdaListAll <- list(vals$celdaList@resList)
           names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
         }
 
       } else if (input$celdaModelGS == "celda_G") {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(L = seq(input$GSRangeLlow,
+          paramsTest = list(L = seq(input$GSRangeLlow,
             input$GSRangeLup,
             input$interL)),
-          max.iter = input$celdaMaxIterGS,
+          maxIter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
           cores = input$celdaCoresGS,
-          best.only = TRUE)
+          bestOnly = TRUE)
           #verbose = input$celdaGSVerbose)
 
-        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
           "L",
-          vals$celdaList@run.params[["L"]],
+          vals$celdaList@runParams[["L"]],
           sep = "_")
         cgsName <- paste0(input$celdaModelGS,
           "_L=",
-          min(vals$celdaList@run.params[["L"]]),
+          min(vals$celdaList@runParams[["L"]]),
           "to",
-          max(vals$celdaList@run.params[["L"]]),
+          max(vals$celdaList@runParams[["L"]]),
           "step",
           input$interL)
 
         if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@res.list)
+          vals$celdaListAll <- list(vals$celdaList@resList)
           names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
         }
 
       } else if (input$celdaModelGS == "celda_CG") {
         vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
           input$celdaAssayGS),
           model = input$celdaModelGS,
-          params.test = list(K = seq(input$GSRangeKCGlow,
+          paramsTest = list(K = seq(input$GSRangeKCGlow,
             input$GSRangeKCGup,
             input$interKCG),
             L = seq(input$GSRangeLCGlow,
               input$GSRangeLCGup,
               input$interLCG)),
-          max.iter = input$celdaMaxIterGS,
+          maxIter = input$celdaMaxIterGS,
           nchains = input$celdaNChainsGS,
           cores = input$celdaCoresGS,
-          best.only = TRUE)
+          bestOnly = TRUE)
           #verbose = input$celdaGSVerbose)
 
-        names(vals$celdaList@res.list) <- paste(input$celdaModelGS,
+        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
           "K",
-          vals$celdaList@run.params[["K"]],
+          vals$celdaList@runParams[["K"]],
           "L",
-          vals$celdaList@run.params[["L"]],
+          vals$celdaList@runParams[["L"]],
           sep = "_")
         cgsName <- paste0(input$celdaModelGS,
           "_K=",
-          min(vals$celdaList@run.params[["K"]]),
+          min(vals$celdaList@runParams[["K"]]),
           "to",
-          max(vals$celdaList@run.params[["K"]]),
+          max(vals$celdaList@runParams[["K"]]),
           "step",
           input$interKCG,
           "_L=",
-          min(vals$celdaList@run.params[["L"]]),
+          min(vals$celdaList@runParams[["L"]]),
           "to",
-          max(vals$celdaList@run.params[["L"]]),
+          max(vals$celdaList@runParams[["L"]]),
           "step",
           input$interLCG)
 
         if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@res.list)
+          vals$celdaListAll <- list(vals$celdaList@resList)
           names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@res.list))
+          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
           names(vals$celdaListAllNames) <- names(vals$celdaListAll)
         } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@res.list
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@res.list)
+          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
+          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
         }
       }
 
@@ -1348,9 +1348,9 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("renderPerplexityPlot", {
         vals$celdaList <- resamplePerplexity(counts = assay(vals$counts,
           input$celdaAssayGS),
-          celda.list = vals$celdaList)
+          celdaList = vals$celdaList)
         output$celdaPerplexityPlot <- renderPlot({
-          g <- plotGridSearchPerplexity(celda.list = vals$celdaList)
+          g <- plotGridSearchPerplexity(celdaList = vals$celdaList)
           g
         }, height = 600)
       })}
@@ -1412,11 +1412,11 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("runCeldatSNE", {
       vals$celdatSNE <- celdaTsne(counts = assay(vals$counts,
         input$celdaAssaytSNE),
-        celda.mod = vals$celdaMod,
-        max.cells = input$celdatSNEmaxCells,
-        min.cluster.size = input$celdatSNEminClusterSize,
+        celdaMod = vals$celdaMod,
+        maxCells = input$celdatSNEmaxCells,
+        minClusterSize = input$celdatSNEminClusterSize,
         perplexity = input$celdatSNEPerplexity,
-        max.iter = input$celdatSNEmaxIter,
+        maxIter = input$celdatSNEmaxIter,
         seed = input$celdatSNESeed)
     })
   })
@@ -1455,7 +1455,7 @@ shinyServer(function(input, output, session) {
           dim1 = vals$celdatSNE[,1], 
           dim2 = vals$celdatSNE[,2],
           counts = assay(vals$counts, input$celdaAssaytSNE),
-          celda.mod = vals$celdaMod)
+          celdaMod = vals$celdaMod)
         g}, height = 600)
     )}
   )
@@ -1489,7 +1489,7 @@ shinyServer(function(input, output, session) {
       output$celdaProbabilityMapPlot <- renderPlot({
         g <- celdaProbabilityMap(counts = assay(vals$counts,
           input$celdaAssayProbabilityMap),
-          celda.mod = vals$celdaMod)
+          celdaMod = vals$celdaMod)
         g}, height = 600)
     )}
   )
@@ -1511,11 +1511,11 @@ shinyServer(function(input, output, session) {
       output$celdaModuleHeatmapPlot <- renderPlot({
         g <- moduleHeatmap(counts = assay(vals$counts,
           input$celdaAssayModuleHeatmap),
-          celda.mod = vals$celdaMod,
-          feature.module = as.integer(input$celdaFeatureModule),
-          top.cells = input$celdaModuleTopCells,
+          celdaMod = vals$celdaMod,
+          featureModule = as.integer(input$celdaFeatureModule),
+          topCells = input$celdaModuleTopCells,
           normalize = as.logical(input$celdaFeatureModuleNormalize),
-          show_featurenames = as.logical(input$celdaModuleFeatureNames))
+          showFeaturenames = as.logical(input$celdaModuleFeatureNames))
         g}, height = 600)
     )}
   )
