@@ -1,9 +1,16 @@
-#' @describeIn getPCA plot t-SNE results
+#' Plot t-SNE plot on dimensionality reduction data run from t-SNE method.
 #'
 #' @param runTSNE Run t-SNE if the reducedDimName does not exist. the Default is
 #' FALSE.
+#' @param inSCE Input SCtkExperiment object. Required
+#' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param reducedDimName a name to store the results of the dimension reduction
+#' coordinates obtained from this method. This is stored in the SingleCellExperiment
+#' object in the reducedDims slot. Required.
+#' @param colorBy color by condition.
+#' @param shape add shape to each distinct label.
 #'
-#' @return plotTSNE(): A t-SNE plot
+#' @return A t-SNE plot
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -27,6 +34,8 @@ plotTSNE <- function(inSCE, colorBy="No Color", shape="No Shape",
   if (ncol(tsneDf) > 2){
     warning("More than two t-SNE dimensions. Using the first two.")
   }
+  colnames(tsneDf)[1] <- "tSNE1"
+  colnames(tsneDf)[2] <- "tSNE2"
   xdim <- colnames(tsneDf)[1]
   ydim <- colnames(tsneDf)[2]
   if (colorBy == "No Color"){
