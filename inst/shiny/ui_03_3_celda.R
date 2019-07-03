@@ -474,11 +474,11 @@ shinyPanelCelda <- fluidPage(
                           value = 100,
                           min = 1,
                           step = 1),
-                        selectInput("celdaFeatureModuleNormalize",
-                          "Normalize: Whether to normalize the columns of
-                          'counts'",
-                          choices = c(TRUE, FALSE),
-                          selected = TRUE),
+                        # selectInput("celdaFeatureModuleNormalize",
+                        #   "Normalize: Whether to normalize the columns of
+                        #   'counts'",
+                        #   choices = c(TRUE, FALSE),
+                        #   selected = TRUE),
                         selectInput("celdaModuleFeatureNames",
                           "Show Feature Names:",
                           choices = c(TRUE, FALSE),

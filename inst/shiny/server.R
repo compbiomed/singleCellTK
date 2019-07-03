@@ -1514,7 +1514,7 @@ shinyServer(function(input, output, session) {
           celdaMod = vals$celdaMod,
           featureModule = as.integer(input$celdaFeatureModule),
           topCells = input$celdaModuleTopCells,
-          normalize = as.logical(input$celdaFeatureModuleNormalize),
+          #normalize = as.logical(input$celdaFeatureModuleNormalize),
           showFeaturenames = as.logical(input$celdaModuleFeatureNames))
         g}, height = 600)
     )}
