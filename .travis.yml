@@ -9,8 +9,7 @@ before_install:
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
 r_github_packages:
-- jimhester/lintr
-- compbiomed/celda
+  - jimhester/lintr
 notifications:
   slack:
     secure: sw/He3WX7Fs61DTufgG9hx7fWDhwx57zv+dYB4sr30LgKyIJNbZYSU76ZN4oPwHFGAJ0eyk/22XCuKF8/seSB2ArQuc4kFlsaeWWg1CxDqW9iR0zs91MJL3lJoUOSayy5WcWbsUxD+x8GcB37FCgoTXcveN956bfgrDb2nGrFY6QMSVsnkWi/kiMdzhR4VPzOfmAUZUcr1aDU3WN4ROwbDg89zCfu9HbVKZwyQdYZk7L2Pgg8xGIcGZkaMN1MMD/r0Wc2aVYqCOcn5qO/9CaspEBf7cd6ejVzgAl/LM4dTIPlx9E6ekQGwJXpt1Qxyc0sqVSQWFZvFkWyV3wkqX8pfSXV6ojlP2cGJt+PSQXwLHj0TKWYx7yHbw+55da/b//SVLZVHl+P6VXxQBe2hmFD6sCk3V3uq2CkxzI52bK4Wv4RRncVKIZEpFZOc9P2ik5mf6pICmLHwttlbHeDjJbQ+raYftF704xb1sOxapLwuy+c2SWKPeqOiimfZNgOK+J7JbvQvpnaiHN+3CA3wQXs1auKBwI+swvsZPAzeKssnLv/0AQmX8ckVzvXJzUvl1J73c9V2zG2F44xmIsXwzruEp6leSbeXcLifrfbfQdmaHzq4M/Z83o/fwGRzdWfG7YXDyPIabik7DOMrSUvF+wLGVTjOart8HrA4eVEkKFnRE=

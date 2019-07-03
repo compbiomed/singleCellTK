@@ -58,7 +58,10 @@ Imports:
     shinyalert,
     circlize,
     enrichR,
+<<<<<<< HEAD
     celda,
+=======
+>>>>>>> 21b641fb6a1dedf04128ea4a140ce7366b8b1ea0
     shinycssloaders,
     shinythemes,
     umap
