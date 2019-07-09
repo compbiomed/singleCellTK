@@ -113,8 +113,8 @@ shinyPanelCelda <- fluidPage(
                         max = 100000,
                         step = 1),
                       numericInput("celdaStopIter",
-                        label = "Number of Converging Iterations for Gibbs sampler to
-                  stop:",
+                        label = "Number of Converging Iterations for Gibbs
+                          sampler to stop:",
                         value = 10,
                         min = 1,
                         max = 100000,
@@ -127,7 +127,7 @@ shinyPanelCelda <- fluidPage(
                         step = 1),
                       numericInput("celdaNChains",
                         label = "Number of random cluster initializations
-                        for every K/L combination:",
+                          for every K/L combination:",
                         value = 3,
                         min = 1,
                         max = 100000,
@@ -192,21 +192,21 @@ shinyPanelCelda <- fluidPage(
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'celda_C'",
                         "celdaModelGS"),
-                      
+
                       h4("Range of Cell Clusters (K):"),
-                      
+
                       numericInput("GSRangeKlow",
                         "Lower bound:",
                         value = 2,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("GSRangeKup",
                         "Upper bound:",
                         value = 4,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("interK",
                         label = "Cell Cluster Increment Step Size:",
                         value = 1,
@@ -216,15 +216,15 @@ shinyPanelCelda <- fluidPage(
                     conditionalPanel(
                       condition = sprintf("input['%s'] == 'celda_G'",
                         "celdaModelGS"),
-                      
+
                       h4("Range of Gene Modules (L):"),
-                      
+
                       numericInput("GSRangeLlow",
                         "Lower bound:",
                         value = 2,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("GSRangeLup",
                         "Upper bound:",
                         value = 4,
@@ -240,39 +240,39 @@ shinyPanelCelda <- fluidPage(
                       condition = sprintf("input['%s'] == 'celda_CG'",
                         "celdaModelGS"),
                       h4("Range of Cell Clusters (K):"),
-                      
+
                       numericInput("GSRangeKCGlow",
                         "Lower bound:",
                         value = 2,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("GSRangeKCGup",
                         "Upper bound:",
                         value = 4,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("interKCG",
                         label = "Cell Cluster Search Increment Step Size:",
                         value = 1,
                         min = 1,
                         step = 1),
-                      
+
                       h4("Range of Gene Modules (L):"),
-                      
+
                       numericInput("GSRangeLCGlow",
                         "Lower bound:",
                         value = 2,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("GSRangeLCGup",
                         "Upper bound:",
                         value = 4,
                         min = 2,
                         step = 1),
-                      
+
                       numericInput("interLCG",
                         label = "Gene module Search Increment Step Size:",
                         value = 1,
@@ -373,7 +373,7 @@ shinyPanelCelda <- fluidPage(
                         #wellPanel(
                         selectInput("celdaAssaytSNE", "Select Assay:",
                           currassays),
-                        
+
                         numericInput("celdatSNEmaxCells",
                           label =
                             "Max.cells: Maximum number of cells to
@@ -381,7 +381,7 @@ shinyPanelCelda <- fluidPage(
                           value = 25000,
                           min = 1,
                           step = 1),
-                        
+
                         numericInput("celdatSNEminClusterSize",
                           label =
                             "Min.cluster.size: Do not subsample cell
@@ -389,18 +389,18 @@ shinyPanelCelda <- fluidPage(
                           value = 100,
                           min = 1,
                           step = 1),
-                        
+
                         numericInput("celdatSNEPerplexity",
                           label =
                             "Perplexity: ",
                           value = 20),
-                        
+
                         numericInput("celdatSNEmaxIter",
                           label =
                             "Max.iter: Maximum number of iterations in
                               tSNE generation",
                           value = 2500),
-                        
+
                         numericInput("celdatSNESeed",
                           label =
                             "Seed: ",
