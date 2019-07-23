@@ -6,11 +6,15 @@
 #' @param binary binary/continuous color for the expression.
 #' @param shape shape parameter for the ggplot.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
-#' @param reducedDimName the name which has stored the results of the dimension reduction
+#' @param reducedDimName results name of dimension reduction
 #' coordinates obtained from this method. This is stored in the SingleCellExperiment
 #' object in the reducedDims slot. Required.
 #' @param comp1 label for x-axis
 #' @param comp2 label for y-axis
+#' @param x PCA component to be used for plotting(if applicable).
+#' Default is first PCA component for PCA data and NULL otherwise.
+#' @param y PCA component to be used for plotting(if applicable).
+#' Default is second PCA component for PCA data and NULL otherwise.
 #'
 #' @return A Biomarker plot
 #' @export
@@ -21,6 +25,7 @@
 plotBiomarker <- function(inSCE, gene, binary="Binary",
                           shape="No Shape",
                           useAssay="counts", reducedDimName="PCA",
+                          x=NULL, y=NULL,
                           comp1 = NULL, comp2 = NULL){
   if (shape == "No Shape"){
     shape <- NULL
@@ -35,7 +40,16 @@ plotBiomarker <- function(inSCE, gene, binary="Binary",
     axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                           reducedDimName))
   }
-  if (!is.null(comp1) & !is.null(comp2)) {
+  if (!is.null(x) & !is.null(y)){
+    if (!(x %in% colnames(axisDf))){
+      stop("x dimension ", x, " is not in the reducedDim data")
+    }
+    if (!(y %in% colnames(axisDf))){
+      stop("Y dimension ", y, " is not in the reducedDim data")
+    }
+    xdim <- x
+    ydim <- y
+  } else if (!is.null(comp1) & !is.null(comp2)){
     x <- comp1
     y <- comp2
     colnames(axisDf) <- c(x, y)
@@ -89,7 +103,7 @@ plotBiomarker <- function(inSCE, gene, binary="Binary",
       if (is.null(variances)){
         g <- g + ggplot2::labs(x = x, y = y)
       } else {
-        if (any(grepl("PC", colnames(l)))){
+        if (any(grepl("PC*", colnames(l)))){
           g <- g + ggplot2::labs(
             x = paste0(x, " ", toString(round(variances[x, ] * 100, 2)), "%"),
             y = paste0(y, " ", toString(round(variances[y, ] * 100, 2)), "%"))
