@@ -24,7 +24,9 @@ shinyServer(function(input, output, session) {
     diffexBmName = NULL,
     dimRedPlot = NULL,
     dimRedPlot_geneExp = NULL,
-    dendrogram = NULL
+    dendrogram = NULL,
+    pcX = NULL,
+    pcY = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -92,12 +94,12 @@ shinyServer(function(input, output, session) {
                       choices = 1:numsamples)
     updateSelectInput(session, "Cnumber",
                       choices = 1:numsamples)
-    updateSelectInput(session, "pcX",
-                      choices = paste("PC", 1:numsamples, sep = ""),
-                      selected = "PC1")
-    updateSelectInput(session, "pcY",
-                      choices = paste("PC", 1:numsamples, sep = ""),
-                      selected = "PC2")
+    # updateSelectInput(session, "pcX",
+    #                   choices = paste("PC", 1:numsamples, sep = ""),
+    #                   selected = "PC1")
+    # updateSelectInput(session, "pcY",
+    #                   choices = paste("PC", 1:numsamples, sep = ""),
+    #                   selected = "PC2")
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
@@ -220,6 +222,8 @@ shinyServer(function(input, output, session) {
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
+      vals$pcX <- NULL
+      vals$pcY <- NULL
     })
   })
 
@@ -319,6 +323,8 @@ shinyServer(function(input, output, session) {
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
+      vals$pcX <- NULL
+      vals$pcY <- NULL
     })
   })
 
@@ -356,6 +362,8 @@ shinyServer(function(input, output, session) {
         vals$dimRedPlot <- NULL
         vals$dimRedPlot_geneExp <- NULL
         vals$dendrogram <- NULL
+        vals$pcX <- NULL
+        vals$pcY <- NULL
         #Refresh things for the clustering tab
         updateGeneNames()
         updateEnrichDB()
@@ -388,6 +396,8 @@ shinyServer(function(input, output, session) {
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
+      vals$pcX <- NULL
+      vals$pcY <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -449,6 +459,8 @@ shinyServer(function(input, output, session) {
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
+      vals$pcX <- NULL
+      vals$pcY <- NULL
       updateNumSamples()
     })
   })
@@ -504,6 +516,8 @@ shinyServer(function(input, output, session) {
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
+      vals$pcX <- NULL
+      vals$pcY <- NULL
     })
   })
 
@@ -522,6 +536,8 @@ shinyServer(function(input, output, session) {
     vals$dimRedPlot <- NULL
     vals$dimRedPlot_geneExp <- NULL
     vals$dendrogram <- NULL
+    vals$pcX <- NULL
+    vals$pcY <- NULL
   })
 
   #disable the downloadSCE button if no object is loaded
@@ -764,6 +780,25 @@ shinyServer(function(input, output, session) {
     selectInput("usingReducedDims", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
   })
 
+  output$dimRedAxisSettings <- renderUI({
+    req(vals$counts)
+    req(input$usingReducedDims)
+    if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
+      pcComponents <- colnames(reducedDim(vals$counts, input$usingReducedDims))
+      pcComponentsSelectedX <- pcComponents[1]
+      pcComponentsSelectedY <- pcComponents[2]
+      tagList(
+        checkboxInput("checkAxis", label = "Modify axes", value = FALSE),
+        conditionalPanel(
+          condition = "input.checkAxis == true",
+          h4("Axis Settings"),
+          selectInput("pcX", "X Axis:", pcComponents),
+          selectInput("pcY", "Y Axis:", pcComponents, selected = pcComponentsSelectedY)
+          )
+      )
+      }
+    })
+
   observeEvent(input$cUpdatePlot, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -781,15 +816,25 @@ shinyServer(function(input, output, session) {
             comp1 <- NULL
             comp2 <- NULL
           }
-          vals$dimRedPlot <- singleCellTK::plotDimRed(inSCE = vals$counts,
-                                                      colorBy = input$colorBy,
-                                                      shape = input$shapeBy,
-                                                      useAssay = input$dimRedAssaySelect,
-                                                      reducedDimName = input$usingReducedDims,
-                                                      comp1 = comp1,
-                                                      comp2 = comp2
-          )
-        }
+          #shinyjs doesn't have any visibility functions so have used the following conditions
+          if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
+            vals$pcX <- input$pcX
+            vals$pcY <- input$pcY
+          } else {
+            vals$pcX <- NULL
+            vals$pcY <- NULL
+          }
+            vals$dimRedPlot <- singleCellTK::plotDimRed(inSCE = vals$counts,
+                                                        colorBy = input$colorBy,
+                                                        shape = input$shapeBy,
+                                                        useAssay = input$dimRedAssaySelect,
+                                                        reducedDimName = input$usingReducedDims,
+                                                        comp1 = comp1,
+                                                        comp2 = comp2,
+                                                        pcX = vals$pcX,
+                                                        pcY = vals$pcY
+            )
+          }
       })
     }
     })
@@ -813,13 +858,22 @@ shinyServer(function(input, output, session) {
           comp1 <- NULL
           comp2 <- NULL
         }
+        #shinyjs doesn't have any visibility functions so have used the following conditions
+        if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
+          vals$pcX <- input$pcX
+          vals$pcY <- input$pcY
+        } else {
+          vals$pcX <- NULL
+          vals$pcY <- NULL
+        }
         vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(inSCE = vals$counts,
                                                                gene = input$colorGenes,
                                                                binary = input$colorBinary,
                                                                shape = input$shapeBy,
                                                                useAssay = input$dimRedAssaySelect,
                                                                reducedDimName = input$usingReducedDims,
-                                                               comp1 = comp1, comp2 = comp2)
+                                                               comp1 = comp1, comp2 = comp2,
+                                                               x = vals$pcX, y = vals$pcY)
         vals$dimRedPlot_geneExp
       }
     }
@@ -873,7 +927,7 @@ shinyServer(function(input, output, session) {
   output$pctable <- renderTable({
       if (!is.null(vals$counts)){
        # HTML(tags$h4("PC Table:"))
-          if (grepl(pattern = "PCA*", x = input$usingReducedDims)) {
+          if (any(grepl(pattern = "PC*", x = colnames(reducedDim(vals$counts, input$usingReducedDims))))) {
             if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
               data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                          Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]

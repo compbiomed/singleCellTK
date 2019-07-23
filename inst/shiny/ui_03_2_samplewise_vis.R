@@ -77,10 +77,7 @@ shinyPanelCluster <- fluidPage(
                      tags$h3("Visualization Settings:"),
                      ## NOT LINKED UP
                      uiOutput("usingReducedDims"),
-                     #selectInput("usingReducedDims", "Select Reduced Dimension Data:", currreddim),
-                     tags$h4("Axis Settings"),
-                     selectInput("pcX", "X Axis:", pcComponents),
-                     selectInput("pcY", "Y Axis:", pcComponents, selected = pcComponentsSelectedY),
+                     uiOutput("dimRedAxisSettings"),
                      tags$h4("Style Settings"),
                      selectInput("colorBy", "Color points by:", c("No Color", "Gene Expression", clusterChoice)),
                      conditionalPanel(

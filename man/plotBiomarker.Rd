@@ -6,8 +6,8 @@
 values.}
 \usage{
 plotBiomarker(inSCE, gene, binary = "Binary", shape = "No Shape",
-  useAssay = "counts", reducedDimName = "PCA", comp1 = NULL,
-  comp2 = NULL)
+  useAssay = "counts", reducedDimName = "PCA", x = NULL, y = NULL,
+  comp1 = NULL, comp2 = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -20,9 +20,15 @@ plotBiomarker(inSCE, gene, binary = "Binary", shape = "No Shape",
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
-\item{reducedDimName}{the name which has stored the results of the dimension reduction
+\item{reducedDimName}{results name of dimension reduction
 coordinates obtained from this method. This is stored in the SingleCellExperiment
 object in the reducedDims slot. Required.}
+
+\item{x}{PCA component to be used for plotting(if applicable).
+Default is first PCA component for PCA data and NULL otherwise.}
+
+\item{y}{PCA component to be used for plotting(if applicable).
+Default is second PCA component for PCA data and NULL otherwise.}
 
 \item{comp1}{label for x-axis}
 
