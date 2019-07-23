@@ -1,12 +1,13 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.5.4
+Version: 1.5.5
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
              person(given="Tyler", family="Faits", email="tfaits@bu.edu", role=c("aut")),
              person(given=c("Mohammed", "Muzamil"), family="Khan", email="mmkhan@bu.edu", role=c("aut")),
+             person(given="Zhe", family="Wang", email="zhe@bu.edu", role=c("aut")),
              person(given="Emma", family="Briars", email="ebriars@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0001-9350-5523")),
              person(given="Sebastian", family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
@@ -57,6 +58,7 @@ Imports:
     shinyalert,
     circlize,
     enrichR,
+    celda,
     shinycssloaders,
     shinythemes,
     umap
