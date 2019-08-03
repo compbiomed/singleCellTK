@@ -18,7 +18,6 @@ test_that("Should fail when an incorrect db name is provided", {
 })
 
 test_that("Should fail when the gene list is empty", {
-  expect_error(enrichRSCE(mouseBrainSubsetSCE, NULL,
-                          "GO_Cellular_Component_2017"),
+  expect_error(enrichRSCE(mouseBrainSubsetSCE, NULL, NULL),
                "Please provide a gene list.")
 })
