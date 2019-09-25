@@ -34,7 +34,7 @@ plotBiomarker <- function(inSCE, gene, binary="Binary",
   if (class(inSCE) == "SCtkExperiment"){
     variances <- pcaVariances(inSCE)
   }
-  if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))) {
+  if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     stop("Please supply a correct reducedDimName")
   } else {
     axisDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,

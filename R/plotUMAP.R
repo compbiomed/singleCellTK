@@ -19,7 +19,7 @@
 plotUMAP <- function(inSCE, colorBy = "No Color", shape = "No Shape",
                      reducedDimName = "UMAP", runUMAP = FALSE,
                      useAssay = "logcounts"){
-  if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))){
+  if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runUMAP){
       inSCE <- getUMAP(inSCE, useAssay = useAssay,
                        reducedDimName = reducedDimName)
