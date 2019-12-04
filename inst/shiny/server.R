@@ -1,5 +1,6 @@
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
+options(useFancyQuotes = FALSE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
@@ -146,9 +147,13 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
+  
+  observeEvent(input$consoleToggle, {
+    toggle(id = "console")
+  })
 
   # Close app on quit
-  session$onSessionEnded(stopApp)
+  # session$onSessionEnded(stopApp)
 
   #-----------------------------------------------------------------------------
   # Page 1: Upload
@@ -158,23 +163,25 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- withConsoleRedirect(createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts)
+                                   createLogCounts = input$createLogcounts))
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
-          vals$original <- createSCE(assayFile = t(maits$expressionmat),
+          vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
                                      annotFile = maits$cdat,
                                      featureFile = maits$fdat,
                                      assayName = "logtpm",
                                      inputDataFrames = TRUE,
-                                     createLogCounts = FALSE)
+                                     createLogCounts = FALSE))
+          # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
+          
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -201,6 +208,7 @@ shinyServer(function(input, output, session) {
         }
       }
       if (!is.null(vals$original)) {
+        # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
         updateColDataNames()
         updateNumSamples()
@@ -359,7 +367,7 @@ shinyServer(function(input, output, session) {
         deletesamples <- input$deletesamplelist
         vals$counts <- filterSCData(inSCE = vals$counts,
                                     useAssay = input$filterAssaySelect,
-                                    deletesamples = deletesamples,
+                                     deletesamples = deletesamples,
                                     removeNoExpress = input$removeNoexpress,
                                     removeBottom = 0.01 * input$LowExpression,
                                     minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
