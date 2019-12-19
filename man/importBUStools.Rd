@@ -11,7 +11,7 @@ importBUStools(
   featuresFileName = "genes.genes.txt",
   barcodesFileName = "genes.barcodes.txt",
   gzipped = FALSE,
-  class = "DelayedArray"
+  class = "Matrix"
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in BUStools
 object. Can be one of "DelayedArray" (as returned by
 \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
-\link[base]{matrix} function). Default "DelayedArray".}
+\link[base]{matrix} function). Default "Matrix".}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

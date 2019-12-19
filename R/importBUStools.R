@@ -75,7 +75,7 @@
 #'  object. Can be one of "DelayedArray" (as returned by
 #'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
-#'  \link[base]{matrix} function). Default "DelayedArray".
+#'  \link[base]{matrix} function). Default "Matrix".
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -112,7 +112,7 @@ importBUStools <- function(
     featuresFileName = "genes.genes.txt",
     barcodesFileName = "genes.barcodes.txt",
     gzipped = FALSE,
-    class = "DelayedArray") {
+    class = "Matrix") {
 
     .importBUStools(
         BUStoolsDir = BUStoolsDir,
