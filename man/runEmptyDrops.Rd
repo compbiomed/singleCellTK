@@ -23,8 +23,8 @@ matrix.}
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
  \link[DropletUtils]{emptyDrops} output table appended to the
  \link[SingleCellExperiment]{colData} slot. The columns include
- \emph{EmptyDrops_Total}, \emph{EmptyDrops_LogProb},
- \emph{EmptyDrops_PValue}, \emph{EmptyDrops_Limited}, \emph{EmptyDrops_FDR}.
+ \emph{emptyDrops_total}, \emph{emptyDrops_logprob},
+ \emph{emptyDrops_pvalue}, \emph{emptyDrops_limited}, \emph{emptyDrops_fdr}.
  Please refer to the documentation of \link[DropletUtils]{emptyDrops} for
  details.
 }

@@ -32,7 +32,7 @@
 }
 
 
-.readMatrixMM <- function(path, gzipped = TRUE, class = "DelayedArray") {
+.readMatrixMM <- function(path, gzipped, class) {
     if (isTRUE(gzipped)) {
         path <- gzfile(path)
     }
@@ -233,7 +233,7 @@
 #'  object. Can be one of "DelayedArray" (as returned by
 #'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
-#'  \link[base]{matrix} function). Default "DelayedArray".
+#'  \link[base]{matrix} function). Default "Matrix".
 #' @details
 #'  \code{importCellRangerV2} imports output from Cell Ranger V2.
 #'  \code{importCellRangerV3} imports output from Cell Ranger V3. Some implicit
@@ -263,7 +263,7 @@ importCellRanger <- function(
     featuresFileName = "features.tsv.gz",
     barcodesFileName = "barcodes.tsv.gz",
     gzipped = TRUE,
-    class = "DelayedArray") {
+    class = "Matrix") {
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         samples = samples,
@@ -285,7 +285,7 @@ importCellRangerV2 <- function(
     featuresFileName = "genes.tsv",
     barcodesFileName = "barcodes.tsv",
     gzipped = TRUE,
-    class = "DelayedArray") {
+    class = "Matrix") {
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         samples = samples,
@@ -311,7 +311,7 @@ importCellRangerV3 <- function(
     featuresFileName = "features.tsv.gz",
     barcodesFileName = "barcodes.tsv.gz",
     gzipped = TRUE,
-    class = "DelayedArray") {
+    class = "Matrix") {
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         samples = samples,
