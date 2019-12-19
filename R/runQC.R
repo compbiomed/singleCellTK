@@ -14,7 +14,7 @@
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms.
 #' @examples
-#' data(emptyDropsSceExample, package = "scruff")
+#' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runQC(emptyDropsSceExample,
 #'     algorithms = c("emptyDrops", "doubletCells"))
 #' @export

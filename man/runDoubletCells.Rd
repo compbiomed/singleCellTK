@@ -42,7 +42,7 @@ This function is a wrapper function for \link[scran]{doubletCells}.
  \link[SummarizedExperiment]{colData} of \code{sce}.
 }
 \examples{
-data(emptyDropsSceExample, package = "scruff")
+data(emptyDropsSceExample, package = "singleCellTK")
 sce <- runDoubletCells(emptyDropsSceExample)
 }
 \references{

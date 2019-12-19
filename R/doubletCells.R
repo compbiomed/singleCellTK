@@ -56,7 +56,7 @@
 #' doublet_detection/bycell.html}
 #' @seealso \link[scran]{doubletCells}
 #' @examples
-#' data(emptyDropsSceExample, package = "scruff")
+#' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runDoubletCells(emptyDropsSceExample)
 #' @export
 #' @import scran

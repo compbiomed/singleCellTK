@@ -37,7 +37,7 @@ SingleCellExperiment object containing the outputs of the
 A wrapper function for the individual QC algorithms.
 }
 \examples{
-data(emptyDropsSceExample, package = "scruff")
+data(emptyDropsSceExample, package = "singleCellTK")
 sce <- runQC(emptyDropsSceExample,
     algorithms = c("emptyDrops", "doubletCells"))
 }
