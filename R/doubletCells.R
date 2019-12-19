@@ -7,6 +7,12 @@
     doubletScore <- rep(NA, ncol(sce))
     samples <- unique(SummarizedExperiment::colData(sce)[[sampleColname]])
 
+    if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
+        i = assayType))) {
+        SummarizedExperiment::assay(sce, i = assayType) <-
+            as.matrix(SummarizedExperiment::assay(sce, i = assayType))
+    }
+
     for (sample in samples) {
         sceSampleInd <- which(SummarizedExperiment::colData(sce)
             [[sampleColname]] == sample)

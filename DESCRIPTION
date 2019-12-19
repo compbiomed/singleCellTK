@@ -66,6 +66,7 @@ Imports:
     DropletUtils
 RoxygenNote: 7.0.2
 Suggests:
+    Matrix,
     testthat,
     Rsubread,
     BiocStyle,

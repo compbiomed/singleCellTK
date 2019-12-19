@@ -4,7 +4,7 @@
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object. Must
 #'  contain a count matrix.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Possible options are: "EmptyDrops", "doubletCells".
+#'  Possible options are: "emptyDrops", "doubletCells".
 #' @param sampleColname Character. The column name which specifies the sample
 #'  origin in the \link[SummarizedExperiment]{colData} of the provided
 #'  \code{sce} object. Default "sample".
@@ -16,15 +16,15 @@
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runQC(emptyDropsSceExample,
-#'     algorithms = c("EmptyDrops", "doubletCells"))
+#'     algorithms = c("emptyDrops", "doubletCells"))
 #' @export
 runQC <- function(sce,
-    algorithms = c("EmptyDrops", "doubletCells"),
+    algorithms = c("emptyDrops", "doubletCells"),
     sampleColname = "sample",
     assayType = "counts",
     ...) {
 
-    if ("EmptyDrops" %in% algorithms) {
+    if ("emptyDrops" %in% algorithms) {
         sce <- runEmptyDrops(sce = sce,
             sampleColname = sampleColname,
             ...,
