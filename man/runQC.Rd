@@ -7,7 +7,7 @@
 \usage{
 runQC(
   sce,
-  algorithms = c("EmptyDrops", "doubletCells"),
+  algorithms = c("emptyDrops", "doubletCells"),
   sampleColname = "sample",
   assayType = "counts",
   ...
@@ -18,7 +18,7 @@ runQC(
 contain a count matrix.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Possible options are: "EmptyDrops", "doubletCells".}
+Possible options are: "emptyDrops", "doubletCells".}
 
 \item{sampleColname}{Character. The column name which specifies the sample
 origin in the \link[SummarizedExperiment]{colData} of the provided
@@ -37,7 +37,7 @@ SingleCellExperiment object containing the outputs of the
 A wrapper function for the individual QC algorithms.
 }
 \examples{
-data(emptyDropsSceExample, package = "singleCellTK")
+data(emptyDropsSceExample, package = "scruff")
 sce <- runQC(emptyDropsSceExample,
-    algorithms = c("EmptyDrops", "doubletCells"))
+    algorithms = c("emptyDrops", "doubletCells"))
 }
