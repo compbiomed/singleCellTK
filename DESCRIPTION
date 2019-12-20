@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.5.8
+Version: 1.7.1
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
@@ -61,9 +61,12 @@ Imports:
     celda,
     shinycssloaders,
     shinythemes,
-    umap
-RoxygenNote: 6.1.1
+    umap,
+    scran,
+    DropletUtils
+RoxygenNote: 7.0.2
 Suggests:
+    Matrix,
     testthat,
     Rsubread,
     BiocStyle,

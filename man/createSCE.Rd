@@ -4,9 +4,14 @@
 \alias{createSCE}
 \title{Create a SCtkExperiment object}
 \usage{
-createSCE(assayFile = NULL, annotFile = NULL, featureFile = NULL,
-  assayName = "counts", inputDataFrames = FALSE,
-  createLogCounts = TRUE)
+createSCE(
+  assayFile = NULL,
+  annotFile = NULL,
+  featureFile = NULL,
+  assayName = "counts",
+  inputDataFrames = FALSE,
+  createLogCounts = TRUE
+)
 }
 \arguments{
 \item{assayFile}{The path to a text file that contains a header row of sample

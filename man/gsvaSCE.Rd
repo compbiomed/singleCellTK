@@ -7,8 +7,15 @@
 \usage{
 gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
 
-gsvaPlot(inSCE, gsvaData, plotType, condition = NULL,
-  show_column_names = TRUE, show_row_names = TRUE, text_size = 12)
+gsvaPlot(
+  inSCE,
+  gsvaData,
+  plotType,
+  condition = NULL,
+  show_column_names = TRUE,
+  show_row_names = TRUE,
+  text_size = 12
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
