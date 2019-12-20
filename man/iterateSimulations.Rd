@@ -4,14 +4,8 @@
 \alias{iterateSimulations}
 \title{Returns significance data from a snapshot.}
 \usage{
-iterateSimulations(
-  originalData,
-  useAssay = "counts",
-  realLabels,
-  totalReads,
-  cells,
-  iterations
-)
+iterateSimulations(originalData, useAssay = "counts", realLabels,
+  totalReads, cells, iterations)
 }
 \arguments{
 \item{originalData}{SCtkExperiment. The SCtkExperiment object storing all

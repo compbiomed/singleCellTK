@@ -5,7 +5,8 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCE, useAssay = "logcounts", batch, condition = NULL)
+plotBatchVariance(inSCE, useAssay = "logcounts", batch,
+  condition = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
