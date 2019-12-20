@@ -13,8 +13,10 @@
 
         if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
             i = assayType))) {
+            sce2 <- sce
             SummarizedExperiment::assay(sce, i = assayType) <-
-                as.matrix(SummarizedExperiment::assay(sce, i = assayType))
+                as(SummarizedExperiment::assay(sce, i = assayType),
+                    "sparseMatrix")
         }
 
         output <- DropletUtils::emptyDrops(m = SummarizedExperiment::assay(sce,
@@ -32,6 +34,11 @@
         } else {
             cd[sceSampleInd, ] <- output
         }
+    }
+
+    if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
+        i = assayType))) {
+        sce <- sce2
     }
 
     SummarizedExperiment::colData(sce) <-
