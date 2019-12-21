@@ -9,8 +9,10 @@
 
     if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
         i = assayType))) {
+        sce2 <- sce
         SummarizedExperiment::assay(sce, i = assayType) <-
-            as.matrix(SummarizedExperiment::assay(sce, i = assayType))
+            as(SummarizedExperiment::assay(sce, i = assayType),
+                "sparseMatrix")
     }
 
     for (sample in samples) {
@@ -21,6 +23,12 @@
             assay.type = assayType)
         doubletScore[sceSampleInd] <- scores
     }
+
+    if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
+        i = assayType))) {
+        sce <- sce2
+    }
+
     SummarizedExperiment::colData(sce)$scran_doublet_score <- doubletScore
     return(sce)
 }
