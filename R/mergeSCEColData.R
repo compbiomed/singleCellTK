@@ -13,10 +13,14 @@
 #' @return SingleCellExperiment object containing combined colData from  
 #'  both singleCellExperiment for samples in sce1.
 #' @examples
+#' sce1 <- importCellRanger(
+#'     cellRangerDirs = system.file("extdata", package = "singleCellTK"),
+#'     samples = "hgmm_1k_v3_20x20")
+#' data(emptyDropsSceExample, package = "scruff")
+#' sce2 <- emptyDropsSceExample
 #' sce <- mergeSCEColData(sce1, sce2, id1 = "column_name", id2 = "column_name")
 #' @export
 mergeSCEColData <- function(sce1, sce2, id1 = "column_name", id2 = "column_name"){
-    #Subset coldata of sce2
     not.in.sce1 <- c(setdiff(names(SummarizedExperiment::colData(sce2)),
       names(SummarizedExperiment::colData(sce1))),id2)
     not.in.sce1 <- not.in.sce1[!is.null(not.in.sce1)]
@@ -32,19 +36,16 @@ mergeSCEColData <- function(sce1, sce2, id1 = "column_name", id2 = "column_name"
               Please define id1/id2 within the function,
               or assign a column name for the singleCellExperiment object.")
         }else{
-            #Add placeholder for merging
             coldata.not.in.sce1$cell <- rownames(coldata.not.in.sce1)
-            #Add placeholder for merging
             coldata.sce1$cell <- rownames(SummarizedExperiment::colData(sce1))
-            id1 = "cell"
-            id2 = "cell"
+            id1 <- "cell"
+            id2 <- "cell"
             placeholder = TRUE
         }
     }else{
-        placeholder = FALSE
+        placeholder <- FALSE
     }
 
-    #Merge
     coldata.merge <- base::merge(coldata.sce1,
         coldata.not.in.sce1,
         all.x = TRUE,
@@ -52,14 +53,11 @@ mergeSCEColData <- function(sce1, sce2, id1 = "column_name", id2 = "column_name"
         by.x = id1,
         by.y = id2)
 
-    #Reorder to match counts matrix
     coldata.merge <- coldata.merge[match(colnames(SingleCellExperiment::counts(sce1)),
         coldata.merge[,id1]),]
 
-    #Re-enter rownames back into coldata
     rownames(coldata.merge) <- coldata.merge[,id1]
 
-    #Get rid of placeholder
     if(placeholder == TRUE){
     	  coldata.merge[,id1] <- NULL
     }
