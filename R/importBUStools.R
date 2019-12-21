@@ -32,23 +32,33 @@
 
 # main function
 .importBUStools <- function(
-    BUStoolsDir,
-    sample,
+    BUStoolsDirs,
+    samples,
     matrixFileName,
     featuresFileName,
     barcodesFileName,
     gzipped,
     class) {
 
-    dir <- file.path(BUStoolsDir)
-    sce <- .constructSCEFromBUStoolsOutputs(dir,
-        sample = sample,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
-        gzipped = gzipped,
-        class = class)
+    if (length(BUStoolsDirs) != length(samples)) {
+        stop("'BUStoolsDirs' and 'samples' have unequal lengths!")
+    }
 
+    res <- vector("list", length = length(samples))
+
+    for (i in seq_along(samples)) {
+        dir <- file.path(BUStoolsDirs[i])
+        scei <- .constructSCEFromBUStoolsOutputs(dir,
+            sample = samples[i],
+            matrixFileName = matrixFileName,
+            featuresFileName = featuresFileName,
+            barcodesFileName = barcodesFileName,
+            gzipped = gzipped,
+            class = class)
+        res[[i]] <- scei
+    }
+
+    sce <- do.call(BiocGenerics::cbind, res)
     return(sce)
 }
 
@@ -60,9 +70,11 @@
 #'  output. Import them
 #'  as one \link[SingleCellExperiment]{SingleCellExperiment} object. Note the
 #'  cells in the output files for BUStools 0.39.4 are not filtered.
-#' @param BUStoolsDir The path to BUStools output files. For
-#'  example: \code{./genecount}.
-#' @param sample User-defined sample name for the sample to be imported.
+#' @param BUStoolsDirs A vector of paths to BUStools output files. Each sample
+#'  should have its own path. For example: \code{./genecount}.
+#'  Must have the same length as \code{samples}.
+#' @param samples A vector of user-defined sample names for the samples to be
+#'  imported. Must have the same length as \code{BUStoolsDirs}.
 #' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
 #'  matrix file (.mtx file).
 #' @param featuresFileName Filename for the feature annotation file.
@@ -101,13 +113,13 @@
 #'
 #' # The top 20 genes and the first 20 cells are included in this example.
 #' sce <- importBUStools(
-#'   BUStoolsDir = system.file("extdata/BUStools_PBMC_1k_v3_20x20/genecount/",
+#'   BUStoolsDirs = system.file("extdata/BUStools_PBMC_1k_v3_20x20/genecount/",
 #'     package = "singleCellTK"),
-#'   sample = "PBMC_1k_v3_20x20")
+#'   samples = "PBMC_1k_v3_20x20")
 #' @export
 importBUStools <- function(
-    BUStoolsDir,
-    sample,
+    BUStoolsDirs,
+    samples,
     matrixFileName = "genes.mtx",
     featuresFileName = "genes.genes.txt",
     barcodesFileName = "genes.barcodes.txt",
@@ -115,8 +127,8 @@ importBUStools <- function(
     class = "Matrix") {
 
     .importBUStools(
-        BUStoolsDir = BUStoolsDir,
-        sample = sample,
+        BUStoolsDirs = BUStoolsDirs,
+        samples = samples,
         matrixFileName = matrixFileName,
         featuresFileName = featuresFileName,
         barcodesFileName = barcodesFileName,

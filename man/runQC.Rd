@@ -2,6 +2,8 @@
 % Please edit documentation in R/runQC.R
 \name{runQC}
 \alias{runQC}
+\alias{runQCFilteredCells}
+\alias{runQCAllDroplets}
 \title{Generates a SingleCellExperiment object containing the output of
  specified QC functions}
 \usage{
@@ -12,13 +14,30 @@ runQC(
   assayType = "counts",
   ...
 )
+
+runQCFilteredCells(
+  sce,
+  algorithms = c("doubletCells"),
+  sampleColname = "sample",
+  assayType = "counts",
+  ...
+)
+
+runQCAllDroplets(
+  sce,
+  algorithms = c("emptyDrops"),
+  sampleColname = "sample",
+  assayType = "counts",
+  ...
+)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object. Must
 contain a count matrix.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Possible options are: "emptyDrops", "doubletCells".}
+Available options are: \link[DropletUtils]{emptyDrops},
+\link[scran]{doubletCells}.}
 
 \item{sampleColname}{Character. The column name which specifies the sample
 origin in the \link[SummarizedExperiment]{colData} of the provided
@@ -36,8 +55,22 @@ SingleCellExperiment object containing the outputs of the
 \description{
 A wrapper function for the individual QC algorithms.
 }
+\details{
+\code{runQC} by default runs all available QC algorithms
+ (\link[DropletUtils]{emptyDrops}, \link[scran]{doubletCells}).
+ \code{runQCFilteredCells} runs QC
+ algorithm (\link[scran]{doubletCells}) on \code{sce} containing
+ filtered cells.
+ \code{runQCAllDroplets}, runs QC
+ algorithm (\link[DropletUtils]{emptyDrops}) on \code{sce} containing
+ unfiltered cells.
+}
 \examples{
 data(emptyDropsSceExample, package = "singleCellTK")
 sce <- runQC(emptyDropsSceExample,
     algorithms = c("emptyDrops", "doubletCells"))
+data(emptyDropsSceExample, package = "singleCellTK")
+sce <- runQCFilteredCells(emptyDropsSceExample)
+data(emptyDropsSceExample, package = "singleCellTK")
+sce <- runQCAllDroplets(emptyDropsSceExample)
 }

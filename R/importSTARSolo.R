@@ -30,8 +30,8 @@
 
 
 # main function
-.importSTARsolo <- function(STARsoloDir,
-    sample,
+.importSTARsolo <- function(STARsoloDirs,
+    samples,
     STARsoloOuts,
     matrixFileName,
     featuresFileName,
@@ -39,15 +39,26 @@
     gzipped,
     class) {
 
-    dir <- file.path(STARsoloDir, STARsoloOuts)
-    sce <- .constructSCEFromSTARsoloOutputs(dir,
-        sample = sample,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
-        gzipped = gzipped,
-        class = class)
 
+    if (length(STARsoloDirs) != length(samples)) {
+        stop("'STARsoloDirs' and 'samples' have unequal lengths!")
+    }
+
+    res <- vector("list", length = length(samples))
+
+    for (i in seq_along(samples)) {
+        dir <- file.path(STARsoloDirs[i], STARsoloOuts)
+        scei <- .constructSCEFromSTARsoloOutputs(dir,
+            sample = samples[i],
+            matrixFileName = matrixFileName,
+            featuresFileName = featuresFileName,
+            barcodesFileName = barcodesFileName,
+            gzipped = gzipped,
+            class = class)
+        res[[i]] <- scei
+    }
+
+    sce <- do.call(BiocGenerics::cbind, res)
     return(sce)
 }
 
@@ -58,10 +69,13 @@
 #' @description Read the barcodes, features (genes), and matrix from STARsolo
 #'  output. Import them
 #'  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param STARsoloDir The root directory of STARsolo output files. The path
-#'  should be something like this: \bold{/PATH/TO/\emph{prefix}Solo.out}. For
-#'  example: \code{./Solo.out}.
-#' @param sample User-defined sample name for the sample to be imported.
+#' @param STARsoloDirs A vector of root directories of STARsolo output files.
+#'  The paths should be something like this:
+#'  \bold{/PATH/TO/\emph{prefix}Solo.out}. For example: \code{./Solo.out}.
+#'  Each sample should have its own path. Must have the same length as
+#'  \code{samples}.
+#' @param samples A vector of user-defined sample names for the sample to be
+#'  imported. Must have the same length as \code{STARsoloDirs}.
 #' @param STARsoloOuts Character. It is the intermediate
 #'  path to filtered or raw feature count file saved in sparse matrix format
 #'  for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
@@ -106,13 +120,13 @@
 #'
 #' # The top 20 genes and the first 20 cells are included in this example.
 #' sce <- importSTARsolo(
-#'   STARsoloDir = system.file("extdata/STARsolo_PBMC_1k_v3_20x20",
+#'   STARsoloDirs = system.file("extdata/STARsolo_PBMC_1k_v3_20x20",
 #'     package = "singleCellTK"),
-#'   sample = "PBMC_1k_v3_20x20")
+#'   samples = "PBMC_1k_v3_20x20")
 #' @export
 importSTARsolo <- function(
-    STARsoloDir,
-    sample,
+    STARsoloDirs,
+    samples,
     STARsoloOuts = "Gene/filtered",
     matrixFileName = "matrix.mtx",
     featuresFileName = "features.tsv",
@@ -121,8 +135,8 @@ importSTARsolo <- function(
     class = "Matrix") {
 
     .importSTARsolo(
-        STARsoloDir = STARsoloDir,
-        sample = sample,
+        STARsoloDirs = STARsoloDirs,
+        samples = samples,
         STARsoloOuts = STARsoloOuts,
         matrixFileName = matrixFileName,
         featuresFileName = featuresFileName,
