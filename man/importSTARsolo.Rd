@@ -23,7 +23,7 @@ Each sample should have its own path. Must have the same length as
 \code{samples}.}
 
 \item{samples}{A vector of user-defined sample names for the sample to be
-imported. Must have the same length as \code{BUStoolsDirs}.}
+imported. Must have the same length as \code{STARsoloDirs}.}
 
 \item{STARsoloOuts}{Character. It is the intermediate
 path to filtered or raw feature count file saved in sparse matrix format

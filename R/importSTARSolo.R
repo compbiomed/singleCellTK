@@ -47,7 +47,7 @@
     res <- vector("list", length = length(samples))
 
     for (i in seq_along(samples)) {
-        dir <- file.path(BUStoolsDirs[i], STARsoloOuts)
+        dir <- file.path(STARsoloDirs[i], STARsoloOuts)
         scei <- .constructSCEFromSTARsoloOutputs(dir,
             sample = samples[i],
             matrixFileName = matrixFileName,
@@ -75,7 +75,7 @@
 #'  Each sample should have its own path. Must have the same length as
 #'  \code{samples}.
 #' @param samples A vector of user-defined sample names for the sample to be
-#'  imported. Must have the same length as \code{BUStoolsDirs}.
+#'  imported. Must have the same length as \code{STARsoloDirs}.
 #' @param STARsoloOuts Character. It is the intermediate
 #'  path to filtered or raw feature count file saved in sparse matrix format
 #'  for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
