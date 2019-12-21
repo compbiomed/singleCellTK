@@ -16,9 +16,9 @@
 #' sce1 <- importCellRanger(
 #'     cellRangerDirs = system.file("extdata", package = "singleCellTK"),
 #'     samples = "hgmm_1k_v3_20x20")
-#' data(emptyDropsSceExample, package = "scruff")
+#' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce2 <- emptyDropsSceExample
-#' sce <- mergeSCEColData(sce1, sce2, id1 = "column_name", id2 = "column_name")
+#' sce <- mergeSCEColData(sce1 = sce1, sce2 = sce2, id1 = "column_name", id2 = "column_name")
 #' @export
 mergeSCEColData <- function(sce1, sce2, id1 = "column_name", id2 = "column_name"){
     not.in.sce1 <- c(setdiff(names(SummarizedExperiment::colData(sce2)),

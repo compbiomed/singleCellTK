@@ -4,16 +4,10 @@
 \alias{importSTARsolo}
 \title{Construct SCE object from STARsolo output}
 \usage{
-importSTARsolo(
-  STARsoloDirs,
-  samples,
-  STARsoloOuts = "Gene/filtered",
-  matrixFileName = "matrix.mtx",
-  featuresFileName = "features.tsv",
-  barcodesFileName = "barcodes.tsv",
-  gzipped = FALSE,
-  class = "Matrix"
-)
+importSTARsolo(STARsoloDirs, samples, STARsoloOuts = "Gene/filtered",
+  matrixFileName = "matrix.mtx", featuresFileName = "features.tsv",
+  barcodesFileName = "barcodes.tsv", gzipped = FALSE,
+  class = "Matrix")
 }
 \arguments{
 \item{STARsoloDirs}{A vector of root directories of STARsolo output files.

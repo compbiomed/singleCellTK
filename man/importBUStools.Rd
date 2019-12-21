@@ -4,13 +4,9 @@
 \alias{importBUStools}
 \title{Construct SCE object from BUStools output}
 \usage{
-importBUStools(
-  BUStoolsDirs,
-  samples,
-  matrixFileName = "genes.mtx",
+importBUStools(BUStoolsDirs, samples, matrixFileName = "genes.mtx",
   featuresFileName = "genes.genes.txt",
-  barcodesFileName = "genes.barcodes.txt",
-   gzipped = FALSE,
+  barcodesFileName = "genes.barcodes.txt", gzipped = FALSE,
   class = "Matrix")
 }
 \arguments{

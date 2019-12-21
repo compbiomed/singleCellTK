@@ -7,29 +7,14 @@
 \title{Generates a SingleCellExperiment object containing the output of
  specified QC functions}
 \usage{
-runQC(
-  sce,
-  algorithms = c("emptyDrops", "doubletCells"),
-  sampleColname = "sample",
-  assayType = "counts",
-  ...
-)
+runQC(sce, algorithms = c("emptyDrops", "doubletCells"),
+  sampleColname = "sample", assayType = "counts", ...)
 
-runQCFilteredCells(
-  sce,
-  algorithms = c("doubletCells"),
-  sampleColname = "sample",
-  assayType = "counts",
-  ...
-)
+runQCFilteredCells(sce, algorithms = c("doubletCells"),
+  sampleColname = "sample", assayType = "counts", ...)
 
-runQCAllDroplets(
-  sce,
-  algorithms = c("emptyDrops"),
-  sampleColname = "sample",
-  assayType = "counts",
-  ...
-)
+runQCAllDroplets(sce, algorithms = c("emptyDrops"),
+  sampleColname = "sample", assayType = "counts", ...)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object. Must
