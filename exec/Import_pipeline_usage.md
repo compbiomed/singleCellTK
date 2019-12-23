@@ -13,10 +13,15 @@ Rscript importScript.R -u /path/to/raw_feature_bc_matrix -f /path/to/filtered_fe
 The arguments are as follows:
 
 -u The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+
 -f The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+
 -p Preprocessing step used (CellRanger, etc.)
+
 -g Whether the outputs from -u/-f are gzipped or not
+
 -s The desired sample name
+
 -d The desired output directory name
 
 If users wish to run this script as a batch job on a computing cluster, they may simply do so by:
