@@ -69,7 +69,9 @@ gzip <- opt$gzip
 
 samplename <- opt$samplename
 
-dir <- opt$directory
+directory <- opt$directory
+
+sessionInfo()
 
 ##Use appropriate import function for preprocessing tool
 if(preproc == "BUStools") {
@@ -98,3 +100,4 @@ setwd(file.path(directory))
 saveRDS(object = mergedUnfilteredSCE, file = paste0(samplename , "_Droplets.rds"))
 saveRDS(object = mergedFilteredSCE, file = paste0(samplename , "_FilteredCells.rds"))
 
+sessionInfo()
