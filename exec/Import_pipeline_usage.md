@@ -2,6 +2,10 @@
 
 This pipeline will import outputs from single-cell preprocessing steps (i.e. CellRanger, STARSolo, BUStools), run various quality control metrics (ex. doublet detection), and output SingleCellExperiment object(s) containing QC metric information.
 
+## Specifications
+
+The pipeline is currently written in the R language. Users will need to install R version 3.6.0 (or higher) in order to run all of the required software. 
+
 ## Running the import pipeline
 
 To run the pipeline script, users will need to upload the importScript.R Rscript to the desired folder and run the following code:
@@ -24,7 +28,7 @@ The arguments are as follows:
 
 -d The desired output directory name
 
-If users wish to run this script as a batch job on a computing cluster, they may simply do so by:
+If users wish to run this script as a batch job on a computing cluster, we have provided a .sh script that may be used to run the pipeline Rscript:
 
 ```
 qsub importScript.sh

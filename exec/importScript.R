@@ -73,14 +73,14 @@ directory <- opt$directory
 
 ##Use appropriate import function for preprocessing tool
 if(preproc == "BUStools") {
-    unfilteredSCE <- importBUStools(BUStoolsDir=unfiltered.path,sample="",gzipped=gzip, class="Matrix")
-    filteredSCE <- importBUStools(BUStoolsDir=filtered.path,sample="",gzipped=gzip, class="Matrix")
+    unfilteredSCE <- importBUStools(BUStoolsDir=unfiltered.path,sample="",gzipped=gzip)
+    filteredSCE <- importBUStools(BUStoolsDir=filtered.path,sample="",gzipped=gzip)
 }else if(preproc == "STARSolo"){
-    unfilteredSCE <- importSTARsolo(STARsoloDir=unfiltered.path,sample="",STARsoloOuts="",gzipped=gzip, class="Matrix")
-    filteredSCE <- importSTARsolo(STARsoloDir=filtered.path,sample="",STARsoloOuts="",gzipped=gzip, class="Matrix")
+    unfilteredSCE <- importSTARsolo(STARsoloDir=unfiltered.path,sample="",STARsoloOuts="",gzipped=gzip)
+    filteredSCE <- importSTARsolo(STARsoloDir=filtered.path,sample="",STARsoloOuts="",gzipped=gzip)
 }else if(preproc == "CellRanger"){
-    unfilteredSCE <- importCellRanger(cellRangerDirs=unfiltered.path,samples="", cellRangerOuts="", gzipped=gzip, class="Matrix")
-    filteredSCE <- importCellRanger(cellRangerDirs=filtered.path,samples="", cellRangerOuts="", gzipped=gzip, class ="Matrix")}
+    unfilteredSCE <- importCellRanger(cellRangerDirs=unfiltered.path,samples="", cellRangerOuts="", gzipped=gzip)
+    filteredSCE <- importCellRanger(cellRangerDirs=filtered.path,samples="", cellRangerOuts="", gzipped=gzip, class =)}
 
 ##Run Appropriate QC functions
 unfilteredSCE = runQC(sce = unfilteredSCE, algorithms = "emptyDrops")
