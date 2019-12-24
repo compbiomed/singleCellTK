@@ -44,9 +44,16 @@ runCellQC <- function(sce,
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
-    sampleColname = sampleColname,
+    sample = sample,
     ...,
-    assayType = assayType)
+    assayName = assayName)
+  }
+
+  if ("decontX" %in% algorithms) {
+    sce <- celda::decontX(sce = sce,
+    batch = sample,
+    ...,
+    assayName = assayName)
   }
 
   return(sce)
