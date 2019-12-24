@@ -53,7 +53,17 @@ runCellQC <- function(sce,
 }
 
 
-#' @rdname runQC
+#' @title Perform comprehensive droplet QC
+#' @description A wrapper function to run several QC algorithms for determining 
+#' empty droplets in single cell RNA-seq data
+#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' the full droplet count matrix
+#' @param algorithms Character vector. Specify which QC algorithms to run.
+#'  Available options are "emptyDrops" and "barcodeRanks".
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Algorithms will be run on cells from each sample separately.
+#' @param assayName  A string specifying which assay contains the count
+#'  matrix for droplets.
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runDropletQC(emptyDropsSceExample)
