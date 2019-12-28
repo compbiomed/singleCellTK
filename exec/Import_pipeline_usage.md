@@ -11,7 +11,7 @@ The pipeline is currently written in the R language. Users will need to install 
 To run the pipeline script, users will need to upload the importScript.R Rscript to the desired folder and run the following code:
 
 ```
-Rscript importScript.R -u /path/to/raw_feature_bc_matrix -f /path/to/filtered_feature_bc_matrix -p Preprocessing -g TRUE -s SampleName -d Directory
+Rscript singleCellTK_SampleQC.R -u /path/to/raw_feature_bc_matrix -f /path/to/filtered_feature_bc_matrix -p Preprocessing -g TRUE -s SampleName -d Directory
 ```
 
 The arguments are as follows:
@@ -31,7 +31,7 @@ The arguments are as follows:
 If users wish to run this script as a batch job on a computing cluster, we have provided a .sh script that may be used to run the pipeline Rscript:
 
 ```
-qsub importScript.sh
+qsub singleCellTK_SampleQC.sh
 ```
 
 ## Documentation of tools that are currently available within the pipeline:

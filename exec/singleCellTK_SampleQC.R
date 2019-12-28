@@ -50,11 +50,10 @@ option_list <- list(optparse::make_option(c("-u", "--unfiltered"),
         help="Are your matrix, barcode, and features files gzipped?"),
     optparse::make_option(c("-s","--samplename"),
         type="character",
-        default=NA,
         help="Sample name"),
     optparse::make_option(c("-d","--directory"),
         type="character",
-        default="R",
+        default=NULL,
         help="Directory for output SingleCellExperiment objects"))
 
 opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
@@ -70,6 +69,9 @@ gzip <- opt$gzip
 samplename <- opt$samplename
 
 directory <- opt$directory
+
+##Check all input parameters
+
 
 ##Use appropriate import function for preprocessing tool
 if(preproc == "BUStools") {
@@ -91,10 +93,17 @@ mergedUnfilteredSCE <- mergeSCEColData(unfilteredSCE, filteredSCE)
 mergedFilteredSCE <- mergeSCEColData(filteredSCE, unfilteredSCE)
 
 #Create directory
+if(is.null(directory)){
+    directory <- samplename
+}
+
 dir.create(file.path(directory), showWarnings = TRUE)
+
 setwd(file.path(directory))
 
 #Save singleCellExperiment object
+dir.create(file.path("R"), showWarnings = TRUE)
+setwd("R")
 saveRDS(object = mergedUnfilteredSCE, file = paste0(samplename , "_Droplets.rds"))
 saveRDS(object = mergedFilteredSCE, file = paste0(samplename , "_FilteredCells.rds"))
 
