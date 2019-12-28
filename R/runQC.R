@@ -1,17 +1,13 @@
-#' @title Generates a SingleCellExperiment object containing the output of
-#'  specified QC functions
-#' @description A wrapper function for the individual QC algorithms.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object. Must
-#'  contain a count matrix.
+#' @title Perform comprehensive single cell QC
+#' @description A wrapper function to run several QC algorithms on a SingleCellExperiment
+#' object containing cells after empty droplets have been removed.
+#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object. 
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are: \link[DropletUtils]{emptyDrops},
-#'  \link[scran]{doubletCells}.
-#' @param sampleColname Character. The column name which specifies the sample
-#'  origin in the \link[SummarizedExperiment]{colData} of the provided
-#'  \code{sce} object. Default "sample".
-#' @param assayType  A string specifying which assay values contain the count
-#'  matrix.
-#' @param ... Additional arguments to pass to \code{algorithms}.
+#'  Available options are "decontX" and "doubletCells".
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Algorithms will be run on cells from each sample separately.
+#' @param assayName  A string specifying which assay contains the count
+#'  matrix for cells.
 #' @details
 #'  \code{runQC} by default runs all available QC algorithms
 #'  (\link[DropletUtils]{emptyDrops}, \link[scran]{doubletCells}).
@@ -22,75 +18,98 @@
 #'  algorithm (\link[DropletUtils]{emptyDrops}) on \code{sce} containing
 #'  unfiltered cells.
 #' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms.
+#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#' of \code{sce}.
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runQC(emptyDropsSceExample,
-#'     algorithms = c("emptyDrops", "doubletCells"))
+#'     algorithms = c("decontX", "doubletCells"))
 #' @export
-runQC <- function(sce,
-    algorithms = c("emptyDrops", "doubletCells"),
-    sampleColname = "sample",
-    assayType = "counts",
-    ...) {
-
-    if ("emptyDrops" %in% algorithms) {
-        sce <- runEmptyDrops(sce = sce,
-            sampleColname = sampleColname,
-            ...,
-            assayType = assayType)
-    }
-
-    if ("doubletCells" %in% algorithms) {
-        sce <- runDoubletCells(sce = sce,
-            sampleColname = sampleColname,
-            ...,
-            assayType = assayType)
-    }
-    return(sce)
-}
-
 
 #' @rdname runQC
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runQCFilteredCells(emptyDropsSceExample)
 #' @export
-runQCFilteredCells <- function(sce,
-    algorithms = c("doubletCells"),
+runCellQC <- function(sce,
+    algorithms = c("doubletCells", "DecontX"),
     sampleColname = "sample",
     assayType = "counts",
     ...) {
 
-    if ("doubletCells" %in% algorithms) {
-        sce <- runDoubletCells(sce = sce,
-            sampleColname = sampleColname,
-            ...,
-            assayType = assayType)
-    }
-    return(sce)
+  nonmatch <- setdiff(algorithms, c("doubletCells", "decontX"))
+  if(length(nonmatch) > 0) {
+    stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
+  }
+
+  if ("doubletCells" %in% algorithms) {
+    sce <- runDoubletCells(sce = sce,
+    sample = sample,
+    ...,
+    assayName = assayName)
+  }
+
+  if ("decontX" %in% algorithms) {
+    sce <- celda::decontX(sce = sce,
+    batch = sample,
+    ...,
+    assayName = assayName)
+  }
+
+  return(sce)
 }
 
 
-#' @rdname runQC
+#' @title Perform comprehensive droplet QC
+#' @description A wrapper function to run several QC algorithms for determining 
+#' empty droplets in single cell RNA-seq data
+#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' the full droplet count matrix
+#' @param algorithms Character vector. Specify which QC algorithms to run.
+#'  Available options are "emptyDrops" and "barcodeRanks".
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Algorithms will be run on cells from each sample separately.
+#' @param assayName  A string specifying which assay contains the count
+#'  matrix for droplets.
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runQCAllDroplets(emptyDropsSceExample)
+#' sce <- runDropletQC(emptyDropsSceExample)
 #' @export
-runQCAllDroplets <- function(sce,
-    algorithms = c("emptyDrops"),
-    sampleColname = "sample",
-    assayType = "counts",
-    ...) {
+runDropletQC <- function(sce,
+    algorithms = c("emptyDrops", "barcodeRanks"),
+    sample = NULL,
+    assayName = "counts") {
 
-    if ("emptyDrops" %in% algorithms) {
-        sce <- runEmptyDrops(sce = sce,
-            sampleColname = sampleColname,
-            ...,
-            assayType = assayType)
-    }
+  nonmatch <- setdiff(algorithms, c("emptyDrops", "barcodeRanks"))
+  if(length(nonmatch) > 0) {
+    stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
+  }
+  
+  ## emptyDrops and barcodeRanks need dgCMatrix objects as input
+  ## Convert once for both functions
+  counts.class <- class(SummarizedExperiment::assay(sce, i = assayName))
+  if (class(counts.class) != "dgCMatrix") {
+    SummarizedExperiment::assay(sce, i = assayName) <-
+      as(SummarizedExperiment::assay(sce, i = assayName), "dgCMatrix")
+  }
 
-    return(sce)
+  if (any("emptyDrops" %in% algorithms)) {
+    sce <- runEmptyDrops(sce = sce,
+      sample = sample,
+      assayName = assayName)
+  }
+
+  if (any("barcodeRanks" %in% algorithms)) {
+    sce <- runBarcodeRankDrops(sce = sce,
+      sample = sample,
+      assayName = assayName)
+  }
+
+  ## Convert back to original class
+  SummarizedExperiment::assay(sce, i = assayName) <-
+      as(SummarizedExperiment::assay(sce, i = assayName), counts.class)
+  
+  return(sce)
 }
 
 
