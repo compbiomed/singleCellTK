@@ -22,6 +22,8 @@ runQC <- function(sce,
     algorithms = c("emptyDrops", "doubletCells"),
     sampleColname = "sample",
     assayType = "counts",
+    doubletMethod = "scran",
+    scdsMethod = "hybrid",
     ...) {
 
     if ("emptyDrops" %in% algorithms) {
@@ -32,10 +34,20 @@ runQC <- function(sce,
     }
 
     if ("doubletCells" %in% algorithms) {
-        sce <- runDoubletCells(sce = sce,
-            sampleColname = sampleColname,
-            ...,
-            assayType = assayType)
+        if (doubletMethod == "scran") {
+            sce <- runDoubletCells(sce = sce,
+                sampleColname = sampleColname,
+                ...,
+                assayType = assayType)
+        } else if (doubletMethod == "scds") {
+            sce <- runDoubletScds(sce = sce, 
+                sampleColname = sampleColname,
+                ...,
+                method = scdsMethod)
+        } else if (!doubletMethod %in% c("scran", "scds")) {
+            warning("Currently, only 'scran' or 'scds' is supported ", 
+                    "in doublet detection. ")
+        }
     }
     return(sce)
 }

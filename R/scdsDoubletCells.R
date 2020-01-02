@@ -7,29 +7,29 @@
     samples <- unique(SummarizedExperiment::colData(sce)[[sampleColname]])
 
     if ("DelayedMatrix" %in% class(SummarizedExperiment::assay(sce,
-        i = 'counts'))) {
-        SummarizedExperiment::assay(sce, i = 'counts') <-
-            as.matrix(SummarizedExperiment::assay(sce, i = 'counts'))
+        i = "counts"))) {
+        SummarizedExperiment::assay(sce, i = "counts") <-
+            as.matrix(SummarizedExperiment::assay(sce, i = "counts"))
     }
 
     for (sample in samples) {
         sceSampleInd <- which(SummarizedExperiment::colData(sce)
             [[sampleColname]] == sample)
         
-        if (!method %in% c('cxds', 'bcds', 'hybrid')){
-            warning("Doublet detection methods must be one of the following:",
+        if (!method %in% c("cxds", "bcds", "hybrid")){
+            warning("Doublet detection methods must be one of the following: ",
                 "'cxds', 'bcds' or 'hybrid'")
-        } else if (method == 'cxds') {
+        } else if (method == "cxds") {
             sceSubset <- scds::cxds(sce[, sceSampleInd], 
                 ..., 
                 retRes=TRUE)
             score <- sceSubset$cxds_score
-        } else if (method == 'bcds') {
+        } else if (method == "bcds") {
             sceSubset <- scds::bcds(sce[, sceSampleInd], 
                 ..., 
                 verb=TRUE)
             score <- sceSubset$bcds_score
-        } else if (method == 'hybrid') {
+        } else if (method == "hybrid") {
             sceSubset <- scds::cxds_bcds_hybrid(sce[, sceSampleInd], ...)
             score <- sceSubset$hybrid_score
         }
@@ -80,7 +80,7 @@
 runDoubletScds <- function(sce,
     sampleColname = "sample",
     ...,
-    method = 'hybrid') {
+    method = "hybrid") {
 
     sce <- .runDoubletScds(sce = sce,
         sampleColname = sampleColname,
