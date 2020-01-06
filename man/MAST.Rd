@@ -7,36 +7,17 @@
 \alias{MASTregression}
 \title{MAST}
 \usage{
-MAST(
-  inSCE,
-  condition = NULL,
-  interest.level = NULL,
-  freqExpressed = 0.1,
-  fcThreshold = log2(1.5),
-  p.value = 0.05,
-  useThresh = FALSE,
-  useAssay = "logcounts"
-)
+MAST(inSCE, condition = NULL, interest.level = NULL,
+  freqExpressed = 0.1, fcThreshold = log2(1.5), p.value = 0.05,
+  useThresh = FALSE, useAssay = "logcounts")
 
 thresholdGenes(inSCE, useAssay = "logcounts")
 
-MASTviolin(
-  inSCE,
-  useAssay = "logcounts",
-  fcHurdleSig,
-  samplesize = 49,
-  threshP = FALSE,
-  condition
-)
+MASTviolin(inSCE, useAssay = "logcounts", fcHurdleSig, samplesize = 49,
+  threshP = FALSE, condition)
 
-MASTregression(
-  inSCE,
-  useAssay = "logcounts",
-  fcHurdleSig,
-  samplesize = 49,
-  threshP = FALSE,
-  condition
-)
+MASTregression(inSCE, useAssay = "logcounts", fcHurdleSig,
+  samplesize = 49, threshP = FALSE, condition)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
