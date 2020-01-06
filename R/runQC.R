@@ -1,41 +1,26 @@
 #' @title Perform comprehensive single cell QC
 #' @description A wrapper function to run several QC algorithms on a SingleCellExperiment
 #' object containing cells after empty droplets have been removed.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object. 
+#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
 #'  Available options are "decontX" and "doubletCells".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
-#' @details
-#'  \code{runQC} by default runs all available QC algorithms
-#'  (\link[DropletUtils]{emptyDrops}, \link[scran]{doubletCells}).
-#'  \code{runQCFilteredCells} runs QC
-#'  algorithm (\link[scran]{doubletCells}) on \code{sce} containing
-#'  filtered cells.
-#'  \code{runQCAllDroplets}, runs QC
-#'  algorithm (\link[DropletUtils]{emptyDrops}) on \code{sce} containing
-#'  unfiltered cells.
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{sce}.
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runQC(emptyDropsSceExample,
-#'     algorithms = c("decontX", "doubletCells"))
-#' @export
-
-#' @rdname runQC
-#' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runQCFilteredCells(emptyDropsSceExample)
+#' sce <- runCellQC(emptyDropsSceExample,
+#'   sample = colData(emptyDropsSceExample)$sample)
 #' @export
 runCellQC <- function(sce,
-    algorithms = c("doubletCells", "DecontX"),
-    sampleColname = "sample",
-    assayType = "counts",
-    ...) {
+  algorithms = c("doubletCells", "DecontX"),
+  sample = NULL,
+  assayName = "counts",
+  ...) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "decontX"))
   if(length(nonmatch) > 0) {
@@ -44,16 +29,16 @@ runCellQC <- function(sce,
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
-    sample = sample,
-    ...,
-    assayName = assayName)
+      sample = sample,
+      ...,
+      assayName = assayName)
   }
 
   if ("decontX" %in% algorithms) {
     sce <- celda::decontX(sce = sce,
-    batch = sample,
-    ...,
-    assayName = assayName)
+      batch = sample,
+      ...,
+      assayName = assayName)
   }
 
   return(sce)
@@ -61,7 +46,7 @@ runCellQC <- function(sce,
 
 
 #' @title Perform comprehensive droplet QC
-#' @description A wrapper function to run several QC algorithms for determining 
+#' @description A wrapper function to run several QC algorithms for determining
 #' empty droplets in single cell RNA-seq data
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the full droplet count matrix
@@ -71,20 +56,24 @@ runCellQC <- function(sce,
 #'  Algorithms will be run on cells from each sample separately.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for droplets.
+#' @return SingleCellExperiment object containing the outputs of the
+#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#' of \code{sce}.
 #' @examples
 #' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDropletQC(emptyDropsSceExample)
+#' sce <- runDropletQC(emptyDropsSceExample,
+#'   sample = colData(emptyDropsSceExample)$sample)
 #' @export
 runDropletQC <- function(sce,
-    algorithms = c("emptyDrops", "barcodeRanks"),
-    sample = NULL,
-    assayName = "counts") {
+  algorithms = c("emptyDrops", "barcodeRanks"),
+  sample = NULL,
+  assayName = "counts") {
 
   nonmatch <- setdiff(algorithms, c("emptyDrops", "barcodeRanks"))
   if(length(nonmatch) > 0) {
     stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
   }
-  
+
   ## emptyDrops and barcodeRanks need dgCMatrix objects as input
   ## Convert once for both functions
   counts.class <- class(SummarizedExperiment::assay(sce, i = assayName))
@@ -107,8 +96,8 @@ runDropletQC <- function(sce,
 
   ## Convert back to original class
   SummarizedExperiment::assay(sce, i = assayName) <-
-      as(SummarizedExperiment::assay(sce, i = assayName), counts.class)
-  
+    as(SummarizedExperiment::assay(sce, i = assayName), counts.class)
+
   return(sce)
 }
 
