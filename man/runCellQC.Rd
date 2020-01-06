@@ -6,7 +6,7 @@
 \usage{
 runCellQC(
   sce,
-  algorithms = c("doubletCells", "DecontX"),
+  algorithms = c("doubletCells"),
   sample = NULL,
   assayName = "counts",
   ...

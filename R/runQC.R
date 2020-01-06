@@ -17,7 +17,8 @@
 #'   sample = colData(emptyDropsSceExample)$sample)
 #' @export
 runCellQC <- function(sce,
-  algorithms = c("doubletCells", "DecontX"),
+  #algorithms = c("doubletCells", "DecontX"),
+  algorithms = c("doubletCells"),
   sample = NULL,
   assayName = "counts",
   ...) {
