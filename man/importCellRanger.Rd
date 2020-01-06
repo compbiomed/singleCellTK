@@ -6,23 +6,36 @@
 \alias{importCellRangerV3}
 \title{Construct SCE object from Cell Ranger output}
 \usage{
-importCellRanger(cellRangerDirs = NULL, samples = NULL,
+importCellRanger(
+  cellRangerDirs = NULL,
+  samples = NULL,
   cellRangerOuts = "outs/filtered_feature_bc_matrix/",
   matrixFileName = "matrix.mtx.gz",
   featuresFileName = "features.tsv.gz",
-  barcodesFileName = "barcodes.tsv.gz", gzipped = TRUE,
-  class = "DelayedArray")
+  barcodesFileName = "barcodes.tsv.gz",
+  gzipped = TRUE,
+  class = "DelayedArray"
+)
 
-importCellRangerV2(cellRangerDirs = NULL, samples = NULL,
-  matrixFileName = "matrix.mtx", featuresFileName = "genes.tsv",
-  barcodesFileName = "barcodes.tsv", gzipped = TRUE,
-  class = "DelayedArray")
+importCellRangerV2(
+  cellRangerDirs = NULL,
+  samples = NULL,
+  matrixFileName = "matrix.mtx",
+  featuresFileName = "genes.tsv",
+  barcodesFileName = "barcodes.tsv",
+  gzipped = TRUE,
+  class = "DelayedArray"
+)
 
-importCellRangerV3(cellRangerDirs = NULL, samples = NULL,
+importCellRangerV3(
+  cellRangerDirs = NULL,
+  samples = NULL,
   matrixFileName = "matrix.mtx.gz",
   featuresFileName = "features.tsv.gz",
-  barcodesFileName = "barcodes.tsv.gz", gzipped = TRUE,
-  class = "DelayedArray")
+  barcodesFileName = "barcodes.tsv.gz",
+  gzipped = TRUE,
+  class = "DelayedArray"
+)
 }
 \arguments{
 \item{cellRangerDirs}{The root directories where Cell Ranger was run. These
