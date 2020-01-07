@@ -1,69 +1,3 @@
-# .readBarcodes <- function(path,
-#     header = FALSE,
-#     colname = "cell_barcode", 
-#     removeFirstCol = TRUE) {
-
-#     res <- data.table::fread(path, header = header)
-
-#     if (ncol(res) == 1) {
-#         colnames(res) <- colname
-#     } else {
-#         if (ncol(res) == 2) {
-#             if (removeFirstCol) {
-#                 message("First column of barcode file was row index and it was removed.")
-#                 res <- res[, -1]
-#                 colnames(res) <- colname
-#             }
-#         } else if (ncol(res) > 2) {
-#             warning("'barcodes' file contains >2 columns!",
-#             " The column names are kept as is. ")
-#         }
-#     }
-#     return(res)
-# }
-
-# .readFeatures <- function(path,
-#     header = FALSE,
-#     colname = "feature_name",
-#     removeFirstCol = TRUE) {
-
-#     res <- data.table::fread(path, header = header)
-#     if (ncol(res) == 1) {
-#         colnames(res) <- colname
-#     } else {
-#         if (ncol(res) == 2) {
-#             if (removeFirstCol) {
-#                 message("First column of gene file was row index and it was removed.")
-#                 res <- res[, -1]
-#                 colnames(res) <- colname
-#             }
-#         } else if (ncol(res) > 2) {
-#             warning("'barcodes' file contains >2 columns!",
-#             " The column names are kept as is. ")
-#         }
-#     }
-#     return(res)
-# }
-
-
-# .readMatrixMM <- function(path, gzipped = FALSE, class = "DelayedArray") {
-#     if (isTRUE(gzipped)) {
-#         path <- gzfile(path)
-#     }
-
-#     res <- Matrix::readMM(path)
-#     res <- t(res)
-#     if (class == "Matrix") {
-#         return(res)
-#     } else if (class == "DelayedArray") {
-#         res <- DelayedArray::DelayedArray(res)
-#         return(res)
-#     } else if (class == "matrix") {
-#         res <- as.matrix(res)
-#         return(res)
-#     }
-# }
-
 .constructSCEFromSeqcOutputs <- function(
     sampleName,
     matrix,
@@ -83,79 +17,6 @@
 
     return(sce)
 }
-
-## We don't need .getOutputFolderPath for seqc output. 
-
-.checkArgsImportSeqc <- function(SeqcDirs, samples, class, prefix) {
-    if (is.null(SeqcDirs)) {
-        if (is.null(samples)) {
-            stop("samples can not be NULL if SeqcDirs is NULL!")
-        }
-        for (i in seq_along(samples)) {
-            if (!dir.exists(samples[i])) {
-                stop("Sample folder does not exist!\n", samples[i])
-            }
-        }
-    } else {
-        if (is.null(samples)) {
-            for (i in seq_along(SeqcDirs)) {
-                if (length(list.dirs(SeqcDirs[i],
-                    recursive = FALSE)) == 0) {
-                    warning("Empty folder. Skipping SeqcDirs ",
-                        SeqcDirs[i])
-                }
-            }
-        } else {
-            if (!(length(samples) == length(SeqcDirs))) {
-                stop("Length of samples is not equal to length of ",
-                    "SeqcDirs!")
-            } else {
-                for (i in seq_along(SeqcDirs)) {
-                    paths <- file.path(SeqcDirs[i], samples[i])
-                    ## why need a for loop below
-                    for (j in seq_along(paths)) {  
-                        if (!dir.exists(paths[j])) {
-                            stop("Sample folder does not exist!\n",
-                                paths[j])
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (!(class %in% c("DelayedArray", "Matrix", "matrix"))) {
-        stop("Invalid 'class' argument! ", "Only accept 'DelayedArray', 'Matric' or 'matrix'")
-    }
-
-    if (is.null(prefix)) {
-        stop("prefix of output files could not be null ")
-    }
-
-}
-
-# .getSamplesPaths <- function(SeqcDirs, samples){
-#     if (is.null(SeqcDirs)){
-#         res <- samples
-#     } else {
-#         if (is.null(samples)){
-#             ## We assume there are only sample directories udner SeqcDirs
-#             res <- list.dirs(SeqcDirs, recursive = FALSE)
-#         } else {
-#             res <- vector("list", length = length(SeqcDirs))
-#             for (i in seq_along(SeqcDirs)) {
-#                 res[[i]] <- file.path(SeqcDirs[i], samples[i])
-#             }
-#             res <- unlist(res)
-#         }
-#     }
-#     return(res)
-# }
-
-# .getSampleNames <- function(samplesDir) {
-#     res <- basename(samplesDir)
-#     return(res)
-# }
 
 .unionGeneMatrix <- function(geneUnion, matrix){
     missGene <- geneUnion[!geneUnion %in% rownames(matrix)]
@@ -190,46 +51,52 @@
     feNotFirstCol,
     combinedSample) {
 
-    .checkArgsImportSeqc(SeqcDirs, samples, class, prefix)
-    sampleDirs <- .getSamplesPaths(SeqcDirs, samples)
+    if (length(SeqcDirs) != length(samples)) {
+        stop("'SeqcDirs' and 'samples' have unequal lengths!")
+    }
 
-    res <- vector("list", length = length(sampleDirs))
-    cb <- vector("list", length = length(sampleDirs))
-    fe <- vector("list", length = length(sampleDirs))
-    mat <- vector("list", length = length(sampleDirs))
+    if (length(SeqcDirs) != length(prefix)) {
+        stop("'SeqcDirs' and 'prefix' have unequal lengths!")
+    }
 
-    for (i in seq_along(sampleDirs)) {
+    res <- vector("list", length = length(SeqcDirs))
+    cb <- vector("list", length = length(SeqcDirs))
+    fe <- vector("list", length = length(SeqcDirs))
+    mat <- vector("list", length = length(SeqcDirs))
+
+    for (i in seq_along(SeqcDirs)) {
+        dir <- SeqcDirs[i]
         matrixFile <- paste(prefix[i], 'sparse_molecule_counts.mtx', sep = "_")
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
 
-        cb[[i]] <- .readBarcodes(file.path(sampleDirs[i], barcodesFile))
+        cb[[i]] <- .readBarcodes(file.path(dir, barcodesFile))
         if (isTRUE(cbNotFirstCol)) {
             message("First column of barcode file was row index and it was removed.")
             cb[[i]] <- cb[[i]][, -1]            
         }
 
-        fe[[i]] <- .readFeatures(file.path(sampleDirs[i], featuresFile))
+        fe[[i]] <- .readFeatures(file.path(dir, featuresFile))
         if (isTRUE(feNotFirstCol)) {
             message("First column of gene file was row index and it was removed.")
             fe[[i]] <- fe[[i]][, -1]            
         }
 
-        mat[[i]] <- .readMatrixMM(file.path(sampleDirs[i], matrixFile), 
+        mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile), 
             gzipped = gzipped, class = 'Matrix')
         mat[[i]] <- t(mat[[i]])
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
 
-    if (isTRUE(combinedSample) & length(sampleDirs) > 1) {
+    if (isTRUE(combinedSample) & length(SeqcDirs) > 1) {
         geneUnion <- .getGeneUnion(fe)
-        for (i in seq_along(sampleDirs)) {
+        for (i in seq_along(SeqcDirs)) {
             matrix <- .unionGeneMatrix(geneUnion = geneUnion, matrix = mat[[i]])
             matrix <- matrix[geneUnion, ]
             feature <- S4Vectors::DataFrame('feature_name' = rownames(matrix))
 
             scei <- .constructSCEFromSeqcOutputs(
-                sampleName = .getSampleNames(sampleDirs[i]),
+                sampleName = samples[i],
                 matrix = matrix,
                 features = feature,
                 barcodes = cb[[i]])
@@ -240,7 +107,7 @@
         return(sce)
 
     } else {
-        for (i in seq_along(sampleDirs)) {
+        for (i in seq_along(SeqcDirs)) {
             if (class == 'DelayedArray') {
                 mat[[i]] <- DelayedArray::DelayedArray(mat[[i]])
             } else if (class == 'matrix') {
@@ -248,13 +115,13 @@
             }
 
             scei <- .constructSCEFromSeqcOutputs(
-                sampleName = .getSampleNames(sampleDirs[i]),
+                sampleName = samples[i],
                 matrix = mat[[i]],
                 features = fe[[i]],
                 barcodes = cb[[i]])
             res[[i]] <- scei
         }
-        if (length(sampleDirs) == 1){
+        if (length(SeqcDirs) == 1){
             return(res[[1]])
         } else {
             return(res) 
@@ -268,24 +135,11 @@
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from (preferably a single run of) seqc output. Import and
 #'  combine them as one big \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param SeqcDirs The root directories where seqc was run. These
-#'  folders should contain sample specific folders. Default \code{NULL},
-#'  meaning the paths for each sample will be specified in \emph{samples}
-#'  argument.
-#' @param samples Default \code{NULL}. Can be one of
-#' \itemize{
-#'   \item \code{NULL}. All samples within \emph{SeqcDirs} will be
-#'    imported. The order of samples will be first determined by the order of
-#'    \emph{SeqcDirs} and then by \link[base]{list.files}. This is only
-#'    for the case where \emph{SeqcDirs} is specified.
-#'   \item A vector containing sample names to import.
-#'    These names are the same as the folder names under \emph{SeqcDirs}.
-#'    This is only for the case where \emph{SeqcDirs} is specified.
-#'   \item A vector of folder paths for the samples to import. This is only for
-#'    the case where \emph{SeqcDirs} is \code{NULL}.
-#' }
-#' The cells in the final SCE object will be ordered in the same order of
-#' samples.
+#' @param SeqcDirs A vector of paths to seqc output files. Each sample
+#'  should have its own path. For example: \code{./pbmc_1k_50x50}.
+#'  Must have the same length as \code{samples}.
+#' @param samples A vector of user-defined sample names for the samples to be
+#'  imported. Must have the same length as \code{SeqcDirs}.
 #' @param prefix A vector containing the prefix of file names within each sample directory. 
 #' It cannot be null and the vector should have the same length as \emph{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the seqc output files
@@ -325,9 +179,9 @@
 #' # The top 50 hg38 genes are included in this example.
 #' # Only the top 50 cells are included.
 #' sce <- importSeqc(
-#'     SeqcDirs = system.file("extdata", package = "singleCellTK"),
+#'     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
 #'     samples = "pbmc_1k_50x50", 
-#'     prefix = 'pbmc_1k', 
+#'     prefix = "pbmc_1k", 
 #'     combinedSample = FALSE)
 #' @export
 
