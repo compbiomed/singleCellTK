@@ -1,68 +1,68 @@
-.readBarcodes <- function(path,
-    header = FALSE,
-    colname = "cell_barcode", 
-    removeFirstCol = TRUE) {
+# .readBarcodes <- function(path,
+#     header = FALSE,
+#     colname = "cell_barcode", 
+#     removeFirstCol = TRUE) {
 
-    res <- data.table::fread(path, header = header)
+#     res <- data.table::fread(path, header = header)
 
-    if (ncol(res) == 1) {
-        colnames(res) <- colname
-    } else {
-        if (ncol(res) == 2) {
-            if (removeFirstCol) {
-                message("First column of barcode file was row index and it was removed.")
-                res <- res[, -1]
-                colnames(res) <- colname
-            }
-        } else if (ncol(res) > 2) {
-            warning("'barcodes' file contains >2 columns!",
-            " The column names are kept as is. ")
-        }
-    }
-    return(res)
-}
+#     if (ncol(res) == 1) {
+#         colnames(res) <- colname
+#     } else {
+#         if (ncol(res) == 2) {
+#             if (removeFirstCol) {
+#                 message("First column of barcode file was row index and it was removed.")
+#                 res <- res[, -1]
+#                 colnames(res) <- colname
+#             }
+#         } else if (ncol(res) > 2) {
+#             warning("'barcodes' file contains >2 columns!",
+#             " The column names are kept as is. ")
+#         }
+#     }
+#     return(res)
+# }
 
-.readFeatures <- function(path,
-    header = FALSE,
-    colname = "feature_name",
-    removeFirstCol = TRUE) {
+# .readFeatures <- function(path,
+#     header = FALSE,
+#     colname = "feature_name",
+#     removeFirstCol = TRUE) {
 
-    res <- data.table::fread(path, header = header)
-    if (ncol(res) == 1) {
-        colnames(res) <- colname
-    } else {
-        if (ncol(res) == 2) {
-            if (removeFirstCol) {
-                message("First column of gene file was row index and it was removed.")
-                res <- res[, -1]
-                colnames(res) <- colname
-            }
-        } else if (ncol(res) > 2) {
-            warning("'barcodes' file contains >2 columns!",
-            " The column names are kept as is. ")
-        }
-    }
-    return(res)
-}
+#     res <- data.table::fread(path, header = header)
+#     if (ncol(res) == 1) {
+#         colnames(res) <- colname
+#     } else {
+#         if (ncol(res) == 2) {
+#             if (removeFirstCol) {
+#                 message("First column of gene file was row index and it was removed.")
+#                 res <- res[, -1]
+#                 colnames(res) <- colname
+#             }
+#         } else if (ncol(res) > 2) {
+#             warning("'barcodes' file contains >2 columns!",
+#             " The column names are kept as is. ")
+#         }
+#     }
+#     return(res)
+# }
 
 
-.readMatrixMM <- function(path, gzipped = FALSE, class = "DelayedArray") {
-    if (isTRUE(gzipped)) {
-        path <- gzfile(path)
-    }
+# .readMatrixMM <- function(path, gzipped = FALSE, class = "DelayedArray") {
+#     if (isTRUE(gzipped)) {
+#         path <- gzfile(path)
+#     }
 
-    res <- Matrix::readMM(path)
-    res <- t(res)
-    if (class == "Matrix") {
-        return(res)
-    } else if (class == "DelayedArray") {
-        res <- DelayedArray::DelayedArray(res)
-        return(res)
-    } else if (class == "matrix") {
-        res <- as.matrix(res)
-        return(res)
-    }
-}
+#     res <- Matrix::readMM(path)
+#     res <- t(res)
+#     if (class == "Matrix") {
+#         return(res)
+#     } else if (class == "DelayedArray") {
+#         res <- DelayedArray::DelayedArray(res)
+#         return(res)
+#     } else if (class == "matrix") {
+#         res <- as.matrix(res)
+#         return(res)
+#     }
+# }
 
 .constructSCEFromSeqcOutputs <- function(
     sampleName,
@@ -134,28 +134,28 @@
 
 }
 
-.getSamplesPaths <- function(SeqcDirs, samples){
-    if (is.null(SeqcDirs)){
-        res <- samples
-    } else {
-        if (is.null(samples)){
-            ## We assume there are only sample directories udner SeqcDirs
-            res <- list.dirs(SeqcDirs, recursive = FALSE)
-        } else {
-            res <- vector("list", length = length(SeqcDirs))
-            for (i in seq_along(SeqcDirs)) {
-                res[[i]] <- file.path(SeqcDirs[i], samples[i])
-            }
-            res <- unlist(res)
-        }
-    }
-    return(res)
-}
+# .getSamplesPaths <- function(SeqcDirs, samples){
+#     if (is.null(SeqcDirs)){
+#         res <- samples
+#     } else {
+#         if (is.null(samples)){
+#             ## We assume there are only sample directories udner SeqcDirs
+#             res <- list.dirs(SeqcDirs, recursive = FALSE)
+#         } else {
+#             res <- vector("list", length = length(SeqcDirs))
+#             for (i in seq_along(SeqcDirs)) {
+#                 res[[i]] <- file.path(SeqcDirs[i], samples[i])
+#             }
+#             res <- unlist(res)
+#         }
+#     }
+#     return(res)
+# }
 
-.getSampleNames <- function(samplesDir) {
-    res <- basename(samplesDir)
-    return(res)
-}
+# .getSampleNames <- function(samplesDir) {
+#     res <- basename(samplesDir)
+#     return(res)
+# }
 
 .unionGeneMatrix <- function(geneUnion, matrix){
     missGene <- geneUnion[!geneUnion %in% rownames(matrix)]
@@ -203,12 +203,21 @@
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
 
-        cb[[i]] <- .readBarcodes(file.path(sampleDirs[i], barcodesFile), 
-            removeFirstCol = cbNotFirstCol)
-        fe[[i]] <- .readFeatures(file.path(sampleDirs[i], featuresFile), 
-            removeFirstCol = feNotFirstCol)
+        cb[[i]] <- .readBarcodes(file.path(sampleDirs[i], barcodesFile))
+        if (isTRUE(cbNotFirstCol)) {
+            message("First column of barcode file was row index and it was removed.")
+            cb[[i]] <- cb[[i]][, -1]            
+        }
+
+        fe[[i]] <- .readFeatures(file.path(sampleDirs[i], featuresFile))
+        if (isTRUE(feNotFirstCol)) {
+            message("First column of gene file was row index and it was removed.")
+            fe[[i]] <- fe[[i]][, -1]            
+        }
+
         mat[[i]] <- .readMatrixMM(file.path(sampleDirs[i], matrixFile), 
             gzipped = gzipped, class = 'Matrix')
+        mat[[i]] <- t(mat[[i]])
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
 
