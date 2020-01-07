@@ -5,8 +5,8 @@
 \title{Construct SCE object from BUStools output}
 \usage{
 importBUStools(
-  BUStoolsDir,
-  sample,
+  BUStoolsDirs,
+  samples,
   matrixFileName = "genes.mtx",
   featuresFileName = "genes.genes.txt",
   barcodesFileName = "genes.barcodes.txt",
@@ -15,10 +15,12 @@ importBUStools(
 )
 }
 \arguments{
-\item{BUStoolsDir}{The path to BUStools output files. For
-example: \code{./genecount}.}
+\item{BUStoolsDirs}{A vector of paths to BUStools output files. Each sample
+should have its own path. For example: \code{./genecount}.
+Must have the same length as \code{samples}.}
 
-\item{sample}{User-defined sample name for the sample to be imported.}
+\item{samples}{A vector of user-defined sample names for the samples to be
+imported. Must have the same length as \code{BUStoolsDirs}.}
 
 \item{matrixFileName}{Filename for the Market Exchange Format (MEX) sparse
 matrix file (.mtx file).}
@@ -71,7 +73,7 @@ Read the barcodes, features (genes), and matrix from BUStools
 
 # The top 20 genes and the first 20 cells are included in this example.
 sce <- importBUStools(
-  BUStoolsDir = system.file("extdata/BUStools_PBMC_1k_v3_20x20/genecount/",
+  BUStoolsDirs = system.file("extdata/BUStools_PBMC_1k_v3_20x20/genecount/",
     package = "singleCellTK"),
-  sample = "PBMC_1k_v3_20x20")
+  samples = "PBMC_1k_v3_20x20")
 }

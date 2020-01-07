@@ -5,8 +5,8 @@
 \title{Construct SCE object from STARsolo output}
 \usage{
 importSTARsolo(
-  STARsoloDir,
-  sample,
+  STARsoloDirs,
+  samples,
   STARsoloOuts = "Gene/filtered",
   matrixFileName = "matrix.mtx",
   featuresFileName = "features.tsv",
@@ -16,11 +16,14 @@ importSTARsolo(
 )
 }
 \arguments{
-\item{STARsoloDir}{The root directory of STARsolo output files. The path
-should be something like this: \bold{/PATH/TO/\emph{prefix}Solo.out}. For
-example: \code{./Solo.out}.}
+\item{STARsoloDirs}{A vector of root directories of STARsolo output files.
+The paths should be something like this:
+\bold{/PATH/TO/\emph{prefix}Solo.out}. For example: \code{./Solo.out}.
+Each sample should have its own path. Must have the same length as
+\code{samples}.}
 
-\item{sample}{User-defined sample name for the sample to be imported.}
+\item{samples}{A vector of user-defined sample names for the sample to be
+imported. Must have the same length as \code{STARsoloDirs}.}
 
 \item{STARsoloOuts}{Character. It is the intermediate
 path to filtered or raw feature count file saved in sparse matrix format
@@ -79,7 +82,7 @@ Read the barcodes, features (genes), and matrix from STARsolo
 
 # The top 20 genes and the first 20 cells are included in this example.
 sce <- importSTARsolo(
-  STARsoloDir = system.file("extdata/STARsolo_PBMC_1k_v3_20x20",
+  STARsoloDirs = system.file("extdata/STARsolo_PBMC_1k_v3_20x20",
     package = "singleCellTK"),
-  sample = "PBMC_1k_v3_20x20")
+  samples = "PBMC_1k_v3_20x20")
 }
