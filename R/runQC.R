@@ -7,39 +7,64 @@
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param assayName  A string specifying which assay contains the count
-#'  matrix for cells.
+#'  matrix for cells. This argument is not used for algorithms
+#'  \link[scds]{cxds}, \link[scds]{bcds}, and \link[scds]{cxds_bcds_hybrid}.
+#' @param seed Seed for the random number generator. Default 12345.
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{sce}.
 #' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runCellQC(emptyDropsSceExample,
-#'   sample = colData(emptyDropsSceExample)$sample)
+#' data(sce_chcl, package = "scds")
+#' sce <- runCellQC(sce_chcl)
 #' @export
 runCellQC <- function(sce,
   #algorithms = c("doubletCells", "DecontX"),
-  algorithms = c("doubletCells"),
+  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
   sample = NULL,
   assayName = "counts",
+  seed = 12345,
   ...) {
 
-  nonmatch <- setdiff(algorithms, c("doubletCells", "decontX"))
-  if(length(nonmatch) > 0) {
-    stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
+  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
+    "cxds_bcds_hybrid"))
+  if (length(nonmatch) > 0) {
+    stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
       sample = sample,
-      ...,
-      assayName = assayName)
+      assayName = assayName,
+      seed = seed,
+      ...)
   }
 
-  if ("decontX" %in% algorithms) {
-    sce <- celda::decontX(sce = sce,
-      batch = sample,
-      ...,
-      assayName = assayName)
+  # if ("decontX" %in% algorithms) {
+  #   sce <- celda::decontX(sce = sce,
+  #     batch = sample,
+  #     ...,
+  #     assayName = assayName)
+  # }
+
+  if ("cxds" %in% algorithms) {
+    sce <- runCxds(sce = sce,
+      sample = sample,
+      seed = seed,
+      ...)
+  }
+
+  if ("bcds" %in% algorithms) {
+    sce <- runBcds(sce = sce,
+      sample = sample,
+      seed = seed,
+      ...)
+  }
+
+  if ("cxds_bcds_hybrid" %in% algorithms) {
+    sce <- runCxdsBcdsHybrid(sce = sce,
+      sample = sample,
+      seed = seed,
+      ...)
   }
 
   return(sce)

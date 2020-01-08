@@ -6,9 +6,10 @@
 \usage{
 runCellQC(
   sce,
-  algorithms = c("doubletCells"),
+  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
   sample = NULL,
   assayName = "counts",
+  seed = 12345,
   ...
 )
 }
@@ -22,7 +23,10 @@ Available options are "decontX" and "doubletCells".}
 Algorithms will be run on cells from each sample separately.}
 
 \item{assayName}{A string specifying which assay contains the count
-matrix for cells.}
+matrix for cells. This argument is not used for algorithms
+\link[scds]{cxds}, \link[scds]{bcds}, and \link[scds]{cxds_bcds_hybrid}.}
+
+\item{seed}{Seed for the random number generator. Default 12345.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
@@ -34,7 +38,6 @@ A wrapper function to run several QC algorithms on a SingleCellExperiment
 object containing cells after empty droplets have been removed.
 }
 \examples{
-data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runCellQC(emptyDropsSceExample,
-  sample = colData(emptyDropsSceExample)$sample)
+data(sce_chcl, package = "scds")
+sce <- runCellQC(sce_chcl)
 }
