@@ -23,11 +23,11 @@ Must have the same length as \code{samples}.}
 \item{samples}{A vector of user-defined sample names for the samples to be
 imported. Must have the same length as \code{SeqcDirs}.}
 
-\item{prefix}{A vector containing the prefix of file names within each sample directory. 
+\item{prefix}{A vector containing the prefix of file names within each sample directory.
 It cannot be null and the vector should have the same length as \emph{samples}.}
 
 \item{gzipped}{Boolean. \code{TRUE} if the seqc output files
-(sparse_counts_barcode.csv, sparse_counts_genes.csv, and sparse_molecule_counts.mtx) 
+(sparse_counts_barcode.csv, sparse_counts_genes.csv, and sparse_molecule_counts.mtx)
 were gzip compressed. \code{FALSE} otherwise. Default seqc outputs are not gzipped.
 Default \code{FALSE}.}
 
@@ -43,9 +43,9 @@ is row index and it will be removed. \code{FALSE} the first column will be kept.
 \item{feNotFirstCol}{Boolean. \code{TRUE} if first column of sparse_counts_genes.csv
 is row index and it will be removed. \code{FALSE} the first column will be kept.}
 
-\item{combinedSample}{Boolean. If \code{TRUE}, \code{importSeqc} returns a 
-\code{SingleCellExperiment} object containing the combined count matrix, feature annotations 
-and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple 
+\item{combinedSample}{Boolean. If \code{TRUE}, \code{importSeqc} returns a
+\code{SingleCellExperiment} object containing the combined count matrix, feature annotations
+and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple
 \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
 , feature anotations and cell annotations for each sample.}
 }
@@ -61,10 +61,10 @@ Read the filtered barcodes, features, and matrices for all
 \details{
 \code{importSeqc} imports output from seqc.
 The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
-contains two columns. The first column is row index and the second column is cell-barcode 
-or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call 
+contains two columns. The first column is row index and the second column is cell-barcode
+or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call
 \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first column
-of these files.  
+of these files.
 When \code{combinedSample} is TRUE, \code{importSeqc} will combined count matrix
 with genes detected in at least one sample.
 }
@@ -77,7 +77,7 @@ with genes detected in at least one sample.
 # Only the top 50 cells are included.
 sce <- importSeqc(
     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
-    samples = "pbmc_1k_50x50", 
-    prefix = "pbmc_1k", 
+    samples = "pbmc_1k_50x50",
+    prefix = "pbmc_1k",
     combinedSample = FALSE)
 }

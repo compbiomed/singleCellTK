@@ -23,7 +23,10 @@
     missMat <- Matrix::Matrix(0, nrow = length(missGene), ncol = ncol(matrix),
         dimnames = list(missGene, NULL))
 
-    mat <- rbind(matrix,missMat)
+    matb <- as(matrix, "dgCMatrix")
+    rownames(matb) <- rownames(matrix)
+
+    mat <- rbind(matb, missMat)
     if (anyDuplicated(rownames(mat))) {
         mat <- mat[!duplicated(rownames(mat)), ]
         warning('Duplicated genes exist in count matrix. Filtered duplicated genes.')
@@ -36,7 +39,7 @@
     for (i in seq_along(geneList)){
         gene[[i]] <- geneList[[i]][[1]]
     }
-    
+
     geneUnion <- base::Reduce(union, gene)
     return(geneUnion)
 }
@@ -44,7 +47,7 @@
 .importSeqc <- function(
     SeqcDirs,
     samples,
-    prefix, 
+    prefix,
     gzipped,
     class,
     cbNotFirstCol,
@@ -73,17 +76,17 @@
         cb[[i]] <- .readBarcodes(file.path(dir, barcodesFile))
         if (isTRUE(cbNotFirstCol)) {
             message("First column of barcode file was row index and it was removed.")
-            cb[[i]] <- cb[[i]][, -1]            
+            cb[[i]] <- cb[[i]][, -1, drop = FALSE]
         }
 
         fe[[i]] <- .readFeatures(file.path(dir, featuresFile))
         if (isTRUE(feNotFirstCol)) {
             message("First column of gene file was row index and it was removed.")
-            fe[[i]] <- fe[[i]][, -1]            
+            fe[[i]] <- fe[[i]][, -1, drop = FALSE]
         }
 
-        mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile), 
-            gzipped = gzipped, class = 'Matrix')
+        mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile),
+            gzipped = gzipped, class = class)
         mat[[i]] <- t(mat[[i]])
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
@@ -124,7 +127,7 @@
         if (length(SeqcDirs) == 1){
             return(res[[1]])
         } else {
-            return(res) 
+            return(res)
         }
     }
 }
@@ -140,10 +143,10 @@
 #'  Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the samples to be
 #'  imported. Must have the same length as \code{SeqcDirs}.
-#' @param prefix A vector containing the prefix of file names within each sample directory. 
+#' @param prefix A vector containing the prefix of file names within each sample directory.
 #' It cannot be null and the vector should have the same length as \emph{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the seqc output files
-#' (sparse_counts_barcode.csv, sparse_counts_genes.csv, and sparse_molecule_counts.mtx) 
+#' (sparse_counts_barcode.csv, sparse_counts_genes.csv, and sparse_molecule_counts.mtx)
 #' were gzip compressed. \code{FALSE} otherwise. Default seqc outputs are not gzipped.
 #' Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
@@ -152,23 +155,23 @@
 #' \link[Matrix]{readMM} function), or "matrix" (as returned by
 #' \link[base]{matrix} function). Default "DelayedArray".
 #' @param feNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_genes.csv
-#' is row index and it will be removed. \code{FALSE} the first column will be kept. 
+#' is row index and it will be removed. \code{FALSE} the first column will be kept.
 #' @param cbNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_barcode.csv
-#' is row index and it will be removed. \code{FALSE} the first column will be kept. 
-#' @param combinedSample Boolean. If \code{TRUE}, \code{importSeqc} returns a 
-#' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations 
-#' and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple 
+#' is row index and it will be removed. \code{FALSE} the first column will be kept.
+#' @param combinedSample Boolean. If \code{TRUE}, \code{importSeqc} returns a
+#' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
+#' and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple
 #' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
-#' , feature anotations and cell annotations for each sample. 
+#' , feature anotations and cell annotations for each sample.
 #' @details
 #' \code{importSeqc} imports output from seqc.
 #' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
-#' contains two columns. The first column is row index and the second column is cell-barcode 
-#' or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call 
+#' contains two columns. The first column is row index and the second column is cell-barcode
+#' or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call
 #' \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first column
-#' of these files.  
+#' of these files.
 #' When \code{combinedSample} is TRUE, \code{importSeqc} will combined count matrix
-#' with genes detected in at least one sample. 
+#' with genes detected in at least one sample.
 #' @return A \code{SingleCellExperiment} object containing the combined count
 #'  matrix, the feature annotations, and the cell annotation.
 #' @examples
@@ -180,27 +183,26 @@
 #' # Only the top 50 cells are included.
 #' sce <- importSeqc(
 #'     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
-#'     samples = "pbmc_1k_50x50", 
-#'     prefix = "pbmc_1k", 
+#'     samples = "pbmc_1k_50x50",
+#'     prefix = "pbmc_1k",
 #'     combinedSample = FALSE)
 #' @export
-
 importSeqc <- function(
     SeqcDirs = NULL,
     samples = NULL,
-    prefix = NULL, 
+    prefix = NULL,
     gzipped = FALSE,
-    class = "DelayedArray", 
+    class = "DelayedArray",
     cbNotFirstCol = TRUE,
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
 
     .importSeqc(SeqcDirs = SeqcDirs,
         samples = samples,
-        prefix = prefix, 
+        prefix = prefix,
         gzipped = gzipped,
-        class = class, 
+        class = class,
         cbNotFirstCol = cbNotFirstCol,
-        feNotFirstCol = feNotFirstCol, 
+        feNotFirstCol = feNotFirstCol,
         combinedSample = combinedSample)
 }
