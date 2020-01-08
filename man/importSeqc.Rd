@@ -16,25 +16,12 @@ importSeqc(
 )
 }
 \arguments{
-\item{SeqcDirs}{The root directories where seqc was run. These
-folders should contain sample specific folders. Default \code{NULL},
-meaning the paths for each sample will be specified in \emph{samples}
-argument.}
+\item{SeqcDirs}{A vector of paths to seqc output files. Each sample
+should have its own path. For example: \code{./pbmc_1k_50x50}.
+Must have the same length as \code{samples}.}
 
-\item{samples}{Default \code{NULL}. Can be one of
-\itemize{
-  \item \code{NULL}. All samples within \emph{SeqcDirs} will be
-   imported. The order of samples will be first determined by the order of
-   \emph{SeqcDirs} and then by \link[base]{list.files}. This is only
-   for the case where \emph{SeqcDirs} is specified.
-  \item A vector containing sample names to import.
-   These names are the same as the folder names under \emph{SeqcDirs}.
-   This is only for the case where \emph{SeqcDirs} is specified.
-  \item A vector of folder paths for the samples to import. This is only for
-   the case where \emph{SeqcDirs} is \code{NULL}.
-}
-The cells in the final SCE object will be ordered in the same order of
-samples.}
+\item{samples}{A vector of user-defined sample names for the samples to be
+imported. Must have the same length as \code{SeqcDirs}.}
 
 \item{prefix}{A vector containing the prefix of file names within each sample directory. 
 It cannot be null and the vector should have the same length as \emph{samples}.}
@@ -89,8 +76,8 @@ with genes detected in at least one sample.
 # The top 50 hg38 genes are included in this example.
 # Only the top 50 cells are included.
 sce <- importSeqc(
-    SeqcDirs = system.file("extdata", package = "singleCellTK"),
+    SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
     samples = "pbmc_1k_50x50", 
-    prefix = 'pbmc_1k', 
+    prefix = "pbmc_1k", 
     combinedSample = FALSE)
 }
