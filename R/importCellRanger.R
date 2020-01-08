@@ -1,8 +1,9 @@
 .readBarcodes <- function(path,
     header = FALSE,
-    colname = "cell_barcode") {
+    colname = "cell_barcode",
+    colClasses = "character") {
 
-    res <- data.table::fread(path, header = header)
+    res <- data.table::fread(path, header = header, colClasses = colClasses)
     if (ncol(res) == 1) {
         colnames(res) <- colname
     } else {
@@ -15,7 +16,8 @@
 
 .readFeatures <- function(path,
     header = FALSE,
-    colnames = c("feature_ID", "feature_name", "feature_type")) {
+    colnames = c("feature_ID", "feature_name", "feature_type"),
+    colClasses = "character") {
 
     res <- data.table::fread(path, header = header)
     if (ncol(res) == 1) {
