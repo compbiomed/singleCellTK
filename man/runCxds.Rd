@@ -16,6 +16,8 @@ separately. If NULL, then all cells will be processed together.
 Default NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
+
+\item{...}{Additional arguments passed to \link[scds]{cxds}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
