@@ -22,8 +22,7 @@ runCellQC <- function(sce,
   algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
   sample = NULL,
   assayName = "counts",
-  seed = 12345,
-  ...) {
+  seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid"))
@@ -35,8 +34,7 @@ runCellQC <- function(sce,
     sce <- runDoubletCells(sce = sce,
       sample = sample,
       assayName = assayName,
-      seed = seed,
-      ...)
+      seed = seed)
   }
 
   # if ("decontX" %in% algorithms) {
@@ -49,22 +47,19 @@ runCellQC <- function(sce,
   if ("cxds" %in% algorithms) {
     sce <- runCxds(sce = sce,
       sample = sample,
-      seed = seed,
-      ...)
+      seed = seed)
   }
 
   if ("bcds" %in% algorithms) {
     sce <- runBcds(sce = sce,
       sample = sample,
-      seed = seed,
-      ...)
+      seed = seed)
   }
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
     sce <- runCxdsBcdsHybrid(sce = sce,
       sample = sample,
-      seed = seed,
-      ...)
+      seed = seed)
   }
 
   return(sce)

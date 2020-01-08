@@ -10,6 +10,7 @@
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
+#' @param ... Additional arguments passed to \link[scds]{cxds}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds} output appended to the
 #'  \link[SingleCellExperiment]{colData} slot. The columns include
@@ -76,7 +77,12 @@ runCxds <- function(sce,
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  separately. If NULL, then all cells will be processed together.
+#'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
+#' @param ... Additional arguments passed to \link[scds]{bcds}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{bcds} output appended to the
 #'  \link[SingleCellExperiment]{colData} slot. The columns include
@@ -143,7 +149,12 @@ runBcds <- function(sce,
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  separately. If NULL, then all cells will be processed together.
+#'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
+#' @param ... Additional arguments passed to \link[scds]{cxds_bcds_hybrid}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
 #'  \link[SingleCellExperiment]{colData} slot. The columns include

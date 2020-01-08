@@ -9,8 +9,7 @@ runCellQC(
   algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
   sample = NULL,
   assayName = "counts",
-  seed = 12345,
-  ...
+  seed = 12345
 )
 }
 \arguments{
