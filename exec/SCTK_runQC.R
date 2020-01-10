@@ -58,44 +58,48 @@ option_list <- list(optparse::make_option(c("-u", "--unfiltered"),
         help="Directory for output SingleCellExperiment objects"))
 
 opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
-
 unfiltered.path <- opt$unfiltered
-
 filtered.path <- opt$filtered
-
 preproc <- opt$preproc
-
 gzip <- opt$gzip
-
 samplename <- opt$samplename
-
 directory <- opt$directory
 
-##Use appropriate import function for preprocessing tool
-if(preproc == "BUStools") {
+## Use appropriate import function for preprocessing tool
+
+if (preproc == "BUStools") {
     unfilteredSCE <- importBUStools(BUStoolsDir=unfiltered.path,sample="",gzipped=gzip)
     filteredSCE <- importBUStools(BUStoolsDir=filtered.path,sample="",gzipped=gzip)
-}else if(preproc == "STARSolo"){
+} else if(preproc == "STARSolo"){
     unfilteredSCE <- importSTARsolo(STARsoloDir=unfiltered.path,sample="",STARsoloOuts="",gzipped=gzip)
     filteredSCE <- importSTARsolo(STARsoloDir=filtered.path,sample="",STARsoloOuts="",gzipped=gzip)
-}else if(preproc == "CellRanger"){
+} else if(preproc == "CellRanger"){
     unfilteredSCE <- importCellRanger(cellRangerDirs=unfiltered.path,samples="", cellRangerOuts="", gzipped=gzip)
-    filteredSCE <- importCellRanger(cellRangerDirs=filtered.path,samples="", cellRangerOuts="", gzipped=gzip, class =)}
+    filteredSCE <- importCellRanger(cellRangerDirs=filtered.path,samples="", cellRangerOuts="", gzipped=gzip, class =)
+} else {
+  stop(paste0("'", preproc, "' not supported."))
+}
+    
 
-##Run Appropriate QC functions
-unfilteredSCE = runQC(sce = unfilteredSCE, algorithms = "emptyDrops")
-filteredSCE = runQC(sce = filteredSCE, algorithms = "doubletCells")
+## Run QC functions
+unfilteredSCE = runDropletQC(sce = unfilteredSCE)
+filteredSCE = runCellQC(sce = filteredSCE)
 
-#Merge singleCellExperiment objects
+## Merge singleCellExperiment objects
 mergedUnfilteredSCE <- mergeSCEColData(unfilteredSCE, filteredSCE)
 mergedFilteredSCE <- mergeSCEColData(filteredSCE, unfilteredSCE)
 
-#Create directory
+## Create directory
 dir.create(file.path(directory), showWarnings = TRUE)
 setwd(file.path(directory))
 
-#Save singleCellExperiment object
+## Save singleCellExperiment object
 saveRDS(object = mergedUnfilteredSCE, file = paste0(samplename , "_Droplets.rds"))
 saveRDS(object = mergedFilteredSCE, file = paste0(samplename , "_FilteredCells.rds"))
+
+## ToDo ##
+## Export to Python
+## Export to flatfile
+
 
 sessionInfo()
