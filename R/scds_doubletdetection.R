@@ -53,6 +53,7 @@ runCxds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
+        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
         result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ...))
 
         if ("cxds_call" %in% colnames(SummarizedExperiment::colData(result))) {
@@ -64,6 +65,7 @@ runCxds <- function(sce,
         }
     }
 
+    colnames(output) <- paste0("scds_", colnames(output))
     colData(sce) = cbind(colData(sce), output)
 
     return(sce)
@@ -125,6 +127,7 @@ runBcds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
+        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
         result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ...))
 
         if ("bcds_call" %in% colnames(SummarizedExperiment::colData(result))) {
@@ -136,6 +139,7 @@ runBcds <- function(sce,
         }
     }
 
+    colnames(output) <- paste0("scds_", colnames(output))
     colData(sce) = cbind(colData(sce), output)
 
     return(sce)
@@ -185,11 +189,11 @@ runCxdsBcdsHybrid <- function(sce,
     ## Define result matrix for all samples
     if ("estNdbl" %in% names(list(...))) {
         output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            bcds_score = numeric(ncol(sce)),
-            bcds_call = logical(ncol(sce)))
+            hybrid_score = numeric(ncol(sce)),
+            hybrid_call = logical(ncol(sce)))
     } else {
         output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            bcds_score = numeric(ncol(sce)))
+            hybrid_score = numeric(ncol(sce)))
     }
 
     ## Loop through each sample and run cxds_bcds_hybrid
@@ -198,6 +202,7 @@ runCxdsBcdsHybrid <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
+        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
         result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
             ...))
 
@@ -210,6 +215,7 @@ runCxdsBcdsHybrid <- function(sce,
         }
     }
 
+    colnames(output) <- paste0("scds_", colnames(output))
     colData(sce) = cbind(colData(sce), output)
 
     return(sce)
