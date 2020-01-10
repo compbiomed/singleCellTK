@@ -6,7 +6,7 @@
 \usage{
 runCellQC(
   sce,
-  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
+  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
   assayName = "counts",
   seed = 12345
@@ -16,14 +16,13 @@ runCellQC(
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "decontX" and "doubletCells".}
+Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
 
 \item{assayName}{A string specifying which assay contains the count
-matrix for cells. This argument is not used for algorithms
-\link[scds]{cxds}, \link[scds]{bcds}, and \link[scds]{cxds_bcds_hybrid}.}
+matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 }
