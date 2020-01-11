@@ -16,9 +16,9 @@ Rscript singleCellTK_SampleQC.R -u /path/to/raw_feature_bc_matrix -f /path/to/fi
 
 The arguments are as follows:
 
--u The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-d The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
 
--f The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-c The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
 
 -p Preprocessing step used (CellRanger, etc.)
 
