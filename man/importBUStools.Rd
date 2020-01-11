@@ -4,10 +4,15 @@
 \alias{importBUStools}
 \title{Construct SCE object from BUStools output}
 \usage{
-importBUStools(BUStoolsDirs, samples, matrixFileName = "genes.mtx",
+importBUStools(
+  BUStoolsDirs,
+  samples,
+  matrixFileName = "genes.mtx",
   featuresFileName = "genes.genes.txt",
-  barcodesFileName = "genes.barcodes.txt", gzipped = FALSE,
-  class = "Matrix")
+  barcodesFileName = "genes.barcodes.txt",
+  gzipped = FALSE,
+  class = "Matrix"
+)
 }
 \arguments{
 \item{BUStoolsDirs}{A vector of paths to BUStools output files. Each sample
@@ -58,12 +63,12 @@ Read the barcodes, features (genes), and matrix from BUStools
 # The following BUStools command generates the gene, cell, and
 # matrix files
 
-# bustools correct -w ./3M-february-2018.txt -p output.bus | \\
-#   bustools sort -T tmp/ -t 4 -p - | \\
-#   bustools count -o genecount/genes \\
-#     -g ./transcripts_to_genes.txt \\
-#     -e matrix.ec \\
-#     -t transcripts.txt \\
+# bustools correct -w ./3M-february-2018.txt -p output.bus | \
+#   bustools sort -T tmp/ -t 4 -p - | \
+#   bustools count -o genecount/genes \
+#     -g ./transcripts_to_genes.txt \
+#     -e matrix.ec \
+#     -t transcripts.txt \
 #     --genecounts -
 
 # The top 20 genes and the first 20 cells are included in this example.

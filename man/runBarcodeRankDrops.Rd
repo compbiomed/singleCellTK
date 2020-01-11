@@ -27,8 +27,8 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with the
  details.
 }
 \description{
-Run \link[DropletUtils]{barcodeRanks} on a count matrix 
- provided in a\link[SingleCellExperiment]{SingleCellExperiment} object.
+Run \link[DropletUtils]{barcodeRanks} on a count matrix
+ provided in a \link[SingleCellExperiment]{SingleCellExperiment} object.
  Distinguish between droplets containing cells and ambient RNA in a
  droplet-based single-cell RNA sequencing experiment.
 }

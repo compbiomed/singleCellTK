@@ -4,8 +4,12 @@
 \alias{runDropletQC}
 \title{Perform comprehensive droplet QC}
 \usage{
-runDropletQC(sce, algorithms = c("emptyDrops", "barcodeRanks"),
-  sample = NULL, assayName = "counts")
+runDropletQC(
+  sce,
+  algorithms = c("emptyDrops", "barcodeRanks"),
+  sample = NULL,
+  assayName = "counts"
+)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
@@ -26,5 +30,6 @@ empty droplets in single cell RNA-seq data
 }
 \examples{
 data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runDropletQC(emptyDropsSceExample)
+sce <- runDropletQC(emptyDropsSceExample,
+  sample = colData(emptyDropsSceExample)$sample)
 }

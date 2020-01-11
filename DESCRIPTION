@@ -63,7 +63,8 @@ Imports:
     shinythemes,
     umap,
     scran,
-    DropletUtils
+    DropletUtils,
+    scds
 RoxygenNote: 7.0.2
 Suggests:
     Matrix,
