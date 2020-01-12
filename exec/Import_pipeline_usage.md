@@ -26,7 +26,7 @@ The arguments are as follows:
 
 -s The desired sample name
 
--d The desired output directory name
+-o The desired output directory name
 
 If users wish to run this script as a batch job on a computing cluster, we have provided a .sh script that may be used to run the pipeline Rscript:
 

@@ -7,49 +7,21 @@
 \alias{scDiffExANOVA}
 \title{Perform differential expression analysis on a SCtkExperiment object}
 \usage{
-scDiffEx(
-  inSCE,
-  useAssay = "logcounts",
-  condition,
-  covariates = NULL,
-  significance = 0.05,
-  ntop = 500,
-  usesig = TRUE,
-  diffexmethod,
-  levelofinterest = NULL,
-  analysisType = NULL,
-  controlLevel = NULL,
-  adjust = "fdr"
-)
+scDiffEx(inSCE, useAssay = "logcounts", condition, covariates = NULL,
+  significance = 0.05, ntop = 500, usesig = TRUE, diffexmethod,
+  levelofinterest = NULL, analysisType = NULL, controlLevel = NULL,
+  adjust = "fdr")
 
-scDiffExDESeq2(
-  inSCE,
-  useAssay = "counts",
-  condition,
-  analysisType = "biomarker",
-  levelofinterest = NULL,
-  controlLevel = NULL,
-  covariates = NULL,
-  adjust = "fdr"
-)
+scDiffExDESeq2(inSCE, useAssay = "counts", condition,
+  analysisType = "biomarker", levelofinterest = NULL,
+  controlLevel = NULL, covariates = NULL, adjust = "fdr")
 
-scDiffExlimma(
-  inSCE,
-  useAssay = "logcounts",
-  condition,
-  analysisType = "biomarker",
-  levelofinterest = NULL,
-  covariates = NULL,
-  adjust = "fdr"
-)
+scDiffExlimma(inSCE, useAssay = "logcounts", condition,
+  analysisType = "biomarker", levelofinterest = NULL,
+  covariates = NULL, adjust = "fdr")
 
-scDiffExANOVA(
-  inSCE,
-  useAssay = "logcounts",
-  condition,
-  covariates = NULL,
-  adjust = "fdr"
-)
+scDiffExANOVA(inSCE, useAssay = "logcounts", condition,
+  covariates = NULL, adjust = "fdr")
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

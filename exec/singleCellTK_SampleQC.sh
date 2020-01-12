@@ -24,5 +24,5 @@ Rscript ImportScript.R \
  -p Preprocessing \
  -g TRUE \
  -s SampleName \
- -d Directory
+ -o Directory
 

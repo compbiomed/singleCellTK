@@ -4,12 +4,8 @@
 \alias{runDropletQC}
 \title{Perform comprehensive droplet QC}
 \usage{
-runDropletQC(
-  sce,
-  algorithms = c("emptyDrops", "barcodeRanks"),
-  sample = NULL,
-  assayName = "counts"
-)
+runDropletQC(sce, algorithms = c("emptyDrops", "barcodeRanks"),
+  sample = NULL, assayName = "counts")
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
@@ -24,8 +20,13 @@ Algorithms will be run on cells from each sample separately.}
 \item{assayName}{A string specifying which assay contains the count
 matrix for droplets.}
 }
+\value{
+SingleCellExperiment object containing the outputs of the
+ specified algorithms in the \link[SummarizedExperiment]{colData}
+of \code{sce}.
+}
 \description{
-A wrapper function to run several QC algorithms for determining 
+A wrapper function to run several QC algorithms for determining
 empty droplets in single cell RNA-seq data
 }
 \examples{
