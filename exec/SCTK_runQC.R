@@ -63,11 +63,6 @@ if (is.na(samplename)){
   stop("A sample name is required. Please specify using the -s flag.")
 }
 
-print(samplename)
-print(droplet.path)
-print(filtered.path)
-is.na(filtered.path)
-
 ## Use appropriate import function for preprocessing tool
 
 if (preproc == "BUStools") {
@@ -92,10 +87,10 @@ if (preproc == "BUStools") {
 
 
 ## Run QC functions
-dropletSCE = runDropletQC(sce = dropletSCE)
+dropletSCE <- runDropletQC(sce = dropletSCE)
 
 if(!is.na(filtered.path)){
-  filteredSCE = runCellQC(sce = filteredSCE)
+  filteredSCE <- runCellQC(sce = filteredSCE)
 }
 
 ## Merge singleCellExperiment objects
