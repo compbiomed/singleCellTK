@@ -1,9 +1,11 @@
 #' @title Perform comprehensive single cell QC
-#' @description A wrapper function to run several QC algorithms on a SingleCellExperiment
-#' object containing cells after empty droplets have been removed.
+#' @description A wrapper function to run several QC algorithms on a
+#'  SingleCellExperiment
+#'  object containing cells after empty droplets have been removed.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
+#' "decontX", and "scrublet".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param assayName  A string specifying which assay contains the count
@@ -18,13 +20,14 @@
 #' @export
 runCellQC <- function(sce,
   #algorithms = c("doubletCells", "DecontX"),
-  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX"),
+  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX",
+    "scrublet"),
   sample = NULL,
   assayName = "counts",
   seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX"))
+    "cxds_bcds_hybrid", "decontX", "scrublet"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -57,6 +60,14 @@ runCellQC <- function(sce,
   if ("decontX" %in% algorithms) {
     sce <- runDecontX(sce = sce,
       sample = sample,
+      assayName = assayName,
+      seed = seed)
+  }
+
+  if ("scrublet" %in% algorithms) {
+    sce <- runScrublet(sce = sce,
+      sample = sample,
+      assayName = assayName,
       seed = seed)
   }
 
