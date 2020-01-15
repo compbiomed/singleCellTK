@@ -19,7 +19,7 @@ all cells will be processed together. Default \code{NULL}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \code{scrub_doublets} output appended to the
- \link[SingleCellExperiment]{colData} slot. The columns include
+ \link[SummarizedExperiment]{colData} slot. The columns include
  \emph{scrublet_score} and \emph{scrublet_call}.
 }
 \description{
