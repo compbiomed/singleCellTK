@@ -13,7 +13,7 @@
 #' @param ... Additional arguments passed to \link[scds]{cxds}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds} output appended to the
-#'  \link[SingleCellExperiment]{colData} slot. The columns include
+#'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{cxds_score} and optionally \emph{cxds_call}.
 #'  Please refer to the documentation of \link[scds]{cxds} for details.
 #' @examples
@@ -87,7 +87,7 @@ runCxds <- function(sce,
 #' @param ... Additional arguments passed to \link[scds]{bcds}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{bcds} output appended to the
-#'  \link[SingleCellExperiment]{colData} slot. The columns include
+#'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{bcds_score} and optionally \emph{bcds_call}.
 #'  Please refer to the documentation of \link[scds]{bcds} for details.
 #' @examples
@@ -161,7 +161,7 @@ runBcds <- function(sce,
 #' @param ... Additional arguments passed to \link[scds]{cxds_bcds_hybrid}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
-#'  \link[SingleCellExperiment]{colData} slot. The columns include
+#'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{hybrid_score} and optionally \emph{hybrid_call}.
 #'  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
 #'  details.

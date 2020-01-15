@@ -22,7 +22,7 @@ Default NULL.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \link[scds]{cxds_bcds_hybrid} output appended to the
- \link[SingleCellExperiment]{colData} slot. The columns include
+ \link[SummarizedExperiment]{colData} slot. The columns include
  \emph{hybrid_score} and optionally \emph{hybrid_call}.
  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
  details.
