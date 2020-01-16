@@ -3,9 +3,10 @@
 #' object containing cells after empty droplets have been removed.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
+#' @param geneSets List. Named list of gene sets to use for calculating QC metrics.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -18,16 +19,21 @@
 #' @export
 runCellQC <- function(sce,
   #algorithms = c("doubletCells", "DecontX"),
-  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX"),
+  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
+  geneSets = NULL,
   assayName = "counts",
   seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX"))
+    "cxds_bcds_hybrid", "decontX", "QCMetrics"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
+
+  if ("QCMetrics" %in% algorithms) {
+    sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = geneSets)
+  }    
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
@@ -84,11 +90,11 @@ runCellQC <- function(sce,
 #'   sample = colData(emptyDropsSceExample)$sample)
 #' @export
 runDropletQC <- function(sce,
-  algorithms = c("emptyDrops", "barcodeRanks"),
+  algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
   sample = NULL,
   assayName = "counts") {
 
-  nonmatch <- setdiff(algorithms, c("emptyDrops", "barcodeRanks"))
+  nonmatch <- setdiff(algorithms, c("QCMetrics", "emptyDrops", "barcodeRanks"))
   if(length(nonmatch) > 0) {
     stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
   }
@@ -100,6 +106,10 @@ runDropletQC <- function(sce,
     SummarizedExperiment::assay(sce, i = assayName) <-
       as(SummarizedExperiment::assay(sce, i = assayName), "dgCMatrix")
   }
+
+  if ("QCMetrics" %in% algorithms) {
+    sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = NULL)
+  }    
 
   if (any("emptyDrops" %in% algorithms)) {
     sce <- runEmptyDrops(sce = sce,
