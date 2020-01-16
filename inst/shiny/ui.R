@@ -102,7 +102,7 @@ shinyUI(
     theme = shinytheme(shinyTheme),
     #Upload Tab
     tabPanel("Upload", shinyPanelUpload),
-    tabPanel("Data Summary & Filtering", shinyPanelFilter),
+    tabPanel("QC & Filtering", shinyPanelFilter),
     navbarMenu(
       "Visualization & Clustering",
       tabPanel("Genewise Visualization", shinyPanelVis),
