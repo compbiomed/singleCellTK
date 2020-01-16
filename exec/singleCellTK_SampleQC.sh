@@ -19,10 +19,10 @@ module load R/3.6.0
 module load gcc
 
 Rscript ImportScript.R \
- -u raw_feature_bc_matrix \
- -f filtered_feature_bc_matrix \
+ -d raw_feature_bc_matrix \
+ -c filtered_feature_bc_matrix \
  -p Preprocessing \
  -g TRUE \
  -s SampleName \
- -d Directory
+ -o Directory
 

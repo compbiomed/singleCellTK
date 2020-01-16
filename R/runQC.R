@@ -1,9 +1,10 @@
 #' @title Perform comprehensive single cell QC
-#' @description A wrapper function to run several QC algorithms on a SingleCellExperiment
-#' object containing cells after empty droplets have been removed.
+#' @description A wrapper function to run several QC algorithms on a
+#'  SingleCellExperiment
+#'  object containing cells after empty droplets have been removed.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param geneSets List. Named list of gene sets to use for calculating QC metrics.
@@ -18,15 +19,16 @@
 #' sce <- runCellQC(sce_chcl)
 #' @export
 runCellQC <- function(sce,
-  #algorithms = c("doubletCells", "DecontX"),
-  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX"),
+  algorithms = c("QCMetrics", "scrublet", "doubletCells", "cxds", "bcds",
+    "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
   geneSets = NULL,
   assayName = "counts",
   seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX", "QCMetrics"))
+
+    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -63,6 +65,14 @@ runCellQC <- function(sce,
   if ("decontX" %in% algorithms) {
     sce <- runDecontX(sce = sce,
       sample = sample,
+      assayName = assayName,
+      seed = seed)
+  }
+
+  if ("scrublet" %in% algorithms) {
+    sce <- runScrublet(sce = sce,
+      sample = sample,
+      assayName = assayName,
       seed = seed)
   }
 

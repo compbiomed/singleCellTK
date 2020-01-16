@@ -11,14 +11,14 @@ The pipeline is currently written in the R language. Users will need to install 
 To run the pipeline script, users will need to upload the importScript.R Rscript to the desired folder and run the following code:
 
 ```
-Rscript importScript.R -u /path/to/raw_feature_bc_matrix -f /path/to/filtered_feature_bc_matrix -p Preprocessing -g TRUE -s SampleName -d Directory
+Rscript singleCellTK_SampleQC.R -u /path/to/raw_feature_bc_matrix -f /path/to/filtered_feature_bc_matrix -p Preprocessing -g TRUE -s SampleName -d Directory
 ```
 
 The arguments are as follows:
 
--u The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-d The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
 
--f The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-c The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
 
 -p Preprocessing step used (CellRanger, etc.)
 
@@ -26,12 +26,12 @@ The arguments are as follows:
 
 -s The desired sample name
 
--d The desired output directory name
+-o The desired output directory name
 
 If users wish to run this script as a batch job on a computing cluster, we have provided a .sh script that may be used to run the pipeline Rscript:
 
 ```
-qsub importScript.sh
+qsub singleCellTK_SampleQC.sh
 ```
 
 ## Documentation of tools that are currently available within the pipeline:

@@ -21,7 +21,7 @@ If NULL, then all cells will be processed together. Default NULL.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
  \link[DropletUtils]{barcodeRanks} output table appended to the
- \link[SingleCellExperiment]{colData} slot. The columns include
+ \link[SummarizedExperiment]{colData} slot. The columns include
  \emph{dropletUtils_BarcodeRank_Knee} and \emph{dropletUtils_BarcodeRank_Knee}
  Please refer to the documentation of \link[DropletUtils]{barcodeRanks} for
  details.

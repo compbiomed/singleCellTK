@@ -6,7 +6,7 @@
 
   result <- DropletUtils::emptyDrops(m = barcode.matrix, ...)
   colnames(result) <- paste0("dropletUtils_emptyDrops_", colnames(result))
-  
+
   return(result)
 }
 
@@ -15,7 +15,7 @@
 #' @description Run \link[DropletUtils]{emptyDrops} on the count matrix in the
 #'  provided \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Distinguish between droplets containing cells and ambient RNA in a
-#'  droplet-based single-cell RNA sequencing experiment. 
+#'  droplet-based single-cell RNA sequencing experiment.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Must contain a raw counts matrix before empty droplets have been removed.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -26,7 +26,7 @@
 #'  matrix.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  \link[DropletUtils]{emptyDrops} output table appended to the
-#'  \link[SingleCellExperiment]{colData} slot. The columns include
+#'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{emptyDrops_total}, \emph{emptyDrops_logprob},
 #'  \emph{emptyDrops_pvalue}, \emph{emptyDrops_limited}, \emph{emptyDrops_fdr}.
 #'  Please refer to the documentation of \link[DropletUtils]{emptyDrops} for
@@ -52,34 +52,34 @@ runEmptyDrops <- function(sce,
   if(!is.null(sample)) {
     if(length(sample) != ncol(sce)) {
       stop("'sample' must be the same length as the number of columns in 'sce'")
-    }  
+    }
   } else {
     sample = rep(1, ncol(sce))
   }
 
-  message(paste0(date(), " ... Running 'emptyDrops'"))  
-  
-  ## Define result matrix for all samples  
+  message(paste0(date(), " ... Running 'emptyDrops'"))
+
+  ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(sce),
                 dropletUtils_emptyDrops_total = integer(ncol(sce)),
                 dropletUtils_emptyDrops_logprob = numeric(ncol(sce)),
                 dropletUtils_emptyDrops_pvalue = numeric(ncol(sce)),
                 dropletUtils_emptyDrops_limited = logical(ncol(sce)),
                 dropletUtils_emptyDrops_fdr = numeric(ncol(sce)))
-            
+
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
   for (i in seq_len(length(samples))) {
     sceSampleInd <- sample == samples[i]
     sceSample <- sce[, sceSampleInd]
 
-    mat <- SummarizedExperiment::assay(sceSample, i = assayName)  
+    mat <- SummarizedExperiment::assay(sceSample, i = assayName)
     result <- .runEmptyDrops(barcode.matrix = mat, ...)
-      
+
     output[sceSampleInd, ] <- result
   }
-  
+
   colData(sce) = cbind(colData(sce), output)
-  
+
   return(sce)
 }

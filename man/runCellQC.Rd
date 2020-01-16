@@ -6,7 +6,8 @@
 \usage{
 runCellQC(
   sce,
-  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid"),
+  algorithms = c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX",
+    "scrublet"),
   sample = NULL,
   assayName = "counts",
   seed = 12345
@@ -16,14 +17,14 @@ runCellQC(
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "decontX" and "doubletCells".}
+ Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
+"decontX", and "scrublet".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
 
 \item{assayName}{A string specifying which assay contains the count
-matrix for cells. This argument is not used for algorithms
-\link[scds]{cxds}, \link[scds]{bcds}, and \link[scds]{cxds_bcds_hybrid}.}
+matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 }
@@ -33,8 +34,9 @@ SingleCellExperiment object containing the outputs of the
 of \code{sce}.
 }
 \description{
-A wrapper function to run several QC algorithms on a SingleCellExperiment
-object containing cells after empty droplets have been removed.
+A wrapper function to run several QC algorithms on a
+ SingleCellExperiment
+ object containing cells after empty droplets have been removed.
 }
 \examples{
 data(sce_chcl, package = "scds")

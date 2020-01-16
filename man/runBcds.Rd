@@ -22,7 +22,7 @@ Default NULL.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \link[scds]{bcds} output appended to the
- \link[SingleCellExperiment]{colData} slot. The columns include
+ \link[SummarizedExperiment]{colData} slot. The columns include
  \emph{bcds_score} and optionally \emph{bcds_call}.
  Please refer to the documentation of \link[scds]{bcds} for details.
 }
