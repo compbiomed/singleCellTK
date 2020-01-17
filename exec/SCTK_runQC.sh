@@ -18,7 +18,7 @@
 module load R/3.6.0
 module load gcc
 
-Rscript ImportScript.R \
+Rscript SCTK_runQC.R \
  -d raw_feature_bc_matrix \
  -c filtered_feature_bc_matrix \
  -p Preprocessing \

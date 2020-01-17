@@ -38,7 +38,7 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRanger",
-        help="One of 'CellRanger', 'BUStools', 'STARSolo'"),
+        help="One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC'"),
     optparse::make_option(c("-g","--gzip"),
         type="logical",
         default=TRUE,
@@ -80,6 +80,11 @@ if (preproc == "BUStools") {
     if(!is.na(filtered.path)){
       filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = "", cellRangerOuts = "", gzipped = gzip)
     }
+} else if(preproc == "SEQC"){
+  dropletSCE <- importSeqc(SeqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
+  if(!is.na(filtered.path)){
+    filteredSCE <- importSeqc(SeqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
+  }
 } else {
   stop(paste0("'", preproc, "' not supported."))
 }
