@@ -7,7 +7,9 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
-#' @param geneSets List. Named list of gene sets to use for calculating QC metrics.
+#' @param geneSetList. See \link[runPerCellQC]. Default NULL.
+#' @param geneSetListLocation. See \link[runPerCellQC]. Default NULL.
+#' @param geneSetCollection. See \link[runPerCellQC]. Default NULL.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -22,7 +24,9 @@ runCellQC <- function(sce,
   algorithms = c("QCMetrics", "scrublet", "doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
-  geneSets = NULL,
+  geneSetList = NULL,
+  geneSetListLocation = "rownames",
+  geneSetCollection = NULL,
   assayName = "counts",
   seed = 12345) {
 
@@ -34,7 +38,10 @@ runCellQC <- function(sce,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = geneSets)
+    sce <- runPerCellQC(sce = sce, assayName = assayName,
+                                 geneSetList = geneSetList,
+                                 geneSetListLocation = geneSetListLocation,
+                                 geneSetCollection = geneSetCollection)
   }    
 
   if ("doubletCells" %in% algorithms) {
