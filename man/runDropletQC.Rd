@@ -6,7 +6,7 @@
 \usage{
 runDropletQC(
   sce,
-  algorithms = c("emptyDrops", "barcodeRanks"),
+  algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
   sample = NULL,
   assayName = "counts"
 )
