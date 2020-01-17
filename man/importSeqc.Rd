@@ -4,16 +4,9 @@
 \alias{importSeqc}
 \title{Construct SCE object from seqc output}
 \usage{
-importSeqc(
-  SeqcDirs = NULL,
-  samples = NULL,
-  prefix = NULL,
-  gzipped = FALSE,
-  class = "DelayedArray",
-  cbNotFirstCol = TRUE,
-  feNotFirstCol = TRUE,
-  combinedSample = TRUE
-)
+importSeqc(SeqcDirs = NULL, samples = NULL, prefix = NULL,
+  gzipped = FALSE, class = "DelayedArray", cbNotFirstCol = TRUE,
+  feNotFirstCol = TRUE, combinedSample = TRUE)
 }
 \arguments{
 \item{SeqcDirs}{A vector of paths to seqc output files. Each sample

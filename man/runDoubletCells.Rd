@@ -4,7 +4,8 @@
 \alias{runDoubletCells}
 \title{Detect doublet cells using \link[scran]{doubletCells}.}
 \usage{
-runDoubletCells(sce, sample = NULL, assayName = "counts", seed = 12345, ...)
+runDoubletCells(sce, sample = NULL, assayName = "counts",
+  seed = 12345, ...)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}

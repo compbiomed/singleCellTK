@@ -5,15 +5,8 @@
 \title{saveBiomarkerRes
 Save biomarker gene information with a custom name when provided with diffex results.}
 \usage{
-saveBiomarkerRes(
-  inSCE,
-  diffex,
-  biomarkerName,
-  method,
-  ntop = 25,
-  logFC = NULL,
-  pVal = NULL
-)
+saveBiomarkerRes(inSCE, diffex, biomarkerName, method, ntop = 25,
+  logFC = NULL, pVal = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

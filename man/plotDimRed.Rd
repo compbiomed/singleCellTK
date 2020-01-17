@@ -4,17 +4,9 @@
 \alias{plotDimRed}
 \title{Plot results either on already run results of reduced dimensions data.}
 \usage{
-plotDimRed(
-  inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
-  reducedDimName = NULL,
-  useAssay = "logcounts",
-  comp1 = NULL,
-  comp2 = NULL,
-  pcX = NULL,
-  pcY = NULL
-)
+plotDimRed(inSCE, colorBy = "No Color", shape = "No Shape",
+  reducedDimName = NULL, useAssay = "logcounts", comp1 = NULL,
+  comp2 = NULL, pcX = NULL, pcY = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction components

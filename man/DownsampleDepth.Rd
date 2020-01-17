@@ -5,16 +5,9 @@
 \title{Estimate numbers of detected genes, significantly differentially expressed
 genes, and median significant effect size}
 \usage{
-DownsampleDepth(
-  originalData,
-  useAssay = "counts",
-  minCount = 10,
-  minCells = 3,
-  maxDepth = 1e+07,
-  realLabels,
-  depthResolution = 10,
-  iterations = 10
-)
+DownsampleDepth(originalData, useAssay = "counts", minCount = 10,
+  minCells = 3, maxDepth = 1e+07, realLabels, depthResolution = 10,
+  iterations = 10)
 }
 \arguments{
 \item{originalData}{SCtkExperiment. The SCtkExperiment object storing all
