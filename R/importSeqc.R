@@ -18,6 +18,7 @@
     return(sce)
 }
 
+
 .unionGeneMatrix <- function(geneUnion, matrix){
     missGene <- geneUnion[!geneUnion %in% rownames(matrix)]
     missMat <- Matrix::Matrix(0, nrow = length(missGene), ncol = ncol(matrix),
@@ -34,6 +35,7 @@
     return(mat)
 }
 
+
 .getGeneUnion <- function(geneList){
     gene <- geneList
     for (i in seq_along(geneList)){
@@ -44,8 +46,9 @@
     return(geneUnion)
 }
 
-.importSeqc <- function(
-    SeqcDirs,
+
+.importSEQC <- function(
+    seqcDirs,
     samples,
     prefix,
     gzipped,
@@ -54,21 +57,21 @@
     feNotFirstCol,
     combinedSample) {
 
-    if (length(SeqcDirs) != length(samples)) {
-        stop("'SeqcDirs' and 'samples' have unequal lengths!")
+    if (length(seqcDirs) != length(samples)) {
+        stop("'seqcDirs' and 'samples' have unequal lengths!")
     }
 
-    if (length(SeqcDirs) != length(prefix)) {
-        stop("'SeqcDirs' and 'prefix' have unequal lengths!")
+    if (length(seqcDirs) != length(prefix)) {
+        stop("'seqcDirs' and 'prefix' have unequal lengths!")
     }
 
-    res <- vector("list", length = length(SeqcDirs))
-    cb <- vector("list", length = length(SeqcDirs))
-    fe <- vector("list", length = length(SeqcDirs))
-    mat <- vector("list", length = length(SeqcDirs))
+    res <- vector("list", length = length(seqcDirs))
+    cb <- vector("list", length = length(seqcDirs))
+    fe <- vector("list", length = length(seqcDirs))
+    mat <- vector("list", length = length(seqcDirs))
 
-    for (i in seq_along(SeqcDirs)) {
-        dir <- SeqcDirs[i]
+    for (i in seq_along(seqcDirs)) {
+        dir <- seqcDirs[i]
         matrixFile <- paste(prefix[i], 'sparse_molecule_counts.mtx', sep = "_")
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
@@ -91,9 +94,9 @@
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
 
-    if (isTRUE(combinedSample) & length(SeqcDirs) > 1) {
+    if (isTRUE(combinedSample) & length(seqcDirs) > 1) {
         geneUnion <- .getGeneUnion(fe)
-        for (i in seq_along(SeqcDirs)) {
+        for (i in seq_along(seqcDirs)) {
             matrix <- .unionGeneMatrix(geneUnion = geneUnion, matrix = mat[[i]])
             matrix <- matrix[geneUnion, ]
             feature <- S4Vectors::DataFrame('feature_name' = rownames(matrix))
@@ -110,7 +113,7 @@
         return(sce)
 
     } else {
-        for (i in seq_along(SeqcDirs)) {
+        for (i in seq_along(seqcDirs)) {
             if (class == 'DelayedArray') {
                 mat[[i]] <- DelayedArray::DelayedArray(mat[[i]])
             } else if (class == 'matrix') {
@@ -124,7 +127,7 @@
                 barcodes = cb[[i]])
             res[[i]] <- scei
         }
-        if (length(SeqcDirs) == 1){
+        if (length(seqcDirs) == 1){
             return(res[[1]])
         } else {
             return(res)
@@ -132,17 +135,18 @@
     }
 }
 
-#' @name importSeqc
-#' @rdname importSeqc
+
+#' @name importSEQC
+#' @rdname importSEQC
 #' @title Construct SCE object from seqc output
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from (preferably a single run of) seqc output. Import and
 #'  combine them as one big \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param SeqcDirs A vector of paths to seqc output files. Each sample
+#' @param seqcDirs A vector of paths to seqc output files. Each sample
 #'  should have its own path. For example: \code{./pbmc_1k_50x50}.
 #'  Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the samples to be
-#'  imported. Must have the same length as \code{SeqcDirs}.
+#'  imported. Must have the same length as \code{seqcDirs}.
 #' @param prefix A vector containing the prefix of file names within each sample directory.
 #' It cannot be null and the vector should have the same length as \emph{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the seqc output files
@@ -158,19 +162,19 @@
 #' is row index and it will be removed. \code{FALSE} the first column will be kept.
 #' @param cbNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_barcode.csv
 #' is row index and it will be removed. \code{FALSE} the first column will be kept.
-#' @param combinedSample Boolean. If \code{TRUE}, \code{importSeqc} returns a
+#' @param combinedSample Boolean. If \code{TRUE}, \code{importSEQC} returns a
 #' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
-#' and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple
+#' and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
 #' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
 #' , feature anotations and cell annotations for each sample.
 #' @details
-#' \code{importSeqc} imports output from seqc.
+#' \code{importSEQC} imports output from seqc.
 #' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
 #' contains two columns. The first column is row index and the second column is cell-barcode
-#' or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call
+#' or gene symbol. \code{importSEQC} will remove first column. Alternatively, user can call
 #' \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first column
 #' of these files.
-#' When \code{combinedSample} is TRUE, \code{importSeqc} will combined count matrix
+#' When \code{combinedSample} is TRUE, \code{importSEQC} will combined count matrix
 #' with genes detected in at least one sample.
 #' @return A \code{SingleCellExperiment} object containing the combined count
 #'  matrix, the feature annotations, and the cell annotation.
@@ -181,14 +185,14 @@
 #' # 3.0.0/pbmc_1k_v3
 #' # The top 50 hg38 genes are included in this example.
 #' # Only the top 50 cells are included.
-#' sce <- importSeqc(
-#'     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
+#' sce <- importSEQC(
+#'     seqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
 #'     samples = "pbmc_1k_50x50",
 #'     prefix = "pbmc_1k",
 #'     combinedSample = FALSE)
 #' @export
-importSeqc <- function(
-    SeqcDirs = NULL,
+importSEQC <- function(
+    seqcDirs = NULL,
     samples = NULL,
     prefix = NULL,
     gzipped = FALSE,
@@ -197,7 +201,7 @@ importSeqc <- function(
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
 
-    .importSeqc(SeqcDirs = SeqcDirs,
+    .importSEQC(seqcDirs = seqcDirs,
         samples = samples,
         prefix = prefix,
         gzipped = gzipped,
