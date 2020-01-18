@@ -4,16 +4,16 @@
 \alias{runCellQC}
 \title{Perform comprehensive single cell QC}
 \usage{
-runCellQC(sce, algorithms = c("doubletCells", "cxds", "bcds",
-  "cxds_bcds_hybrid", "decontX", "scrublet"), sample = NULL,
-  assayName = "counts", seed = 12345)
+runCellQC(sce, algorithms = c("QCMetrics", "scrublet", "doubletCells",
+  "cxds", "bcds", "cxds_bcds_hybrid", "decontX"), sample = NULL,
+  geneSetList = NULL, geneSetListLocation = "rownames",
+  geneSetCollection = NULL, assayName = "counts", seed = 12345)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
- Available options are "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
-"decontX", and "scrublet".}
+Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
@@ -22,6 +22,12 @@ Algorithms will be run on cells from each sample separately.}
 matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
+
+\item{geneSetList.}{See \link[runPerCellQC]. Default NULL.}
+
+\item{geneSetListLocation.}{See \link[runPerCellQC]. Default NULL.}
+
+\item{geneSetCollection.}{See \link[runPerCellQC]. Default NULL.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the

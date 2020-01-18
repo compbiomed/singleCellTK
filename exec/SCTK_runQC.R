@@ -1,9 +1,5 @@
 #!/usr/bin/env Rscript
 
-
-suppressPackageStartupMessages(library("optparse"))
-suppressPackageStartupMessages(library("singleCellTK"))
-
 ##Check to see if necessary packages are installed
 
 #Bioconductor packages
@@ -26,16 +22,15 @@ cran.package.check <- lapply(cran.packages, FUN = function(x) {
 
 
 ##Read in flags from command line using optparse
-
+require("optparse")
+require("singleCellTK")
 option_list <- list(optparse::make_option(c("-d", "--droplet"),
         type="character",
-        default=NA,
-        help="path to the unfiltered output from preprocessing steps [CellRanger, etc.]"),
+        help="path to the unfiltered droplet counts matrix"),
     optparse::make_option(c("-c", "--cell"),
         type="character",
-        default=NA,
-        help="path to the filtered output from preprocessing steps [BUStools, etc.]"),
-    optparse::make_option(c("-p", "--preproc"),
+        help="path to the filtered cells counts matrix"),
+    optparse::make_option(c("-d", "--droplet"),
         type = "character",
         default="CellRanger",
         help="One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC'"),
@@ -45,11 +40,20 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
         help="Are your matrix, barcode, and features files gzipped?"),
     optparse::make_option(c("-s","--samplename"),
         type="character",
+        default="sample",
         help="Sample name"),
     optparse::make_option(c("-o","--directory"),
         type="character",
-        default="R",
-        help="Directory for output SingleCellExperiment objects"))
+        default=NULL,
+        help="Name of output directory. If NULL, then a directory will be created named the same as the sample name"),
+    optparse::make_option(c("-m","--gmt"),
+        type="character",
+        default=NULL,
+        help="GMT file containing gene sets for quality control")
+    optparse::make_option(c("-t","--delim"),
+        type="character",
+        default="\t",
+        help="Delimiter used in GMT file"))
 
 opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
 droplet.path <- opt$droplet
@@ -58,6 +62,8 @@ preproc <- opt$preproc
 gzip <- opt$gzip
 samplename <- opt$samplename
 directory <- opt$directory
+gmt <- opt$gmt
+sep <- opt$delim
 
 if (is.na(samplename)){
   stop("A sample name is required. Please specify using the -s flag.")
@@ -89,13 +95,17 @@ if (preproc == "BUStools") {
   stop(paste0("'", preproc, "' not supported."))
 }
 
-
+## Read in gene sets for QC
+geneSetCollection <- NULL
+if(!is.null(gmt)) {
+  geneSetCollection <- GSEABase::getGmt(gmt, sep=sep)
+}
 
 ## Run QC functions
 dropletSCE <- runDropletQC(sce = dropletSCE)
 
 if(!is.na(filtered.path)){
-  filteredSCE <- runCellQC(sce = filteredSCE)
+  filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
 }
 
 ## Merge singleCellExperiment objects
