@@ -1,145 +1,236 @@
-.readMatrix <- function(path) {
 
-  res <- readRDS(path)
-  matrix <- t(as.matrix(res))
+.readMatrixNpz <- function(matrixLocation,
+  colIndexLocation,
+  rowIndexLocation,
+  class) {
+
+  sparse <- reticulate::import("scipy.sparse")
+  np <- reticulate::import("numpy")
+
+  mat <- sparse$load_npz(matrixLocation)
+  colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
+  rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
+  colnames(mat) <- colIndex
+  rownames(mat) <- rowIndex
+  mat <- t(mat)
 
   if (class == "Matrix") {
-    return(matrix)
+    return(mat)
   } else if (class == "DelayedArray") {
-    res <- DelayedArray::DelayedArray(res)
-    return(matrix)
+    mat <- DelayedArray::DelayedArray(mat)
+    return(mat)
+  } else if (class == "matrix") {
+    mat <- as.matrix(mat)
+    return(mat)
   }
 }
 
 
-.readMetrics <- function(path) {
+.readMetricsOptimus <- function(path) {
+  metrics <- data.table::fread(path)
+  return(metrics)
+}
 
-  res <- fread(path)
-  res <- as.dataframe(res)
-  return(res)
 
-  if (ncol(res) == 1) {
-    stop("There are no Cell or Gene Metrics!")
+.readEmptyDrops <- function(path) {
+  emptyDrops <- data.table::fread(path)
+  colnames(emptyDrops) <- paste0("dropletUtils_emptyDrops_",
+    colnames(emptyDrops))
+  return(emptyDrops)
+}
+
+
+.combineColData <- function(colnames, cellMetrics, emptyDrops) {
+  cd <- data.table::data.table(CellId = colnames)
+  cd <- merge(cd,
+    cellMetrics,
+    by.x = "CellId",
+    by.y = "V1",
+    all.x = TRUE,
+    all.y = FALSE,
+    sort = FALSE)
+
+  if (!is.null(emptyDrops)) {
+    cd <- merge(cd,
+      emptyDrops,
+      by.x = "CellId",
+      by.y = "dropletUtils_emptyDrops_CellId",
+      all.x = TRUE,
+      all.y = FALSE,
+      sort = FALSE)
   }
 
-}
-
-.readEmptyDrops<-function(path){
-  EmptyDrops<-read.csv(path)
+  return(cd)
 }
 
 
-.constructSCEFromOptimusOutputs <- function(matrixLocation,
-  CellMetricsLocation,
-  EmptyDropsLocation,
-  GeneMetricsLocation) {
+.combineRowData <- function(rownames, geneMetrics) {
+  rd <- data.table::data.table(feature_ID = rownames)
+  rd <- merge(rd,
+    geneMetrics,
+    by.x = "feature_ID",
+    by.y = "V1",
+    all.x = TRUE,
+    all.y = FALSE,
+    sort = FALSE)
+  return(rd)
+}
 
-  c_me <- .readMetrics(file.path(CellMetricsLocation))
-  cb <- c_me[,1]
-  c_me <- c_me[,-1]
-  emptydrops <- .readEmptyDrops(file.path(EmptyDropsLocation))
-  c_me_full <- cbind(c_me, emptydrops)
-  g_me <- .readMetrics(file.path(GeneMetricsLocation))
-  g_me <- g_me[,g_me %in% rownames(ma)]
-  gi <- g_me[,1]
-  g_me <- g_me[,-1]
-  ma <- .readMatrix(file.path(matrixLocation))
+
+.constructSCEFromOptimusOutputs <- function(dir,
+  sample,
+  matrixLocation,
+  colIndexLocation,
+  rowIndexLocation,
+  cellMetricsLocation,
+  geneMetricsLocation,
+  emptyDropsLocation,
+  class) {
+
+  mat <- .readMatrixNpz(file.path(dir, matrixLocation),
+    file.path(dir, colIndexLocation),
+    file.path(dir, rowIndexLocation),
+    class)
+
+  cellMetrics <- .readMetricsOptimus(file.path(dir, cellMetricsLocation))
+  geneMetrics <- .readMetricsOptimus(file.path(dir, geneMetricsLocation))
+
+  if (!is.null(geneMetricsLocation)) {
+    emptyDrops <- .readEmptyDrops(file.path(dir, emptyDropsLocation))
+  }
+
+  cd <- .combineColData(colnames(mat), cellMetrics, emptyDrops)
+  rd <- .combineRowData(rownames(mat), geneMetrics)
+
+  coln <- paste(sample, colnames(mat), sep = "_")
 
   sce <- SingleCellExperiment::SingleCellExperiment(
-    assays = list(counts = ma))
-  SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(g_me,row.names = gi)
-  SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(c_me_full,row.names = cb)
+    assays = list(counts = mat))
+  SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(cd,
+    column_name = coln,
+    sample = sample,
+    row.names = coln)
+  SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(rd)
 
   return(sce)
 }
 
 
-.checkArgsImportOptimus <- function(OptimusDirs) {
+.checkArgsImportOptimus <- function(OptimusDirs,
+  samples,
+  class) {
 
-  if (!dir.exists(OptimusDirs)) {
-      stop("OptimusDirs is NULL!")
+  if (length(OptimusDirs) != length(samples)) {
+    stop("'OptimusDirs' and 'samples' have unequal lengths!")
+  }
+
+  if (!(class %in% c("DelayedArray", "Matrix", "matrix"))) {
+    stop("Invalid 'class' argument!")
   }
 }
 
 
-.importOptimus <- function(
-  OptimusDirs,
+.importOptimus <- function(OptimusDirs,
+  samples,
   matrixLocation,
-  CellMetricsLocation,
-  EmptyDropsLocation,
-  GeneMetricsLocation) {
+  colIndexLocation,
+  rowIndexLocation,
+  cellMetricsLocation,
+  geneMetricsLocation,
+  emptyDropsLocation,
+  class) {
 
-  .checkArgsImportOptimus(OptimusDirs)
-  sce <- .constructSCEFromOptimusOutputs(OptimusDirs,
-    matrixLocation = matrixLocation,
-    CellMetricsLocation = CellMetricsLocation,
-    EmptyDropsLocation = EmptyDropsLocation,
-    GeneMetricsLocation = GeneMetricsLocation)
-   return(sce)
+  .checkArgsImportOptimus(OptimusDirs, samples, class)
+
+  res <- vector("list", length = length(samples))
+
+  for (i in seq_along(samples)) {
+    scei <- .constructSCEFromOptimusOutputs(OptimusDirs[i],
+      sample = samples[i],
+      matrixLocation = matrixLocation,
+      colIndexLocation = colIndexLocation,
+      rowIndexLocation = rowIndexLocation,
+      cellMetricsLocation = cellMetricsLocation,
+      geneMetricsLocation = geneMetricsLocation,
+      emptyDropsLocation = emptyDropsLocation,
+      class = class)
+    res[[i]] <- scei
+  }
+
+  sce <- do.call(BiocGenerics::cbind, res)
+  return(sce)
 }
 
 
 #' @name importOptimus
 #' @rdname importOptimus
 #' @title Construct SCE object from Optimus output
-#' @description Read the barcodes, features (genes), and matrix from STARsolo
-#'  output. Import them
+#' @description Read the barcodes, features (genes), and matrices from Optimus
+#'  outputs. Import them
 #'  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param STARsoloDirs A vector of root directories of STARsolo output files.
+#' @param OptimusDirs A vector of root directories of Optimus output files.
 #'  The paths should be something like this:
-#'  \bold{/PATH/TO/\emph{prefix}Solo.out}. For example: \code{./Solo.out}.
-#'  Each sample should have its own path. Must have the same length as
-#'  \code{samples}.
+#'  \code{/PATH/TO/bb4a2a5e-ff34-41b6-97d2-0c0c0c534530}.
+#'  Each entry in \code{OptimusDirs} is considered a sample and should have
+#'  its own path. Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the sample to be
-#'  imported. Must have the same length as \code{STARsoloDirs}.
-#' @param STARsoloOuts Character. It is the intermediate
-#'  path to filtered or raw feature count file saved in sparse matrix format
-#'  for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
-#'  2.7.3a.
-#' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
-#'  matrix file (.mtx file).
-#' @param featuresFileName Filename for the feature annotation file.
-#' @param barcodesFileName Filename for the cell barcode list file.
-#' @param gzipped Boolean. \code{TRUE} if the STARsolo output files
-#'  (barcodes.tsv, features.tsv, and matrix.mtx) were
-#'  gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in STAR
-#'  2.7.3a. Default \code{FALSE}.
-#' @param class Character. The class of the expression matrix stored in the SCE
+#'  imported. Must have the same length as \code{OptimusDirs}.
+#' @param matrixLocation Character. It is the intermediate
+#'  path to the filtered count maxtrix file saved in sparse matrix format
+#'  (\code{.npz}). Default
+#'  \code{call-MergeCountFiles/sparse_counts.npz} which works for
+#'  optimus_v1.4.0.
+#' @param colIndexLocation Character. The intermediate path to the barcode
+#'  index file. Default \code{call-MergeCountFiles/sparse_counts_col_index.npy}.
+#' @param rowIndexLocation Character. The intermediate path to the feature
+#'  (gene) index file. Default
+#'  \code{call-MergeCountFiles/sparse_counts_row_index.npy}.
+#' @param cellMetricsLocation Character. It is the intermediate
+#'  path to the cell metrics file (\code{merged-cell-metrics.csv.gz}). Default
+#'  \code{call-MergeCellMetrics/merged-cell-metrics.csv.gz} which works for
+#'  optimus_v1.4.0.
+#' @param geneMetricsLocation Character. It is the intermediate
+#'  path to the feature (gene) metrics file (\code{merged-gene-metrics.csv.gz}).
+#'  Default \code{call-MergeGeneMetrics/merged-gene-metrics.csv.gz} which works
+#'  for optimus_v1.4.0.
+#' @param emptyDropsLocation Character. It is the intermediate
+#'  path to \link[DropletUtils]{emptyDrops} metrics file
+#'  (\code{empty_drops_result.csv}).
+#'  Default \code{call-RunEmptyDrops/empty_drops_result.csv} which works for
+#'  optimus_v1.4.0.
+#' @param class Character. The class of the expression matrix stored in the
+#'  \link[SingleCellExperiment]{SingleCellExperiment}
 #'  object. Can be one of "DelayedArray" (as returned by
 #'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
-#' @return A \code{SingleCellExperiment} object containing the count
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
-#' # Example #1
-#' # FASTQ files were downloaded from
-#' # https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0
-#' # /pbmc_1k_v3
-#' # They were concatenated as follows:
-#' # cat pbmc_1k_v3_S1_L001_R1_001.fastq.gz pbmc_1k_v3_S1_L002_R1_001.fastq.gz >
-#' # pbmc_1k_v3_R1.fastq.gz
-#' # cat pbmc_1k_v3_S1_L001_R2_001.fastq.gz pbmc_1k_v3_S1_L002_R2_001.fastq.gz >
-#' # pbmc_1k_v3_R2.fastq.gz
-#' # The following STARsolo command generates the filtered feature, cell, and
-#' # matrix files
-#' # STAR \
-#' #   --genomeDir ./index \
-#' #   --readFilesIn ./pbmc_1k_v3_R2.fastq.gz \
-#' #                 ./pbmc_1k_v3_R1.fastq.gz \
-#' #   --readFilesCommand zcat \
-#' #   --outSAMtype BAM Unsorted \
-#' #   --outBAMcompression -1 \
-#' #   --soloType CB_UMI_Simple \
-#' #   --soloCBwhitelist ./737K-august-2016.txt \
-#' #   --soloUMIlen 12
-#'
-#' # The top 20 genes and the first 20 cells are included in this example.
-#' sce <- importSTARsolo(
-#'   STARsoloDirs = system.file("extdata/STARsolo_PBMC_1k_v3_20x20",
-#'     package = "singleCellTK"),
-#'   samples = "PBMC_1k_v3_20x20")
+#' sce <- importOptimus(OptimusDirs =
+#'   system.file("extdata/Optimus_20x1000/bb4a2a5e-ff34-41b6-97d2-0c0c0c534530",
+#'   package = "singleCellTK"),
+#'   samples = "Optimus_20x1000")
 #' @export
-importOptimus <- function() {
+importOptimus <- function(OptimusDirs,
+  samples,
+  matrixLocation = "call-MergeCountFiles/sparse_counts.npz",
+  colIndexLocation = "call-MergeCountFiles/sparse_counts_col_index.npy",
+  rowIndexLocation = "call-MergeCountFiles/sparse_counts_row_index.npy",
+  cellMetricsLocation = "call-MergeCellMetrics/merged-cell-metrics.csv.gz",
+  geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
+  emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
+  class = "Matrix") {
+
+  .importOptimus(OptimusDirs = OptimusDirs,
+    samples = samples,
+    matrixLocation = matrixLocation,
+    colIndexLocation = colIndexLocation,
+    rowIndexLocation = rowIndexLocation,
+    cellMetricsLocation = cellMetricsLocation,
+    geneMetricsLocation = geneMetricsLocation,
+    emptyDropsLocation = emptyDropsLocation,
+    class = class)
 
 }

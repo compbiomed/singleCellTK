@@ -18,6 +18,7 @@
     return(sce)
 }
 
+
 .unionGeneMatrix <- function(geneUnion, matrix){
     missGene <- geneUnion[!geneUnion %in% rownames(matrix)]
     missMat <- Matrix::Matrix(0, nrow = length(missGene), ncol = ncol(matrix),
@@ -34,6 +35,7 @@
     return(mat)
 }
 
+
 .getGeneUnion <- function(geneList){
     gene <- geneList
     for (i in seq_along(geneList)){
@@ -44,7 +46,8 @@
     return(geneUnion)
 }
 
-.importSeqc <- function(
+
+.importSEQC <- function(
     SeqcDirs,
     samples,
     prefix,
@@ -132,8 +135,9 @@
     }
 }
 
-#' @name importSeqc
-#' @rdname importSeqc
+
+#' @name importSEQC
+#' @rdname importSEQC
 #' @title Construct SCE object from seqc output
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from (preferably a single run of) seqc output. Import and
@@ -158,19 +162,19 @@
 #' is row index and it will be removed. \code{FALSE} the first column will be kept.
 #' @param cbNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_barcode.csv
 #' is row index and it will be removed. \code{FALSE} the first column will be kept.
-#' @param combinedSample Boolean. If \code{TRUE}, \code{importSeqc} returns a
+#' @param combinedSample Boolean. If \code{TRUE}, \code{importSEQC} returns a
 #' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
-#' and the cell annotations. If \code{FALSE}, \code{importSeqc} returns a list containing multiple
+#' and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
 #' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
 #' , feature anotations and cell annotations for each sample.
 #' @details
-#' \code{importSeqc} imports output from seqc.
+#' \code{importSEQC} imports output from seqc.
 #' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
 #' contains two columns. The first column is row index and the second column is cell-barcode
-#' or gene symbol. \code{importSeqc} will remove first column. Alternatively, user can call
+#' or gene symbol. \code{importSEQC} will remove first column. Alternatively, user can call
 #' \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first column
 #' of these files.
-#' When \code{combinedSample} is TRUE, \code{importSeqc} will combined count matrix
+#' When \code{combinedSample} is TRUE, \code{importSEQC} will combined count matrix
 #' with genes detected in at least one sample.
 #' @return A \code{SingleCellExperiment} object containing the combined count
 #'  matrix, the feature annotations, and the cell annotation.
@@ -181,13 +185,13 @@
 #' # 3.0.0/pbmc_1k_v3
 #' # The top 50 hg38 genes are included in this example.
 #' # Only the top 50 cells are included.
-#' sce <- importSeqc(
+#' sce <- importSEQC(
 #'     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
 #'     samples = "pbmc_1k_50x50",
 #'     prefix = "pbmc_1k",
 #'     combinedSample = FALSE)
 #' @export
-importSeqc <- function(
+importSEQC <- function(
     SeqcDirs = NULL,
     samples = NULL,
     prefix = NULL,
@@ -197,7 +201,7 @@ importSeqc <- function(
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
 
-    .importSeqc(SeqcDirs = SeqcDirs,
+    .importSEQC(SeqcDirs = SeqcDirs,
         samples = samples,
         prefix = prefix,
         gzipped = gzipped,
