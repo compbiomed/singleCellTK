@@ -5,7 +5,7 @@
 \title{Construct SCE object from seqc output}
 \usage{
 importSEQC(
-  SeqcDirs = NULL,
+  seqcDirs = NULL,
   samples = NULL,
   prefix = NULL,
   gzipped = FALSE,
@@ -16,12 +16,12 @@ importSEQC(
 )
 }
 \arguments{
-\item{SeqcDirs}{A vector of paths to seqc output files. Each sample
+\item{seqcDirs}{A vector of paths to seqc output files. Each sample
 should have its own path. For example: \code{./pbmc_1k_50x50}.
 Must have the same length as \code{samples}.}
 
 \item{samples}{A vector of user-defined sample names for the samples to be
-imported. Must have the same length as \code{SeqcDirs}.}
+imported. Must have the same length as \code{seqcDirs}.}
 
 \item{prefix}{A vector containing the prefix of file names within each sample directory.
 It cannot be null and the vector should have the same length as \emph{samples}.}
@@ -76,7 +76,7 @@ with genes detected in at least one sample.
 # The top 50 hg38 genes are included in this example.
 # Only the top 50 cells are included.
 sce <- importSEQC(
-    SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
+    seqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
     samples = "pbmc_1k_50x50",
     prefix = "pbmc_1k",
     combinedSample = FALSE)

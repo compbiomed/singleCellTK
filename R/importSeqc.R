@@ -48,7 +48,7 @@
 
 
 .importSEQC <- function(
-    SeqcDirs,
+    seqcDirs,
     samples,
     prefix,
     gzipped,
@@ -57,21 +57,21 @@
     feNotFirstCol,
     combinedSample) {
 
-    if (length(SeqcDirs) != length(samples)) {
-        stop("'SeqcDirs' and 'samples' have unequal lengths!")
+    if (length(seqcDirs) != length(samples)) {
+        stop("'seqcDirs' and 'samples' have unequal lengths!")
     }
 
-    if (length(SeqcDirs) != length(prefix)) {
-        stop("'SeqcDirs' and 'prefix' have unequal lengths!")
+    if (length(seqcDirs) != length(prefix)) {
+        stop("'seqcDirs' and 'prefix' have unequal lengths!")
     }
 
-    res <- vector("list", length = length(SeqcDirs))
-    cb <- vector("list", length = length(SeqcDirs))
-    fe <- vector("list", length = length(SeqcDirs))
-    mat <- vector("list", length = length(SeqcDirs))
+    res <- vector("list", length = length(seqcDirs))
+    cb <- vector("list", length = length(seqcDirs))
+    fe <- vector("list", length = length(seqcDirs))
+    mat <- vector("list", length = length(seqcDirs))
 
-    for (i in seq_along(SeqcDirs)) {
-        dir <- SeqcDirs[i]
+    for (i in seq_along(seqcDirs)) {
+        dir <- seqcDirs[i]
         matrixFile <- paste(prefix[i], 'sparse_molecule_counts.mtx', sep = "_")
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
@@ -94,9 +94,9 @@
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
 
-    if (isTRUE(combinedSample) & length(SeqcDirs) > 1) {
+    if (isTRUE(combinedSample) & length(seqcDirs) > 1) {
         geneUnion <- .getGeneUnion(fe)
-        for (i in seq_along(SeqcDirs)) {
+        for (i in seq_along(seqcDirs)) {
             matrix <- .unionGeneMatrix(geneUnion = geneUnion, matrix = mat[[i]])
             matrix <- matrix[geneUnion, ]
             feature <- S4Vectors::DataFrame('feature_name' = rownames(matrix))
@@ -113,7 +113,7 @@
         return(sce)
 
     } else {
-        for (i in seq_along(SeqcDirs)) {
+        for (i in seq_along(seqcDirs)) {
             if (class == 'DelayedArray') {
                 mat[[i]] <- DelayedArray::DelayedArray(mat[[i]])
             } else if (class == 'matrix') {
@@ -127,7 +127,7 @@
                 barcodes = cb[[i]])
             res[[i]] <- scei
         }
-        if (length(SeqcDirs) == 1){
+        if (length(seqcDirs) == 1){
             return(res[[1]])
         } else {
             return(res)
@@ -142,11 +142,11 @@
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from (preferably a single run of) seqc output. Import and
 #'  combine them as one big \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param SeqcDirs A vector of paths to seqc output files. Each sample
+#' @param seqcDirs A vector of paths to seqc output files. Each sample
 #'  should have its own path. For example: \code{./pbmc_1k_50x50}.
 #'  Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the samples to be
-#'  imported. Must have the same length as \code{SeqcDirs}.
+#'  imported. Must have the same length as \code{seqcDirs}.
 #' @param prefix A vector containing the prefix of file names within each sample directory.
 #' It cannot be null and the vector should have the same length as \emph{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the seqc output files
@@ -186,13 +186,13 @@
 #' # The top 50 hg38 genes are included in this example.
 #' # Only the top 50 cells are included.
 #' sce <- importSEQC(
-#'     SeqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
+#'     seqcDirs = system.file("extdata/pbmc_1k_50x50", package = "singleCellTK"),
 #'     samples = "pbmc_1k_50x50",
 #'     prefix = "pbmc_1k",
 #'     combinedSample = FALSE)
 #' @export
 importSEQC <- function(
-    SeqcDirs = NULL,
+    seqcDirs = NULL,
     samples = NULL,
     prefix = NULL,
     gzipped = FALSE,
@@ -201,7 +201,7 @@ importSEQC <- function(
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
 
-    .importSEQC(SeqcDirs = SeqcDirs,
+    .importSEQC(seqcDirs = seqcDirs,
         samples = samples,
         prefix = prefix,
         gzipped = gzipped,
