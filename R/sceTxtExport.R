@@ -128,13 +128,8 @@ sceTxtExport <- function(sce, outputDir) {
 testFUN() {
   library(scRNAseq)
   
-  data <- readRDS("data/pbmc3k_unfiltered.rds")
-  sce <-
-    SingleCellExperiment(assays = list(counts = data, logcounts = data))
-  
-  sce1 <- ReprocessedAllenData("tophat_counts")
+  sce <- ReprocessedAllenData("tophat_counts")
   
   sceTxtExport(sce)
-  sceTxtExport(sce1)
-  
+ 
 }
