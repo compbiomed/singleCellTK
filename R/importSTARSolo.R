@@ -65,9 +65,9 @@
 
 #' @name importSTARsolo
 #' @rdname importSTARsolo
-#' @title Construct SCE object from STARsolo output
-#' @description Read the barcodes, features (genes), and matrix from STARsolo
-#'  output. Import them
+#' @title Construct SCE object from STARsolo outputs
+#' @description Read the barcodes, features (genes), and matrices from STARsolo
+#'  outputs. Import them
 #'  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param STARsoloDirs A vector of root directories of STARsolo output files.
 #'  The paths should be something like this:

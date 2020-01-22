@@ -2,7 +2,7 @@
 % Please edit documentation in R/importSTARSolo.R
 \name{importSTARsolo}
 \alias{importSTARsolo}
-\title{Construct SCE object from STARsolo output}
+\title{Construct SCE object from STARsolo outputs}
 \usage{
 importSTARsolo(STARsoloDirs, samples, STARsoloOuts = "Gene/filtered",
   matrixFileName = "matrix.mtx", featuresFileName = "features.tsv",
@@ -47,8 +47,8 @@ A \code{SingleCellExperiment} object containing the count
  matrix, the gene annotation, and the cell annotation.
 }
 \description{
-Read the barcodes, features (genes), and matrix from STARsolo
- output. Import them
+Read the barcodes, features (genes), and matrices from STARsolo
+ outputs. Import them
  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
 \examples{

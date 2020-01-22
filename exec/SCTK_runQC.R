@@ -87,9 +87,9 @@ if (preproc == "BUStools") {
       filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = "", cellRangerOuts = "", gzipped = gzip)
     }
 } else if(preproc == "SEQC"){
-  dropletSCE <- importSeqc(SeqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
+  dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
   if(!is.na(filtered.path)){
-    filteredSCE <- importSeqc(SeqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
+    filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
   }
 } else {
   stop(paste0("'", preproc, "' not supported."))
