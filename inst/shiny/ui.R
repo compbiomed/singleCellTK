@@ -24,6 +24,14 @@ library(celda)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(RColorBrewer)
+library(grDevices)
+
+
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -41,6 +49,20 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+#from SCE
+cell_list <- ""
+gene_list <- ""
+#from assays
+method_list <- ""
+#from reduced
+approach_list <- ""
+#from colData
+annotation_list <- ""
+#from RColorBrewer
+colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+                                           |color_table$category == "seq"),])
 if (internetConnection){
   enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 } else {
@@ -59,6 +81,21 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
+  ###############################################################
+  #from sce
+  cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
+  gene_list <- BiocGenerics::rownames(getShinyOption("inputSCEset"))
+  #from assays
+  method_list <- names(assays(getShinyOption("inputSCEset")))
+  #from reduced
+  approach_list <- names(reducedDims(getShinyOption("inputSCEset")))
+  #from colData
+  annotation_list <- names(colData(getShinyOption("inputSCEset")))
+  #from colorbrewer
+  colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+  color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+  color_seqdiv <- rownames(color_table[which(color_table$category == "div"|color_table$category == "seq"),])
+  ###############################################################
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
@@ -77,6 +114,7 @@ source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
 source("ui_03_1_genewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_03_3_celda.R", local = TRUE) #creates shinyPanelCelda variable
+source("ui_03_4_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
@@ -108,7 +146,8 @@ shinyUI(
       "Visualization & Clustering",
       tabPanel("Genewise Visualization", shinyPanelVis),
       tabPanel("Samplewise Vis & Clustering", shinyPanelCluster),
-      tabPanel("Celda", shinyPanelCelda)
+      tabPanel("Celda", shinyPanelCelda),
+      tabPanel("Cell Viewer", shinyPanelCellViewer)
     ),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(

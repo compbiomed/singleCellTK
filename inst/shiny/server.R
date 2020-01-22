@@ -40,6 +40,7 @@ shinyServer(function(input, output, session) {
     index = 0
   )
 
+
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
@@ -1595,6 +1596,984 @@ shinyServer(function(input, output, session) {
     })
 
 
+  #-----------------------------------------------------------------------------
+  # Page 3.3: Cell Viewer
+  #-----------------------------------------------------------------------------
+  #-+-+-+-+-+-For Functional Panel collapse##############  
+  shinyjs::onclick("cv_button1", shinyjs::toggle(id = "cv_collapse1",
+                                                 anim = TRUE), add = TRUE)
+  shinyjs::onclick("cv_button2", shinyjs::toggle(id = "cv_collapse2",
+                                                 anim = TRUE), add = TRUE)
+  shinyjs::onclick("cv_button3", shinyjs::toggle(id = "cv_collapse3",
+                                                 anim = TRUE), add = TRUE)
+  shinyjs::addClass(id = "cv_button1", class = "btn-block")
+  shinyjs::addClass(id = "cv_button2", class = "btn-block")
+  shinyjs::addClass(id = "cv_button3", class = "btn-block")
+  
+  #-+-+-+-+-+-For Input Observe##############  
+  observe({
+    # is there an error or not
+    if (is.null(vals$counts)) {
+      # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+      color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+      color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+                                                 |color_table$category == "seq"),])
+      #from sce
+      cell_list <- BiocGenerics::colnames(vals$counts)
+      gene_list <- BiocGenerics::rownames(vals$counts)
+      #from assays
+      method_list <- names(assays(vals$counts))
+      #from reduced
+      approach_list <- names(reducedDims(vals$counts))
+      #from colData
+      annotation_list <- names(colData(vals$counts))
+      
+      updateSelectInput(session, "QuickAccess", 
+                        choices = c("",approach_list,"Custom"))
+        updateSelectInput(session, "ApproachSelect_Xaxis", 
+                          choices = c(approach_list))
+        updateSelectInput(session, "AdvancedMethodSelect_Xaxis", 
+                          choices = c(method_list))
+        updateSelectInput(session, "GeneSelect_Assays_Xaxis", 
+                          choices = c(gene_list))
+        updateSelectInput(session, "AnnotationSelect_Xaxis", 
+                          choices = c(annotation_list))
+        updateSelectInput(session, "ApproachSelect_Yaxis", 
+                          choices = c(approach_list))
+        updateSelectInput(session, "AdvancedMethodSelect_Yaxis", 
+                          choices = c(method_list))
+        updateSelectInput(session, "GeneSelect_Assays_Yaxis", 
+                          choices = c(gene_list))
+        updateSelectInput(session, "AnnotationSelect_Yaxis", 
+                          choices = c(annotation_list))
+        updateSelectInput(session, "ApproachSelect_Colorby", 
+                          choices = c(approach_list))
+        updateSelectInput(session, "AdvancedMethodSelect_Colorby", 
+                          choices = c(method_list))
+        updateSelectInput(session, "GeneSelect_Assays_Colorby", 
+                          choices = c(gene_list))
+        updateSelectInput(session, "AnnotationSelect_Colorby", 
+                          choices = c(annotation_list))
+        updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
+        updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", 
+                             choices = c("RdYlBu",color_seqdiv))
+        
+        
+
+      }
+    })
+  
+  #-+-+-+-+-+-For Advanced Input Observe##############  
+  ###ApproachSelect to DimensionSelect X-Axis
+  observe({
+    if (!is.null(vals$counts)){
+    if (!is.null(input$ApproachSelect_Xaxis)){
+    Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
+    xs <- colnames(Df)
+    updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
+    rm(Df)
+    }
+    }
+    })
+  ###ApproachSelect to DimensionSelect Y-Axis
+  observe({
+    if (!is.null(vals$counts)){
+    if (!is.null(input$ApproachSelect_Yaxis)){
+    Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
+    xs2 <- colnames(Df2)
+    xs2 <- sort(xs2, decreasing = TRUE)
+    updateSelectInput(session, "ColumnSelect_Yaxis", choices = c(xs2))
+    rm(Df2)
+    }
+    }
+    })
+  ###ApproachSelect to DimensionSelect Colorby
+  observe({
+    if (!is.null(vals$counts)){
+    if (!is.null(input$ApproachSelect_Colorby)){
+    Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
+    xs3 <- colnames(Df3)
+    updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
+    rm(Df3)
+    }
+    }
+    })
+
+  #-+-+-+-+-+-Observe Group by###################################################
+  ###Observe Radio Button Select Value Type
+  observe({
+    if (!is.null(vals$counts)){
+    if (input$adjustgroupby !=  'None'){
+    #Integer,level>25#
+    if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+       & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
+      updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+                         choices = c("Categorical", "Continuous"),
+                         selected = "Continuous")
+      shinyjs::delay(5,shinyjs::disable("SelectValueType"))
+      #Integer,level<25#
+    }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+             & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25){
+      updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+                         choices = c("Categorical", "Continuous"),
+                         selected = "Categorical")
+      shinyjs::enable("SelectValueType")
+      #Numeric,noninteger#
+    }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
+      updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+                         choices = c("Categorical", "Continuous"),
+                         selected = "Continuous")
+      shinyjs::delay(5,shinyjs::disable("SelectValueType"))
+      #Categorical#
+    }else{
+      updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+                         choices = c("Categorical", "Continuous"),
+                         selected = "Categorical")
+      shinyjs::delay(5,shinyjs::disable("SelectValueType"))}
+    }
+    }
+  })#observe_end
+
+  ###Observe Check Box Check Binning & Text Input Number of Bins:
+
+  observe({
+    if (!is.null(vals$counts)){
+    if (input$adjustgroupby !=  'None'){
+    #Integer,level>25#
+    if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+       &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
+      updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+      shinyjs::delay(5,shinyjs::disable("checkbinning"))
+      shinyjs::enable("adjustbinning")
+      #Integer,level<25,continuous
+    }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+             &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
+             &input$SelectValueType == "Continuous"){
+      updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+      shinyjs::delay(5,shinyjs::disable("checkbinning"))
+      shinyjs::enable("adjustbinning")
+      #Integer,level<25,Categorical
+    }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+             &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
+             &input$SelectValueType == "Categorical"){
+      updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
+      shinyjs::delay(5,shinyjs::disable("checkbinning"))
+      shinyjs::disable("adjustbinning")
+      #Numeric,noninteger
+    }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
+      updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+      shinyjs::delay(5,shinyjs::disable("checkbinning"))
+      shinyjs::enable("adjustbinning")
+      #Categorical
+    }else{updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
+      shinyjs::delay(5,shinyjs::disable("checkbinning"))
+      shinyjs::disable("adjustbinning")
+    }
+    }
+    }
+  })#observe_end
+
+  #-+-+-+-+-+-Observe Color bye###################################################
+  ###Observe Radio Button Select Value Type
+  observe({
+    if (!is.null(vals$counts)){
+    if (input$TypeSelect_Colorby != 'Pick a Color'){
+    ###If Cell Annotation###############################################################
+    if(input$TypeSelect_Colorby == 'Cell Annotation'){
+      ###If Cell Annotation numeric
+      if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                           choices = c("Categorical", "Continuous"),
+                           selected = "Categorical")
+        shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+
+
+      }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+               &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                           choices = c("Categorical", "Continuous"),
+                           selected = "Categorical")
+        shinyjs::enable("SelectColorType")
+
+      }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                               choices = c("Categorical", "Continuous"),
+                               selected = "Continuous")
+        shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+
+      ###If ReducedData##########################################################
+    }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+      Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+      if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+        Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+        ###If ReducedData numeric
+
+        if(!is.numeric(Dfcolor[,1])){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                             choices = c("Categorical", "Continuous"),
+                             selected = "Categorical")
+          shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+
+
+        }else if(is.integer(Dfcolor[,1])
+                 &length(levels(as.factor(Dfcolor[,1])))<=25){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                             choices = c("Categorical", "Continuous"),
+                             selected = "Categorical")
+          shinyjs::enable("SelectColorType")
+
+        }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                                 choices = c("Categorical", "Continuous"),
+                                 selected = "Continuous")
+          shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+      }
+      ###If Expression Assays###########################################################
+    }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+    if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+      Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+
+      if(!is.numeric(Dfassay[,1])){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                           choices = c("Categorical", "Continuous"),
+                           selected = "Categorical")
+        shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+
+
+      }else if(is.integer(Dfassay[,1])
+               &length(levels(as.factor(Dfassay[,1])))<=25){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                           choices = c("Categorical", "Continuous"),
+                           selected = "Categorical")
+        shinyjs::enable("SelectColorType")
+
+      }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                               choices = c("Categorical", "Continuous"),
+                               selected = "Continuous")
+        shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+    }
+    }
+    }
+    }
+  })###observe_end
+
+  ###Observe Check Box Check Binning & Text Input Number of Bins:
+  observe({
+    if (!is.null(vals$counts)){
+    ###If Cell Annotation###############################################################
+    if(input$TypeSelect_Colorby != 'Pick a Color'){
+
+      if(input$TypeSelect_Colorby == 'Cell Annotation'){
+        if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+          updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+          shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+          shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+          updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+        }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+                 &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+                 &input$SelectColorType == 'Categorical'){
+          updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+          shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+          shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+          updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+        }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+                 &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+                 &input$SelectColorType == 'Continuous'){
+
+          shinyjs::enable("checkColorbinning")
+          if(input$checkColorbinning == TRUE){
+            shinyjs::enable("adjustColorbinning")
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+          else{
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+
+        }else{
+
+          shinyjs::enable("checkColorbinning")
+          if(input$checkColorbinning == TRUE){
+            shinyjs::enable("adjustColorbinning")
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+          else{
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+        }
+
+
+        ###If Reduce Dimensions##############################################################
+      }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+        Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+        if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+          Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+
+          if(!is.numeric(Dfcolor[,1])){
+            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+          }else if(is.integer(Dfcolor[,1])
+                   &length(levels(as.factor(Dfcolor[,1])))<=25
+                   &input$SelectColorType == 'Categorical'){
+            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+          }else if(is.integer(Dfcolor[,1])
+                   &length(levels(as.factor(Dfcolor[,1])))<=25
+                   &input$SelectColorType == 'Continuous'){
+
+            shinyjs::enable("checkColorbinning")
+            if(input$checkColorbinning == TRUE){
+              shinyjs::enable("adjustColorbinning")
+              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+            else{
+              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+
+          }else{
+
+            shinyjs::enable("checkColorbinning")
+            if(input$checkColorbinning == TRUE){
+              shinyjs::enable("adjustColorbinning")
+              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+            else{
+              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+          }
+        }
+
+
+        ###If Expression Assays##########################################################
+      }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+      if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+        Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+
+        if(!is.numeric(Dfassay[,1])){
+          updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+          shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+          shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+          updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+        }else if(is.integer(Dfassay[,1])
+                 &length(levels(as.factor(Dfassay[,1])))<=25
+                 &input$SelectColorType == 'Categorical'){
+          updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+          shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+          shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+          updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+
+        }else if(is.integer(Dfassay[,1])
+                 &length(levels(as.factor(Dfassay[,1])))<=25
+                 &input$SelectColorType == 'Continuous'){
+
+          shinyjs::enable("checkColorbinning")
+          if(input$checkColorbinning == TRUE){
+            shinyjs::enable("adjustColorbinning")
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+          else{
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+
+        }else{
+
+          shinyjs::enable("checkColorbinning")
+          if(input$checkColorbinning == TRUE){
+            shinyjs::enable("adjustColorbinning")
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+
+          else{
+            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+        }
+      }
+      }#Dfassay_end
+    }#ifnot_end
+    }
+  })###observe_end
+
+  # 
+  # 
+  # #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
+  # cellviewer <- eventReactive(input$runCellViewer,{
+  #   if(input$QuickAccess == ""){
+  #     
+  #   }else if(input$QuickAccess != "Custom"){
+  #     ###QuickAccess for ReduceData
+  #     xy <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$QuickAccess))
+  #     colnames(xy) <- c("X_input","Y_input")
+  #     xy <- cbind(xy,data.frame(colData(vals$counts)))
+  #     
+  #   }else{
+  #     ###Custom
+  #     #X_axis
+  #     ##ReduceDim
+  #     if(input$TypeSelect_Xaxis == "Reduced Dimensions"){
+  #       Dfx <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
+  #       Dfx2 <- Dfx[which(colnames(Dfx) == input$ColumnSelect_Xaxis)]
+  #       colnames(Dfx2) <- c("X_input")
+  #       rm(Dfx)##Assay
+  #     }else if(input$TypeSelect_Xaxis == "Expression Assays"){
+  #       Dfx <- assay(vals$counts, input$AdvancedMethodSelect_Xaxis)
+  #       Dfx2 <- data.frame(Dfx[which(rownames(Dfx)== input$GeneSelect_Assays_Xaxis),])
+  #       colnames(Dfx2) <- c("X_input")
+  #       rm(Dfx)##Annotation
+  #     }else if(input$TypeSelect_Xaxis == "Cell Annotation"){
+  #       Dfx <- colData(vals$counts)
+  #       Dfx2 <- data.frame(Dfx[which(colnames(Dfx)== input$AnnotationSelect_Xaxis)])
+  #       colnames(Dfx2) <- c("X_input")
+  #       rm(Dfx)
+  #     }
+  #     
+  #     #Y_axis
+  #     ##ReduceDIm
+  #     if(input$TypeSelect_Yaxis == "Reduced Dimensions"){
+  #       Dfy <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
+  #       Dfy2 <- Dfy[which(colnames(Dfy) == input$ColumnSelect_Yaxis)]
+  #       colnames(Dfy2) <- c("Y_input")
+  #       rm(Dfy)##Assay
+  #     }else if(input$TypeSelect_Yaxis == "Expression Assays"){
+  #       Dfy <- assay(vals$counts, input$AdvancedMethodSelect_Yaxis)
+  #       Dfy2 <- data.frame(Dfy[which(rownames(Dfy)== input$GeneSelect_Assays_Yaxis),])
+  #       colnames(Dfy2) <- c("Y_input")
+  #       rm(Dfy)##Annotation
+  #     }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
+  #       Dfy <- colData(vals$counts)
+  #       Dfy2 <- data.frame(Dfy[which(colnames(Dfy)== input$AnnotationSelect_Yaxis)])
+  #       colnames(Dfy2) <- c("Y_input")
+  #       rm(Dfy)
+  #     }
+  #     xy <- cbind(Dfx2,Dfy2)#BindXY
+  #     xy <- cbind(xy,data.frame(colData(vals$counts)))#BindAnnotation
+  #     rm(Dfx2)
+  #     rm(Dfy2)
+  #   }#ConditionalCustom_end
+  #   
+  #   #-+-+-+-+-+-cellviewer prepare2 : choose color#####################  
+  #   
+  #   ####Cell Annotation if numeric, Categorical, check###
+  #   
+  #   if(input$TypeSelect_Colorby != 'Pick a Color'){
+  #     ####Cell Annotation if numeric, Categorical, check###       
+  #     if(input$TypeSelect_Colorby == 'Cell Annotation'){
+  #       if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         # legendname <- paste0(input$AnnotationSelect_Colorby)
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #                &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+  #                &input$SelectColorType == 'Categorical'){
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         total_colors$Color <- as.factor(total_colors$Color)
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #                &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == FALSE){
+  #         
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #                &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #       }else{
+  #         
+  #         total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #       }                 
+  #       
+  #       ####Reduced Dimensions if numeric, Categorical, check###  
+  #     }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+  #       Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+  #       Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+  #       
+  #       if(!is.numeric(Dfcolor[,1])){
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfcolor[,1])
+  #                &length(levels(as.factor(Dfcolor[,1])))<=25
+  #                &input$SelectColorType == 'Categorical'){
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         total_colors$Color <- as.factor(total_colors$Color)
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfcolor[,1])
+  #                &length(levels(as.factor(Dfcolor[,1])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == FALSE){
+  #         
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfcolor[,1])
+  #                &length(levels(as.factor(Dfcolor[,1])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.numeric(Dfcolor[,1])
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #         
+  #       }else{
+  #         
+  #         total_colors <- Dfcolor[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #       }                 
+  #       
+  #     }else{
+  #       Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+  #       Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+  #       
+  #       if(!is.numeric(Dfassay[,1])){
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfassay[,1])
+  #                &length(levels(as.factor(Dfassay[,1])))<=25
+  #                &input$SelectColorType == 'Categorical'){
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         total_colors$Color <- as.factor(total_colors$Color)
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfassay[,1])
+  #                &length(levels(as.factor(Dfassay[,1])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == FALSE){
+  #         
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.integer(Dfassay[,1])
+  #                &length(levels(as.factor(Dfassay[,1])))<=25
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #         
+  #       }else if(is.numeric(Dfassay[,1])
+  #                &input$SelectColorType == 'Continuous'
+  #                &input$checkColorbinning == TRUE){
+  #         
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
+  #                                                      to = max(total_colors)+1,
+  #                                                      by = (max(total_colors)-min(total_colors)+1)/input$adjustColorbinning)) %>% data.frame()
+  #         colnames(color1) <- c("Color")
+  #         xy <- cbind(xy,color1)
+  #         rm(color1)
+  #         rm(total_colors)
+  #         
+  #       }else{
+  #         
+  #         total_colors <- Dfassay[,1] %>% data.frame()
+  #         colnames(total_colors) <- c("Color")
+  #         xy <- cbind(xy,total_colors)
+  #         rm(total_colors)
+  #       }                 
+  #       
+  #     }
+  #     
+  #   }#ifnotUniform_end
+  #   
+  #   #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name##################### 
+  #   ###Xaxis label name
+  #   if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+  #     xname = paste0(input$QuickAccess, 1)
+  #     
+  #   }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
+  #     xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
+  #     
+  #   }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
+  #     xname = paste0(input$GeneSelect_Assays_Xaxis)
+  #   }else{
+  #     xname = paste0(input$AnnotationSelect_Xaxis)
+  #   }    
+  #   
+  #   ###Yaxis label name
+  #   if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+  #     yname = paste0(input$QuickAccess, 2)
+  #     
+  #   }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
+  #     yname = paste0(input$ApproachSelect_Yaxis,substr(input$ColumnSelect_Yaxis,2,2))
+  #     
+  #   }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
+  #     yname = paste0(input$GeneSelect_Assays_Yaxis)
+  #     
+  #   }else{
+  #     yname = paste0(input$AnnotationSelect_Yaxis)
+  #   }
+  #   
+  #   ###Yaxis label name
+  #   if(input$TypeSelect_Colorby != 'Pick a Color'){
+  #     if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+  #       legendname = paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,2,2))
+  #       
+  #     }else if(input$TypeSelect_Colorby == 'Expression Assays'){
+  #       legendname = paste0(input$GeneSelect_Assays_Colorby)
+  #       
+  #     }else{
+  #       legendname = paste0(input$AnnotationSelect_Colorby)
+  #     }
+  #   }
+  #   
+  #   #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
+  #   
+  #   if (input$adjustgroupby == "None"){
+  #     #if uniform
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) +
+  #         aes_string(x= "X_input", y= "Y_input") +
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
+  #         theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }
+  #     #if not uniform
+  #     else{
+  #       #ggplot#none
+  #       a <- ggplot(data = xy) +
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") +
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
+  #         theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) +  labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }
+  #       #ggplotly#none
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) }
+  #     #else_end
+  #     
+  #   }#if_none_end
+  #   
+  #   ###Integer,level>25
+  #   else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #           & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
+  #     #data manage#Integer,level>25
+  #     total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
+  #     c1 <- cut(total_features, breaks = seq(from = min(total_features)-1, 
+  #                                            to = max(total_features)+1, 
+  #                                            by = (max(total_features)-min(total_features)+1)/input$adjustbinning)) %>%
+  #       data.frame()
+  #     colnames(c1) <- c("groupby")
+  #     c1$groupby <- as.factor(c1$groupby)
+  #     xy <- cbind(xy,c1)
+  #     rm(c1)
+  #     
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input") + 
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname))
+  #       
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }
+  #     else{
+  #       #ggplot#Integer,level>25
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") + 
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }
+  #       #ggplotly#Integer,level>25
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)       
+  #     }
+  #   }
+  #   
+  #   ###Integer,level<25,continuous 
+  #   else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #           &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25 
+  #           &input$SelectValueType == "Continuous"){
+  #     #data manage#Integer,level<25,Continuous
+  #     total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
+  #     c1 <- cut(total_features, breaks = seq(from = min(total_features)-1, 
+  #                                            to = max(total_features)+1, 
+  #                                            by = (max(total_features)-min(total_features)+1)/input$adjustbinning)) %>% 
+  #       data.frame()
+  #     colnames(c1) <- c("groupby")
+  #     c1$groupby <- as.factor(c1$groupby)
+  #     xy <- cbind(xy,c1)
+  #     rm(c1)
+  #     
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input") + 
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname))
+  #       
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }#ifUniform_end
+  #     else{
+  #       #ggplot#Integer,level<25,Continous
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") + 
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) +
+  #         xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }
+  #       
+  #       #ggplotly#Integer,level<25,Continous
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)     
+  #     }#notUniform_End
+  #   }#condition_End
+  #   
+  #   ###Integer,level<25,Categorical
+  #   else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #           &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25 
+  #           &input$SelectValueType == "Categorical"){
+  #     #data manage#Integer,level<25,Categorical
+  #     c1 <- colData(vals$counts)@listData[[input$adjustgroupby]] %>% data.frame()
+  #     colnames(c1) <- c("groupby")
+  #     c1$groupby <- as.factor(c1$groupby)
+  #     xy <- cbind(xy,c1)
+  #     rm(c1)
+  #     
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input") + 
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname))
+  #       
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }#uniform_end
+  #     else{
+  #       #ggplot#Integer,level<25,Categorical
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") + 
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) +
+  #         xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }              
+  #       #ggplotly#Integer,level<25,Categorical
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) 
+  #     }#notuniform_End
+  #   }#condition_End
+  #   
+  #   ###Numeric,noninteger
+  #   else if (is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){ 
+  #     #data manage#Numeric,noninteger
+  #     total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
+  #     c1 <- cut(total_features, 
+  #               breaks = seq(from = min(total_features)-1, to = max(total_features)+1, 
+  #                            by = (max(total_features)-min(total_features)+1)/input$adjustbinning)) %>% data.frame()
+  #     colnames(c1) <- c("groupby")
+  #     c1$groupby <- as.factor(c1$groupby)
+  #     xy <- cbind(xy,c1)
+  #     rm(c1)
+  #     
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input") + 
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname))
+  #       
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }#ifUniform_end
+  #     else{
+  #       #ggplot2#Numeric,noninteger
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") + 
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) +
+  #         xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }               
+  #       #ggplotly2#Numeric,noninteger
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) 
+  #     }#notUniform_end
+  #   }#condition_end
+  #   
+  #   ###else,Categorical
+  #   else{
+  #     #data manage#cate
+  #     c1 <- colData(vals$counts)@listData[[input$adjustgroupby]] %>% data.frame()
+  #     colnames(c1) <- c("groupby")
+  #     c1$groupby <- as.factor(c1$groupby)
+  #     xy <- cbind(xy,c1)
+  #     rm(c1)
+  #     if(input$TypeSelect_Colorby == 'Pick a Color'){
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input") + 
+  #         geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) + 
+  #         xlab(xname) + ylab(paste0("\n",yname))
+  #       
+  #       ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600) 
+  #     }#ifUniform_end
+  #     else{
+  #       #ggplot3#
+  #       a <- ggplot(data = xy) + 
+  #         aes_string(x= "X_input", y= "Y_input", color = "Color") + 
+  #         geom_point(size = input$adjustsize, alpha = input$adjustalpha) + 
+  #         theme_classic() + 
+  #         theme(legend.title = element_blank(), 
+  #               strip.background = element_blank()) + 
+  #         facet_wrap(~groupby) +
+  #         xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)  
+  #       
+  #       if(!is.numeric(xy$Color)){
+  #         if(input$adjustbrewer == 'Celda'){
+  #           a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
+  #         else{a = a + theme(legend.text=element_text(size=12))}
+  #       }else{
+  #         a = a + scale_color_distiller(palette = input$adjustbrewer)  
+  #       }              
+  #       #ggplotly3#
+  #       ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) 
+  #       
+  #     }#notUniform_end
+  #   }#condition_end
+  #   
+  # })#Cellviewer_end
+  # output$scatter <- renderPlotly({cellviewer()})
+  # 
+  # 
+  #-+-+-+-+-+-cellviewer prepare done: plot#####################     
+  ###plotly_after_reactive
+  
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction
   #-----------------------------------------------------------------------------
