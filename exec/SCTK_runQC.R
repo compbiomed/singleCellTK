@@ -51,7 +51,7 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
     optparse::make_option(c("-m","--gmt"),
         type="character",
         default=NULL,
-        help="GMT file containing gene sets for quality control")
+        help="GMT file containing gene sets for quality control"),
     optparse::make_option(c("-t","--delim"),
         type="character",
         default="\t",
@@ -110,9 +110,13 @@ if(!is.null(gmt)) {
 }
 
 ## Run QC functions
-dropletSCE <- runDropletQC(sce = dropletSCE)
+if(!is.null(droplet.path)) {
+  message(paste0(date(), " .. Running droplet QC"))    
+  dropletSCE <- runDropletQC(sce = dropletSCE)
+}
 
 if(!is.na(filtered.path)){
+  message(paste0(date(), " .. Running cell QC"))    
   filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
 }
 
