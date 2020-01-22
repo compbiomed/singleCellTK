@@ -21,7 +21,7 @@
 #' sce <- runCellQC(sce_chcl)
 #' @export
 runCellQC <- function(sce,
-  algorithms = c("QCMetrics", "scrublet", "doubletCells", "cxds", "bcds",
+  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
   geneSetList = NULL,
@@ -43,6 +43,13 @@ runCellQC <- function(sce,
                                  geneSetListLocation = geneSetListLocation,
                                  geneSetCollection = geneSetCollection)
   }    
+
+  if ("scrublet" %in% algorithms) {
+    sce <- runScrublet(sce = sce,
+      sample = sample,
+      assayName = assayName,
+      seed = seed)
+  }
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
@@ -71,13 +78,6 @@ runCellQC <- function(sce,
 
   if ("decontX" %in% algorithms) {
     sce <- runDecontX(sce = sce,
-      sample = sample,
-      assayName = assayName,
-      seed = seed)
-  }
-
-  if ("scrublet" %in% algorithms) {
-    sce <- runScrublet(sce = sce,
       sample = sample,
       assayName = assayName,
       seed = seed)
