@@ -115,7 +115,7 @@ runPerCellQC <- function(sce,
   if(length(geneSets) == 0) {
     geneSets <- NULL
   }  
-  sce <- addPerCellQC(x = sce, exprs_values = assayName, subsets = geneSets, ...)
+  sce <- scater::addPerCellQC(x = sce, exprs_values = assayName, subsets = geneSets, ...)
   metadata(sce)$scran$addPerCellQC$geneSets <- geneSets
   
   return(sce)

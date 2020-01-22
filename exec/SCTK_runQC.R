@@ -30,10 +30,10 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
     optparse::make_option(c("-c", "--cell"),
         type="character",
         help="path to the filtered cells counts matrix"),
-    optparse::make_option(c("-d", "--droplet"),
+    optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRanger",
-        help="One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC'"),
+        help="One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC', or 'Optimus'"),
     optparse::make_option(c("-g","--gzip"),
         type="logical",
         default=TRUE,
@@ -49,7 +49,7 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
     optparse::make_option(c("-m","--gmt"),
         type="character",
         default=NULL,
-        help="GMT file containing gene sets for quality control")
+        help="GMT file containing gene sets for quality control"),
     optparse::make_option(c("-t","--delim"),
         type="character",
         default="\t",
@@ -91,7 +91,12 @@ if (preproc == "BUStools") {
   if(!is.na(filtered.path)){
     filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
   }
-} else {
+} else if(preproc == "Optimus"){
+  dropletSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
+  if(!is.na(filtered.path)){
+    filteredSCE <- importOptimus(seqcDirs = droplet.path, samples = samplename)
+  }
+} else{
   stop(paste0("'", preproc, "' not supported."))
 }
 
