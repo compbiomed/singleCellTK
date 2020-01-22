@@ -125,7 +125,7 @@ runDropletQC <- function(sce,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = NULL)
+    sce <- runPerCellQC(sce = sce, assayName = assayName)
   }    
 
   if (any("emptyDrops" %in% algorithms)) {
