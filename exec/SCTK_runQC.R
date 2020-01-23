@@ -32,19 +32,15 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRanger",
-        help="One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
-    optparse::make_option(c("-g","--gzip"),
-        type="logical",
-        default=TRUE,
-        help="Are your matrix, barcode, and features files gzipped?"),
-    optparse::make_option(c("-s","--samplename"),
+        help="Algorithm used for preprocessing. One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
+    optparse::make_option(c("-s","--sample"),
         type="character",
         help="Sample name"),
     optparse::make_option(c("-o","--directory"),
         type="character",
         default=".",
         help="Output directory"),
-    optparse::make_option(c("-m","--gmt"),
+    optparse::make_option(c("-g","--gmt"),
         type="character",
         default=NULL,
         help="GMT file containing gene sets for quality control"),
@@ -57,8 +53,7 @@ opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
 droplet.path <- opt$droplet
 filtered.path <- opt$cell
 preproc <- opt$preproc
-gzip <- opt$gzip
-samplename <- opt$samplename
+samplename <- opt$sample
 directory <- opt$directory
 gmt <- opt$gmt
 sep <- opt$delim
@@ -75,32 +70,32 @@ if(is.null(droplet.path) && is.null(filtered.path)){
 ## Use appropriate import function for preprocessing tool
 if (preproc == "BUStools") {
     if(!is.null(droplet.path)){
-      dropletSCE <- importBUStools(BUStoolsDir = droplet.path, sample = samplename, gzipped = gzip, class = "Matrix")
+      dropletSCE <- importBUStools(BUStoolsDir = droplet.path, sample = samplename, class = "Matrix")
     }  
     if(!is.null(filtered.path)){
-      filteredSCE <- importBUStools(BUStoolsDir = filtered.path, sample = samplename, gzipped = gzip, class = "Matrix")
+      filteredSCE <- importBUStools(BUStoolsDir = filtered.path, sample = samplename, class = "Matrix")
     }
 } else if(preproc == "STARSolo"){
     if(!is.null(droplet.path)){
-      dropletSCE <- importSTARsolo(STARsoloDir = droplet.path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", gzipped = gzip, class = "Matrix")
+      dropletSCE <- importSTARsolo(STARsoloDir = droplet.path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
       dropletSCE$sample <- samplename
     }  
     if(!is.null(filtered.path)){
-      filteredSCE <- importSTARsolo(STARsoloDir = filtered.path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", gzipped = gzip, class = "Matrix")
+      filteredSCE <- importSTARsolo(STARsoloDir = filtered.path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
     }
 } else if(preproc == "CellRanger"){
     if(!is.null(droplet.path)){
-      dropletSCE <- importCellRanger(cellRangerDirs = droplet.path, samples = samplename, cellRangerOuts = "/outs/raw_feature_bc_matrix", gzipped = gzip, class = "Matrix")
+      dropletSCE <- importCellRanger(cellRangerDirs = droplet.path, samples = samplename, cellRangerOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
     }  
     if(!is.null(filtered.path)){
-      filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", gzipped = gzip, class = "Matrix")
+      filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
     }
 } else if(preproc == "SEQC"){
     if(!is.null(droplet.path)){
-      dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
+      dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, class = "Matrix")
     }  
     if(!is.null(filtered.path)){
-      filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix") 
+      filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, class = "Matrix") 
     }
 } else if(preproc == "Optimus"){
     if(!is.null(droplet.path)){
