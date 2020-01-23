@@ -21,14 +21,10 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
 
 
 ##Read in flags from command line using optparse
-option_list <- list(optparse::make_option(c("-d", "--droplet"),
+option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
-        help="Base path for the unfiltered droplet counts matrix"),
-    optparse::make_option(c("-c", "--cell"),
-        type="character",
-        default=NULL,        
-        help="Base path for the filtered cells counts matrix"),
+        help="Base path for the output from the preprocessing algorithm"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRanger",
@@ -50,60 +46,30 @@ option_list <- list(optparse::make_option(c("-d", "--droplet"),
         help="Delimiter used in GMT file"))
 
 opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
-droplet.path <- opt$droplet
-filtered.path <- opt$cell
+path <- opt$base_path
 preproc <- opt$preproc
 samplename <- opt$sample
 directory <- opt$directory
 gmt <- opt$gmt
 sep <- opt$delim
 
-## Check parameters
-if (is.null(samplename)){
-  stop("A sample name is required. Please specify using the -s flag.")
-}
-
-if(is.null(droplet.path) && is.null(filtered.path)){
-  stop("Either the droplet counts or the filtered counts file path need to be specified.")
-}
-
 ## Use appropriate import function for preprocessing tool
+dropletSCE <- NULL
+filteredSCE <- NULL
 if (preproc == "BUStools") {
-    if(!is.null(droplet.path)){
-      dropletSCE <- importBUStools(BUStoolsDir = droplet.path, sample = samplename, class = "Matrix")
-    }  
-    if(!is.null(filtered.path)){
-      filteredSCE <- importBUStools(BUStoolsDir = filtered.path, sample = samplename, class = "Matrix")
-    }
+  dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix")
 } else if(preproc == "STARSolo"){
-    if(!is.null(droplet.path)){
-      dropletSCE <- importSTARsolo(STARsoloDir = droplet.path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
-      dropletSCE$sample <- samplename
-    }  
-    if(!is.null(filtered.path)){
-      filteredSCE <- importSTARsolo(STARsoloDir = filtered.path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
-    }
+  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
+  filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
 } else if(preproc == "CellRanger"){
-    if(!is.null(droplet.path)){
-      dropletSCE <- importCellRanger(cellRangerDirs = droplet.path, samples = samplename, cellRangerOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
-    }  
-    if(!is.null(filtered.path)){
-      filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
-    }
+  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, cellRangerOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
+  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
 } else if(preproc == "SEQC"){
-    if(!is.null(droplet.path)){
-      dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, class = "Matrix")
-    }  
-    if(!is.null(filtered.path)){
-      filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, class = "Matrix") 
-    }
+  dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
+  filteredSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix") 
 } else if(preproc == "Optimus"){
-    if(!is.null(droplet.path)){
-        dropletSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
-    }
-    if(!is.null(filtered.path)){
-        filteredSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
-    }
+  dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
+  filteredSCE <- dropletSCE[,isTRUE(dropletSCE$dropletUtils_emptyDrops_IsCell)]
 } else {
   stop(paste0("'", preproc, "' not supported."))
 }
@@ -115,22 +81,26 @@ if(!is.null(gmt)) {
 }
 
 ## Run QC functions
-if(!is.null(droplet.path)) {
+if(!is.null(dropletSCE)) {
   message(paste0(date(), " .. Running droplet QC"))    
   dropletSCE <- runDropletQC(sce = dropletSCE)
   
-  if(is.null(filtered.path)) {
+  if(is.null(filteredSCE)) {
     ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
     filteredSCE <- dropletSCE[,ix]
   }  
 }
 
-message(paste0(date(), " .. Running cell QC"))    
-filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
+if(!is.null(filteredSCE)) {
+  message(paste0(date(), " .. Running cell QC"))    
+  filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
+}  
 
 
 ## Merge singleCellExperiment objects
-if(!is.null(filtered.path) & !is.null(droplet.path)) {
+mergedDropletSCE <- NULL
+mergedFilteredSCE <- NULL
+if(!is.null(filteredSCE) & !is.null(dropletSCE)) {
   mergedDropletSCE <- mergeSCEColData(dropletSCE, filteredSCE)
   mergedFilteredSCE <- mergeSCEColData(filteredSCE, dropletSCE)
 } else {
@@ -143,12 +113,14 @@ dir.create(file.path(directory, samplename, "R"), showWarnings = TRUE, recursive
 dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recursive = TRUE)
 dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
 
-if(!is.null(droplet.path)){
+if(!is.null(mergedDropletSCE)){
   fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
   saveRDS(object = mergedDropletSCE, file = fn)
 }
-fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
-saveRDS(object = mergedFilteredSCE, file = fn)
+if(!is.null(mergedFilteredSCE)) {
+  fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
+  saveRDS(object = mergedFilteredSCE, file = fn)
+}  
 
 
 ## ToDo ##
