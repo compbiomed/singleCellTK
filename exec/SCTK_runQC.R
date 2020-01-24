@@ -27,11 +27,11 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         help="Base path for the output from the preprocessing algorithm"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
-        default="CellRanger",
-        help="Algorithm used for preprocessing. One of 'CellRanger', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
+        default="CellRangerV3",
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
-        help="Sample name"),
+        help="Name of the sample. This will be prepended to the cell barcodes."),
     optparse::make_option(c("-o","--directory"),
         type="character",
         default=".",
@@ -39,7 +39,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-g","--gmt"),
         type="character",
         default=NULL,
-        help="GMT file containing gene sets for quality control"),
+        help="GMT file containing gene sets for quality control. The second column in the GMT file (i.e. the description) should contain the location to look for the IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If another character or integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table."
     optparse::make_option(c("-t","--delim"),
         type="character",
         default="\t",
@@ -61,9 +61,12 @@ if (preproc == "BUStools") {
 } else if(preproc == "STARSolo"){
   dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
   filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
-} else if(preproc == "CellRanger"){
-  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, cellRangerOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
+} else if(preproc == "CellRangerV3"){
+  dropletSCE <- importCellRangerV3(cellRangerDirs = path, samples = samplename, class = "Matrix")
+  filteredSCE <- importCellRangerV3(cellRangerDirs = path, samples = samplename, class = "Matrix")
+} else if(preproc == "CellRangerV2"){
+  dropletSCE <- importCellRangerV2(cellRangerDirs = path, samples = samplename, class = "Matrix")
+  filteredSCE <- importCellRangerV2(cellRangerDirs = path, samples = samplename, class = "Matrix")
 } else if(preproc == "SEQC"){
   dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
 } else if(preproc == "Optimus"){
