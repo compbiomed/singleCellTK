@@ -19,7 +19,7 @@
   newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
   newM <- as(newM, "dgCMatrix")
   breaks <- seq(2, ncol(mat), by=1000)
-  if(length(breaks) > 1) {
+  if(length(breaks) > 2) {
 	for(i in seq(2, length(breaks))) {
 	  ix <- seq(breaks[i-1], (breaks[i]-1))
 	  newM <- cbind(newM, mat[,ix])
