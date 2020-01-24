@@ -73,8 +73,10 @@ Read the barcodes, features (genes), and matrices from Optimus
  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
 \examples{
+\dontrun{
 sce <- importOptimus(OptimusDirs =
   system.file("extdata/Optimus_20x1000",
   package = "singleCellTK"),
   samples = "Optimus_20x1000")
+}
 }

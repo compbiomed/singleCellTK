@@ -229,10 +229,12 @@
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
+#' \dontrun{
 #' sce <- importOptimus(OptimusDirs =
 #'   system.file("extdata/Optimus_20x1000",
 #'   package = "singleCellTK"),
 #'   samples = "Optimus_20x1000")
+#' }
 #' @export
 importOptimus <- function(OptimusDirs,
   samples,

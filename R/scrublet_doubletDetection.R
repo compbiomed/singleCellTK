@@ -16,8 +16,10 @@
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' sce <- runScrublet(sce_chcl)
+#' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
 runScrublet <- function(sce,

@@ -31,6 +31,8 @@ A wrapper function that calls \code{scrub_doublets} from python
  array that is \code{TRUE} for predicted doublets and \code{FALSE} otherwise.
 }
 \examples{
+\dontrun{
 data(sce_chcl, package = "scds")
 sce <- runScrublet(sce_chcl)
+}
 }
