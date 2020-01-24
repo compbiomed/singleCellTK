@@ -54,15 +54,26 @@ runCxds <- function(sce,
         sceSample <- sce[, sceSampleInd]
 
         counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
-        result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ...))
-
-        if ("cxds_call" %in% colnames(SummarizedExperiment::colData(result))) {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("cxds_score", "cxds_call")]
+        
+        result <- NULL
+        nGene <- 500
+        while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
+          try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ...))}, silent = TRUE)
+          nGene <- nGene - 100
+        }  
+        
+        if (!inherits(result, "try-error")) {
+          if ("cxds_call" %in% colnames(SummarizedExperiment::colData(result))) {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("cxds_score", "cxds_call")]
+          } else {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("cxds_score")]
+          }
         } else {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("cxds_score")]
-        }
+          output[sceSampleInd, ] <- NA
+          warning(paste0("'cxds' from package 'scds' did not complete successfully for sample", samples[i]))
+        }            
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
@@ -152,7 +163,7 @@ runBcds <- function(sce,
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
-      colData(sce) = cbind(colData(sce), output)
+    colData(sce) = cbind(colData(sce), output)
 
     return(sce)
 }
@@ -215,16 +226,26 @@ runCxdsBcdsHybrid <- function(sce,
         sceSample <- sce[, sceSampleInd]
 
         counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
-        result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
-            ...))
 
-        if ("hybrid_call" %in% colnames(SummarizedExperiment::colData(result))) {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("hybrid_score", "hybrid_call")]
+        result <- NULL
+        nGene <- 500
+        while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, ...))}, silent = TRUE)
+          nGene <- nGene - 100
+        }  
+
+        if (!inherits(result, "try-error")) {
+          if ("hybrid_call" %in% colnames(SummarizedExperiment::colData(result))) {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("hybrid_score", "hybrid_call")]
+          } else {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("hybrid_score")]
+          }
         } else {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("hybrid_score")]
-        }
+          output[sceSampleInd, ] <- NA
+          warning(paste0("'cxds_bcds_hybrid' from package 'scds' did not complete successfully for sample", samples[i]))
+        }   
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
