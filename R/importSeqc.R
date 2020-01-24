@@ -10,7 +10,8 @@
     sce <- SingleCellExperiment::SingleCellExperiment(
         assays = list(counts = matrix))
     SummarizedExperiment::rowData(sce) <- features
-    SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(barcodes,
+    SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(
+        cell_barcode = barcodes,
         column_name = coln,
         sample = sampleName,
         row.names = coln)
