@@ -42,11 +42,11 @@ if the Rscript executable can be found in your environment with the command
 
 This pipeline can currently import data from the following tools:
 
-* CellRanger (V2 or V3)
-* STARsolo 
-* Human Cell Atlas (HCA) Optimus pipeline
-* BUStools
-* SEQC
+* [CellRanger (V2 or V3)](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)
+* [STARsolo](https://github.com/alexdobin/STAR/releases)
+* [Human Cell Atlas (HCA) Optimus pipeline](https://data.humancellatlas.org/pipelines/optimus-workflow)
+* [BUStools](https://github.com/BUStools/bustools)
+* [SEQC](https://github.com/ambrosejcarr/seqc)
 
 For each tool, the pipeline expect the data in a certain format within a specific directory structure. For example, data generated with CellRanger V3 is expected to be under a sample folder (specified with the "-s" flag) and a base folder (specified with the "-b" flag).
 Some tools prepend the sample name onto the output files instead of making a separate subdirectory (e.g. BUStools and SEQC). The combination of --base_path ("-b") and --sample ("-s") should specify the location of the data files:
@@ -65,21 +65,26 @@ The arguments are as follows:
 
 -o, --directory. Output directory. A new subdirectory will be created with the name "sample". R, Python, and FlatFile directories will be created under the "sample" directory containing the data containers with QC metrics. Default ".".
 
--g, --gmt. GMT file containing gene sets for quality control. The second column in the GMT file (i.e. the description) should contain the location to look for the IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If another character or integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
+-g, --gmt. GMT file containing gene sets for quality control. 
 
 -t, --delim. Delimiter used in GMT file. Default "\t".
 
 ## Including genes sets for analysis
 
+Quantifying the level of gene sets can be useful quality control. For example, the percentage of counts from mitochondrial genes can be an indicator or cell stress or death. 
+
+Users can pass a (GMT)[http://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29] file to the pipeline with one row for each gene set. The first column should be the name of the gene set (e.g. mito). 
+The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
+
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
-- emptyDrops from the dropletUtils package: https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html
+* [emptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) from the package [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
 
 #### Doublet Detection
-* doubletCells(scran): https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html
-* scds
+* [doubletCells](https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html) from the package [scran](http://bioconductor.org/packages/release/bioc/html/scran.html)
+* [cxds](https://rdrr.io/bioc/scds/man/cxds.html), [bcds](https://rdrr.io/bioc/scds/man/bcds.html), and [cxds_bcds_hybrid](https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html) from the package [scds](http://bioconductor.org/packages/release/bioc/html/scds.html)
 
 #### Ambient RNA detection
-* DecontX
+* [decontX](https://rdrr.io/bioc/celda/man/decontX.html) from the package [celda](https://bioconductor.org/packages/release/bioc/html/celda.html)
 
 
