@@ -69,35 +69,49 @@ if (is.na(samplename)){
   stop("A sample name is required. Please specify using the -s flag.")
 }
 
+if(is.na(droplet.path) && is.na(filtered.path)){
+  stop("Either the droplet counts or the filtered counts file path need to be specified.")
+}
+
 ## Use appropriate import function for preprocessing tool
 
 if (preproc == "BUStools") {
-    dropletSCE <- importBUStools(BUStoolsDir = droplet.path, sample = "", gzipped = gzip)
+    if(!is.na(droplet.path)){
+        dropletSCE <- importBUStools(BUStoolsDir = droplet.path, sample = "", gzipped = gzip)
+    }
     if(!is.na(filtered.path)){
-      filteredSCE <- importBUStools(BUStoolsDir = filtered.path, sample = "", gzipped = gzip)
+        filteredSCE <- importBUStools(BUStoolsDir = filtered.path, sample = "", gzipped = gzip)
     }
 } else if(preproc == "STARSolo"){
-    dropletSCE <- importSTARsolo(STARsoloDir = droplet.path, sample = "", STARsoloOuts = "", gzipped = gzip, class = "Matrix")
+    if(!is.na(droplet.path)){
+        dropletSCE <- importSTARsolo(STARsoloDir = droplet.path, sample = "", STARsoloOuts = "", gzipped = gzip, class = "Matrix")
+    }
     if(!is.na(filtered.path)){
-      filteredSCE <- importSTARsolo(STARsoloDir = filtered.path, sample = "", STARsoloOuts = "", gzipped = gzip)
+        filteredSCE <- importSTARsolo(STARsoloDir = filtered.path, sample = "", STARsoloOuts = "", gzipped = gzip)
     }
 } else if(preproc == "CellRanger"){
-    dropletSCE <- importCellRanger(cellRangerDirs = droplet.path, samples = "", cellRangerOuts = "", gzipped = gzip, class = "Matrix")
+    if(!is.na(droplet.path)){
+        dropletSCE <- importCellRanger(cellRangerDirs = droplet.path, samples = "", cellRangerOuts = "", gzipped = gzip, class = "Matrix")
+    }
     if(!is.na(filtered.path)){
-      filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = "", cellRangerOuts = "", gzipped = gzip)
+        filteredSCE <- importCellRanger(cellRangerDirs = filtered.path, samples = "", cellRangerOuts = "", gzipped = gzip)
     }
 } else if(preproc == "SEQC"){
-  dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
-  if(!is.na(filtered.path)){
-    filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
-  }
+    if(!is.na(droplet.path)){
+        dropletSCE <- importSEQC(seqcDirs = droplet.path, samples = samplename, prefix = samplename, gzipped = gzip, class = "Matrix")
+    }
+    if(!is.na(filtered.path)){
+        filteredSCE <- importSEQC(seqcDirs = filtered.path, samples = samplename, prefix = samplename, gzipped = gzip)
+    }
 } else if(preproc == "Optimus"){
-  dropletSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
-  if(!is.na(filtered.path)){
-    filteredSCE <- importOptimus(seqcDirs = droplet.path, samples = samplename)
-  }
+    if(!is.na(droplet.path)){
+        dropletSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
+    }
+    if(!is.na(filtered.path)){
+        filteredSCE <- importOptimus(OptimusDirs = droplet.path, samples = samplename)
+    }
 } else{
-  stop(paste0("'", preproc, "' not supported."))
+    stop(paste0("'", preproc, "' not supported."))
 }
 
 ## Read in gene sets for QC
@@ -107,19 +121,22 @@ if(!is.null(gmt)) {
 }
 
 ## Run QC functions
-dropletSCE <- runDropletQC(sce = dropletSCE)
-
+if(!is.na(droplet.path)){
+  dropletSCE <- runDropletQC(sce = dropletSCE)
+}
 if(!is.na(filtered.path)){
   filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
 }
 
 ## Merge singleCellExperiment objects
-if(!is.na(filtered.path)){
+if(!is.na(filtered.path) && !is.na(droplet.path)){
   mergedDropletSCE <- mergeSCEColData(dropletSCE, filteredSCE)
   mergedFilteredSCE <- mergeSCEColData(filteredSCE, dropletSCE)
-}else{
+}else if(is.na(filtered.path)){
   mergedDropletSCE <- dropletSCE[,!is.na(dropletSCE$dropletUtils_emptyDrops_fdr)]
-  mergedDropletSCE <- mergedDropletSCE[,mergedDropletSCE$dropletUtils_emptyDrops_fdr < 0.25]
+  mergedDropletSCE <- mergedDropletSCE[,mergedDropletSCE$dropletUtils_emptyDrops_fdr < 0.05]
+}else if(is.na(droplet.path)){
+  mergedFilteredSCE <- filteredSCE
 }
 
 ## Create directory
@@ -133,10 +150,12 @@ setwd(file.path(directory))
 ## Save singleCellExperiment object
 dir.create(file.path("R"), showWarnings = TRUE)
 setwd("R")
-saveRDS(object = mergedDropletSCE, file = paste0(samplename , "_Droplets.rds"))
 
 if(!is.na(filtered.path)){
   saveRDS(object = mergedFilteredSCE, file = paste0(samplename , "_FilteredCells.rds"))
+}
+if(!is.na(droplet.path)){
+  saveRDS(object = mergedDropletSCE, file = paste0(samplename , "_Droplets.rds"))
 }
 
 ## ToDo ##
