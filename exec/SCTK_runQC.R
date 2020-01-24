@@ -66,7 +66,6 @@ if (preproc == "BUStools") {
   filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, cellRangerOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
 } else if(preproc == "SEQC"){
   dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
-  filteredSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix") 
 } else if(preproc == "Optimus"){
   dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
   filteredSCE <- dropletSCE[,isTRUE(dropletSCE$dropletUtils_emptyDrops_IsCell)]
