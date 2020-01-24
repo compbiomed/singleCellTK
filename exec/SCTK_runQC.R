@@ -71,7 +71,7 @@ if (preproc == "BUStools") {
   dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
 } else if(preproc == "Optimus"){
   dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
-  filteredSCE <- dropletSCE[,isTRUE(dropletSCE$dropletUtils_emptyDrops_IsCell)]
+  filteredSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
 } else {
   stop(paste0("'", preproc, "' not supported."))
 }
