@@ -1,4 +1,4 @@
-# SCTK QC pipeline
+# Generation of comprehensive quality control metrics with SCTK
 
 This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger), generate various quality control metrics (e.g. doublet scores), and output results in standard data containers (e.g. SingleCellExperiment).
 Both the original droplet matrix and the filtered cell matrix will be processed.
@@ -6,8 +6,8 @@ This pipeline is focused on single cell data generated from microfluidic devices
 
 ## Specifications
 
-The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required software. 
-For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python.
+* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required software. 
+* For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python.
 
 
 ## Running the pipeline
@@ -41,7 +41,8 @@ This pipeline can currently import data from the following tools:
 * BUStools
 * SEQC
 
-For each tool, the pipeline expect the data in a certain format within a specific directory structure.
+For each tool, the pipeline expect the data in a certain format within a specific directory structure. For example, data generated with CellRanger V3 is expected to be under a sample folder (specified with the "-s" flag) and a base folder (specified with the "-b" flag).
+Some tools prepend the sample name onto the output files instead of making a separate subdirectory (e.g. BUStools and SEQC). The combination of --base_path ("-b") and --sample ("-s") should specify the location of the data files:
 
 ![](/exec/SCTK_QC_Import.png)
 
