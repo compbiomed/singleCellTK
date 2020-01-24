@@ -6,8 +6,8 @@
 \usage{
 runCellQC(
   sce,
-  algorithms = c("QCMetrics", "scrublet", "doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX"),
+  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
+    "decontX"),
   sample = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
@@ -30,11 +30,11 @@ matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{geneSetList.}{See \link[runPerCellQC]. Default NULL.}
+\item{geneSetList.}{See \code{runPerCellQC}. Default NULL.}
 
-\item{geneSetListLocation.}{See \link[runPerCellQC]. Default NULL.}
+\item{geneSetListLocation.}{See \code{runPerCellQC}. Default NULL.}
 
-\item{geneSetCollection.}{See \link[runPerCellQC]. Default NULL.}
+\item{geneSetCollection.}{See \code{runPerCellQC}. Default NULL.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the

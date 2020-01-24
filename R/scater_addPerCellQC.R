@@ -8,7 +8,7 @@
 #' @param geneSetListLocation Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in \code{rownames(sce)}.
 #' If another character is supplied, then genes will be looked up in the column names of \code{rowData(sce)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different 
 #' gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(sce)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(sce)}. Default 'rownames'.
-#' @param geneSetCollection. Class of \code{GeneSetCollection} from package \link[GSEABase]. The location of the gene IDs in \code{sce} should be in the \code{description} slot of each gene set and should follow the 
+#' @param geneSetCollection. Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{sce} should be in the \code{description} slot of each gene set and should follow the 
 #' same notation as \code{geneSetListLocation}. The function \link[GSEABase]{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
 #' of the gene IDs in \code{sce}. These gene sets will be included with those from \code{geneSetList} if both parameters are provided.
 #' @param ... Additional arguments to pass to \link[scran]{addPerCellQC}.

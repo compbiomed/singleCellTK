@@ -7,9 +7,9 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
-#' @param geneSetList. See \link[runPerCellQC]. Default NULL.
-#' @param geneSetListLocation. See \link[runPerCellQC]. Default NULL.
-#' @param geneSetCollection. See \link[runPerCellQC]. Default NULL.
+#' @param geneSetList. See \code{runPerCellQC}. Default NULL.
+#' @param geneSetListLocation. See \code{runPerCellQC}. Default NULL.
+#' @param geneSetCollection. See \code{runPerCellQC}. Default NULL.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -30,9 +30,7 @@ runCellQC <- function(sce,
   assayName = "counts",
   seed = 12345) {
 
-  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-
-    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
+  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }

@@ -6,8 +6,8 @@ This pipeline is focused on single cell data generated from microfluidic devices
 
 ## Specifications
 
-* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required software. 
-* For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python.
+* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
+* For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python on the system.
 
 
 ## Running the pipeline
@@ -24,7 +24,7 @@ or
 SCTK_runQC.R -p /base/path/ -p Preprocessing_Algorithm -s SampleName -o Output_Directory
 ```
 
-if Rscript can be found in your environment with the command
+if the Rscript executable can be found in your environment with the command
 
 ```
 /usr/bin/env Rscript
@@ -50,17 +50,17 @@ Some tools prepend the sample name onto the output files instead of making a sep
 
 The arguments are as follows:
 
--d The path to the unfiltered/raw output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-b, --base_path. Base path for the output from the preprocessing algorithm
 
--c The path to the filtered output from preprocessing steps. A "matrix.mtx" file containing the counts data, "features.tsv"containing the features data, and a "barcodes.tsv" containing the barcodes for all of the samples is required.
+-p, --preproc. Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"
 
--p Preprocessing step used (CellRanger, etc.)
+-s, --sample. Name of the sample. This will be prepended to the cell barcodes.
 
--g Whether the outputs from -u/-f are gzipped or not
+-o, --directory. Output directory. A new subdirectory will be created with the name "sample". R, Python, and FlatFile directories will be created under the "sample" directory containing the data containers with QC metrics. Default ".".
 
--s The desired sample name
+-g, --gmt. GMT file containing gene sets for quality control. The second column in the GMT file (i.e. the description) should contain the location to look for the IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If another character or integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
 
--o The desired output directory name
+-t, --delim. Delimiter used in GMT file. Default "\t".
 
 ## Including genes sets for analysis
 
