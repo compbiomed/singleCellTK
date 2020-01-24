@@ -9,6 +9,13 @@ This pipeline is focused on single cell data generated from microfluidic devices
 * The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
 * For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python on the system.
 
+## Installation
+The script will automatically try to install the "singleCellTK" package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:
+
+```
+library(devtools)
+install_github("compbiomed/singleCellTK@importQC")
+```
 
 ## Running the pipeline
 
@@ -66,9 +73,13 @@ The arguments are as follows:
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
-- emptyDrops(dropletUtils): https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html
+- emptyDrops from the dropletUtils package: https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html
 
-#### Doublet Detection:
-- doubletCells(scran): https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html
+#### Doublet Detection
+* doubletCells(scran): https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html
+* scds
+
+#### Ambient RNA detection
+* DecontX
 
 
