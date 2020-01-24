@@ -29,6 +29,40 @@ shinyPanelBatchcorrect <- fluidPage(
         withBusyIndicatorUI(actionButton("combatRun", "Run"))
       ),
       mainPanel(
+          actionButton("toggleAssayDetails", "Assay Details ", style="width: 100%", icon=icon("caret-down", lib="font-awesome")),
+          hidden(wellPanel(id="assayDetails",
+            br(),
+            fluidRow(
+              sidebarLayout(
+                sidebarPanel(
+                  h4("Assay Options:"),
+                  selectInput("assayModifyAction", "Assay Actions:",
+                              c("Log Transform" = "log", "Create CPM" = "cpm",
+                                "Rename" = "rename", "Delete" = "delete")),
+                  conditionalPanel(
+                    condition = "input.assayModifyAction == 'cpm'",
+                    h5("Select a count assay to use for CPM calculation:")
+                  ),
+                  selectInput("modifyAssaySelect", "Select Assay:", currassays),
+                  conditionalPanel(
+                    condition = "input.assayModifyAction != 'delete'",
+                    textInput("modifyAssayOutname", "Assay Name", "",
+                              placeholder = "What should the assay be called?")
+                  ),
+                  withBusyIndicatorUI(actionButton("modifyAssay", "Run"))
+                ),
+                mainPanel(
+                  fluidRow(
+                    column(12,
+                           h4("Available Assays:"),
+                           tableOutput("assayList")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
         uiOutput("combatStatus"),
         plotOutput("combatBoxplot", height = "600px")
       )

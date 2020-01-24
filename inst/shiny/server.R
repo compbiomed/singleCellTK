@@ -33,7 +33,8 @@ shinyServer(function(input, output, session) {
     dimRedPlot_geneExp = NULL,
     dendrogram = NULL,
     pcX = NULL,
-    pcY = NULL
+    pcY = NULL,
+    showAssayDetails = FALSE
   )
 
   #reactive list to store names of results given by the user.
@@ -152,6 +153,21 @@ shinyServer(function(input, output, session) {
     toggle(id = "console")
   })
 
+  observeEvent(input$toggleAssayDetails, {
+    if (vals$showAssayDetails == FALSE) {
+      vals$showAssayDetails <- TRUE
+      shinyjs::show(id="assayDetails", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-up", lib="font-awesome"))
+    } else {
+      vals$showAssayDetails <- FALSE
+      shinyjs::hide(id="assayDetails", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
+    }
+  })
+  
+
+  # js$disableTabs()
+  
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
@@ -174,7 +190,7 @@ shinyServer(function(input, output, session) {
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
-          vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
+          vals$original <- (createSCE(assayFile = t(maits$expressionmat),
                                      annotFile = maits$cdat,
                                      featureFile = maits$fdat,
                                      assayName = "logtpm",
@@ -225,7 +241,9 @@ shinyServer(function(input, output, session) {
             HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
                  </span> Successfully Uploaded! <button type='button' \
                  class='close' data-dismiss='alert'>&times;</button>"))
-            )
+        )
+        shinyjs::show(id="annotationData")
+        js$enableTabs();
       } else {
         shinyalert::shinyalert("Error!", "The data upload failed!",
                                type = "error")
@@ -658,7 +676,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
-  }, options = list(scrollX = TRUE, pageLength = 30))
+  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
 
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))
@@ -730,8 +748,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #Sidebar buttons functionality - not an accordion
-  shinyjs::onclick("c_button1", shinyjs::toggle(id = "c_collapse1",
-                                                anim = TRUE), add = TRUE)
   shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
                                                 anim = TRUE), add = TRUE)
   shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",

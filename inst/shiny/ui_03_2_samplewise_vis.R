@@ -4,69 +4,6 @@ shinyPanelCluster <- fluidPage(
     h3("Samplewise Visualization and Clustering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
               "(help)", target = "_blank")),
-      # SHINYJS COLLAPSE --------------------------
-      # Section 1 - Assay Settings
-      actionButton("c_button1", "Run New Dimensional Reduction"),
-      # open by default
-      tags$div(id = "c_collapse1",
-               wellPanel(
-                 fluidRow(
-                   column(8,
-                          wellPanel(
-                            fluidRow(
-                              column(6,
-                                     tags$h4("Select:"),
-                                     selectInput("dimRedAssaySelect", "Assay:", currassays),
-                                     # Note: Removed "Dendrogram" option from method select to disable conditionalPanels.
-                                     selectInput("dimRedPlotMethod", "Method:", c("PCA", "tSNE", "UMAP")),
-                                     tags$br(),
-                                     withBusyIndicatorUI(actionButton("runDimred", "Run"))
-                              ),
-                              column(6,
-                                     tags$h4("DR Options:"),
-                                     textInput("dimRedNameInput", "reducedDim Name:", ""),
-                                     tags$br(),
-                                     HTML('<button type="button" class="btn btn-default btn-block"
-                                          data-toggle="collapse" data-target="#c-collapse-run-options">
-                                          View More Options</button>'
-                                     ),
-                                     tags$div(
-                                       id = "c-collapse-run-options", class = "collapse",
-                                       conditionalPanel(
-                                         condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
-                                         sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 200),
-                                         sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
-                                         numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
-                                       ),
-                                       conditionalPanel(
-                                         condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
-                                         sliderInput("iterTSNE", "# of iterations", min = 100, max = 2000, value = 1000),
-                                         sliderInput("perplexityTSNE", "Perplexity paramter", min = 5, max = 50, value = 5)
-                                       )
-                                     )
-                                     )
-                            )
-                   )
-                 ),
-                 column(4,
-                        wellPanel(
-                          h4("Available Reduced Dims:"),
-                          tableOutput("reducedDimsList"),
-                          tags$hr(),
-                          h4("Remove a reducedDim:"),
-                          fluidRow(
-                            column(8,
-                                   selectInput("delRedDimType", label = NULL, currreddim)
-                            ),
-                            column(4,
-                                   withBusyIndicatorUI(actionButton("delRedDim", "Delete"))
-                            )
-                          )
-                        )
-                 )
-               )
-               )
-      ),
       # Section 2 - Visualize
       actionButton("c_button2", "Visualize"),
       # open by default
