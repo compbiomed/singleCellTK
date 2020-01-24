@@ -26,9 +26,11 @@ require("optparse")
 require("singleCellTK")
 option_list <- list(optparse::make_option(c("-d", "--droplet"),
         type="character",
+        default=NA,
         help="path to the unfiltered droplet counts matrix"),
     optparse::make_option(c("-c", "--cell"),
         type="character",
+        default=NA,
         help="path to the filtered cells counts matrix"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
