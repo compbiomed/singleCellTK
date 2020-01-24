@@ -59,8 +59,8 @@ filteredSCE <- NULL
 if (preproc == "BUStools") {
   dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix")
 } else if(preproc == "STARSolo"){
-  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
+  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix")
+  filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix")
 } else if(preproc == "CellRangerV3"){
   dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
   filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/filtered_feature_bc_matrix", class = "Matrix")

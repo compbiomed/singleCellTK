@@ -42,5 +42,5 @@ A wrapper function for \link[celda]{decontX}. Identify
 data(emptyDropsSceExample, package = "singleCellTK")
 mito.ix = grep("^MT-", rowData(emptyDropsSceExample)$feature_name)
 geneSet <- list("Mito"=rownames(emptyDropsSceExample)[mito.ix])
-sce <- runPerCellQC(emptyDropsSceExample, geneSet = geneSet)
+sce <- runPerCellQC(emptyDropsSceExample, geneSetList = geneSet)
 }

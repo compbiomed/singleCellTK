@@ -10,7 +10,7 @@ runDoubletCells(sce, sample = NULL, assayName = "counts", seed = 12345, ...)
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[scran]{doubleCells} will be run on cells from each sample separately.}
+\link[scran]{doubletCells} will be run on cells from each sample separately.}
 
 \item{assayName}{A string specifying which assay in the SCE to use.}
 

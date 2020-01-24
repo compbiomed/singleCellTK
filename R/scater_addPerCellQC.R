@@ -17,7 +17,7 @@
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' mito.ix = grep("^MT-", rowData(emptyDropsSceExample)$feature_name)
 #' geneSet <- list("Mito"=rownames(emptyDropsSceExample)[mito.ix])
-#' sce <- runPerCellQC(emptyDropsSceExample, geneSet = geneSet)
+#' sce <- runPerCellQC(emptyDropsSceExample, geneSetList = geneSet)
 #' @export
 runPerCellQC <- function(sce,
     assayName = "counts",
