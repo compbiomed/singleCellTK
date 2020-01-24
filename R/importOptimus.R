@@ -24,6 +24,7 @@
   }
   ix <- seq(tail(breaks, n = 1), ncol(mat))
   newM <- cbind(newM, mat[,ix])
+  mat <- newM
   
   if (class == "Matrix") {
     return(mat)
