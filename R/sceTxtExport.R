@@ -1,135 +1,188 @@
-#' @title sceTxtExport
-#' @description exports SingleCellExperiment object to txt.gz file(s).
-#' @param sce SingleCellExperiment object to be exported.
-#' @param outputDir Name of the directory to store the exported txt.gz file(s).
-#' @examples
-#' sceTxtExport(sce, outputDir)
-#' @export txt.gz file(s)
-#'
-library(SingleCellExperiment)
-library(SummarizedExperiment)
 
-sceTxtExport <- function(sce, outputDir) {
-  # creating folders
-  assays_folder <- paste0(outputDir, "/assays")
-  
-  if (dir.exists(outputDir)) {
-    print("Warning: Output folder already exists. Overwriting.")
-  } else {
-    dir.create(outputDir)
+.checkOverwrite <- function(path, overwrite) {
+  if (file.exists(path) && !isTRUE(overwrite)) {
+    stop(path, " already exists! Try setting a new 'outputDir' or",
+      " 'overwrite' to TRUE")
   }
-  
-  if (!dir.exists(assays_folder)) {
-    dir.create(assays_folder)
-  }
-  
-  if (length(reducedDimNames(sce)) > 0) {
-    reduce_dimensions_folder <- paste0(outputDir, "/reducedDimNames")
-    
-    if (!dir.exists(reduce_dimensions_folder)) {
-      dir.create(reduce_dimensions_folder)
-    }
-  }
-  
-  if (length(altExpNames(sce)) > 0) {
-    altExp_folder <- paste0(outputDir, "/altExp")
-    if (!dir.exists(altExp_folder)) {
-      dir.create(altExp_folder)
-    }
-  }
-  
-  
-  
-  if (length(names(metadata(sce))) > 0) {
-    metadata_folder <- paste0(outputDir, "/metadata")
-    if (!dir.exists(metadata_folder)) {
-      dir.create(metadata_folder)
-    }
-  }
-  
-  # function to write txt gz files
-  writeGzFile <- function(data, name) {
-    data <- as.data.frame(data)
-    gz <- gzfile(paste0(name, ".txt.gz"), open = "w")
-    write.table(as.data.frame(data), gz, row.names = T)
-    close(con = gz, type = "w")
-  }
-  
-  # write assays data
-  assay_names <- names(assays(sce))
-  for (i in assay_names) {
-    data <- assays(sce)[[i]]
-    filename <- paste0(assays_folder, "/", i)
-    print(paste("Writing", filename, "..."))
-    writeGzFile(data, filename)
-  }
-  
-  # write altExpNames
-  if (length(altExpNames(sce)) > 0) {
-    altExp_names <- altExpNames(sce)
-    for (i in altExp_names) {
-      data <- altExp(sce)[[i]]
-      filename <- paste0(altExp_folder, "/", i)
-      print(paste("Writing", filename, "..."))
-      writeGzFile(data, filename)
-    }
-  }
-  
-  # write colData and rowData
-  
-  # write colData
-  data <- colData(sce)
-  if (length(data) > 0) {
-    filename <- paste0(outputDir, "/", "colData")
-    print(paste("Writing", filename, "..."))
-    writeGzFile(data, name = filename)
-  }
-  
-  # write rowData
-  
-  data <- rowData(sce)
-  if (length(colData(sce)) > 0) {
-    filename <- paste0(outputDir, "/", "rowData")
-    print(paste("Writing", filename, "..."))
-    writeGzFile(data, filename)
-  }
-  
-  
-  
-  # write reduced dimensions
-  if (length(reducedDimNames(sce)) != 0) {
-    redDim_names <- reducedDimNames(sce)
-    for (i in redDim_names) {
-      data <- reducedDim(sce, i, withDimnames = TRUE)
-      filename <- paste0(reduce_dimensions_folder, "/", i)
-      print(paste("Writing", filename, "..."))
-      writeGzFile(data, filename)
-    }
-  }
-  
-  # write metaData
-  
-  if (length(names(metadata(sce))) > 0) {
-    metadata_names <- names(metadata(sce))
-    for (i in metadata_names) {
-      data <- metadata(sce)[[i]]
-      filename <- paste0(metadata_folder, "/", i)
-      print(paste("Writing", filename, "..."))
-      writeGzFile(data, filename)
-    }
-  }
-  
-  print("Done")
-  
 }
 
-# testing
 
-testFUN() {
-  library(scRNAseq)
-  
-  sce <- ReprocessedAllenData("tophat_counts")
-  
-  sceTxtExport(sce)
- 
+# function to write txt gz files
+.writeSCEFile <- function(data, path, overwrite, gzipped) {
+  data <- data.table::as.data.table(data, keep.rownames = TRUE)
+  if (isTRUE(gzipped)) {
+    filename <- paste0(path, ".txt.gz")
+  } else {
+    filename <- paste0(path, ".txt")
+  }
+  .checkOverwrite(filename, overwrite)
+  data.table::fwrite(data, file = filename)
+}
+
+
+# write assays data
+.writeAssays <- function(sce, path, overwrite, gzipped) {
+  assayNames <- names(SummarizedExperiment::assays(sce))
+  for (i in assayNames) {
+    data <- SummarizedExperiment::assays(sce)[[i]]
+    assaypath <- file.path(path, i)
+    message(date(), " Writing assay ", i, " ...")
+
+    match <- intersect(c("dgTMatrix", "dgCMatrix", "dgRMatrix"), class(data))
+    if (length(match) > 0) {
+      data <- data.table::as.data.table(Matrix::as.matrix(data),
+        keep.rownames = TRUE)
+    }
+
+    if (!("data.frame" %in% class(data))) {
+      data <- data.table::as.data.table(data, keep.rownames = TRUE)
+    }
+
+    .writeSCEFile(data, assaypath, overwrite, gzipped)
+  }
+}
+
+
+# write altExpNames
+.writeAltExps <- function(sce, path, overwrite, gzipped) {
+  altExpNames <- SingleCellExperiment::altExpNames(sce)
+  for (i in altExpNames) {
+    sceAltExp <- SingleCellExperiment::altExp(sce, i, withColData = FALSE)
+    altExpPath <- file.path(path, i)
+    message(date(), " Writing altExp ", i, " ...")
+
+    if (length(SummarizedExperiment::assays(sceAltExp)) > 0) {
+      assaysFolder <- file.path(altExpPath, "/assays")
+      dir.create(assaysFolder, showWarnings = FALSE, recursive = TRUE)
+      .writeAssays(sceAltExp, assaysFolder, overwrite, gzipped)
+    }
+
+    .writeColData(sceAltExp, altExpPath, overwrite, gzipped)
+    .writeRowData(sceAltExp, altExpPath, overwrite, gzipped)
+
+    if (length(SingleCellExperiment::reducedDimNames(sceAltExp)) > 0) {
+      reducedDimsFolder <- file.path(altExpPath, "/reducedDims")
+      dir.create(reducedDimsFolder, showWarnings = FALSE, recursive = TRUE)
+      .writeReducedDims(sceAltExp, reducedDimsFolder, overwrite, gzipped)
+    }
+
+    if (length(SingleCellExperiment::altExpNames(sceAltExp)) > 0) {
+      altExpsFolder <- file.path(altExpPath, "/altExps")
+      dir.create(altExpsFolder, showWarnings = FALSE, recursive = TRUE)
+      .writeAltExps(sceAltExp, altExpsFolder, overwrite, gzipped)
+    }
+
+    if (length(names(S4Vectors::metadata(sceAltExp))) > 0) {
+      metadataFolder <- file.path(altExpPath, "/metadata")
+      dir.create(metadataFolder, showWarnings = FALSE, recursive = TRUE)
+      .writeMetaData(sce, metadataFolder, overwrite, gzipped)
+    }
+    message(date(), " Finished writing altExp ", i, " ...")
+  }
+}
+
+
+# write colData
+.writeColData <- function(sce, path, overwrite, gzipped) {
+  data <- SummarizedExperiment::colData(sce)
+  colDataPath <- file.path(path, "colData")
+  message(date(), " Writing colData ...")
+  .writeSCEFile(data, colDataPath, overwrite, gzipped)
+}
+
+
+# write rowData
+.writeRowData <- function(sce, path, overwrite, gzipped) {
+  data <- SummarizedExperiment::rowData(sce)
+  rowDataPath <- file.path(path, "rowData")
+  message(date(), " Writing rowData ...")
+  .writeSCEFile(data, rowDataPath, overwrite, gzipped)
+}
+
+
+# write reduced dimensions
+.writeReducedDims <- function(sce, path, overwrite, gzipped) {
+  if (length(reducedDimNames(sce)) > 0) {
+    reducedDimNames <- SingleCellExperiment::reducedDimNames(sce)
+    for (i in reducedDimNames) {
+      data <- SingleCellExperiment::reducedDim(sce, i, withDimnames = TRUE)
+      reducedDimNamePath <- file.path(path, i)
+      message(date(), " Writing reduced dimension ", i, " ...")
+      .writeSCEFile(data, reducedDimNamePath, overwrite, gzipped)
+    }
+  }
+}
+
+
+# write metaData
+.writeMetaData <- function(sce, path, overwrite, gzipped) {
+  if (length(names(S4Vectors::metadata(sce))) > 0) {
+    metadataNames <- names(S4Vectors::metadata(sce))
+    for (i in metadataNames) {
+      data <- S4Vectors::metadata(sce)[[i]]
+      metaDataPath <- file.path(path, i)
+      message(date(), " Writing metaData ", i, " ...")
+      .writeSCEFile(data, metaDataPath, overwrite, gzipped)
+    }
+  }
+}
+
+
+#' @title Export \link[SingleCellExperiment]{SingleCellExperiment} object
+#' @description Save \link[SingleCellExperiment]{SingleCellExperiment} to
+#'  disk.
+#' @param sce \link[SingleCellExperiment]{SingleCellExperiment} object to be
+#'  exported.
+#' @param outputDir Name of the directory to store the exported file(s).
+#' @param overwrite Boolean. Whether to overwrite the output files. Default
+#'  \code{FALSE}.
+#' @param outputType The desired type of the output files. Default \code{"txt"}
+#'  which
+#'  writes the \link[SingleCellExperiment]{SingleCellExperiment} object as
+#'  tab delimited text files.
+#' @param gzipped Boolean. \code{TRUE} if the output files are to be
+#'  gzip compressed. \code{FALSE} otherwise. Default
+#'  \code{TRUE} to save disk space.
+#' @examples
+#' data(sce_chcl, package = "scds")
+#' writeSCE(sce_chcl, "sce_chcl")
+#'
+#' if (!requireNamespace("scRNAseq", quietly = TRUE)) {
+#'   BiocManager::install("scRNAseq")
+#' }
+#' sce <- scRNAseq::ReprocessedAllenData("tophat_counts")
+#' writeSCE(sce, "ReprocessedAllenData")
+#' @export
+writeSCE <- function(sce,
+  outputDir = "./",
+  outputType = "txt",
+  overwrite = FALSE,
+  gzipped = TRUE) {
+
+  if (length(SummarizedExperiment::assays(sce)) > 0) {
+    assaysFolder <- file.path(outputDir, "/assays")
+    dir.create(assaysFolder, showWarnings = FALSE, recursive = TRUE)
+    .writeAssays(sce, assaysFolder, overwrite, gzipped)
+  }
+
+  .writeColData(sce, outputDir, overwrite, gzipped)
+  .writeRowData(sce, outputDir, overwrite, gzipped)
+
+  if (length(SingleCellExperiment::reducedDimNames(sce)) > 0) {
+    reducedDimsFolder <- file.path(outputDir, "/reducedDims")
+    dir.create(reducedDimsFolder, showWarnings = FALSE, recursive = TRUE)
+    .writeReducedDims(sce, reducedDimsFolder, overwrite, gzipped)
+  }
+
+  if (length(SingleCellExperiment::altExpNames(sce)) > 0) {
+    altExpsFolder <- file.path(outputDir, "/altExps")
+    dir.create(altExpsFolder, showWarnings = FALSE, recursive = TRUE)
+    .writeAltExps(sce, altExpsFolder, overwrite, gzipped)
+  }
+
+  if (length(names(S4Vectors::metadata(sce))) > 0) {
+    metadataFolder <- file.path(outputDir, "/metadata")
+    dir.create(metadataFolder, showWarnings = FALSE, recursive = TRUE)
+    .writeMetaData(sce, metadataFolder, overwrite, gzipped)
+  }
 }

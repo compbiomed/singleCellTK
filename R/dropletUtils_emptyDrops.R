@@ -57,7 +57,7 @@ runEmptyDrops <- function(sce,
     sample = rep(1, ncol(sce))
   }
 
-  message(paste0(date(), " ... Running 'emptyDrops'"))
+  message(date(), " ... Running 'emptyDrops'")
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(sce),
