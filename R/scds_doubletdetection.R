@@ -58,11 +58,11 @@ runCxds <- function(sce,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ...))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ntop = nGene, ...))}, silent = TRUE)
           nGene <- nGene - 100
         }  
         
-        if (!inherits(result, "try-error")) {
+        if (!inherits(result, "try-error") & !is.null(result)) {
           if ("cxds_call" %in% colnames(SummarizedExperiment::colData(result))) {
               output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
                   c("cxds_score", "cxds_call")]
@@ -147,7 +147,7 @@ runBcds <- function(sce,
           nGene <- nGene - 100
         }  
 
-        if (!inherits(result, "try-error")) {
+        if (!inherits(result, "try-error") & !is.null(result)) {
           if ("bcds_call" %in% colnames(SummarizedExperiment::colData(result))) {
               output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
                   c("bcds_score", "bcds_call")]
@@ -230,11 +230,11 @@ runCxdsBcdsHybrid <- function(sce,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, ...))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, bcds_args=list(ntop = nGene)))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
-        if (!inherits(result, "try-error")) {
+        if (!inherits(result, "try-error") & !is.null(result)) {
           if ("hybrid_call" %in% colnames(SummarizedExperiment::colData(result))) {
               output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
                   c("hybrid_score", "hybrid_call")]
