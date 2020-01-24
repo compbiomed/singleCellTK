@@ -78,13 +78,11 @@
 
         cb[[i]] <- .readBarcodes(file.path(dir, barcodesFile))
         if (isTRUE(cbNotFirstCol)) {
-            message("First column of barcode file was row index and it was removed.")
             cb[[i]] <- cb[[i]][, -1, drop = FALSE]
         }
 
         fe[[i]] <- .readFeatures(file.path(dir, featuresFile))
         if (isTRUE(feNotFirstCol)) {
-            message("First column of gene file was row index and it was removed.")
             fe[[i]] <- fe[[i]][, -1, drop = FALSE]
         }
 
