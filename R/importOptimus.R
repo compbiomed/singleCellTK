@@ -11,6 +11,8 @@
   mat <- sparse$load_npz(matrixLocation)
   colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
   rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
+  colnames(mat) <- colIndex
+  rownames(mat) <- rowIndex  
   mat <- t(mat)
 
   ## Convert to "dgCMatrix"
@@ -29,10 +31,10 @@
     newM <- cbind(newM, mat[,ix])
   }  
   
+  colnames(newM) <- colnames(mat)
+  rownames(newM) <- rownames(mat)  
   mat <- newM
-  colnames(mat) <- colIndex
-  rownames(mat) <- rowIndex
-
+  
   if (class == "Matrix") {
     return(mat)
   } else if (class == "DelayedArray") {
