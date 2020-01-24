@@ -7,8 +7,8 @@
     if (ncol(res) == 1) {
         colnames(res) <- colname
     } else {
-        res <- res[,colname, drop=FALSE]
-        colnames(res) <- colname        
+        warning("'barcodes' file contains >1 columns!",
+            " The column names are kept as is.")
     }
     return(res)
 }

@@ -48,6 +48,22 @@
 }
 
 
+.readBarcodesSEQC <- function(path) {
+    res <- data.table::fread(path, header = FALSE, sep=",", colClasses = "character")
+    res <- res[,-1,drop = FALSE]
+    colnames(res) <- "cell_barcode"
+    return(res)
+}
+
+
+.readFeaturesSEQC <- function(path) {
+    res <- data.table::fread(path, header = FALSE, sep=",", colClasses = "character")
+    res <- res[,-1,drop = FALSE]
+    colnames(res) <- "feature_name"
+    return(res)
+}
+
+
 .importSEQC <- function(
     seqcDirs,
     samples,
@@ -77,15 +93,8 @@
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
 
-        cb[[i]] <- .readBarcodes(file.path(dir, barcodesFile))
-        if (isTRUE(cbNotFirstCol)) {
-            cb[[i]] <- cb[[i]][, -1, drop = FALSE]
-        }
-
-        fe[[i]] <- .readFeatures(file.path(dir, featuresFile))
-        if (isTRUE(feNotFirstCol)) {
-            fe[[i]] <- fe[[i]][, -1, drop = FALSE]
-        }
+        cb[[i]] <- .readBarcodesSEQC(file.path(dir, barcodesFile))
+        fe[[i]] <- .readFeaturesSEQC(file.path(dir, featuresFile))
 
         mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile),
             gzipped = gzipped, class = class)
