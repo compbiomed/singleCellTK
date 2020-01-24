@@ -11,7 +11,7 @@
         assays = list(counts = matrix))
     SummarizedExperiment::rowData(sce) <- features
     SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(
-        cell_barcode = barcodes[[1]],
+        cell_barcode = as.character(barcodes[[1]]),
         column_name = coln,
         sample = sampleName,
         row.names = coln)
