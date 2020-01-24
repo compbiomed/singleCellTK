@@ -132,7 +132,7 @@ runBcds <- function(sce,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          result <- withr::with_seed(seed, scds::bcds(sce = sceSample, nTop = nGene, ...))
+          result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ntop = nGene, ...))
           nGene <- nGene - 100
         }  
 
@@ -144,15 +144,15 @@ runBcds <- function(sce,
               output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
                   c("bcds_score")]
           }
+        } else {
+          output[sceSampleInd, ] <- NA
+          warning(paste0("'bcds' from package 'scds' did not complete successfully for sample", samples[i]))
         }  
+ 
     }
 
-    if (!inherits(result, "try-error")) {
-      colnames(output) <- paste0("scds_", colnames(output))
+    colnames(output) <- paste0("scds_", colnames(output))
       colData(sce) = cbind(colData(sce), output)
-    } else {
-      warning("'bcds' from package 'scds' did not complete successfully")
-    }  
 
     return(sce)
 }
