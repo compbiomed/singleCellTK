@@ -174,7 +174,7 @@
 #' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
 #' and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
 #' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
-#' , feature anotations and cell annotations for each sample.
+#' , feature annotations and cell annotations for each sample.
 #' @details
 #' \code{importSEQC} imports output from seqc.
 #' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output

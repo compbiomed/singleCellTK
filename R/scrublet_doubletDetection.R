@@ -10,6 +10,7 @@
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Scrublet will be run on cells from each sample separately. If NULL, then
 #'  all cells will be processed together. Default \code{NULL}.
+#' @param assayName  A string specifying which assay in the SCE to use. Default 'counts'.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \code{scrub_doublets} output appended to the

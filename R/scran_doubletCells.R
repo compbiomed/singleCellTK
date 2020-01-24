@@ -23,7 +23,7 @@
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param ... Additional arguments to pass to \link[scran]{doubletCells}.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
-#'  \link{runDoubletCells} runs \link[scran]{doubletCells} for each
+#'  \link[scran]{runDoubletCells} runs \link[scran]{doubletCells} for each
 #'  \code{sample} within \code{sce} iteratively. The
 #'  resulting doublet scores for all cells will be appended to the
 #'  \link[SummarizedExperiment]{colData} of \code{sce}.

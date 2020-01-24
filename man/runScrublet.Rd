@@ -14,6 +14,8 @@ Needs \code{counts} in assays slot.}
 Scrublet will be run on cells from each sample separately. If NULL, then
 all cells will be processed together. Default \code{NULL}.}
 
+\item{assayName}{A string specifying which assay in the SCE to use. Default 'counts'.}
+
 \item{seed}{Seed for the random number generator. Default 12345.}
 }
 \value{

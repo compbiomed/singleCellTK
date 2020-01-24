@@ -7,9 +7,9 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
-#' @param geneSetList. See \code{runPerCellQC}. Default NULL.
-#' @param geneSetListLocation. See \code{runPerCellQC}. Default NULL.
-#' @param geneSetCollection. See \code{runPerCellQC}. Default NULL.
+#' @param geneSetList See \code{runPerCellQC}. Default NULL.
+#' @param geneSetListLocation See \code{runPerCellQC}. Default NULL.
+#' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -17,8 +17,10 @@
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{sce}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' sce <- runCellQC(sce_chcl)
+#' }
 #' @export
 runCellQC <- function(sce,
   algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
