@@ -1,4 +1,5 @@
 
+#' @importFrom reticulate import
 .readMatrixNpz <- function(matrixLocation,
   colIndexLocation,
   rowIndexLocation,
