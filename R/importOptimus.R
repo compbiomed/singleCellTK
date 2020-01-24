@@ -15,7 +15,7 @@
   mat <- t(mat)
 
   ## Convert to "dgCMatrix"
-  newM <- Matrix(mat[,1], nrow=nrow(mat))
+  newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
   newM <- as(newM, "dgCMatrix")
   breaks <- seq(2, ncol(mat), by=1000)
   for(i in seq(2, length(breaks))) {
