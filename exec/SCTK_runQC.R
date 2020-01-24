@@ -62,11 +62,11 @@ if (preproc == "BUStools") {
   dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/raw_feature_bc_matrix", class = "Matrix")
   filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "/outs/filtered_feature_bc_matrix", class = "Matrix")
 } else if(preproc == "CellRangerV3"){
-  dropletSCE <- importCellRangerV3(cellRangerDirs = path, samples = samplename, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRangerV3(cellRangerDirs = path, samples = samplename, cellRangerOuts = "outs/filtered_feature_bc_matrix", class = "Matrix")
+  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
+  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/filtered_feature_bc_matrix", class = "Matrix")
 } else if(preproc == "CellRangerV2"){
-  dropletSCE <- importCellRangerV2(cellRangerDirs = path, samples = samplename, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRangerV2(cellRangerDirs = path, samples = samplename, cellRangerOuts = "outs/filtered_gene_bc_matrix", class = "Matrix")
+  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
+  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/filtered_gene_bc_matrix", class = "Matrix")
 } else if(preproc == "SEQC"){
   dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
 } else if(preproc == "Optimus"){
