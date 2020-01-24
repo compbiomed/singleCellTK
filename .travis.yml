@@ -1,5 +1,6 @@
 language: r
 cache: packages
+script: true
 dist: trusty
 sudo: false
 warnings_are_errors: false
