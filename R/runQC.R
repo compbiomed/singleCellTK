@@ -30,7 +30,9 @@ runCellQC <- function(sce,
   assayName = "counts",
   seed = 12345) {
 
-  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
+  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
+    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
+
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -40,7 +42,7 @@ runCellQC <- function(sce,
                                  geneSetList = geneSetList,
                                  geneSetListLocation = geneSetListLocation,
                                  geneSetCollection = geneSetCollection)
-  }    
+  }
 
   if ("scrublet" %in% algorithms) {
     sce <- runScrublet(sce = sce,

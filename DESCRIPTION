@@ -64,7 +64,8 @@ Imports:
     umap,
     scran,
     DropletUtils,
-    scds
+    scds,
+    reticulate
 RoxygenNote: 7.0.2
 Suggests:
     Matrix,
