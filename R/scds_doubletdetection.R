@@ -128,19 +128,31 @@ runBcds <- function(sce,
         sceSample <- sce[, sceSampleInd]
 
         counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
-        result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ...))
+        
+        result <- NULL
+        nGene <- 500
+        while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
+          result <- withr::with_seed(seed, scds::bcds(sce = sceSample, nTop = nGene, ...))
+          nGene <- nGene - 100
+        }  
 
-        if ("bcds_call" %in% colnames(SummarizedExperiment::colData(result))) {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("bcds_score", "bcds_call")]
-        } else {
-            output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                c("bcds_score")]
-        }
+        if (!inherits(result, "try-error")) {
+          if ("bcds_call" %in% colnames(SummarizedExperiment::colData(result))) {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("bcds_score", "bcds_call")]
+          } else {
+              output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
+                  c("bcds_score")]
+          }
+        }  
     }
 
-    colnames(output) <- paste0("scds_", colnames(output))
-    colData(sce) = cbind(colData(sce), output)
+    if (!inherits(result, "try-error")) {
+      colnames(output) <- paste0("scds_", colnames(output))
+      colData(sce) = cbind(colData(sce), output)
+    } else {
+      warning("'bcds' from package 'scds' did not complete successfully")
+    }  
 
     return(sce)
 }
