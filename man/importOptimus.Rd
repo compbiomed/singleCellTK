@@ -74,7 +74,7 @@ Read the barcodes, features (genes), and matrices from Optimus
 }
 \examples{
 sce <- importOptimus(OptimusDirs =
-  system.file("extdata/Optimus_20x1000/bb4a2a5e-ff34-41b6-97d2-0c0c0c534530",
+  system.file("extdata/Optimus_20x1000",
   package = "singleCellTK"),
   samples = "Optimus_20x1000")
 }
