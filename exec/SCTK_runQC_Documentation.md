@@ -1,6 +1,8 @@
 # SCTK QC pipeline
 
-This pipeline will import outputs from single-cell preprocessing algorithms (e.g. CellRanger), generate various quality control metrics (e.g. doublet scores), and output SingleCellExperiment objects containing QC metric information.
+This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger), generate various quality control metrics (e.g. doublet scores), and output results in standard data containers (e.g. SingleCellExperiment).
+Both the original droplet matrix and the filtered cell matrix will be processed.
+This pipeline is focused on single cell data generated from microfluidic devices (e.g. 10X).
 
 ## Specifications
 
@@ -10,16 +12,16 @@ For importing files from the HCA Optimus pipeline, the "scipy" module needs to b
 
 ## Running the pipeline
 
-To run the pipeline script, users will need to upload the importScript.R Rscript to the desired folder and run the following code:
+To run the pipeline script, users will need to download the 'SCTK_runQC.R' and run the following code:
 
 ```
-Rscript SCTK_runQC.R -p /path/to/data -p Preprocessing_Algorithm -s SampleName -o Output_Directory
+Rscript SCTK_runQC.R -p /base/path -p Preprocessing_Algorithm -s SampleName -o Output_Directory
 ```
 
 or 
 
 ```
-SCTK_runQC.R -p /path/to/data -p Preprocessing_Algorithm -s SampleName -o Output_Directory
+SCTK_runQC.R -p /base/path/ -p Preprocessing_Algorithm -s SampleName -o Output_Directory
 ```
 
 if Rscript can be found in your environment with the command
@@ -31,7 +33,17 @@ if Rscript can be found in your environment with the command
 
 ## Data formats
 
-![](exec/SCTK_QC_Import.png)
+This pipeline can currently import data from the following tools:
+
+* CellRanger (V2 or V3)
+* STARsolo 
+* Human Cell Atlas (HCA) Optimus pipeline
+* BUStools
+* SEQC
+
+For each tool, the pipeline expect the data in a certain format within a specific directory structure.
+
+![](/exec/SCTK_QC_Import.png)
 
 ## Arguments
 
@@ -48,6 +60,8 @@ The arguments are as follows:
 -s The desired sample name
 
 -o The desired output directory name
+
+## Including genes sets for analysis
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
