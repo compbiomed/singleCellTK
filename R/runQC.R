@@ -31,7 +31,6 @@ runCellQC <- function(sce,
   seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-
     "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
@@ -42,7 +41,7 @@ runCellQC <- function(sce,
                                  geneSetList = geneSetList,
                                  geneSetListLocation = geneSetListLocation,
                                  geneSetCollection = geneSetCollection)
-  }    
+  }
 
   if ("doubletCells" %in% algorithms) {
     sce <- runDoubletCells(sce = sce,
@@ -132,7 +131,7 @@ runDropletQC <- function(sce,
 
   if ("QCMetrics" %in% algorithms) {
     sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = NULL)
-  }    
+  }
 
   if (any("emptyDrops" %in% algorithms)) {
     sce <- runEmptyDrops(sce = sce,
