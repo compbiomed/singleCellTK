@@ -1609,6 +1609,10 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "cv_button1", class = "btn-block")
   shinyjs::addClass(id = "cv_button2", class = "btn-block")
   shinyjs::addClass(id = "cv_button3", class = "btn-block")
+  colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+  color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+  color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+    |color_table$category == "seq"),])
 
   #-+-+-+-+-+-For Input Observe##############
   observe({
@@ -1632,36 +1636,33 @@ shinyServer(function(input, output, session) {
 
       updateSelectInput(session, "QuickAccess",
                         choices = c("",approach_list,"Custom"))
-        updateSelectInput(session, "ApproachSelect_Xaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Xaxis",
-                          choices = c(gene_list))
-        updateSelectInput(session, "AnnotationSelect_Xaxis",
-                          choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Yaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Yaxis",
-                          choices = c(gene_list))
-        updateSelectInput(session, "AnnotationSelect_Yaxis",
-                          choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Colorby",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Colorby",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Colorby",
-                          choices = c(gene_list))
-        updateSelectInput(session, "AnnotationSelect_Colorby",
-                          choices = c(annotation_list))
-        updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
-        updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:",
-                             choices = c("RdYlBu",color_seqdiv))
-
-
-
+      updateSelectInput(session, "ApproachSelect_Xaxis",
+                        choices = c(approach_list))
+      updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
+                        choices = c(method_list))
+      updateSelectInput(session, "GeneSelect_Assays_Xaxis",
+                        choices = c(gene_list))
+      updateSelectInput(session, "AnnotationSelect_Xaxis",
+                        choices = c(annotation_list))
+      updateSelectInput(session, "ApproachSelect_Yaxis",
+                        choices = c(approach_list))
+      updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
+                        choices = c(method_list))
+      updateSelectInput(session, "GeneSelect_Assays_Yaxis",
+                        choices = c(gene_list))
+      updateSelectInput(session, "AnnotationSelect_Yaxis",
+                        choices = c(annotation_list))
+      updateSelectInput(session, "ApproachSelect_Colorby",
+                        choices = c(approach_list))
+      updateSelectInput(session, "AdvancedMethodSelect_Colorby",
+                        choices = c(method_list))
+      updateSelectInput(session, "GeneSelect_Assays_Colorby",
+                        choices = c(gene_list))
+      updateSelectInput(session, "AnnotationSelect_Colorby",
+                        choices = c(annotation_list))
+      updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
+      updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:",
+                         choices = c("RdYlBu",color_seqdiv))
       }
     })
 
