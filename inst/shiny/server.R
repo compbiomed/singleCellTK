@@ -1620,10 +1620,10 @@ shinyServer(function(input, output, session) {
     if (is.null(vals$counts)) {
       # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
-      color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
-      color_seqdiv <- rownames(color_table[which(color_table$category == "div"
-                                                 |color_table$category == "seq"),])
+      #colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+      #color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+      #color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+      #                                           |color_table$category == "seq"),])
       #from sce
       cell_list <- BiocGenerics::colnames(vals$counts)
       gene_list <- BiocGenerics::rownames(vals$counts)
