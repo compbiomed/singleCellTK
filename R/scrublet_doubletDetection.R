@@ -10,14 +10,17 @@
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Scrublet will be run on cells from each sample separately. If NULL, then
 #'  all cells will be processed together. Default \code{NULL}.
+#' @param assayName  A string specifying which assay in the SCE to use. Default 'counts'.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \code{scrub_doublets} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' sce <- runScrublet(sce_chcl)
+#' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
 runScrublet <- function(sce,

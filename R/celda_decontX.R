@@ -13,8 +13,10 @@
 #'  \link[SummarizedExperiment]{colData} slot. Additionally, the 
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
+#' \dontrun{
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runDecontX(emptyDropsSceExample)
+#' }
 #' @export
 runDecontX <- function(sce,
     sample = NULL,

@@ -12,9 +12,29 @@
   colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
   rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
   colnames(mat) <- colIndex
-  rownames(mat) <- rowIndex
+  rownames(mat) <- rowIndex  
   mat <- t(mat)
 
+  ## Convert to "dgCMatrix"
+  newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
+  newM <- as(newM, "dgCMatrix")
+  breaks <- seq(2, ncol(mat), by=1000)
+  if(length(breaks) > 2) {
+	for(i in seq(2, length(breaks))) {
+	  ix <- seq(breaks[i-1], (breaks[i]-1))
+	  newM <- cbind(newM, mat[,ix])
+	}
+	ix <- seq(tail(breaks, n = 1), ncol(mat))
+	newM <- cbind(newM, mat[,ix])
+  } else {
+    ix <- seq(2, ncol(mat))
+    newM <- cbind(newM, mat[,ix])
+  }  
+  
+  colnames(newM) <- colnames(mat)
+  rownames(newM) <- rownames(mat)  
+  mat <- newM
+  
   if (class == "Matrix") {
     return(mat)
   } else if (class == "DelayedArray") {
@@ -209,10 +229,12 @@
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
+#' \dontrun{
 #' sce <- importOptimus(OptimusDirs =
-#'   system.file("extdata/Optimus_20x1000/bb4a2a5e-ff34-41b6-97d2-0c0c0c534530",
+#'   system.file("extdata/Optimus_20x1000",
 #'   package = "singleCellTK"),
 #'   samples = "Optimus_20x1000")
+#' }
 #' @export
 importOptimus <- function(OptimusDirs,
   samples,
