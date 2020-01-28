@@ -10,24 +10,23 @@ runPerCellQC(sce, assayName = "counts", geneSetList = NULL,
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
-\item{assayName}{A string specifying which assay in the SCE to use. Default 
-'counts'.}
+\item{assayName}{A string specifying which assay in the SCE to use. Default 'counts'.}
+
+\item{geneSetList}{List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}.}
 
 \item{geneSetListLocation}{Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in \code{rownames(sce)}.
 If another character is supplied, then genes will be looked up in the column names of \code{rowData(sce)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different 
 gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(sce)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(sce)}. Default 'rownames'.}
 
-\item{...}{Additional arguments to pass to \link[scran]{addPerCellQC}.}
-
-\item{geneSetList.}{List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}.}
-
-\item{geneSetCollection.}{Class of \code{GeneSetCollection} from package \link[GSEABase]. The location of the gene IDs in \code{sce} should be in the \code{description} slot of each gene set and should follow the 
+\item{geneSetCollection}{Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{sce} should be in the \code{description} slot of each gene set and should follow the 
 same notation as \code{geneSetListLocation}. The function \link[GSEABase]{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
 of the gene IDs in \code{sce}. These gene sets will be included with those from \code{geneSetList} if both parameters are provided.}
+
+\item{...}{Additional arguments to pass to \link[scater]{addPerCellQC}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
- cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(sce)$scran$addPerCellQC$geneSets}.
+ cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(sce)$scater$addPerCellQC$geneSets}.
 }
 \description{
 A wrapper function for \link[celda]{decontX}. Identify
@@ -37,5 +36,5 @@ A wrapper function for \link[celda]{decontX}. Identify
 data(emptyDropsSceExample, package = "singleCellTK")
 mito.ix = grep("^MT-", rowData(emptyDropsSceExample)$feature_name)
 geneSet <- list("Mito"=rownames(emptyDropsSceExample)[mito.ix])
-sce <- runPerCellQC(emptyDropsSceExample, geneSet = geneSet)
+sce <- runPerCellQC(emptyDropsSceExample, geneSetList = geneSet)
 }

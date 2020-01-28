@@ -40,7 +40,7 @@ is row index and it will be removed. \code{FALSE} the first column will be kept.
 \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
 and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
 \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
-, feature anotations and cell annotations for each sample.}
+, feature annotations and cell annotations for each sample.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count

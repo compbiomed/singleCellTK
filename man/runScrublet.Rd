@@ -14,6 +14,8 @@ Needs \code{counts} in assays slot.}
 Scrublet will be run on cells from each sample separately. If NULL, then
 all cells will be processed together. Default \code{NULL}.}
 
+\item{assayName}{A string specifying which assay in the SCE to use. Default 'counts'.}
+
 \item{seed}{Seed for the random number generator. Default 12345.}
 }
 \value{
@@ -31,6 +33,8 @@ A wrapper function that calls \code{scrub_doublets} from python
  array that is \code{TRUE} for predicted doublets and \code{FALSE} otherwise.
 }
 \examples{
+\dontrun{
 data(sce_chcl, package = "scds")
 sce <- runScrublet(sce_chcl)
+}
 }
