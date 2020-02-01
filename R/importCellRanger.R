@@ -150,10 +150,10 @@
 }
 
 
-.getSampleNames <- function(samples) {
-    res <- basename(samples)
-    return(res)
-}
+# .getSampleNames <- function(samples) {
+#     res <- basename(samples)
+#     return(res)
+# }
 
 
 # main function
@@ -168,14 +168,14 @@
     class) {
 
     .checkArgsImportCellRanger(cellRangerDirs, samples, class)
-    samples <- .getSamplesPaths(cellRangerDirs, samples)
+    samplePaths <- .getSamplesPaths(cellRangerDirs, samples)
 
     res <- vector("list", length = length(samples))
 
     for (i in seq_along(samples)) {
-        dir <- .getOutputFolderPath(samples[i], cellRangerOuts)
+        dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts)
         scei <- .constructSCEFromCellRangerOutputs(dir,
-            sample = .getSampleNames(samples[i]),
+            sample = samples[i],
             matrixFileName = matrixFileName,
             featuresFileName = featuresFileName,
             barcodesFileName = barcodesFileName,
