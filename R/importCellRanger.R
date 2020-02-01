@@ -150,10 +150,10 @@
 }
 
 
-# .getSampleNames <- function(samples) {
-#     res <- basename(samples)
-#     return(res)
-# }
+.getSampleNames <- function(samples) {
+    res <- basename(samples)
+    return(res)
+}
 
 
 # main function
@@ -175,7 +175,7 @@
     for (i in seq_along(samples)) {
         dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts)
         scei <- .constructSCEFromCellRangerOutputs(dir,
-            sample = samples[i],
+            sample = .getSampleNames(samples[i]),
             matrixFileName = matrixFileName,
             featuresFileName = featuresFileName,
             barcodesFileName = barcodesFileName,
