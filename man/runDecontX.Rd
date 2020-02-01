@@ -29,6 +29,8 @@ A wrapper function for \link[celda]{decontX}. Identify
  potential contamination from experimental factors such as ambient RNA.
 }
 \examples{
+\dontrun{
 data(emptyDropsSceExample, package = "singleCellTK")
 sce <- runDecontX(emptyDropsSceExample)
+}
 }

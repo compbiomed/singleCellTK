@@ -7,9 +7,9 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
-#' @param geneSetList. See \link[runPerCellQC]. Default NULL.
-#' @param geneSetListLocation. See \link[runPerCellQC]. Default NULL.
-#' @param geneSetCollection. See \link[runPerCellQC]. Default NULL.
+#' @param geneSetList See \code{runPerCellQC}. Default NULL.
+#' @param geneSetListLocation See \code{runPerCellQC}. Default NULL.
+#' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
 #' @param assayName  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -17,11 +17,13 @@
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{sce}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' sce <- runCellQC(sce_chcl)
+#' }
 #' @export
 runCellQC <- function(sce,
-  algorithms = c("QCMetrics", "scrublet", "doubletCells", "cxds", "bcds",
+  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX"),
   sample = NULL,
   geneSetList = NULL,
@@ -32,6 +34,7 @@ runCellQC <- function(sce,
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
+
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -41,6 +44,13 @@ runCellQC <- function(sce,
                                  geneSetList = geneSetList,
                                  geneSetListLocation = geneSetListLocation,
                                  geneSetCollection = geneSetCollection)
+  }
+
+  if ("scrublet" %in% algorithms) {
+    sce <- runScrublet(sce = sce,
+      sample = sample,
+      assayName = assayName,
+      seed = seed)
   }
 
   if ("doubletCells" %in% algorithms) {
@@ -70,13 +80,6 @@ runCellQC <- function(sce,
 
   if ("decontX" %in% algorithms) {
     sce <- runDecontX(sce = sce,
-      sample = sample,
-      assayName = assayName,
-      seed = seed)
-  }
-
-  if ("scrublet" %in% algorithms) {
-    sce <- runScrublet(sce = sce,
       sample = sample,
       assayName = assayName,
       seed = seed)
@@ -124,8 +127,8 @@ runDropletQC <- function(sce,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    sce <- runPerCellQC(sce = sce, assayName = assayName, geneSets = NULL)
-  }
+    sce <- runPerCellQC(sce = sce, assayName = assayName)
+  }    
 
   if (any("emptyDrops" %in% algorithms)) {
     sce <- runEmptyDrops(sce = sce,

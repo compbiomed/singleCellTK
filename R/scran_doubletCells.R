@@ -18,12 +18,12 @@
 #'  profiles. Generate a doublet score for each cell.
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[scran]{doubleCells} will be run on cells from each sample separately.
+#'  \link[scran]{doubletCells} will be run on cells from each sample separately.
 #' @param assayName  A string specifying which assay in the SCE to use.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param ... Additional arguments to pass to \link[scran]{doubletCells}.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
-#'  \link{runDoubletCells} runs \link[scran]{doubletCells} for each
+#'  \code{runDoubletCells} runs \link[scran]{doubletCells} for each
 #'  \code{sample} within \code{sce} iteratively. The
 #'  resulting doublet scores for all cells will be appended to the
 #'  \link[SummarizedExperiment]{colData} of \code{sce}.

@@ -10,7 +10,8 @@
     sce <- SingleCellExperiment::SingleCellExperiment(
         assays = list(counts = matrix))
     SummarizedExperiment::rowData(sce) <- features
-    SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(barcodes,
+    SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(
+        cell_barcode = as.character(barcodes[[1]]),
         column_name = coln,
         sample = sampleName,
         row.names = coln)
@@ -47,6 +48,22 @@
 }
 
 
+.readBarcodesSEQC <- function(path) {
+    res <- data.table::fread(path, header = FALSE, sep=",", colClasses = "character")
+    res <- res[,-1,drop = FALSE]
+    colnames(res) <- "cell_barcode"
+    return(res)
+}
+
+
+.readFeaturesSEQC <- function(path) {
+    res <- data.table::fread(path, header = FALSE, sep=",", colClasses = "character")
+    res <- res[,-1,drop = FALSE]
+    colnames(res) <- "feature_name"
+    return(res)
+}
+
+
 .importSEQC <- function(
     seqcDirs,
     samples,
@@ -76,17 +93,8 @@
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
         barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
 
-        cb[[i]] <- .readBarcodes(file.path(dir, barcodesFile))
-        if (isTRUE(cbNotFirstCol)) {
-            message("First column of barcode file was row index and it was removed.")
-            cb[[i]] <- cb[[i]][, -1, drop = FALSE]
-        }
-
-        fe[[i]] <- .readFeatures(file.path(dir, featuresFile))
-        if (isTRUE(feNotFirstCol)) {
-            message("First column of gene file was row index and it was removed.")
-            fe[[i]] <- fe[[i]][, -1, drop = FALSE]
-        }
+        cb[[i]] <- .readBarcodesSEQC(file.path(dir, barcodesFile))
+        fe[[i]] <- .readFeaturesSEQC(file.path(dir, featuresFile))
 
         mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile),
             gzipped = gzipped, class = class)
@@ -166,7 +174,7 @@
 #' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
 #' and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
 #' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
-#' , feature anotations and cell annotations for each sample.
+#' , feature annotations and cell annotations for each sample.
 #' @details
 #' \code{importSEQC} imports output from seqc.
 #' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
