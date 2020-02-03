@@ -1,6 +1,6 @@
 shinyPanelCellViewer <- fluidPage(
   tags$div(
-    class = "container", 
+    class = "container",
            h1("Cell Viewer"),
            fluidRow(
              column(3,
@@ -18,16 +18,16 @@ shinyPanelCellViewer <- fluidPage(
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Xaxis"),
                                              selectizeInput("ApproachSelect_Xaxis", label = h5("Select Approach:"), choices = c(approach_list)),
                                              selectInput("ColumnSelect_Xaxis", h5("Select Dimension:"),choices = NULL)),
-                            
+
                             #Expression Assays condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
                                              selectizeInput("AdvancedMethodSelect_Xaxis", label = h5("Select Advanced Method:"), choices = c(method_list)),
                                              selectizeInput("GeneSelect_Assays_Xaxis", label = h5("Select Feature:"), choices = c(gene_list))),
-                            
+
                             #Cell Annotation condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Xaxis"),
                                              selectizeInput("AnnotationSelect_Xaxis", label = h5("Select Annotation:"), choices = c(annotation_list))),
-                            
+
                             #-+-+-+-+-+-Y-Axis###################################
                             tags$hr(),
                             h5(strong("Select Y-Axis:")),
@@ -36,20 +36,20 @@ shinyPanelCellViewer <- fluidPage(
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Yaxis"),
                                              selectizeInput("ApproachSelect_Yaxis", label = h5("Select Approach:"), choices = c(approach_list)),
                                              selectInput("ColumnSelect_Yaxis", h5("Select Dimension:"),choices = NULL)),
-                            
+
                             #Expression Assays condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
                                              selectizeInput("AdvancedMethodSelect_Yaxis", label = h5("Select Advanced Method:"), choices = c(method_list)),
                                              selectizeInput("GeneSelect_Assays_Yaxis", label = h5("Select Feature:"), choices = c(gene_list))),
-                            
+
                             #Cell Annotation condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Yaxis"),
                                              selectizeInput("AnnotationSelect_Yaxis", label = h5("Select Annotation:"), choices = c(annotation_list)))
-                            
-  )                 
+
+  )
   ),
-  
-                            #-+-+-+-+-+-colorby part1###################################  
+
+                            #-+-+-+-+-+-colorby part1###################################
                             tags$hr(),
                             #Select Color by Data
                             # Section 1 - Assay Settings
@@ -62,41 +62,41 @@ shinyPanelCellViewer <- fluidPage(
                                             selectizeInput("ApproachSelect_Colorby", label = h5("-> Approach:"),
                                                            choices = c(approach_list)),
                                             selectInput("ColumnSelect_Colorby", h5("-> Dimension:"),choices = NULL)),
-                           
+
                             #Expression Assays condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
                                             selectizeInput("AdvancedMethodSelect_Colorby", label = h5("-> Advanced Method:"),
                                                            choices = c(method_list)),
                                             selectizeInput("GeneSelect_Assays_Colorby", label = h5("-> Feature:"),
                                                            choices = c(gene_list))),
-                           
+
                             #Cell Annotation condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Colorby"),
                                             selectizeInput("AnnotationSelect_Colorby", label = h5("-> Annotation:"),
                                                            choices = c(annotation_list))),
-                           
+
                             #-+-+-+-+-+-colorby part2###################################
                             conditionalPanel(condition = sprintf("input['%s'] == 'Pick a Color'", "TypeSelect_Colorby"),
                                             colourInput("Col", h5(strong("Color Picker:")), "purple",palette = 'limited')),
-                           
+
                             conditionalPanel(condition = sprintf("input['%s'] != 'Pick a Color'", "TypeSelect_Colorby"),
                                             radioButtons("SelectColorType",label = NULL,choices = c("Categorical", "Continuous")),
                                             tags$hr(),
-                                            
+
                                             conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
                                                              checkboxInput("checkColorbinning",h5("Perform Binning:"), value = FALSE)),
-                                            
+
                                             conditionalPanel(condition =  "input.checkColorbinning == 1",
                                                              numericInput("adjustColorbinning", h5("Number of Bins:"), value = 2, min =2))
                                             ,
-                                            
-                                            
+
+
                                             selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL))
 ),
-                  
-                  
-                              #-+-+-+-+-+-group by################################### 
-                              
+
+
+                              #-+-+-+-+-+-group by###################################
+
                               tags$hr(),
                               shinyjs::useShinyjs(),
                               # Section 1 - Assay Settings
@@ -114,12 +114,12 @@ shinyPanelCellViewer <- fluidPage(
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
-                              
+
              )),#sidebarPanel_end
-             
+
              #-+-+-+-+-+-mainPanel#################################
              column(9,wellPanel(style = "background: floralwhite",
-                                plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8), 
+                                plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8),
                                 tags$br(),
                                 tags$br(),
                                 tags$br(),
@@ -129,15 +129,18 @@ shinyPanelCellViewer <- fluidPage(
                                 tags$br(),
                                 tags$br(),
                                 tags$br(),
-                                # conditionalPanel("$('#scatter').hasClass('recalculating')", 
-                                #                  tags$div('Your plot is loading, due to large manipulation. 
+                                # conditionalPanel("$('#scatter').hasClass('recalculating')",
+                                #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
                                 tags$hr(),
-                                fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Transparency:")), min = 0, max = 1, value = 1)),
-                                         column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)))
+                                fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
+                                         column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
+                                         column(6,textInput("adjustxlab", h5(strong("X-axis label:")), value = "Dimension_1")),
+                                         column(6,textInput("adjustylab", h5(strong("Y-axis label:")), value = "Dimension_2"))
+                                  )
              ))
-             
-           )#fluidrow_end  
+
+           )#fluidrow_end
            # )#well_end
   )#tag_end
 )#page_end
