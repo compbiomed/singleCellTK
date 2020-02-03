@@ -17,14 +17,14 @@
 
   ## Convert to "dgCMatrix"
   newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
-  newM <- as(newM, "dgCMatrix")
+  newM <- methods::as(newM, "dgCMatrix")
   breaks <- seq(2, ncol(mat), by=1000)
   if(length(breaks) > 2) {
 	for(i in seq(2, length(breaks))) {
 	  ix <- seq(breaks[i-1], (breaks[i]-1))
 	  newM <- cbind(newM, mat[,ix])
 	}
-	ix <- seq(tail(breaks, n = 1), ncol(mat))
+	ix <- seq(utils::tail(breaks, n = 1), ncol(mat))
 	newM <- cbind(newM, mat[,ix])
   } else {
     ix <- seq(2, ncol(mat))
@@ -178,7 +178,7 @@
     res[[i]] <- scei
   }
 
-  sce <- do.call(BiocGenerics::cbind, res)
+  sce <- do.call(SingleCellExperiment::cbind, res)
   return(sce)
 }
 

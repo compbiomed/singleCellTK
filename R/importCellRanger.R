@@ -184,7 +184,7 @@
         res[[i]] <- scei
     }
 
-    sce <- do.call(BiocGenerics::cbind, res)
+    sce <- do.call(SingleCellExperiment::cbind, res)
     return(sce)
 }
 

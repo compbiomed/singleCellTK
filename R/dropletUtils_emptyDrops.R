@@ -1,7 +1,7 @@
 .runEmptyDrops <- function(barcode.matrix, ...) {
 
   if (class(barcode.matrix) != "dgCMatrix") {
-    barcode.matrix <- as(barcode.matrix, "dgCMatrix")
+    barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
   }
 
   result <- DropletUtils::emptyDrops(m = barcode.matrix, ...)

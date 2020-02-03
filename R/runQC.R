@@ -123,7 +123,7 @@ runDropletQC <- function(sce,
   counts.class <- class(SummarizedExperiment::assay(sce, i = assayName))
   if (class(counts.class) != "dgCMatrix") {
     SummarizedExperiment::assay(sce, i = assayName) <-
-      as(SummarizedExperiment::assay(sce, i = assayName), "dgCMatrix")
+      methods::as(SummarizedExperiment::assay(sce, i = assayName), "dgCMatrix")
   }
 
   if ("QCMetrics" %in% algorithms) {
@@ -144,7 +144,7 @@ runDropletQC <- function(sce,
 
   ## Convert back to original class
   SummarizedExperiment::assay(sce, i = assayName) <-
-    as(SummarizedExperiment::assay(sce, i = assayName), counts.class)
+    methods::as(SummarizedExperiment::assay(sce, i = assayName), counts.class)
 
   return(sce)
 }
