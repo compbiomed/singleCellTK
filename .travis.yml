@@ -4,6 +4,7 @@ dist: trusty
 sudo: false
 warnings_are_errors: false
 bioc_required: true
+pyenv global 3.6
 before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
   - pip install scipy scrublet
