@@ -1993,7 +1993,8 @@ shinyServer(function(input, output, session) {
 
           else{
             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))
+          }
         }
       }
       }#Dfassay_end
@@ -2260,12 +2261,12 @@ shinyServer(function(input, output, session) {
 
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab != ""){
       xname = paste0(input$QuickAccess, 1)
-
-    }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
+    } else if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+      xname = input$adjustxlab
+    } else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
       xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
-
     }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
       xname = paste0(input$GeneSelect_Assays_Xaxis)
     }else{
