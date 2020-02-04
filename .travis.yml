@@ -5,9 +5,10 @@ sudo: false
 warnings_are_errors: false
 bioc_required: true
 before_install:
-  - pyenv install 3.5.0
-  - pyenv global 3.5.0
+  - pyenv install 3.7.6
+  - pyenv global 3.7.6
   - Rscript -e 'update.packages(ask = FALSE)'
+  - pip install --upgrade pip
   - pip install scipy scrublet
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
