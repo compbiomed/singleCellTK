@@ -2263,9 +2263,9 @@ shinyServer(function(input, output, session) {
     ###Xaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
       xname = paste0(input$QuickAccess, 1)
-    } else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
+    }else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
       xname = input$adjustxlab
-    } else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
+    }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
       xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
     }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
       xname = paste0(input$GeneSelect_Assays_Xaxis)
@@ -2274,12 +2274,12 @@ shinyServer(function(input, output, session) {
     }
 
     ###Yaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
       yname = paste0(input$QuickAccess, 2)
-
+    }else if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab != ""){
+      yname = input$adjustylab
     }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
       yname = paste0(input$ApproachSelect_Yaxis,substr(input$ColumnSelect_Yaxis,2,2))
-
     }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
       yname = paste0(input$GeneSelect_Assays_Yaxis)
 
