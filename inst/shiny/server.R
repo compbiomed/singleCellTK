@@ -2261,9 +2261,9 @@ shinyServer(function(input, output, session) {
 
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab != ""){
+    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
       xname = paste0(input$QuickAccess, 1)
-    } else if(input$QuickAccess != "Custom" & input$QuickAccess != ""){
+    } else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
       xname = input$adjustxlab
     } else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
       xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
