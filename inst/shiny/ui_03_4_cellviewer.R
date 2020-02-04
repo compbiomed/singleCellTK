@@ -133,6 +133,7 @@ shinyPanelCellViewer <- fluidPage(
                                 #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
                                 tags$hr(),
+                                fluidRow(column(6, textInput("adjusttitle", h5(strong("Title:"))))),
                                 fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
                                          column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
                                          column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
