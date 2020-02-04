@@ -65,7 +65,9 @@ Imports:
     scran,
     DropletUtils,
     scds,
-    reticulate
+    reticulate,
+    scater,
+    withr
 RoxygenNote: 7.0.2
 Suggests:
     Matrix,
