@@ -5,25 +5,6 @@ sudo: false
 warnings_are_errors: false
 bioc_required: true
 
-r_packages:
-  - ape
-  - colourpicker
-  - cluster
-  - data.table
-  - DT
-  - ggplot2
-  - ggtree
-  - gridExtra
-  - matrixStats
-
-bioc_packages:
-  - ComplexHeatmap
-  - DESeq2
-  - limma
-  - MAST
-  - matrixStats
-  - multtest
-
 before_install:
   - pyenv install 3.6.1
   - pyenv global 3.6.1
