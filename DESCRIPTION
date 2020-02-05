@@ -67,10 +67,11 @@ Imports:
     scds,
     reticulate,
     scater,
-    withr
+    withr,
+    Matrix,
+    GSEABase
 RoxygenNote: 7.0.2
 Suggests:
-    Matrix,
     testthat,
     Rsubread,
     BiocStyle,
@@ -82,8 +83,7 @@ Suggests:
     org.Hs.eg.db,
     scRNAseq,
     xtable,
-    spelling,
-    GSEABase
+    spelling
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
