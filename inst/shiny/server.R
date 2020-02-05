@@ -2310,7 +2310,7 @@ shinyServer(function(input, output, session) {
           geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
@@ -2331,7 +2331,7 @@ shinyServer(function(input, output, session) {
         }
         #ggplotly#none
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) }
       #else_end
@@ -2362,7 +2362,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
@@ -2386,7 +2386,7 @@ shinyServer(function(input, output, session) {
         }
         #ggplotly#Integer,level>25
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
@@ -2417,7 +2417,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }#ifUniform_end
@@ -2442,7 +2442,7 @@ shinyServer(function(input, output, session) {
 
         #ggplotly#Integer,level<25,Continous
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notUniform_End
@@ -2469,7 +2469,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }#uniform_end
@@ -2493,7 +2493,7 @@ shinyServer(function(input, output, session) {
         }
         #ggplotly#Integer,level<25,Categorical
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notuniform_End
@@ -2521,7 +2521,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }#ifUniform_end
@@ -2545,7 +2545,7 @@ shinyServer(function(input, output, session) {
         }
         #ggplotly2#Numeric,noninteger
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notUniform_end
@@ -2569,7 +2569,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }#ifUniform_end
@@ -2593,7 +2593,7 @@ shinyServer(function(input, output, session) {
         }
         #ggplotly3#
         if (input$adjusttitle != ""){
-          a <- a + theme(legend.title = element_text(input$adjusttitle))
+          a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
 
