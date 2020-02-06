@@ -76,8 +76,6 @@
     feNotFirstCol,
     combinedSample) {
 
-    class <- match.arg(class)
-
     if (length(seqcDirs) != length(samples)) {
         stop("'seqcDirs' and 'samples' have unequal lengths!")
     }
@@ -223,6 +221,8 @@ importSEQC <- function(
     cbNotFirstCol = TRUE,
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
+
+    class <- match.arg(class)
 
     .importSEQC(seqcDirs = seqcDirs,
         samples = samples,

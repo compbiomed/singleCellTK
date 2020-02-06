@@ -42,8 +42,6 @@
     class,
     delayedArray) {
 
-    class <- match.arg(class)
-
     if (length(STARsoloDirs) != length(samples)) {
         stop("'STARsoloDirs' and 'samples' have unequal lengths!")
     }
@@ -140,6 +138,8 @@ importSTARsolo <- function(
     gzipped = FALSE,
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importSTARsolo(
         STARsoloDirs = STARsoloDirs,

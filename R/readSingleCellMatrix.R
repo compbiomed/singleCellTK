@@ -40,6 +40,8 @@
 #'  feature (gene) index .npy file. Used only if \code{file} has .npz extension.
 #'  Default \code{NULL}.
 #' @examples
+#' mat <- readSingleCellMatrix(system.file("extdata/hgmm_1k_v3_20x20/outs/",
+#'     "filtered_feature_bc_matrix/matrix.mtx.gz", package = "singleCellTK"))
 #' @importFrom reticulate import
 #' @export
 readSingleCellMatrix <- function(file,
@@ -48,8 +50,8 @@ readSingleCellMatrix <- function(file,
     colIndexLocation = NULL,
     rowIndexLocation = NULL) {
 
-    ext <- .getFileExt(file)
     class <- match.arg(class)
+    ext <- .getFileExt(file)
 
     if (ext[1] == "gz") {
         file <- gzfile(file)
@@ -70,12 +72,12 @@ readSingleCellMatrix <- function(file,
             mat <- as.matrix(dt[, -1])
             rownames(mat) <- dt[[1]]
         }
-    } else if (ext == "npz") {
+    } else if (ext2 == "npz") {
         mat <- .readMatrixNpz(matrixLocation = file,
             colIndexLocation = colIndexLocation,
             rowIndexLocation = rowIndexLocation,
             class = class)
-    } else if (ext == "mtx") {
+    } else if (ext2 == "mtx") {
         mat <- .readMatrixMM(path = file,
             gzipped = FALSE,
             class = class,

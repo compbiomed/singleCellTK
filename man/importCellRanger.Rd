@@ -151,7 +151,7 @@ Read the filtered barcodes, features, and matrices for all
 # Only the first 20 cells are included.
 sce <- importCellRanger(
     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
-    sampleDirs = "hgmm_1k_v3_20x20"
+    sampleDirs = "hgmm_1k_v3_20x20",
     sampleNames = "hgmm1kv3")
 sce <- importCellRangerV3(
     cellRangerDirs = system.file("extdata", package = "singleCellTK"),

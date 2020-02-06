@@ -11,7 +11,7 @@ importBUStools(
   featuresFileName = "genes.genes.txt",
   barcodesFileName = "genes.barcodes.txt",
   gzipped = FALSE,
-  class = "Matrix",
+  class = c("Matrix", "matrix"),
   delayedArray = TRUE
 )
 }

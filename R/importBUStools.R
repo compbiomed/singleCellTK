@@ -43,8 +43,6 @@
     class,
     delayedArray) {
 
-    class <- match.arg(class)
-
     if (length(BUStoolsDirs) != length(samples)) {
         stop("'BUStoolsDirs' and 'samples' have unequal lengths!")
     }
@@ -131,8 +129,10 @@ importBUStools <- function(
     featuresFileName = "genes.genes.txt",
     barcodesFileName = "genes.barcodes.txt",
     gzipped = FALSE,
-    class = "Matrix",
+    class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importBUStools(
         BUStoolsDirs = BUStoolsDirs,

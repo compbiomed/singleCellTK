@@ -190,7 +190,6 @@
     class,
     delayedArray) {
 
-    class <- match.arg(class)
     .checkArgsImportCellRanger(cellRangerDirs, sampleDirs, sampleNames)
 
     samplePaths <- .getSamplesPaths(cellRangerDirs, sampleDirs)
@@ -310,7 +309,7 @@
 #' # Only the first 20 cells are included.
 #' sce <- importCellRanger(
 #'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
-#'     sampleDirs = "hgmm_1k_v3_20x20"
+#'     sampleDirs = "hgmm_1k_v3_20x20",
 #'     sampleNames = "hgmm1kv3")
 #' @export
 importCellRanger <- function(
@@ -324,6 +323,8 @@ importCellRanger <- function(
     gzipped = TRUE,
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
@@ -351,6 +352,9 @@ importCellRangerV2 <- function(
     dataType = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
+
+    class <- match.arg(class)
+    dataType <- match.arg(dataType)
 
     if (dataType == "filtered") {
         .importCellRanger(cellRangerDirs = cellRangerDirs,
@@ -386,6 +390,8 @@ importCellRangerV2Sample <- function(
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
 
+    class <- match.arg(class)
+
     .importCellRanger(cellRangerDirs = NULL,
         sampleDirs = sampleDir,
         sampleNames = sampleName,
@@ -413,6 +419,9 @@ importCellRangerV3 <- function(
     dataType = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
     delayedArray = delayedArray) {
+
+    class <- match.arg(class)
+    dataType <- match.arg(dataType)
 
     if (dataType == "filtered") {
         .importCellRanger(cellRangerDirs = cellRangerDirs,
@@ -452,6 +461,8 @@ importCellRangerV3Sample <- function(
     sampleName = NULL,
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importCellRanger(cellRangerDirs = NULL,
         sampleDirs = sampleDir,

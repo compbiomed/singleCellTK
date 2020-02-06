@@ -159,7 +159,6 @@
   class,
   delayedArray) {
 
-  class <- match.arg(class)
   .checkArgsImportOptimus(OptimusDirs, samples)
 
   res <- vector("list", length = length(samples))
@@ -246,6 +245,8 @@ importOptimus <- function(OptimusDirs,
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
   class = c("Matrix", "matrix"),
   delayedArray = TRUE) {
+
+  class <- match.arg(class)
 
   .importOptimus(OptimusDirs = OptimusDirs,
     samples = samples,

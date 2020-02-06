@@ -33,3 +33,7 @@ Default \code{NULL}.}
 Automatically detact the format of the input file and read
  the file.
 }
+\examples{
+mat <- readSingleCellMatrix(system.file("extdata/hgmm_1k_v3_20x20/outs/",
+    "filtered_feature_bc_matrix/matrix.mtx.gz", package = "singleCellTK"))
+}
