@@ -12,7 +12,8 @@ importSTARsolo(
   featuresFileName = "features.tsv",
   barcodesFileName = "barcodes.tsv",
   gzipped = FALSE,
-  class = "Matrix"
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE
 )
 }
 \arguments{
@@ -43,10 +44,12 @@ gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in STAR
 2.7.3a. Default \code{FALSE}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

@@ -3,7 +3,8 @@
 .readMatrixNpz <- function(matrixLocation,
   colIndexLocation,
   rowIndexLocation,
-  class) {
+  class,
+  delayedArray) {
 
   sparse <- reticulate::import("scipy.sparse")
   np <- reticulate::import("numpy")
@@ -12,7 +13,7 @@
   colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
   rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
   colnames(mat) <- colIndex
-  rownames(mat) <- rowIndex  
+  rownames(mat) <- rowIndex
   mat <- t(mat)
 
   ## Convert to "dgCMatrix"
@@ -20,30 +21,29 @@
   newM <- as(newM, "dgCMatrix")
   breaks <- seq(2, ncol(mat), by=1000)
   if(length(breaks) > 2) {
-	for(i in seq(2, length(breaks))) {
-	  ix <- seq(breaks[i-1], (breaks[i]-1))
-	  newM <- cbind(newM, mat[,ix])
-	}
-	ix <- seq(tail(breaks, n = 1), ncol(mat))
-	newM <- cbind(newM, mat[,ix])
+    for(i in seq(2, length(breaks))) {
+      ix <- seq(breaks[i-1], (breaks[i]-1))
+      newM <- cbind(newM, mat[,ix])
+    }
+    ix <- seq(tail(breaks, n = 1), ncol(mat))
+    newM <- cbind(newM, mat[,ix])
   } else {
     ix <- seq(2, ncol(mat))
     newM <- cbind(newM, mat[,ix])
-  }  
-  
-  colnames(newM) <- colnames(mat)
-  rownames(newM) <- rownames(mat)  
-  mat <- newM
-  
-  if (class == "Matrix") {
-    return(mat)
-  } else if (class == "DelayedArray") {
-    mat <- DelayedArray::DelayedArray(mat)
-    return(mat)
-  } else if (class == "matrix") {
-    mat <- as.matrix(mat)
-    return(mat)
   }
+
+  colnames(newM) <- colnames(mat)
+  rownames(newM) <- rownames(mat)
+  mat <- newM
+
+  if (class == "matrix") {
+    mat <- as.matrix(mat)
+  }
+
+  if (isTRUE(delayedArray)) {
+    mat <- DelayedArray::DelayedArray(mat)
+  }
+  return(mat)
 }
 
 
@@ -106,12 +106,14 @@
   cellMetricsLocation,
   geneMetricsLocation,
   emptyDropsLocation,
-  class) {
+  class,
+  delayedArray) {
 
   mat <- .readMatrixNpz(file.path(dir, matrixLocation),
     file.path(dir, colIndexLocation),
     file.path(dir, rowIndexLocation),
-    class)
+    class,
+    delayedArray)
 
   cellMetrics <- .readMetricsOptimus(file.path(dir, cellMetricsLocation))
   geneMetrics <- .readMetricsOptimus(file.path(dir, geneMetricsLocation))
@@ -138,15 +140,10 @@
 
 
 .checkArgsImportOptimus <- function(OptimusDirs,
-  samples,
-  class) {
+  samples) {
 
   if (length(OptimusDirs) != length(samples)) {
     stop("'OptimusDirs' and 'samples' have unequal lengths!")
-  }
-
-  if (!(class %in% c("DelayedArray", "Matrix", "matrix"))) {
-    stop("Invalid 'class' argument!")
   }
 }
 
@@ -159,9 +156,11 @@
   cellMetricsLocation,
   geneMetricsLocation,
   emptyDropsLocation,
-  class) {
+  class,
+  delayedArray) {
 
-  .checkArgsImportOptimus(OptimusDirs, samples, class)
+  class <- match.arg(class)
+  .checkArgsImportOptimus(OptimusDirs, samples)
 
   res <- vector("list", length = length(samples))
 
@@ -174,7 +173,8 @@
       cellMetricsLocation = cellMetricsLocation,
       geneMetricsLocation = geneMetricsLocation,
       emptyDropsLocation = emptyDropsLocation,
-      class = class)
+      class = class,
+      delayedArray = delayedArray)
     res[[i]] <- scei
   }
 
@@ -219,12 +219,12 @@
 #'  (\code{empty_drops_result.csv}).
 #'  Default \code{call-RunEmptyDrops/empty_drops_result.csv} which works for
 #'  optimus_v1.4.0.
-#' @param class Character. The class of the expression matrix stored in the
-#'  \link[SingleCellExperiment]{SingleCellExperiment}
-#'  object. Can be one of "DelayedArray" (as returned by
-#'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -244,7 +244,8 @@ importOptimus <- function(OptimusDirs,
   cellMetricsLocation = "call-MergeCellMetrics/merged-cell-metrics.csv.gz",
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
-  class = "Matrix") {
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE) {
 
   .importOptimus(OptimusDirs = OptimusDirs,
     samples = samples,
@@ -254,6 +255,7 @@ importOptimus <- function(OptimusDirs,
     cellMetricsLocation = cellMetricsLocation,
     geneMetricsLocation = geneMetricsLocation,
     emptyDropsLocation = emptyDropsLocation,
-    class = class)
+    class = class,
+    delayedArray = delayedArray)
 
 }

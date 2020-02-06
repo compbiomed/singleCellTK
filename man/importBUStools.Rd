@@ -11,7 +11,8 @@ importBUStools(
   featuresFileName = "genes.genes.txt",
   barcodesFileName = "genes.barcodes.txt",
   gzipped = FALSE,
-  class = "Matrix"
+  class = "Matrix",
+  delayedArray = TRUE
 )
 }
 \arguments{
@@ -35,10 +36,12 @@ gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in BUStools
 0.39.4. Default \code{FALSE}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

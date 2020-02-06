@@ -6,13 +6,15 @@
     featuresFileName,
     barcodesFileName,
     gzipped,
-    class) {
+    class,
+    delayedArray) {
 
     cb <- .readBarcodes(file.path(dir, barcodesFileName))
     fe <- .readFeatures(file.path(dir, featuresFileName))
     ma <- .readMatrixMM(file.path(dir, matrixFileName),
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
     ma <- t(ma)
 
     coln <- paste(sample, cb[[1]], sep = "_")
@@ -38,7 +40,10 @@
     featuresFileName,
     barcodesFileName,
     gzipped,
-    class) {
+    class,
+    delayedArray) {
+
+    class <- match.arg(class)
 
     if (length(BUStoolsDirs) != length(samples)) {
         stop("'BUStoolsDirs' and 'samples' have unequal lengths!")
@@ -54,7 +59,8 @@
             featuresFileName = featuresFileName,
             barcodesFileName = barcodesFileName,
             gzipped = gzipped,
-            class = class)
+            class = class,
+            delayedArray = delayedArray)
         res[[i]] <- scei
     }
 
@@ -84,10 +90,11 @@
 #'  gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in BUStools
 #'  0.39.4. Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
-#'  object. Can be one of "DelayedArray" (as returned by
-#'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+#'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -124,7 +131,8 @@ importBUStools <- function(
     featuresFileName = "genes.genes.txt",
     barcodesFileName = "genes.barcodes.txt",
     gzipped = FALSE,
-    class = "Matrix") {
+    class = "Matrix",
+    delayedArray = TRUE) {
 
     .importBUStools(
         BUStoolsDirs = BUStoolsDirs,
@@ -133,5 +141,6 @@ importBUStools <- function(
         featuresFileName = featuresFileName,
         barcodesFileName = barcodesFileName,
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
 }
