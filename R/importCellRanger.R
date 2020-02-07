@@ -33,9 +33,15 @@
     return(res)
 }
 
-
+#' @importFrom tools file_ext
 .readMatrixMM <- function(path, gzipped, class, delayedArray) {
-    if (isTRUE(gzipped)) {
+
+    if (gzipped == "auto") {
+        ext <- tools::file_ext(path)
+        if (ext == "gz") {
+            path <- gzfile(path)
+        }
+    } else if (isTRUE(gzipped)) {
         path <- gzfile(path)
     }
 
@@ -92,7 +98,17 @@
 
 .checkArgsImportCellRanger <- function(cellRangerDirs,
     sampleDirs,
-    sampleNames) {
+    sampleNames,
+    cellRangerOuts,
+    matrixFileNames,
+    featuresFileNames,
+    barcodesFileNames,
+    gzipped) {
+
+    if (!gzipped %in% c("auto", TRUE, FALSE)) {
+        stop("Invalid 'gzipped' argument! Should be one of 'auto',",
+            " TRUE, or FALSE")
+    }
 
     if (is.null(cellRangerDirs)) {
         if (is.null(sampleDirs)) {
@@ -105,9 +121,43 @@
             }
         }
 
+        sampleLength <- length(sampleDirs)
+
         if (!is.null(sampleNames)) {
-            if (length(sampleNames) != length(sampleDirs)) {
+            if (length(sampleNames) != sampleLength) {
                 stop("'sampleDirs' and 'sampleNames' have unequal lengths!")
+            }
+        }
+
+        if (length(cellRangerOuts) != 1) {
+            if (length(cellRangerOuts) != sampleLength) {
+                stop("'sampleDirs' and 'cellRangerOuts' have unequal lengths!")
+            }
+        }
+
+        if (length(matrixFileNames) != 1) {
+            if (length(matrixFileNames) != sampleLength) {
+                stop("'sampleDirs' and 'matrixFileNames' have unequal lengths!")
+            }
+        }
+
+        if (length(featuresFileNames) != 1) {
+            if (length(featuresFileNames) != sampleLength) {
+                stop("'sampleDirs' and 'featuresFileNames'",
+                    " have unequal lengths!")
+            }
+        }
+
+        if (length(barcodesFileNames) != 1) {
+            if (length(barcodesFileNames) != sampleLength) {
+                stop("'sampleDirs' and 'barcodesFileNames'",
+                    " have unequal lengths!")
+            }
+        }
+
+        if (gzipped != "auto") {
+            if (length(gzipped) != sampleLength) {
+                stop("'sampleDirs' and 'gzipped' have unequal lengths!")
             }
         }
 
@@ -121,12 +171,55 @@
                 }
             }
 
-            if (length(unlist(lapply(cellRangerDirs,
-                list.dirs, recursive = FALSE))) != length(sampleNames)) {
-                stop("The length of 'sampleNames' does not match length of",
-                    " subdirectories in 'cellRangerDirs'!")
+            sampleLength <- length(unlist(lapply(cellRangerDirs,
+                list.dirs, recursive = FALSE)))
+
+            if (!is.null(sampleNames)) {
+                if (sampleLength != length(sampleNames)) {
+                    stop("The length of 'sampleNames' does not match length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
             }
 
+            if (length(cellRangerOuts) != 1) {
+                if (sampleLength != length(cellRangerOuts)) {
+                    stop("The length of 'cellRangerOuts' does not match",
+                        " length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
+            }
+
+            if (length(matrixFileNames) != 1) {
+                if (sampleLength != length(matrixFileNames)) {
+                    stop("The length of 'matrixFileNames' does not match",
+                        " length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
+            }
+
+            if (length(featuresFileNames) != 1) {
+                if (sampleLength != length(featuresFileNames)) {
+                    stop("The length of 'featuresFileNames' does not match",
+                        " length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
+            }
+
+            if (length(barcodesFileNames) != 1) {
+                if (sampleLength != length(barcodesFileNames)) {
+                    stop("The length of 'barcodesFileNames' does not match",
+                        " length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
+            }
+
+            if (gzipped != "auto") {
+                if (sampleLength != length(gzipped)) {
+                    stop("The length of 'gzipped' does not match",
+                        " length of",
+                        " subdirectories in 'cellRangerDirs'!")
+                }
+            }
         } else {
             if (length(sampleDirs) != length(cellRangerDirs)) {
                 stop("'sampleDirs' and 'cellRangerDirs' have unequal lengths!")
@@ -141,11 +234,48 @@
                     }
                 }
             }
+            # analogous to length(unlist(sampleDirs))
+            sampleLength <- sum(vapply(sampleDirs, length, integer(1)))
 
             if (!is.null(sampleNames)) {
-                if (length(sampleNames) != length(unlist(sampleDirs))) {
+                if (length(sampleNames) != sampleLength) {
                     stop("'sampleNames' and 'unlist(sampleDirs)' have unequal",
                         " lengths!")
+                }
+            }
+
+            if (length(cellRangerOuts) != 1) {
+                if (length(cellRangerOuts) != sampleLength) {
+                    stop("'cellRangerOuts' and 'unlist(sampleDirs)'",
+                        " have unequal lengths!")
+                }
+            }
+
+            if (length(matrixFileNames) != 1) {
+                if (length(matrixFileNames) != sampleLength) {
+                    stop("'matrixFileNames' and 'unlist(sampleDirs)'",
+                        " have unequal lengths!")
+                }
+            }
+
+            if (length(featuresFileNames) != 1) {
+                if (length(featuresFileNames) != sampleLength) {
+                    stop("'featuresFileNames' and 'unlist(sampleDirs)'",
+                        " have unequal lengths!")
+                }
+            }
+
+            if (length(barcodesFileNames) != 1) {
+                if (length(barcodesFileNames) != sampleLength) {
+                    stop("'barcodesFileNames' and 'unlist(sampleDirs)'",
+                        " have unequal lengths!")
+                }
+            }
+
+            if (gzipped != "auto") {
+                if (length(gzipped) != sampleLength) {
+                    stop("'gzipped' and 'unlist(sampleDirs)'",
+                        " have unequal lengths!")
                 }
             }
         }
@@ -177,47 +307,67 @@
 }
 
 
+.getVectorized <- function(arg, len) {
+    if (length(arg) != 1) {
+        arg <- rep(arg, len)
+    }
+    return(arg)
+}
+
 # main function
 .importCellRanger <- function(
     cellRangerDirs,
     sampleDirs,
     sampleNames,
     cellRangerOuts,
-    matrixFileName,
-    featuresFileName,
-    barcodesFileName,
+    matrixFileNames,
+    featuresFileNames,
+    barcodesFileNames,
     gzipped,
     class,
     delayedArray) {
 
-    .checkArgsImportCellRanger(cellRangerDirs, sampleDirs, sampleNames)
+    .checkArgsImportCellRanger(cellRangerDirs,
+        sampleDirs,
+        sampleNames,
+        cellRangerOuts,
+        matrixFileNames,
+        featuresFileNames,
+        barcodesFileNames,
+        gzipped)
 
     samplePaths <- .getSamplesPaths(cellRangerDirs, sampleDirs)
 
     res <- vector("list", length = length(samplePaths))
 
+    cellRangerOuts <- .getVectorized(cellRangerOuts, length(samplePaths))
+    matrixFileNames <- .getVectorized(matrixFileNames, length(samplePaths))
+    featuresFileNames <- .getVectorized(featuresFileNames, length(samplePaths))
+    barcodesFileNames <- .getVectorized(barcodesFileNames, length(samplePaths))
+    gzipped <- .getVectorized(gzipped, length(samplePaths))
+
     if (is.null(sampleNames)) {
         for (i in seq_along(samplePaths)) {
-            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts)
+            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
             scei <- .constructSCEFromCellRangerOutputs(dir,
                 sample = .getSampleNames(samplePaths[i]),
-                matrixFileName = matrixFileName,
-                featuresFileName = featuresFileName,
-                barcodesFileName = barcodesFileName,
-                gzipped = gzipped,
+                matrixFileName = matrixFileNames[i],
+                featuresFileName = featuresFileNames[i],
+                barcodesFileName = barcodesFileNames[i],
+                gzipped = gzipped[i],
                 class = class,
                 delayedArray = delayedArray)
             res[[i]] <- scei
         }
     } else {
         for (i in seq_along(samplePaths)) {
-            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts)
+            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
             scei <- .constructSCEFromCellRangerOutputs(dir,
                 sample = sampleNames[i],
-                matrixFileName = matrixFileName,
-                featuresFileName = featuresFileName,
-                barcodesFileName = barcodesFileName,
-                gzipped = gzipped,
+                matrixFileName = matrixFileNames[i],
+                featuresFileName = featuresFileNames[i],
+                barcodesFileName = barcodesFileNames[i],
+                gzipped = gzipped[i],
                 class = class,
                 delayedArray = delayedArray)
             res[[i]] <- scei
@@ -263,21 +413,47 @@
 #'  order match the output of
 #'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Default
 #'  \code{NULL}, in which case the folder names will be used as sample names.
-#' @param cellRangerOuts Character. It is the intermediate
-#'  path to filtered or raw feature count file saved in sparse matrix format
-#'  for each of \emph{samples}.
+#' @param cellRangerOuts Character vector. The intermediate
+#'  paths to filtered or raw cell barcode, feature, and matrix files
+#'  for each sample. Must have length 1 or the same length as
+#'  \code{length(unlist(sampleDirs))} if
+#'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+#'  order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 #'  Reference genome names might need to be
 #'  appended for CellRanger version below 3.0.0 if reads were mapped to
 #'  multiple genomes when running Cell Ranger pipeline.
-#' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
-#'  matrix file (.mtx file).
-#' @param featuresFileName Filename for the feature annotation file. It can be
-#'  \emph{features.tsv.gz} or \emph{genes.tsv}.
-#' @param barcodesFileName Filename for the cell barcode list file.
-#' @param gzipped Boolean. \code{TRUE} if the Cell Ranger output files
+#' @param matrixFileNames Character vector. Filenames for the Market Exchange
+#'  Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
+#'  Must have length 1 or the same
+#'  length as \code{length(unlist(sampleDirs))} if
+#'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+#'  order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
+#' @param featuresFileNames Character vector. Filenames for the feature
+#'  annotation files. They are usually named \emph{features.tsv.gz} or
+#'  \emph{genes.tsv}. Must have length 1 or the same
+#'  length as \code{length(unlist(sampleDirs))} if
+#'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+#'  order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
+#' @param barcodesFileNames Character vector. Filename for the cell barcode
+#'  list files. They are usually named \emph{barcodes.tsv.gz} or
+#'  \emph{barcodes.tsv}. Must have length 1 or the same
+#'  length as \code{length(unlist(sampleDirs))} if
+#'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+#'  order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
+#' @param gzipped \code{TRUE} if the Cell Ranger output files
 #'  (barcodes.tsv, features.tsv, and matrix.mtx) were
 #'  gzip compressed. \code{FALSE} otherwise. This is true after Cell Ranger
-#'  3.0.0 update. Default \code{TRUE}.
+#'  3.0.0 update. Default \code{"auto"} which automatically detects if the
+#'  files are gzip compressed. If not \code{"auto"}, \code{gzipped} must have
+#'  length 1 or the same
+#'  length as \code{length(unlist(sampleDirs))} if
+#'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+#'  order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
@@ -317,10 +493,10 @@ importCellRanger <- function(
     sampleDirs = NULL,
     sampleNames = NULL,
     cellRangerOuts = "outs/filtered_feature_bc_matrix/",
-    matrixFileName = "matrix.mtx.gz",
-    featuresFileName = "features.tsv.gz",
-    barcodesFileName = "barcodes.tsv.gz",
-    gzipped = TRUE,
+    matrixFileNames = "matrix.mtx.gz",
+    featuresFileNames = "features.tsv.gz",
+    barcodesFileNames = "barcodes.tsv.gz",
+    gzipped = "auto",
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
 
@@ -330,9 +506,9 @@ importCellRanger <- function(
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
         cellRangerOuts = cellRangerOuts,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
+        matrixFileNames = matrixFileNames,
+        featuresFileNames = featuresFileNames,
+        barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
         delayedArray = delayedArray)
@@ -361,9 +537,9 @@ importCellRangerV2 <- function(
             sampleDirs = sampleDirs,
             sampleNames = sampleNames,
             cellRangerOuts = "outs/filtered_gene_bc_matrices/",
-            matrixFileName = "matrix.mtx",
-            featuresFileName = "genes.tsv",
-            barcodesFileName = "barcodes.tsv",
+            matrixFileNames = "matrix.mtx",
+            featuresFileNames = "genes.tsv",
+            barcodesFileNames = "barcodes.tsv",
             gzipped = FALSE,
             class = class,
             delayedArray = delayedArray)
@@ -372,9 +548,9 @@ importCellRangerV2 <- function(
             sampleDirs = sampleDirs,
             sampleNames = sampleNames,
             cellRangerOuts = "outs/raw_gene_bc_matrices/",
-            matrixFileName = "matrix.mtx",
-            featuresFileName = "genes.tsv",
-            barcodesFileName = "barcodes.tsv",
+            matrixFileNames = "matrix.mtx",
+            featuresFileNames = "genes.tsv",
+            barcodesFileNames = "barcodes.tsv",
             gzipped = FALSE,
             class = class,
             delayedArray = delayedArray)
@@ -396,9 +572,9 @@ importCellRangerV2Sample <- function(
         sampleDirs = sampleDir,
         sampleNames = sampleName,
         cellRangerOuts = "",
-        matrixFileName = "matrix.mtx",
-        featuresFileName = "genes.tsv",
-        barcodesFileName = "barcodes.tsv",
+        matrixFileNames = "matrix.mtx",
+        featuresFileNames = "genes.tsv",
+        barcodesFileNames = "barcodes.tsv",
         gzipped = FALSE,
         class = class,
         delayedArray = delayedArray)
@@ -428,9 +604,9 @@ importCellRangerV3 <- function(
             sampleDirs = sampleDirs,
             sampleNames = sampleNames,
             cellRangerOuts = "outs/filtered_feature_bc_matrix/",
-            matrixFileName = "matrix.mtx.gz",
-            featuresFileName = "features.tsv.gz",
-            barcodesFileName = "barcodes.tsv.gz",
+            matrixFileNames = "matrix.mtx.gz",
+            featuresFileNames = "features.tsv.gz",
+            barcodesFileNames = "barcodes.tsv.gz",
             gzipped = TRUE,
             class = class,
             delayedArray = delayedArray)
@@ -439,9 +615,9 @@ importCellRangerV3 <- function(
             sampleDirs = sampleDirs,
             sampleNames = sampleNames,
             cellRangerOuts = "outs/raw_feature_bc_matrix/",
-            matrixFileName = "matrix.mtx.gz",
-            featuresFileName = "features.tsv.gz",
-            barcodesFileName = "barcodes.tsv.gz",
+            matrixFileNames = "matrix.mtx.gz",
+            featuresFileNames = "features.tsv.gz",
+            barcodesFileNames = "barcodes.tsv.gz",
             gzipped = TRUE,
             class = class,
             delayedArray = delayedArray)
@@ -468,9 +644,9 @@ importCellRangerV3Sample <- function(
         sampleDirs = sampleDir,
         sampleNames = sampleName,
         cellRangerOuts = "",
-        matrixFileName = "matrix.mtx.gz",
-        featuresFileName = "features.tsv.gz",
-        barcodesFileName = "barcodes.tsv.gz",
+        matrixFileNames = "matrix.mtx.gz",
+        featuresFileNames = "features.tsv.gz",
+        barcodesFileNames = "barcodes.tsv.gz",
         gzipped = TRUE,
         class = class,
         delayedArray = delayedArray)

@@ -35,9 +35,9 @@
 .importSTARsolo <- function(STARsoloDirs,
     samples,
     STARsoloOuts,
-    matrixFileName,
-    featuresFileName,
-    barcodesFileName,
+    matrixFileNames,
+    featuresFileNames,
+    barcodesFileNames,
     gzipped,
     class,
     delayedArray) {
@@ -48,14 +48,20 @@
 
     res <- vector("list", length = length(samples))
 
+    STARsoloOuts <- .getVectorized(STARsoloOuts, length(samples))
+    matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
+    featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
+    barcodesFileNames <- .getVectorized(barcodesFileNames, length(samples))
+    gzipped <- .getVectorized(gzipped, length(samples))
+
     for (i in seq_along(samples)) {
-        dir <- file.path(STARsoloDirs[i], STARsoloOuts)
+        dir <- file.path(STARsoloDirs[i], STARsoloOuts[i])
         scei <- .constructSCEFromSTARsoloOutputs(dir,
             sample = samples[i],
-            matrixFileName = matrixFileName,
-            featuresFileName = featuresFileName,
-            barcodesFileName = barcodesFileName,
-            gzipped = gzipped,
+            matrixFileName = matrixFileNames[i],
+            featuresFileName = featuresFileNames[i],
+            barcodesFileName = barcodesFileNames[i],
+            gzipped = gzipped[i],
             class = class,
             delayedArray = delayedArray)
         res[[i]] <- scei
@@ -79,18 +85,26 @@
 #'  \code{samples}.
 #' @param samples A vector of user-defined sample names for the sample to be
 #'  imported. Must have the same length as \code{STARsoloDirs}.
-#' @param STARsoloOuts Character. It is the intermediate
-#'  path to filtered or raw feature count file saved in sparse matrix format
-#'  for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
-#'  2.7.3a.
-#' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
-#'  matrix file (.mtx file).
-#' @param featuresFileName Filename for the feature annotation file.
-#' @param barcodesFileName Filename for the cell barcode list file.
+#' @param STARsoloOuts Character vector. The intermediate
+#'  paths to filtered or raw cell barcode, feature, and matrix files
+#'  for each of \code{samples}. Default \code{"Gene/filtered"}  which works
+#'  for STAR 2.7.3a. Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param matrixFileNames Filenames for the Market Exchange Format (MEX) sparse
+#'  matrix file (.mtx file). Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param featuresFileNames Filenames for the feature annotation file.
+#'  Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param barcodesFileNames Filenames for the cell barcode list file.
+#'  Must have length 1 or the same
+#'  length as \code{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the STARsolo output files
 #'  (barcodes.tsv, features.tsv, and matrix.mtx) were
 #'  gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in STAR
-#'  2.7.3a. Default \code{FALSE}.
+#'  2.7.3a. Default \code{"auto"} which automatically detects if the
+#'  files are gzip compressed. Must have length 1 or the same
+#'  length as \code{samples}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
@@ -132,10 +146,10 @@ importSTARsolo <- function(
     STARsoloDirs,
     samples,
     STARsoloOuts = "Gene/filtered",
-    matrixFileName = "matrix.mtx",
-    featuresFileName = "features.tsv",
-    barcodesFileName = "barcodes.tsv",
-    gzipped = FALSE,
+    matrixFileNames = "matrix.mtx",
+    featuresFileNames = "features.tsv",
+    barcodesFileNames = "barcodes.tsv",
+    gzipped = "auto",
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
 
@@ -145,9 +159,9 @@ importSTARsolo <- function(
         STARsoloDirs = STARsoloDirs,
         samples = samples,
         STARsoloOuts = STARsoloOuts,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
+        matrixFileNames = matrixFileNames,
+        featuresFileNames = featuresFileNames,
+        barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
         delayedArray = delayedArray)

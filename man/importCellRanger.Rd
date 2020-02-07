@@ -13,10 +13,10 @@ importCellRanger(
   sampleDirs = NULL,
   sampleNames = NULL,
   cellRangerOuts = "outs/filtered_feature_bc_matrix/",
-  matrixFileName = "matrix.mtx.gz",
-  featuresFileName = "features.tsv.gz",
-  barcodesFileName = "barcodes.tsv.gz",
-  gzipped = TRUE,
+  matrixFileNames = "matrix.mtx.gz",
+  featuresFileNames = "features.tsv.gz",
+  barcodesFileNames = "barcodes.tsv.gz",
+  gzipped = "auto",
   class = c("Matrix", "matrix"),
   delayedArray = TRUE
 )
@@ -84,25 +84,51 @@ order match the output of
 \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Default
 \code{NULL}, in which case the folder names will be used as sample names.}
 
-\item{cellRangerOuts}{Character. It is the intermediate
-path to filtered or raw feature count file saved in sparse matrix format
-for each of \emph{samples}.
+\item{cellRangerOuts}{Character vector. The intermediate
+paths to filtered or raw cell barcode, feature, and matrix files
+for each sample. Must have length 1 or the same length as
+\code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 Reference genome names might need to be
 appended for CellRanger version below 3.0.0 if reads were mapped to
 multiple genomes when running Cell Ranger pipeline.}
 
-\item{matrixFileName}{Filename for the Market Exchange Format (MEX) sparse
-matrix file (.mtx file).}
+\item{matrixFileNames}{Character vector. Filenames for the Market Exchange
+Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
+Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
-\item{featuresFileName}{Filename for the feature annotation file. It can be
-\emph{features.tsv.gz} or \emph{genes.tsv}.}
+\item{featuresFileNames}{Character vector. Filenames for the feature
+annotation files. They are usually named \emph{features.tsv.gz} or
+\emph{genes.tsv}. Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
-\item{barcodesFileName}{Filename for the cell barcode list file.}
+\item{barcodesFileNames}{Character vector. Filename for the cell barcode
+list files. They are usually named \emph{barcodes.tsv.gz} or
+\emph{barcodes.tsv}. Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
-\item{gzipped}{Boolean. \code{TRUE} if the Cell Ranger output files
+\item{gzipped}{\code{TRUE} if the Cell Ranger output files
 (barcodes.tsv, features.tsv, and matrix.mtx) were
 gzip compressed. \code{FALSE} otherwise. This is true after Cell Ranger
-3.0.0 update. Default \code{TRUE}.}
+3.0.0 update. Default \code{"auto"} which automatically detects if the
+files are gzip compressed. If not \code{"auto"}, \code{gzipped} must have
+length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by

@@ -14,7 +14,7 @@ readSingleCellMatrix(
 }
 \arguments{
 \item{file}{Path to input file. Supported file endings include .mtx, .txt,
-.csv, .tab, .npz, and their corresponding \code{gzip},
+.csv, .tab, .tsv, .npz, and their corresponding \code{gzip},
 \code{bzip2}, or \code{xz} compressed extensions (\code{*.gz},
 \code{*.bz2}, or \code{*.xz}).}
 

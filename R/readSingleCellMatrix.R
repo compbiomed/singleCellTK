@@ -2,7 +2,8 @@
 #' @importFrom tools file_ext
 .getFileExt <- function(file) {
     ext1 <- tools::file_ext(file)
-    if (!(ext1 %in% c("mtx", "txt", "csv", "tab", "npz", "gz", "bz2", "xz"))) {
+    if (!(ext1 %in% c("mtx", "txt", "csv", "tab", "tsv",
+        "npz", "gz", "bz2", "xz"))) {
 
         warning("Unknown extension ", ext1, ". Treat as text file.")
         return(c("unknown"))
@@ -28,7 +29,7 @@
 #' @description Automatically detact the format of the input file and read
 #'  the file.
 #' @param file Path to input file. Supported file endings include .mtx, .txt,
-#'  .csv, .tab, .npz, and their corresponding \code{gzip},
+#'  .csv, .tab, .tsv, .npz, and their corresponding \code{gzip},
 #'  \code{bzip2}, or \code{xz} compressed extensions (\code{*.gz},
 #'  \code{*.bz2}, or \code{*.xz}).
 #' @param delayedArray Boolean. Whether to read the expression matrix as
@@ -63,7 +64,7 @@ readSingleCellMatrix <- function(file,
 
     ext2 <- data.table::last(ext)
 
-    if (ext2 %in% c("txt", "csv", "tab", "unknown")) {
+    if (ext2 %in% c("txt", "csv", "tab", "tsv", "unknown")) {
         dt <- data.table::read(file)
         if (class == "Matrix") {
             mat <- Matrix::Matrix(dt[, -1])
@@ -85,6 +86,3 @@ readSingleCellMatrix <- function(file,
     }
     return(mat)
 }
-
-
-
