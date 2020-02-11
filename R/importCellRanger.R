@@ -162,11 +162,18 @@
         }
 
     } else {
+
+        if (!all(dir.exists(cellRangerDirs))) {
+            stop("Invalid cellRangerDirs: ",
+                paste(cellRangerDirs[which(!dir.exists(cellRangerDirs))],
+                    collapse = ", "))
+        }
+
         if (is.null(sampleDirs)) {
             for (i in seq_along(cellRangerDirs)) {
                 if (length(list.dirs(cellRangerDirs[i],
                     recursive = FALSE)) == 0) {
-                    warning("Invalid folder. Skipping cellRangerDir ",
+                    warning("Empty cellRangerDir. Skipping ",
                         cellRangerDirs[i])
                 }
             }
@@ -346,32 +353,22 @@
     barcodesFileNames <- .getVectorized(barcodesFileNames, length(samplePaths))
     gzipped <- .getVectorized(gzipped, length(samplePaths))
 
+
     if (is.null(sampleNames)) {
-        for (i in seq_along(samplePaths)) {
-            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
-            scei <- .constructSCEFromCellRangerOutputs(dir,
-                sample = .getSampleNames(samplePaths[i]),
-                matrixFileName = matrixFileNames[i],
-                featuresFileName = featuresFileNames[i],
-                barcodesFileName = barcodesFileNames[i],
-                gzipped = gzipped[i],
-                class = class,
-                delayedArray = delayedArray)
-            res[[i]] <- scei
-        }
-    } else {
-        for (i in seq_along(samplePaths)) {
-            dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
-            scei <- .constructSCEFromCellRangerOutputs(dir,
-                sample = sampleNames[i],
-                matrixFileName = matrixFileNames[i],
-                featuresFileName = featuresFileNames[i],
-                barcodesFileName = barcodesFileNames[i],
-                gzipped = gzipped[i],
-                class = class,
-                delayedArray = delayedArray)
-            res[[i]] <- scei
-        }
+        sampleNames <- .getSampleNames(samplePaths)
+    }
+
+    for (i in seq_along(samplePaths)) {
+        dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
+        scei <- .constructSCEFromCellRangerOutputs(dir,
+            sample = sampleNames[i],
+            matrixFileName = matrixFileNames[i],
+            featuresFileName = featuresFileNames[i],
+            barcodesFileName = barcodesFileNames[i],
+            gzipped = gzipped[i],
+            class = class,
+            delayedArray = delayedArray)
+        res[[i]] <- scei
     }
 
     sce <- do.call(BiocGenerics::cbind, res)
@@ -533,28 +530,22 @@ importCellRangerV2 <- function(
     dataType <- match.arg(dataType)
 
     if (dataType == "filtered") {
-        .importCellRanger(cellRangerDirs = cellRangerDirs,
-            sampleDirs = sampleDirs,
-            sampleNames = sampleNames,
-            cellRangerOuts = "outs/filtered_gene_bc_matrices/",
-            matrixFileNames = "matrix.mtx",
-            featuresFileNames = "genes.tsv",
-            barcodesFileNames = "barcodes.tsv",
-            gzipped = FALSE,
-            class = class,
-            delayedArray = delayedArray)
+        cellRangerOuts <- "outs/filtered_gene_bc_matrices/"
     } else if (dataType == "raw") {
-        .importCellRanger(cellRangerDirs = cellRangerDirs,
-            sampleDirs = sampleDirs,
-            sampleNames = sampleNames,
-            cellRangerOuts = "outs/raw_gene_bc_matrices/",
-            matrixFileNames = "matrix.mtx",
-            featuresFileNames = "genes.tsv",
-            barcodesFileNames = "barcodes.tsv",
-            gzipped = FALSE,
-            class = class,
-            delayedArray = delayedArray)
+        cellRangerOuts <- "outs/raw_gene_bc_matrices/"
     }
+
+    .importCellRanger(cellRangerDirs = cellRangerDirs,
+        sampleDirs = sampleDirs,
+        sampleNames = sampleNames,
+        cellRangerOuts = cellRangerOuts,
+        matrixFileNames = "matrix.mtx",
+        featuresFileNames = "genes.tsv",
+        barcodesFileNames = "barcodes.tsv",
+        gzipped = FALSE,
+        class = class,
+        delayedArray = delayedArray)
+
 }
 
 
@@ -600,28 +591,22 @@ importCellRangerV3 <- function(
     dataType <- match.arg(dataType)
 
     if (dataType == "filtered") {
-        .importCellRanger(cellRangerDirs = cellRangerDirs,
-            sampleDirs = sampleDirs,
-            sampleNames = sampleNames,
-            cellRangerOuts = "outs/filtered_feature_bc_matrix/",
-            matrixFileNames = "matrix.mtx.gz",
-            featuresFileNames = "features.tsv.gz",
-            barcodesFileNames = "barcodes.tsv.gz",
-            gzipped = TRUE,
-            class = class,
-            delayedArray = delayedArray)
+        cellRangerOuts <- "outs/filtered_feature_bc_matrix/"
     } else if (dataType == "raw") {
-        .importCellRanger(cellRangerDirs = cellRangerDirs,
-            sampleDirs = sampleDirs,
-            sampleNames = sampleNames,
-            cellRangerOuts = "outs/raw_feature_bc_matrix/",
-            matrixFileNames = "matrix.mtx.gz",
-            featuresFileNames = "features.tsv.gz",
-            barcodesFileNames = "barcodes.tsv.gz",
-            gzipped = TRUE,
-            class = class,
-            delayedArray = delayedArray)
+        cellRangerOuts <- "outs/raw_feature_bc_matrix/"
     }
+
+    .importCellRanger(cellRangerDirs = cellRangerDirs,
+        sampleDirs = sampleDirs,
+        sampleNames = sampleNames,
+        cellRangerOuts = cellRangerOuts,
+        matrixFileNames = "matrix.mtx.gz",
+        featuresFileNames = "features.tsv.gz",
+        barcodesFileNames = "barcodes.tsv.gz",
+        gzipped = TRUE,
+        class = class,
+        delayedArray = delayedArray)
+
 }
 
 
