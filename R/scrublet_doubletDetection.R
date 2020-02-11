@@ -64,7 +64,7 @@ runScrublet <- function(sce,
     mat <- SummarizedExperiment::assay(sceSample, i = assayName)
 
     if (class(mat) != "dgCMatrix") {
-      mat <- as(mat, "dgCMatrix")
+      mat <- methods::as(mat, "dgCMatrix")
     }
 
     scr <- scrublet$Scrublet(mat)

@@ -2,7 +2,7 @@
 .runDoubletCells <- function(cell.matrix, ...) {
 
   if (class(cell.matrix) != "dgCMatrix") {
-    cell.matrix <- as(cell.matrix, "dgCMatrix")
+    cell.matrix <- methods::as(cell.matrix, "dgCMatrix")
   }
 
   scores <- matrix(scran::doubletCells(cell.matrix, ...), ncol=1)
