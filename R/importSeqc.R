@@ -31,7 +31,8 @@
     mat <- rbind(matb, missMat)
     if (anyDuplicated(rownames(mat))) {
         mat <- mat[!duplicated(rownames(mat)), ]
-        warning('Duplicated genes exist in count matrix. Filtered duplicated genes.')
+        warning("Duplicated genes exist in count matrix. Filtered",
+            " duplicated genes.")
     }
     return(mat)
 }
@@ -70,6 +71,7 @@
     prefix,
     gzipped,
     class,
+    delayedArray,
     cbNotFirstCol,
     feNotFirstCol,
     combinedSample) {
@@ -91,13 +93,14 @@
         dir <- seqcDirs[i]
         matrixFile <- paste(prefix[i], 'sparse_molecule_counts.mtx', sep = "_")
         featuresFile <- paste(prefix[i], 'sparse_counts_genes.csv', sep = "_")
-        barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv', sep = "_")
+        barcodesFile <- paste(prefix[i], 'sparse_counts_barcodes.csv',
+            sep = "_")
 
         cb[[i]] <- .readBarcodesSEQC(file.path(dir, barcodesFile))
         fe[[i]] <- .readFeaturesSEQC(file.path(dir, featuresFile))
 
         mat[[i]] <- .readMatrixMM(file.path(dir, matrixFile),
-            gzipped = gzipped, class = class)
+            gzipped = gzipped, class = class, delayedArray = delayedArray)
         mat[[i]] <- t(mat[[i]])
         rownames(mat[[i]]) <- fe[[i]][[1]]
     }
@@ -122,12 +125,6 @@
 
     } else {
         for (i in seq_along(seqcDirs)) {
-            if (class == 'DelayedArray') {
-                mat[[i]] <- DelayedArray::DelayedArray(mat[[i]])
-            } else if (class == 'matrix') {
-                mat[[i]] <- as.matrix(mat[[i]])
-            }
-
             scei <- .constructSCEFromSeqcOutputs(
                 sampleName = samples[i],
                 matrix = mat[[i]],
@@ -135,7 +132,7 @@
                 barcodes = cb[[i]])
             res[[i]] <- scei
         }
-        if (length(seqcDirs) == 1){
+        if (length(seqcDirs) == 1) {
             return(res[[1]])
         } else {
             return(res)
@@ -149,41 +146,56 @@
 #' @title Construct SCE object from seqc output
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from (preferably a single run of) seqc output. Import and
-#'  combine them as one big \link[SingleCellExperiment]{SingleCellExperiment} object.
+#'  combine them as one big \link[SingleCellExperiment]{SingleCellExperiment}
+#'  object.
 #' @param seqcDirs A vector of paths to seqc output files. Each sample
 #'  should have its own path. For example: \code{./pbmc_1k_50x50}.
 #'  Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the samples to be
 #'  imported. Must have the same length as \code{seqcDirs}.
-#' @param prefix A vector containing the prefix of file names within each sample directory.
-#' It cannot be null and the vector should have the same length as \emph{samples}.
+#' @param prefix A vector containing the prefix of file names within each
+#'  sample directory. It cannot be null and the vector should have the same
+#'  length as \emph{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the seqc output files
-#' (sparse_counts_barcode.csv, sparse_counts_genes.csv, and sparse_molecule_counts.mtx)
-#' were gzip compressed. \code{FALSE} otherwise. Default seqc outputs are not gzipped.
+#'  (sparse_counts_barcode.csv, sparse_counts_genes.csv, and
+#'  sparse_molecule_counts.mtx)
+#'  were gzip compressed. \code{FALSE} otherwise. Default seqc outputs are
+#'  not gzipped.
 #' Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
-#' object. Can be one of "DelayedArray" (as returned by
-#' \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
-#' \link[Matrix]{readMM} function), or "matrix" (as returned by
-#' \link[base]{matrix} function). Default "DelayedArray".
-#' @param feNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_genes.csv
-#' is row index and it will be removed. \code{FALSE} the first column will be kept.
-#' @param cbNotFirstCol Boolean. \code{TRUE} if first column of sparse_counts_barcode.csv
-#' is row index and it will be removed. \code{FALSE} the first column will be kept.
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#' @param feNotFirstCol Boolean. \code{TRUE} if first column of
+#'  sparse_counts_genes.csv
+#' is row index and it will be removed. \code{FALSE} the first column will
+#'  be kept.
+#' @param cbNotFirstCol Boolean. \code{TRUE} if first column of
+#'  sparse_counts_barcode.csv
+#' is row index and it will be removed. \code{FALSE} the first column will
+#'  be kept.
 #' @param combinedSample Boolean. If \code{TRUE}, \code{importSEQC} returns a
-#' \code{SingleCellExperiment} object containing the combined count matrix, feature annotations
-#' and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a list containing multiple
-#' \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment} contains count matrix
-#' , feature annotations and cell annotations for each sample.
+#' \code{SingleCellExperiment} object containing the combined count matrix,
+#'  feature annotations
+#'  and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a
+#'  list containing multiple
+#'  \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment}
+#'  contains count matrix, feature annotations and cell annotations for
+#'  each sample.
 #' @details
 #' \code{importSEQC} imports output from seqc.
-#' The default sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
-#' contains two columns. The first column is row index and the second column is cell-barcode
-#' or gene symbol. \code{importSEQC} will remove first column. Alternatively, user can call
-#' \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first column
-#' of these files.
-#' When \code{combinedSample} is TRUE, \code{importSEQC} will combined count matrix
-#' with genes detected in at least one sample.
+#'  The default sparse_counts_barcode.csv or sparse_counts_genes.csv from
+#'  seqc output
+#'  contains two columns. The first column is row index and the second column
+#'  is cell-barcode
+#'  or gene symbol. \code{importSEQC} will remove first column. Alternatively,
+#'  user can call
+#'  \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first
+#'  column of these files.
+#'  When \code{combinedSample} is TRUE, \code{importSEQC} will combined count
+#'  matrix with genes detected in at least one sample.
 #' @return A \code{SingleCellExperiment} object containing the combined count
 #'  matrix, the feature annotations, and the cell annotation.
 #' @examples
@@ -204,16 +216,20 @@ importSEQC <- function(
     samples = NULL,
     prefix = NULL,
     gzipped = FALSE,
-    class = "DelayedArray",
+    class = c("Matrix", "matrix"),
+    delayedArray = TRUE,
     cbNotFirstCol = TRUE,
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {
+
+    class <- match.arg(class)
 
     .importSEQC(seqcDirs = seqcDirs,
         samples = samples,
         prefix = prefix,
         gzipped = gzipped,
         class = class,
+        delayedArray = delayedArray,
         cbNotFirstCol = cbNotFirstCol,
         feNotFirstCol = feNotFirstCol,
         combinedSample = combinedSample)
