@@ -90,9 +90,22 @@
 }
 
 
-.getOutputFolderPath <- function(samplePath, cellRangerOuts) {
+.getOutputFolderPath <- function(samplePath, cellRangerOuts, cellRangerOuts2) {
     path <- file.path(samplePath, cellRangerOuts)
-    return(path)
+    if (dir.exists(path)) {
+        return(path)
+    }
+
+    if (!is.na(cellRangerOuts2)) {
+        path2 <- file.path(samplePath, cellRangerOuts2)
+        if (dir.exists(path2)) {
+            return(path2)
+        } else {
+            stop("Invalid path ", path2)
+        }
+    }
+
+    stop("Invalid path ", path)
 }
 
 
@@ -117,7 +130,7 @@
 
         for (i in seq_along(sampleDirs)) {
             if (!dir.exists(sampleDirs[i])) {
-                stop("Sample folder ", samples[i], " does not exist!")
+                stop("Sample folder ", sampleDirs[i], " does not exist!")
             }
         }
 
@@ -129,7 +142,7 @@
             }
         }
 
-        if (length(cellRangerOuts) != 1) {
+        if (!(length(cellRangerOuts) %in% c(0, 1))) {
             if (length(cellRangerOuts) != sampleLength) {
                 stop("'sampleDirs' and 'cellRangerOuts' have unequal lengths!")
             }
@@ -188,7 +201,7 @@
                 }
             }
 
-            if (length(cellRangerOuts) != 1) {
+            if (!(length(cellRangerOuts) %in% c(0, 1))) {
                 if (sampleLength != length(cellRangerOuts)) {
                     stop("The length of 'cellRangerOuts' does not match",
                         " length of",
@@ -251,7 +264,7 @@
                 }
             }
 
-            if (length(cellRangerOuts) != 1) {
+            if (!(length(cellRangerOuts) %in% c(0, 1))) {
                 if (length(cellRangerOuts) != sampleLength) {
                     stop("'cellRangerOuts' and 'unlist(sampleDirs)'",
                         " have unequal lengths!")
@@ -315,7 +328,7 @@
 
 
 .getVectorized <- function(arg, len) {
-    if (length(arg) != 1) {
+    if (length(arg) == 1) {
         arg <- rep(arg, len)
     }
     return(arg)
@@ -327,6 +340,7 @@
     sampleDirs,
     sampleNames,
     cellRangerOuts,
+    dataType,
     matrixFileNames,
     featuresFileNames,
     barcodesFileNames,
@@ -347,7 +361,20 @@
 
     res <- vector("list", length = length(samplePaths))
 
+    cellRangerOuts2 <- NA
+    if (is.null(cellRangerOuts)) {
+        if (dataType == "filtered") {
+            cellRangerOuts <- "outs/filtered_gene_bc_matrix"
+            cellRangerOuts2 <- "outs/filtered_feature_bc_matrix"
+        } else {
+            cellRangerOuts <- "outs/raw_gene_bc_matrix"
+            cellRangerOuts2 <- "outs/raw_feature_bc_matrix"
+        }
+    }
+
+
     cellRangerOuts <- .getVectorized(cellRangerOuts, length(samplePaths))
+    cellRangerOuts2 <- .getVectorized(cellRangerOuts2, length(samplePaths))
     matrixFileNames <- .getVectorized(matrixFileNames, length(samplePaths))
     featuresFileNames <- .getVectorized(featuresFileNames, length(samplePaths))
     barcodesFileNames <- .getVectorized(barcodesFileNames, length(samplePaths))
@@ -359,9 +386,10 @@
     }
 
     for (i in seq_along(samplePaths)) {
-        dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i])
+        dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i],
+            cellRangerOuts2[i])
         scei <- .constructSCEFromCellRangerOutputs(dir,
-            sample = sampleNames[i],
+            sampleName = sampleNames[i],
             matrixFileName = matrixFileNames[i],
             featuresFileName = featuresFileNames[i],
             barcodesFileName = barcodesFileNames[i],
@@ -412,14 +440,28 @@
 #'  \code{NULL}, in which case the folder names will be used as sample names.
 #' @param cellRangerOuts Character vector. The intermediate
 #'  paths to filtered or raw cell barcode, feature, and matrix files
-#'  for each sample. Must have length 1 or the same length as
+#'  for each sample. \strong{Supercedes \code{dayaType}}. If \code{NULL},
+#'  \code{dataType}
+#'  will be used to determine Cell Ranger output directory. If not \code{NULL},
+#'  \code{dataType} will be ingored and \code{cellRangerOuts} specifies the
+#'  paths. Must have length 1 or the same length as
 #'  \code{length(unlist(sampleDirs))} if
 #'  \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
 #'  order match the output of
 #'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 #'  Reference genome names might need to be
 #'  appended for CellRanger version below 3.0.0 if reads were mapped to
-#'  multiple genomes when running Cell Ranger pipeline.
+#'  multiple genomes when running Cell Ranger pipeline. Probable options
+#'  include "outs/filtered_feature_bc_matrix/", "outs/raw_feature_bc_matrix/",
+#'  "outs/filtered_gene_bc_matrix/", "outs/raw_gene_bc_matrix/".
+#' @param dataType Character. The type of data to import. Can be one of
+#'  "filtered" (which is equivalent to
+#'  \code{cellRangerOuts = "outs/filtered_feature_bc_matrix/"} or
+#'  \code{cellRangerOuts = "outs/filtered_gene_bc_matrix/"}) or "raw" (which
+#'  is equivalent to
+#'  \code{cellRangerOuts = "outs/raw_feature_bc_matrix/"} or
+#'  \code{cellRangerOuts = "outs/raw_gene_bc_matrix/"}). Default
+#'  "filtered" which imports the counts for filtered cell barcodes only.
 #' @param matrixFileNames Character vector. Filenames for the Market Exchange
 #'  Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
 #'  Must have length 1 or the same
@@ -483,13 +525,15 @@
 #' sce <- importCellRanger(
 #'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
 #'     sampleDirs = "hgmm_1k_v3_20x20",
-#'     sampleNames = "hgmm1kv3")
+#'     sampleNames = "hgmm1kv3",
+#'     dataType = "filtered")
 #' @export
 importCellRanger <- function(
     cellRangerDirs = NULL,
     sampleDirs = NULL,
     sampleNames = NULL,
-    cellRangerOuts = "outs/filtered_feature_bc_matrix/",
+    cellRangerOuts = NULL,
+    dataType = c("filtered", "raw"),
     matrixFileNames = "matrix.mtx.gz",
     featuresFileNames = "features.tsv.gz",
     barcodesFileNames = "barcodes.tsv.gz",
@@ -498,11 +542,13 @@ importCellRanger <- function(
     delayedArray = TRUE) {
 
     class <- match.arg(class)
+    dataType <- match.arg(dataType)
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
         cellRangerOuts = cellRangerOuts,
+        dataType = dataType,
         matrixFileNames = matrixFileNames,
         featuresFileNames = featuresFileNames,
         barcodesFileNames = barcodesFileNames,
@@ -530,15 +576,16 @@ importCellRangerV2 <- function(
     dataType <- match.arg(dataType)
 
     if (dataType == "filtered") {
-        cellRangerOuts <- "outs/filtered_gene_bc_matrices/"
+        cellRangerOuts <- "outs/filtered_gene_bc_matrix/"
     } else if (dataType == "raw") {
-        cellRangerOuts <- "outs/raw_gene_bc_matrices/"
+        cellRangerOuts <- "outs/raw_gene_bc_matrix/"
     }
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
         cellRangerOuts = cellRangerOuts,
+        dataType = dataType,
         matrixFileNames = "matrix.mtx",
         featuresFileNames = "genes.tsv",
         barcodesFileNames = "barcodes.tsv",
@@ -563,6 +610,7 @@ importCellRangerV2Sample <- function(
         sampleDirs = sampleDir,
         sampleNames = sampleName,
         cellRangerOuts = "",
+        dataType = "filtered", # ignored
         matrixFileNames = "matrix.mtx",
         featuresFileNames = "genes.tsv",
         barcodesFileNames = "barcodes.tsv",
@@ -575,9 +623,10 @@ importCellRangerV2Sample <- function(
 #' @rdname importCellRanger
 #' @examples
 #' sce <- importCellRangerV3(
-#'     cellRangerDirs = system.file("extdata", package = "singleCellTK"),
+#'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
 #'     sampleDirs = "hgmm_1k_v3_20x20",
-#'     sampleNames = "hgmm1kv3")
+#'     sampleNames = "hgmm1kv3",
+#'     dataType = "filtered")
 #' @export
 importCellRangerV3 <- function(
     cellRangerDirs = NULL,
@@ -585,7 +634,7 @@ importCellRangerV3 <- function(
     sampleNames = NULL,
     dataType = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
-    delayedArray = delayedArray) {
+    delayedArray = TRUE) {
 
     class <- match.arg(class)
     dataType <- match.arg(dataType)
@@ -600,6 +649,7 @@ importCellRangerV3 <- function(
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
         cellRangerOuts = cellRangerOuts,
+        dataType = dataType,
         matrixFileNames = "matrix.mtx.gz",
         featuresFileNames = "features.tsv.gz",
         barcodesFileNames = "barcodes.tsv.gz",
@@ -629,6 +679,7 @@ importCellRangerV3Sample <- function(
         sampleDirs = sampleDir,
         sampleNames = sampleName,
         cellRangerOuts = "",
+        dataType = "filtered", # ignored
         matrixFileNames = "matrix.mtx.gz",
         featuresFileNames = "features.tsv.gz",
         barcodesFileNames = "barcodes.tsv.gz",

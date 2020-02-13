@@ -12,7 +12,8 @@ importCellRanger(
   cellRangerDirs = NULL,
   sampleDirs = NULL,
   sampleNames = NULL,
-  cellRangerOuts = "outs/filtered_feature_bc_matrix/",
+  cellRangerOuts = NULL,
+  dataType = c("filtered", "raw"),
   matrixFileNames = "matrix.mtx.gz",
   featuresFileNames = "features.tsv.gz",
   barcodesFileNames = "barcodes.tsv.gz",
@@ -43,7 +44,7 @@ importCellRangerV3(
   sampleNames = NULL,
   dataType = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = delayedArray
+  delayedArray = TRUE
 )
 
 importCellRangerV3Sample(
@@ -86,14 +87,25 @@ order match the output of
 
 \item{cellRangerOuts}{Character vector. The intermediate
 paths to filtered or raw cell barcode, feature, and matrix files
-for each sample. Must have length 1 or the same length as
+for each sample. \strong{Supercedes \code{dayaType}}. If \code{NULL},
+\code{dataType}
+will be used to determine Cell Ranger output directory. If not \code{NULL},
+\code{dataType} will be ingored and \code{cellRangerOuts} specifies the
+paths. Must have length 1 or the same length as
 \code{length(unlist(sampleDirs))} if
 \code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
 order match the output of
 \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 Reference genome names might need to be
 appended for CellRanger version below 3.0.0 if reads were mapped to
-multiple genomes when running Cell Ranger pipeline.}
+multiple genomes when running Cell Ranger pipeline. Probable options
+include "outs/filtered_feature_bc_matrix/", "outs/raw_feature_bc_matrix/",
+"outs/filtered_gene_bc_matrix/", "outs/raw_gene_bc_matrix/".}
+
+\item{dataType}{The type of output to import. Whether to import the
+filtered or the raw data. Can be one of "filtered" or
+"raw". Default "filtered". When \code{dataType} is specified,
+\code{cellRangerDirs} will be ignored.}
 
 \item{matrixFileNames}{Character vector. Filenames for the Market Exchange
 Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
@@ -137,11 +149,6 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
-
-\item{dataType}{The type of output to import. Whether to import the
-filtered or the raw data. Can be one of "filtered" or
-"raw". Default "filtered". When \code{dataType} is specified,
-\code{cellRangerDirs} will be ignored.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count
@@ -178,11 +185,13 @@ Read the filtered barcodes, features, and matrices for all
 sce <- importCellRanger(
     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
     sampleDirs = "hgmm_1k_v3_20x20",
-    sampleNames = "hgmm1kv3")
+    sampleNames = "hgmm1kv3",
+    dataType = "filtered")
 sce <- importCellRangerV3(
-    cellRangerDirs = system.file("extdata", package = "singleCellTK"),
+    cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
     sampleDirs = "hgmm_1k_v3_20x20",
-    sampleNames = "hgmm1kv3")
+    sampleNames = "hgmm1kv3",
+    dataType = "filtered")
 sce <- importCellRangerV3Sample(
     sampleDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
         "filtered_feature_bc_matrix", package = "singleCellTK"),
