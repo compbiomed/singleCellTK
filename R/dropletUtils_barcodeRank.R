@@ -2,13 +2,13 @@
 .runBarcodeRankDrops <- function(barcode.matrix, ...) {
 
   if (class(barcode.matrix) != "dgCMatrix") {
-    barcode.matrix <- as(barcode.matrix, "dgCMatrix")
+    barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
   }
 
   output <- DropletUtils::barcodeRanks(m = barcode.matrix, ...)
 
-  knee.ix <- as.integer(output@listData$total >= metadata(output)$knee)
-  inflection.ix <- as.integer(output@listData$total >= metadata(output)$inflection)
+  knee.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$knee)
+  inflection.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$inflection)
 
   result <- cbind(knee.ix, inflection.ix)
   colnames(result) <- c("dropletUtils_BarcodeRank_Knee",

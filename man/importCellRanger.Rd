@@ -3,26 +3,31 @@
 \name{importCellRanger}
 \alias{importCellRanger}
 \alias{importCellRangerV2}
+\alias{importCellRangerV2Sample}
 \alias{importCellRangerV3}
+\alias{importCellRangerV3Sample}
 \title{Construct SCE object from Cell Ranger output}
 \usage{
-importCellRanger(cellRangerDirs = NULL, samples = NULL,
-  cellRangerOuts = "outs/filtered_feature_bc_matrix/",
-  matrixFileName = "matrix.mtx.gz",
-  featuresFileName = "features.tsv.gz",
-  barcodesFileName = "barcodes.tsv.gz", gzipped = TRUE,
-  class = "DelayedArray")
+importCellRanger(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, cellRangerOuts = NULL, dataType = c("filtered",
+  "raw"), matrixFileNames = "matrix.mtx.gz",
+  featuresFileNames = "features.tsv.gz",
+  barcodesFileNames = "barcodes.tsv.gz", gzipped = "auto",
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 
-importCellRangerV2(cellRangerDirs = NULL, samples = NULL,
-  matrixFileName = "matrix.mtx", featuresFileName = "genes.tsv",
-  barcodesFileName = "barcodes.tsv", gzipped = TRUE,
-  class = "DelayedArray")
+importCellRangerV2(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, dataType = c("filtered", "raw"),
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 
-importCellRangerV3(cellRangerDirs = NULL, samples = NULL,
-  matrixFileName = "matrix.mtx.gz",
-  featuresFileName = "features.tsv.gz",
-  barcodesFileName = "barcodes.tsv.gz", gzipped = TRUE,
-  class = "DelayedArray")
+importCellRangerV2Sample(sampleDir = NULL, sampleName = NULL,
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
+
+importCellRangerV3(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, dataType = c("filtered", "raw"),
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
+
+importCellRangerV3Sample(sampleDir = NULL, sampleName = NULL,
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{cellRangerDirs}{The root directories where Cell Ranger was run. These
@@ -30,47 +35,104 @@ folders should contain sample specific folders. Default \code{NULL},
 meaning the paths for each sample will be specified in \emph{samples}
 argument.}
 
-\item{samples}{Default \code{NULL}. Can be one of
+\item{sampleDirs}{Default \code{NULL}. Can be one of
 \itemize{
-  \item \code{NULL}. All samples within \emph{cellRangerDirs} will be
+  \item \code{NULL}. All samples within \code{cellRangerDirs} will be
    imported. The order of samples will be first determined by the order of
-   \emph{cellRangerDirs} and then by \link[base]{list.files}. This is only
-   for the case where \emph{cellRangerDirs} is specified.
-  \item A list of vectors containing sample names to import. Each vector in
-   the list corresponds to samples from one of \emph{cellRangerDirs}.
-   These names are the same as the folder names under \emph{cellRangerDirs}.
-   This is only for the case where \emph{cellRangerDirs} is specified.
+   \code{cellRangerDirs} and then by \link[base]{list.dirs}. This is only
+   for the case where \code{cellRangerDirs} is specified.
+  \item A list of vectors containing the folder names for samples to import.
+   Each vector in
+   the list corresponds to samples from one of \code{cellRangerDirs}.
+   These names are the same as the folder names under \code{cellRangerDirs}.
+   This is only for the case where \code{cellRangerDirs} is specified.
   \item A vector of folder paths for the samples to import. This is only for
-   the case where \emph{cellRangerDirs} is \code{NULL}.
+   the case where \code{cellRangerDirs} is \code{NULL}.
 }
 The cells in the final SCE object will be ordered in the same order of
-samples.}
+ \code{sampleDirs}.}
 
-\item{cellRangerOuts}{Character. It is the intermediate
-path to filtered or raw feature count file saved in sparse matrix format
-for each of \emph{samples}.
+\item{sampleNames}{A vector of user-defined sample names for the samples
+to be
+imported. Must have the same length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Default
+\code{NULL}, in which case the folder names will be used as sample names.}
+
+\item{cellRangerOuts}{Character vector. The intermediate
+paths to filtered or raw cell barcode, feature, and matrix files
+for each sample. \strong{Supercedes \code{dayaType}}. If \code{NULL},
+\code{dataType}
+will be used to determine Cell Ranger output directory. If not \code{NULL},
+\code{dataType} will be ingored and \code{cellRangerOuts} specifies the
+paths. Must have length 1 or the same length as
+\code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 Reference genome names might need to be
 appended for CellRanger version below 3.0.0 if reads were mapped to
-multiple genomes when running Cell Ranger pipeline.}
+multiple genomes when running Cell Ranger pipeline. Probable options
+include "outs/filtered_feature_bc_matrix/", "outs/raw_feature_bc_matrix/",
+"outs/filtered_gene_bc_matrix/", "outs/raw_gene_bc_matrix/".}
 
-\item{matrixFileName}{Filename for the Market Exchange Format (MEX) sparse
-matrix file (.mtx file).}
+\item{dataType}{Character. The type of data to import. Can be one of
+"filtered" (which is equivalent to
+\code{cellRangerOuts = "outs/filtered_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/filtered_gene_bc_matrix/"}) or "raw" (which
+is equivalent to
+\code{cellRangerOuts = "outs/raw_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/raw_gene_bc_matrix/"}). Default
+"filtered" which imports the counts for filtered cell barcodes only.}
 
-\item{featuresFileName}{Filename for the feature annotation file. It can be
-\emph{features.tsv.gz} or \emph{genes.tsv}.}
+\item{matrixFileNames}{Character vector. Filenames for the Market Exchange
+Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
+Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
-\item{barcodesFileName}{Filename for the cell barcode list file.}
+\item{featuresFileNames}{Character vector. Filenames for the feature
+annotation files. They are usually named \emph{features.tsv.gz} or
+\emph{genes.tsv}. Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
-\item{gzipped}{Boolean. \code{TRUE} if the Cell Ranger output files
+\item{barcodesFileNames}{Character vector. Filename for the cell barcode
+list files. They are usually named \emph{barcodes.tsv.gz} or
+\emph{barcodes.tsv}. Must have length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
+
+\item{gzipped}{\code{TRUE} if the Cell Ranger output files
 (barcodes.tsv, features.tsv, and matrix.mtx) were
 gzip compressed. \code{FALSE} otherwise. This is true after Cell Ranger
-3.0.0 update. Default \code{TRUE}.}
+3.0.0 update. Default \code{"auto"} which automatically detects if the
+files are gzip compressed. If not \code{"auto"}, \code{gzipped} must have
+length 1 or the same
+length as \code{length(unlist(sampleDirs))} if
+\code{sampleDirs} is not \code{NULL}. Otherwise, make sure the length and
+order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
-\link[base]{matrix} function). Default "DelayedArray".}
+\link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+
+\item{dataType}{The type of output to import. Whether to import the
+filtered or the raw data. Can be one of "filtered" or
+"raw". Default "filtered". When \code{dataType} is specified,
+\code{cellRangerDirs} will be ignored.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count
@@ -84,12 +146,18 @@ Read the filtered barcodes, features, and matrices for all
 }
 \details{
 \code{importCellRangerV2} imports output from Cell Ranger V2.
- \code{importCellRangerV3} imports output from Cell Ranger V3. Some implicit
- assumptions are made in these two functions including \code{cellRangerOuts},
- \code{matrixFileName}, \code{featuresFileName}, and \code{barcodesFileName}.
+ \code{importCellRangerV2Sample} imports output from one sample from Cell
+ Ranger V2.
+ \code{importCellRangerV3} imports output from Cell Ranger V3.
+ \code{importCellRangerV3} imports output from one sample from Cell Ranger
+ V3.
+ Some implicit
+ assumptions which match the output structure of Cell Ranger V2 & V3
+ are made in these 4 functions including \code{cellRangerOuts},
+ \code{matrixFileName}, \code{featuresFileName}, \code{barcodesFileName},
+ and \code{gzipped}.
  Alternatively, user can call \code{importCellRanger} to explicitly
- specify \code{cellRangerOuts}, \code{matrixFileName},
- \code{featuresFileName}, and \code{barcodesFileName}.
+ specify these arguments.
 }
 \examples{
 # Example #1
@@ -99,9 +167,17 @@ Read the filtered barcodes, features, and matrices for all
 # The top 10 hg19 & mm10 genes are included in this example.
 # Only the first 20 cells are included.
 sce <- importCellRanger(
-    cellRangerDirs = system.file("extdata", package = "singleCellTK"),
-    samples = "hgmm_1k_v3_20x20")
+    cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+    sampleDirs = "hgmm_1k_v3_20x20",
+    sampleNames = "hgmm1kv3",
+    dataType = "filtered")
 sce <- importCellRangerV3(
-    cellRangerDirs = system.file("extdata", package = "singleCellTK"),
-    samples = "hgmm_1k_v3_20x20")
+    cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+    sampleDirs = "hgmm_1k_v3_20x20",
+    sampleNames = "hgmm1kv3",
+    dataType = "filtered")
+sce <- importCellRangerV3Sample(
+    sampleDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
+        "filtered_feature_bc_matrix", package = "singleCellTK"),
+    sampleName = "hgmm1kv3")
 }

@@ -124,18 +124,27 @@ dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recu
 dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
 
 if(!is.null(mergedDropletSCE)){
+  ## Export to R 
   fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
   saveRDS(object = mergedDropletSCE, file = fn)
+  
+  ## Export to flatfile
+  fn <- file.path(directory, samplename, "FlatFile", "Droplets")
+  writeSCE(mergedDropletSCE, outputDir = fn)
 }
 if(!is.null(mergedFilteredSCE)) {
+  ## Export to R    
   fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
   saveRDS(object = mergedFilteredSCE, file = fn)
-}  
 
+  ## Export to flatfile  
+  fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
+  writeSCE(mergedFilteredSCE, outputDir = fn)
+}  
 
 ## ToDo ##
 ## Export to Python
-## Export to flatfile
+
 
 
 sessionInfo()

@@ -33,9 +33,4 @@ Save \link[SingleCellExperiment]{SingleCellExperiment} to
 data(sce_chcl, package = "scds")
 writeSCE(sce_chcl, "sce_chcl")
 
-if (!requireNamespace("scRNAseq", quietly = TRUE)) {
-  BiocManager::install("scRNAseq")
-}
-sce <- scRNAseq::ReprocessedAllenData("tophat_counts")
-writeSCE(sce, "ReprocessedAllenData")
 }

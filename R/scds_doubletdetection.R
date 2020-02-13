@@ -53,7 +53,7 @@ runCxds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
         
         result <- NULL
         nGene <- 500
@@ -138,7 +138,7 @@ runBcds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
         
         result <- NULL
         nGene <- 500
@@ -225,7 +225,7 @@ runCxdsBcdsHybrid <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
 
         result <- NULL
         nGene <- 500
