@@ -1,4 +1,4 @@
-.runDoubletFinder <- function(counts, ...){
+.runDoubletFinder <- function(counts, seurat.pcs = seurat.pcs, seurat.res = seurat.res, ...){
         seurat <- Seurat::CreateSeuratObject(counts = counts,
             project = "seurat", min.features = 0)
         seurat <- Seurat::NormalizeData(object = seurat,
@@ -16,11 +16,11 @@
                 Seurat::VariableFeatures(object = seurat),
                 npcs = numPc, verbose = F)
 
-        seurat <- Seurat::FindNeighbors(seurat, dims = 1:15, verbose = F)
-        seurat <- Seurat::FindClusters(seurat, resolution = 1.2, verbose = F)
+        seurat <- Seurat::FindNeighbors(seurat, dims = seurat.pcs, verbose = F)
+        seurat <- Seurat::FindClusters(seurat, resolution = seurat.res, verbose = F)
 
         sweepResListSeurat <- DoubletFinder::paramSweep_v3(seurat,
-            PCs = 1:15, sct = FALSE)
+            PCs = seurat.pcs, sct = FALSE)
         sweepStatsSeurat <- DoubletFinder::summarizeSweep(sweepResListSeurat,
             GT = FALSE)
         bcmvnSeurat <- DoubletFinder::find.pK(sweepStatsSeurat)
@@ -31,7 +31,7 @@
         homotypicProp <- DoubletFinder::modelHomotypic(annotations)
         nExpPoi <- round(0.075*ncol(seurat@assays$RNA))
         seurat <- DoubletFinder::doubletFinder_v3(seurat,
-            PCs = 1:15, pN = 0.25, pK = pkOptimal, nExp = nExpPoi,
+            PCs = seurat.dims, pN = 0.25, pK = pkOptimal, nExp = nExpPoi,
             reuse.pANN = FALSE, sct = FALSE)
 
         names(seurat@meta.data)[6] <- "doubletFinderAnnScore"
@@ -48,6 +48,10 @@
 #' @param sce SingleCellExperiment object. Must contain a counts matrix
 #' @param sample Numeric vector. Each cell will be assigned a sample number.
 #' @param seed Seed for the random number generator. Default 12345.
+#' @param seurat.pcs Numeric vector. The PCs used in seurat function to 
+#'   determine number of clusters. Default 1:15.
+#' @param seurat.res Numeric vector. The resolution parameter used in seurat 
+#'   which adjusts the number of clusters determined via the algorithm. Default 1.2.
 #' @return SingleCellExperiment object containing the
 #'  'doublet_finder_doublet_score'.
 #' @examples
@@ -56,7 +60,7 @@
 #' @import SummarizedExperiment
 #' @import Seurat
 #' @import DoubletFinder
-runDoubletFinder <- function(sce, sample, seed = 12345, ...){
+runDoubletFinder <- function(sce, sample, seed = 12345, seurat.pcs = 1:15, seurat.res = 1.2, ...){
 
   if(!is.null(sample)) {
     if(length(sample) != ncol(sce)) {
@@ -78,7 +82,8 @@ runDoubletFinder <- function(sce, sample, seed = 12345, ...){
         sceCountsSub <- sceCounts[,sceSubIx]
 
         result <- suppressMessages(withr::with_seed(seed, 
-                  .runDoubletFinder(counts = sceCountsSub, ...)))
+                  .runDoubletFinder(counts = sceCountsSub, 
+			seurat.pcs = seurat.pcs, seurat.res = seurat.res, ...)))
     
      doubletScore[sceSubIx] <- result@meta.data$doubletFinderAnnScore
      doubletLabel[sceSubIx] <- result@meta.data$doubletFinderLabel
