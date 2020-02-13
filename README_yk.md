@@ -87,9 +87,10 @@ we'd be happy to help.
 
 ## Parameters
 
-| Command | Description | Package |
+| Name | Description | Package |
 | --- | --- | --- |
-| doublet | doublets and stuff | scran |
+| scran_doubletCells_Score | numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
+| scrublet_score | numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
 
 ## Develop singleCellTK
 
