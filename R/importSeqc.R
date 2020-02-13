@@ -25,7 +25,7 @@
     missMat <- Matrix::Matrix(0, nrow = length(missGene), ncol = ncol(matrix),
         dimnames = list(missGene, NULL))
 
-    matb <- as(matrix, "dgCMatrix")
+    matb <- methods::as(matrix, "dgCMatrix")
     rownames(matb) <- rownames(matrix)
 
     mat <- rbind(matb, missMat)
@@ -120,7 +120,7 @@
             res[[i]] <- scei
 
         }
-        sce <- do.call(BiocGenerics::cbind, res)
+        sce <- do.call(SingleCellExperiment::cbind, res)
         return(sce)
 
     } else {

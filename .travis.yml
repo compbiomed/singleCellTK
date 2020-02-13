@@ -4,8 +4,33 @@ dist: trusty
 sudo: false
 warnings_are_errors: false
 bioc_required: true
+
+r_packages:
+  - ape
+  - colourpicker
+  - cluster
+  - data.table
+  - DT
+  - ggplot2
+  - ggtree
+  - gridExtra
+  - matrixStats
+
+bioc_packages:
+  - ComplexHeatmap
+  - DESeq2
+  - limma
+  - MAST
+  - matrixStats
+  - multtest
+
 before_install:
-- Rscript -e 'update.packages(ask = FALSE)'
+  - pyenv install 3.6.1
+  - pyenv global 3.6.1
+  - Rscript -e 'update.packages(ask = FALSE)'
+  - pip install --upgrade pip
+  - pip install scipy scrublet
+
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
 r_github_packages:
