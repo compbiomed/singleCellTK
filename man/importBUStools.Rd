@@ -4,15 +4,10 @@
 \alias{importBUStools}
 \title{Construct SCE object from BUStools output}
 \usage{
-importBUStools(
-  BUStoolsDirs,
-  samples,
-  matrixFileName = "genes.mtx",
-  featuresFileName = "genes.genes.txt",
-  barcodesFileName = "genes.barcodes.txt",
-  gzipped = FALSE,
-  class = "Matrix"
-)
+importBUStools(BUStoolsDirs, samples, matrixFileNames = "genes.mtx",
+  featuresFileNames = "genes.genes.txt",
+  barcodesFileNames = "genes.barcodes.txt", gzipped = "auto",
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{BUStoolsDirs}{A vector of paths to BUStools output files. Each sample
@@ -22,23 +17,30 @@ Must have the same length as \code{samples}.}
 \item{samples}{A vector of user-defined sample names for the samples to be
 imported. Must have the same length as \code{BUStoolsDirs}.}
 
-\item{matrixFileName}{Filename for the Market Exchange Format (MEX) sparse
-matrix file (.mtx file).}
+\item{matrixFileNames}{Filenames for the Market Exchange Format (MEX) sparse
+matrix files (.mtx files). Must have length 1 or the same
+length as \code{samples}.}
 
-\item{featuresFileName}{Filename for the feature annotation file.}
+\item{featuresFileNames}{Filenames for the feature annotation files.
+Must have length 1 or the same length as \code{samples}.}
 
-\item{barcodesFileName}{Filename for the cell barcode list file.}
+\item{barcodesFileNames}{Filenames for the cell barcode list file.
+Must have length 1 or the same length as \code{samples}.}
 
 \item{gzipped}{Boolean. \code{TRUE} if the BUStools output files
 (barcodes.txt, genes.txt, and genes.mtx) were
 gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in BUStools
-0.39.4. Default \code{FALSE}.}
+0.39.4. Default \code{"auto"} which automatically detects if the
+files are gzip compressed. Must have length 1 or the same length as
+\code{samples}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count
@@ -63,12 +65,12 @@ Read the barcodes, features (genes), and matrix from BUStools
 # The following BUStools command generates the gene, cell, and
 # matrix files
 
-# bustools correct -w ./3M-february-2018.txt -p output.bus | \
-#   bustools sort -T tmp/ -t 4 -p - | \
-#   bustools count -o genecount/genes \
-#     -g ./transcripts_to_genes.txt \
-#     -e matrix.ec \
-#     -t transcripts.txt \
+# bustools correct -w ./3M-february-2018.txt -p output.bus | \\
+#   bustools sort -T tmp/ -t 4 -p - | \\
+#   bustools count -o genecount/genes \\
+#     -g ./transcripts_to_genes.txt \\
+#     -e matrix.ec \\
+#     -t transcripts.txt \\
 #     --genecounts -
 
 # The top 20 genes and the first 20 cells are included in this example.

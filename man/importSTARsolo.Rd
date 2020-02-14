@@ -4,16 +4,10 @@
 \alias{importSTARsolo}
 \title{Construct SCE object from STARsolo outputs}
 \usage{
-importSTARsolo(
-  STARsoloDirs,
-  samples,
-  STARsoloOuts = "Gene/filtered",
-  matrixFileName = "matrix.mtx",
-  featuresFileName = "features.tsv",
-  barcodesFileName = "barcodes.tsv",
-  gzipped = FALSE,
-  class = "Matrix"
-)
+importSTARsolo(STARsoloDirs, samples, STARsoloOuts = "Gene/filtered",
+  matrixFileNames = "matrix.mtx", featuresFileNames = "features.tsv",
+  barcodesFileNames = "barcodes.tsv", gzipped = "auto",
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{STARsoloDirs}{A vector of root directories of STARsolo output files.
@@ -25,28 +19,38 @@ Each sample should have its own path. Must have the same length as
 \item{samples}{A vector of user-defined sample names for the sample to be
 imported. Must have the same length as \code{STARsoloDirs}.}
 
-\item{STARsoloOuts}{Character. It is the intermediate
-path to filtered or raw feature count file saved in sparse matrix format
-for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
-2.7.3a.}
+\item{STARsoloOuts}{Character vector. The intermediate
+paths to filtered or raw cell barcode, feature, and matrix files
+for each of \code{samples}. Default \code{"Gene/filtered"}  which works
+for STAR 2.7.3a. Must have length 1 or the same
+length as \code{samples}.}
 
-\item{matrixFileName}{Filename for the Market Exchange Format (MEX) sparse
-matrix file (.mtx file).}
+\item{matrixFileNames}{Filenames for the Market Exchange Format (MEX) sparse
+matrix file (.mtx file). Must have length 1 or the same
+length as \code{samples}.}
 
-\item{featuresFileName}{Filename for the feature annotation file.}
+\item{featuresFileNames}{Filenames for the feature annotation file.
+Must have length 1 or the same
+length as \code{samples}.}
 
-\item{barcodesFileName}{Filename for the cell barcode list file.}
+\item{barcodesFileNames}{Filenames for the cell barcode list file.
+Must have length 1 or the same
+length as \code{samples}.}
 
 \item{gzipped}{Boolean. \code{TRUE} if the STARsolo output files
 (barcodes.tsv, features.tsv, and matrix.mtx) were
 gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in STAR
-2.7.3a. Default \code{FALSE}.}
+2.7.3a. Default \code{"auto"} which automatically detects if the
+files are gzip compressed. Must have length 1 or the same
+length as \code{samples}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count
@@ -69,15 +73,15 @@ Read the barcodes, features (genes), and matrices from STARsolo
 # pbmc_1k_v3_R2.fastq.gz
 # The following STARsolo command generates the filtered feature, cell, and
 # matrix files
-# STAR \
-#   --genomeDir ./index \
-#   --readFilesIn ./pbmc_1k_v3_R2.fastq.gz \
-#                 ./pbmc_1k_v3_R1.fastq.gz \
-#   --readFilesCommand zcat \
-#   --outSAMtype BAM Unsorted \
-#   --outBAMcompression -1 \
-#   --soloType CB_UMI_Simple \
-#   --soloCBwhitelist ./737K-august-2016.txt \
+# STAR \\
+#   --genomeDir ./index \\
+#   --readFilesIn ./pbmc_1k_v3_R2.fastq.gz \\
+#                 ./pbmc_1k_v3_R1.fastq.gz \\
+#   --readFilesCommand zcat \\
+#   --outSAMtype BAM Unsorted \\
+#   --outBAMcompression -1 \\
+#   --soloType CB_UMI_Simple \\
+#   --soloCBwhitelist ./737K-august-2016.txt \\
 #   --soloUMIlen 12
 
 # The top 20 genes and the first 20 cells are included in this example.

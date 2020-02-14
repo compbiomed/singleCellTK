@@ -66,6 +66,7 @@ Imports:
     DropletUtils,
     scds,
     reticulate,
+    tools,
     scater,
     withr,
     Matrix,

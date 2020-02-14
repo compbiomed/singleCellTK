@@ -4,17 +4,14 @@
 \alias{importOptimus}
 \title{Construct SCE object from Optimus output}
 \usage{
-importOptimus(
-  OptimusDirs,
-  samples,
+importOptimus(OptimusDirs, samples,
   matrixLocation = "call-MergeCountFiles/sparse_counts.npz",
   colIndexLocation = "call-MergeCountFiles/sparse_counts_col_index.npy",
   rowIndexLocation = "call-MergeCountFiles/sparse_counts_row_index.npy",
   cellMetricsLocation = "call-MergeCellMetrics/merged-cell-metrics.csv.gz",
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
-  class = "Matrix"
-)
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{OptimusDirs}{A vector of root directories of Optimus output files.
@@ -55,12 +52,13 @@ path to \link[DropletUtils]{emptyDrops} metrics file
 Default \code{call-RunEmptyDrops/empty_drops_result.csv} which works for
 optimus_v1.4.0.}
 
-\item{class}{Character. The class of the expression matrix stored in the
-\link[SingleCellExperiment]{SingleCellExperiment}
-object. Can be one of "DelayedArray" (as returned by
-\link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+\item{class}{Character. The class of the expression matrix stored in the SCE
+object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

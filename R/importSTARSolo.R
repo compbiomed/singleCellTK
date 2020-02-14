@@ -6,13 +6,15 @@
     featuresFileName,
     barcodesFileName,
     gzipped,
-    class) {
+    class,
+    delayedArray) {
 
     cb <- .readBarcodes(file.path(dir, barcodesFileName))
     fe <- .readFeatures(file.path(dir, featuresFileName))
     ma <- .readMatrixMM(file.path(dir, matrixFileName),
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
 
     coln <- paste(sample, cb[[1]], sep = "_")
     rownames(ma) <- fe[[1]]
@@ -33,12 +35,12 @@
 .importSTARsolo <- function(STARsoloDirs,
     samples,
     STARsoloOuts,
-    matrixFileName,
-    featuresFileName,
-    barcodesFileName,
+    matrixFileNames,
+    featuresFileNames,
+    barcodesFileNames,
     gzipped,
-    class) {
-
+    class,
+    delayedArray) {
 
     if (length(STARsoloDirs) != length(samples)) {
         stop("'STARsoloDirs' and 'samples' have unequal lengths!")
@@ -46,15 +48,22 @@
 
     res <- vector("list", length = length(samples))
 
+    STARsoloOuts <- .getVectorized(STARsoloOuts, length(samples))
+    matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
+    featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
+    barcodesFileNames <- .getVectorized(barcodesFileNames, length(samples))
+    gzipped <- .getVectorized(gzipped, length(samples))
+
     for (i in seq_along(samples)) {
-        dir <- file.path(STARsoloDirs[i], STARsoloOuts)
+        dir <- file.path(STARsoloDirs[i], STARsoloOuts[i])
         scei <- .constructSCEFromSTARsoloOutputs(dir,
             sample = samples[i],
-            matrixFileName = matrixFileName,
-            featuresFileName = featuresFileName,
-            barcodesFileName = barcodesFileName,
-            gzipped = gzipped,
-            class = class)
+            matrixFileName = matrixFileNames[i],
+            featuresFileName = featuresFileNames[i],
+            barcodesFileName = barcodesFileNames[i],
+            gzipped = gzipped[i],
+            class = class,
+            delayedArray = delayedArray)
         res[[i]] <- scei
     }
 
@@ -76,23 +85,32 @@
 #'  \code{samples}.
 #' @param samples A vector of user-defined sample names for the sample to be
 #'  imported. Must have the same length as \code{STARsoloDirs}.
-#' @param STARsoloOuts Character. It is the intermediate
-#'  path to filtered or raw feature count file saved in sparse matrix format
-#'  for each of \emph{samples}. Default "Gene/filtered"  which works for STAR
-#'  2.7.3a.
-#' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
-#'  matrix file (.mtx file).
-#' @param featuresFileName Filename for the feature annotation file.
-#' @param barcodesFileName Filename for the cell barcode list file.
+#' @param STARsoloOuts Character vector. The intermediate
+#'  paths to filtered or raw cell barcode, feature, and matrix files
+#'  for each of \code{samples}. Default \code{"Gene/filtered"}  which works
+#'  for STAR 2.7.3a. Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param matrixFileNames Filenames for the Market Exchange Format (MEX) sparse
+#'  matrix file (.mtx file). Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param featuresFileNames Filenames for the feature annotation file.
+#'  Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param barcodesFileNames Filenames for the cell barcode list file.
+#'  Must have length 1 or the same
+#'  length as \code{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the STARsolo output files
 #'  (barcodes.tsv, features.tsv, and matrix.mtx) were
 #'  gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in STAR
-#'  2.7.3a. Default \code{FALSE}.
+#'  2.7.3a. Default \code{"auto"} which automatically detects if the
+#'  files are gzip compressed. Must have length 1 or the same
+#'  length as \code{samples}.
 #' @param class Character. The class of the expression matrix stored in the SCE
-#'  object. Can be one of "DelayedArray" (as returned by
-#'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+#'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -128,19 +146,23 @@ importSTARsolo <- function(
     STARsoloDirs,
     samples,
     STARsoloOuts = "Gene/filtered",
-    matrixFileName = "matrix.mtx",
-    featuresFileName = "features.tsv",
-    barcodesFileName = "barcodes.tsv",
-    gzipped = FALSE,
-    class = "Matrix") {
+    matrixFileNames = "matrix.mtx",
+    featuresFileNames = "features.tsv",
+    barcodesFileNames = "barcodes.tsv",
+    gzipped = "auto",
+    class = c("Matrix", "matrix"),
+    delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importSTARsolo(
         STARsoloDirs = STARsoloDirs,
         samples = samples,
         STARsoloOuts = STARsoloOuts,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
+        matrixFileNames = matrixFileNames,
+        featuresFileNames = featuresFileNames,
+        barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
 }
