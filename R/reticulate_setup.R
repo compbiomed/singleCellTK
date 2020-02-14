@@ -9,8 +9,8 @@ scipy <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
-  scrublet <<- reticulate::import("scrublet", delay_load = TRUE)
-  scipy <<- reticulate::import("scipy", delay_load = TRUE)
+#  scrublet <<- reticulate::import("scrublet", delay_load = TRUE)
+#  scipy <<- reticulate::import("scipy", delay_load = TRUE)
 }
 
 

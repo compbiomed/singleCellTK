@@ -24,7 +24,7 @@
 #' @export
 runCellQC <- function(sce,
   algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX"),
+    "cxds_bcds_hybrid", "scrublet", "decontX"),
   sample = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",

@@ -29,11 +29,10 @@ runScrublet <- function(sce,
   seed = 12345) {
 
   if (!reticulate::py_module_available(module = "scrublet")) {
-    stop("Cannot find python module 'scrublet', please install through",
-      " pip (e.g. pip install scrublet).")
+    warning("Cannot find python module 'scrublet', please install through pip (e.g. pip install scrublet)
+            or use 'py_config()' to select correct Python version.")
+    return(sce)
   }
-
-  scrublet <- reticulate::import(module = "scrublet", delay_load = TRUE)
 
   if (!is.null(seed)) {
     reticulate::py_set_seed(seed = seed)
@@ -56,25 +55,31 @@ runScrublet <- function(sce,
     scrublet_call = logical(ncol(sce)))
 
   ## Loop through each sample and run scrublet
-  samples <- unique(sample)
-  for (i in seq_len(length(samples))) {
-    sceSampleInd <- sample == samples[i]
-    sceSample <- sce[, sceSampleInd]
+  error <- try({
+    samples <- unique(sample)
+    for (i in seq_len(length(samples))) {
+      sceSampleInd <- sample == samples[i]
+      sceSample <- sce[, sceSampleInd]
 
-    mat <- SummarizedExperiment::assay(sceSample, i = assayName)
+      mat <- SummarizedExperiment::assay(sceSample, i = assayName)
 
-    if (class(mat) != "dgCMatrix") {
-      mat <- methods::as(mat, "dgCMatrix")
+      if (class(mat) != "dgCMatrix") {
+        mat <- methods::as(mat, "dgCMatrix")
+      }
+
+      scr <- scrublet$Scrublet(mat)
+      result <- scr$scrub_doublets()
+
+      output[sceSampleInd, "scrublet_score"] <- result[[1]]
+      output[sceSampleInd, "scrublet_call"] <- result[[2]]
     }
 
-    scr <- scrublet$Scrublet(mat)
-    result <- scr$scrub_doublets()
+    colData(sce) = cbind(colData(sce), output)
+  }, silent = TRUE)
 
-    output[sceSampleInd, "scrublet_score"] <- result[[1]]
-    output[sceSampleInd, "scrublet_call"] <- result[[2]]
+  if(inherits(error, "try-error")) {
+    warning("Scrublet did not complete successfully. Returning SCE without making any changes.")
   }
-
-  colData(sce) = cbind(colData(sce), output)
 
   return(sce)
 }
