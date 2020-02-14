@@ -33,8 +33,7 @@ runCellQC <- function(sce,
   seed = 12345) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet"))
-
+    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -57,6 +56,12 @@ runCellQC <- function(sce,
     sce <- runDoubletCells(sce = sce,
       sample = sample,
       assayName = assayName,
+      seed = seed)
+  }
+  
+  if ("doubletFinder" %in% algorithms) {
+    sce <- runDoubletFinder(sce = sce,
+      sample = sample,
       seed = seed)
   }
 

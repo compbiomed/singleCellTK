@@ -4,17 +4,10 @@
 \alias{runCellQC}
 \title{Perform comprehensive single cell QC}
 \usage{
-runCellQC(
-  sce,
-  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
-    "decontX"),
-  sample = NULL,
-  geneSetList = NULL,
-  geneSetListLocation = "rownames",
-  geneSetCollection = NULL,
-  assayName = "counts",
-  seed = 12345
-)
+runCellQC(sce, algorithms = c("QCMetrics", "doubletCells", "cxds",
+  "bcds", "cxds_bcds_hybrid", "decontX"), sample = NULL,
+  geneSetList = NULL, geneSetListLocation = "rownames",
+  geneSetCollection = NULL, assayName = "counts", seed = 12345)
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}

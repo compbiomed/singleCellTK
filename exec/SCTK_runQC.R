@@ -53,6 +53,14 @@ directory <- opt$directory
 gmt <- opt$gmt
 sep <- opt$delim
 
+if (is.na(samplename)){
+  stop("A sample name is required. Please specify using the -s flag.")
+}
+
+if(is.na(droplet.path) && is.na(filtered.path)){
+  stop("Either the droplet counts or the filtered counts file path need to be specified.")
+}
+
 ## Use appropriate import function for preprocessing tool
 dropletSCE <- NULL
 filteredSCE <- NULL
