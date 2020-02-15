@@ -25,7 +25,7 @@
       ix <- seq(breaks[i-1], (breaks[i]-1))
       newM <- cbind(newM, mat[,ix])
     }
-    ix <- seq(tail(breaks, n = 1), ncol(mat))
+    ix <- seq(utils::tail(breaks, n = 1), ncol(mat))
     newM <- cbind(newM, mat[,ix])
   } else {
     ix <- seq(2, ncol(mat))

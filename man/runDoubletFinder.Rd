@@ -4,8 +4,15 @@
 \alias{runDoubletFinder}
 \title{Generates a doublet score for each cell via doubletFinder}
 \usage{
-runDoubletFinder(sce, sample, seed = 12345, seurat.pcs = 1:15,
-  seurat.res = 1.2, ...)
+runDoubletFinder(
+  sce,
+  sample = NULL,
+  seed = 12345,
+  seurat.pcs = 1:15,
+  seurat.res = 2,
+  seurat.nfeatures = 2000,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{sce}{SingleCellExperiment object. Must contain a counts matrix}
@@ -18,7 +25,11 @@ runDoubletFinder(sce, sample, seed = 12345, seurat.pcs = 1:15,
 determine number of clusters. Default 1:15.}
 
 \item{seurat.res}{Numeric vector. The resolution parameter used in seurat 
-which adjusts the number of clusters determined via the algorithm. Default 1.2.}
+which adjusts the number of clusters determined via the algorithm. Default 2.}
+
+\item{seurat.nfeatures}{Integer. Number of highly variable genes to use. Default 2000.}
+
+\item{verbose}{Boolean. Wheter to print messages from Seurat and DoubletFinder. Default FALSE.}
 }
 \value{
 SingleCellExperiment object containing the

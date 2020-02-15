@@ -596,7 +596,22 @@ importCellRangerV2 <- function(
 }
 
 
-#' @rdname importCellRanger
+#' @name importCellRangerV2Sample
+#' @title Construct SCE object from Cell Ranger V2 output for a single sample
+#' @description Read the filtered barcodes, features, and matrices for all
+#'  samples from Cell Ranger V3 output. Files are assumed to be named
+#'  "matrix.mtx", "genes.tsv", and "barcodes.tsv".
+#' @param sampleDir  A path to the directory containing the data files. Default "./".
+#' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
+#'  Default "sample".
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#' @return A \code{SingleCellExperiment} object containing the count
+#'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @export
 importCellRangerV2Sample <- function(
     sampleDir = NULL,
@@ -660,7 +675,22 @@ importCellRangerV3 <- function(
 }
 
 
-#' @rdname importCellRanger
+#' @name importCellRangerV3Sample
+#' @title Construct SCE object from Cell Ranger V3 output for a single sample
+#' @description Read the filtered barcodes, features, and matrices for all
+#'  samples from Cell Ranger V3 output. Files are assumed to be named
+#'  "matrix.mtx.gz", "features.tsv.gz", and "barcodes.tsv.gz".
+#' @param sampleDir  A path to the directory containing the data files. Default "./".
+#' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
+#'  Default "sample".
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#' @return A \code{SingleCellExperiment} object containing the count
+#'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
 #' sce <- importCellRangerV3Sample(
 #'     sampleDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
@@ -668,8 +698,8 @@ importCellRangerV3 <- function(
 #'     sampleName = "hgmm1kv3")
 #' @export
 importCellRangerV3Sample <- function(
-    sampleDir = NULL,
-    sampleName = NULL,
+    sampleDir = "./",
+    sampleName = "sample",
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
 
