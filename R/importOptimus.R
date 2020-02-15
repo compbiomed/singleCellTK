@@ -6,8 +6,18 @@
   class,
   delayedArray) {
 
-#  sparse <- reticulate::import("scipy.sparse")
-#  np <- reticulate::import("numpy")
+  ## Now importing these functions in 'reticulate_setup.R' file
+  #  sparse <- reticulate::import("scipy.sparse")
+  #  np <- reticulate::import("numpy")
+  if (!reticulate::py_module_available(module = "scipy.sparse")) {
+    stop("Cannot find python module 'scipy.sparse', please install through pip (e.g. pip install scipy.sparse)
+            or use 'use_python()' to select correct Python environment.")
+  }
+  if (!reticulate::py_module_available(module = "numpy")) {
+    stop("Cannot find python module 'numpy', please install through pip (e.g. pip install numpy)
+            or use 'use_python()' to select correct Python environment.")
+  }
+  
 
   mat <- sparse$load_npz(matrixLocation)
   colIndex <- as.vector(numpy$load(colIndexLocation, allow_pickle = TRUE))

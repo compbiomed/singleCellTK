@@ -30,7 +30,7 @@ runScrublet <- function(sce,
 
   if (!reticulate::py_module_available(module = "scrublet")) {
     warning("Cannot find python module 'scrublet', please install through pip (e.g. pip install scrublet)
-            or use 'py_config()' to select correct Python version.")
+            or use 'use_python()' to select correct Python environment.")
     return(sce)
   }
 
