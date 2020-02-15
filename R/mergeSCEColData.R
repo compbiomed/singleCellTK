@@ -14,9 +14,10 @@
 #'  both singleCellExperiment for samples in sce1.
 #' @examples
 #' sce1 <- importCellRanger(
-#'     cellRangerDirs = system.file("extdata", package = "singleCellTK"),
-#'     samples = "hgmm_1k_v3_20x20")
-#' data(emptyDropsSceExample, package = "singleCellTK")
+#'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+#'     sampleDirs = "hgmm_1k_v3_20x20",
+#'     sampleNames = "hgmm1kv3",
+#'     dataType = "filtered")
 #' sce2 <- emptyDropsSceExample
 #' sce <- mergeSCEColData(sce1 = sce1, sce2 = sce2, id1 = "column_name", id2 = "column_name")
 #' @export

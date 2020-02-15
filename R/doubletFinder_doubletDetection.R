@@ -1,5 +1,9 @@
 .runDoubletFinder <- function(counts, seurat.pcs = 30, seurat.res = 2, 
                               seurat.nfeatures = 2000, verbose = FALSE){
+
+        ## Convert to sparse matrix if not already in that format
+        counts <- methods::as(counts, "dgCMatrix")
+        
         seurat <- Seurat::CreateSeuratObject(counts = counts,
             project = "seurat", min.features = 0)
         seurat <- Seurat::NormalizeData(object = seurat,
@@ -59,7 +63,8 @@
 #' @return SingleCellExperiment object containing the
 #'  'doublet_finder_doublet_score'.
 #' @examples
-#' sce <- runDoubletFinder(sce)
+#' data(sce_chcl, package = "scds")
+#' sce <- runDoubletFinder(sce_chcl)
 #' @export
 runDoubletFinder <- function(sce, sample = NULL, seed = 12345, seurat.pcs = 1:15,
                              seurat.res = 2, seurat.nfeatures = 2000, verbose = FALSE){

@@ -40,5 +40,6 @@ Uses doubletFinder to determine cells within the dataset
  suspected to be doublets.
 }
 \examples{
-sce <- runDoubletFinder(sce)
+data(sce_chcl, package = "scds")
+sce <- runDoubletFinder(sce_chcl)
 }
