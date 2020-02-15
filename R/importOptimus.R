@@ -6,12 +6,12 @@
   class,
   delayedArray) {
 
-  sparse <- reticulate::import("scipy.sparse")
-  np <- reticulate::import("numpy")
+#  sparse <- reticulate::import("scipy.sparse")
+#  np <- reticulate::import("numpy")
 
   mat <- sparse$load_npz(matrixLocation)
-  colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
-  rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
+  colIndex <- as.vector(numpy$load(colIndexLocation, allow_pickle = TRUE))
+  rowIndex <- as.vector(numpy$load(rowIndexLocation, allow_pickle = TRUE))
   colnames(mat) <- colIndex
   rownames(mat) <- rowIndex
   mat <- t(mat)

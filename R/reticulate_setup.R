@@ -6,11 +6,15 @@
 # python modules to use 
 scrublet <- NULL
 scipy <- NULL
+sparse <- NULL
+numpy <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
-#  scrublet <<- reticulate::import("scrublet", delay_load = TRUE)
-#  scipy <<- reticulate::import("scipy", delay_load = TRUE)
+  scrublet <<- reticulate::import("scrublet", delay_load = TRUE)
+  scipy <<- reticulate::import("scipy", delay_load = TRUE)
+  sparse <<- reticulate::import("scipy.sparse", delay_load = TRUE)
+  numpy <<- reticulate::import("numpy", delay_load = TRUE)
 }
 
 
