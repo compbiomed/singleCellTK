@@ -65,7 +65,7 @@ Imports:
     scran,
     DropletUtils,
     scds,
-    reticulate,
+    reticulate (>= 1.14),
     tools,
     scater,
     withr,
