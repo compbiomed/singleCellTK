@@ -67,7 +67,7 @@ runScrublet <- function(sce,
         mat <- methods::as(mat, "dgCMatrix")
       }
 
-      scr <- scrublet$Scrublet(mat)
+      scr <- scrublet$Scrublet(t(mat))
       result <- scr$scrub_doublets()
 
       output[sceSampleInd, "scrublet_score"] <- result[[1]]
