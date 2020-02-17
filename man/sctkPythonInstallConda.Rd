@@ -41,7 +41,7 @@ to install via pip due to compilation requirements).}
 Install all Python packages used in the \code{\link{singleCellTK}} package
 using \code{\link[reticulate]{conda_install}} from package \code{\link{reticulate}}. This
 will create a new Conda environment with the name \code{envname} if not already present.
-Note that Conda or Miniconda already need to be installed on the local system.
+Note that Anaconda or Miniconda already need to be installed on the local system.
 }
 \examples{
 \dontrun{

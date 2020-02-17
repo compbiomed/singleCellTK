@@ -23,7 +23,7 @@ numpy <- NULL
 #' @description Install all Python packages used in the \code{\link{singleCellTK}} package
 #' using \code{\link[reticulate]{conda_install}} from package \code{\link{reticulate}}. This
 #' will create a new Conda environment with the name \code{envname} if not already present.
-#' Note that Conda or Miniconda already need to be installed on the local system.
+#' Note that Anaconda or Miniconda already need to be installed on the local system. 
 #' @param envname Character. Name of the conda environment to create.
 #' @param conda Character. Path to conda executable. Usue "auto" to find conda using the PATH and other conventional install locations. Default 'auto'.
 #' @param packages Character Vector. List of packages to install from Conda. 
