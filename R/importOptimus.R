@@ -6,36 +6,59 @@
   class,
   delayedArray) {
 
-  sparse <- reticulate::import("scipy.sparse")
-  np <- reticulate::import("numpy")
+  ## Now importing these functions in 'reticulate_setup.R' file
+  #  sparse <- reticulate::import("scipy.sparse")
+  #  np <- reticulate::import("numpy")
+  if (!reticulate::py_module_available(module = "scipy.sparse")) {
+    stop("Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda() 
+         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
+         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
+         restarted since the module installation. Alternatively, scipy can be installed on the local machine
+         with pip (e.g. pip install scipy) and then the 'use_python()' function from the 'reticulate' package
+         can be used to select the correct Python environment.")
+  }
+  if (!reticulate::py_module_available(module = "numpy")) {
+    stop("Cannot find python module 'numpy', please install Conda and run sctkPythonInstallConda() 
+         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
+         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
+         restarted since the module installation. Alternatively, numpy can be installed on the local machine
+         with pip (e.g. pip install numpy) and then the 'use_python()' function from the 'reticulate' package
+         can be used to select the correct Python environment.")
+  }
+  
+  error <- try({
+    mat <- sparse$load_npz(matrixLocation)
+    colIndex <- as.vector(numpy$load(colIndexLocation, allow_pickle = TRUE))
+    rowIndex <- as.vector(numpy$load(rowIndexLocation, allow_pickle = TRUE))
+    colnames(mat) <- colIndex
+    rownames(mat) <- rowIndex
+    mat <- t(mat)
 
-  mat <- sparse$load_npz(matrixLocation)
-  colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
-  rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
-  colnames(mat) <- colIndex
-  rownames(mat) <- rowIndex
-  mat <- t(mat)
-
-  ## Convert to "dgCMatrix"
-  newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
-  newM <- methods::as(newM, "dgCMatrix")
-  breaks <- seq(2, ncol(mat), by=1000)
-  if(length(breaks) > 2) {
-    for(i in seq(2, length(breaks))) {
-      ix <- seq(breaks[i-1], (breaks[i]-1))
+    ## Convert to "dgCMatrix"
+    newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
+    newM <- methods::as(newM, "dgCMatrix")
+    breaks <- seq(2, ncol(mat), by=1000)
+    if(length(breaks) > 2) {
+      for(i in seq(2, length(breaks))) {
+        ix <- seq(breaks[i-1], (breaks[i]-1))
+        newM <- cbind(newM, mat[,ix])
+      }
+      ix <- seq(utils::tail(breaks, n = 1), ncol(mat))
+      newM <- cbind(newM, mat[,ix])
+    } else {
+      ix <- seq(2, ncol(mat))
       newM <- cbind(newM, mat[,ix])
     }
-    ix <- seq(tail(breaks, n = 1), ncol(mat))
-    newM <- cbind(newM, mat[,ix])
-  } else {
-    ix <- seq(2, ncol(mat))
-    newM <- cbind(newM, mat[,ix])
+
+    colnames(newM) <- colnames(mat)
+    rownames(newM) <- rownames(mat)
+    mat <- newM
+  }, silent = TRUE)
+  
+  if(inherits(error, "try-error")) {
+    stop(paste0("importOptimus did not complete successfully. SCE could not be generated. Error given during the import process: \n\n", error))
   }
-
-  colnames(newM) <- colnames(mat)
-  rownames(newM) <- rownames(mat)
-  mat <- newM
-
+  
   if (class == "matrix") {
     mat <- as.matrix(mat)
   }
