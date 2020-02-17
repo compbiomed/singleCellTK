@@ -29,8 +29,12 @@ runScrublet <- function(sce,
   seed = 12345) {
 
   if (!reticulate::py_module_available(module = "scrublet")) {
-    warning("Cannot find python module 'scrublet', please install through pip (e.g. pip install scrublet)
-            or use 'use_python()' to select correct Python environment.")
+    warning("Cannot find python module 'scrublet', please install Conda and run sctkPythonInstallConda() 
+            or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
+            make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
+            restarted since the module installation. Alternatively, Scrublet can be installed on the local machine
+            with pip (e.g. pip install scrublet) and then the 'use_python()' function from the 'reticulate' package
+            can be used to select the correct Python environment.")
     return(sce)
   }
 
@@ -62,10 +66,7 @@ runScrublet <- function(sce,
       sceSample <- sce[, sceSampleInd]
 
       mat <- SummarizedExperiment::assay(sceSample, i = assayName)
-
-      if (class(mat) != "dgCMatrix") {
-        mat <- methods::as(mat, "dgCMatrix")
-      }
+      mat <- methods::as(mat, "dgCMatrix")
 
       scr <- scrublet$Scrublet(t(mat))
       result <- scr$scrub_doublets()
@@ -78,7 +79,7 @@ runScrublet <- function(sce,
   }, silent = TRUE)
 
   if(inherits(error, "try-error")) {
-    warning("Scrublet did not complete successfully. Returning SCE without making any changes.")
+    warning(paste0("Scrublet did not complete successfully. Returning SCE without making any changes. Error given by Scrublet: \n\n", error))
   }
 
   return(sce)
