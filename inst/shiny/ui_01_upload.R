@@ -28,32 +28,35 @@ shinyPanelUpload <- fluidPage(
       "(help)", target = "_blank")),
     tags$hr(),
     tags$div(id = "uploadAlert", alertText),
-    hidden(wellPanel(id="annotationData",
-      sidebarLayout(
-        sidebarPanel(
-          h4("Modify Annotation Data:"),
-          selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-          uiOutput("annotModifyUI"),
-          uiOutput("annotModifyUIHelpText"),
-          tags$hr(),
-          downloadButton("downloadcolData", "Download Annotation Data"),
-          tags$hr(),
-          fileInput(
-            "newAnnotFile", "Upload and replace annotation data:",
-            accept = c(
-              "text/csv",
-              "text/comma-separated-values",
-              ".csv"
-            )
-          )
-        ),
-        mainPanel(
-          tags$h4("Annotation data(colData):"),
-          tags$br(),
-          DT::dataTableOutput("colDataDataFrame")
-        )
-      )
-    )),
+    hidden(wellPanel(id = "annotationData",
+                     h4("Data summary:"),
+                     tableOutput("summarycontents"))), 
+    # hidden(wellPanel(id="annotationData",
+    #   sidebarLayout(
+    #     sidebarPanel(
+    #       h4("Modify Annotation Data:"),
+    #       selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
+    #       uiOutput("annotModifyUI"),
+    #       uiOutput("annotModifyUIHelpText"),
+    #       tags$hr(),
+    #       downloadButton("downloadcolData", "Download Annotation Data"),
+    #       tags$hr(),
+    #       fileInput(
+    #         "newAnnotFile", "Upload and replace annotation data:",
+    #         accept = c(
+    #           "text/csv",
+    #           "text/comma-separated-values",
+    #           ".csv"
+    #         )
+    #       )
+    #     ),
+    #     mainPanel(
+    #       tags$h4("Annotation data(colData):"),
+    #       tags$br(),
+    #       DT::dataTableOutput("colDataDataFrame")
+    #     )
+    #   )
+    # )),
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",

@@ -86,6 +86,8 @@ source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 
+
+
 jsCode <- "
 
 shinyjs.disableTabs = function() {
@@ -105,14 +107,6 @@ shinyjs.enableTabs = function() {
 }
 "
 
-css <- "
-.nav li a.disabled {
-  color: #cccccc !important;
-  cursor: not-allowed !important;
-  border-color: #aaa !important;
-}"
-
-
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
                      packageVersion("singleCellTK"), sep = "")
@@ -126,45 +120,47 @@ if (is.null(getShinyOption("includeVersion"))){
 }
 
 shinyUI(
-  navbarPage(
-    tooltitle,
-    theme = shinytheme(shinyTheme),
-    #Upload Tab
-    tabPanel("Upload", shinyPanelUpload),
-    tabPanel(title="QC & Filtering", shinyPanelFilter),
-    tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
-    tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
-    tabPanel("Clustering", shinyPanelCluster),
-    navbarMenu(
-      "Differential Expression & Marker Selection",
-      tabPanel("Differential Expression", shinyPanelDiffex),
-      tabPanel("MAST", shinyPanelMAST)
-    ),
-    navbarMenu(
-      "Cell Annotation & Pathway Analysis",
-      tabPanel("GSVA", shinyPanelPathway),
-      tabPanel("EnrichR", shinyPanelEnrichR)
-    ),
-    tabPanel("Sample Size Calculator", shinyPanelSubsample),
-    navbarMenu(
-      "Curated Workflows",
-      tabPanel("CELDA", shinyPanelCelda),
-      tabPanel("Seurat", h1("Seurat")),
-      tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
-    ),
-    # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
-    tabPanel("Viewers", shinyPanelViewers),
-    footer = includeHTML("www/footer.html"),
-    # fluidRow(
-    #   column(12, id = "consoleDiv",
-    #          actionButton(inputId="consoleToggle", label = "Show/Hide Console Log"),
-    #          verbatimTextOutput(outputId="console"),
-    #          tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
-    #          tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
-    #   )
-    # )
-    useShinyjs(),
-    extendShinyjs(text = jsCode),
-    inlineCSS(css)
-  )
+    navbarPage(
+      tooltitle,
+      theme = shinytheme(shinyTheme),
+      #Upload Tab
+      tabPanel("Upload", shinyPanelUpload),
+      navbarMenu("QC & Filtering", 
+                 tabPanel("Filtering"), shinyPanelFilter),
+      # tabPanel(title="QC & Filtering", shinyPanelFilter),
+      tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
+      tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
+      tabPanel("Clustering", shinyPanelCluster),
+      navbarMenu(
+        "Differential Expression & Marker Selection",
+        tabPanel("Differential Expression", shinyPanelDiffex),
+        tabPanel("MAST", shinyPanelMAST)
+      ),
+      navbarMenu(
+        "Cell Annotation & Pathway Analysis",
+        tabPanel("GSVA", shinyPanelPathway),
+        tabPanel("EnrichR", shinyPanelEnrichR)
+      ),
+      tabPanel("Sample Size Calculator", shinyPanelSubsample),
+      navbarMenu(
+        "Curated Workflows",
+        tabPanel("CELDA", shinyPanelCelda),
+        tabPanel("Seurat", h1("Seurat")),
+        tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
+      ),
+      # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
+      navbarMenu("Viewers", 
+                 tabPanel("Gene Visualization", shinyPanelViewers)),
+      footer = includeHTML("www/footer.html"),
+      # fluidRow(
+      #   column(12, id = "consoleDiv",
+      #          actionButton(inputId="consoleToggle", label = "Show/Hide Console Log"),
+      #          verbatimTextOutput(outputId="console"),
+      #          tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
+      #          tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
+      #   )
+      # )
+      useShinyjs(),
+      extendShinyjs(text = jsCode)
+    )
 )

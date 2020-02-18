@@ -1,6 +1,7 @@
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
 options(useFancyQuotes = FALSE)
+options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
@@ -153,17 +154,7 @@ shinyServer(function(input, output, session) {
     toggle(id = "console")
   })
 
-  observeEvent(input$toggleAssayDetails, {
-    if (vals$showAssayDetails == FALSE) {
-      vals$showAssayDetails <- TRUE
-      shinyjs::show(id="assayDetails", anim=TRUE, animType="slide", time=0.2)
-      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-up", lib="font-awesome"))
-    } else {
-      vals$showAssayDetails <- FALSE
-      shinyjs::hide(id="assayDetails", anim=TRUE, animType="slide", time=0.2)
-      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
-    }
-  })
+
   
 
   # js$disableTabs()
@@ -186,6 +177,7 @@ shinyServer(function(input, output, session) {
                                    createLogCounts = input$createLogcounts))
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
+          print("mouse stuff selected")
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
@@ -1623,6 +1615,18 @@ shinyServer(function(input, output, session) {
   # Page 4: Batch Correction
   #-----------------------------------------------------------------------------
 
+  observeEvent(input$toggleNormalization, {
+    if (vals$showAssayDetails == FALSE) {
+      vals$showAssayDetails <- TRUE
+      shinyjs::show(id="normalization", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-up", lib="font-awesome"))
+    } else {
+      vals$showAssayDetails <- FALSE
+      shinyjs::hide(id="normalization", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
+    }
+  })
+  
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){

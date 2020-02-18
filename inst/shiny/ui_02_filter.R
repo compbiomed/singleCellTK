@@ -121,8 +121,8 @@ shinyPanelFilter <- fluidPage(
         mainPanel(
           wellPanel(
             style = "background-color:transparent",
-            h4("Summary Contents:"),
-            tableOutput("summarycontents"),
+            # h4("Summary Contents:"),
+            # tableOutput("summarycontents"),
             tags$hr(),
             h4("Counts Histogram:"),
             plotlyOutput("countshist"),
