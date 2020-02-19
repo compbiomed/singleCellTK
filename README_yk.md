@@ -87,10 +87,20 @@ we'd be happy to help.
 
 ## Parameters
 
+### Droplet-based
+
+| Name | Description | Package |
+| --- | --- | --- |
+| dropletUtils_emptyDrops_total | XXXXX | dropletUtils | 
+
+### Doublet detection
+
 | Name | Description | Package |
 | --- | --- | --- |
 | scran_doubletCells_Score | numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
 | scrublet_score | numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
+| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm | scrublet |
+
 
 ## Develop singleCellTK
 
