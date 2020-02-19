@@ -182,12 +182,12 @@ shinyServer(function(input, output, session) {
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
-          vals$original <- (createSCE(assayFile = t(maits$expressionmat),
+          vals$original <- createSCE(assayFile = t(maits$expressionmat),
                                      annotFile = maits$cdat,
                                      featureFile = maits$fdat,
                                      assayName = "logtpm",
                                      inputDataFrames = TRUE,
-                                     createLogCounts = FALSE))
+                                     createLogCounts = FALSE)
           # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
           
           rm(maits)

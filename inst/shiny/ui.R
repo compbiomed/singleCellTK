@@ -126,7 +126,7 @@ shinyUI(
       #Upload Tab
       tabPanel("Upload", shinyPanelUpload),
       navbarMenu("QC & Filtering", 
-                 tabPanel("Filtering"), shinyPanelFilter),
+                 tabPanel("Filtering", shinyPanelFilter)),
       # tabPanel(title="QC & Filtering", shinyPanelFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
