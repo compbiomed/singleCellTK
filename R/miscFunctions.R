@@ -74,6 +74,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
+  
   if (is.null(assayFile)){
     stop("You must supply a count file.")
   }
@@ -263,3 +264,15 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     circlize::colorRamp2(c(1, 2, 3), c("red", "blue", "black"))
   }
 }
+
+`%@%` = function(decorator, f) {
+  decorator(f)
+}
+
+simpleLog <- function(f) {
+  function(...) {
+    print(match.call())
+    f(...)
+  }
+}
+

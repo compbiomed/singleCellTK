@@ -1,5 +1,7 @@
 #1GB max upload size
 options(shiny.maxRequestSize = 1000 * 1024 ^ 2)
+options(useFancyQuotes = FALSE)
+options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
@@ -32,7 +34,8 @@ shinyServer(function(input, output, session) {
     dimRedPlot_geneExp = NULL,
     dendrogram = NULL,
     pcX = NULL,
-    pcY = NULL
+    pcY = NULL,
+    showAssayDetails = FALSE
   )
 
   #reactive list to store names of results given by the user.
@@ -146,9 +149,18 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
+  
+  observeEvent(input$consoleToggle, {
+    toggle(id = "console")
+  })
 
+
+  
+
+  # js$disableTabs()
+  
   # Close app on quit
-  session$onSessionEnded(stopApp)
+  # session$onSessionEnded(stopApp)
 
   #-----------------------------------------------------------------------------
   # Page 1: Upload
@@ -158,13 +170,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- withConsoleRedirect(createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts)
+                                   createLogCounts = input$createLogcounts))
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
+          print("mouse stuff selected")
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
@@ -175,6 +188,8 @@ shinyServer(function(input, output, session) {
                                      assayName = "logtpm",
                                      inputDataFrames = TRUE,
                                      createLogCounts = FALSE)
+          # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
+          
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -201,6 +216,7 @@ shinyServer(function(input, output, session) {
         }
       }
       if (!is.null(vals$original)) {
+        # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
         updateColDataNames()
         updateNumSamples()
@@ -217,7 +233,9 @@ shinyServer(function(input, output, session) {
             HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
                  </span> Successfully Uploaded! <button type='button' \
                  class='close' data-dismiss='alert'>&times;</button>"))
-            )
+        )
+        shinyjs::show(id="annotationData")
+        js$enableTabs();
       } else {
         shinyalert::shinyalert("Error!", "The data upload failed!",
                                type = "error")
@@ -359,7 +377,7 @@ shinyServer(function(input, output, session) {
         deletesamples <- input$deletesamplelist
         vals$counts <- filterSCData(inSCE = vals$counts,
                                     useAssay = input$filterAssaySelect,
-                                    deletesamples = deletesamples,
+                                     deletesamples = deletesamples,
                                     removeNoExpress = input$removeNoexpress,
                                     removeBottom = 0.01 * input$LowExpression,
                                     minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
@@ -650,7 +668,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
     }
-  }, options = list(scrollX = TRUE, pageLength = 30))
+  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
 
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))
@@ -722,8 +740,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   #Sidebar buttons functionality - not an accordion
-  shinyjs::onclick("c_button1", shinyjs::toggle(id = "c_collapse1",
-                                                anim = TRUE), add = TRUE)
   shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
                                                 anim = TRUE), add = TRUE)
   shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",
@@ -1599,6 +1615,18 @@ shinyServer(function(input, output, session) {
   # Page 4: Batch Correction
   #-----------------------------------------------------------------------------
 
+  observeEvent(input$toggleNormalization, {
+    if (vals$showAssayDetails == FALSE) {
+      vals$showAssayDetails <- TRUE
+      shinyjs::show(id="normalization", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-up", lib="font-awesome"))
+    } else {
+      vals$showAssayDetails <- FALSE
+      shinyjs::hide(id="normalization", anim=TRUE, animType="slide", time=0.2)
+      updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
+    }
+  })
+  
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){
