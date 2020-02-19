@@ -4,15 +4,23 @@
 \alias{readSingleCellMatrix}
 \title{Read single cell expression matrix}
 \usage{
-readSingleCellMatrix(file, class = c("Matrix", "matrix"),
-  delayedArray = TRUE, colIndexLocation = NULL,
-  rowIndexLocation = NULL)
+readSingleCellMatrix(
+  file,
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE,
+  colIndexLocation = NULL,
+  rowIndexLocation = NULL
+)
 }
 \arguments{
 \item{file}{Path to input file. Supported file endings include .mtx, .txt,
 .csv, .tab, .tsv, .npz, and their corresponding \code{gzip},
 \code{bzip2}, or \code{xz} compressed extensions (\code{*.gz},
 \code{*.bz2}, or \code{*.xz}).}
+
+\item{class}{Character. Class of matrix. One of "Matrix" or "matrix". Specifying "Matrix"
+will convert to a sparse format which should be used
+for datasets with large numbers of cells.  Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}

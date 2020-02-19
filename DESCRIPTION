@@ -15,7 +15,7 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
                     comment = c(ORCID = "0000-0002-6247-6595")))
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
-    R (>= 3.5),
+    R (>= 3.6.0),
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
@@ -65,12 +65,14 @@ Imports:
     scran,
     DropletUtils,
     scds,
-    reticulate,
+    reticulate (>= 1.14),
     tools,
     scater,
     withr,
     Matrix,
-    GSEABase
+    GSEABase,
+    Seurat,
+    DoubletFinder
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
@@ -85,6 +87,7 @@ Suggests:
     scRNAseq,
     xtable,
     spelling
+Remotes: chris-mcginnis-ucsf/DoubletFinder
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

@@ -1,10 +1,9 @@
 
 .runBarcodeRankDrops <- function(barcode.matrix, ...) {
 
-  if (class(barcode.matrix) != "dgCMatrix") {
-    barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
-  }
-
+  ## Convert to sparse matrix if not already in that format
+  barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
+  
   output <- DropletUtils::barcodeRanks(m = barcode.matrix, ...)
 
   knee.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$knee)

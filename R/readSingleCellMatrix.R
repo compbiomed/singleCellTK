@@ -32,6 +32,9 @@
 #'  .csv, .tab, .tsv, .npz, and their corresponding \code{gzip},
 #'  \code{bzip2}, or \code{xz} compressed extensions (\code{*.gz},
 #'  \code{*.bz2}, or \code{*.xz}).
+#' @param class Character. Class of matrix. One of "Matrix" or "matrix". Specifying "Matrix"
+#'  will convert to a sparse format which should be used
+#'  for datasets with large numbers of cells.  Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @param colIndexLocation Character. For Optimus output, the path to the
@@ -65,7 +68,7 @@ readSingleCellMatrix <- function(file,
     ext2 <- data.table::last(ext)
 
     if (ext2 %in% c("txt", "csv", "tab", "tsv", "unknown")) {
-        dt <- data.table::read(file)
+        dt <- data.table::fread(file)
         if (class == "Matrix") {
             mat <- Matrix::Matrix(dt[, -1])
             rownames(mat) <- dt[[1]]
