@@ -110,14 +110,14 @@ There are several available QC algorithms that are implemented within singleCell
 
 | Output name | Description | Package |
 | --- | --- | --- |
-| scran_doubletCells_Score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
-| scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
-| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm | scrublet |
-| doubletFinderAnnScore | Numeric value that determines how likely a cell in the counts matrix is a doublet using artificially generated doublets | doubletFinder |
-| doubletFinderLabel | Whether the cell is deemed a doublet or not by the algorithm | doubletFinder |
+| doubletFinder_doublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet using artificially generated doublets | doubletFinder |
+| doubletFinder_doublet_label | Whether the cell is deemed a doublet or not by the algorithm | doubletFinder |
 | scds_cxds_score | Numeric value that determines how likely a cell is a doublet, based on co-expression of gene pairs | scds |
 | scds_bcds_score | Numeric value that determines how likely a cell is a doublet, using artificially generated doublets | scds |
 | scds_hybrid_score | Numeric value that determines how likely a cell is a doublet, uses both cxds and bcds approach | scds |
+| scran_doubletCells_Score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
+| scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
+| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm | scrublet |
 
 ### Ambient RNA detection
 
