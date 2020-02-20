@@ -1,7 +1,7 @@
 .runEmptyDrops <- function(barcode.matrix, ...) {
 
   if (class(barcode.matrix) != "dgCMatrix") {
-    barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
+    barcode.matrix <- as(barcode.matrix, "dgCMatrix")
   }
 
   result <- DropletUtils::emptyDrops(m = barcode.matrix, ...)
@@ -37,7 +37,7 @@
 #' # /pbmc_1k_v3
 #' # Only the top 10 cells with most counts and the last 10 cells with non-zero
 #' # counts are included in this example.
-#' # This example only serves as an proof of concept and a tutoriol on how to
+#' # This example only serves as an proof of concept and a tutorial on how to
 #' # run the function. The results should not be
 #' # used for drawing scientific conclusions.
 #' data(emptyDropsSceExample, package = "singleCellTK")
@@ -49,6 +49,10 @@ runEmptyDrops <- function(sce,
     assayName = "counts",
     ...
 ) {
+  # getting the current argument values
+  current_params <- as.list(sys.call())
+  metadata_params <- sce@metadata$QCParams
+  
   if(!is.null(sample)) {
     if(length(sample) != ncol(sce)) {
       stop("'sample' must be the same length as the number of columns in 'sce'")
@@ -78,8 +82,10 @@ runEmptyDrops <- function(sce,
 
     output[sceSampleInd, ] <- result
   }
-
+  
   colData(sce) = cbind(colData(sce), output)
-
+  sce@metadata$QCParams <- metadata_params
+  sce@metadata$QCParams$runEmptyDrops <- current_params
+  
   return(sce)
 }

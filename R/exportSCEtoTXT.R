@@ -1,3 +1,8 @@
+library(stringr)
+library(SingleCellExperiment)
+library(Matrix)
+library(scRNAseq)
+library(data.table)
 
 .checkOverwrite <- function(path, overwrite) {
   if (file.exists(path) && !isTRUE(overwrite)) {
@@ -6,40 +11,45 @@
   }
 }
 
-
 # function to write txt gz files
 .writeSCEFile <- function(data, path, overwrite, gzipped) {
-  data <- data.table::as.data.table(data, keep.rownames = TRUE)
+  data <- data.table::as.data.table(data, keep.rownames = TRUE,  key=NULL, sorted=TRUE,
+                                    value.name="value", na.rm=TRUE)
   if (isTRUE(gzipped)) {
     filename <- paste0(path, ".txt.gz")
   } else {
     filename <- paste0(path, ".txt")
   }
-  .checkOverwrite(filename, overwrite)
+  if (str_detect(path, pattern="metadata" , negate = FALSE)){
+    filename <- paste0(path, ".rds.gz")
+  }
+   .checkOverwrite(filename, overwrite)
   data.table::fwrite(data, file = filename)
+
 }
 
 
 # write assays data
 .writeAssays <- function(sce, path, overwrite, gzipped) {
-  assayNames <- names(SummarizedExperiment::assays(sce))
-  for (i in assayNames) {
-    data <- SummarizedExperiment::assays(sce)[[i]]
-    assaypath <- file.path(path, i)
-    message(date(), " Writing assay ", i, " ...")
-
-    match <- intersect(c("dgTMatrix", "dgCMatrix", "dgRMatrix"), class(data))
-    if (length(match) > 0) {
-      data <- data.table::as.data.table(Matrix::as.matrix(data),
-        keep.rownames = TRUE)
-    }
+   assayNames <- names(SummarizedExperiment::assays(sce))
+    for (i in assayNames) {
+      data <- SummarizedExperiment::assays(sce)[[i]]
+      assaypath <- file.path(path, i)
+      message(date(), " Writing assay ", i, " ...")
+      
+      match <- intersect(c("dgTMatrix", "dgCMatrix", "dgRMatrix", "matrix"), class(data))
+      if (length(match) > 0) {
+        filename <- paste0(assaypath, ".mtx")
+        Matrix::writeMM(Matrix(data, sparse = TRUE), filename)
 
     if (!("data.frame" %in% class(data))) {
-      data <- data.table::as.data.table(data, keep.rownames = TRUE)
+      data <- data.table::as.data.table(Matrix::as.matrix(data), keep.rownames = TRUE)
+      
     }
 
     .writeSCEFile(data, assaypath, overwrite, gzipped)
   }
+    }
 }
 
 
@@ -147,6 +157,11 @@
 #' data(sce_chcl, package = "scds")
 #' writeSCE(sce_chcl, "sce_chcl")
 #'
+#' if (!requireNamespace("scRNAseq", quietly = TRUE)) {
+#'   BiocManager::install("scRNAseq")
+#' }
+#' sce <- scRNAseq::ReprocessedAllenData("tophat_counts")
+#' writeSCE(sce, "ReprocessedAllenData")
 #' @export
 writeSCE <- function(sce,
   outputDir = "./",
@@ -157,6 +172,7 @@ writeSCE <- function(sce,
   if (length(SummarizedExperiment::assays(sce)) > 0) {
     assaysFolder <- file.path(outputDir, "/assays")
     dir.create(assaysFolder, showWarnings = FALSE, recursive = TRUE)
+    
     .writeAssays(sce, assaysFolder, overwrite, gzipped)
   }
 
@@ -181,3 +197,10 @@ writeSCE <- function(sce,
     .writeMetaData(sce, metadataFolder, overwrite, gzipped)
   }
 }
+
+
+# test
+sce <- scRNAseq::ReprocessedAllenData("tophat_counts")
+writeSCE(sce, "ReprocessedAllenData_test")
+
+
