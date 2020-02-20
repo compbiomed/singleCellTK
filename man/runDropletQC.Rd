@@ -4,12 +4,8 @@
 \alias{runDropletQC}
 \title{Perform comprehensive droplet QC}
 \usage{
-runDropletQC(
-  sce,
-  algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
-  sample = NULL,
-  assayName = "counts"
-)
+runDropletQC(sce, algorithms = c("QCMetrics", "emptyDrops",
+  "barcodeRanks"), sample = NULL, assayName = "counts")
 }
 \arguments{
 \item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing

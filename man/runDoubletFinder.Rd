@@ -4,15 +4,8 @@
 \alias{runDoubletFinder}
 \title{Generates a doublet score for each cell via doubletFinder}
 \usage{
-runDoubletFinder(
-  sce,
-  sample = NULL,
-  seed = 12345,
-  seurat.pcs = 1:15,
-  seurat.res = 2,
-  seurat.nfeatures = 2000,
-  verbose = FALSE
-)
+runDoubletFinder(sce, sample = NULL, seed = 12345, seurat.pcs = 1:15,
+  seurat.res = 2, seurat.nfeatures = 2000, verbose = FALSE)
 }
 \arguments{
 \item{sce}{SingleCellExperiment object. Must contain a counts matrix}

@@ -4,13 +4,8 @@
 \alias{writeSCE}
 \title{Export \link[SingleCellExperiment]{SingleCellExperiment} object}
 \usage{
-writeSCE(
-  sce,
-  outputDir = "./",
-  outputType = "txt",
-  overwrite = FALSE,
-  gzipped = TRUE
-)
+writeSCE(sce, outputDir = "./", outputType = "txt",
+  overwrite = FALSE, gzipped = TRUE)
 }
 \arguments{
 \item{sce}{\link[SingleCellExperiment]{SingleCellExperiment} object to be
