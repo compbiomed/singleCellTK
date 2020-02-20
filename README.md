@@ -95,8 +95,8 @@ There are several available QC algorithms that are implemented within singleCell
 | dropletUtils_emptyDrops_total | Integer, spicifies the total UMI count for each barcode | dropletUtils |
 | dropletUtils_emptyDrops_pvalue | Numeric, the Monte Carlo p-value under the null model | dropletUtils |
 | dropletUtils_emptyDrops_logprob | Numeric, the barcode's count log-probability of a vector under the null model | dropletUtils |
-| dropletUtils_emptyDrops_fdr | Numeric, the barcode's count log-probability of a vector under the null model | dropletUtils |
-| dropletUtils_emptyDrops_limited | Numeric, the barcode's count log-probability of a vector under the null model | dropletUtils |
+| dropletUtils_emptyDrops_fdr | Numeric, false discovery rate. Suggested fdr cut-off is 1% | dropletUtils |
+| dropletUtils_emptyDrops_limited | Logical, indicates if a lower p-value could be obtained by increasing niters, a number of iterations for Monte Carlo p-value calculations | dropletUtils |
 | dropletUtils_BarcodeRank_Knee | Numeric, specifies total count at the knee point | dropletUtils |
 | dropletUtils_BarcodeRank_Inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
 | sum | Total transcript counts in cell | scater |
