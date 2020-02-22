@@ -230,7 +230,7 @@ runCxdsBcdsHybrid <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, bcds_args=list(ntop = nGene)))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, bcdsArgs=list(ntop = nGene)))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 

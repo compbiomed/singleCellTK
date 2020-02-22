@@ -93,7 +93,7 @@ if(!is.null(gmt)) {
 ## Run QC functions
 if(!is.null(dropletSCE)) {
   message(paste0(date(), " .. Running droplet QC"))    
-  dropletSCE <- runDropletQC(sce = dropletSCE)
+  dropletSCE <- runDropletQC(inSCE = dropletSCE)
   
   if(is.null(filteredSCE)) {
     ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
@@ -103,7 +103,7 @@ if(!is.null(dropletSCE)) {
 
 if(!is.null(filteredSCE)) {
   message(paste0(date(), " .. Running cell QC"))    
-  filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
+  filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection)
 }  
 
 

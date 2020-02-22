@@ -31,7 +31,7 @@ runDecontX <- function(inSCE,
   
   message(paste0(date(), " ... Running 'DecontX'"))    
   
-  inSCE <- celda::decontX(x = inSCE, batch = sample, useAssay = useAssay, ...)
+  inSCE <- celda::decontX(x = inSCE, batch = sample, assayName = useAssay, ...)
   
   return(inSCE)
 }
