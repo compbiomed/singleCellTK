@@ -5,7 +5,7 @@
 \title{Create a SCtkExperiment object}
 \usage{
 createSCE(assayFile = NULL, annotFile = NULL, featureFile = NULL,
-  assayName = "counts", inputDataFrames = FALSE,
+  useAssay = "counts", inputDataFrames = FALSE,
   createLogCounts = TRUE)
 }
 \arguments{
@@ -20,7 +20,7 @@ number of rows as there are columns in the assayFile.}
 annotation information for each gene in the count matrix. This file should
 have the same genes in the same order as assayFile. This is optional.}
 
-\item{assayName}{The name of the assay that you are uploading. The default
+\item{useAssay}{The name of the assay that you are uploading. The default
 is "counts".}
 
 \item{inputDataFrames}{If TRUE, assayFile and annotFile are read as data
@@ -42,6 +42,6 @@ counts_mat <- assay(mouseBrainSubsetSCE, "counts")
 sample_annot <- colData(mouseBrainSubsetSCE)
 row_annot <- rowData(mouseBrainSubsetSCE)
 newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
-                    featureFile = row_annot, assayName = "counts",
+                    featureFile = row_annot, useAssay = "counts",
                     inputDataFrames = TRUE, createLogCounts = TRUE)
 }

@@ -5,12 +5,12 @@
 #'  \code{scrublet_score} (between 0 and 1) for each transcriptome. The score
 #'  is automatically thresholded to generate \code{scrublet_call}, a boolean
 #'  array that is \code{TRUE} for predicted doublets and \code{FALSE} otherwise.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Scrublet will be run on cells from each sample separately. If NULL, then
 #'  all cells will be processed together. Default \code{NULL}.
-#' @param assayName  A string specifying which assay in the SCE to use. Default 'counts'.
+#' @param useAssay  A string specifying which assay in the SCE to use. Default 'counts'.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \code{scrub_doublets} output appended to the
@@ -19,13 +19,13 @@
 #' @examples
 #' \dontrun{
 #' data(sce_chcl, package = "scds")
-#' sce <- runScrublet(sce_chcl)
+#' inSCE <- runScrublet(sce_chcl)
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
-runScrublet <- function(sce,
+runScrublet <- function(inSCE,
   sample = NULL,
-  assayName = "counts",
+  useAssay = "counts",
   seed = 12345) {
 
   if (!reticulate::py_module_available(module = "scrublet")) {
@@ -35,7 +35,7 @@ runScrublet <- function(sce,
             restarted since the module installation. Alternatively, Scrublet can be installed on the local machine
             with pip (e.g. pip install scrublet) and then the 'use_python()' function from the 'reticulate' package
             can be used to select the correct Python environment.")
-    return(sce)
+    return(inSCE)
   }
 
   if (!is.null(seed)) {
@@ -43,29 +43,29 @@ runScrublet <- function(sce,
   }
 
   if (!is.null(sample)) {
-    if (length(sample) != ncol(sce)) {
+    if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of",
-        " columns in 'sce'")
+        " columns in 'inSCE'")
     }
   } else {
-    sample = rep(1, ncol(sce))
+    sample = rep(1, ncol(inSCE))
   }
 
   message(paste0(date(), " ... Running 'scrublet'"))
 
   ## Define result matrix for all samples
-  output <- S4Vectors::DataFrame(row.names = colnames(sce),
-    scrublet_score = numeric(ncol(sce)),
-    scrublet_call = logical(ncol(sce)))
+  output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+    scrublet_score = numeric(ncol(inSCE)),
+    scrublet_call = logical(ncol(inSCE)))
 
   ## Loop through each sample and run scrublet
   error <- try({
     samples <- unique(sample)
     for (i in seq_len(length(samples))) {
       sceSampleInd <- sample == samples[i]
-      sceSample <- sce[, sceSampleInd]
+      sceSample <- inSCE[, sceSampleInd]
 
-      mat <- SummarizedExperiment::assay(sceSample, i = assayName)
+      mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
       mat <- methods::as(mat, "dgCMatrix")
 
       scr <- scrublet$Scrublet(t(mat))
@@ -75,13 +75,13 @@ runScrublet <- function(sce,
       output[sceSampleInd, "scrublet_call"] <- result[[2]]
     }
 
-    colData(sce) = cbind(colData(sce), output)
+    colData(inSCE) = cbind(colData(inSCE), output)
   }, silent = TRUE)
 
   if(inherits(error, "try-error")) {
     warning(paste0("Scrublet did not complete successfully. Returning SCE without making any changes. Error given by Scrublet: \n\n", error))
   }
 
-  return(sce)
+  return(inSCE)
 }
 

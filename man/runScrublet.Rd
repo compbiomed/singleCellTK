@@ -4,17 +4,17 @@
 \alias{runScrublet}
 \title{Find doublets using \code{scrublet}.}
 \usage{
-runScrublet(sce, sample = NULL, assayName = "counts", seed = 12345)
+runScrublet(inSCE, sample = NULL, useAssay = "counts", seed = 12345)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
 Needs \code{counts} in assays slot.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Scrublet will be run on cells from each sample separately. If NULL, then
 all cells will be processed together. Default \code{NULL}.}
 
-\item{assayName}{A string specifying which assay in the SCE to use. Default 'counts'.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 'counts'.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 }
@@ -35,6 +35,6 @@ A wrapper function that calls \code{scrub_doublets} from python
 \examples{
 \dontrun{
 data(sce_chcl, package = "scds")
-sce <- runScrublet(sce_chcl)
+inSCE <- runScrublet(sce_chcl)
 }
 }

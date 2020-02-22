@@ -4,14 +4,14 @@
 \alias{runCellQC}
 \title{Perform comprehensive single cell QC}
 \usage{
-runCellQC(sce, algorithms = c("QCMetrics", "doubletCells", "cxds",
+runCellQC(inSCE, algorithms = c("QCMetrics", "doubletCells", "cxds",
   "bcds", "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
   sample = NULL, geneSetList = NULL,
   geneSetListLocation = "rownames", geneSetCollection = NULL,
-  assayName = "counts", seed = 12345)
+  useAssay = "counts", seed = 12345)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
 Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
@@ -25,7 +25,7 @@ Algorithms will be run on cells from each sample separately.}
 
 \item{geneSetCollection}{See \code{runPerCellQC}. Default NULL.}
 
-\item{assayName}{A string specifying which assay contains the count
+\item{useAssay}{A string specifying which assay contains the count
 matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
@@ -33,7 +33,7 @@ matrix for cells.}
 \value{
 SingleCellExperiment object containing the outputs of the
  specified algorithms in the \link[SummarizedExperiment]{colData}
-of \code{sce}.
+of \code{inSCE}.
 }
 \description{
 A wrapper function to run several QC algorithms on a

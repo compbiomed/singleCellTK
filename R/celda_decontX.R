@@ -1,11 +1,11 @@
 #' @title Detecting contamination with DecontX.
 #' @description A wrapper function for \link[celda]{decontX}. Identify
 #'  potential contamination from experimental factors such as ambient RNA.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object. 
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object. 
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' Default NULL. \link[celda]{decontX} will be run on cells from each
 #' sample separately.
-#' @param assayName  A string specifying which assay in the SCE to use. Default 
+#' @param useAssay  A string specifying which assay in the SCE to use. Default 
 #' 'counts'.
 #' @param ... Additional arguments to pass to \link[celda]{decontX}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
@@ -18,21 +18,21 @@
 #' sce <- runDecontX(emptyDropsSceExample)
 #' }
 #' @export
-runDecontX <- function(sce,
+runDecontX <- function(inSCE,
     sample = NULL,
-    assayName = "counts",
+    useAssay = "counts",
     ...
 ) {
   if(!is.null(sample)) {
-    if(length(sample) != ncol(sce)) {
-      stop("'sample' must be the same length as the number of columns in 'sce'")
+    if(length(sample) != ncol(inSCE)) {
+      stop("'sample' must be the same length as the number of columns in 'inSCE'")
     }  
   } 
   
   message(paste0(date(), " ... Running 'DecontX'"))    
   
-  sce <- celda::decontX(x = sce, batch = sample, assayName = assayName, ...)
+  inSCE <- celda::decontX(x = inSCE, batch = sample, useAssay = useAssay, ...)
   
-  return(sce)
+  return(inSCE)
 }
 
