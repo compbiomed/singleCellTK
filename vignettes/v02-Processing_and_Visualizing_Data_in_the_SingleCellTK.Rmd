@@ -52,7 +52,7 @@ data(maits, package="MAST")
 maits_sce <- createSCE(assayFile = t(maits$expressionmat),
                        annotFile = maits$cdat,
                        featureFile = maits$fdat,
-                       assayName = "logtpm",
+                       useAssay = "logtpm",
                        inputDataFrames = TRUE,
                        createLogCounts = FALSE)
 rm(maits)
