@@ -88,7 +88,19 @@ we'd be happy to help.
 ## QC Outputs
 There are several available QC algorithms that are implemented within singleCellTK as wrapper functions, which will be stored as `colData` within the output `singleCellExperiment` object. These are the currently available QC outputs:
 
-### Droplet-based
+### General statistics
+
+| Output name | Description | Package |
+| --- | --- | --- |
+| sum | Total transcript counts in cell | scater |
+| detected | Total genes detected in cell | scater |
+| percent_top | Numeric value, the percentage of counts assigned to the percent_topage of most highly expressed genes. Each column of the matrix corresponds to an entry of the sorted percent_top, in increasing order | scater |
+| subsets_mito_sum | Number of total mitochonrial transcript counts per cell | scater |
+| subsets_mito_detected | Number of mitochondrial genes detected per cell | scater |
+| subsets_mito_percent | Percentage of mitochondial transcript counts out of total gene counts | scater |
+
+
+### Droplet-based statistics 
 
 | Output name | Description | Package |
 | --- | --- | --- |
@@ -99,32 +111,26 @@ There are several available QC algorithms that are implemented within singleCell
 | dropletUtils_emptyDrops_limited | Logical, indicates if a lower p-value could be obtained by increasing niters, a number of iterations for Monte Carlo p-value calculations | dropletUtils |
 | dropletUtils_BarcodeRank_Knee | Numeric, specifies total count at the knee point | dropletUtils |
 | dropletUtils_BarcodeRank_Inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
-| sum | Total transcript counts in cell | scater |
-| detected | Total genes detected in cell | scater |
-| percent_top | Numeric value, the percentage of counts assigned to the percent_topage of most highly expressed genes. Each column of the matrix corresponds to an entry of the sorted percent_top, in increasing order | scater |
-| subsets_mito_sum | Number of total mitochonrial transcript counts per cell | scater |
-| subsets_mito_detected | Number of mitochondrial genes detected per cell | scater |
-| subsets_mito_percent | Percentage of mitochondial transcript counts out of total gene counts | scater |
 
 ### Doublet detection
 
 | Output name | Description | Package |
 | --- | --- | --- |
 | doubletFinder_doublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet using artificially generated doublets | doubletFinder |
-| doubletFinder_doublet_label | Whether the cell is deemed a doublet or not by the algorithm | doubletFinder |
+| doubletFinder_doublet_label | Whether the cell is deemed a doublet or not by the algorithm. Will be "Singlet" or "Doublet" | doubletFinder |
 | scds_cxds_score | Numeric value that determines how likely a cell is a doublet, based on co-expression of gene pairs | scds |
 | scds_bcds_score | Numeric value that determines how likely a cell is a doublet, using artificially generated doublets | scds |
-| scds_hybrid_score | Numeric value that determines how likely a cell is a doublet, uses both cxds and bcds approach | scds |
+| scds_hybrid_score | Numeric value that determines how likely a cell is a doublet, uses both cxds and bcds algorithm | scds |
 | scran_doubletCells_Score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
 | scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
-| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm | scrublet |
+| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm. Will be  | scrublet |
 
 ### Ambient RNA detection
 
 | Output name | Description | Package |
 | --- | --- | --- |
-| decontX_Contamination | Probability of contamination? | celda |
-| decontX_Clusters | Clusters identified by decontX? | celda |
+| decontX_Contamination | Probability of contamination determined by decontX | celda |
+| decontX_Clusters | Clusters determined by Celda, a clustering algorithm that runs in the background of decontX | celda |
 
 ## Develop singleCellTK
 
