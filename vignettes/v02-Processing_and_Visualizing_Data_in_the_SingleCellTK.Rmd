@@ -239,7 +239,7 @@ pheno <- pData(dat)
 edata <- exprs(dat)
 bladder_sctke <- createSCE(assayFile = edata,
                            annotFile = pheno,
-                           assayName = "microarray",
+                           useAssay = "microarray",
                            inputDataFrames = TRUE,
                            createLogCounts = FALSE)
 ```
