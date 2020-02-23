@@ -54,7 +54,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' @param featureFile The path to a text file that contains columns of
 #' annotation information for each gene in the count matrix. This file should
 #' have the same genes in the same order as assayFile. This is optional.
-#' @param useAssay The name of the assay that you are uploading. The default
+#' @param assayName The name of the assay that you are uploading. The default
 #' is "counts".
 #' @param inputDataFrames If TRUE, assayFile and annotFile are read as data
 #' frames instead of file paths. The default is FALSE.
@@ -69,10 +69,10 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' sample_annot <- colData(mouseBrainSubsetSCE)
 #' row_annot <- rowData(mouseBrainSubsetSCE)
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
-#'                     featureFile = row_annot, useAssay = "counts",
+#'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
 createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
-                      useAssay="counts", inputDataFrames=FALSE,
+                      assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
   if (is.null(assayFile)){
     stop("You must supply a count file.")
@@ -120,13 +120,13 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
     stop("Sample names in input matrix and feature annotation do not match!")
   }
   assaylist <- list()
-  assaylist[[useAssay]] <- as.matrix(countsin)
+  assaylist[[assayName]] <- as.matrix(countsin)
   newassay <- SCtkExperiment(assays = assaylist,
                              colData = annotin,
                              rowData = featurein)
   if (createLogCounts){
-    SummarizedExperiment::assay(newassay, paste0("log", useAssay)) <-
-      log2(SummarizedExperiment::assay(newassay, useAssay) + 1)
+    SummarizedExperiment::assay(newassay, paste0("log", assayName)) <-
+      log2(SummarizedExperiment::assay(newassay, assayName) + 1)
   }
   return(newassay)
 }
@@ -134,7 +134,7 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #' Filter Genes and Samples from a Single Cell Object
 #'
 #' @param inSCE Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use for filtering. Default is
+#' @param assayName Indicate which assay to use for filtering. Default is
 #' "counts"
 #' @param deletesamples List of samples to delete from the object.
 #' @param removeNoExpress Remove genes that have no expression across all

@@ -52,7 +52,7 @@ data(maits, package="MAST")
 maits_sce <- createSCE(assayFile = t(maits$expressionmat),
                        annotFile = maits$cdat,
                        featureFile = maits$fdat,
-                       useAssay = "logtpm",
+                       assayName = "logtpm",
                        inputDataFrames = TRUE,
                        createLogCounts = FALSE)
 rm(maits)
@@ -239,7 +239,7 @@ pheno <- pData(dat)
 edata <- exprs(dat)
 bladder_sctke <- createSCE(assayFile = edata,
                            annotFile = pheno,
-                           useAssay = "microarray",
+                           assayName = "microarray",
                            inputDataFrames = TRUE,
                            createLogCounts = FALSE)
 ```
