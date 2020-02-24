@@ -58,7 +58,7 @@ runCellQC <- function(inSCE,
       useAssay = useAssay,
       seed = seed)
   }
-  
+
   if ("doubletFinder" %in% algorithms) {
     inSCE <- runDoubletFinder(inSCE = inSCE,
       sample = sample,
@@ -126,12 +126,12 @@ runDropletQC <- function(inSCE,
   ## emptyDrops and barcodeRanks need dgCMatrix objects as input
   ## Convert once for both functions
   counts.class <- class(SummarizedExperiment::assay(inSCE, i = useAssay))
-  SummarizedExperiment::assay(sce, i = assayName) <-
+  SummarizedExperiment::assay(inSCE, i = assayName) <-
     .convertToMatrix(SummarizedExperiment::assay(inSCE, i = useAssay))
 
   if ("QCMetrics" %in% algorithms) {
     inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay)
-  }    
+  }
 
   if (any("emptyDrops" %in% algorithms)) {
     inSCE <- runEmptyDrops(inSCE = inSCE,
