@@ -4,15 +4,11 @@
 \alias{runDropletQC}
 \title{Perform comprehensive droplet QC}
 \usage{
-runDropletQC(
-  sce,
-  algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
-  sample = NULL,
-  assayName = "counts"
-)
+runDropletQC(inSCE, algorithms = c("QCMetrics", "emptyDrops",
+  "barcodeRanks"), sample = NULL, useAssay = "counts")
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 the full droplet count matrix}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
@@ -21,13 +17,13 @@ Available options are "emptyDrops" and "barcodeRanks".}
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
 
-\item{assayName}{A string specifying which assay contains the count
+\item{useAssay}{A string specifying which assay contains the count
 matrix for droplets.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
  specified algorithms in the \link[SummarizedExperiment]{colData}
-of \code{sce}.
+of \code{inSCE}.
 }
 \description{
 A wrapper function to run several QC algorithms for determining

@@ -4,15 +4,16 @@
 \alias{runDoubletCells}
 \title{Detect doublet cells using \link[scran]{doubletCells}.}
 \usage{
-runDoubletCells(sce, sample = NULL, assayName = "counts", seed = 12345, ...)
+runDoubletCells(inSCE, sample = NULL, useAssay = "counts",
+  seed = 12345, ...)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 \link[scran]{doubletCells} will be run on cells from each sample separately.}
 
-\item{assayName}{A string specifying which assay in the SCE to use.}
+\item{useAssay}{A string specifying which assay in the SCE to use.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
@@ -31,9 +32,9 @@ A wrapper function for \link[scran]{doubletCells}. Identify
 \details{
 This function is a wrapper function for \link[scran]{doubletCells}.
  \code{runDoubletCells} runs \link[scran]{doubletCells} for each
- \code{sample} within \code{sce} iteratively. The
+ \code{sample} within \code{inSCE} iteratively. The
  resulting doublet scores for all cells will be appended to the
- \link[SummarizedExperiment]{colData} of \code{sce}.
+ \link[SummarizedExperiment]{colData} of \code{inSCE}.
 }
 \examples{
 data(emptyDropsSceExample, package = "singleCellTK")
