@@ -126,10 +126,9 @@ runDropletQC <- function(sce,
   ## emptyDrops and barcodeRanks need dgCMatrix objects as input
   ## Convert once for both functions
   counts.class <- class(SummarizedExperiment::assay(sce, i = assayName))
-  if (class(counts.class) != "dgCMatrix") {
-    SummarizedExperiment::assay(sce, i = assayName) <-
-      methods::as(SummarizedExperiment::assay(sce, i = assayName), "dgCMatrix")
-  }
+  SummarizedExperiment::assay(sce, i = assayName) <-
+    .convertToMatrix(SummarizedExperiment::assay(sce, i = assayName))
+  
 
   if ("QCMetrics" %in% algorithms) {
     sce <- runPerCellQC(sce = sce, assayName = assayName)

@@ -11,7 +11,7 @@ runCxdsBcdsHybrid(sce, sample = NULL, seed = 12345, ...)
 Needs \code{counts} in assays slot.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[DropletUtils]{emptyDrops} will be run on cells from each sample
+\link[scds]{cxds_bcds_hybrid} will be run on cells from each sample
 separately. If NULL, then all cells will be processed together.
 Default NULL.}
 

@@ -263,3 +263,15 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     circlize::colorRamp2(c(1, 2, 3), c("red", "blue", "black"))
   }
 }
+
+## Convert a matrix to a sparse matrix and preserve column/row names
+.convertToMatrix <- function(x) {
+  cn <- colnames(x)
+  rn <- rownames(x)
+  
+  x <- methods::as(x, "dgCMatrix")
+  colnames(x) <- cn
+  rownames(x) <- rn
+  
+  return(x)
+}
