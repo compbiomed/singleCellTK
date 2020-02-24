@@ -40,7 +40,7 @@ Run \link[DropletUtils]{emptyDrops} on the count matrix in the
 # /pbmc_1k_v3
 # Only the top 10 cells with most counts and the last 10 cells with non-zero
 # counts are included in this example.
-# This example only serves as an proof of concept and a tutoriol on how to
+# This example only serves as an proof of concept and a tutorial on how to
 # run the function. The results should not be
 # used for drawing scientific conclusions.
 data(emptyDropsSceExample, package = "singleCellTK")
