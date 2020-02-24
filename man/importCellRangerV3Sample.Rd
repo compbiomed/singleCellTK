@@ -4,8 +4,12 @@
 \alias{importCellRangerV3Sample}
 \title{Construct SCE object from Cell Ranger V3 output for a single sample}
 \usage{
-importCellRangerV3Sample(sampleDir = "./", sampleName = "sample",
-  class = c("Matrix", "matrix"), delayedArray = TRUE)
+importCellRangerV3Sample(
+  sampleDir = "./",
+  sampleName = "sample",
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE
+)
 }
 \arguments{
 \item{sampleDir}{A path to the directory containing the data files. Default "./".}

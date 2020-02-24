@@ -4,10 +4,17 @@
 \alias{sctkPythonInstallConda}
 \title{Installs Python packages into a Conda environment}
 \usage{
-sctkPythonInstallConda(envname = "sctk-reticulate", conda = "auto",
+sctkPythonInstallConda(
+  envname = "sctk-reticulate",
+  conda = "auto",
   packages = c("scipy", "numpy", "astroid", "six"),
-  pipPackages = c("scrublet"), selectConda = TRUE, forge = FALSE,
-  pipIgnoreInstalled = TRUE, pythonVersion = NULL, ...)
+  pipPackages = c("scrublet"),
+  selectConda = TRUE,
+  forge = FALSE,
+  pipIgnoreInstalled = TRUE,
+  pythonVersion = NULL,
+  ...
+)
 }
 \arguments{
 \item{envname}{Character. Name of the conda environment to create.}

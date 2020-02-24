@@ -4,9 +4,12 @@
 \alias{sctkPythonInstallVirtualEnv}
 \title{Installs Python packages into a virtual environment}
 \usage{
-sctkPythonInstallVirtualEnv(envname = "sctk-reticulate",
+sctkPythonInstallVirtualEnv(
+  envname = "sctk-reticulate",
   packages = c("scipy", "numpy", "astroid", "six", "scrublet"),
-  selectEnvironment = TRUE, python = NULL)
+  selectEnvironment = TRUE,
+  python = NULL
+)
 }
 \arguments{
 \item{envname}{Character. Name of the virtual environment to create.}
