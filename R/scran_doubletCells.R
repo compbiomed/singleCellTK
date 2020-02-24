@@ -1,9 +1,7 @@
 
 .runDoubletCells <- function(cell.matrix, ...) {
 
-  if (class(cell.matrix) != "dgCMatrix") {
-    cell.matrix <- methods::as(cell.matrix, "dgCMatrix")
-  }
+  cell.matrix <- .convertToMatrix(cell.matrix)
 
   scores <- matrix(scran::doubletCells(cell.matrix, ...), ncol=1)
   colnames(scores) <- "scran_doubletCells_Score"

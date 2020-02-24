@@ -66,7 +66,7 @@ runScrublet <- function(sce,
       sceSample <- sce[, sceSampleInd]
 
       mat <- SummarizedExperiment::assay(sceSample, i = assayName)
-      mat <- methods::as(mat, "dgCMatrix")
+      mat <- .convertToMatrix(mat)
 
       scr <- scrublet$Scrublet(t(mat))
       result <- scr$scrub_doublets()

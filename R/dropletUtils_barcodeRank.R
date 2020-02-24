@@ -2,7 +2,7 @@
 .runBarcodeRankDrops <- function(barcode.matrix, ...) {
 
   ## Convert to sparse matrix if not already in that format
-  barcode.matrix <- methods::as(barcode.matrix, "dgCMatrix")
+  barcode.matrix <- .convertToMatrix(barcode.matrix)
   
   output <- DropletUtils::barcodeRanks(m = barcode.matrix, ...)
 

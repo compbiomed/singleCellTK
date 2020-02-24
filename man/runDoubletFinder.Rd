@@ -40,6 +40,8 @@ Uses doubletFinder to determine cells within the dataset
  suspected to be doublets.
 }
 \examples{
+\dontrun{
 data(sce_chcl, package = "scds")
 sce <- runDoubletFinder(sce_chcl)
+}
 }

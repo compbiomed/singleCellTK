@@ -6,7 +6,7 @@
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{cxds} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -53,7 +53,7 @@ runCxds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
         
         result <- NULL
         nGene <- 500
@@ -91,7 +91,7 @@ runCxds <- function(sce,
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{bcds} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -138,7 +138,7 @@ runBcds <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
         
         result <- NULL
         nGene <- 500
@@ -177,7 +177,7 @@ runBcds <- function(sce,
 #' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{cxds_bcds_hybrid} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -225,12 +225,12 @@ runCxdsBcdsHybrid <- function(sce,
         sceSampleInd <- sample == samples[i]
         sceSample <- sce[, sceSampleInd]
 
-        counts(sceSample) <- methods::as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
 
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, bcds_args=list(ntop = nGene)))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, cxdsArgs=list(ntop = nGene), bcdsArgs=list(ntop = nGene)))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
