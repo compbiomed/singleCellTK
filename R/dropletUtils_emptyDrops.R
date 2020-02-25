@@ -49,7 +49,7 @@ runEmptyDrops <- function(inSCE,
 ) {
   # getting the current argument values
   current_params <- as.list(sys.call())
-  metadata_params <- sce@metadata$QCParams
+  metadata_params <- inSCE@metadata$QCParams
   
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
@@ -85,5 +85,5 @@ runEmptyDrops <- function(inSCE,
   inSCE@metadata$QCParams <- metadata_params
   inSCE@metadata$QCParams$runEmptyDrops <- current_params
   
-  return(sce)
+  return(inSCE)
 }

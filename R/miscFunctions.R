@@ -134,7 +134,7 @@ createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #' Filter Genes and Samples from a Single Cell Object
 #'
 #' @param inSCE Input SCtkExperiment object. Required
-#' @param assayName Indicate which assay to use for filtering. Default is
+#' @param useAssay Indicate which assay to use for filtering. Default is
 #' "counts"
 #' @param deletesamples List of samples to delete from the object.
 #' @param removeNoExpress Remove genes that have no expression across all
