@@ -123,15 +123,6 @@ runDropletQC <- function(inSCE,
     stop(paste0("'", paste(nonmatch, collapse=","), "' are not supported algorithms."))
   }
 
-<<<<<<< HEAD
-=======
-  ## emptyDrops and barcodeRanks need dgCMatrix objects as input
-  ## Convert once for both functions
-  counts.class <- class(SummarizedExperiment::assay(inSCE, i = useAssay))
-  SummarizedExperiment::assay(inSCE, i = assayName) <-
-    .convertToMatrix(SummarizedExperiment::assay(inSCE, i = useAssay))
-
->>>>>>> upstream/importQC
   if ("QCMetrics" %in% algorithms) {
     inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay)
   }
@@ -148,15 +139,7 @@ runDropletQC <- function(inSCE,
       useAssay = useAssay)
   }
 
-<<<<<<< HEAD
-  return(sce)
-=======
-  ## Convert back to original class
-  SummarizedExperiment::assay(inSCE, i = useAssay) <-
-    methods::as(SummarizedExperiment::assay(inSCE, i = useAssay), counts.class)
-
   return(inSCE)
->>>>>>> upstream/importQC
 }
 
 
