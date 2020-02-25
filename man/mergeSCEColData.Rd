@@ -4,24 +4,24 @@
 \alias{mergeSCEColData}
 \title{Merging colData from two singleCellExperiment objects}
 \usage{
-mergeSCEColData(sce1, sce2, id1 = "column_name", id2 = "column_name")
+mergeSCEColData(inSCE1, inSCE2, id1 = "column_name", id2 = "column_name")
 }
 \arguments{
-\item{sce1}{SingleCellExperiment object. The function will output this
-singleCellExperiment object with a combined colData from sce1 and sce2.}
+\item{inSCE1}{Input SingleCellExperiment object. The function will output this
+singleCellExperiment object with a combined colData from inSCE1 and inSCE2.}
 
-\item{sce2}{SingleCellExperiment object. colData from this object
-will be merged with colData from sce1 and loaded into sce1.}
+\item{inSCE2}{Input SingleCellExperiment object. colData from this object
+will be merged with colData from inSCE1 and loaded into inSCE1.}
 
-\item{id1}{Character vector. Column in colData of sce1 that will be 
-used to combine sce1 and sce2. Default "column_name"}
+\item{id1}{Character vector. Column in colData of inSCE1 that will be 
+used to combine inSCE1 and inSCE2. Default "column_name"}
 
-\item{id2}{Character vector. Column in colData of sce2 that will be
-used to combine sce1 and sce2. Default "column_name"}
+\item{id2}{Character vector. Column in colData of inSCE2 that will be
+used to combine inSCE1 and inSCE2. Default "column_name"}
 }
 \value{
 SingleCellExperiment object containing combined colData from  
- both singleCellExperiment for samples in sce1.
+ both singleCellExperiment for samples in inSCE1.
 }
 \description{
 Merges colData of the singleCellExperiment objects 
@@ -35,5 +35,5 @@ sce1 <- importCellRanger(
     sampleNames = "hgmm1kv3",
     dataType = "filtered")
 sce2 <- emptyDropsSceExample
-sce <- mergeSCEColData(sce1 = sce1, sce2 = sce2, id1 = "column_name", id2 = "column_name")
+sce <- mergeSCEColData(inSCE1 = sce1, inSCE2 = sce2, id1 = "column_name", id2 = "column_name")
 }
