@@ -82,7 +82,7 @@ runEmptyDrops <- function(inSCE,
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
-  inSCEe@metadata$QCParams <- metadata_params
+  inSCE@metadata$QCParams <- metadata_params
   inSCE@metadata$QCParams$runEmptyDrops <- current_params
   
   return(sce)
