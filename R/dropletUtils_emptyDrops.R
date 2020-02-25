@@ -35,7 +35,7 @@
 #' # /pbmc_1k_v3
 #' # Only the top 10 cells with most counts and the last 10 cells with non-zero
 #' # counts are included in this example.
-#' # This example only serves as an proof of concept and a tutoriol on how to
+#' # This example only serves as an proof of concept and a tutorial on how to
 #' # run the function. The results should not be
 #' # used for drawing scientific conclusions.
 #' data(emptyDropsSceExample, package = "singleCellTK")
@@ -47,6 +47,10 @@ runEmptyDrops <- function(inSCE,
     useAssay = "counts",
     ...
 ) {
+  # getting the current argument values
+  current_params <- as.list(sys.call())
+  metadata_params <- inSCE@metadata$QCParams
+  
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -76,8 +80,10 @@ runEmptyDrops <- function(inSCE,
 
     output[sceSampleInd, ] <- result
   }
-
+  
   colData(inSCE) = cbind(colData(inSCE), output)
-
+  inSCE@metadata$QCParams <- metadata_params
+  inSCE@metadata$QCParams$runEmptyDrops <- current_params
+  
   return(inSCE)
 }

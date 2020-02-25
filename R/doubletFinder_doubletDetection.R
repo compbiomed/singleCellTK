@@ -78,13 +78,6 @@ runDoubletFinder <- function(inSCE,
                              formationRate = 0.075,
                              verbose = FALSE){
 
-  if (!require("DoubletFinder", character.only = TRUE)){
-      message("Package `DoubletFinder` not found, cannot be run. Please install 
-	via `devtools::install_github('chris-mcginnis-ucsf/DoubletFinder')`")
-      return(inSCE)	
-  }
-
-
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
