@@ -4,10 +4,10 @@
 \alias{runCxds}
 \title{Find doublets/multiplets using \link[scds]{cxds}.}
 \usage{
-runCxds(sce, sample = NULL, seed = 12345, ...)
+runCxds(inSCE, sample = NULL, seed = 12345, ...)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
 Needs \code{counts} in assays slot.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.

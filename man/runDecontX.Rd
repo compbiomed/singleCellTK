@@ -4,16 +4,16 @@
 \alias{runDecontX}
 \title{Detecting contamination with DecontX.}
 \usage{
-runDecontX(sce, sample = NULL, assayName = "counts", ...)
+runDecontX(inSCE, sample = NULL, useAssay = "counts", ...)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL. \link[celda]{decontX} will be run on cells from each
 sample separately.}
 
-\item{assayName}{A string specifying which assay in the SCE to use. Default 
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 
 'counts'.}
 
 \item{...}{Additional arguments to pass to \link[celda]{decontX}.}

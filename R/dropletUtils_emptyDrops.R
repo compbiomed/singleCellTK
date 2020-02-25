@@ -14,12 +14,12 @@
 #'  provided \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Distinguish between droplets containing cells and ambient RNA in a
 #'  droplet-based single-cell RNA sequencing experiment.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE Input \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Must contain a raw counts matrix before empty droplets have been removed.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
 #'  If NULL, then all cells will be processed together. Default NULL.
-#' @param assayName  A string specifying which assay in the SCE to use.
+#' @param useAssay  A string specifying which assay in the SCE to use.
 #' @param ... Additional arguments to pass to \link[DropletUtils]{emptyDrops}.
 #'  matrix.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
@@ -39,12 +39,12 @@
 #' # run the function. The results should not be
 #' # used for drawing scientific conclusions.
 #' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runEmptyDrops(sce = emptyDropsSceExample)
+#' sce <- runEmptyDrops(inSCE = emptyDropsSceExample)
 #' @import DropletUtils
 #' @export
-runEmptyDrops <- function(sce,
+runEmptyDrops <- function(inSCE,
     sample = NULL,
-    assayName = "counts",
+    useAssay = "counts",
     ...
 ) {
   # getting the current argument values
@@ -52,38 +52,38 @@ runEmptyDrops <- function(sce,
   metadata_params <- sce@metadata$QCParams
   
   if(!is.null(sample)) {
-    if(length(sample) != ncol(sce)) {
-      stop("'sample' must be the same length as the number of columns in 'sce'")
+    if(length(sample) != ncol(inSCE)) {
+      stop("'sample' must be the same length as the number of columns in 'inSCE'")
     }
   } else {
-    sample = rep(1, ncol(sce))
+    sample = rep(1, ncol(inSCE))
   }
 
   message(date(), " ... Running 'emptyDrops'")
 
   ## Define result matrix for all samples
-  output <- S4Vectors::DataFrame(row.names = colnames(sce),
-                dropletUtils_emptyDrops_total = integer(ncol(sce)),
-                dropletUtils_emptyDrops_logprob = numeric(ncol(sce)),
-                dropletUtils_emptyDrops_pvalue = numeric(ncol(sce)),
-                dropletUtils_emptyDrops_limited = logical(ncol(sce)),
-                dropletUtils_emptyDrops_fdr = numeric(ncol(sce)))
+  output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+                dropletUtils_emptyDrops_total = integer(ncol(inSCE)),
+                dropletUtils_emptyDrops_logprob = numeric(ncol(inSCE)),
+                dropletUtils_emptyDrops_pvalue = numeric(ncol(inSCE)),
+                dropletUtils_emptyDrops_limited = logical(ncol(inSCE)),
+                dropletUtils_emptyDrops_fdr = numeric(ncol(inSCE)))
 
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
   for (i in seq_len(length(samples))) {
     sceSampleInd <- sample == samples[i]
-    sceSample <- sce[, sceSampleInd]
+    sceSample <- inSCE[, sceSampleInd]
 
-    mat <- SummarizedExperiment::assay(sceSample, i = assayName)
+    mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
     result <- .runEmptyDrops(barcode.matrix = mat, ...)
 
     output[sceSampleInd, ] <- result
   }
   
-  colData(sce) = cbind(colData(sce), output)
-  sce@metadata$QCParams <- metadata_params
-  sce@metadata$QCParams$runEmptyDrops <- current_params
+  colData(inSCE) = cbind(colData(inSCE), output)
+  inSCEe@metadata$QCParams <- metadata_params
+  inSCE@metadata$QCParams$runEmptyDrops <- current_params
   
   return(sce)
 }
