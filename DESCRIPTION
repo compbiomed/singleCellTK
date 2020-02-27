@@ -72,7 +72,8 @@ Imports:
     Matrix,
     GSEABase,
     Seurat,
-    DoubletFinder
+    DoubletFinder,
+    R.utils
 RoxygenNote: 7.0.2
 Suggests:
     testthat,

@@ -17,6 +17,9 @@ filterSCData(
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
 
+\item{useAssay}{Indicate which assay to use for filtering. Default is
+"counts"}
+
 \item{deletesamples}{List of samples to delete from the object.}
 
 \item{removeNoExpress}{Remove genes that have no expression across all
@@ -31,9 +34,6 @@ count to include a sample in the single cell object. The default is 1700.}
 \item{filterSpike}{Apply filtering to Spike in controls (indicated by
 isSpike).
 The default is TRUE.}
-
-\item{assayName}{Indicate which assay to use for filtering. Default is
-"counts"}
 }
 \value{
 The filtered single cell object.
