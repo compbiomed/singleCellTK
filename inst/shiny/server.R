@@ -5,6 +5,8 @@ internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  # library(fs)
+  # library(shinyFiles)
 
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
@@ -148,13 +150,181 @@ shinyServer(function(input, output, session) {
   }
 
   # Close app on quit
-  session$onSessionEnded(stopApp)
+  # session$onSessionEnded(stopApp)
 
   #-----------------------------------------------------------------------------
   # Page 1: Upload
   #-----------------------------------------------------------------------------
 
-  #Upload data through shiny app
+  # Upload data through shiny app
+  
+  # Components for uploading directories if user is importing from a preprocessing step
+  volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), getVolumes()())
+  shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  # shinyFileChoose(input, "barcodes", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  # shinyFileChoose(input, "features", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  # shinyFileChoose(input, "matrix", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  base <- reactive(input$base)
+  output$base <- renderText({
+    parseDirPath(volumes, base())
+  })
+  sample <- reactive(input$sample)
+  output$sample <- renderText({
+    parseDirPath(volumes, sample())
+  })
+  sampleFile <- reactive(input$sampleFile)
+  output$sampleFile <- renderText({
+    parseFilePaths(volumes, sampleFile())$datapath
+  })
+  importCR2Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importCR3Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importSSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importBUSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importSEQFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importOptFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  
+  importModal <- function(failed = FALSE) {
+    modalDialog(
+      h3("Sample ID"),
+      textInput("sampleID", "*This is the name you would like to give your sample."),
+      h3("Sample Name"),
+      textInput("sampleName", "*This name must match your sample's directory name."),
+      h3("Base Directory"),
+      shinyDirButton("base", "Choose Directory ", "Please select a folder"),
+      verbatimTextOutput("base", placeholder = TRUE),
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("modalOk", "OK")
+      )
+    )
+  }
+  
+  # event listeners for "Add Sample" buttons
+  observeEvent(input$addCR2Sample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addCR3Sample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addSSSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addBUSSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addSEQSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addOptSample, {
+    showModal(importModal())
+  })
+  
+  # event listeners for "Remove Last Sample" buttons
+  observeEvent(input$removeCR2Sample, {
+    selector <- paste("#newSampleCR2", length(importCR2Files$bases), sep = "")
+    importCR2Files$bases <- head(importCR2Files$bases, -1)
+    importCR2Files$samples <- head(importCR2Files$samples, -1)
+    importCR2Files$ids <- head(importCR2Files$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeCR3Sample, {
+    selector <- paste("#newSampleCR3", length(importCR3Files$bases), sep = "")
+    importCR3Files$bases <- head(importCR3Files$bases, -1)
+    importCR3Files$samples <- head(importCR3Files$samples, -1)
+    importCR3Files$ids <- head(importCR3Files$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeSSSample, {
+    selector <- paste("#newSampleSS", length(importSSFiles$bases), sep = "")
+    importSSFiles$bases <- head(importSSFiles$bases, -1)
+    importSSFiles$samples <- head(importSSFiles$samples, -1)
+    importSSFiles$ids <- head(importSSFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeBUSSample, {
+    selector <- paste("#newSampleBUS", length(importBUSFiles$bases), sep = "")
+    importBUSFiles$bases <- head(importBUSFiles$bases, -1)
+    importBUSFiles$samples <- head(importBUSFiles$samples, -1)
+    importBUSFiles$ids <- head(importBUSFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeSEQSample, {
+    selector <- paste("#newSampleSEQ", length(importSEQFiles$bases), sep = "")
+    importSEQFiles$bases <- head(importSEQFiles$bases, -1)
+    importSEQFiles$samples <- head(importSEQFiles$samples, -1)
+    importSEQFiles$ids <- head(importSEQFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeOptSample, {
+    selector <- paste("#newSampleOpt", length(importOptFiles$bases), sep = "")
+    importOptFiles$bases <- head(importOptFiles$bases, -1)
+    importOptFiles$samples <- head(importOptFiles$samples, -1)
+    importOptFiles$ids <- head(importOptFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  
+  # event handler for pressing OK on the import modal
+  observeEvent(input$modalOk, {
+    samplePath <- parseDirPath(volumes, input$sample)
+    basePath <- parseDirPath(volumes, input$base)
+    if ((!nzchar(input$sampleID)) || (!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
+      showModal(importModal(failed = TRUE))
+    } else {
+      if (input$algoChoice == "cellRanger2") {
+        importCR2Files$bases <- c(importCR2Files$bases, basePath)
+        importCR2Files$samples <- c(importCR2Files$samples, input$sampleName)
+        importCR2Files$ids <- c(importCR2Files$ids, input$sampleID)
+        selector <- "#newSampleCR2"
+        id <- paste("newSampleCR2", length(importCR2Files$bases), sep = "")
+      } else if (input$algoChoice == "cellRanger3") {
+        importCR3Files$bases <- c(importCR3Files$bases, basePath)
+        importCR3Files$samples <- c(importCR3Files$samples, input$sampleName)
+        importCR3Files$ids <- c(importCR3Files$ids, input$sampleID)
+        selector <- "#newSampleCR3"
+        id <- paste("newSampleCR3", length(importCR3Files$bases), sep = "")
+      } else if (input$algoChoice == "starSolo") {
+        importSSFiles$bases <- c(importSSFiles$bases, basePath)
+        importSSFiles$samples <- c(importSSFiles$samples, input$sampleName)
+        importSSFiles$ids <- c(importSSFiles$ids, input$sampleID)
+        selector <- "#newSampleSS"
+        id <- paste("newSampleSS", length(importSSFiles$bases), sep = "")
+      } else if (input$algoChoice == "busTools") {
+        importBUSFiles$bases <- c(importBUSFiles$bases, basePath)
+        importBUSFiles$samples <- c(importBUSFiles$samples, input$sampleName)
+        importBUSFiles$ids <- c(importBUSFiles$ids, input$sampleID)
+        selector <- "#newSampleBUS"
+        id <- paste("newSampleBUS", length(importBUSFiles$bases), sep = "")
+      } else if (input$algoChoice == "seqc") {
+        importSEQFiles$bases <- c(importSEQFiles$bases, basePath)
+        importSEQFiles$samples <- c(importSEQFiles$samples, input$sampleName)
+        importSEQFiles$ids <- c(importSEQFiles$ids, input$sampleID)
+        selector <- "#newSampleSEQ"
+        id <- paste("newSampleSEQ", length(importSEQFiles$bases), sep = "")
+      } else if (input$algoChoice == "optimus") {
+        importOptFiles$bases <- c(importOptFiles$bases, basePath)
+        importOptFiles$samples <- c(importOptFiles$samples, input$sampleName)
+        importOptFiles$ids <- c(importOptFiles$ids, input$sampleID)
+        selector <- "#newSampleOpt"
+        id <- paste("newSampleOpt", length(importOptFiles$bases), sep = "")
+      }
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          column(4, input$sampleID),
+          column(4, input$sampleName),
+          column(4, basePath)
+        )
+      )
+      removeModal()
+    }
+  })
+  
+  # Event listener for "Upload" button
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
@@ -198,6 +368,45 @@ shinyServer(function(input, output, session) {
           vals$original <- importedrds
         } else {
           vals$original <- NULL
+        }
+      } else if (input$uploadChoice == "directory") {
+        if (input$algoChoice == "cellRanger2") {
+          print("CR2")
+        } else if (input$algoChoice == "cellRanger3") {
+          print("CR3")
+          vals$original <- importCellRangerV3(
+            cellRangerDirs = importCR3Files$bases,
+            sampleDirs = importCR3Files$samples,
+            sampleNames = importCR3Files$ids,
+            dataType = c("filtered"),
+            class = c("Matrix", "matrix"),
+            delayedArray = TRUE
+          )
+        } else if (input$algoChoice == "starSolo") {
+          print("star")
+          vals$original <- importSTARsolo(
+            STARsoloDirs = importSSFiles$bases,
+            samples = importSSFiles$ids
+          )
+        } else if (input$algoChoice == "busTools") {
+          print("bus")
+          vals$original <- importBUStools(
+            BUStoolsDirs = importBUSFiles$bases,
+            samples = importBUSFiles$ids,
+          )
+        } else if (input$algoChoice == "seqc") {
+          print("seqc")
+          vals$original <- importSEQC(
+            seqcDirs = importSEQFiles$bases,
+            samples = importSEQFiles$ids,
+            prefix = importSEQFiles$samples,
+          )
+        } else if (input$algoChoice == "optimus") {
+          print("opt")
+          vals$original <- importOptimus(
+            OptimusDirs = importOptFiles$bases,
+            samples = importOptFiles$samples
+          )
         }
       }
       if (!is.null(vals$original)) {
