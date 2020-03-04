@@ -8,6 +8,11 @@ scrublet <- NULL
 scipy <- NULL
 sparse <- NULL
 numpy <- NULL
+scnrm <- NULL
+blt <- NULL
+scgen <- NULL
+sc <- NULL
+bbknn <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
@@ -15,6 +20,11 @@ numpy <- NULL
   scipy <<- reticulate::import("scipy", delay_load = TRUE)
   sparse <<- reticulate::import("scipy.sparse", delay_load = TRUE)
   numpy <<- reticulate::import("numpy", delay_load = TRUE)
+  scnrm <<- reticulate::import("scanorama", delay_load = TRUE)
+  scgen <<- reticulate::import("scgen", delay_load = TRUE)
+  sc <<- reticulate::import("scanpy", delay_load = TRUE)
+  bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
+  blt <<- reticulate::import_builtins()
 }
 
 
@@ -49,7 +59,7 @@ numpy <- NULL
 sctkPythonInstallConda <- function(envname = "sctk-reticulate", 
                                    conda = "auto",
                                    packages = c("scipy", "numpy", "astroid", "six"),
-                                   pipPackages = c("scrublet"),
+                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "scgen"),
                                    selectConda = TRUE,
                                    forge = FALSE,
                                    pipIgnoreInstalled = TRUE,
@@ -96,7 +106,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' going through the whole installation process again. 
 #' @export
 sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
-                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet"),
+                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "scgen"),
                                         selectEnvironment = TRUE,
                                         python = NULL) {
   
