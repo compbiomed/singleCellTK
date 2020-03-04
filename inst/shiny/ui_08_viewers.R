@@ -1,4 +1,4 @@
-shinyPanelVis <- fluidPage(
+shinyPanelViewers <- fluidPage(
   tags$div(
     class = "container",
     h1("Gene Visualization"),
@@ -15,25 +15,25 @@ shinyPanelVis <- fluidPage(
         radioButtons(
           "visGeneList", label = NULL, c("Select Gene(s)" = "selVisRadioGenes",
                                          "Saved top genes" = "visBiomarker")
-          ),
+        ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selVisRadioGenes'", "visGeneList"),
           selectizeInput("selectvisGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
-          ),
+        ),
         conditionalPanel(
           helpText("To use this, first run Differential expression and save top genes."),
           helpText("Note: currently selects first 'n' genes from the list"),
           condition = sprintf("input['%s'] == 'visBiomarker'", "visGeneList"),
           uiOutput("visBioGenes")
-          ),
+        ),
         uiOutput("visOptions"),
         withBusyIndicatorUI(actionButton("plotvis", "Plot"))
-        ),
+      ),
       mainPanel(
         fluidRow(
           plotOutput("visPlot", height = '600px')
-          )
         )
       )
     )
   )
+)
