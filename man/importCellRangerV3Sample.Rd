@@ -12,10 +12,11 @@ importCellRangerV3Sample(
 )
 }
 \arguments{
-\item{sampleDir}{A path to the directory containing the data files. Default "./".}
+\item{sampleDir}{A path to the directory containing the data files. Default
+"./".}
 
-\item{sampleName}{A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".}
+\item{sampleName}{A User-defined sample name. This will be prepended to all
+cell barcode IDs. Default "sample".}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
