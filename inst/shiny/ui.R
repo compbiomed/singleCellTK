@@ -112,7 +112,6 @@ if (is.null(getShinyOption("theme"))){
 source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
 source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
-source("ui_03_4_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
@@ -122,6 +121,7 @@ source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
+source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 
 
@@ -134,7 +134,7 @@ shinyjs.disableTabs = function() {
     e.preventDefault();
     return false;
   });
-  
+
   tabs.addClass('disabled');
 }
 
@@ -163,7 +163,7 @@ shinyUI(
       theme = shinytheme(shinyTheme),
       #Upload Tab
       tabPanel("Upload", shinyPanelUpload),
-      navbarMenu("QC & Filtering", 
+      navbarMenu("QC & Filtering",
                  tabPanel("Filtering", shinyPanelFilter)),
       # tabPanel(title="QC & Filtering", shinyPanelFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
@@ -187,7 +187,7 @@ shinyUI(
         tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
-      navbarMenu("Viewers", 
+      navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
                  tabPanel("Cell Viewer", shinyPanelCellViewer)),
       footer = includeHTML("www/footer.html"),
