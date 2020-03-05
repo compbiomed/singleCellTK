@@ -40,17 +40,19 @@ runSCGEN <- function(inSCE, exprs = 'logcounts', batchKey = 'batch',
                      cellTypeKey = "cell_type", assayName = 'SCGEN', 
                      nEpochs = 50L){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && !class(inSCE) == "SCtkExperiment"){
+    if(!class(inSCE) == "SingleCellExperiment" 
+       && !class(inSCE) == "SCtkExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!batchKey %in% names(colData(inSCE))){
+    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"batchKey\" name:", batchKey, "not found"))
     }
-    if(!cellTypeKey %in% names(colData(inSCE))){
+    if(!cellTypeKey %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"cellTypeKey\" name:", batchKey, "not found"))
     }
     assayName <- gsub(' ', '_', assayName)
-    
+    nEpochs <- as.integer(nEpochs)
+
     ## Run algorithm
     adata <- sce2adata(inSCE, mainAssay = exprs)
     network = scgen$VAEArith(x_dimension = adata$n_vars)
@@ -58,6 +60,6 @@ runSCGEN <- function(inSCE, exprs = 'logcounts', batchKey = 'batch',
     corrAdata <- scgen$batch_removal(network, adata, batch_key = batchKey, 
                                      cell_label_key = cellTypeKey)
     corrMat <- t(corrAdata$X)
-    assay(inSCE, assayName) <- corrMat
+    SummarizedExperiment::assay(inSCE, assayName) <- corrMat
     return(inSCE)
 }
