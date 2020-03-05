@@ -137,7 +137,8 @@ shinyPanelCellViewer <- fluidPage(
                                 fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
                                          column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
                                          column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
-                                         column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
+                                         column(6,textInput("adjustylab", h5(strong("Y-axis label:"))),
+                                         column(6, checkboxInput("checkbinning",h5("Perform Binning:"), value = FALSE))
                                   )
              ))
            )#fluidrow_end
