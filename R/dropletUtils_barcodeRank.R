@@ -10,8 +10,8 @@
   inflection.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$inflection)
 
   result <- cbind(knee.ix, inflection.ix)
-  colnames(result) <- c("dropletUtils_BarcodeRank_Knee",
-                        "dropletUtils_BarcodeRank_Knee")
+  colnames(result) <- c("dropletUtils_barcodeRank_knee",
+                        "dropletUtils_barcodeRank_inflection")
 
   return(result)
 }
