@@ -24,8 +24,10 @@
 #' @export
 #' @references Joshua Welch, et al., 2018
 #' @examples  
+#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runLIGER(sceBatches)
+#' }
 runLIGER <- function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
                      reducedDimName = 'LIGER', nComponents = 20L, lambda = 5.0, 
                      resolution = 1.0){

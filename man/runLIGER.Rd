@@ -49,8 +49,10 @@ shared and dataset-specific factors.
 }
 \examples{
  
+\dontrun{
 data('sceBatches', package = 'singleCellTK')
 sceCorr <- runLIGER(sceBatches)
+}
 }
 \references{
 Joshua Welch, et al., 2018
