@@ -6,37 +6,20 @@
 \alias{importCellRangerV3}
 \title{Construct SCE object from Cell Ranger output}
 \usage{
-importCellRanger(
-  cellRangerDirs = NULL,
-  sampleDirs = NULL,
-  sampleNames = NULL,
-  cellRangerOuts = NULL,
-  dataType = c("filtered", "raw"),
-  matrixFileNames = "matrix.mtx.gz",
+importCellRanger(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, cellRangerOuts = NULL, dataType = c("filtered",
+  "raw"), matrixFileNames = "matrix.mtx.gz",
   featuresFileNames = "features.tsv.gz",
-  barcodesFileNames = "barcodes.tsv.gz",
-  gzipped = "auto",
-  class = c("Matrix", "matrix"),
-  delayedArray = TRUE
-)
+  barcodesFileNames = "barcodes.tsv.gz", gzipped = "auto",
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 
-importCellRangerV2(
-  cellRangerDirs = NULL,
-  sampleDirs = NULL,
-  sampleNames = NULL,
-  dataType = c("filtered", "raw"),
-  class = c("Matrix", "matrix"),
-  delayedArray = TRUE
-)
+importCellRangerV2(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, dataType = c("filtered", "raw"),
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 
-importCellRangerV3(
-  cellRangerDirs = NULL,
-  sampleDirs = NULL,
-  sampleNames = NULL,
-  dataType = c("filtered", "raw"),
-  class = c("Matrix", "matrix"),
-  delayedArray = TRUE
-)
+importCellRangerV3(cellRangerDirs = NULL, sampleDirs = NULL,
+  sampleNames = NULL, dataType = c("filtered", "raw"),
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{cellRangerDirs}{The root directories where Cell Ranger was run. These
@@ -86,10 +69,14 @@ multiple genomes when running Cell Ranger pipeline. Probable options
 include "outs/filtered_feature_bc_matrix/", "outs/raw_feature_bc_matrix/",
 "outs/filtered_gene_bc_matrix/", "outs/raw_gene_bc_matrix/".}
 
-\item{dataType}{The type of output to import. Whether to import the
-filtered or the raw data. Can be one of "filtered" or
-"raw". Default "filtered". When \code{dataType} is specified,
-\code{cellRangerDirs} will be ignored.}
+\item{dataType}{Character. The type of data to import. Can be one of
+"filtered" (which is equivalent to
+\code{cellRangerOuts = "outs/filtered_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/filtered_gene_bc_matrix/"}) or "raw" (which
+is equivalent to
+\code{cellRangerOuts = "outs/raw_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/raw_gene_bc_matrix/"}). Default
+"filtered" which imports the counts for filtered cell barcodes only.}
 
 \item{matrixFileNames}{Character vector. Filenames for the Market Exchange
 Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
@@ -133,6 +120,11 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+
+\item{dataType}{The type of output to import. Whether to import the
+filtered or the raw data. Can be one of "filtered" or
+"raw". Default "filtered". When \code{dataType} is specified,
+\code{cellRangerDirs} will be ignored.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count

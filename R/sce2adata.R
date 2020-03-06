@@ -1,0 +1,58 @@
+#' Coverts SingleCellExperiment object from R to anndata.AnnData object in 
+#' Python
+#'
+#' The AnnData object here can be saved to .h5ad file and read into Python
+#' interactive console. Mostly used senario is when you want to apply 
+#' reticulated Python function, which only works with an anndata.AnnData object.
+#' @param SCE A SingleCellExperiment object.
+#' @param mainAssay Character, default `"counts"`. The name of assay of
+#' interests that will be set as the primary matrix of the output AnnData.
+#' Available options can be listed by `assayNames(SCE)`. Thee primary matrix 
+#' will be saved in `adata$X`, Other assays will be stored in `adata$obsm` 
+#' together with the low-dimension representations (for now). 
+#' @return A Python anndata.AnnData object
+#' @examples
+#' data('mouseBrainSubsetSCE')
+#' adata <- sce2adata(mouseBrainSubsetSCE)
+sce2adata <- function(SCE, mainAssay = 'counts') {
+    # Transfer SCE object back to AnnData
+    # Argument check first
+    stopifnot(class(SCE) == "SingleCellExperiment")
+    
+    # Extract information that correspond to AnnData structure
+    X <- t(SummarizedExperiment::assay(SCE, mainAssay))
+    AnnData <- sc$AnnData(X = X)
+    obs <- as.data.frame(colData(SCE))
+    if(length(obs) > 0){
+        AnnData$obs = obs
+    } else {
+        AnnData$obs_names <- colnames(SCE)
+    }
+    var <- as.data.frame(rowData(SCE))
+    if(length(var) > 0){
+        AnnData$var = var
+    } else {
+        AnnData$var_names <- rownames(SCE)
+    }
+    uns  <- S4Vectors::metadata(SCE)
+    if(length(uns) > 0){
+        AnnData$uns <- uns    
+    }
+    obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
+    if(length(obsmNames) > 0){
+        for (i in 1:length(obsmNames)) {
+            AnnData$obsm$'__setitem__'(obsmNames[i], 
+                                       SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+        }
+    }
+    
+    # Furthermore, the other assays will for now also be saved to .obsm
+    allAssayNames <- SummarizedExperiment::assayNames(SCE)
+    for (i in 1:length(allAssayNames)) {
+        oneName <- allAssayNames[i]
+        if (!oneName == mainAssay) {
+            AnnData$obsm$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
+        }
+    }
+    return(AnnData)
+}

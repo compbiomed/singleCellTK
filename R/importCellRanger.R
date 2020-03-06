@@ -668,7 +668,7 @@ importCellRangerV3 <- function(
         matrixFileNames = "matrix.mtx.gz",
         featuresFileNames = "features.tsv.gz",
         barcodesFileNames = "barcodes.tsv.gz",
-        gzipped = TRUE,
+        gzipped = "auto",
         class = class,
         delayedArray = delayedArray)
 
@@ -680,9 +680,10 @@ importCellRangerV3 <- function(
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from Cell Ranger V3 output. Files are assumed to be named
 #'  "matrix.mtx.gz", "features.tsv.gz", and "barcodes.tsv.gz".
-#' @param sampleDir  A path to the directory containing the data files. Default "./".
-#' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
-#'  Default "sample".
+#' @param sampleDir  A path to the directory containing the data files. Default
+#'  "./".
+#' @param sampleName A User-defined sample name. This will be prepended to all
+#'  cell barcode IDs. Default "sample".
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by

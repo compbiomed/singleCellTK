@@ -4,17 +4,10 @@
 \alias{runDoubletFinder}
 \title{Generates a doublet score for each cell via doubletFinder}
 \usage{
-runDoubletFinder(
-  inSCE,
-  useAssay = "counts",
-  sample = NULL,
-  seed = 12345,
-  seuratNfeatures = 2000,
-  seuratPcs = 1:15,
-  seuratRes = c(0.5, 1, 1.5, 2),
-  formationRate = 0.075,
-  verbose = FALSE
-)
+runDoubletFinder(inSCE, useAssay = "counts", sample = NULL,
+  seed = 12345, seuratNfeatures = 2000, seuratPcs = 1:15,
+  seuratRes = c(0.5, 1, 1.5, 2), formationRate = 0.075,
+  verbose = FALSE)
 }
 \arguments{
 \item{inSCE}{Input SingleCellExperiment object. Must contain a counts matrix}

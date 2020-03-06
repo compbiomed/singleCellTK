@@ -4,13 +4,9 @@
 \alias{readSingleCellMatrix}
 \title{Read single cell expression matrix}
 \usage{
-readSingleCellMatrix(
-  file,
-  class = c("Matrix", "matrix"),
-  delayedArray = TRUE,
-  colIndexLocation = NULL,
-  rowIndexLocation = NULL
-)
+readSingleCellMatrix(file, class = c("Matrix", "matrix"),
+  delayedArray = TRUE, colIndexLocation = NULL,
+  rowIndexLocation = NULL)
 }
 \arguments{
 \item{file}{Path to input file. Supported file endings include .mtx, .txt,

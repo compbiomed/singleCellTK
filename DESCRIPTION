@@ -24,11 +24,15 @@ Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
 Encoding: UTF-8
+cache:
+  - packages: true
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
     Clustering, ImmunoOncology
 LazyData: TRUE
 Imports:
     ape,
+    batchelor,
+    BiocGenerics,
     colourpicker,
     cluster,
     ComplexHeatmap,
@@ -40,6 +44,7 @@ Imports:
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
+    liger,
     limma,
     MAST,
     matrixStats,
@@ -49,7 +54,12 @@ Imports:
     RColorBrewer,
     Rtsne,
     S4Vectors,
+    scater,
+    scMerge,
+    scran,
+    Seurat,
     shiny,
+    shinyFiles,
     shinyjs,
     shinyBS,
     sva,
@@ -62,18 +72,16 @@ Imports:
     shinycssloaders,
     shinythemes,
     umap,
-    scran,
     DropletUtils,
     scds,
     reticulate (>= 1.14),
     tools,
-    scater,
     withr,
     Matrix,
     GSEABase,
-    Seurat,
     DoubletFinder,
-    R.utils
+    R.utils,
+    zinbwave
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
@@ -88,7 +96,9 @@ Suggests:
     scRNAseq,
     xtable,
     spelling
-Remotes: chris-mcginnis-ucsf/DoubletFinder
+Remotes: 
+    chris-mcginnis-ucsf/DoubletFinder,
+    immunogenomics/harmony
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
