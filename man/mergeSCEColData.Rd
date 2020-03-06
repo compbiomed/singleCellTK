@@ -4,7 +4,8 @@
 \alias{mergeSCEColData}
 \title{Merging colData from two singleCellExperiment objects}
 \usage{
-mergeSCEColData(inSCE1, inSCE2, id1 = "column_name", id2 = "column_name")
+mergeSCEColData(inSCE1, inSCE2, id1 = "column_name",
+  id2 = "column_name")
 }
 \arguments{
 \item{inSCE1}{Input SingleCellExperiment object. The function will output this
