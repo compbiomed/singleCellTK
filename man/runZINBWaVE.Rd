@@ -4,9 +4,17 @@
 \alias{runZINBWaVE}
 \title{Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object}
 \usage{
-runZINBWaVE(inSCE, exprs = "logcounts", batchKey = "batch",
-  reducedDimName = "zinbwave", nHVG = 3000, filterParams = NULL,
-  nComponents = 50, epsilon = 1000, nIter = 10)
+runZINBWaVE(
+  inSCE,
+  exprs = "logcounts",
+  batchKey = "batch",
+  reducedDimName = "zinbwave",
+  nHVG = 3000,
+  filterParams = NULL,
+  nComponents = 50,
+  epsilon = 1000,
+  nIter = 10
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

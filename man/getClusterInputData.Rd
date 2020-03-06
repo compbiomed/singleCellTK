@@ -4,8 +4,12 @@
 \alias{getClusterInputData}
 \title{Get data to use as input clustering algorithms}
 \usage{
-getClusterInputData(inSCE, inputData, useAssay = "logcounts",
-  reducedDimName = NULL)
+getClusterInputData(
+  inSCE,
+  inputData,
+  useAssay = "logcounts",
+  reducedDimName = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

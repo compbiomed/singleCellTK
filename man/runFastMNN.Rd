@@ -5,8 +5,13 @@
 \title{Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
 correction method to SingleCellExperiment object}
 \usage{
-runFastMNN(inSCE, exprs = "logcounts", reducedDimName = "MNN",
-  batchKey = "batch", pcInput = FALSE)
+runFastMNN(
+  inSCE,
+  exprs = "logcounts",
+  reducedDimName = "MNN",
+  batchKey = "batch",
+  pcInput = FALSE
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

@@ -4,9 +4,17 @@
 \alias{runSCMerge}
 \title{Apply scMerge batch effect correction method to SingleCellExperiment object}
 \usage{
-runSCMerge(inSCE, exprs = "logcounts", batchKey = "batch",
-  assayName = "scMerge", kmeansK = NULL, cellTypeKey = "cell_type",
-  species = NULL, seg = NULL, nHVG = 1000)
+runSCMerge(
+  inSCE,
+  exprs = "logcounts",
+  batchKey = "batch",
+  assayName = "scMerge",
+  kmeansK = NULL,
+  cellTypeKey = "cell_type",
+  species = NULL,
+  seg = NULL,
+  nHVG = 1000
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

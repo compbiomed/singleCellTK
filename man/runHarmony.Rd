@@ -4,9 +4,16 @@
 \alias{runHarmony}
 \title{Apply Harmony batch effect correction method to SingleCellExperiment object}
 \usage{
-runHarmony(inSCE, exprs = "logcounts", pcInput = FALSE,
-  batchKey = "batch", reducedDimName = "HARMONY", nComponents = 50,
-  theta = 5, nIter = 10)
+runHarmony(
+  inSCE,
+  exprs = "logcounts",
+  pcInput = FALSE,
+  batchKey = "batch",
+  reducedDimName = "HARMONY",
+  nComponents = 50,
+  theta = 5,
+  nIter = 10
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

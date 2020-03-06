@@ -81,7 +81,8 @@ Imports:
     GSEABase,
     DoubletFinder,
     R.utils,
-    zinbwave
+    zinbwave,
+    harmony
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
@@ -98,7 +99,8 @@ Suggests:
     spelling
 Remotes: 
     chris-mcginnis-ucsf/DoubletFinder,
-    immunogenomics/harmony
+    immunogenomics/harmony,
+    MacoskoLab/liger
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

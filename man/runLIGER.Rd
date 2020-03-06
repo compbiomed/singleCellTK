@@ -4,9 +4,15 @@
 \alias{runLIGER}
 \title{Apply LIGER batch effect correction method to SingleCellExperiment object}
 \usage{
-runLIGER(inSCE, exprs = "logcounts", batchKey = "batch",
-  reducedDimName = "LIGER", nComponents = 20L, lambda = 5,
-  resolution = 1)
+runLIGER(
+  inSCE,
+  exprs = "logcounts",
+  batchKey = "batch",
+  reducedDimName = "LIGER",
+  nComponents = 20L,
+  lambda = 5,
+  resolution = 1
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
@@ -44,17 +50,6 @@ shared and dataset-specific factors.
 \examples{
  
 data('sceBatches', package = 'singleCellTK')
-sceBatches
-## class: SingleCellExperiment 
-## dim: 27610 1820 
-## metadata(0):
-## assays(3): normcounts logcounts
-## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-## rowData names(0):
-## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-## colData names(2): cell_type1 batch
-## reducedDimNames(5): PCA
-## spikeNames(0):
 sceCorr <- runLIGER(sceBatches)
 }
 \references{

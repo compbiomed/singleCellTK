@@ -4,8 +4,14 @@
 \alias{runPerCellQC}
 \title{Wrapper for calculating QC metrics with scater.}
 \usage{
-runPerCellQC(inSCE, useAssay = "counts", geneSetList = NULL,
-  geneSetListLocation = "rownames", geneSetCollection = NULL, ...)
+runPerCellQC(
+  inSCE,
+  useAssay = "counts",
+  geneSetList = NULL,
+  geneSetListLocation = "rownames",
+  geneSetCollection = NULL,
+  ...
+)
 }
 \arguments{
 \item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.}

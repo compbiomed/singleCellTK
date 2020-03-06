@@ -4,8 +4,7 @@
 \alias{runLimmaBC}
 \title{Apply Limma's batch effect correction method to SingleCellExperiment object}
 \usage{
-runLimmaBC(inSCE, exprs = "logcounts", assayName = "LIMMA",
-  batchKey = "batch")
+runLimmaBC(inSCE, exprs = "logcounts", assayName = "LIMMA", batchKey = "batch")
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
