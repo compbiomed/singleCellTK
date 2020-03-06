@@ -153,12 +153,12 @@ runScrublet <- function(inSCE,
         distance_metric = distanceMetric,
         get_doublet_neighbor_parents = getDoubletNeighborParents,
         min_counts = minCounts,
-        min_cells = minCells,
+        min_cells = as.integer(minCells),
         min_gene_variability_pctl = minGeneVariabilityPctl,
         log_transform = logTransform,
         mean_center = meanCenter,
         normalize_variance = normalizeVariance,
-        n_prin_comps = nPrinComps,
+        n_prin_comps = as.integer(nPrinComps),
         verbose = verbose)
 
       output[sceSampleInd, "scrublet_score"] <- result[[1]]
