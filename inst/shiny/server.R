@@ -163,11 +163,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- withConsoleRedirect(createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts))
+                                   createLogCounts = input$createLogcounts)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))

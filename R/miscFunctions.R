@@ -13,7 +13,7 @@
 #' data("mouseBrainSubsetSCE")
 #' summarizeTable(mouseBrainSubsetSCE)
 #'
-summarizeTable <- simpleLog %@% function(inSCE, useAssay="counts", expressionCutoff=1700){
+summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
   return(
     data.frame(
       "Metric" = c(
@@ -264,49 +264,32 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     circlize::colorRamp2(c(1, 2, 3), c("red", "blue", "black"))
   }
 }
+# 
+# log = function(f){
+#   function(...){
+#     args <- listToString(list(...))
+#     fName <- as.character(match.call()[1])
+#     res = f(...)
+#     call <- paste0(fName, "(", args, ")")
+#     # print("logging a function:")
+#     print(noquote(call))
+#     # insertUI(paste0("#", "console"), where = "beforeEnd",
+#     # ui = tags$p(paste0(call, "\n", collapse = ""))
+#     # )
+#     return(res)
+#   }
+# }
+# 
+# listToString <- function(l) {
+#   res = ""
+#   for(i in l[1:length(l)]){
+#     if (is.character(i)) {
+#       res = paste0(res, sQuote(i), ",")
+#     } else {
+#       res = paste0(res, i, ",")
+#     }
+#   }
+#   return(substr(res, 1, nchar(res)-1))
+# }
 
-`%@%` = function(decorator, f) {
-  decorator(f)
-}
 
-log = function(f){
-  function(...){
-    args <- listToString(list(...))
-    fName <- as.character(match.call()[1])
-    res = f(...)
-    call <- paste0(fName, "(", args, ")")
-    # print("logging a function:")
-    print(noquote(call))
-    # insertUI(paste0("#", "console"), where = "beforeEnd",
-    # ui = tags$p(paste0(call, "\n", collapse = ""))
-    # )
-    return(res)
-  }
-}
-
-listToString <- function(l) {
-  res = ""
-  for(i in l[1:length(l)]){
-    if (is.character(i)) {
-      res = paste0(res, sQuote(i), ",")
-    } else {
-      res = paste0(res, i, ",")
-    }
-  }
-  return(substr(res, 1, nchar(res)-1))
-}
-
-simpleLog <- function(f) {
-  function(...) {
-    print(match.call())
-    f(...)
-  }
-}
-
-sayHello = log %@% function(name, age=NULL) {
-  if (!is.null(age)) {
-    return(paste("Hello", name, ", you are", age, "years old."))
-  } else {
-    return(paste("Hello,", name))
-  }
-}
