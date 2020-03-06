@@ -52,6 +52,7 @@ Imports:
     Rtsne,
     S4Vectors,
     shiny,
+    shinyFiles,
     shinyjs,
     shinyBS,
     sva,
