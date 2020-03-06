@@ -61,17 +61,6 @@ applying a Gaussian smoothing kernel with bandwidth `sigma`.
 \examples{
  
 data('sceBatches', package = 'singleCellTK')
-sceBatches
-## class: SingleCellExperiment 
-## dim: 27610 1820 
-## metadata(0):
-## assays(3): normcounts logcounts
-## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-## rowData names(0):
-## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-## colData names(2): cell_type1 batch
-## reducedDimNames(5): PCA
-## spikeNames(0):
 sceCorr <- runMNNCorrect(sceBatches)
 }
 \references{

@@ -80,12 +80,14 @@ runZINBWaVE <- function(inSCE, exprs = 'logcounts', batchKey = 'batch',
         if(nrow(batches[[i]]) <= nHVG){
             topVarGenesPerBatch[[i]] <- 1:nrow(batches[[i]])
         } else {
-            mvTrend <- scran::trendVar(batches[[i]], use.spikes=FALSE, 
-                                       assay.type=exprs)
-            decomposeTrend <- scran::decomposeVar(batches[[i]], mvTrend, 
-                                                  assay.type=exprs)
-            topVarGenesPerBatch[[i]] <- order(decomposeTrend$bio, 
-                                              decreasing = TRUE)[1:nHVG]
+          sce.var <- scran::modelGeneVar(batches[[i]])
+          topVarGenesPerBatch[[i]] <- order(sce.var$bio,decreasing = TRUE)[seq(nHVG)]
+#            mvTrend <- scran::trendVar(batches[[i]], use.spikes=FALSE, 
+#                                       assay.type=exprs)
+#            decomposeTrend <- scran::decomposeVar(batches[[i]], mvTrend, 
+#                                                  assay.type=exprs)
+#            topVarGenesPerBatch[[i]] <- order(decomposeTrend$bio, 
+#                                              decreasing = TRUE)[1:nHVG]
         }    
     }
     selectedHVG <- BiocGenerics::Reduce(intersect, topVarGenesPerBatch)

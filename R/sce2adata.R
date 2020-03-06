@@ -11,10 +11,7 @@
 #' will be saved in `adata$X`, Other assays will be stored in `adata$obsm` 
 #' together with the low-dimension representations (for now). 
 #' @return A Python anndata.AnnData object
-#' @examples
-#' data('mouseBrainSubsetSCE')
-#' adata <- sce2adata(mouseBrainSubsetSCE)
-sce2adata <- function(SCE, mainAssay = 'counts') {
+.sce2adata <- function(SCE, mainAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first
     stopifnot(class(SCE) == "SingleCellExperiment")
