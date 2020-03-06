@@ -71,7 +71,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <- simpleLog %@% function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
+createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
   
@@ -291,5 +291,4 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #   }
 #   return(substr(res, 1, nchar(res)-1))
 # }
-
 
