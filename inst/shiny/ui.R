@@ -24,6 +24,14 @@ library(celda)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(RColorBrewer)
+library(grDevices)
+
+
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -41,6 +49,20 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+#from SCE
+cell_list <- ""
+gene_list <- ""
+#from assays
+method_list <- ""
+#from reduced
+approach_list <- ""
+#from colData
+annotation_list <- ""
+#from RColorBrewer
+colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+                                           |color_table$category == "seq"),])
 if (internetConnection){
   enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 } else {
@@ -59,6 +81,21 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
+  ###############################################################
+  #from sce
+  cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
+  gene_list <- BiocGenerics::rownames(getShinyOption("inputSCEset"))
+  #from assays
+  method_list <- names(assays(getShinyOption("inputSCEset")))
+  #from reduced
+  approach_list <- names(reducedDims(getShinyOption("inputSCEset")))
+  #from colData
+  annotation_list <- names(colData(getShinyOption("inputSCEset")))
+  #from colorbrewer
+  colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+  color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+  color_seqdiv <- rownames(color_table[which(color_table$category == "div"|color_table$category == "seq"),])
+  ###############################################################
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
@@ -84,6 +121,7 @@ source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
+source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 
 
@@ -96,7 +134,7 @@ shinyjs.disableTabs = function() {
     e.preventDefault();
     return false;
   });
-  
+
   tabs.addClass('disabled');
 }
 
@@ -125,7 +163,7 @@ shinyUI(
       theme = shinytheme(shinyTheme),
       #Upload Tab
       tabPanel("Upload", shinyPanelUpload),
-      navbarMenu("QC & Filtering", 
+      navbarMenu("QC & Filtering",
                  tabPanel("Filtering", shinyPanelFilter)),
       # tabPanel(title="QC & Filtering", shinyPanelFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
@@ -149,8 +187,9 @@ shinyUI(
         tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
-      navbarMenu("Viewers", 
-                 tabPanel("Gene Visualization", shinyPanelViewers)),
+      navbarMenu("Viewers",
+                 tabPanel("Gene Visualization", shinyPanelViewers),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer)),
       footer = includeHTML("www/footer.html"),
       # fluidRow(
       #   column(12, id = "consoleDiv",
