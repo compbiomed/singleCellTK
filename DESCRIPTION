@@ -92,15 +92,13 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    org.Mm.eg.db,
-    org.Hs.eg.db,
     scRNAseq,
     xtable,
     spelling
 Remotes: 
-    chris-mcginnis-ucsf/DoubletFinder,
-    immunogenomics/harmony,
-    MacoskoLab/liger
+    joshua-d-campbell/DoubletFinder,
+    joshua-d-campbell/harmony,
+    joshua-d-campbell/liger
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
