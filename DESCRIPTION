@@ -19,7 +19,8 @@ Depends:
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
-    Biobase
+    Biobase,
+    Matrix
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
@@ -77,7 +78,6 @@ Imports:
     reticulate (>= 1.14),
     tools,
     withr,
-    Matrix,
     GSEABase,
     DoubletFinder,
     R.utils,
