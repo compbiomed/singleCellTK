@@ -10,7 +10,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param reducedDimName character, default `"zinbwave"`. The name for the 
 #' corrected low-dimensional representation.
@@ -33,23 +33,19 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runZINBWaVE(sceBatches, nIter=5)
 #' }
-runZINBWaVE <- function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
+runZINBWaVE <- function(inSCE, exprs = 'logcounts', batch = 'batch', 
                         reducedDimName = 'zinbwave', nHVG = 3000, 
                         filterParams = NULL, nComponents = 50, 
                         epsilon = 1000, nIter = 10){
     ## Input check
-    #if(!require(dplyr)){
-    #    stop("Required R package not importable.")
-    #}
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
         stop(paste("\"exprs\" (assay) name: ", exprs, " not found"))
     }
-    if(!batchKey %in% names(colData(inSCE))){
-        stop(paste("\"batchKey name:", batchKey, "not found."))
+    if(!batch %in% names(colData(inSCE))){
+        stop(paste("\"batch name:", batch, "not found."))
     }
     if(!length(filterParams) == 2 || !class(filterParams) == "numeric" ||
        filterParams[1] < 0 || filterParams[2] < 0){
@@ -69,7 +65,7 @@ runZINBWaVE <- function(inSCE, exprs = 'logcounts', batchKey = 'batch',
     }
     # Split the batches
     batches <- list()
-    batchCol <- SummarizedExperiment::colData(tmpSCE)[[batchKey]]
+    batchCol <- SummarizedExperiment::colData(tmpSCE)[[batch]]
     uniqBatch <- unique(batchCol)
     for(i in uniqBatch){
         batches[[i]] <- tmpSCE[, batchCol == i]
@@ -93,7 +89,7 @@ runZINBWaVE <- function(inSCE, exprs = 'logcounts', batchKey = 'batch',
     selectedHVG <- BiocGenerics::Reduce(intersect, topVarGenesPerBatch)
     tmpSCE <- zinbwave::zinbwave(tmpSCE[selectedHVG,], K = nComponents, 
                                   epsilon = epsilon, which_assay=exprs, 
-                                  X = paste('~', batchKey, sep = ''), 
+                                  X = paste('~', batch, sep = ''), 
                                   maxiter.optimize=nIter, verbose = TRUE)
     reducedDim(inSCE, reducedDimName) <- reducedDim(tmpSCE, 'zinbwave')
     return(inSCE)

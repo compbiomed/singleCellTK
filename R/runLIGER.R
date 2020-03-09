@@ -7,7 +7,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param reducedDimName character, default `"LIGER"`. The name for the 
 #' corrected low-dimensional representation.
@@ -28,24 +28,23 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runLIGER(sceBatches)
 #' }
-runLIGER <- function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
+runLIGER <- function(inSCE, exprs = 'logcounts', batch = 'batch', 
                      reducedDimName = 'LIGER', nComponents = 20L, lambda = 5.0, 
                      resolution = 1.0){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
         stop(paste("\"exprs\" (assay) name: ", exprs, " not found"))
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
     ## Run algorithm
-    batchCol <- SummarizedExperiment::colData(inSCE)[[batchKey]]
+    batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     batches <- unique(batchCol)
     nBatch <- length(batches)
     batchMatrices <- list()

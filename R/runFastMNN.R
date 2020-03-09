@@ -8,7 +8,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`. Alternatively, see `pcInput` parameter.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param reducedDimName character, default `"fastMNN"`. The name for the 
 #' corrected low-dimensional representation.
@@ -24,10 +24,9 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runFastMNN(sceBatches, exprs = 'PCA', pcInput = TRUE)
 runFastMNN <- function(inSCE, exprs = "logcounts", reducedDimName = "MNN", 
-                       batchKey = 'batch', pcInput = FALSE){
+                       batch = 'batch', pcInput = FALSE){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(pcInput){
@@ -40,8 +39,8 @@ runFastMNN <- function(inSCE, exprs = "logcounts", reducedDimName = "MNN",
         }
     }
     
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey name:", batchKey, "not found."))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch name:", batch, "not found."))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
@@ -53,7 +52,7 @@ runFastMNN <- function(inSCE, exprs = "logcounts", reducedDimName = "MNN",
         mat <- SummarizedExperiment::assay(inSCE, exprs)
     }
     batches <- list()
-    batchCol <- SummarizedExperiment::colData(inSCE)[[batchKey]]
+    batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     batchIndicator <- unique(batchCol)
     for(i in batchIndicator){
         if(pcInput){

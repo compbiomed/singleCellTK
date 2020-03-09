@@ -9,7 +9,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param assayName character, default `"SCANORAMA"`. The name for the 
 #' corrected full-sized expression matrix.
@@ -24,37 +24,39 @@
 #' @export
 #' @references Brian Hie et al, 2019
 #' @examples 
+#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches
-#' ## class: SingleCellExperiment 
-#' ## dim: 27610 1820 
-#' ## metadata(0):
-#' ## assays(3): normcounts logcounts
-#' ## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-#' ## rowData names(0):
-#' ## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-#' ## colData names(2): cell_type1 batch
-#' ## reducedDimNames(5): PCA
-#' ## spikeNames(0):
 #' sceCorr <- runSCANORAMA(sceBatches)
-runSCANORAMA <- function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
+#' }
+runSCANORAMA <- function(inSCE, exprs = 'logcounts', batch = 'batch', 
                          assayName = 'SCANORAMA', SIGMA = 15, ALPHA = 0.1, 
                          KNN = 20L){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
+    }
+    if(!reticulate::py_module_available(module = "scanorama")){
+        warning("Cannot find python module 'scanorama', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scrublet can be installed on the local machine",
+            "with pip (e.g. pip install scrublet) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+        return(inSCE)
     }
     if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
         stop(paste("\"exprs\" (assay) name: ", exprs, " not found"))
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
     assayName <- gsub(' ', '_', assayName)
     
     ## Run algorithm
-    batchCol <- SummarizedExperiment::colData(inSCE)[[batchKey]]
+    batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     batches <- unique(batchCol)
     nBatch <- length(batches)
     ixList <- list()

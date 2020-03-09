@@ -14,7 +14,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param assayName character, default `"Seurat3Int"`. The name for the 
 #' corrected full-sized expression matrix. If the number of features returned 
@@ -27,30 +27,18 @@
 #' @references Stuart et al. 2019
 #' @examples 
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches
-#' ## class: SingleCellExperiment 
-#' ## dim: 27610 1820 
-#' ## metadata(0):
-#' ## assays(3): normcounts logcounts
-#' ## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-#' ## rowData names(0):
-#' ## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-#' ## colData names(2): cell_type1 batch
-#' ## reducedDimNames(5): PCA
-#' ## spikeNames(0):
 #' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
 runSeurat3Integration <- function(inSCE, exprs = 'logcounts', 
-                                  batchKey = 'batch', 
+                                  batch = 'batch', 
                                   assayName = "Seurat3Int", 
                                   nAnchors = nrow(inSCE)){
     
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
     assayName <- gsub(' ', '_', assayName)
     
@@ -61,7 +49,7 @@ runSeurat3Integration <- function(inSCE, exprs = 'logcounts',
     
     ## Run algorithm
     srtObj <- Seurat::as.Seurat(inSCE, counts = exprs)
-    batchSplit <- Seurat::SplitObject(srtObj, split.by = batchKey)
+    batchSplit <- Seurat::SplitObject(srtObj, split.by = batch)
     nHVG <- nAnchors
     for (i in 1:length(batchSplit)){
         batchSplit[[i]] <- Seurat::NormalizeData(batchSplit[[i]], 

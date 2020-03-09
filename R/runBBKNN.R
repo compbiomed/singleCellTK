@@ -8,7 +8,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param reducedDimName character, default `"BBKNN"`. The name for the 
 #' corrected low-dimensional representation.
@@ -26,22 +26,33 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runBBKNN(sceBatches)
 #' }
-runBBKNN <-function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
+runBBKNN <-function(inSCE, exprs = 'logcounts', batch = 'batch', 
                     reducedDimName = 'BBKNN', nComponents = 50L){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!reticulate::py_module_available(module = "bbknn")){
+        warning("Cannot find python module 'bbknn', please install Conda and",
+            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
+            "If one of these have been previously run to install the modules,",
+            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module installation.",
+            " Alternatively, Scrublet can be installed on the local machine",
+            "with pip (e.g. pip install scrublet) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+        return(inSCE)
+    }
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
     ## Run algorithm
     adata <- .sce2adata(inSCE, mainAssay = exprs)
     sc$tl$pca(adata, n_comps = nComponents)
-    bbknn$bbknn(adata, batch_key = batchKey, n_pcs = nComponents)
+    bbknn$bbknn(adata, batch_key = batch, n_pcs = nComponents)
     sc$tl$umap(adata, n_components = nComponents)
     bbknnUmap <- adata$obsm[["X_umap"]]
     SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- bbknnUmap

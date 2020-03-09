@@ -8,7 +8,7 @@
 #' @param exprs character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the field 
+#' @param batch character, default `"batch"`. A string indicating the field 
 #' of `colData(inSCE)` that defines different batches.
 #' @param assayName character, default `"scMerge"`. The name for the corrected 
 #' full-sized expression matrix.
@@ -16,7 +16,7 @@
 #' each batch. The length of `kmeansK` needs to be the same as the number of 
 #' batches. If not given, this vector will be identified by counting cell types 
 #' in each batch.
-#' @param cellTypeKey character, default `"cell_type"`. A string indicating the 
+#' @param cellType character, default `"cell_type"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different cell types. Only needed 
 #' when `kmeansK` is left to `NULL`. 
 #' @param species character, default `NULL`. Choose from `{"human", "mouse"}`. 
@@ -35,23 +35,22 @@
 #' @examples 
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runSCMerge(sceBatches, species = 'human')
-runSCMerge <- function(inSCE, exprs = "logcounts", batchKey = 'batch', 
+runSCMerge <- function(inSCE, exprs = "logcounts", batch = 'batch', 
                        assayName = "scMerge", kmeansK = NULL, 
-                       cellTypeKey = 'cell_type', species = NULL, 
+                       cellType = 'cell_type', species = NULL, 
                        seg = NULL, nHVG = 1000){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment"){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
         stop(paste("\"exprs\" (assay) name: ", exprs, " not found."))
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
-    if(!cellTypeKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"cellTypeKey\" name:", cellTypeKey, "not found"))
+    if(!cellType %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"cellType\" name:", cellType, "not found"))
     }
     if (!is.null(species) && !is.null(seg)){
         stop("None or only one of the arguments \"species\" and \"seg\" should be applied.")
@@ -77,7 +76,7 @@ runSCMerge <- function(inSCE, exprs = "logcounts", batchKey = 'batch',
         ctl <- seg
     } else {
         seg <- scMerge::scSEGIndex(SummarizedExperiment::assay(inSCE, exprs), 
-                            SummarizedExperiment::colData(inSCE)[[cellTypeKey]],
+                            SummarizedExperiment::colData(inSCE)[[cellType]],
                             ncore = parallel::detectCores())
         ctl <- rownames(seg[order(seg$segIdx, decreasing = TRUE)[1:1000],])
     }
@@ -86,7 +85,7 @@ runSCMerge <- function(inSCE, exprs = "logcounts", batchKey = 'batch',
     
     # Select HVG
     batches <- list()
-    batchCol <- SummarizedExperiment::colData(inSCE)[[batchKey]]
+    batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     uniqBatch <- unique(batchCol)
     for(i in uniqBatch){
         batches[[i]] <- inSCE[, batchCol == i]
@@ -107,7 +106,7 @@ runSCMerge <- function(inSCE, exprs = "logcounts", batchKey = 'batch',
     
     if(is.null(kmeansK)){
         # If kmeansK not given, detect by cell type.
-        cellTypeCol <- SummarizedExperiment::colData(inSCE)[[cellTypeKey]]
+        cellTypeCol <- SummarizedExperiment::colData(inSCE)[[cellType]]
         kmeansK <- c()
         for (i in 1:length(uniqBatch)){
             cellTypePerBatch <- cellTypeCol[batchCol == uniqBatch[i]]
@@ -120,7 +119,7 @@ runSCMerge <- function(inSCE, exprs = "logcounts", batchKey = 'batch',
     # scMerge automatically search for the column called "batch"...
     sceTmp <- inSCE
     colDataNames <- names(SummarizedExperiment::colData(sceTmp))
-    names(SummarizedExperiment::colData(sceTmp))[colDataNames == batchKey] <- 'batch'
+    names(SummarizedExperiment::colData(sceTmp))[colDataNames == batch] <- 'batch'
     sceTmp <- scMerge::scMerge(sceTmp, exprs = exprs, 
                                hvg_exprs = exprs, 
                                assay_name = assayName, 
