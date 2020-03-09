@@ -19,8 +19,7 @@ Depends:
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
-    Biobase,
-    Matrix
+    Biobase
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
@@ -48,6 +47,7 @@ Imports:
     liger,
     limma,
     MAST,
+    Matrix,
     matrixStats,
     methods,
     multtest,
@@ -94,7 +94,8 @@ Suggests:
     rmarkdown,
     scRNAseq,
     xtable,
-    spelling
+    spelling,
+    org.Mm.eg.db
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
