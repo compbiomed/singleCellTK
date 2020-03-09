@@ -24,9 +24,17 @@ library(celda)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
+library(shinyWidgets);
+library(shinyBS);
+library(shinyjqui);
+library(Seurat);
+library(ggplotify);
+library(ggplot2);
+library(cowplot);
 
 source("helpers.R")
 source("colourGroupInput.R")
+source("../../R/seuratFunctions.R")
 data("c2BroadSets")
 
 #test internet connection for enrichR connectivity
@@ -83,6 +91,7 @@ source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
+source("ui_08_seurat.R", local = TRUE) #creates shinyPanelSeurat variable
 
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
@@ -122,6 +131,7 @@ shinyUI(
       tabPanel("EnrichR", shinyPanelEnrichR)
     ),
     tabPanel("Sample Size", shinyPanelSubsample),
+    tabPanel("Seurat", shinyPanelSeurat),
     footer = includeHTML("www/footer.html")
   )
 )
