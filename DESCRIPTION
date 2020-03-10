@@ -34,6 +34,7 @@ Imports:
     batchelor,
     BiocGenerics,
     colourpicker,
+    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
@@ -84,7 +85,8 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    harmony
+    harmony,
+    V8
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
