@@ -4,8 +4,13 @@
 \alias{getTSNE}
 \title{Run t-SNE dimensionality reduction method on the assay data.}
 \usage{
-getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
-  n_iterations = 1000, perplexity = NULL)
+getTSNE(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "TSNE",
+  n_iterations = 1000,
+  perplexity = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

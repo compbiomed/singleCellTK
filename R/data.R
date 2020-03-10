@@ -15,3 +15,18 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 "mouseBrainSubsetSCE"
+
+#' Example PBMC_1k_v3_33538x20 SingleCellExperiment Object
+#'
+#' The following unfiltered PBMC_1k_v3 data were downloaded from
+#' https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0
+#' /pbmc_1k_v3
+#' Only the top 10 cells with most counts and the last 10 cells with non-zero
+#' counts are included in this example.
+#' This example only serves as a proof of concept and a tutoriol on how to
+#' run the functions in this package. The results should not be
+#' used for drawing scientific conclusions.
+#' @examples
+#' data("emptyDropsSceExample", package = "singleCellTK")
+#' @format A \link[SingleCellExperiment]{SingleCellExperiment} object.
+"emptyDropsSceExample"
