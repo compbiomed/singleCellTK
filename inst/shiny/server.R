@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
   # Upload data through shiny app
   
   # Components for uploading directories if user is importing from a preprocessing step
-  volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), getVolumes()())
+  volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
   shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
   shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
   # shinyFileChoose(input, "barcodes", roots = volumes, session = session, restrictions = system.file(package = "base"))
