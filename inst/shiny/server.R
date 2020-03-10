@@ -173,8 +173,8 @@ shinyServer(function(input, output, session) {
   
   # Components for uploading directories if user is importing from a preprocessing step
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
-  shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  shinyFiles::shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
   # shinyFileChoose(input, "barcodes", roots = volumes, session = session, restrictions = system.file(package = "base"))
   # shinyFileChoose(input, "features", roots = volumes, session = session, restrictions = system.file(package = "base"))
   # shinyFileChoose(input, "matrix", roots = volumes, session = session, restrictions = system.file(package = "base"))

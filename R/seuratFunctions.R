@@ -28,7 +28,7 @@
 #' @param filePath; path of the rds file to convert to seurat object
 #' @return seurat object
 .sceToSeurat <- function(filePath) {
-    seuratObject <- CreateSeuratObject(counts = counts(.rdsToSce(filePath)))
+    seuratObject <- Seurat::CreateSeuratObject(counts = counts(.rdsToSce(filePath)))
     return(seuratObject)
 }
 
@@ -38,8 +38,8 @@
 #' @param seuratObject; seurat object which should be added to the metadata slot of sce object (copy from)
 #' @return sce; updated sce object which now contains the seurat object in its metadata slot (excluding data matrices)
 .addSeuratToMetaDataSCE <- function(sce, seuratObject) {
-    seuratObject@assays$RNA@counts <- new("dgCMatrix")
-    seuratObject@assays$RNA@data <- new("dgCMatrix")
+    seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
+    seuratObject@assays$RNA@data <- methods::new("dgCMatrix")
     seuratObject@assays$RNA@scale.data <- matrix()
     sce@metadata[["seurat"]] <- seuratObject
     return(sce)
@@ -87,7 +87,7 @@
 #' @return sceObject; normalized sce object
 #' @export
 seuratNormalizeData <- function(sceObject, geneNamesSeurat, normalizationMethod, scaleFactor) {
-    seuratObject <- NormalizeData(convertSCEToSeurat(sceObject, geneNamesSeurat), normalization.method = normalizationMethod, scale.factor = scaleFactor)
+    seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(sceObject, geneNamesSeurat), normalization.method = normalizationMethod, scale.factor = scaleFactor)
     sceObject <- convertSeuratToSCE(sceObject, geneNamesSeurat, seuratObject, "seuratNormalizedData", "data")
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
@@ -104,7 +104,7 @@ seuratNormalizeData <- function(sceObject, geneNamesSeurat, normalizationMethod,
 #' @return sceObject; scaled sce object
 #' @export
 seuratScaleData <- function(sceObject, geneNamesSeurat, model.use, do.scale, do.center, scale.max) {
-    seuratObject <- ScaleData(convertSCEToSeurat(sceObject, geneNamesSeurat), model.use = model.use, do.scale = do.scale, do.center = do.center, scale.max = as.double(scale.max))
+    seuratObject <- Seurat::ScaleData(convertSCEToSeurat(sceObject, geneNamesSeurat), model.use = model.use, do.scale = do.scale, do.center = do.center, scale.max = as.double(scale.max))
     sceObject <- convertSeuratToSCE(sceObject, geneNamesSeurat, seuratObject, "seuratScaledData", "scale.data")
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
@@ -118,7 +118,7 @@ seuratScaleData <- function(sceObject, geneNamesSeurat, model.use, do.scale, do.
 #' @return sceObject; updated sce object which now contains the computed principal components
 #' @export
 seuratPCA <- function(sceObject, geneNamesSeurat, npcs) {
-    seuratObject <- RunPCA(convertSCEToSeurat(sceObject, geneNamesSeurat), npcs = as.double(npcs))
+    seuratObject <- Seurat::RunPCA(convertSCEToSeurat(sceObject, geneNamesSeurat), npcs = as.double(npcs))
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -131,7 +131,7 @@ seuratPCA <- function(sceObject, geneNamesSeurat, npcs) {
 #' @return sceObject; updated sce object which now contains the computed independent components
 #' @export
 seuratICA <- function(sceObject, geneNamesSeurat, nics) {
-    seuratObject <- RunICA(convertSCEToSeurat(sceObject, geneNamesSeurat), nics = as.double(nics))
+    seuratObject <- Seurat::RunICA(convertSCEToSeurat(sceObject, geneNamesSeurat), nics = as.double(nics))
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -145,8 +145,8 @@ seuratICA <- function(sceObject, geneNamesSeurat, nics) {
 #' @export
 seuratComputeJackStraw <- function(sceObject, geneNamesSeurat, dims) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    seuratObject <- JackStraw(seuratObject, dims = as.double(dims))
-    seuratObject <- ScoreJackStraw(seuratObject, dims = 1:dims)
+    seuratObject <- Seurat::JackStraw(seuratObject, dims = as.double(dims))
+    seuratObject <- Seurat::ScoreJackStraw(seuratObject, dims = 1:dims)
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -161,7 +161,7 @@ seuratComputeJackStraw <- function(sceObject, geneNamesSeurat, dims) {
 #' @export
 seuratFindHVG <- function(sceObject, geneNamesSeurat, hvgMethod, hvgNumber) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    seuratObject <- FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber)
+    seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber)
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -174,7 +174,7 @@ seuratFindHVG <- function(sceObject, geneNamesSeurat, hvgMethod, hvgNumber) {
 #' @export
 seuratPlotHVG <- function(sceObject, geneNamesSeurat) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    return(VariableFeaturePlot(seuratObject))
+    return(Seurat::VariableFeaturePlot(seuratObject))
 }
 
 #' seuratReductionPlot
@@ -186,7 +186,7 @@ seuratPlotHVG <- function(sceObject, geneNamesSeurat) {
 #' @export
 seuratReductionPlot <- function(sceObject, geneNamesSeurat, reduction) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    plot <- DimPlot(seuratObject, reduction = reduction)
+    plot <- Seurat::DimPlot(seuratObject, reduction = reduction)
     if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
         plot$data$ident <- seuratObject@meta.data$seurat_clusters
     }
@@ -205,7 +205,7 @@ seuratReductionPlot <- function(sceObject, geneNamesSeurat, reduction) {
 #' @export
 convertSeuratToSCE <- function(sce, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat) {
     assay(sce, assaySlotSCE) <- NULL
-    assay(sce, assaySlotSCE) <- slot(seuratObject@assays$RNA, assaySlotSeurat)
+    assay(sce, assaySlotSCE) <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
     rownames(sce) <- geneNames
     return(sce)
 }
@@ -217,7 +217,7 @@ convertSeuratToSCE <- function(sce, geneNames, seuratObject, assaySlotSCE, assay
 #' @return seuratObject; updated seurat object that contains all data from the input sce object
 #' @export
 convertSCEToSeurat <- function(sce, geneNames) {
-    seuratObject <- CreateSeuratObject(counts = counts(sce))
+    seuratObject <- Seurat::CreateSeuratObject(counts = counts(sce))
     if ("seuratNormalizedData" %in% names(assays(sce))) {
         seuratObject@assays$RNA@data <- assay(sce, "seuratNormalizedData")
         rownames(seuratObject@assays$RNA@data) <- geneNames
@@ -264,7 +264,7 @@ convertSCEToSeurat <- function(sce, geneNames) {
 #' @export
 seuratFindClusters <- function(sceObject, geneNamesSeurat, reduction, dims, algorithm, group.singletons) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    seuratObject <- FindNeighbors(seuratObject, reduction = reduction, dims = 1:dims)
+    seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = reduction, dims = 1:dims)
     no_algorithm <- 1
     if (algorithm == "original Louvain algorithm") {
         no_algorithm = 1
@@ -273,7 +273,7 @@ seuratFindClusters <- function(sceObject, geneNamesSeurat, reduction, dims, algo
     } else if (algorithm == "SLM algorithm") {
         no_algorithm = 3
     }
-    seuratObject <- FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = group.singletons)
+    seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = group.singletons)
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -288,7 +288,7 @@ seuratFindClusters <- function(sceObject, geneNamesSeurat, reduction, dims, algo
 #' @export
 seuratRunTSNE <- function(sceObject, geneNamesSeurat, reduction, dims) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    seuratObject <- RunTSNE(seuratObject, reduction = reduction, dims = 1:dims)
+    seuratObject <- Seurat::RunTSNE(seuratObject, reduction = reduction, dims = 1:dims)
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -303,7 +303,7 @@ seuratRunTSNE <- function(sceObject, geneNamesSeurat, reduction, dims) {
 #' @export
 seuratRunUMAP <- function(sceObject, geneNamesSeurat, reduction, dims) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    seuratObject <- RunUMAP(seuratObject, reduction = reduction, dims = 1:dims)
+    seuratObject <- Seurat::RunUMAP(seuratObject, reduction = reduction, dims = 1:dims)
     sceObject <- .addSeuratToMetaDataSCE(sceObject, seuratObject)
     return(sceObject)
 }
@@ -330,15 +330,15 @@ seuratRunUMAP <- function(sceObject, geneNamesSeurat, reduction, dims) {
 #' @export
 seuratElbowPlot <- function(sceObject, geneNamesSeurat, significantPC) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    plot <- ElbowPlot(seuratObject)
-    plot <- ggplot_build(plot)
+    plot <- Seurat::ElbowPlot(seuratObject)
+    plot <- ggplot2::ggplot_build(plot)
     for (i in 1:significantPC) {
         plot$data[[1]]$shape[i] <- 16
         plot$data[[1]]$colour[i] <- "red"
         plot$data[[1]]$size[i] <- 3.5
     }
-    plot <- ggplot_gtable(plot)
-    plot <- as.ggplot(plot)
+    plot <- ggplot2::ggplot_gtable(plot)
+    plot <- ggplotify::as.ggplot(plot)
     return(plot)
 }
 
@@ -351,7 +351,7 @@ seuratElbowPlot <- function(sceObject, geneNamesSeurat, significantPC) {
 #' @export
 seuratJackStrawPlot <- function(sceObject, geneNamesSeurat, dims) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    return(JackStrawPlot(seuratObject, dims = 1:dims))
+    return(Seurat::JackStrawPlot(seuratObject, dims = 1:dims))
 }
 
 #' seuratComputeHeatmap
@@ -363,7 +363,7 @@ seuratJackStrawPlot <- function(sceObject, geneNamesSeurat, dims) {
 #' @export
 seuratComputeHeatmap <- function(sceObject, geneNamesSeurat, dims) {
     seuratObject <- convertSCEToSeurat(sceObject, geneNamesSeurat)
-    return(DimHeatmap(seuratObject, dims = 1:dims, fast = FALSE, combine = FALSE))
+    return(Seurat::DimHeatmap(seuratObject, dims = 1:dims, fast = FALSE, combine = FALSE))
 }
 
 #' seuratHeatmapPlot
@@ -376,7 +376,7 @@ seuratComputeHeatmap <- function(sceObject, geneNamesSeurat, dims) {
 #' @export
 seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
     componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
-    return(plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
+    return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
 }
 
 # ----

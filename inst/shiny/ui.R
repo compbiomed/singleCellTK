@@ -128,7 +128,7 @@ source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
-source("ui_08_seurat.R", local = TRUE) #creates shinyPanelSeurat variable
+source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 
 
 jsCode <- "
@@ -187,7 +187,7 @@ shinyUI(
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
-        tabPanel("CELDA", shinyPanelCelda),
+        tabPanel("Celda", shinyPanelCelda),
         tabPanel("Seurat", shinyPanelSeurat),
         tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
       ),

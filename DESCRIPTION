@@ -34,6 +34,7 @@ Imports:
     batchelor,
     BiocGenerics,
     colourpicker,
+    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
