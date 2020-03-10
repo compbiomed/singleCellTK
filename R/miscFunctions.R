@@ -74,6 +74,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
+  
   if (is.null(assayFile)){
     stop("You must supply a count file.")
   }
@@ -264,6 +265,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   }
 }
 
+
 ## Convert a matrix to a sparse matrix and preserve column/row names
 .convertToMatrix <- function(x) {
   cn <- colnames(x)
@@ -275,3 +277,16 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   
   return(x)
 }
+
+`%@%` = function(decorator, f) {
+  decorator(f)
+}
+
+simpleLog <- function(f) {
+  function(...) {
+    print(match.call())
+    f(...)
+  }
+}
+
+

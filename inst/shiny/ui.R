@@ -31,10 +31,15 @@ library(Seurat);
 library(ggplotify);
 library(ggplot2);
 library(cowplot);
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(broom)
+library(RColorBrewer)
+library(grDevices)
 
 source("helpers.R")
 source("colourGroupInput.R")
-#source("../../R/seuratFunctions.R")
 data("c2BroadSets")
 
 #test internet connection for enrichR connectivity
@@ -49,6 +54,20 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+#from SCE
+cell_list <- ""
+gene_list <- ""
+#from assays
+method_list <- ""
+#from reduced
+approach_list <- ""
+#from colData
+annotation_list <- ""
+#from RColorBrewer
+colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+                                           |color_table$category == "seq"),])
 if (internetConnection){
   enrichedDB <- enrichR::listEnrichrDbs()$libraryName
 } else {
@@ -67,6 +86,21 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
+  ###############################################################
+  #from sce
+  cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
+  gene_list <- BiocGenerics::rownames(getShinyOption("inputSCEset"))
+  #from assays
+  method_list <- names(assays(getShinyOption("inputSCEset")))
+  #from reduced
+  approach_list <- names(reducedDims(getShinyOption("inputSCEset")))
+  #from colData
+  annotation_list <- names(colData(getShinyOption("inputSCEset")))
+  #from colorbrewer
+  colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+  color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+  color_seqdiv <- rownames(color_table[which(color_table$category == "div"|color_table$category == "seq"),])
+  ###############################################################
   alertText <- HTML("<div class='alert alert-success alert-dismissible'>\
                     <span class='glyphicon glyphicon-ok' aria-hidden='true'>\
                     </span> Successfully Uploaded from Command Line! <button \
@@ -82,16 +116,39 @@ if (is.null(getShinyOption("theme"))){
 
 source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
 source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
-source("ui_03_1_genewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
-source("ui_03_3_celda.R", local = TRUE) #creates shinyPanelCelda variable
+source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
+source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
+source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
+source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
+source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_08_seurat.R", local = TRUE) #creates shinyPanelSeurat variable
+
+
+jsCode <- "
+
+shinyjs.disableTabs = function() {
+  let tabs = $('.nav li a').not('a[data-value=\"Upload\"]');
+  tabs.bind('click', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  tabs.addClass('disabled');
+}
+
+shinyjs.enableTabs = function() {
+  let tabs = $('.nav li a');
+  tabs.unbind('click');
+  tabs.removeClass('disabled');
+}
+"
 
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
@@ -105,33 +162,49 @@ if (is.null(getShinyOption("includeVersion"))){
   }
 }
 
-# Define UI for application that draws a histogram
 shinyUI(
-  navbarPage(
-    tooltitle,
-    theme = shinytheme(shinyTheme),
-    #Upload Tab
-    tabPanel("Upload", shinyPanelUpload),
-    tabPanel("Data Summary & Filtering", shinyPanelFilter),
-    navbarMenu(
-      "Visualization & Clustering",
-      tabPanel("Genewise Visualization", shinyPanelVis),
-      tabPanel("Samplewise Vis & Clustering", shinyPanelCluster),
-      tabPanel("Celda", shinyPanelCelda)
-    ),
-    tabPanel("Batch Correction", shinyPanelBatchcorrect),
-    navbarMenu(
-      "Differential Expression",
-      tabPanel("Differential Expression", shinyPanelDiffex),
-      tabPanel("MAST", shinyPanelMAST)
-    ),
-    navbarMenu(
-      "Enrichment Analysis",
-      tabPanel("GSVA", shinyPanelPathway),
-      tabPanel("EnrichR", shinyPanelEnrichR)
-    ),
-    tabPanel("Sample Size", shinyPanelSubsample),
-    tabPanel("Seurat", shinyPanelSeurat),
-    footer = includeHTML("www/footer.html")
-  )
+    navbarPage(
+      tooltitle,
+      theme = shinytheme(shinyTheme),
+      #Upload Tab
+      tabPanel("Upload", shinyPanelUpload),
+      navbarMenu("QC & Filtering",
+                 tabPanel("Filtering", shinyPanelFilter)),
+      # tabPanel(title="QC & Filtering", shinyPanelFilter),
+      tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
+      tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
+      tabPanel("Clustering", shinyPanelCluster),
+      navbarMenu(
+        "Differential Expression & Marker Selection",
+        tabPanel("Differential Expression", shinyPanelDiffex),
+        tabPanel("MAST", shinyPanelMAST)
+      ),
+      navbarMenu(
+        "Cell Annotation & Pathway Analysis",
+        tabPanel("GSVA", shinyPanelPathway),
+        tabPanel("EnrichR", shinyPanelEnrichR)
+      ),
+      tabPanel("Sample Size Calculator", shinyPanelSubsample),
+      navbarMenu(
+        "Curated Workflows",
+        tabPanel("CELDA", shinyPanelCelda),
+        tabPanel("Seurat", shinyPanelSeurat),
+        tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
+      ),
+      # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
+      navbarMenu("Viewers",
+                 tabPanel("Gene Visualization", shinyPanelViewers),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer)),
+      footer = includeHTML("www/footer.html"),
+      # fluidRow(
+      #   column(12, id = "consoleDiv",
+      #          actionButton(inputId="consoleToggle", label = "Show/Hide Console Log"),
+      #          verbatimTextOutput(outputId="console"),
+      #          tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
+      #          tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
+      #   )
+      # )
+      useShinyjs(),
+      extendShinyjs(text = jsCode)
+    )
 )
