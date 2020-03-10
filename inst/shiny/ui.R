@@ -34,7 +34,7 @@ library(cowplot);
 
 source("helpers.R")
 source("colourGroupInput.R")
-source("../../R/seuratFunctions.R")
+#source("../../R/seuratFunctions.R")
 data("c2BroadSets")
 
 #test internet connection for enrichR connectivity
