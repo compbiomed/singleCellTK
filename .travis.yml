@@ -11,6 +11,7 @@ before_install:
   - Rscript -e 'update.packages(ask = FALSE)'
   - pip install --upgrade pip
   - pip install scipy scrublet scanpy scanorama scgen bbknn
+  - sudo apt-get -y libv8-dev
 
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
