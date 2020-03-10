@@ -9,7 +9,7 @@ bioc_required: true
 
 before_install:
   - sudo apt-get -q update
-  - sudo apt-get -y libv8-dev
+  - sudo apt-get -y install libv8-dev
   - pyenv install 3.6.1
   - pyenv global 3.6.1
   - Rscript -e 'update.packages(ask = FALSE)'
