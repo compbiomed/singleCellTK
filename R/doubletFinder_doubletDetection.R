@@ -3,6 +3,7 @@
 
         ## Convert to sparse matrix if not already in that format
         counts <- .convertToMatrix(counts)
+        colnames(counts) <- gsub("_", "-", colnames(counts))
 
         seurat <- Seurat::CreateSeuratObject(counts = counts,
             project = "seurat", min.features = 0)

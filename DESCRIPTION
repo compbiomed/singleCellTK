@@ -34,12 +34,14 @@ Imports:
     batchelor,
     BiocGenerics,
     colourpicker,
+    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
     DESeq2,
     DT,
     ggplot2,
+    ggplotify,
     ggtree,
     gridExtra,
     GSVA (>= 1.26.0),
@@ -47,6 +49,7 @@ Imports:
     liger,
     limma,
     MAST,
+    Matrix,
     matrixStats,
     methods,
     multtest,
@@ -62,6 +65,7 @@ Imports:
     shinyFiles,
     shinyjs,
     shinyBS,
+    shinyjqui,
     sva,
     reshape2,
     AnnotationDbi,
@@ -77,12 +81,12 @@ Imports:
     reticulate (>= 1.14),
     tools,
     withr,
-    Matrix,
     GSEABase,
     DoubletFinder,
     R.utils,
     zinbwave,
-    harmony
+    harmony,
+    V8
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
@@ -92,15 +96,14 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    org.Mm.eg.db,
-    org.Hs.eg.db,
     scRNAseq,
     xtable,
-    spelling
+    spelling,
+    org.Mm.eg.db
 Remotes: 
-    chris-mcginnis-ucsf/DoubletFinder,
-    immunogenomics/harmony,
-    MacoskoLab/liger
+    joshua-d-campbell/DoubletFinder,
+    joshua-d-campbell/harmony,
+    joshua-d-campbell/liger
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
