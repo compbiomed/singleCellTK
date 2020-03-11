@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/env Rscript --vanilla
 
 ##Check to see if necessary packages are installed
 #CRAN packages
@@ -11,14 +11,25 @@ cran.package.check <- lapply(cran.packages, FUN = function(x) {
 })
 
 #Bioconductor packages
-bioc.packages <- c("singleCellTK")
+bioc.packages <- c("singleCellTK", "celda")
 
 bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
-        BiocManager::install("singleCellTK")
+        BiocManager::install(x)
     }
 })
 
+#Install singleCellTK from github (the most updated)
+# if (!require(devtools)) {
+#   install.packages('devtools')
+# }
+# devtools::install_github("compbiomed/singleCellTK@importQC")
+
+#Specify python within the container if you are using docker
+Sys.setenv(RETICULATE_PYTHON = '/usr/bin/python3')
+
+#Check which python version is used
+reticulate::py_config()
 
 ##Read in flags from command line using optparse
 option_list <- list(optparse::make_option(c("-b", "--base_path"),
@@ -43,7 +54,11 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-t","--delim"),
         type="character",
         default="\t",
-        help="Delimiter used in GMT file"))
+        help="Delimiter used in GMT file"),
+    optparse::make_option(c("-r","--ref"),
+        type="character",
+        default=NULL,
+        help="The name of genome reference. This is only required for CellRangerV2 data."))
 
 opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
 path <- opt$base_path
@@ -52,12 +67,13 @@ samplename <- opt$sample
 directory <- opt$directory
 gmt <- opt$gmt
 sep <- opt$delim
+ref <- opt$ref
 
 if (is.na(samplename)){
   stop("A sample name is required. Please specify using the -s flag.")
 }
 
-if(is.na(droplet.path) && is.na(filtered.path)){
+if(is.na(path) || is.null(path) || path==""){
   stop("Either the droplet counts or the filtered counts file path need to be specified.")
 }
 
@@ -70,11 +86,17 @@ if (preproc == "BUStools") {
   dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix")
   filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix")
 } else if(preproc == "CellRangerV3"){
-  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/filtered_feature_bc_matrix", class = "Matrix")
+  dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='raw', class = 'Matrix')
+  filteredSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='filtered', class = "Matrix")
 } else if(preproc == "CellRangerV2"){
-  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/filtered_gene_bc_matrix", class = "Matrix")
+  if(is.null(ref)){
+    stop("The name of genome reference needs to be specified.")
+  } else {
+    rawOuts <- paste0("outs/raw_gene_bc_matrices/", ref)
+    filterOuts <- paste0("outs/filtered_gene_bc_matrices/", ref)
+  }
+  dropletSCE <- importCellRanger(cellRangerDirs = path, sampleNames = samplename, gzipped = FALSE, cellRangerOuts = rawOuts, class = "Matrix", matrixFileNames = "matrix.mtx", featuresFileNames = "genes.tsv", barcodesFileNames = "barcodes.tsv")
+  filteredSCE <- importCellRanger(cellRangerDirs = path, sampleNames = samplename, gzipped = FALSE, cellRangerOuts = filterOuts, class = "Matrix", matrixFileNames = "matrix.mtx", featuresFileNames = "genes.tsv", barcodesFileNames = "barcodes.tsv")
 } else if(preproc == "SEQC"){
   dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
 } else if(preproc == "Optimus"){
@@ -130,7 +152,7 @@ if(!is.null(mergedDropletSCE)){
   
   ## Export to flatfile
   fn <- file.path(directory, samplename, "FlatFile", "Droplets")
-  writeSCE(mergedDropletSCE, outputDir = fn)
+  exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn)
 }
 if(!is.null(mergedFilteredSCE)) {
   ## Export to R    
@@ -139,7 +161,7 @@ if(!is.null(mergedFilteredSCE)) {
 
   ## Export to flatfile  
   fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
-  writeSCE(mergedFilteredSCE, outputDir = fn)
+  exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn)
 }  
 
 ## ToDo ##
