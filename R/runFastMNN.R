@@ -5,7 +5,7 @@
 #' more robust performance. For introduction of MNN, see `runMNNCorrect`
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`. Alternatively, see `pcInput` parameter.
 #' @param batch character, default `"batch"`. A string indicating the 
@@ -13,7 +13,7 @@
 #' @param reducedDimName character, default `"fastMNN"`. The name for the 
 #' corrected low-dimensional representation.
 #' @param pcInput bool, default `FALSE`. Whether to use a reduceDim matrix for 
-#' batch effect correction. If TRUE, `exprs` should exist in 
+#' batch effect correction. If TRUE, `useAssay` should exist in 
 #' `reduceDimNames(inSCE)`. Note that more dimensions in precomputed reducedDim
 #' have shown better correction results.
 #' @return SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
@@ -22,20 +22,20 @@
 #' @references Lun ATL, et al., 2016
 #' @examples  
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runFastMNN(sceBatches, exprs = 'PCA', pcInput = TRUE)
-runFastMNN <- function(inSCE, exprs = "logcounts", reducedDimName = "MNN", 
+#' sceCorr <- runFastMNN(sceBatches, useAssay = 'PCA', pcInput = TRUE)
+runFastMNN <- function(inSCE, useAssay = "logcounts", reducedDimName = "MNN", 
                        batch = 'batch', pcInput = FALSE){
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(pcInput){
-        if(!exprs %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-            stop(paste("\"exprs\" (assay) name: ", exprs, " not found."))
+        if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+            stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
         }
     } else {
-        if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
-            stop(paste("\"exprs\" (assay) name: ", exprs, " not found."))
+        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+            stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
         }
     }
     
@@ -45,33 +45,19 @@ runFastMNN <- function(inSCE, exprs = "logcounts", reducedDimName = "MNN",
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
     ## Run algorithm
-    # Extract each batch
-    if(pcInput){
-        mat <- SingleCellExperiment::reducedDim(inSCE, exprs)
-    } else {
-        mat <- SummarizedExperiment::assay(inSCE, exprs)
-    }
     batches <- list()
     batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-    batchIndicator <- unique(batchCol)
-    for(i in batchIndicator){
-        if(pcInput){
-            batches[[i]] <- mat[batchCol == i,]
-        } else {
-            batches[[i]] <- mat[,batchCol == i]
-        }
-        
-    }
+    batchFactor <- as.factor(batchCol)
+    
     if(pcInput){
-        mnn <- batchelor::fastMNN(batches[[1]], 
-                              batches[[2]], 
-                              pc.input = TRUE)    
+        mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
+        redMNN <- batchelor::reducedMNN(mat, batch = batchFactor)
+        newRedDim <- redMNN$corrected
     } else {
-        mnn <- batchelor::fastMNN(batches[[1]], 
-                              batches[[2]])
+        mat <- SummarizedExperiment::assay(inSCE, useAssay)
+        mnnSCE <- batchelor::fastMNN(mat, batch = batchFactor)
+        newRedDim <- SingleCellExperiment::reducedDim(mnnSCE, 'corrected')
     }
-    rn <- rownames(mat)
-    newMat <- mnn$corrected[rn,]
-    SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- newMat
+    SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- newRedDim
     return(inSCE)
 }

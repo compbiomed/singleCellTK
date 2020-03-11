@@ -9,7 +9,7 @@
 #' cores.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the field 
@@ -27,11 +27,11 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runSCGEN(sceBatches)
 #' }
-runSCGEN <- function(inSCE, exprs = 'logcounts', batch = 'batch', 
+runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch', 
                      cellType = "cell_type", assayName = 'SCGEN', 
                      nEpochs = 50L){
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if (!reticulate::py_module_available(module = "scgen")) {
@@ -56,7 +56,7 @@ runSCGEN <- function(inSCE, exprs = 'logcounts', batch = 'batch',
     nEpochs <- as.integer(nEpochs)
 
     ## Run algorithm
-    adata <- .sce2adata(inSCE, mainAssay = exprs)
+    adata <- .sce2adata(inSCE, mainAssay = useAssay)
     network = scgen$VAEArith(x_dimension = adata$n_vars)
     network$train(train_data = adata, n_epochs = nEpochs)
     corrAdata <- scgen$batch_removal(network, adata, batch_key = batch, 

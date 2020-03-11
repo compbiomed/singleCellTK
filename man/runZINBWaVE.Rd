@@ -6,11 +6,10 @@
 \usage{
 runZINBWaVE(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   reducedDimName = "zinbwave",
   nHVG = 3000,
-  filterParams = NULL,
   nComponents = 50,
   epsilon = 1000,
   nIter = 10
@@ -20,11 +19,11 @@ runZINBWaVE(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{reducedDimName}{character, default `"zinbwave"`. The name for the 
@@ -32,11 +31,6 @@ corrected low-dimensional representation.}
 
 \item{nHVG}{integer, default `1000`. Number of highly variable genes to use 
 when fitting the model}
-
-\item{filterParams}{vector of two number, default `c(5, 5)`. In the form of 
-c(a, b), and a filter like `rowSums(assay > a) > b` will be applied, meaning
-that we only want the genes that has at least `a` counts in at least `b` 
-cells.}
 
 \item{nComponents}{integer, default `50L`. Number of principle components or 
 dimensionality to generate in the resulting reducedDim.}
@@ -57,7 +51,7 @@ sizes and optionally for batch effects and/or other covariates.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runZINBWaVE(sceBatches, nIter=5)
+sceCorr <- runZINBWaVE(sceBatches, nIter=5, filterParams=c(3, 3))
 }
 }
 \references{

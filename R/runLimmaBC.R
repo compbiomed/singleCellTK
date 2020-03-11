@@ -4,7 +4,7 @@
 #' removes the component due to the batch effects.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the 
@@ -18,14 +18,14 @@
 #' @examples  
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runLimmaBC(sceBatches)
-runLimmaBC <- function(inSCE, exprs = "logcounts", assayName = "LIMMA", 
+runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA", 
                        batch = "batch") {
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
-        stop(paste("\"exprs\" (assay) name: ", exprs, " not found."))
+    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+        stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
     }
     if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"batch\" name:", batch, "not found."))
@@ -36,7 +36,7 @@ runLimmaBC <- function(inSCE, exprs = "logcounts", assayName = "LIMMA",
     ## Run algorithm
     ## One more check for the batch names
     batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-    mat <- SummarizedExperiment::assay(inSCE, exprs)
+    mat <- SummarizedExperiment::assay(inSCE, useAssay)
     newMat <- limma::removeBatchEffect(mat, batch = batchCol)
     SummarizedExperiment::assay(inSCE, assayName) <- newMat
     return(inSCE)

@@ -5,7 +5,7 @@
 #' across all batches of the data. 
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the 
@@ -26,10 +26,10 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runBBKNN(sceBatches)
 #' }
-runBBKNN <-function(inSCE, exprs = 'logcounts', batch = 'batch', 
+runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch', 
                     reducedDimName = 'BBKNN', nComponents = 50L){
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!reticulate::py_module_available(module = "bbknn")){
@@ -50,7 +50,7 @@ runBBKNN <-function(inSCE, exprs = 'logcounts', batch = 'batch',
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
     ## Run algorithm
-    adata <- .sce2adata(inSCE, mainAssay = exprs)
+    adata <- .sce2adata(inSCE, mainAssay = useAssay)
     sc$tl$pca(adata, n_comps = nComponents)
     bbknn$bbknn(adata, batch_key = batch, n_pcs = nComponents)
     sc$tl$umap(adata, n_components = nComponents)

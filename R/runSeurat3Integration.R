@@ -4,14 +4,14 @@
 #' Can get either a full-sized corrected assay or a dimension reduced corrected 
 #' matrix. 
 #' 
-#' This method aims to first identify ‘anchors’ between pairs of datasets, that 
+#' This method aims to first identify anchors between pairs of datasets, that 
 #' represent pairwise correspondences between individual cells in each 
 #' dataset, that is hypothesized to originate from the same cell state. These 
-#' ‘anchors’ are then used to harmonize the datasets, or transfer information 
+#' anchors are then used to harmonize the datasets, or transfer information 
 #' from one dataset to another.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the 
@@ -28,13 +28,13 @@
 #' @examples 
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
-runSeurat3Integration <- function(inSCE, exprs = 'logcounts', 
+runSeurat3Integration <- function(inSCE, useAssay = 'logcounts', 
                                   batch = 'batch', 
                                   assayName = "Seurat3Int", 
                                   nAnchors = nrow(inSCE)){
     
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
@@ -48,7 +48,7 @@ runSeurat3Integration <- function(inSCE, exprs = 'logcounts',
     }
     
     ## Run algorithm
-    srtObj <- Seurat::as.Seurat(inSCE, counts = exprs)
+    srtObj <- Seurat::as.Seurat(inSCE, counts = useAssay)
     batchSplit <- Seurat::SplitObject(srtObj, split.by = batch)
     nHVG <- nAnchors
     for (i in 1:length(batchSplit)){

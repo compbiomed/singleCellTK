@@ -6,7 +6,7 @@
 #' panorama. 
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the 
@@ -28,11 +28,11 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runSCANORAMA(sceBatches)
 #' }
-runSCANORAMA <- function(inSCE, exprs = 'logcounts', batch = 'batch', 
+runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch', 
                          assayName = 'SCANORAMA', SIGMA = 15, ALPHA = 0.1, 
                          KNN = 20L){
     ## Input check
-    if(!inherits(inSCE, "SingleCellExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
     if(!reticulate::py_module_available(module = "scanorama")){
@@ -47,8 +47,8 @@ runSCANORAMA <- function(inSCE, exprs = 'logcounts', batch = 'batch',
             " correct Python environment.")
         return(inSCE)
     }
-    if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
-        stop(paste("\"exprs\" (assay) name: ", exprs, " not found"))
+    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+        stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
     }
     if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"batch\" name:", batch, "not found"))
@@ -65,7 +65,7 @@ runSCANORAMA <- function(inSCE, exprs = 'logcounts', batch = 'batch',
     }
     exprsList <- list()
     for(i in 1:nBatch){
-        exprsList[[i]] <- t(as.matrix(SummarizedExperiment::assay(inSCE[,ixList[[i]]], exprs)))
+        exprsList[[i]] <- t(as.matrix(SummarizedExperiment::assay(inSCE[,ixList[[i]]], useAssay)))
     }
     geneList <- list()
     for(i in 1:nBatch){

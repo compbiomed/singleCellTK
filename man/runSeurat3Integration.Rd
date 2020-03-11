@@ -7,8 +7,8 @@ SingleCellExperiment object}
 \usage{
 runSeurat3Integration(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   assayName = "Seurat3Int",
   nAnchors = nrow(inSCE)
 )
@@ -17,11 +17,11 @@ runSeurat3Integration(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{assayName}{character, default `"Seurat3Int"`. The name for the 
@@ -38,25 +38,14 @@ Can get either a full-sized corrected assay or a dimension reduced corrected
 matrix.
 }
 \details{
-This method aims to first identify ‘anchors’ between pairs of datasets, that 
+This method aims to first identify anchors between pairs of datasets, that 
 represent pairwise correspondences between individual cells in each 
 dataset, that is hypothesized to originate from the same cell state. These 
-‘anchors’ are then used to harmonize the datasets, or transfer information 
+anchors are then used to harmonize the datasets, or transfer information 
 from one dataset to another.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-sceBatches
-## class: SingleCellExperiment 
-## dim: 27610 1820 
-## metadata(0):
-## assays(3): normcounts logcounts
-## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-## rowData names(0):
-## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-## colData names(2): cell_type1 batch
-## reducedDimNames(5): PCA
-## spikeNames(0):
 sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
 }
 \references{
