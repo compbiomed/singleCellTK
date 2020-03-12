@@ -1649,14 +1649,14 @@ shinyServer(function(input, output, session) {
       approach_list <- names(reducedDims(vals$counts))
       #from colData
       annotation_list <- names(colData(vals$counts))
-      annotation_list2 <- list(Categorical = c(), Continuous = c(), Both = c())
+      annotation_list2 <- list()
       for (i in 1:length(annotation_list)){
-        if(!is.numeric(annotation_list[i])){
-          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list2[i])
-        }else if(is.integer(annotation_list[i]) & length(levels(as.factor(annotation_list[i])))){
-          annotation_list2$Both <- c(annotation_list2$Both, annotation_list2[i])
+        if(!is.numeric(sce[[val$countsannotation_list[i]]])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
+        }else if(is.integer(val$counts[[annotation_list[i]]]) & length(levels(as.factor(val$counts[[annotation_list[i]]])))){
+          annotation_list2$Both <- c(annotation_list2$Both, annotation_list[i])
         }else{
-          annotation_list2$Continuous <- c(annotation_list2$Continuous, annotation_list2[i])
+          annotation_list2$Continuous <- c(annotation_list2$Continuous, annotation_list[i])
         }
       }
       annotation_list <- annotation_list2
