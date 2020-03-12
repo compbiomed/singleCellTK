@@ -150,16 +150,16 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
-  
+
   observeEvent(input$consoleToggle, {
     toggle(id = "console")
   })
 
 
-  
+
 
   # js$disableTabs()
-  
+
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
@@ -190,7 +190,7 @@ shinyServer(function(input, output, session) {
                                      inputDataFrames = TRUE,
                                      createLogCounts = FALSE)
           # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
-          
+
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -1649,6 +1649,16 @@ shinyServer(function(input, output, session) {
       approach_list <- names(reducedDims(vals$counts))
       #from colData
       annotation_list <- names(colData(vals$counts))
+      annotation_list2 <- list(Categorical = c(), Continuous = c(), Both = c())
+      for (i in 1:length(annotation_list)){
+        if(!is.numeric(annotation_list[i])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list2[i])
+        }else if(is.integer(annotation_list[i]) & length(levels(as.factor(annotation_list[i])))){
+          annotation_list2$Both <- c(annotation_list2$Both, annotation_list2[i])
+        }else{
+          annotation_list2$Continuous <- c(annotation_list2$Continuous, annotation_list2[i])
+        }
+      }
 
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list,"Custom"))
@@ -2639,7 +2649,7 @@ shinyServer(function(input, output, session) {
       updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
     }
   })
-  
+
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){
