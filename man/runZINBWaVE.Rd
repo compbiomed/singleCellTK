@@ -9,7 +9,7 @@ runZINBWaVE(
   useAssay = "logcounts",
   batch = "batch",
   reducedDimName = "zinbwave",
-  nHVG = 3000,
+  nHVG = 1000,
   nComponents = 50,
   epsilon = 1000,
   nIter = 10

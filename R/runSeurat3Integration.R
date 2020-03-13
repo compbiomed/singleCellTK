@@ -23,15 +23,19 @@
 #' @param nAnchors integer, default `nrow(inSCE)`. The number of features to 
 #' anchor, and also the final dimensionality of the integrated matrix. Thus 
 #' default value turns to produce full-sized assay. 
+#' @param verbose bool, default `TRUE`. Whether to show detail information of 
+#' the process.
 #' @export
 #' @references Stuart et al. 2019
 #' @examples 
+#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
+#' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 100)
+#' }
 runSeurat3Integration <- function(inSCE, useAssay = 'logcounts', 
                                   batch = 'batch', 
                                   assayName = "Seurat3Int", 
-                                  nAnchors = nrow(inSCE)){
+                                  nAnchors = nrow(inSCE), verbose = TRUE){
     
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
@@ -53,16 +57,16 @@ runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',
     nHVG <- nAnchors
     for (i in 1:length(batchSplit)){
         batchSplit[[i]] <- Seurat::NormalizeData(batchSplit[[i]], 
-                                                 verbose = FALSE)
+                                                 verbose = verbose)
         batchSplit[[i]] <- Seurat::FindVariableFeatures(batchSplit[[i]], 
                                                       selection.method = "vst", 
                                                       nfeatures = nHVG, 
-                                                      verbose = FALSE)
+                                                      verbose = verbose)
     }
     anchors <- Seurat::FindIntegrationAnchors(object.list = batchSplit, 
                                               anchor.features = nAnchors, 
-                                              verbose = FALSE)
-    srtInt <- Seurat::IntegrateData(anchorset = anchors, verbose = FALSE)
+                                              verbose = verbose)
+    srtInt <- Seurat::IntegrateData(anchorset = anchors, verbose = verbose)
     IntMat <- as.matrix(Seurat::GetAssayData(srtInt, assay = 'integrated'))
     IntMat <- IntMat[,colnames(inSCE)]
     if(nrow(IntMat) == nrow(inSCE)){

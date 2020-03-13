@@ -10,7 +10,8 @@ runSeurat3Integration(
   useAssay = "logcounts",
   batch = "batch",
   assayName = "Seurat3Int",
-  nAnchors = nrow(inSCE)
+  nAnchors = nrow(inSCE),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ is smaller the number of total feature, the returned matrix will be saved in
 \item{nAnchors}{integer, default `nrow(inSCE)`. The number of features to 
 anchor, and also the final dimensionality of the integrated matrix. Thus 
 default value turns to produce full-sized assay.}
+
+\item{verbose}{bool, default `TRUE`. Whether to show detail information of 
+the process.}
 }
 \description{
 Can get either a full-sized corrected assay or a dimension reduced corrected 
@@ -45,8 +49,10 @@ anchors are then used to harmonize the datasets, or transfer information
 from one dataset to another.
 }
 \examples{
+\dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
+sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 100)
+}
 }
 \references{
 Stuart et al. 2019

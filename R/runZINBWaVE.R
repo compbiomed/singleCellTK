@@ -24,6 +24,7 @@
 #' high epsilon is often required to obtained a good low-level representation.
 #' @export
 #' @importFrom magrittr "%>%"
+#' @importFrom matrixStats rowVars
 #' @references Pollen, Alex A et al., 2014
 #' @examples 
 #' \dontrun{
@@ -31,7 +32,7 @@
 #' sceCorr <- runZINBWaVE(sceBatches, nIter=5, filterParams=c(3, 3))
 #' }
 runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch', 
-                        reducedDimName = 'zinbwave', nHVG = 3000, 
+                        reducedDimName = 'zinbwave', nHVG = 1000, 
                         nComponents = 50, epsilon = 1000, nIter = 10){
     #filterParams = NULL  <<< something told in tutorial but might be ignored
     ## Input check
@@ -64,11 +65,9 @@ runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
     
     ##ZINBWaVE tutorial style of HVG selection
     if(nHVG < nrow(inSCE)){
-        SummarizedExperiment::assay(tmpSCE, useAssay) %>% log1p %>% matrixStats::rowVars -> vars
+        SummarizedExperiment::assay(tmpSCE, useAssay) %>% log1p %>% rowVars -> vars
         names(vars) <- rownames(tmpSCE)
         vars <- sort(vars, decreasing = TRUE)
-        print(vars)
-        print(length(vars))
         tmpSCE <- tmpSCE[names(vars)[1:nHVG],]
     }
     

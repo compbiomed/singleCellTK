@@ -52,7 +52,7 @@ runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
     if(pcInput){
         mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
     } else{
-        sceTmp <- scater::runPCA(inSCE, useAssay_values = useAssay, 
+        sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay, 
                                  ncomponents = nComponents)
         mat <- SingleCellExperiment::reducedDim(sceTmp, 'PCA')
     }
