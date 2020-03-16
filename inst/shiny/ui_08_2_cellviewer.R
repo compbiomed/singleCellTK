@@ -2,10 +2,11 @@ shinyPanelCellViewer <- fluidPage(
   tags$div(
     class = "container",
            h1("Cell Viewer"),
+           tabsetPanel(
+           tabPanel(
            fluidRow(
              column(3,
-               tabsetPanel(
-                    tabPanel(style = "background: floralwhite",
+                    wellPanel(style = "background: floralwhite",
                             # Section 1 - Assay Settings
                             actionButton("cv_button1", h4(strong("Select Coordinates")),style = "background: floralwhite"),
                             # open by default
@@ -141,8 +142,9 @@ shinyPanelCellViewer <- fluidPage(
                                          column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
                                   )
              ))
-             )
-           )#fluidrow_end
+           )
+           )
+        )#fluidrow_end
            # )#well_end
   )#tag_end
 )#page_end
