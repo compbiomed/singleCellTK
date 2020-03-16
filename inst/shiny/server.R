@@ -1660,6 +1660,7 @@ shinyServer(function(input, output, session) {
         }
       }
       annotation_list <- annotation_list2
+      rm(annotation_list2)
 
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list,"Custom"))
