@@ -3,7 +3,7 @@ shinyPanelCellViewer <- fluidPage(
     class = "container",
            h1("Cell Viewer"),
            tabsetPanel(
-           tabPanel("tsne",
+           tabPanel("Scatter plot",
            fluidRow(
              column(3,
                     wellPanel(style = "background: floralwhite",
@@ -144,7 +144,8 @@ shinyPanelCellViewer <- fluidPage(
              ))
            )
            ),
-          tabPanel("something")
+          tabPanel("Barplot"),
+          tabPanel("Violin Plot")
         )#fluidrow_end
            # )#well_end
   )#tag_end
