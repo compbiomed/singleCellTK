@@ -19,8 +19,7 @@ Depends:
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
-    Biobase,
-    Matrix
+    Biobase
 Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
@@ -36,12 +35,14 @@ Imports:
     BiocGenerics,
     BiocParallel,
     colourpicker,
+    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
     DESeq2,
     DT,
     ggplot2,
+    ggplotify,
     ggtree,
     gridExtra,
     GSVA (>= 1.26.0),
@@ -50,6 +51,7 @@ Imports:
     limma,
     MAST,
     magrittr,
+    Matrix,
     matrixStats,
     methods,
     multtest,
@@ -65,6 +67,7 @@ Imports:
     shinyFiles,
     shinyjs,
     shinyBS,
+    shinyjqui,
     sva,
     reshape2,
     AnnotationDbi,
@@ -84,7 +87,8 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    harmony
+    harmony,
+    V8
 RoxygenNote: 7.0.2
 Suggests:
     testthat,
@@ -96,7 +100,8 @@ Suggests:
     rmarkdown,
     scRNAseq,
     xtable,
-    spelling
+    spelling,
+    org.Mm.eg.db
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
