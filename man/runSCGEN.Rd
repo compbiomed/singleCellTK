@@ -6,9 +6,9 @@
 \usage{
 runSCGEN(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
-  cellTypeKey = "cell_type",
+  useAssay = "logcounts",
+  batch = "batch",
+  cellType = "cell_type",
   assayName = "SCGEN",
   nEpochs = 50L
 )
@@ -17,14 +17,14 @@ runSCGEN(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the field 
+\item{batch}{character, default `"batch"`. A string indicating the field 
 of `colData(inSCE)` that defines different batches.}
 
-\item{cellTypeKey}{character, default `"cell_type"`. A string indicating the 
+\item{cellType}{character, default `"cell_type"`. A string indicating the 
 field of `colData(inSCE)` that defines different cell types.}
 
 \item{assayName}{character, default `"SCGEN"`. The name for the corrected 

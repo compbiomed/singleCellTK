@@ -4,17 +4,17 @@
 #' Can get either a full-sized corrected assay or a dimension reduced corrected 
 #' matrix. 
 #' 
-#' This method aims to first identify ‘anchors’ between pairs of datasets, that 
+#' This method aims to first identify anchors between pairs of datasets, that 
 #' represent pairwise correspondences between individual cells in each 
 #' dataset, that is hypothesized to originate from the same cell state. These 
-#' ‘anchors’ are then used to harmonize the datasets, or transfer information 
+#' anchors are then used to harmonize the datasets, or transfer information 
 #' from one dataset to another.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
 #' @param assayName character, default `"Seurat3Int"`. The name for the 
 #' corrected full-sized expression matrix. If the number of features returned 
@@ -23,34 +23,26 @@
 #' @param nAnchors integer, default `nrow(inSCE)`. The number of features to 
 #' anchor, and also the final dimensionality of the integrated matrix. Thus 
 #' default value turns to produce full-sized assay. 
+#' @param verbose bool, default `TRUE`. Whether to show detail information of 
+#' the process.
 #' @export
 #' @references Stuart et al. 2019
 #' @examples 
+#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches
-#' ## class: SingleCellExperiment 
-#' ## dim: 27610 1820 
-#' ## metadata(0):
-#' ## assays(3): normcounts logcounts
-#' ## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-#' ## rowData names(0):
-#' ## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-#' ## colData names(2): cell_type1 batch
-#' ## reducedDimNames(5): PCA
-#' ## spikeNames(0):
-#' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 50)
-runSeurat3Integration <- function(inSCE, exprs = 'logcounts', 
-                                  batchKey = 'batch', 
+#' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 100)
+#' }
+runSeurat3Integration <- function(inSCE, useAssay = 'logcounts', 
+                                  batch = 'batch', 
                                   assayName = "Seurat3Int", 
-                                  nAnchors = nrow(inSCE)){
+                                  nAnchors = nrow(inSCE), verbose = TRUE){
     
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey\" name:", batchKey, "not found"))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch\" name:", batch, "not found"))
     }
     assayName <- gsub(' ', '_', assayName)
     
@@ -60,21 +52,21 @@ runSeurat3Integration <- function(inSCE, exprs = 'logcounts',
     }
     
     ## Run algorithm
-    srtObj <- Seurat::as.Seurat(inSCE, counts = exprs)
-    batchSplit <- Seurat::SplitObject(srtObj, split.by = batchKey)
+    srtObj <- Seurat::as.Seurat(inSCE, counts = useAssay)
+    batchSplit <- Seurat::SplitObject(srtObj, split.by = batch)
     nHVG <- nAnchors
     for (i in 1:length(batchSplit)){
         batchSplit[[i]] <- Seurat::NormalizeData(batchSplit[[i]], 
-                                                 verbose = FALSE)
+                                                 verbose = verbose)
         batchSplit[[i]] <- Seurat::FindVariableFeatures(batchSplit[[i]], 
                                                       selection.method = "vst", 
                                                       nfeatures = nHVG, 
-                                                      verbose = FALSE)
+                                                      verbose = verbose)
     }
     anchors <- Seurat::FindIntegrationAnchors(object.list = batchSplit, 
                                               anchor.features = nAnchors, 
-                                              verbose = FALSE)
-    srtInt <- Seurat::IntegrateData(anchorset = anchors, verbose = FALSE)
+                                              verbose = verbose)
+    srtInt <- Seurat::IntegrateData(anchorset = anchors, verbose = verbose)
     IntMat <- as.matrix(Seurat::GetAssayData(srtInt, assay = 'integrated'))
     IntMat <- IntMat[,colnames(inSCE)]
     if(nrow(IntMat) == nrow(inSCE)){

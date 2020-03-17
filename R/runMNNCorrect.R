@@ -8,17 +8,13 @@
 #' applying a Gaussian smoothing kernel with bandwidth `sigma`.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param exprs character, default `"logcounts"`. A string indicating the name 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name 
 #' of the assay requiring batch correction in "inSCE", should exist in 
 #' `assayNames(inSCE)`.
-#' @param batchKey character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the 
 #' field of `colData(inSCE)` that defines different batches.
-#' @param reducedDimName character, default `"MNN"`. The name for the 
-#' corrected low-dimensional representation.
-#' @param nHVG integer, default `1000`. The number of top highly variable genes 
-#' to select per batch. Afterwards the intersection of all HVG sets will be 
-#' taken for running , thus the exact dimensionality of the resulting
-#' reducedDim is not certain. 
+#' @param assayName character, default `"MNN"`. The name for the corrected 
+#' full-sized expression matrix.
 #' @param k integer, default `20`. Specifies the number of nearest neighbours to 
 #' consider when defining MNN pairs. This should be interpreted as the minimum 
 #' frequency of each cell type or state in each batch. Larger values will 
@@ -37,57 +33,26 @@
 #' @examples  
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runMNNCorrect(sceBatches)
-runMNNCorrect <- function(inSCE, exprs = 'logcounts', batchKey = 'batch', 
-                          reducedDimName = 'MNN', nHVG = 1000, 
-                          k = 20, sigma = 0.1){
+runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch', 
+                          assayName = 'MNN', k = 20, sigma = 0.1){
     ## Input check
-    if(!class(inSCE) == "SingleCellExperiment" && 
-       !class(inSCE) == "SCtkExperiment"){
+    if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(!exprs %in% SummarizedExperiment::assayNames(inSCE)) {
-        stop(paste("\"exprs\" (assay) name: ", exprs, " not found."))
+    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+        stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
     }
-    if(!batchKey %in% names(SummarizedExperiment::colData(inSCE))){
-        stop(paste("\"batchKey name:", batchKey, "not found."))
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+        stop(paste("\"batch name:", batch, "not found."))
     }
-    reducedDimName <- gsub(' ', '_', reducedDimName)
+    assayName <- gsub(' ', '_', assayName)
     
     ## Run algorithm
-    # Split the batches
-    batches <- list()
-    batchCol <- SummarizedExperiment::colData(inSCE)[[batchKey]]
-    uniqBatch <- unique(batchCol)
-    for(i in uniqBatch){
-        batches[[i]] <- inSCE[, batchCol == i]
-    }
-    
-    # Select HVG
-    topVarGenesPerBatch <- list()
-    for(i in uniqBatch){
-        if(nrow(batches[[i]]) <= nHVG){
-            topVarGenesPerBatch[[i]] <- 1:nrow(batches[[i]])
-        } else {
-          sce.var <- scran::modelGeneVar(batches[[i]])
-          topVarGenesPerBatch[[i]] <- order(sce.var$bio,decreasing = TRUE)[seq(nHVG)]
-#            mvTrend <- scran::trendVar(batches[[i]], use.spikes=FALSE)
-#            decomposeTrend <- scran::decomposeVar(batches[[i]], mvTrend)
-#            topVarGenesPerBatch[[i]] <- order(decomposeTrend$bio, 
-#                                              decreasing = TRUE)[1:nHVG]
-        }    
-    }
-    selectedHVG <- BiocGenerics::Reduce(intersect, topVarGenesPerBatch)
-    
-    ## Run mnnCorrect
-    inputAssays <- list()
-    for(i in uniqBatch){
-        inputAssays[[i]] <- 
-            SummarizedExperiment::assay(batches[[i]], exprs)[selectedHVG,]
-    }
-    corrected <- BiocGenerics::do.call(batchelor::mnnCorrect, 
-                         c(inputAssays, list(k = k, sigma = sigma)))
-    corrected <- t(assay(corrected, 'corrected')[,colnames(inSCE)])
-    SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- corrected
-    
+    batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
+    batchFactor <- as.factor(batchCol)
+    mnnSCE <- batchelor::mnnCorrect(inSCE, batch = batchFactor, 
+                                    k = k, sigma = sigma)
+    corrected <- SummarizedExperiment::assay(mnnSCE, 'corrected')
+    SummarizedExperiment::assay(inSCE, assayName) <- corrected
     return(inSCE)
 }

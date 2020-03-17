@@ -7,8 +7,8 @@ SingleCellExperiment object}
 \usage{
 runSCANORAMA(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   assayName = "SCANORAMA",
   SIGMA = 15,
   ALPHA = 0.1,
@@ -19,11 +19,11 @@ runSCANORAMA(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{assayName}{character, default `"SCANORAMA"`. The name for the 
@@ -48,19 +48,10 @@ that identify images with overlapping content and merge these into a larger
 panorama.
 }
 \examples{
+\dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceBatches
-## class: SingleCellExperiment 
-## dim: 27610 1820 
-## metadata(0):
-## assays(3): normcounts logcounts
-## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-## rowData names(0):
-## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-## colData names(2): cell_type1 batch
-## reducedDimNames(5): PCA
-## spikeNames(0):
 sceCorr <- runSCANORAMA(sceBatches)
+}
 }
 \references{
 Brian Hie et al, 2019
