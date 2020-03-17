@@ -23,8 +23,6 @@
 #' epsilon parameter is set to the number of genes. We empirically found that a 
 #' high epsilon is often required to obtained a good low-level representation.
 #' @export
-#' @importFrom magrittr "%>%"
-#' @importFrom matrixStats rowVars
 #' @references Pollen, Alex A et al., 2014
 #' @examples 
 #' \dontrun{
@@ -65,7 +63,8 @@ runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
     
     ##ZINBWaVE tutorial style of HVG selection
     if(nHVG < nrow(inSCE)){
-        SummarizedExperiment::assay(tmpSCE, useAssay) %>% log1p %>% rowVars -> vars
+        logAssay <- log1p(SummarizedExperiment::assay(tmpSCE, useAssay))
+        vars <- matrixStats::rowVars(logAssay)
         names(vars) <- rownames(tmpSCE)
         vars <- sort(vars, decreasing = TRUE)
         tmpSCE <- tmpSCE[names(vars)[1:nHVG],]

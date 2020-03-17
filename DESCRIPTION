@@ -50,7 +50,6 @@ Imports:
     liger,
     limma,
     MAST,
-    magrittr,
     Matrix,
     matrixStats,
     methods,
