@@ -1698,7 +1698,7 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect X-Axis
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Xaxis)){
+      if (!is.null(input$ApproachSelect_Xaxis && length(input$ApproachSelect_Xaxis) > 1)){
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -1709,7 +1709,7 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Y-Axis
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Yaxis)){
+      if (!is.null(input$ApproachSelect_Yaxis && length(input$ApproachSelect_Yaxis) > 1)){
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -1721,7 +1721,7 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Colorby
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Colorby)){
+      if (!is.null(input$ApproachSelect_Colorby) && length(input$ApproachSelect_ColorBy) > 1){
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
