@@ -30,11 +30,11 @@
 #' @references Hoa, et al., 2020
 #' @examples 
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runSCMerge(sceBatches, species = 'human')
+#' sceCorr <- runSCMerge(sceBatches)
 runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch', 
                        assayName = "scMerge", seg = NULL, kmeansK = NULL, 
                        cellType = 'cell_type', 
-                       nCores = parallel::detectCores()){
+                       nCores = 1){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")

@@ -12,7 +12,7 @@ runSCMerge(
   seg = NULL,
   kmeansK = NULL,
   cellType = "cell_type",
-  nCores = parallel::detectCores()
+  nCores = 1
 )
 }
 \arguments{
@@ -56,7 +56,7 @@ scRNA-Seq data.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runSCMerge(sceBatches, species = 'human')
+sceCorr <- runSCMerge(sceBatches)
 }
 \references{
 Hoa, et al., 2020

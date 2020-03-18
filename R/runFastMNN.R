@@ -20,26 +20,28 @@
 #' updated with corrected low-dimentional representation.
 #' @export
 #' @references Lun ATL, et al., 2016
-#' @examples  
+#' @examples
+#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runFastMNN(sceBatches, useAssay = 'PCA', pcInput = TRUE)
+#' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
+#' }
 runFastMNN <- function(inSCE, useAssay = "logcounts", reducedDimName = "MNN", 
                        batch = 'batch', pcInput = FALSE){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
     }
-    if(pcInput){
-        if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+    if(isTRUE(pcInput)){
+        if(!(useAssay %in% SingleCellExperiment::reducedDimNames(inSCE))) {
             stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
         }
     } else {
-        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+        if(!(useAssay %in% SummarizedExperiment::assayNames(inSCE))) {
             stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
         }
     }
     
-    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+    if(!(batch %in% names(SummarizedExperiment::colData(inSCE)))){
         stop(paste("\"batch name:", batch, "not found."))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
