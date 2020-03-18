@@ -41,9 +41,10 @@ updated with corrected low-dimentional representation.
 more robust performance. For introduction of MNN, see `runMNNCorrect`
 }
 \examples{
- 
+\dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runFastMNN(sceBatches, useAssay = 'PCA', pcInput = TRUE)
+sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
+}
 }
 \references{
 Lun ATL, et al., 2016

@@ -40,8 +40,8 @@ runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
             "If one of these have been previously run to install the modules,",
             "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
             " respectively, if R has been restarted since the module installation.",
-            " Alternatively, Scrublet can be installed on the local machine",
-            "with pip (e.g. pip install scrublet) and then the 'use_python()'",
+            " Alternatively, scgen can be installed on the local machine",
+            "with pip (e.g. pip install scgen) and then the 'use_python()'",
             " function from the 'reticulate' package can be used to select the",
             " correct Python environment.")
         return(inSCE)
