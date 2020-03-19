@@ -61,7 +61,7 @@ shinyPanelCellViewer <- fluidPage(
                             selectInput(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions","Expression Assays","Cell Annotation")),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Colorby"),
-                                            radioGroupButtons("ApproachSelect_Colorby", label = h5("-> Approach:"),
+                                            selectizeInput("ApproachSelect_Colorby", label = h5("-> Approach:"),
                                                            choices = c(approach_list)),
                                             selectInput("ColumnSelect_Colorby", h5("-> Dimension:"),choices = NULL)),
 
