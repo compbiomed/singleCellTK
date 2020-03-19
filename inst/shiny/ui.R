@@ -30,6 +30,7 @@ library(readxl)
 library(broom)
 library(RColorBrewer)
 library(grDevices)
+library(shinyWidgets)
 
 
 
