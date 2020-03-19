@@ -348,7 +348,6 @@ shinyServer(function(input, output, session) {
                                    createLogCounts = input$createLogcounts)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
-          print("mouse stuff selected")
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
