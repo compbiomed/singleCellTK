@@ -1652,7 +1652,7 @@ shinyServer(function(input, output, session) {
       annotation_list2 <- list()
       for (i in 1:length(annotation_list)){
         if(!is.numeric(vals$counts[[annotation_list[i]]])){
-          annotation_list2$Non_Numeric <- c(annotation_list2$Categorical, annotation_list[i])
+          annotation_list2$Non_Numeric <- c(annotation_list2$Non_Numeric, annotation_list[i])
         }else{
           annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
         }
