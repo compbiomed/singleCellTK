@@ -180,15 +180,15 @@ shinyServer(function(input, output, session) {
   # shinyFileChoose(input, "matrix", roots = volumes, session = session, restrictions = system.file(package = "base"))
   base <- reactive(input$base)
   output$base <- renderText({
-    parseDirPath(volumes, base())
+    shinyFiles::parseDirPath(volumes, base())
   })
   sample <- reactive(input$sample)
   output$sample <- renderText({
-    parseDirPath(volumes, sample())
+    shinyFiles::parseDirPath(volumes, sample())
   })
   sampleFile <- reactive(input$sampleFile)
   output$sampleFile <- renderText({
-    parseFilePaths(volumes, sampleFile())$datapath
+    shinyFiles::parseFilePaths(volumes, sampleFile())$datapath
   })
   importCR2Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importCR3Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
@@ -204,7 +204,7 @@ shinyServer(function(input, output, session) {
       h3("Sample Name"),
       textInput("sampleName", "*This name must match your sample's directory name."),
       h3("Base Directory"),
-      shinyDirButton("base", "Choose Directory ", "Please select a folder"),
+      shinyFiles::shinyDirButton("base", "Choose Directory ", "Please select a folder"),
       verbatimTextOutput("base", placeholder = TRUE),
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
@@ -282,8 +282,8 @@ shinyServer(function(input, output, session) {
   
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
-    samplePath <- parseDirPath(volumes, input$sample)
-    basePath <- parseDirPath(volumes, input$base)
+    samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
+    basePath <- shinyFiles::parseDirPath(volumes, input$base)
     if ((!nzchar(input$sampleID)) || (!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
       showModal(importModal(failed = TRUE))
     } else {
@@ -572,8 +572,13 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
+    if(is.null(input$filterAssaySelect)) {
+      assaySelect <- "counts"
+    } else {
+      assaySelect <- input$filterAssaySelect
+    }
     singleCellTK::summarizeTable(inSCE = vals$counts,
-                                 useAssay = input$filterAssaySelect,
+                                 useAssay = "counts",
                                  expressionCutoff = input$minDetectGene)
   })
 
@@ -1895,7 +1900,8 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect X-Axis
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Xaxis)){
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -1906,7 +1912,8 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Y-Axis
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Yaxis)){
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -1918,7 +1925,8 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Colorby
   observe({
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Colorby)){
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Colorby) & len > 0){
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))

@@ -6,50 +6,44 @@
 \usage{
 runSCMerge(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   assayName = "scMerge",
-  kmeansK = NULL,
-  cellTypeKey = "cell_type",
-  species = NULL,
   seg = NULL,
-  nHVG = 1000
+  kmeansK = NULL,
+  cellType = "cell_type",
+  nCores = 1
 )
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the field 
+\item{batch}{character, default `"batch"`. A string indicating the field 
 of `colData(inSCE)` that defines different batches.}
 
 \item{assayName}{character, default `"scMerge"`. The name for the corrected 
 full-sized expression matrix.}
 
-\item{kmeansK}{vector of int, default `NULL`. Indicates the kmeans's K for 
-each batch. The length of `kmeansK` needs to be the same as the number of 
-batches. If not given, this vector will be identified by counting cell types 
-in each batch.}
+\item{seg}{array, default `NULL`. An array of gene names or indices that 
+specifies SEG (Stably Expressed Genes) set as negative control. Pre-defined 
+dataset with human and mouse SEG lists is available to user by running 
+`data('SEG')`.}
 
-\item{cellTypeKey}{character, default `"cell_type"`. A string indicating the 
-field of `colData(inSCE)` that defines different cell types. Only needed 
-when `kmeansK` is left to `NULL`.}
+\item{kmeansK}{vector of int, default `NULL`. A vector indicating the 
+kmeans' K-value for each batch, in order to construct pseudo-replicates. The 
+length of `kmeansK` needs to be the same as the number of batches.}
 
-\item{species}{character, default `NULL`. Choose from `{"human", "mouse"}`. 
-If given, the algorithm will take default species specific SEG (Stably 
-Expressed Genes) set as negative control.}
+\item{cellType}{character, default `"cell_type"`. A string indicating the 
+field of `colData(inSCE)` that defines different cell types.}
 
-\item{seg}{character vecter, default `NULL`. A gene list that specifies SEG 
-(Stably Expressed Genes) set as negative control. If `species` set, will be 
-ignored; if both `species` and `seg` are `NULL`, will take some time to 
-automatically detect top 1000 SEGs from `assay(inSCE, exprs)`.}
-
-\item{nHVG}{integer, default `1000`. The number of top highly variable genes 
-to select per batch.}
+\item{nCores}{integer, default `parallel::detectCores()`. The number of 
+cores of processors to allocate for the task. By default it takes all the 
+cores available to the user.}
 }
 \value{
 SingleCellExperiment object with `assay(inSCE, assayName)` updated 
@@ -62,7 +56,7 @@ scRNA-Seq data.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runSCMerge(sceBatches, species = 'human')
+sceCorr <- runSCMerge(sceBatches)
 }
 \references{
 Hoa, et al., 2020

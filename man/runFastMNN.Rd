@@ -7,9 +7,9 @@ correction method to SingleCellExperiment object}
 \usage{
 runFastMNN(
   inSCE,
-  exprs = "logcounts",
+  useAssay = "logcounts",
   reducedDimName = "MNN",
-  batchKey = "batch",
+  batch = "batch",
   pcInput = FALSE
 )
 }
@@ -17,18 +17,18 @@ runFastMNN(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`. Alternatively, see `pcInput` parameter.}
 
 \item{reducedDimName}{character, default `"fastMNN"`. The name for the 
 corrected low-dimensional representation.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{pcInput}{bool, default `FALSE`. Whether to use a reduceDim matrix for 
-batch effect correction. If TRUE, `exprs` should exist in 
+batch effect correction. If TRUE, `useAssay` should exist in 
 `reduceDimNames(inSCE)`. Note that more dimensions in precomputed reducedDim
 have shown better correction results.}
 }
@@ -41,9 +41,10 @@ updated with corrected low-dimentional representation.
 more robust performance. For introduction of MNN, see `runMNNCorrect`
 }
 \examples{
- 
+\dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runFastMNN(sceBatches, exprs = 'PCA', pcInput = TRUE)
+sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
+}
 }
 \references{
 Lun ATL, et al., 2016
