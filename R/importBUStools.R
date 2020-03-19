@@ -6,13 +6,15 @@
     featuresFileName,
     barcodesFileName,
     gzipped,
-    class) {
+    class,
+    delayedArray) {
 
     cb <- .readBarcodes(file.path(dir, barcodesFileName))
     fe <- .readFeatures(file.path(dir, featuresFileName))
     ma <- .readMatrixMM(file.path(dir, matrixFileName),
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
     ma <- t(ma)
 
     coln <- paste(sample, cb[[1]], sep = "_")
@@ -34,11 +36,12 @@
 .importBUStools <- function(
     BUStoolsDirs,
     samples,
-    matrixFileName,
-    featuresFileName,
-    barcodesFileName,
+    matrixFileNames,
+    featuresFileNames,
+    barcodesFileNames,
     gzipped,
-    class) {
+    class,
+    delayedArray) {
 
     if (length(BUStoolsDirs) != length(samples)) {
         stop("'BUStoolsDirs' and 'samples' have unequal lengths!")
@@ -46,19 +49,25 @@
 
     res <- vector("list", length = length(samples))
 
+    matrixFileNames <- .getVectorized(matrixFileNames, length(samples))
+    featuresFileNames <- .getVectorized(featuresFileNames, length(samples))
+    barcodesFileNames <- .getVectorized(barcodesFileNames, length(samples))
+    gzipped <- .getVectorized(gzipped, length(samples))
+
     for (i in seq_along(samples)) {
         dir <- file.path(BUStoolsDirs[i])
         scei <- .constructSCEFromBUStoolsOutputs(dir,
             sample = samples[i],
-            matrixFileName = matrixFileName,
-            featuresFileName = featuresFileName,
-            barcodesFileName = barcodesFileName,
-            gzipped = gzipped,
-            class = class)
+            matrixFileName = matrixFileNames[i],
+            featuresFileName = featuresFileNames[i],
+            barcodesFileName = barcodesFileNames[i],
+            gzipped = gzipped[i],
+            class = class,
+            delayedArray = delayedArray)
         res[[i]] <- scei
     }
 
-    sce <- do.call(BiocGenerics::cbind, res)
+    sce <- do.call(SingleCellExperiment::cbind, res)
     return(sce)
 }
 
@@ -75,19 +84,25 @@
 #'  Must have the same length as \code{samples}.
 #' @param samples A vector of user-defined sample names for the samples to be
 #'  imported. Must have the same length as \code{BUStoolsDirs}.
-#' @param matrixFileName Filename for the Market Exchange Format (MEX) sparse
-#'  matrix file (.mtx file).
-#' @param featuresFileName Filename for the feature annotation file.
-#' @param barcodesFileName Filename for the cell barcode list file.
+#' @param matrixFileNames Filenames for the Market Exchange Format (MEX) sparse
+#'  matrix files (.mtx files). Must have length 1 or the same
+#'  length as \code{samples}.
+#' @param featuresFileNames Filenames for the feature annotation files.
+#'  Must have length 1 or the same length as \code{samples}.
+#' @param barcodesFileNames Filenames for the cell barcode list file.
+#'  Must have length 1 or the same length as \code{samples}.
 #' @param gzipped Boolean. \code{TRUE} if the BUStools output files
 #'  (barcodes.txt, genes.txt, and genes.mtx) were
 #'  gzip compressed. \code{FALSE} otherwise. This is \code{FALSE} in BUStools
-#'  0.39.4. Default \code{FALSE}.
+#'  0.39.4. Default \code{"auto"} which automatically detects if the
+#'  files are gzip compressed. Must have length 1 or the same length as
+#'  \code{samples}.
 #' @param class Character. The class of the expression matrix stored in the SCE
-#'  object. Can be one of "DelayedArray" (as returned by
-#'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+#'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -120,18 +135,22 @@
 importBUStools <- function(
     BUStoolsDirs,
     samples,
-    matrixFileName = "genes.mtx",
-    featuresFileName = "genes.genes.txt",
-    barcodesFileName = "genes.barcodes.txt",
-    gzipped = FALSE,
-    class = "Matrix") {
+    matrixFileNames = "genes.mtx",
+    featuresFileNames = "genes.genes.txt",
+    barcodesFileNames = "genes.barcodes.txt",
+    gzipped = "auto",
+    class = c("Matrix", "matrix"),
+    delayedArray = TRUE) {
+
+    class <- match.arg(class)
 
     .importBUStools(
         BUStoolsDirs = BUStoolsDirs,
         samples = samples,
-        matrixFileName = matrixFileName,
-        featuresFileName = featuresFileName,
-        barcodesFileName = barcodesFileName,
+        matrixFileNames = matrixFileNames,
+        featuresFileNames = featuresFileNames,
+        barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
-        class = class)
+        class = class,
+        delayedArray = delayedArray)
 }

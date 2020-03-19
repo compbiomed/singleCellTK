@@ -4,14 +4,14 @@
 \alias{runCxdsBcdsHybrid}
 \title{Find doublets/multiplets using \link[scds]{cxds_bcds_hybrid}.}
 \usage{
-runCxdsBcdsHybrid(sce, sample = NULL, seed = 12345, ...)
+runCxdsBcdsHybrid(inSCE, sample = NULL, seed = 12345, ...)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
 Needs \code{counts} in assays slot.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[DropletUtils]{emptyDrops} will be run on cells from each sample
+\link[scds]{cxds_bcds_hybrid} will be run on cells from each sample
 separately. If NULL, then all cells will be processed together.
 Default NULL.}
 

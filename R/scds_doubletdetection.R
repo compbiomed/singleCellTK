@@ -3,10 +3,10 @@
 #' @description A wrapper function for \link[scds]{cxds}. Annotate
 #'  doublets/multiplets using co-expression based approach. Generate a doublet
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{cxds} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -21,39 +21,39 @@
 #' sce <- runCxds(sce_chcl)
 #' @export
 #' @import scds
-runCxds <- function(sce,
+runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
     ...) {
 
     if (!is.null(sample)) {
-        if (length(sample) != ncol(sce)) {
+        if (length(sample) != ncol(inSCE)) {
             stop("'sample' must be the same length as the number",
-                " of columns in 'sce'")
+                " of columns in 'inSCE'")
         }
     } else {
-        sample <- rep(1, ncol(sce))
+        sample <- rep(1, ncol(inSCE))
     }
 
     message(paste0(date(), " ... Running 'cxds'"))
 
     ## Define result matrix for all samples
     if ("estNdbl" %in% names(list(...))) {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            cxds_score = numeric(ncol(sce)),
-            cxds_call = logical(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            cxds_score = numeric(ncol(inSCE)),
+            cxds_call = logical(ncol(inSCE)))
     } else {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            cxds_score = numeric(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            cxds_score = numeric(ncol(inSCE)))
     }
 
     ## Loop through each sample and run cxds
     samples <- unique(sample)
     for (i in seq_len(length(samples))) {
         sceSampleInd <- sample == samples[i]
-        sceSample <- sce[, sceSampleInd]
+        sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
         
         result <- NULL
         nGene <- 500
@@ -77,9 +77,9 @@ runCxds <- function(sce,
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
-    colData(sce) = cbind(colData(sce), output)
+    colData(inSCE) = cbind(colData(inSCE), output)
 
-    return(sce)
+    return(inSCE)
 }
 
 
@@ -88,10 +88,10 @@ runCxds <- function(sce,
 #'  doublets/multiplets using a binary classification approach to discriminate
 #'  artificial doublets from original data. Generate a doublet
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{bcds} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -106,39 +106,39 @@ runCxds <- function(sce,
 #' sce <- runBcds(sce_chcl)
 #' @export
 #' @import scds
-runBcds <- function(sce,
+runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
     ...) {
 
     if (!is.null(sample)) {
-        if (length(sample) != ncol(sce)) {
+        if (length(sample) != ncol(inSCE)) {
             stop("'sample' must be the same length as the number",
-                " of columns in 'sce'")
+                " of columns in 'inSCE'")
         }
     } else {
-        sample <- rep(1, ncol(sce))
+        sample <- rep(1, ncol(inSCE))
     }
 
     message(paste0(date(), " ... Running 'bcds'"))
 
     ## Define result matrix for all samples
     if ("estNdbl" %in% names(list(...))) {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            bcds_score = numeric(ncol(sce)),
-            bcds_call = logical(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            bcds_score = numeric(ncol(inSCE)),
+            bcds_call = logical(ncol(inSCE)))
     } else {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            bcds_score = numeric(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            bcds_score = numeric(ncol(inSCE)))
     }
 
     ## Loop through each sample and run bcds
     samples <- unique(sample)
     for (i in seq_len(length(samples))) {
         sceSampleInd <- sample == samples[i]
-        sceSample <- sce[, sceSampleInd]
+        sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
         
         result <- NULL
         nGene <- 500
@@ -163,9 +163,9 @@ runBcds <- function(sce,
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
-    colData(sce) = cbind(colData(sce), output)
+    colData(inSCE) = cbind(colData(inSCE), output)
 
-    return(sce)
+    return(inSCE)
 }
 
 
@@ -174,10 +174,10 @@ runBcds <- function(sce,
 #'  doublets/multiplets using a binary classification approach to discriminate
 #'  artificial doublets from original data. Generate a doublet
 #'  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
-#' @param sce A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Needs \code{counts} in assays slot.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample
+#'  \link[scds]{cxds_bcds_hybrid} will be run on cells from each sample
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -193,44 +193,44 @@ runBcds <- function(sce,
 #' sce <- runCxdsBcdsHybrid(sce_chcl)
 #' @export
 #' @import scds
-runCxdsBcdsHybrid <- function(sce,
+runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,
     seed = 12345,
     ...) {
 
     if (!is.null(sample)) {
-        if (length(sample) != ncol(sce)) {
+        if (length(sample) != ncol(inSCE)) {
             stop("'sample' must be the same length as the number",
-                " of columns in 'sce'")
+                " of columns in 'inSCE'")
         }
     } else {
-        sample <- rep(1, ncol(sce))
+        sample <- rep(1, ncol(inSCE))
     }
 
     message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
 
     ## Define result matrix for all samples
     if ("estNdbl" %in% names(list(...))) {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            hybrid_score = numeric(ncol(sce)),
-            hybrid_call = logical(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            hybrid_score = numeric(ncol(inSCE)),
+            hybrid_call = logical(ncol(inSCE)))
     } else {
-        output <- S4Vectors::DataFrame(row.names = colnames(sce),
-            hybrid_score = numeric(ncol(sce)))
+        output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+            hybrid_score = numeric(ncol(inSCE)))
     }
 
     ## Loop through each sample and run cxds_bcds_hybrid
     samples <- unique(sample)
     for (i in seq_len(length(samples))) {
         sceSampleInd <- sample == samples[i]
-        sceSample <- sce[, sceSampleInd]
+        sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- as(counts(sceSample), "dgCMatrix")
+        counts(sceSample) <- .convertToMatrix(counts(sceSample))
 
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, bcds_args=list(ntop = nGene)))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, cxdsArgs=list(ntop = nGene), bcdsArgs=list(ntop = nGene)))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
@@ -249,7 +249,7 @@ runCxdsBcdsHybrid <- function(sce,
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
-    colData(sce) = cbind(colData(sce), output)
+    colData(inSCE) = cbind(colData(inSCE), output)
 
-    return(sce)
+    return(inSCE)
 }

@@ -264,31 +264,16 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     circlize::colorRamp2(c(1, 2, 3), c("red", "blue", "black"))
   }
 }
-# 
-# log = function(f){
-#   function(...){
-#     args <- listToString(list(...))
-#     fName <- as.character(match.call()[1])
-#     res = f(...)
-#     call <- paste0(fName, "(", args, ")")
-#     # print("logging a function:")
-#     print(noquote(call))
-#     # insertUI(paste0("#", "console"), where = "beforeEnd",
-#     # ui = tags$p(paste0(call, "\n", collapse = ""))
-#     # )
-#     return(res)
-#   }
-# }
-# 
-# listToString <- function(l) {
-#   res = ""
-#   for(i in l[1:length(l)]){
-#     if (is.character(i)) {
-#       res = paste0(res, sQuote(i), ",")
-#     } else {
-#       res = paste0(res, i, ",")
-#     }
-#   }
-#   return(substr(res, 1, nchar(res)-1))
-# }
+
+## Convert a matrix to a sparse matrix and preserve column/row names
+.convertToMatrix <- function(x) {
+  cn <- colnames(x)
+  rn <- rownames(x)
+  
+  x <- methods::as(x, "dgCMatrix")
+  colnames(x) <- cn
+  rownames(x) <- rn
+  
+  return(x)
+}
 

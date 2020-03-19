@@ -4,17 +4,17 @@
 \alias{runEmptyDrops}
 \title{Identify empty droplets using \link[DropletUtils]{emptyDrops}.}
 \usage{
-runEmptyDrops(sce, sample = NULL, assayName = "counts", ...)
+runEmptyDrops(inSCE, sample = NULL, useAssay = "counts", ...)
 }
 \arguments{
-\item{sce}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
+\item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.
 Must contain a raw counts matrix before empty droplets have been removed.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 \link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
 If NULL, then all cells will be processed together. Default NULL.}
 
-\item{assayName}{A string specifying which assay in the SCE to use.}
+\item{useAssay}{A string specifying which assay in the SCE to use.}
 
 \item{...}{Additional arguments to pass to \link[DropletUtils]{emptyDrops}.
 matrix.}
@@ -40,9 +40,9 @@ Run \link[DropletUtils]{emptyDrops} on the count matrix in the
 # /pbmc_1k_v3
 # Only the top 10 cells with most counts and the last 10 cells with non-zero
 # counts are included in this example.
-# This example only serves as an proof of concept and a tutoriol on how to
+# This example only serves as an proof of concept and a tutorial on how to
 # run the function. The results should not be
 # used for drawing scientific conclusions.
 data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runEmptyDrops(sce = emptyDropsSceExample)
+sce <- runEmptyDrops(inSCE = emptyDropsSceExample)
 }

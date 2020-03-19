@@ -53,6 +53,14 @@ directory <- opt$directory
 gmt <- opt$gmt
 sep <- opt$delim
 
+if (is.na(samplename)){
+  stop("A sample name is required. Please specify using the -s flag.")
+}
+
+if(is.na(droplet.path) && is.na(filtered.path)){
+  stop("Either the droplet counts or the filtered counts file path need to be specified.")
+}
+
 ## Use appropriate import function for preprocessing tool
 dropletSCE <- NULL
 filteredSCE <- NULL
@@ -85,7 +93,7 @@ if(!is.null(gmt)) {
 ## Run QC functions
 if(!is.null(dropletSCE)) {
   message(paste0(date(), " .. Running droplet QC"))    
-  dropletSCE <- runDropletQC(sce = dropletSCE)
+  dropletSCE <- runDropletQC(inSCE = dropletSCE)
   
   if(is.null(filteredSCE)) {
     ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
@@ -95,7 +103,7 @@ if(!is.null(dropletSCE)) {
 
 if(!is.null(filteredSCE)) {
   message(paste0(date(), " .. Running cell QC"))    
-  filteredSCE <- runCellQC(sce = filteredSCE, geneSetCollection = geneSetCollection)
+  filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection)
 }  
 
 
@@ -116,18 +124,27 @@ dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recu
 dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
 
 if(!is.null(mergedDropletSCE)){
+  ## Export to R 
   fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
   saveRDS(object = mergedDropletSCE, file = fn)
+  
+  ## Export to flatfile
+  fn <- file.path(directory, samplename, "FlatFile", "Droplets")
+  writeSCE(mergedDropletSCE, outputDir = fn)
 }
 if(!is.null(mergedFilteredSCE)) {
+  ## Export to R    
   fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
   saveRDS(object = mergedFilteredSCE, file = fn)
-}  
 
+  ## Export to flatfile  
+  fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
+  writeSCE(mergedFilteredSCE, outputDir = fn)
+}  
 
 ## ToDo ##
 ## Export to Python
-## Export to flatfile
+
 
 
 sessionInfo()

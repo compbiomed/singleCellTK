@@ -3,47 +3,70 @@
 .readMatrixNpz <- function(matrixLocation,
   colIndexLocation,
   rowIndexLocation,
-  class) {
+  class,
+  delayedArray) {
 
-  sparse <- reticulate::import("scipy.sparse")
-  np <- reticulate::import("numpy")
-
-  mat <- sparse$load_npz(matrixLocation)
-  colIndex <- as.vector(np$load(colIndexLocation, allow_pickle = TRUE))
-  rowIndex <- as.vector(np$load(rowIndexLocation, allow_pickle = TRUE))
-  colnames(mat) <- colIndex
-  rownames(mat) <- rowIndex  
-  mat <- t(mat)
-
-  ## Convert to "dgCMatrix"
-  newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
-  newM <- as(newM, "dgCMatrix")
-  breaks <- seq(2, ncol(mat), by=1000)
-  if(length(breaks) > 2) {
-	for(i in seq(2, length(breaks))) {
-	  ix <- seq(breaks[i-1], (breaks[i]-1))
-	  newM <- cbind(newM, mat[,ix])
-	}
-	ix <- seq(tail(breaks, n = 1), ncol(mat))
-	newM <- cbind(newM, mat[,ix])
-  } else {
-    ix <- seq(2, ncol(mat))
-    newM <- cbind(newM, mat[,ix])
-  }  
-  
-  colnames(newM) <- colnames(mat)
-  rownames(newM) <- rownames(mat)  
-  mat <- newM
-  
-  if (class == "Matrix") {
-    return(mat)
-  } else if (class == "DelayedArray") {
-    mat <- DelayedArray::DelayedArray(mat)
-    return(mat)
-  } else if (class == "matrix") {
-    mat <- as.matrix(mat)
-    return(mat)
+  ## Now importing these functions in 'reticulate_setup.R' file
+  #  sparse <- reticulate::import("scipy.sparse")
+  #  np <- reticulate::import("numpy")
+  if (!reticulate::py_module_available(module = "scipy.sparse")) {
+    stop("Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda() 
+         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
+         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
+         restarted since the module installation. Alternatively, scipy can be installed on the local machine
+         with pip (e.g. pip install scipy) and then the 'use_python()' function from the 'reticulate' package
+         can be used to select the correct Python environment.")
   }
+  if (!reticulate::py_module_available(module = "numpy")) {
+    stop("Cannot find python module 'numpy', please install Conda and run sctkPythonInstallConda() 
+         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
+         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
+         restarted since the module installation. Alternatively, numpy can be installed on the local machine
+         with pip (e.g. pip install numpy) and then the 'use_python()' function from the 'reticulate' package
+         can be used to select the correct Python environment.")
+  }
+  
+  error <- try({
+    mat <- sparse$load_npz(matrixLocation)
+    colIndex <- as.vector(numpy$load(colIndexLocation, allow_pickle = TRUE))
+    rowIndex <- as.vector(numpy$load(rowIndexLocation, allow_pickle = TRUE))
+    colnames(mat) <- colIndex
+    rownames(mat) <- rowIndex
+    mat <- t(mat)
+
+    ## Convert to "dgCMatrix"
+    newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
+    newM <- methods::as(newM, "dgCMatrix")
+    breaks <- seq(2, ncol(mat), by=1000)
+    if(length(breaks) > 2) {
+      for(i in seq(2, length(breaks))) {
+        ix <- seq(breaks[i-1], (breaks[i]-1))
+        newM <- cbind(newM, mat[,ix])
+      }
+      ix <- seq(utils::tail(breaks, n = 1), ncol(mat))
+      newM <- cbind(newM, mat[,ix])
+    } else {
+      ix <- seq(2, ncol(mat))
+      newM <- cbind(newM, mat[,ix])
+    }
+
+    colnames(newM) <- colnames(mat)
+    rownames(newM) <- rownames(mat)
+    mat <- newM
+  }, silent = TRUE)
+  
+  if(inherits(error, "try-error")) {
+    stop(paste0("importOptimus did not complete successfully. SCE could not be generated. Error given during the import process: \n\n", error))
+  }
+  
+  if (class == "matrix") {
+    mat <- as.matrix(mat)
+  }
+
+  if (isTRUE(delayedArray)) {
+    mat <- DelayedArray::DelayedArray(mat)
+  }
+  return(mat)
 }
 
 
@@ -106,12 +129,14 @@
   cellMetricsLocation,
   geneMetricsLocation,
   emptyDropsLocation,
-  class) {
+  class,
+  delayedArray) {
 
   mat <- .readMatrixNpz(file.path(dir, matrixLocation),
     file.path(dir, colIndexLocation),
     file.path(dir, rowIndexLocation),
-    class)
+    class,
+    delayedArray)
 
   cellMetrics <- .readMetricsOptimus(file.path(dir, cellMetricsLocation))
   geneMetrics <- .readMetricsOptimus(file.path(dir, geneMetricsLocation))
@@ -138,15 +163,10 @@
 
 
 .checkArgsImportOptimus <- function(OptimusDirs,
-  samples,
-  class) {
+  samples) {
 
   if (length(OptimusDirs) != length(samples)) {
     stop("'OptimusDirs' and 'samples' have unequal lengths!")
-  }
-
-  if (!(class %in% c("DelayedArray", "Matrix", "matrix"))) {
-    stop("Invalid 'class' argument!")
   }
 }
 
@@ -159,9 +179,10 @@
   cellMetricsLocation,
   geneMetricsLocation,
   emptyDropsLocation,
-  class) {
+  class,
+  delayedArray) {
 
-  .checkArgsImportOptimus(OptimusDirs, samples, class)
+  .checkArgsImportOptimus(OptimusDirs, samples)
 
   res <- vector("list", length = length(samples))
 
@@ -174,11 +195,12 @@
       cellMetricsLocation = cellMetricsLocation,
       geneMetricsLocation = geneMetricsLocation,
       emptyDropsLocation = emptyDropsLocation,
-      class = class)
+      class = class,
+      delayedArray = delayedArray)
     res[[i]] <- scei
   }
 
-  sce <- do.call(BiocGenerics::cbind, res)
+  sce <- do.call(SingleCellExperiment::cbind, res)
   return(sce)
 }
 
@@ -219,12 +241,12 @@
 #'  (\code{empty_drops_result.csv}).
 #'  Default \code{call-RunEmptyDrops/empty_drops_result.csv} which works for
 #'  optimus_v1.4.0.
-#' @param class Character. The class of the expression matrix stored in the
-#'  \link[SingleCellExperiment]{SingleCellExperiment}
-#'  object. Can be one of "DelayedArray" (as returned by
-#'  \link[DelayedArray]{DelayedArray} function), "Matrix" (as returned by
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param delayedArray Boolean. Whether to read the expression matrix as
+#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -244,7 +266,10 @@ importOptimus <- function(OptimusDirs,
   cellMetricsLocation = "call-MergeCellMetrics/merged-cell-metrics.csv.gz",
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
-  class = "Matrix") {
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE) {
+
+  class <- match.arg(class)
 
   .importOptimus(OptimusDirs = OptimusDirs,
     samples = samples,
@@ -254,6 +279,7 @@ importOptimus <- function(OptimusDirs,
     cellMetricsLocation = cellMetricsLocation,
     geneMetricsLocation = geneMetricsLocation,
     emptyDropsLocation = emptyDropsLocation,
-    class = class)
+    class = class,
+    delayedArray = delayedArray)
 
 }

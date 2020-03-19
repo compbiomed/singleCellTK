@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+singleCellTK.Rproj
+*.Rproj
+.DS_Store

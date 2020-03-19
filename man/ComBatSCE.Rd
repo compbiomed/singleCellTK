@@ -69,5 +69,4 @@ if(requireNamespace("bladderbatch", quietly = TRUE)) {
   assay(dat, "refbatch_combat_wcov") <- combat_edata3
   assays(dat)
 }
-
 }
