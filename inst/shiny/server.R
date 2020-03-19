@@ -1652,11 +1652,9 @@ shinyServer(function(input, output, session) {
       annotation_list2 <- list()
       for (i in 1:length(annotation_list)){
         if(!is.numeric(vals$counts[[annotation_list[i]]])){
-          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
-        }else if(is.integer(vals$counts[[annotation_list[i]]]) & length(levels(as.factor(vals$counts[[annotation_list[i]]])))){
-          annotation_list2$Both <- c(annotation_list2$Both, annotation_list[i])
+          annotation_list2$Non_Numeric <- c(annotation_list2$Categorical, annotation_list[i])
         }else{
-          annotation_list2$Continuous <- c(annotation_list2$Continuous, annotation_list[i])
+          annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
         }
       }
       annotation_list <- annotation_list2
@@ -1696,9 +1694,9 @@ shinyServer(function(input, output, session) {
 
   #-+-+-+-+-+-For Advanced Input Observe##############
   ###ApproachSelect to DimensionSelect X-Axis
-  observe({
+  observeEvent(input$ApproachSelect_Xaxis, {
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Xaxis) && length(input$ApproachSelect_Xaxis) > 0){
+      if (input$ApproachSelect_Xaxis != ""){
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -1707,9 +1705,9 @@ shinyServer(function(input, output, session) {
     }
   })
   ###ApproachSelect to DimensionSelect Y-Axis
-  observe({
+  observeEvent(input$ApproachSelect_Yaxis, {
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Yaxis) && length(input$ApproachSelect_Yaxis) > 0){
+      if (input$ApproachSelect_Yaxis != ""){
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -1719,9 +1717,9 @@ shinyServer(function(input, output, session) {
     }
   })
   ###ApproachSelect to DimensionSelect Colorby
-  observe({
+  observeEvent(input$ApproachSelect_Colorby, {
     if (!is.null(vals$counts)){
-      if (!is.null(input$ApproachSelect_Colorby) && length(input$ApproachSelect_ColorBy) > 0){
+      if (input$ApproachSelect_Colorby != ""){
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
