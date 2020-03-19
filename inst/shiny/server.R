@@ -341,26 +341,23 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- withConsoleRedirect(createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts))
+                                   createLogCounts = input$createLogcounts)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
-          print("mouse stuff selected")
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
-          vals$original <- createSCE(assayFile = t(maits$expressionmat),
+          vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
                                      annotFile = maits$cdat,
                                      featureFile = maits$fdat,
                                      assayName = "logtpm",
                                      inputDataFrames = TRUE,
-                                     createLogCounts = FALSE)
-          # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
-          
+                                     createLogCounts = FALSE))
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
