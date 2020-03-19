@@ -2,8 +2,7 @@ shinyPanelCellViewer <- fluidPage(
   tags$div(
     class = "container",
            h1("Cell Viewer"),
-           tabsetPanel(
-           tabPanel("Scatter plot",
+           radioGroupButtons("test", choices = c("Scatter Plot", "Bar Plot","Violin/Box Plot")),
            fluidRow(
              column(3,
                     wellPanel(style = "background: floralwhite",
@@ -142,10 +141,6 @@ shinyPanelCellViewer <- fluidPage(
                                          column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
                                   )
              ))
-           )
-           ),
-          tabPanel("Barplot"),
-          tabPanel("Violin Plot")
         )#fluidrow_end
            # )#well_end
   )#tag_end
