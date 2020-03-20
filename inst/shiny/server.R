@@ -2316,7 +2316,7 @@ shinyServer(function(input, output, session) {
     ###Yaxis label name
     if(input$TypeSelect_Colorby != 'Pick a Color'){
       if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
-        legendname <- paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,
+        legendname <- paste0(input$ApproachSelect_Colorby,"_",substr(input$ColumnSelect_Colorby,
           str_length(input$ColumnSelect_Colorby),str_length(input$ColumnSelect_Colorby)))
       }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
         legendname <- input$GeneSelect_Assays_Colorby
