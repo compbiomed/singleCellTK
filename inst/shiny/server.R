@@ -2316,12 +2316,12 @@ shinyServer(function(input, output, session) {
     ###Yaxis label name
     if(input$TypeSelect_Colorby != 'Pick a Color'){
       if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
-        legendname <- as.character(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,
-          length(input$ColumnSelect_Colorby),length(input$ColumnSelect_Colorby)))
+        legendname <- paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,
+          str_length(input$ColumnSelect_Colorby),str_length(input$ColumnSelect_Colorby)))
       }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
-        legendname <- as.character(input$GeneSelect_Assays_Colorby)
+        legendname <- input$GeneSelect_Assays_Colorby
       }else if(input$adjustlegendtitle == ""){
-        legendname <- as.character(input$AnnotationSelect_Colorby)
+        legendname <- input$AnnotationSelect_Colorby
       }else{
         legendname <- input$adjustlegendtitle
       }
