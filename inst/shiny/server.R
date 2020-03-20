@@ -2315,14 +2315,16 @@ shinyServer(function(input, output, session) {
 
     ###Yaxis label name
     if(input$TypeSelect_Colorby != 'Pick a Color'){
-      if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-        legendname = paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,2,2))
+      if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
+        legendname <- paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,2,2))
 
-      }else if(input$TypeSelect_Colorby == 'Expression Assays'){
-        legendname = paste0(input$GeneSelect_Assays_Colorby)
+      }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
+        legendname <- as.character(input$GeneSelect_Assays_Colorby)
 
+      }else if(input$adjustlegendtitle == ""){
+        legendname <- as.character(input$AnnotationSelect_Colorby)
       }else{
-        legendname = paste0(input$AnnotationSelect_Colorby)
+        legendname <- input$adjustlegendtitle
       }
     }
 
@@ -2336,6 +2338,9 @@ shinyServer(function(input, output, session) {
           geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
+          a <- a + ggtitle(input$adjusttitle)
+        }
+        if (input$adjustlegend != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
