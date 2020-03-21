@@ -379,8 +379,18 @@ shinyServer(function(input, output, session) {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (methods::is(importedrds, "SummarizedExperiment")) {
           vals$original <- importedrds
+          seuratWorkflow$sce_rds_file <- input$rdsFile #for seurat workflow
         } else {
           vals$original <- NULL
+        }
+      } else if (input$uploadChoice == "rds_seurat") {
+        importedrds <- readRDS(input$rdsFileSeurat$datapath)
+        if (methods::is(importedrds, "Seurat")) {
+            vals$original <- convertSeuratToSCE(importedrds)
+            seuratWorkflow$sce_rds_file <- importedrds
+        }
+        else {
+            vals$original <- NULL
         }
       } else if (input$uploadChoice == "directory") {
         if (input$algoChoice == "cellRanger2") {
@@ -3886,40 +3896,36 @@ shinyServer(function(input, output, session) {
     # Page 8: Seurat Workflow
     #-----------------------------------------------------------------------------
 
-    #seuratObect; single Seurat object which is updated throughout the workflow 
-    seuratObject <- reactiveVal()
-
-    #sceObject; single SingleCellExperiment object which is updated throughout the workflow
-    sceObject <- reactiveVal()
-
-    #plotObject; contains objects for each of hvg plot, pca plot, ica plot, tsne plot and umap plot (each object accessed through $hvg, $pca, $ica, $tsne and $umap)
-    plotObject <- reactiveValues()
-
-    #numberOfReductionComponents; a reactive object to hold number of computed pca & ica components which are used to populate reduction components selectinput (accessed through $pca and $ica)
-    numberOfReductionComponents <- reactiveValues()
-
-    #geneNames object; store rownames/featurenames/genenames to avoid issues during sce to seurat conversion and vice versa
-    geneNamesSCE <- reactiveVal()
-    geneNamesSeurat <- reactiveVal()
+    #reactive values object to store all objects to be used in seurat workflow
+    seuratWorkflow <- reactiveValues()
 
     #Upload sce object (rds file)
-    observeEvent(input$sce_rds_file, {
-        withProgress(message = "Uploading", max = 1, value = 1, {
-            seuratObject(.sceToSeurat(input$sce_rds_file$datapath))
-            sceObject(.rdsToSce(input$sce_rds_file$datapath))
-            geneNamesSCE(.rowNamesSCE(sceObject()))
-            geneNamesSeurat(.rowNamesSeurat(seuratObject()))
+    observeEvent(seuratWorkflow$sce_rds_file, {
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            withProgress(message = "Uploading", max = 1, value = 1, {
+                if (!methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a filepath
+                    seuratWorkflow$seuratObject <- .sceToSeurat(seuratWorkflow$sce_rds_file$datapath)
+                    seuratWorkflow$inSCE <- .rdsToSce(seuratWorkflow$sce_rds_file$datapath)
+                }
+                else if (methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a seurat object
+                    seuratWorkflow$inSCE <- vals$original
+                    seuratWorkflow$seuratObject <- seuratWorkflow$sce_rds_file
+                }
+                seuratWorkflow$geneNamesSCE <- .rowNamesSCE(seuratWorkflow$inSCE)
+                seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
+                updateSelectInput(session = session, inputId = "select_normalization_assay", choices = names(assays(vals$counts)))
         })
         updateCollapse(session = session, "SeuratUI", style = list("Data Input" = "danger"))
         showNotification("Upload complete")
+        }     
     })
 
     #Display highly variable genes
     output$hvg_output <- renderText({
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if (length(slot(sceObject()@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
-                    .seuratGetVariableFeatures(sceObject(), geneNamesSeurat(), input$hvg_no_features_view)
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
+                    .seuratGetVariableFeatures(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$hvg_no_features_view)
                 }
             }
         }
@@ -3927,9 +3933,10 @@ shinyServer(function(input, output, session) {
 
     #Perform normalization
     observeEvent(input$normalize_button, {
-        if (!is.null(sceObject())) {
+        if (!is.null(seuratWorkflow$inSCE)) {
             withProgress(message = "Normalizing", max = 1, value = 1, {
-                sceObject(seuratNormalizeData(sce = sceObject(), geneNames = geneNamesSeurat(), input$normalization_method, as.numeric(input$scale_factor)))
+                seuratWorkflow$inSCE@metadata$selected_assay <- input$select_normalization_assay
+                seuratWorkflow$inSCE <- seuratNormalizeData(inSCE = seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, geneNames = seuratWorkflow$geneNamesSeurat, input$normalization_method, as.numeric(input$scale_factor))
             })
             updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
             showNotification("Normalization Complete")
@@ -3941,9 +3948,9 @@ shinyServer(function(input, output, session) {
 
     #Perform scaling
     observeEvent(input$scale_button, {
-        if (!is.null(sceObject())) {
+        if (!is.null(seuratWorkflow$inSCE)) {
             withProgress(message = "Scaling", max = 1, value = 1, {
-                sceObject(seuratScaleData(sceObject(), geneNamesSeurat(), input$model.use, input$do.scale, input$do.center, input$scale.max))
+                seuratWorkflow$inSCE <- seuratScaleData(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$model.use, input$do.scale, input$do.center, input$scale.max)
             })
             updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
             showNotification("Scale Complete")
@@ -3955,37 +3962,37 @@ shinyServer(function(input, output, session) {
 
     #Run PCA
     observeEvent(input$run_pca_button, {
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if ((length(slot(sceObject()@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(sceObject()@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if ((length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
                     withProgress(message = "Running PCA", max = 1, value = 1, {
-                        sceObject(seuratPCA(sceObject(), geneNamesSeurat(), input$pca_no_components))
-                        numberOfReductionComponents$pca <- dim(convertSCEToSeurat(sceObject(), geneNamesSeurat())[["pca"]])[2]
+                        seuratWorkflow$inSCE <- seuratPCA(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)[["pca"]])[2]
                     })
                     withProgress(message = "Plotting PCA", max = 1, value = 1, {
-                        plotObject$PCA <- seuratReductionPlot(sceObject(), geneNamesSeurat(), "pca")
+                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "pca")
                     })
                     if (input$pca_compute_elbow) {
                         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-                            numberOfReductionComponents$significantPC <- .computeSignificantPC(sceObject(), geneNamesSeurat())
-                            plotObject$Elbow <- seuratElbowPlot(sceObject(), geneNamesSeurat(), numberOfReductionComponents$significantPC)
+                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)
+                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, seuratWorkflow$numberOfReductionComponents$significantPC)
                         })
                     }
                     if (input$pca_compute_jackstraw) {
                         withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-                            sceObject(seuratComputeJackStraw(sceObject(), geneNamesSeurat(), input$pca_no_components))
-                            plotObject$JackStraw <- seuratJackStrawPlot(sceObject(), geneNamesSeurat(), input$pca_no_components)
+                            seuratWorkflow$inSCE <- seuratComputeJackStraw(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
                         })
                     }
                     if (input$pca_compute_heatmap) {
                         withProgress(message = "Generating Heatmap Plot", max = 1, value = 1, {
-                            plotObject$HeatmapCompute <- seuratComputeHeatmap(sceObject(), geneNamesSeurat(), input$pca_no_components)
-                            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(numberOfReductionComponents$pca))
+                            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
                         })
                     }
-                    addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-                    addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-                    addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
                     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
                     showNotification("PCA Complete")
                 }
@@ -3998,15 +4005,15 @@ shinyServer(function(input, output, session) {
 
     #Run ICA
     observeEvent(input$run_ica_button, {
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if ((length(slot(sceObject()@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(sceObject()@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if ((length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
                     withProgress(message = "Running ICA", max = 1, value = 1, {
-                        sceObject(seuratICA(sceObject(), geneNamesSeurat(), input$ica_no_components))
-                        numberOfReductionComponents$ica <- dim(convertSCEToSeurat(sceObject(), geneNamesSeurat())[["ica"]])[2]
+                        seuratWorkflow$inSCE <- seuratICA(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$ica_no_components)
+                        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)[["ica"]])[2]
                     })
                     withProgress(message = "Plotting ICA", max = 1, value = 1, {
-                        plotObject$ICA <- seuratReductionPlot(sceObject(), geneNamesSeurat(), "ica")
+                        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "ica")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
                     showNotification("ICA Complete")
@@ -4020,12 +4027,12 @@ shinyServer(function(input, output, session) {
 
     #Find HVG
     observeEvent(input$find_hvg_button, {
-        if (!is.null(sceObject())) {
+        if (!is.null(seuratWorkflow$inSCE)) {
             withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-                sceObject(seuratFindHVG(sceObject(), geneNamesSeurat(), input$hvg_method, as.numeric(input$hvg_no_features)))
+                seuratWorkflow$inSCE <- seuratFindHVG(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$hvg_method, as.numeric(input$hvg_no_features))
             })
             withProgress(message = "Plotting HVG", max = 1, value = 1, {
-                plotObject$HVG <- seuratPlotHVG(sceObject(), geneNamesSeurat())
+                seuratWorkflow$plotObject$HVG <- seuratPlotHVG(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)
             })
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
             showNotification("Find HVG Complete")
@@ -4037,11 +4044,11 @@ shinyServer(function(input, output, session) {
 
     #Find clusters
     observeEvent(input$find_clusters_button, {
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if (!is.null(slot(sceObject()@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
                     withProgress(message = "Finding clusters", max = 1, value = 1, {
-                        sceObject(seuratFindClusters(sceObject(), geneNamesSeurat(), reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, group.singletons = input$group.singletons))
+                        seuratWorkflow$inSCE <- seuratFindClusters(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, groupSingletons = input$group.singletons)
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
                     showNotification("Find Clusters Complete")
@@ -4055,14 +4062,14 @@ shinyServer(function(input, output, session) {
 
     #Run tSNE
     observeEvent(input$run_tsne_button, {
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if (!is.null(slot(sceObject()@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
                     withProgress(message = "Running tSNE", max = 1, value = 1, {
-                        sceObject(seuratRunTSNE(sceObject(), geneNamesSeurat(), input$reduction_tsne_method, input$reduction_tsne_count))
+                        seuratWorkflow$inSCE <- seuratRunTSNE(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$reduction_tsne_method, input$reduction_tsne_count)
                     })
                     withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-                        plotObject$TSNE <- seuratReductionPlot(sceObject(), geneNamesSeurat(), "tsne")
+                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "tsne")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("tSNE Complete")
@@ -4076,14 +4083,14 @@ shinyServer(function(input, output, session) {
 
     #Run UMAP
     observeEvent(input$run_umap_button, {
-        if (!is.null(sceObject())) {
-            if (!is.null(sceObject()@metadata[["seurat"]])) {
-                if (!is.null(slot(sceObject()@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
+        if (!is.null(seuratWorkflow$inSCE)) {
+            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
+                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
                     withProgress(message = "Running UMAP", max = 1, value = 1, {
-                        sceObject(seuratRunUMAP(sceObject(), geneNamesSeurat(), input$reduction_umap_method, input$reduction_umap_count))
+                        seuratWorkflow$inSCE <- seuratRunUMAP(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$reduction_umap_method, input$reduction_umap_count)
                     })
                     withProgress(message = "Plotting UMAP", max = 1, value = 1, {
-                        plotObject$UMAP <- seuratReductionPlot(sceObject(), geneNamesSeurat(), "umap")
+                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "umap")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("UMAP Complete")
@@ -4095,130 +4102,80 @@ shinyServer(function(input, output, session) {
         }
     })
 
-    #Display seurat object metadata
-    output$seurat_metadata_output <- renderText({
-        if (!is.null(input$sce_rds_file)) {
-            capture.output(names(seuratObject()@meta.data))
-        }
-    })
-
-    #Display seurat object summary
-    output$seurat_summary_output <- renderText({
-        if (!is.null(input$sce_rds_file)) {
-            capture.output(seuratObject())
-        }
-    })
-
     #Display the number of significant PC computed
     output$pca_significant_pc_output <- renderText({
-        if (!is.null(numberOfReductionComponents$significantPC)) {
-            numberOfReductionComponents$significantPC
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
+            seuratWorkflow$numberOfReductionComponents$significantPC
         }
     })
 
     #Update pca significant slider maximum value with total number of computed principal components
     observe({
-        if (!is.null(numberOfReductionComponents$pca)) {
-            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = numberOfReductionComponents$pca)
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$pca)) {
+            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$pca)
         }
     })
 
     #Update pca significant slider current value with computed significant PC value
     observe({
-        if (!is.null(numberOfReductionComponents$significantPC)) {
-            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = numberOfReductionComponents$significantPC)
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
+            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = seuratWorkflow$numberOfReductionComponents$significantPC)
         }
     })
-
-    #Display current size of seurat object
-    output$download_seurat_summary <- renderPrint({
-        if (!is.null(input$sce_rds_file)) {
-            print("Seurat Object Size:")
-            paste(as.double(object.size(seuratObject())) / 1000000, "Megabytes")
-        }
-    })
-
-    #Display current size of sce object
-    output$download_sce_summary <- renderPrint({
-        if (!is.null(input$sce_rds_file)) {
-            print("SCE Object Size:")
-            paste(as.double(object.size(sceObject())) / 1000000, "Megabytes")
-        }
-    })
-
-    #Download seurat object
-    output$download_seurat_object <- downloadHandler(
-        filename = function() {
-            "seuratObject.rds"
-        },
-        content = function(file) {
-            saveRDS(convertSCEToSeurat(sceObject(), geneNamesSeurat()), file)
-        }
-    )
-
-    #Download sce object
-    output$download_sce_object <- downloadHandler(
-        filename = function() {
-            "sceObject.rds"
-        },
-        content = function(file) {
-            saveRDS(sceObject(), file)
-        }
-    )
 
     #Draw HVG plot
     output$plot_hvg <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$HVG
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$HVG
         }
     })
 
     #Draw PCA plot
     output$plot_pca <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$PCA
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$PCA
         }
     })
 
     #Draw Elbow (pca) plot
     output$plot_elbow <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$Elbow
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$Elbow
         }
     })
 
     #Draw Jackstraw (pca) plot
     output$plot_jackstraw <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$JackStraw
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$JackStraw
         }
     })
 
     #Draw heatmap (pca) plot
     output$plot_heatmap <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$Heatmap
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$Heatmap
         }
     })
 
     #Draw ICA plot
     output$plot_ica <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$ICA
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$ICA
         }
     })
 
     #Draw tSNE plot
     output$plot_tsne <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$TSNE
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$TSNE
         }
     })
 
     #Draw UMAP plot
     output$plot_umap <- renderPlot({
-        if (!is.null(input$sce_rds_file)) {
-            plotObject$UMAP
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+            seuratWorkflow$plotObject$UMAP
         }
     })
 
@@ -4228,26 +4185,26 @@ shinyServer(function(input, output, session) {
             updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_slider)
         }
         else if (input$reduction_umap_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_umap_count", value = numberOfReductionComponents$ica)
+            updateTextInput(session = session, inputId = "reduction_umap_count", value = seuratWorkflow$numberOfReductionComponents$ica)
         }
         if (input$reduction_clustering_method == "pca") {
             updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_slider)
         }
         else if (input$reduction_clustering_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_clustering_count", value = numberOfReductionComponents$ica)
+            updateTextInput(session = session, inputId = "reduction_clustering_count", value = seuratWorkflow$numberOfReductionComponents$ica)
         }
         if (input$reduction_tsne_method == "pca") {
             updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_slider)
         }
         else if (input$reduction_tsne_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_tsne_count", value = numberOfReductionComponents$ica)
+            updateTextInput(session = session, inputId = "reduction_tsne_count", value = seuratWorkflow$numberOfReductionComponents$ica)
         }
     })
 
     #Customize heatmap (pca) with selected options
     observeEvent(input$plot_heatmap_pca_button, {
         if (!is.null(input$picker_dimheatmap_components_pca)) {
-            plotObject$Heatmap <- seuratHeatmapPlot(plotObject$HeatmapCompute, length(input$picker_dimheatmap_components_pca), input$slider_dimheatmap_pca, input$picker_dimheatmap_components_pca)
+            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(seuratWorkflow$plotObject$HeatmapCompute, length(input$picker_dimheatmap_components_pca), input$slider_dimheatmap_pca, input$picker_dimheatmap_components_pca)
         }
     })
 
