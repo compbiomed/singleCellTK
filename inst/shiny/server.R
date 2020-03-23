@@ -1802,7 +1802,7 @@ shinyServer(function(input, output, session) {
     }
   })#observe_end
 
-  #-+-+-+-+-+-Observe Color bye###################################################
+  #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
   observe({
     if (!is.null(vals$counts)){
@@ -2027,6 +2027,17 @@ shinyServer(function(input, output, session) {
       }#ifnot_end
     }
   })###observe_end
+
+  observeEvent(input$testradiobutton, {
+    if (input$testradiobutton == "Scatter Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c(approach_list))
+    }else if (input$testradiobutton == "Bar Plot"){
+
+    }else if (input$testradiobutton == "Violin/Box Plot"){
+
+    }
+  })
 
 
 
