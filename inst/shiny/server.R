@@ -2030,8 +2030,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$testradiobutton, {
     if (input$testradiobutton == "Scatter Plot"){
-      updateSelectInput(session, "QuickAccess",
-        choices = c(approach_list))
+
     }else if (input$testradiobutton == "Bar Plot"){
 
     }else if (input$testradiobutton == "Violin/Box Plot"){
