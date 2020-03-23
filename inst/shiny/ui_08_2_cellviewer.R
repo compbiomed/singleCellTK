@@ -14,7 +14,7 @@ shinyPanelCellViewer <- fluidPage(
                             #-+-+-+-+-+-X-Axis###################################
                             conditionalPanel(condition = sprintf("input['%s'] == 'Custom'", "QuickAccess"),
                             h5(strong("Select X-Axis:")),
-                            selectInput("TypeSelect_Xaxis", h5("Type Of Data:"), choices = c("Reduced Dimensions","Expression Assays","Cell Annotation")),
+                            radioGroupButtons("TypeSelect_Xaxis", h5("Type Of Data:"), choices = c("Reduced Dimensions","Expression Assays","Cell Annotation"), direction = "vertical"),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Xaxis"),
                                              selectizeInput("ApproachSelect_Xaxis", label = h5("Select Approach:"), choices = c(approach_list)),
