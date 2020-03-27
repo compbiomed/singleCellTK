@@ -88,7 +88,7 @@ we'd be happy to help.
 ## QC Outputs
 There are several available QC algorithms that are implemented within singleCellTK as wrapper functions, which will be stored as `colData` within the output `singleCellExperiment` object. These are the currently available QC outputs:
 
-### General statistics
+### General metrics
 
 | Output name | Description | Package |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ There are several available QC algorithms that are implemented within singleCell
 | subsets_mito_percent | Percentage of mitochondial transcript counts out of total gene counts | scater |
 
 
-### Droplet-based statistics 
+### Metrics on Droplet matrix
 
 | Output name | Description | Package |
 | --- | --- | --- |
@@ -112,7 +112,7 @@ There are several available QC algorithms that are implemented within singleCell
 | dropletUtils_BarcodeRank_Knee | Numeric, specifies total count at the knee point | dropletUtils |
 | dropletUtils_BarcodeRank_Inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
 
-### Doublet detection
+### Metrics for doublet detection
 
 | Output name | Description | Package |
 | --- | --- | --- |
@@ -125,7 +125,7 @@ There are several available QC algorithms that are implemented within singleCell
 | scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
 | scrublet_call | Whether the cell is deemed a doublet or not by the algorithm. Will be  | scrublet |
 
-### Ambient RNA detection
+### Metrics for ambient RNA contamination
 
 | Output name | Description | Package |
 | --- | --- | --- |
