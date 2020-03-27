@@ -109,8 +109,8 @@ There are several available QC algorithms that are implemented within singleCell
 | dropletUtils_emptyDrops_logprob | Numeric, the barcode's count log-probability of a vector under the null model | dropletUtils |
 | dropletUtils_emptyDrops_fdr | Numeric, false discovery rate. Suggested fdr cut-off is 1% | dropletUtils |
 | dropletUtils_emptyDrops_limited | Logical, indicates if a lower p-value could be obtained by increasing niters, a number of iterations for Monte Carlo p-value calculations | dropletUtils |
-| dropletUtils_BarcodeRank_Knee | Numeric, specifies total count at the knee point | dropletUtils |
-| dropletUtils_BarcodeRank_Inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
+| dropletUtils_barcodeRank_knee | Numeric, specifies total count at the knee point | dropletUtils |
+| dropletUtils_barcodeRank_inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
 
 ### Metrics for doublet detection
 
@@ -129,8 +129,8 @@ There are several available QC algorithms that are implemented within singleCell
 
 | Output name | Description | Package |
 | --- | --- | --- |
-| decontX_Contamination | Probability of contamination determined by decontX | celda |
-| decontX_Clusters | Clusters determined by Celda, a clustering algorithm that runs in the background of decontX | celda |
+| decontX_contamination | Probability of contamination determined by decontX | celda |
+| decontX_clusters | Clusters determined by Celda, a clustering algorithm that runs in the background of decontX | celda |
 
 ## Develop singleCellTK
 
