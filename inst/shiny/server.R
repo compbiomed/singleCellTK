@@ -1630,6 +1630,7 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
+
   #-+-+-+-+-+-For Input Observe##############
   observe({
     # is there an error or not
@@ -1651,8 +1652,8 @@ shinyServer(function(input, output, session) {
       annotation_list <- names(colData(vals$counts))
       annotation_list2 <- list()
       for (i in 1:length(annotation_list)){
-        if(!is.numeric(vals$counts[[annotation_list[i]]])){
-          annotation_list2$Non_Numeric <- c(annotation_list2$Non_Numeric, annotation_list[i])
+        if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
         }else{
           annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
         }
@@ -1661,7 +1662,7 @@ shinyServer(function(input, output, session) {
       rm(annotation_list2)
 
       updateSelectInput(session, "QuickAccess",
-        choices = c("",approach_list,"Custom"))
+        choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
         choices = c(approach_list))
       updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
@@ -1689,6 +1690,23 @@ shinyServer(function(input, output, session) {
       updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
       updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:",
         choices = c("RdYlBu",color_seqdiv))
+    }
+  })
+
+  observeEvent(input$viewertabs, {
+    approach_list <- names(reducedDims(vals$counts))
+    if(input$viewertabs == "reducedDims Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("", approach_list))
+    }else if(input$viewertabs == "Bar Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
+    }else if(input$viewertabs == "Violin/Box Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
+    }else if (input$viewertabs == "Scatter Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
     }
   })
 
@@ -2028,17 +2046,6 @@ shinyServer(function(input, output, session) {
     }
   })###observe_end
 
-  observeEvent(input$testradiobutton, {
-    if (input$testradiobutton == "Scatter Plot"){
-
-    }else if (input$testradiobutton == "Bar Plot"){
-
-    }else if (input$testradiobutton == "Violin/Box Plot"){
-
-    }
-  })
-
-
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
@@ -2298,29 +2305,30 @@ shinyServer(function(input, output, session) {
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
-      xname = paste0(input$QuickAccess, 1)
+      xname <- paste0(input$QuickAccess, 1)
     }else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
-      xname = input$adjustxlab
+      xname <- input$adjustxlab
     }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
-      xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
+      xname <- paste0(input$ApproachSelect_Xaxis,"_",substr(input$ColumnSelect_Xaxis,
+        str_length(input$ColumnSelect_Xaxis),str_length(input$ColumnSelect_Xaxis)))
     }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
-      xname = paste0(input$GeneSelect_Assays_Xaxis)
+      xname <- input$GeneSelect_Assays_Xaxis
     }else{
-      xname = paste0(input$AnnotationSelect_Xaxis)
+      xname <- input$AnnotationSelect_Xaxis
     }
 
     ###Yaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
-      yname = paste0(input$QuickAccess, 2)
+      yname <- paste0(input$QuickAccess, 2)
     }else if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab != ""){
-      yname = input$adjustylab
+      yname <- input$adjustylab
     }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
-      yname = paste0(input$ApproachSelect_Yaxis,substr(input$ColumnSelect_Yaxis,2,2))
+      yname <- paste0(input$ApproachSelect_Yaxis,"_",substr(input$ColumnSelect_Yaxis,
+        str_length(input$ColumnSelect_Yaxis),str_length(input$ColumnSelect_Yaxis)))
     }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
-      yname = paste0(input$GeneSelect_Assays_Yaxis)
-
+      yname <- input$GeneSelect_Assays_Yaxis
     }else{
-      yname = paste0(input$AnnotationSelect_Yaxis)
+      yname <- input$AnnotationSelect_Yaxis
     }
 
     ###Yaxis label name
@@ -2344,10 +2352,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
+        }
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }else if (input$viewertabs == "Scatter Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
@@ -2356,8 +2376,18 @@ shinyServer(function(input, output, session) {
         #ggplot#none
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) +  labs(color= legendname)
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
@@ -2392,12 +2422,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2407,13 +2447,23 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level>25
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
 
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2447,12 +2497,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2462,13 +2522,22 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level<25,Continous
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2499,12 +2568,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2514,12 +2593,22 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level<25,Categorical
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
@@ -2551,12 +2640,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2566,13 +2665,22 @@ shinyServer(function(input, output, session) {
         #ggplot2#Numeric,noninteger
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2599,12 +2707,22 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2614,12 +2732,22 @@ shinyServer(function(input, output, session) {
         #ggplot3#
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
+        if (input$viewertabs == "reducedDims Plot"){
+          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+        }else if (input$viewertabs == "Bar Plot"){
+          a <- a + geom_bar(stat = "identity")
+        }else if (input$viewertabs == "Violin/Box Plot"){
+          if (input$vlnbox == "Box"){
+            a <- a + geom_boxplot()
+          }else{
+            a <- a + geom_violin()
+          }
+        }
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
