@@ -2,12 +2,10 @@ shinyPanelCellViewer <- fluidPage(
   tags$div(
     class = "container",
            h1("Cell Viewer"),
-           radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot", "Scatter Plot"), selected = NULL),
+           radioGroupButtons("testradiobutton", choices = c("Scatter Plot", "Bar Plot","Violin/Box Plot")),
            fluidRow(
              column(3,
                     wellPanel(style = "background: floralwhite",
-                      conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
-                        radioButtons("vlnbox", h5("Select a type of plot"), choices = c("Violin", "Box"))),
                             # Section 1 - Assay Settings
                             actionButton("cv_button1", h4(strong("Select Coordinates")),style = "background: floralwhite"),
                             # open by default
@@ -16,7 +14,7 @@ shinyPanelCellViewer <- fluidPage(
                             #-+-+-+-+-+-X-Axis###################################
                             conditionalPanel(condition = sprintf("input['%s'] == 'Custom'", "QuickAccess"),
                             h5(strong("Select X-Axis:")),
-                            selectInput("TypeSelect_Xaxis", h5("Type Of Data:"), choices = c("Reduced Dimensions","Expression Assays","Cell Annotation")),
+                            radioGroupButtons("TypeSelect_Xaxis", h5("Type Of Data:"), choices = c("Reduced Dimensions","Expression Assays","Cell Annotation"), direction = "vertical"),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Xaxis"),
                                              selectizeInput("ApproachSelect_Xaxis", label = h5("Select Approach:"), choices = c(approach_list)),
@@ -59,7 +57,7 @@ shinyPanelCellViewer <- fluidPage(
                             actionButton("cv_button2", h4(strong("Color")),style = "background: floralwhite"),
                             # open by default
                             tags$div(id = "cv_collapse2",
-                            radioGroupButtons(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions","Expression Assays","Cell Annotation"), direction = "vertical"),
+                            selectInput(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions","Expression Assays","Cell Annotation")),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Colorby"),
                                             selectizeInput("ApproachSelect_Colorby", label = h5("-> Approach:"),
@@ -136,8 +134,7 @@ shinyPanelCellViewer <- fluidPage(
                                 #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
                                 tags$hr(),
-                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:"))),
-                                  textInput("adjustlegendtitle", h5(strong("Legend title:"))))),
+                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:"))), textInput("adjustlegendtitle", h5(strong("Legend title:"))))),
                                 fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
                                          column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
                                          column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
