@@ -67,7 +67,7 @@ exportSCEtoFlatFile <- function(sce,
     }
     for (i in seq_along(SummarizedExperiment::assays(sce))) {
       message(date(), " .. Writing assay '", assayNames[i], "'")
-      assaypath <- file.path(path, paste0(assayNames[i], ".mtx"))
+      assaypath <- file.path(assaysFolder, paste0(assayNames[i], ".mtx"))
       
       .checkOverwrite(assaypath, overwrite)
       mat <- .convertToMatrix(SummarizedExperiment::assays(sce)[[i]])
@@ -137,7 +137,7 @@ exportSCEtoFlatFile <- function(sce,
       for (i in reducedDimNames) {
         message(date(), " .. Writing reducedDim '", i, "'")
         data <- SingleCellExperiment::reducedDim(sce, i, withDimnames = TRUE)
-        reducedDimNamePath <- file.path(path, i)
+        reducedDimNamePath <- file.path(reducedDimsFolder, i)
         .writeSCEFile(data, reducedDimNamePath, overwrite, gzipped)
       }
     }

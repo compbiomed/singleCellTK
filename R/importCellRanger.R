@@ -118,7 +118,7 @@
     barcodesFileNames,
     gzipped) {
 
-    if (!gzipped %in% c("auto", TRUE, FALSE)) {
+    if (any(!(gzipped %in% c("auto", TRUE, FALSE)))) {
         stop("Invalid 'gzipped' argument! Should be one of 'auto',",
             " TRUE, or FALSE")
     }
@@ -169,7 +169,7 @@
         }
 
         if (gzipped != "auto") {
-            if (length(gzipped) != sampleLength) {
+            if (length(gzipped) != sampleLength & length(gzipped) != 1) {
                 stop("'sampleDirs' and 'gzipped' have unequal lengths!")
             }
         }
@@ -234,7 +234,7 @@
             }
 
             if (gzipped != "auto") {
-                if (sampleLength != length(gzipped)) {
+                if (sampleLength != length(gzipped) & length(gzipped) != 1) {
                     stop("The length of 'gzipped' does not match",
                         " length of",
                         " subdirectories in 'cellRangerDirs'!")
@@ -293,7 +293,7 @@
             }
 
             if (gzipped != "auto") {
-                if (length(gzipped) != sampleLength) {
+                if (length(gzipped) != sampleLength & length(gzipped) != 1) {
                     stop("'gzipped' and 'unlist(sampleDirs)'",
                         " have unequal lengths!")
                 }
@@ -403,6 +403,21 @@
     return(sce)
 }
 
+.getCellRangerOutV2 <- function(dataTypeV2, reference) {
+    res <- vector("list", length = length(reference))
+
+    for (i in seq_along(reference)) {
+
+        if (dataTypeV2 == 'filtered') {
+            res[[i]] <- file.path('outs/filtered_gene_bc_matrices', reference[i])
+        } else {
+            res[[i]] <- file.path('outs/raw_gene_bc_matrices', reference[i])
+        }
+    }
+
+    cellRangerOutsV2 <- unlist(res)  
+    return(cellRangerOutsV2)  
+}
 
 #' @name importCellRanger
 #' @rdname importCellRanger
@@ -499,6 +514,23 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#' @param reference Character vector. The reference genome names. 
+#'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
+#'  \code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
+#'  Otherwise, make sure the length and order match the output of
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed 
+#'  for Cellranger version below 3.0.0. 
+#' @param dataTypeV2 Character. The type of output to import for
+#'  Cellranger version below 3.0.0. Whether to import the filtered or the 
+#'  raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
+#'  \code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will 
+#'  be ignored.
+#' @param cellRangerOutsV2 Character vector. The intermediate paths  
+#'  to filtered or raw cell barcode, feature, and matrix files for each 
+#'  sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and 
+#'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has 
+#'  length 1, it assumes that all samples use the same genome reference and 
+#'  the function will load only filtered or raw data. 
 #' @details
 #'  \code{importCellRangerV2} imports output from Cell Ranger V2.
 #'  \code{importCellRangerV2Sample} imports output from one sample from Cell
@@ -559,37 +591,54 @@ importCellRanger <- function(
 
 
 #' @rdname importCellRanger
-#' @param dataType The type of output to import. Whether to import the
-#'  filtered or the raw data. Can be one of "filtered" or
-#'  "raw". Default "filtered". When \code{dataType} is specified,
-#'  \code{cellRangerDirs} will be ignored.
+#' @examples
+#' # The following filtered feature, cell, and matrix files were downloaded from
+#' # https://support.10xgenomics.com/single-cell-gene-expression/datasets/
+#' # 2.1.0/pbmc4k
+#' # All genes are kept. 840 cell barcodes are extracted.
+#' sce <- importCellRangerV2(
+#'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+#'     sampleDirs = "pbmc_4k_v2_800",
+#'     sampleNames = "pbmc4k_800",
+#'     reference = 'GRCh38',
+#'     dataTypeV2 = "filtered")
 #' @export
 importCellRangerV2 <- function(
     cellRangerDirs = NULL,
     sampleDirs = NULL,
     sampleNames = NULL,
-    dataType = c("filtered", "raw"),
+    dataTypeV2 = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
-    delayedArray = TRUE) {
+    delayedArray = TRUE,
+    reference = NULL,
+    cellRangerOutsV2 = NULL,
+    gzipped = FALSE) {
 
     class <- match.arg(class)
-    dataType <- match.arg(dataType)
+    dataTypeV2 <- match.arg(dataTypeV2)
 
-    if (dataType == "filtered") {
-        cellRangerOuts <- "outs/filtered_gene_bc_matrix/"
-    } else if (dataType == "raw") {
-        cellRangerOuts <- "outs/raw_gene_bc_matrix/"
+    if (is.null(cellRangerOutsV2)) {
+        if (is.null(reference) | is.null(dataTypeV2)) {
+            stop("'reference' and 'dataTypeV2' are required ", 
+                 "when 'cellRangerOutsV2 is not specified!'")
+        }
     }
+
+    # Generate cellRangerOuts if it's null
+    if (is.null(cellRangerOutsV2)) {
+        cellRangerOutsV2 <- .getCellRangerOutV2(dataTypeV2, reference)
+    }
+
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
-        cellRangerOuts = cellRangerOuts,
-        dataType = dataType,
+        cellRangerOuts = cellRangerOutsV2,
+        dataType = NULL,
         matrixFileNames = "matrix.mtx",
         featuresFileNames = "genes.tsv",
         barcodesFileNames = "barcodes.tsv",
-        gzipped = FALSE,
+        gzipped = gzipped,
         class = class,
         delayedArray = delayedArray)
 
@@ -599,9 +648,9 @@ importCellRangerV2 <- function(
 #' @name importCellRangerV2Sample
 #' @title Construct SCE object from Cell Ranger V2 output for a single sample
 #' @description Read the filtered barcodes, features, and matrices for all
-#'  samples from Cell Ranger V3 output. Files are assumed to be named
+#'  samples from Cell Ranger V2 output. Files are assumed to be named
 #'  "matrix.mtx", "genes.tsv", and "barcodes.tsv".
-#' @param sampleDir  A path to the directory containing the data files. Default "./".
+#' @param dataDir  A path to the directory containing the data files. Default "./".
 #' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
 #'  Default "sample".
 #' @param class Character. The class of the expression matrix stored in the SCE
@@ -612,9 +661,14 @@ importCellRangerV2 <- function(
 #'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
+#' @examples
+#' sce <- importCellRangerV2Sample(
+#'     dataDir = system.file("extdata/pbmc_4k_v2_800/outs/",
+#'         "filtered_gene_bc_matrices/GRCh38", package = "singleCellTK"),
+#'     sampleName = "pbmc800")
 #' @export
 importCellRangerV2Sample <- function(
-    sampleDir = NULL,
+    dataDir = NULL,
     sampleName = NULL,
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
@@ -622,10 +676,10 @@ importCellRangerV2Sample <- function(
     class <- match.arg(class)
 
     .importCellRanger(cellRangerDirs = NULL,
-        sampleDirs = sampleDir,
+        sampleDirs = dataDir,
         sampleNames = sampleName,
-        cellRangerOuts = "",
-        dataType = "filtered", # ignored
+        cellRangerOuts = '',
+        dataType = NULL, # ignored
         matrixFileNames = "matrix.mtx",
         featuresFileNames = "genes.tsv",
         barcodesFileNames = "barcodes.tsv",
@@ -668,7 +722,7 @@ importCellRangerV3 <- function(
         matrixFileNames = "matrix.mtx.gz",
         featuresFileNames = "features.tsv.gz",
         barcodesFileNames = "barcodes.tsv.gz",
-        gzipped = "auto",
+        gzipped = TRUE,
         class = class,
         delayedArray = delayedArray)
 
@@ -680,10 +734,9 @@ importCellRangerV3 <- function(
 #' @description Read the filtered barcodes, features, and matrices for all
 #'  samples from Cell Ranger V3 output. Files are assumed to be named
 #'  "matrix.mtx.gz", "features.tsv.gz", and "barcodes.tsv.gz".
-#' @param sampleDir  A path to the directory containing the data files. Default
-#'  "./".
-#' @param sampleName A User-defined sample name. This will be prepended to all
-#'  cell barcode IDs. Default "sample".
+#' @param dataDir  A path to the directory containing the data files. Default "./".
+#' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
+#'  Default "sample".
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
@@ -694,12 +747,12 @@ importCellRangerV3 <- function(
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
 #' sce <- importCellRangerV3Sample(
-#'     sampleDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
+#'     dataDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
 #'         "filtered_feature_bc_matrix", package = "singleCellTK"),
 #'     sampleName = "hgmm1kv3")
 #' @export
 importCellRangerV3Sample <- function(
-    sampleDir = "./",
+    dataDir = "./",
     sampleName = "sample",
     class = c("Matrix", "matrix"),
     delayedArray = TRUE) {
@@ -707,7 +760,7 @@ importCellRangerV3Sample <- function(
     class <- match.arg(class)
 
     .importCellRanger(cellRangerDirs = NULL,
-        sampleDirs = sampleDir,
+        sampleDirs = dataDir,
         sampleNames = sampleName,
         cellRangerOuts = "",
         dataType = "filtered", # ignored

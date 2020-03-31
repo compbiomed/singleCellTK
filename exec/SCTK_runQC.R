@@ -81,12 +81,12 @@ if(is.na(path) || is.null(path) || path==""){
 dropletSCE <- NULL
 filteredSCE <- NULL
 if (preproc == "BUStools") {
-  dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix")
+  dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix", delayedArray=FALSE)
 } else if(preproc == "STARSolo"){
-  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix")
+  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
   filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix")
 } else if(preproc == "CellRangerV3"){
-  dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='raw', class = 'Matrix')
+  dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='raw', class = 'Matrix', delayedArray=FALSE)
   filteredSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='filtered', class = "Matrix")
 } else if(preproc == "CellRangerV2"){
   if(is.null(ref)){
@@ -95,12 +95,12 @@ if (preproc == "BUStools") {
     rawOuts <- paste0("outs/raw_gene_bc_matrices/", ref)
     filterOuts <- paste0("outs/filtered_gene_bc_matrices/", ref)
   }
-  dropletSCE <- importCellRanger(cellRangerDirs = path, sampleNames = samplename, gzipped = FALSE, cellRangerOuts = rawOuts, class = "Matrix", matrixFileNames = "matrix.mtx", featuresFileNames = "genes.tsv", barcodesFileNames = "barcodes.tsv")
+  dropletSCE <- importCellRanger(cellRangerDirs = path, sampleNames = samplename, gzipped = FALSE, cellRangerOuts = rawOuts, class = "Matrix", matrixFileNames = "matrix.mtx", featuresFileNames = "genes.tsv", barcodesFileNames = "barcodes.tsv", delayedArray=FALSE)
   filteredSCE <- importCellRanger(cellRangerDirs = path, sampleNames = samplename, gzipped = FALSE, cellRangerOuts = filterOuts, class = "Matrix", matrixFileNames = "matrix.mtx", featuresFileNames = "genes.tsv", barcodesFileNames = "barcodes.tsv")
 } else if(preproc == "SEQC"){
-  dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
+  dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
 } else if(preproc == "Optimus"){
-  dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
+  dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename, delayedArray = FALSE)
   filteredSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
 } else {
   stop(paste0("'", preproc, "' not supported."))
