@@ -88,14 +88,14 @@ singleCellTK docker image is available from [Docker Hub](https://hub.docker.com/
 
 The Docker image can be obtained by running: 
 ```
-docker pull rz2333/sctk_0.1.1:firsttry
+docker pull rz2333/sctk:1.7.2
 ```
 
 To perform quality control with singleCellTK docker, use the following code:
 
 ```
 docker run --rm -v /path/to/data:/SCTK_docker \
--it sctk_0.1.1 \
+-it rz2333/sctk:1.7.2 \
 -b /SCTK_docker/cellranger \
 -p CellRangerV3 \
 -s pbmc_100x100 \
@@ -110,7 +110,7 @@ The container could not access files in your local host system. That's why we ne
 The Singulatiry image can easily be built using Docker Hub as a source:
 
 ```
-singularity build sctk-0.1.1.sif docker://rz2333/sctk_0.1.1:firsttry
+singularity build sctk-0.1.1.sif docker://rz2333/sctk:1.7.2
 ```
 
 The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
@@ -124,7 +124,8 @@ singularity run sctk-0.1.1.sif \
 -g ./mitochondrial_human_symbol.gmt
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount).
+The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|skylake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
+
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
