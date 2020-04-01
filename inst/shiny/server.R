@@ -1630,6 +1630,23 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
+  plotfun <- function(a){
+    if (input$viewertabs == "reducedDims Plot"){
+      a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+    }else if (input$viewertabs == "Bar Plot"){
+      a <- a + geom_bar(stat = "identity")
+    }else if (input$viewertabs == "Violin/Box Plot"){
+      if (input$vlnbox == "Box"){
+        a <- a + geom_boxplot()
+      }else{
+        a <- a + geom_violin()
+      }
+    }else if (input$viewertabs == "Scatter Plot"){
+      a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+    }
+    return(a)
+  }
+
 
   #-+-+-+-+-+-For Input Observe##############
   observe({
@@ -2356,19 +2373,7 @@ shinyServer(function(input, output, session) {
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+        a <- plotfun(a)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
       #if not uniform
