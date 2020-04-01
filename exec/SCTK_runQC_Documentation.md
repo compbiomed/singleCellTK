@@ -112,7 +112,7 @@ This pipeline will run several QC algorithms. The QC metrics will be stored as `
 | scds_cxds_score | Numeric value that determines how likely a cell is a doublet, based on co-expression of gene pairs | scds |
 | scds_bcds_score | Numeric value that determines how likely a cell is a doublet, using artificially generated doublets | scds |
 | scds_hybrid_score | Numeric value that determines how likely a cell is a doublet, uses both cxds and bcds algorithm | scds |
-| scran_doubletCells_Score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
+| scran_doubletCells_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
 | scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
 | scrublet_call | Whether the cell is deemed a doublet or not by the algorithm. Will be  | scrublet |
 
