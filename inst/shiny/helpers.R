@@ -147,10 +147,10 @@ allSections <- function(action, collapseList) {
   }
 }
 
+# Code snippet from https://gist.github.com/jcheng5/3830244757f8ca25d4b00ce389ea41b3
 withConsoleRedirect <- function(expr) {
   # Change type="output" to type="message" to catch stderr
   # (messages, warnings, and errors) instead of stdout.
-  
   txt <- capture.output(results <- expr, type = "output")
   if (length(txt) > 0) {
     insertUI(paste0("#", "console"), where = "beforeEnd",
