@@ -125,6 +125,9 @@ runScrublet <- function(inSCE,
   }
 
   message(paste0(date(), " ... Running 'scrublet'"))
+  
+  ##  Getting current arguments values
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
@@ -172,7 +175,11 @@ runScrublet <- function(inSCE,
     warning("Scrublet did not complete successfully. Returning SCE without",
       " making any changes. Error given by Scrublet: \n\n", error)
   }
-
+  
+  inSCE@metadata$runScrublet <- argsList[-1]
+  ## Add scrublet version
+  ##inSCE@metadata$runScrublet$packageVersion <- packageDescription("scrublet")$Version
+  
   return(inSCE)
 }
 
