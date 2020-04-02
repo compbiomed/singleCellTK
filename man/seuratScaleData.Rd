@@ -6,7 +6,8 @@
 Scales the input sce object according to the input parameters}
 \usage{
 seuratScaleData(
-  sceObject,
+  inSCE,
+  useAssay,
   geneNamesSeurat,
   model.use,
   do.scale,
@@ -15,7 +16,9 @@ seuratScaleData(
 )
 }
 \arguments{
-\item{sceObject}{sce object to scale}
+\item{inSCE}{(sce) object to scale}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 

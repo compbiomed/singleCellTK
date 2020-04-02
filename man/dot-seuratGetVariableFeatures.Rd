@@ -5,10 +5,12 @@
 \title{.seuratGetVariableFeatures
 Retrieves the requested number of variable feature names}
 \usage{
-.seuratGetVariableFeatures(sceObject, geneNamesSeurat, numberOfFeatures)
+.seuratGetVariableFeatures(inSCE, useAssay, geneNamesSeurat, numberOfFeatures)
 }
 \arguments{
-\item{sceObject}{sce object from which to extract the variable feature names}
+\item{inSCE}{(sce) object from which to extract the variable feature names}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 

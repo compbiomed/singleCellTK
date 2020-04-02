@@ -12,6 +12,6 @@ test_that(desc = "Testing runDoubletCells", {
 test_that(desc = "Testing runDoubletFinder",  {
         sceres <- runDoubletFinder(sce, seuratPcs = 1:3, seuratNfeatures = 100, seuratRes = 1)
         expect_equal(length(colData(sceres)$doubletFinder_doublet_score_Resolution_1),ncol(sce))
-        expect_equal(class(colData(sceres)$), "numeric")
+        expect_equal(class(colData(sceres)$doubletFinder_doublet_score_Resolution_1), "numeric")
 })
 

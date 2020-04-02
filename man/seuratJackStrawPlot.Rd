@@ -5,10 +5,12 @@
 \title{seuratJackStrawPlot
 Computes the plot object for jackstraw plot from the pca slot in the input sce object}
 \usage{
-seuratJackStrawPlot(sceObject, geneNamesSeurat, dims)
+seuratJackStrawPlot(inSCE, useAssay, geneNamesSeurat, dims)
 }
 \arguments{
-\item{sceObject}{sce object from which to compute the jackstraw plot (pca should be computed)}
+\item{inSCE}{(sce) object from which to compute the jackstraw plot (pca should be computed)}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 

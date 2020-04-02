@@ -7,14 +7,17 @@ Wrapper for NormalizeData() function from seurat library
 Normalizes the sce object according to the input parameters}
 \usage{
 seuratNormalizeData(
-  sceObject,
+  inSCE,
+  useAssay,
   geneNamesSeurat,
   normalizationMethod,
   scaleFactor
 )
 }
 \arguments{
-\item{sceObject}{sce object to normalize}
+\item{inSCE}{(sce) object to normalize}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
