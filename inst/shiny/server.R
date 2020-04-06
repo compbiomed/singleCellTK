@@ -1630,7 +1630,7 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
-  plotfun <- function(input, output, session, a){
+  plotfun <- function(session, a){
     if (input$viewertabs == "reducedDims Plot"){
       a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
     }else if (input$viewertabs == "Bar Plot"){
