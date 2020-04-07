@@ -1630,23 +1630,6 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
-  plotfun <- function(input, a){
-    if (input$viewertabs == "reducedDims Plot"){
-      a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-    }else if (input$viewertabs == "Bar Plot"){
-      a <- a + geom_bar(stat = "identity")
-    }else if (input$viewertabs == "Violin/Box Plot"){
-      if (input$vlnbox == "Box"){
-        a <- a + geom_boxplot()
-      }else{
-        a <- a + geom_violin()
-      }
-    }else if (input$viewertabs == "Scatter Plot"){
-      a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-    }
-    return(a)
-  }
-
 
   #-+-+-+-+-+-For Input Observe##############
   observe({
@@ -2066,6 +2049,23 @@ shinyServer(function(input, output, session) {
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
+    plotfun <- function(a){
+      if (input$viewertabs == "reducedDims Plot"){
+        a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+      }else if (input$viewertabs == "Bar Plot"){
+        a <- a + geom_bar(stat = "identity")
+      }else if (input$viewertabs == "Violin/Box Plot"){
+        if (input$vlnbox == "Box"){
+          a <- a + geom_boxplot()
+        }else{
+          a <- a + geom_violin()
+        }
+      }else if (input$viewertabs == "Scatter Plot"){
+        a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
+      }
+      return(a)
+    }
+
     if(input$QuickAccess == ""){
 
     }else if(input$QuickAccess != "Custom"){
@@ -2373,7 +2373,7 @@ shinyServer(function(input, output, session) {
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
       #if not uniform
@@ -2382,7 +2382,7 @@ shinyServer(function(input, output, session) {
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) +  labs(color= legendname)
-        a <- plotfun(input, a)
+        a <- plotfun(a)
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
@@ -2422,7 +2422,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2438,7 +2438,7 @@ shinyServer(function(input, output, session) {
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
 
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2477,7 +2477,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2492,7 +2492,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2528,7 +2528,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2543,7 +2543,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        a <- plotfun(input, a)
+        a <- plotfun(a)
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
@@ -2580,7 +2580,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2595,7 +2595,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2627,7 +2627,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(input, a)
+        a <- plotfun(a)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2642,7 +2642,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        a <- plotfun(input, a)
+        a <- plotfun(a)
 
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
