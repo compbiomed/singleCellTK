@@ -2357,18 +2357,7 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-              a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-            a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+                a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
       #if not uniform
@@ -2377,19 +2366,8 @@ shinyServer(function(input, output, session) {
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) +  labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
+
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2428,19 +2406,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2455,19 +2421,8 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2506,19 +2461,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2533,19 +2476,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2581,19 +2512,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2608,19 +2527,8 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
+
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2656,19 +2564,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2683,19 +2579,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2727,19 +2611,7 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2754,19 +2626,8 @@ shinyServer(function(input, output, session) {
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        if (input$viewertabs == "reducedDims Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }else if (input$viewertabs == "Bar Plot"){
-          a <- a + geom_bar(stat = "identity")
-        }else if (input$viewertabs == "Violin/Box Plot"){
-          if (input$vlnbox == "Box"){
-            a <- a + geom_boxplot()
-          }else{
-            a <- a + geom_violin()
-          }
-        }else if (input$viewertabs == "Scatter Plot"){
-          a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)
-        }
+              if (input$viewertabs == "reducedDims Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }else if (input$viewertabs == "Bar Plot"){         a <- a + geom_bar(stat = "identity")       }else if (input$viewertabs == "Violin/Box Plot"){         if (input$vlnbox == "Box"){           a <- a + geom_boxplot()         }else{           a <- a + geom_violin()         }       }else if (input$viewertabs == "Scatter Plot"){         a <- a + geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha)       }
+
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
