@@ -42,14 +42,7 @@ runDoubletCells <- function(inSCE,
     seed = 12345,
     ...
 ) {
-  args1 <- as.list(sys.call())
-  args2 <- as.list(formals())
-    
-  args2 <- args2[!names(args2) %in% names(args1)]
-  current_params <- c(args1,args2)
-  current_params <- current_params[!names(current_params) %in% c("...","")]
-
-  metadata_params <- inSCE@metadata$QCParams
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
 
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
@@ -78,9 +71,10 @@ runDoubletCells <- function(inSCE,
 
     output[sceSampleInd, ] <- result
   }
-  
-  inSCE@metadata$QCParams <- metadata_params
-  inSCE@metadata$QCParams$doubletCells <- current_params
+
+  argsList = argsList[!names(argsList) %in% ("...")]
+  inSCE@metadata$runDoubletCells <- argsList[-1]
+  inSCE@metadata$runDoubletCells$packageVersion <- packageDescription("scran")$Version
   colData(inSCE) = cbind(colData(inSCE), output)
 
   return(inSCE)
