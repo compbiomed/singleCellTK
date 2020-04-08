@@ -4,14 +4,8 @@
 \alias{plotUMAP}
 \title{Plot UMAP results either on already run results or run first and then plot.}
 \usage{
-plotUMAP(
-  inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
-  reducedDimName = "UMAP",
-  runUMAP = FALSE,
-  useAssay = "logcounts"
-)
+plotUMAP(inSCE, colorBy = "No Color", shape = "No Shape",
+  reducedDimName = "UMAP", runUMAP = FALSE, useAssay = "logcounts")
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction components

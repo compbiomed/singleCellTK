@@ -4,7 +4,7 @@ context("Testing doublet detection algorithms")
 sce <- mouseBrainSubsetSCE
 
 test_that(desc = "Testing runDoubletCells", {
-	sceres <- runDoubletCells(sce)	
+	sceres <- runDoubletCells(sce)
 	expect_equal(length(colData(sceres)$scran_doubletCells_Score),ncol(sce))
 	expect_equal(class(colData(sceres)$scran_doubletCells_Score), "numeric")
 })

@@ -5,14 +5,8 @@
 \title{Apply Integration batch effect correction method from Seurat v3 to 
 SingleCellExperiment object}
 \usage{
-runSeurat3Integration(
-  inSCE,
-  useAssay = "logcounts",
-  batch = "batch",
-  assayName = "Seurat3Int",
-  nAnchors = nrow(inSCE),
-  verbose = TRUE
-)
+runSeurat3Integration(inSCE, useAssay = "logcounts", batch = "batch",
+  assayName = "Seurat3Int", nAnchors = nrow(inSCE), verbose = TRUE)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

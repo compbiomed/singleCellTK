@@ -5,15 +5,8 @@
 \title{seuratFindClusters
 Computes the clusters from the input sce object and stores them back in sce object}
 \usage{
-seuratFindClusters(
-  inSCE,
-  useAssay,
-  geneNamesSeurat,
-  reduction,
-  dims,
-  algorithm,
-  groupSingletons
-)
+seuratFindClusters(inSCE, useAssay, geneNamesSeurat, reduction, dims,
+  algorithm, groupSingletons)
 }
 \arguments{
 \item{inSCE}{(sce) object from which clusters should be computed and stored in}

@@ -4,14 +4,8 @@
 \alias{runSCGEN}
 \title{Apply scGen batch effect correction method to SingleCellExperiment object}
 \usage{
-runSCGEN(
-  inSCE,
-  useAssay = "logcounts",
-  batch = "batch",
-  cellType = "cell_type",
-  assayName = "SCGEN",
-  nEpochs = 50L
-)
+runSCGEN(inSCE, useAssay = "logcounts", batch = "batch",
+  cellType = "cell_type", assayName = "SCGEN", nEpochs = 50L)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

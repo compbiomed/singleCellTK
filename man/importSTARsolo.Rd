@@ -4,17 +4,10 @@
 \alias{importSTARsolo}
 \title{Construct SCE object from STARsolo outputs}
 \usage{
-importSTARsolo(
-  STARsoloDirs,
-  samples,
-  STARsoloOuts = "Gene/filtered",
-  matrixFileNames = "matrix.mtx",
-  featuresFileNames = "features.tsv",
-  barcodesFileNames = "barcodes.tsv",
-  gzipped = "auto",
-  class = c("Matrix", "matrix"),
-  delayedArray = TRUE
-)
+importSTARsolo(STARsoloDirs, samples, STARsoloOuts = "Gene/filtered",
+  matrixFileNames = "matrix.mtx", featuresFileNames = "features.tsv",
+  barcodesFileNames = "barcodes.tsv", gzipped = "auto",
+  class = c("Matrix", "matrix"), delayedArray = TRUE)
 }
 \arguments{
 \item{STARsoloDirs}{A vector of root directories of STARsolo output files.
@@ -80,15 +73,15 @@ Read the barcodes, features (genes), and matrices from STARsolo
 # pbmc_1k_v3_R2.fastq.gz
 # The following STARsolo command generates the filtered feature, cell, and
 # matrix files
-# STAR \
-#   --genomeDir ./index \
-#   --readFilesIn ./pbmc_1k_v3_R2.fastq.gz \
-#                 ./pbmc_1k_v3_R1.fastq.gz \
-#   --readFilesCommand zcat \
-#   --outSAMtype BAM Unsorted \
-#   --outBAMcompression -1 \
-#   --soloType CB_UMI_Simple \
-#   --soloCBwhitelist ./737K-august-2016.txt \
+# STAR \\
+#   --genomeDir ./index \\
+#   --readFilesIn ./pbmc_1k_v3_R2.fastq.gz \\
+#                 ./pbmc_1k_v3_R1.fastq.gz \\
+#   --readFilesCommand zcat \\
+#   --outSAMtype BAM Unsorted \\
+#   --outBAMcompression -1 \\
+#   --soloType CB_UMI_Simple \\
+#   --soloCBwhitelist ./737K-august-2016.txt \\
 #   --soloUMIlen 12
 
 # The top 20 genes and the first 20 cells are included in this example.

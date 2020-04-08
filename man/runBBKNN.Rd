@@ -4,13 +4,8 @@
 \alias{runBBKNN}
 \title{Apply BBKNN batch effect correction method to SingleCellExperiment object}
 \usage{
-runBBKNN(
-  inSCE,
-  useAssay = "logcounts",
-  batch = "batch",
-  reducedDimName = "BBKNN",
-  nComponents = 50L
-)
+runBBKNN(inSCE, useAssay = "logcounts", batch = "batch",
+  reducedDimName = "BBKNN", nComponents = 50L)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
