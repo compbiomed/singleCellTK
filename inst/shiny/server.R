@@ -838,7 +838,7 @@ shinyServer(function(input, output, session) {
             if (input$assayModifyAction == "log") {
                 if (input$trimAssayCheckbox) {
                     assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), input$trimValueAssay)
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
                 }
                 else {
                     assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
@@ -847,7 +847,7 @@ shinyServer(function(input, output, session) {
             else if (input$assayModifyAction == "log1p") {
                 if (input$trimAssayCheckbox) {
                     assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), input$trimValueAssay)
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
                 }
                 else {
                     assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
@@ -856,7 +856,7 @@ shinyServer(function(input, output, session) {
             else if (input$assayModifyAction == "z.score") {
                 if (input$trimAssayCheckbox) {
                     assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
-                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), input$trimValueAssay)
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
                 }
                 else {
                     assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))

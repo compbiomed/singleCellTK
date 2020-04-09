@@ -96,9 +96,14 @@ shinyPanelBatchcorrect <- fluidPage(
                             conditionalPanel(
                                 condition = "input.trimAssayCheckbox == true",
                                 numericInput(
-                                    inputId = "trimValueAssay",
-                                    label = "Specify cutoff value",
+                                    inputId = "trimUpperValueAssay",
+                                    label = "Specify upper trim value",
                                     value = 10
+                                ),
+                                numericInput(
+                                  inputId = "trimLowerValueAssay",
+                                  label = "Specify lower trim value",
+                                  value = -10
                                 )
                             ),
                             withBusyIndicatorUI(actionButton("modifyAssay", "Run")),
