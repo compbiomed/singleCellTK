@@ -71,9 +71,10 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
+createSCE <- simpleLog %@% function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
+  
   if (is.null(assayFile)){
     stop("You must supply a count file.")
   }
@@ -263,3 +264,16 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
     circlize::colorRamp2(c(1, 2, 3), c("red", "blue", "black"))
   }
 }
+
+## Convert a matrix to a sparse matrix and preserve column/row names
+.convertToMatrix <- function(x) {
+  cn <- colnames(x)
+  rn <- rownames(x)
+  
+  x <- methods::as(x, "dgCMatrix")
+  colnames(x) <- cn
+  rownames(x) <- rn
+  
+  return(x)
+}
+

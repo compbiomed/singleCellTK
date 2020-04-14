@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.5.8
+Version: 1.7.1
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
@@ -15,7 +15,7 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
                     comment = c(ORCID = "0000-0002-6247-6595")))
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
-    R (>= 3.5),
+    R (>= 3.6.0),
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
@@ -24,24 +24,33 @@ Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
 Encoding: UTF-8
+cache:
+  - packages: true
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
     Clustering, ImmunoOncology
 LazyData: TRUE
 Imports:
     ape,
+    batchelor,
+    BiocGenerics,
+    BiocParallel,
     colourpicker,
+    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
     DESeq2,
     DT,
     ggplot2,
+    ggplotify,
     ggtree,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
+    liger,
     limma,
     MAST,
+    Matrix,
     matrixStats,
     methods,
     multtest,
@@ -49,9 +58,15 @@ Imports:
     RColorBrewer,
     Rtsne,
     S4Vectors,
+    scater,
+    scMerge,
+    scran,
+    Seurat,
     shiny,
+    shinyFiles,
     shinyjs,
     shinyBS,
+    shinyjqui,
     sva,
     reshape2,
     AnnotationDbi,
@@ -61,8 +76,19 @@ Imports:
     celda,
     shinycssloaders,
     shinythemes,
-    umap
-RoxygenNote: 6.1.1
+    umap,
+    DropletUtils,
+    scds,
+    reticulate (>= 1.14),
+    tools,
+    withr,
+    GSEABase,
+    DoubletFinder,
+    R.utils,
+    zinbwave,
+    harmony,
+    V8
+RoxygenNote: 7.0.2
 Suggests:
     testthat,
     Rsubread,
@@ -71,12 +97,14 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    org.Mm.eg.db,
-    org.Hs.eg.db,
     scRNAseq,
     xtable,
     spelling,
-    GSEABase
+    org.Mm.eg.db
+Remotes: 
+    joshua-d-campbell/DoubletFinder,
+    joshua-d-campbell/harmony,
+    joshua-d-campbell/liger
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

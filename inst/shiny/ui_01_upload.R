@@ -4,6 +4,7 @@ if ("scRNAseq" %in% rownames(installed.packages())){
                        "th2_mahata_et_al", "allen_tasic_et_al")
 }
 
+
 shinyPanelUpload <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
@@ -28,10 +29,41 @@ shinyPanelUpload <- fluidPage(
       "(help)", target = "_blank")),
     tags$hr(),
     tags$div(id = "uploadAlert", alertText),
+    hidden(wellPanel(id = "annotationData",
+                     h4("Data summary:"),
+                     tableOutput("summarycontents"))), 
+    # hidden(wellPanel(id="annotationData",
+    #   sidebarLayout(
+    #     sidebarPanel(
+    #       h4("Modify Annotation Data:"),
+    #       selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
+    #       uiOutput("annotModifyUI"),
+    #       uiOutput("annotModifyUIHelpText"),
+    #       tags$hr(),
+    #       downloadButton("downloadcolData", "Download Annotation Data"),
+    #       tags$hr(),
+    #       fileInput(
+    #         "newAnnotFile", "Upload and replace annotation data:",
+    #         accept = c(
+    #           "text/csv",
+    #           "text/comma-separated-values",
+    #           ".csv"
+    #         )
+    #       )
+    #     ),
+    #     mainPanel(
+    #       tags$h4("Annotation data(colData):"),
+    #       tags$br(),
+    #       DT::dataTableOutput("colDataDataFrame")
+    #     )
+    #   )
+    # )),
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",
-                                                 "Use example data" = "example")
+												 "Upload Seurat RDS File" = "rds_seurat",
+                                                 "Use example data" = "example",
+                                                 "Import from a preprocessing tool" = 'directory')
     ),
     tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
@@ -170,6 +202,151 @@ shinyPanelUpload <- fluidPage(
         "rdsFile", "SCtkExperiment RDS file:", accept = c(".rds", ".RDS")
       )
     ),
+    conditionalPanel(
+      condition = sprintf("input['%s'] == 'rds_seurat'", "uploadChoice"),
+      h3("Choose an RDS file that contains a Seurat Object:"),
+      fileInput(
+        "rdsFileSeurat", "Seurat RDS file:", accept = c(".rds", ".RDS")
+      )
+    ),	
+    conditionalPanel(
+      condition = sprintf("input['%s'] == 'directory'", "uploadChoice"),
+      tags$style(HTML("
+      div {
+        word-wrap: break-word;
+      }
+      ")),
+      h3("Choose an Algorithm"),
+      radioButtons("algoChoice", label = NULL, c("Cell Ranger v2" = "cellRanger2",
+                                                   "Cell Ranger v3" = "cellRanger3",
+                                                   "STARsolo" = "starSolo",
+                                                   "BUStools" = "busTools",
+                                                   "SEQC" = "seqc",
+                                                   "Optimus" = "optimus")
+      ),
+      tags$br(),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'cellRanger2'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleCR2"),
+          tags$br(),
+          tags$br(),
+          actionButton("addCR2Sample", "Add a Sample"),
+          actionButton("removeCR2Sample", "Remove Last Sample")
+        ),
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'cellRanger3'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleCR3"),
+          tags$br(),
+          tags$br(),
+          actionButton("addCR3Sample", "Add a Sample"),
+          actionButton("removeCR3Sample", "Remove Last Sample")
+        ),
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'starSolo'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleSS"),
+          tags$br(),
+          tags$br(),
+          actionButton("addSSSample", "Add a Sample"),
+          actionButton("removeSSSample", "Remove Last Sample")
+        ),
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'busTools'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleBUS"),
+          tags$br(),
+          tags$br(),
+          actionButton("addBUSSample", "Add a Sample"),
+          actionButton("removeBUSSample", "Remove Last Sample")
+        ),
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'seqc'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleSEQ"),
+          tags$br(),
+          tags$br(),
+          actionButton("addSEQSample", "Add a Sample"),
+          actionButton("removeSEQSample", "Remove Last Sample")
+        ),
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'optimus'", "algoChoice"),
+        wellPanel(
+          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+        ),
+        wellPanel(
+          h4("Current Samples:"),
+          fluidRow(
+            column(4, tags$b("Sample ID")),
+            column(4, tags$b("Sample Name")),
+            column(4, tags$b("Base Directory")),
+          ),
+          tags$div(id = "newSampleOpt"),
+          tags$br(),
+          tags$br(),
+          actionButton("addOptSample", "Add a Sample"),
+          actionButton("removeOptSample", "Remove Last Sample")
+        ),
+      ),
+      
+      tags$br(),
+      tags$br(),
+      # actionButton("clearSamples", "Clear All Samples")
+    ),
+    
     withBusyIndicatorUI(
       actionButton("uploadData", "Upload")
     ),
