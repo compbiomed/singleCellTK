@@ -124,7 +124,7 @@ singularity run sctk-0.1.1.sif \
 -g ./mitochondrial_human_symbol.gmt
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|skylake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
+The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. This problem will be fixed in future to make it compatible with older cpu architectures. 
 
 
 ## Documentation of tools that are currently available within the pipeline:

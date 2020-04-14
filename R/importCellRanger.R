@@ -611,8 +611,7 @@ importCellRangerV2 <- function(
     class = c("Matrix", "matrix"),
     delayedArray = TRUE,
     reference = NULL,
-    cellRangerOutsV2 = NULL,
-    gzipped = FALSE) {
+    cellRangerOutsV2 = NULL) {
 
     class <- match.arg(class)
     dataTypeV2 <- match.arg(dataTypeV2)
