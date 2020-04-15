@@ -5,8 +5,14 @@
 \title{Uniform Manifold Approximation and Projection(UMAP) algorithm for
 dimension reduction.}
 \usage{
-getUMAP(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-  n_neighbors = 5, n_iterations = 200, alpha = 1)
+getUMAP(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "UMAP",
+  n_neighbors = 5,
+  n_iterations = 200,
+  alpha = 1
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

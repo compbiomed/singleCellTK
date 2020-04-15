@@ -4,7 +4,18 @@
 \alias{runBcds}
 \title{Find doublets/multiplets using \link[scds]{bcds}.}
 \usage{
-runBcds(inSCE, sample = NULL, seed = 12345, ...)
+runBcds(
+  inSCE,
+  sample = NULL,
+  seed = 12345,
+  ntop = 500,
+  srat = 1,
+  verb = FALSE,
+  retRes = FALSE,
+  nmax = "tune",
+  varImp = FALSE,
+  estNdbl = FALSE
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

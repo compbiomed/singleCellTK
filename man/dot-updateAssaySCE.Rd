@@ -5,8 +5,7 @@
 \title{.updateAssaySCE
 Update/Modify/Add an assay in the provided sce object}
 \usage{
-.updateAssaySCE(inSCE, geneNames, seuratObject, assaySlotSCE,
-  assaySlotSeurat)
+.updateAssaySCE(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat)
 }
 \arguments{
 \item{inSCE}{(sce) object to which we have to add assay to (copy to)}
@@ -18,6 +17,9 @@ Update/Modify/Add an assay in the provided sce object}
 \item{assaySlotSCE}{the assay slot in sce object}
 
 \item{assaySlotSeurat}{the assay slot in seurat object}
+}
+\value{
+
 }
 \description{
 .updateAssaySCE

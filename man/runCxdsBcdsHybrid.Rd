@@ -4,7 +4,16 @@
 \alias{runCxdsBcdsHybrid}
 \title{Find doublets/multiplets using \link[scds]{cxds_bcds_hybrid}.}
 \usage{
-runCxdsBcdsHybrid(inSCE, sample = NULL, seed = 12345, ...)
+runCxdsBcdsHybrid(
+  inSCE,
+  sample = NULL,
+  seed = 12345,
+  cxdsArgs = NULL,
+  bcdsArgs = NULL,
+  verb = FALSE,
+  estNdbl = FALSE,
+  force = FALSE
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

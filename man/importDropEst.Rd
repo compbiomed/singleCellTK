@@ -4,9 +4,13 @@
 \alias{importDropEst}
 \title{Create a SingleCellExperiment Object from DropEst output}
 \usage{
-importDropEst(sampleDirs = NULL, dataType = c("filtered", "raw"),
-  rdsFileName = "cell.counts", sampleNames = NULL,
-  delayedArray = TRUE)
+importDropEst(
+  sampleDirs = NULL,
+  dataType = c("filtered", "raw"),
+  rdsFileName = "cell.counts",
+  sampleNames = NULL,
+  delayedArray = TRUE
+)
 }
 \arguments{
 \item{rdsFileName}{File name prefix of the DropEst RDS output. default is "cell.counts"}

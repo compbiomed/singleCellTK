@@ -4,14 +4,28 @@
 \alias{runScrublet}
 \title{Find doublets using \code{scrublet}.}
 \usage{
-runScrublet(inSCE, sample = NULL, useAssay = "counts",
-  simDoubletRatio = 2, nNeighbors = NULL, expectedDoubletRate = 0.1,
-  stdevDoubletRate = 0.02, syntheticDoubletUmiSubsampling = 1,
-  useApproxNeighbors = TRUE, distanceMetric = "euclidean",
-  getDoubletNeighborParents = FALSE, minCounts = 3, minCells = 3L,
-  minGeneVariabilityPctl = 85, logTransform = FALSE,
-  meanCenter = TRUE, normalizeVariance = TRUE, nPrinComps = 30L,
-  verbose = TRUE, seed = 12345)
+runScrublet(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  simDoubletRatio = 2,
+  nNeighbors = NULL,
+  expectedDoubletRate = 0.1,
+  stdevDoubletRate = 0.02,
+  syntheticDoubletUmiSubsampling = 1,
+  useApproxNeighbors = TRUE,
+  distanceMetric = "euclidean",
+  getDoubletNeighborParents = FALSE,
+  minCounts = 3,
+  minCells = 3L,
+  minGeneVariabilityPctl = 85,
+  logTransform = FALSE,
+  meanCenter = TRUE,
+  normalizeVariance = TRUE,
+  nPrinComps = 30L,
+  verbose = TRUE,
+  seed = 12345
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

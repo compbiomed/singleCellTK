@@ -4,9 +4,15 @@
 \alias{ComBatSCE}
 \title{ComBatSCE}
 \usage{
-ComBatSCE(inSCE, batch, useAssay = "logcounts",
-  par.prior = "Parametric", covariates = NULL, mean.only = FALSE,
-  ref.batch = NULL)
+ComBatSCE(
+  inSCE,
+  batch,
+  useAssay = "logcounts",
+  par.prior = "Parametric",
+  covariates = NULL,
+  mean.only = FALSE,
+  ref.batch = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}

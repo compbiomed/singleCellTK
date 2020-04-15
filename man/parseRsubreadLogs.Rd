@@ -4,8 +4,7 @@
 \alias{parseRsubreadLogs}
 \title{Parse Rsubread Logs for Mapping and Feature Count Statistics}
 \usage{
-parseRsubreadLogs(alignLog = NULL, featurecountLog = NULL,
-  sampleName = NULL)
+parseRsubreadLogs(alignLog = NULL, featurecountLog = NULL, sampleName = NULL)
 }
 \arguments{
 \item{alignLog}{Path to a log file created by the Rsubread align function}

@@ -4,9 +4,17 @@
 \alias{plotDimRedQC}
 \title{Dimension reduction plot of QC outputs.}
 \usage{
-plotDimRedQC(inSCE, outputs, log.counts = TRUE,
-  reducedDimName = "TSNE", runDimensionReduction = FALSE,
-  useAssay = "counts", size = 0.5, figRows = NULL, figCols = NULL)
+plotDimRedQC(
+  inSCE,
+  outputs,
+  log.counts = TRUE,
+  reducedDimName = "TSNE",
+  runDimensionReduction = FALSE,
+  useAssay = "counts",
+  size = 0.5,
+  figRows = NULL,
+  figCols = NULL
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

@@ -4,10 +4,17 @@
 \alias{importSEQC}
 \title{Construct SCE object from seqc output}
 \usage{
-importSEQC(seqcDirs = NULL, samples = NULL, prefix = NULL,
-  gzipped = FALSE, class = c("Matrix", "matrix"),
-  delayedArray = TRUE, cbNotFirstCol = TRUE, feNotFirstCol = TRUE,
-  combinedSample = TRUE)
+importSEQC(
+  seqcDirs = NULL,
+  samples = NULL,
+  prefix = NULL,
+  gzipped = FALSE,
+  class = c("Matrix", "matrix"),
+  delayedArray = TRUE,
+  cbNotFirstCol = TRUE,
+  feNotFirstCol = TRUE,
+  combinedSample = TRUE
+)
 }
 \arguments{
 \item{seqcDirs}{A vector of paths to seqc output files. Each sample

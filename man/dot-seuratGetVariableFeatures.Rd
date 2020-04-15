@@ -5,8 +5,7 @@
 \title{.seuratGetVariableFeatures
 Retrieves the requested number of variable feature names}
 \usage{
-.seuratGetVariableFeatures(inSCE, useAssay, geneNamesSeurat,
-  numberOfFeatures)
+.seuratGetVariableFeatures(inSCE, useAssay, geneNamesSeurat, numberOfFeatures)
 }
 \arguments{
 \item{inSCE}{(sce) object from which to extract the variable feature names}

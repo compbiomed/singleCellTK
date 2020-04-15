@@ -4,8 +4,14 @@
 \alias{runPerCellQC}
 \title{Wrapper for calculating QC metrics with scater.}
 \usage{
-runPerCellQC(inSCE, useAssay = "counts", geneSetList = NULL,
-  geneSetListLocation = "rownames", geneSetCollection = NULL, ...)
+runPerCellQC(
+  inSCE,
+  useAssay = "counts",
+  geneSetList = NULL,
+  geneSetListLocation = "rownames",
+  geneSetCollection = NULL,
+  ...
+)
 }
 \arguments{
 \item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.}
@@ -15,10 +21,10 @@ runPerCellQC(inSCE, useAssay = "counts", geneSetList = NULL,
 \item{geneSetList}{List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}.}
 
 \item{geneSetListLocation}{Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in \code{rownames(inSCE)}.
-If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different 
+If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different
 gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(inSCE)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(inSCE)}. Default 'rownames'.}
 
-\item{geneSetCollection}{Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{inSCE} should be in the \code{description} slot of each gene set and should follow the 
+\item{geneSetCollection}{Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{inSCE} should be in the \code{description} slot of each gene set and should follow the
 same notation as \code{geneSetListLocation}. The function \link[GSEABase]{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
 of the gene IDs in \code{inSCE}. These gene sets will be included with those from \code{geneSetList} if both parameters are provided.}
 

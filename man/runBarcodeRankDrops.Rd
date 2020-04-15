@@ -4,7 +4,14 @@
 \alias{runBarcodeRankDrops}
 \title{Identify empty droplets using \link[DropletUtils]{barcodeRanks}.}
 \usage{
-runBarcodeRankDrops(inSCE, sample = NULL, useAssay = "counts", ...)
+runBarcodeRankDrops(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  lower = 100,
+  fit.bounds = NULL,
+  df = 20
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

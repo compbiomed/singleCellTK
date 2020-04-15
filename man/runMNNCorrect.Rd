@@ -5,8 +5,14 @@
 \title{Apply the mutual nearest neighbors (MNN) batch effect correction method to 
 SingleCellExperiment object}
 \usage{
-runMNNCorrect(inSCE, useAssay = "logcounts", batch = "batch",
-  assayName = "MNN", k = 20, sigma = 0.1)
+runMNNCorrect(
+  inSCE,
+  useAssay = "logcounts",
+  batch = "batch",
+  assayName = "MNN",
+  k = 20,
+  sigma = 0.1
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

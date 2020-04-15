@@ -4,9 +4,15 @@
 \alias{runLIGER}
 \title{Apply LIGER batch effect correction method to SingleCellExperiment object}
 \usage{
-runLIGER(inSCE, useAssay = "logcounts", batch = "batch",
-  reducedDimName = "LIGER", nComponents = 20L, lambda = 5,
-  resolution = 1)
+runLIGER(
+  inSCE,
+  useAssay = "logcounts",
+  batch = "batch",
+  reducedDimName = "LIGER",
+  nComponents = 20L,
+  lambda = 5,
+  resolution = 1
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset

@@ -4,8 +4,7 @@
 \alias{exportSCEtoFlatFile}
 \title{Export a \link[SingleCellExperiment]{SingleCellExperiment} object to flat text files}
 \usage{
-exportSCEtoFlatFile(sce, outputDir = "./", overwrite = TRUE,
-  gzipped = TRUE)
+exportSCEtoFlatFile(sce, outputDir = "./", overwrite = TRUE, gzipped = TRUE)
 }
 \arguments{
 \item{sce}{\link[SingleCellExperiment]{SingleCellExperiment} object to be

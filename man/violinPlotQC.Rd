@@ -4,9 +4,18 @@
 \alias{violinPlotQC}
 \title{Violin plot of QC outputs.}
 \usage{
-violinPlotQC(inSCE, outputnames, sample = NULL, useAssay = "counts",
-  fileName = NULL, fileWidth = 20, fileHeight = 20,
-  fileUnits = "cm", figRows = NULL, figCols = NULL)
+violinPlotQC(
+  inSCE,
+  outputnames,
+  sample = NULL,
+  useAssay = "counts",
+  fileName = NULL,
+  fileWidth = 20,
+  fileHeight = 20,
+  fileUnits = "cm",
+  figRows = NULL,
+  figCols = NULL
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

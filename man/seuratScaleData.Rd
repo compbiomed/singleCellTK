@@ -5,8 +5,15 @@
 \title{seuratScaleData
 Scales the input sce object according to the input parameters}
 \usage{
-seuratScaleData(inSCE, useAssay, geneNamesSeurat, model.use, do.scale,
-  do.center, scale.max)
+seuratScaleData(
+  inSCE,
+  useAssay,
+  geneNamesSeurat,
+  model.use,
+  do.scale,
+  do.center,
+  scale.max
+)
 }
 \arguments{
 \item{inSCE}{(sce) object to scale}
