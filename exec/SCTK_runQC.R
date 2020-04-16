@@ -28,7 +28,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRangerV3",
-        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus','DropEst'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
         help="Name of the sample. This will be prepended to the cell barcodes."),
@@ -80,7 +80,10 @@ if (preproc == "BUStools") {
 } else if(preproc == "Optimus"){
   dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
   filteredSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
-} else {
+} else if(preproc == "DropEst"){
+  dropletSCE <- importDropEst(sampleDirs = path,sampleNames = samplename, dataType = 'raw')
+  filteredSCE <- importDropEst(sampleDirs = path,sampleNames = samplename, dataType = 'filtered')
+}else {
   stop(paste0("'", preproc, "' not supported."))
 }
 
@@ -131,6 +134,10 @@ if(!is.null(mergedDropletSCE)){
   ## Export to flatfile
   fn <- file.path(directory, samplename, "FlatFile", "Droplets")
   writeSCE(mergedDropletSCE, outputDir = fn)
+  
+  ## Export to Python
+  fn <- file.path(directory, samplename, "Anndata", "Droplets")
+  exportSCEtoAnnData(sce=mergedDropletSCE,outputDir = fn, sample = samplename)
 }
 if(!is.null(mergedFilteredSCE)) {
   ## Export to R    
@@ -140,10 +147,11 @@ if(!is.null(mergedFilteredSCE)) {
   ## Export to flatfile  
   fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
   writeSCE(mergedFilteredSCE, outputDir = fn)
+  
+  ## Export to Python
+  fn <- file.path(directory, samplename, "Anndata", "FilteredCells")
+  exportSCEtoAnnData(sce=mergedFilteredSCE,outputDir = fn, sample = samplename)
 }  
-
-## ToDo ##
-## Export to Python
 
 
 
