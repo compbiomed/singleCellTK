@@ -1,18 +1,22 @@
 
-.runBarcodeRankDrops <- function(barcode.matrix, ...) {
-
+.runBarcodeRankDrops <- function(barcode.matrix, lower=100, 
+                                 fit.bounds=NULL, 
+                                 df=20) {
+  
   ## Convert to sparse matrix if not already in that format
   barcode.matrix <- .convertToMatrix(barcode.matrix)
   
-  output <- DropletUtils::barcodeRanks(m = barcode.matrix, ...)
-
+  output <- DropletUtils::barcodeRanks(m = barcode.matrix, lower=100, 
+                                       fit.bounds=NULL, 
+                                       df=20)
+  
   knee.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$knee)
   inflection.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$inflection)
-
+  
   result <- cbind(knee.ix, inflection.ix)
   colnames(result) <- c("dropletUtils_barcodeRank_knee",
                         "dropletUtils_barcodeRank_inflection")
-
+  
   return(result)
 }
 
@@ -48,9 +52,11 @@
 #' sce <- runBarcodeRankDrops(inSCE = emptyDropsSceExample)
 #' @export
 runBarcodeRankDrops <- function(inSCE,
-    sample = NULL,
-    useAssay = "counts",
-    ...
+                                sample = NULL,
+                                useAssay = "counts", 
+                                lower=100, 
+                                fit.bounds=NULL, 
+                                df=20
 ) {
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
@@ -59,27 +65,35 @@ runBarcodeRankDrops <- function(inSCE,
   } else {
     sample = rep(1, ncol(inSCE))
   }
-
+  
   message(paste0(date(), " ... Running 'barcodeRanks'"))
-
+  
+  ##  Getting current arguments values
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
-            dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
-            dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)))
-
+                                 dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
+                                 dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)))
+  
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
   for (i in seq_len(length(samples))) {
     sceSampleInd <- sample == samples[i]
     sceSample <- inSCE[, sceSampleInd]
-
+    
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-    result <- .runBarcodeRankDrops(barcode.matrix = mat, ...)
-
+    result <- .runBarcodeRankDrops(barcode.matrix = mat, lower=100,
+                                   fit.bounds=NULL, 
+                                   df=20)
+    
     output[sceSampleInd, ] <- result
   }
-
+  
   colData(inSCE) = cbind(colData(inSCE), output)
-
+  
+  inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
+  inSCE@metadata$runBarcodeRankDrops$packageVersion <- packageDescription("DropletUtils")$Version
+  
   return(inSCE)
 }

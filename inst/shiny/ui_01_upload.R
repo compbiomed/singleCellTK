@@ -61,6 +61,7 @@ shinyPanelUpload <- fluidPage(
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",
+												 "Upload Seurat RDS File" = "rds_seurat",
                                                  "Use example data" = "example",
                                                  "Import from a preprocessing tool" = 'directory')
     ),
@@ -201,6 +202,13 @@ shinyPanelUpload <- fluidPage(
         "rdsFile", "SCtkExperiment RDS file:", accept = c(".rds", ".RDS")
       )
     ),
+    conditionalPanel(
+      condition = sprintf("input['%s'] == 'rds_seurat'", "uploadChoice"),
+      h3("Choose an RDS file that contains a Seurat Object:"),
+      fileInput(
+        "rdsFileSeurat", "Seurat RDS file:", accept = c(".rds", ".RDS")
+      )
+    ),	
     conditionalPanel(
       condition = sprintf("input['%s'] == 'directory'", "uploadChoice"),
       tags$style(HTML("

@@ -24,7 +24,11 @@
 runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    ...) {
+    ntop = 500, 
+    binThresh = 0,
+    verb = FALSE, 
+    retRes = FALSE,
+    estNdbl = FALSE) {
 
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
@@ -36,9 +40,12 @@ runCxds <- function(inSCE,
     }
 
     message(paste0(date(), " ... Running 'cxds'"))
+    
+    ## Getting current arguments
+    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
 
     ## Define result matrix for all samples
-    if ("estNdbl" %in% names(list(...))) {
+    if (estNdbl) {
         output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
             cxds_score = numeric(ncol(inSCE)),
             cxds_call = logical(ncol(inSCE)))
@@ -58,7 +65,12 @@ runCxds <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample, ntop = nGene, ...))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample,
+                                                           ntop = nGene, 
+                                                           binThresh = 0, 
+                                                           verb = FALSE, 
+                                                           retRes = FALSE,
+                                                           estNdbl = FALSE))}, silent = TRUE)
           nGene <- nGene - 100
         }  
         
@@ -78,6 +90,9 @@ runCxds <- function(inSCE,
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
+    
+    inSCE@metadata$runCxds <- argsList[-1]
+    inSCE@metadata$runCxds$packageVersion <- packageDescription("scds")$Version
 
     return(inSCE)
 }
@@ -109,7 +124,14 @@ runCxds <- function(inSCE,
 runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    ...) {
+    ntop = 500, 
+    srat = 1, 
+    verb = FALSE,
+    retRes = FALSE,
+    nmax = "tune", 
+    varImp = FALSE,
+    estNdbl = FALSE
+    ) {
 
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
@@ -121,9 +143,13 @@ runBcds <- function(inSCE,
     }
 
     message(paste0(date(), " ... Running 'bcds'"))
+    
+    ## Getting current arguments
+    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    
 
     ## Define result matrix for all samples
-    if ("estNdbl" %in% names(list(...))) {
+    if (estNdbl) {
         output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
             bcds_score = numeric(ncol(inSCE)),
             bcds_call = logical(ncol(inSCE)))
@@ -164,6 +190,9 @@ runBcds <- function(inSCE,
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
+    
+    inSCE@metadata$runBcds <- argsList[-1]
+    inSCE@metadata$runBcds$packageVersion <- packageDescription("scds")$Version
 
     return(inSCE)
 }
@@ -196,7 +225,11 @@ runBcds <- function(inSCE,
 runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    ...) {
+    cxdsArgs = NULL,
+    bcdsArgs = NULL, 
+    verb = FALSE,
+    estNdbl = FALSE,
+    force = FALSE) {
 
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
@@ -209,8 +242,11 @@ runCxdsBcdsHybrid <- function(inSCE,
 
     message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
 
+    ## Getting current arguments
+    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    
     ## Define result matrix for all samples
-    if ("estNdbl" %in% names(list(...))) {
+    if (estNdbl) {
         output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
             hybrid_score = numeric(ncol(inSCE)),
             hybrid_call = logical(ncol(inSCE)))
@@ -230,7 +266,12 @@ runCxdsBcdsHybrid <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, cxdsArgs=list(ntop = nGene), bcdsArgs=list(ntop = nGene)))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, 
+                                                                       cxdsArgs=list(ntop = nGene), 
+                                                                       bcdsArgs=list(ntop = nGene), 
+                                                                       verb = FALSE,
+                                                                       estNdbl = FALSE,
+                                                                       force = FALSE))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
@@ -250,6 +291,9 @@ runCxdsBcdsHybrid <- function(inSCE,
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
+    
+    inSCE@metadata$runCxdsBcdsHybrid <- argsList[-1]
+    inSCE@metadata$runCxdsBcdsHybrid$packageVersion <- packageDescription("scds")$Version
 
     return(inSCE)
 }
