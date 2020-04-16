@@ -11,10 +11,10 @@
 #' interests that will be set as the primary matrix of the output AnnData.
 #' @param outputDir Path to the directory where .h5ad outputs will be written
 #' @param overwrite Boolean. Default \code{TRUE}.
-#' @param compression Default \code{NULL}.If output file compression is required, this variable accepts
+#' @param compression Default \code{None}.If output file compression is required, this variable accepts
 #' 'gzip' or 'lzf' as inputs.
 #' @param compression_opts Integer. Default \code{NULL} Sets the compression level
-#' @param forceDense Default \code{NULL} Write sparse data as a dense matrix.
+#' @param forceDense Default \code{False} Write sparse data as a dense matrix.
 #' Refer anndata.write_h5ad documentation for details
 #' @examples
 #' data(sce_chcl, package = "scds")
@@ -27,7 +27,7 @@ exportSCEtoAnnData <- function(sce,
                                 outputDir="./",
                                 sample = "sample",
                                 overwrite=TRUE,
-                                compression= c('gzip','lzf','None'),
+                                compression= c('None','lzf','gzip'),
                                 compressionOpts = NULL,
                                 forceDense= c('False','True')){
   compression <- match.arg(compression)
