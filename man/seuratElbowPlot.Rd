@@ -8,11 +8,11 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
 seuratElbowPlot(sceObject, geneNamesSeurat, significantPC)
 }
 \arguments{
-\item{sceObject;}{sce object from which to compute the elbow plot (pca should be computed)}
+\item{sceObject}{sce object from which to compute the elbow plot (pca should be computed)}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{significantPC;}{a numerical value indicating the number of significant principal components (used to alter the color of the significant components)}
+\item{significantPC}{a numerical value indicating the number of significant principal components (used to alter the color of the significant components)}
 }
 \value{
 plot object

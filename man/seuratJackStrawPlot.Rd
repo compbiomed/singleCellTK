@@ -8,11 +8,11 @@ Computes the plot object for jackstraw plot from the pca slot in the input sce o
 seuratJackStrawPlot(sceObject, geneNamesSeurat, dims)
 }
 \arguments{
-\item{sceObject;}{sce object from which to compute the jackstraw plot (pca should be computed)}
+\item{sceObject}{sce object from which to compute the jackstraw plot (pca should be computed)}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{dims;}{a numerical value indicating how many components to use in the computation of jackstraw plot from pca (default is number of pca components computed)}
+\item{dims}{a numerical value indicating how many components to use in the computation of jackstraw plot from pca (default is number of pca components computed)}
 }
 \value{
 plot object

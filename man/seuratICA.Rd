@@ -8,14 +8,14 @@ Computes ICA on the input sce object and stores the calculated independent compo
 seuratICA(sceObject, geneNamesSeurat, nics)
 }
 \arguments{
-\item{sceObject;}{sce object on which to compute ICA}
+\item{sceObject}{sce object on which to compute ICA}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{nics;}{numeric value of how many components to compute (default is 20)}
+\item{nics}{numeric value of how many components to compute (default is 20)}
 }
 \value{
-sceObject; updated sce object which now contains the computed independent components
+sceObject updated sce object which now contains the computed independent components
 }
 \description{
 seuratICA

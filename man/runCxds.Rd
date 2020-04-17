@@ -4,7 +4,16 @@
 \alias{runCxds}
 \title{Find doublets/multiplets using \link[scds]{cxds}.}
 \usage{
-runCxds(inSCE, sample = NULL, seed = 12345, ...)
+runCxds(
+  inSCE,
+  sample = NULL,
+  seed = 12345,
+  ntop = 500,
+  binThresh = 0,
+  verb = FALSE,
+  retRes = FALSE,
+  estNdbl = FALSE
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.

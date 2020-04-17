@@ -8,7 +8,7 @@ Retrieves a list of genenames/rownames/featurenames from seurat object}
 .rowNamesSeurat(seuratObject)
 }
 \arguments{
-\item{seuratObject;}{seurat object from which the genenames/rownames/featurenames should be extracted}
+\item{seuratObject}{seurat object from which the genenames/rownames/featurenames should be extracted}
 }
 \value{
 list() of genenames/rownames/featurenames

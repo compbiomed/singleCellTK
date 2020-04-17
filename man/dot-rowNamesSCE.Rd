@@ -8,7 +8,7 @@ Retrieves a list of genenames/rownames/featurenames from sce object}
 .rowNamesSCE(sce)
 }
 \arguments{
-\item{sce;}{sce object from which the genenames/rownames/featurenames should be extracted}
+\item{sce}{sce object from which the genenames/rownames/featurenames should be extracted}
 }
 \value{
 list() of genenames/rownames/featurenames

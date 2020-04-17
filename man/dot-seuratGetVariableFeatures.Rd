@@ -8,11 +8,11 @@ Retrieves the requested number of variable feature names}
 .seuratGetVariableFeatures(sceObject, geneNamesSeurat, numberOfFeatures)
 }
 \arguments{
-\item{sceObject;}{sce object from which to extract the variable feature names}
+\item{sceObject}{sce object from which to extract the variable feature names}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{numberOfFeatures;}{numerical value indicating how many feature names should be retrieved (default is 100)}
+\item{numberOfFeatures}{numerical value indicating how many feature names should be retrieved (default is 100)}
 }
 \value{
 list() of variable feature names

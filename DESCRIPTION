@@ -33,6 +33,7 @@ Imports:
     ape,
     batchelor,
     BiocGenerics,
+    BiocParallel,
     colourpicker,
     cowplot,
     cluster,

@@ -8,12 +8,12 @@ Converts sce object to seurat while retaining all assays and metadata}
 convertSCEToSeurat(sce, geneNames)
 }
 \arguments{
-\item{sce;}{sce object to convert to seurat}
+\item{sce}{sce object to convert to seurat}
 
-\item{geneNames;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNames}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 }
 \value{
-seuratObject; updated seurat object that contains all data from the input sce object
+seuratObject updated seurat object that contains all data from the input sce object
 }
 \description{
 convertSCEToSeurat

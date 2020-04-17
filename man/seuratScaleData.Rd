@@ -15,20 +15,20 @@ seuratScaleData(
 )
 }
 \arguments{
-\item{sceObject;}{sce object to scale}
+\item{sceObject}{sce object to scale}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{model.use;}{selected model to use for scaling data (default is "linear")}
+\item{model.use}{selected model to use for scaling data (default is "linear")}
 
-\item{do.scale;}{boolean if data should be scaled or not (TRUE or FALSE, default is TRUE)}
+\item{do.scale}{boolean if data should be scaled or not (TRUE or FALSE, default is TRUE)}
 
-\item{do.center;}{boolean if data should be centered or not (TRUE or FALSE, default is TRUE)}
+\item{do.center}{boolean if data should be centered or not (TRUE or FALSE, default is TRUE)}
 
-\item{scale.max;}{maximum numeric value to return for scaled data (default is 10)}
+\item{scale.max}{maximum numeric value to return for scaled data (default is 10)}
 }
 \value{
-sceObject; scaled sce object
+sceObject scaled sce object
 }
 \description{
 seuratScaleData

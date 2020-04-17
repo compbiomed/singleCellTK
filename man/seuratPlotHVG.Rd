@@ -8,9 +8,9 @@ Plot highly variable genes from input sce object (must have highly variable gene
 seuratPlotHVG(sceObject, geneNamesSeurat)
 }
 \arguments{
-\item{sceObject;}{sce object that contains the highly variable genes computations}
+\item{sceObject}{sce object that contains the highly variable genes computations}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 }
 \value{
 plot object

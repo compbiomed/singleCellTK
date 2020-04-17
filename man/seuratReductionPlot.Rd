@@ -8,11 +8,11 @@ Plots the selected dimensionality reduction method}
 seuratReductionPlot(sceObject, geneNamesSeurat, reduction)
 }
 \arguments{
-\item{sceObject;}{sce object which has the selected dimensionality reduction algorithm already computed and stored}
+\item{sceObject}{sce object which has the selected dimensionality reduction algorithm already computed and stored}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{reduction;}{one of selected algorithm from pca, ica, tsne and umap}
+\item{reduction}{one of selected algorithm from pca, ica, tsne and umap}
 }
 \value{
 plot object

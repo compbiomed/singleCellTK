@@ -15,15 +15,17 @@ seuratFindClusters(
 )
 }
 \arguments{
-\item{sceObject;}{sce object from which clusters should be computed and stored in}
+\item{sceObject}{sce object from which clusters should be computed and stored in}
 
-\item{reduction;}{selected reduction method to use for computing clusters ("pca" or "ica", default is "pca")}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting#'}
 
-\item{dims;}{numeric value of how many components to use for computing clusters (default is 10)}
+\item{reduction}{selected reduction method to use for computing clusters ("pca" or "ica", default is "pca")}
 
-\item{algorithm;}{selected algorithm to compute clusters (default is "original Louvain algorithm")}
+\item{dims}{numeric value of how many components to use for computing clusters (default is 10)}
 
-\item{group.singletons;}{boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)}
+\item{algorithm}{selected algorithm to compute clusters (default is "original Louvain algorithm")}
+
+\item{group.singletons}{boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)}
 }
 \value{
 sceObject; updated sce object which now contains the computed clusters

@@ -8,10 +8,10 @@ Creates a list of PC components to populate the picker for PC heatmap generation
 .getPCAComponentNames(maxComponents)
 }
 \arguments{
-\item{maxComponents;}{number of components to return for the picker}
+\item{maxComponents}{number of components to return for the picker}
 }
 \value{
-componentNames; list of component names (appended with "PC")
+componentNames list of component names (appended with "PC")
 }
 \description{
 .getPCAComponentNames

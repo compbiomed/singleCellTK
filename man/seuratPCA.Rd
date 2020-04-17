@@ -8,14 +8,14 @@ Computes PCA on the input sce object and stores the calculated principal compone
 seuratPCA(sceObject, geneNamesSeurat, npcs)
 }
 \arguments{
-\item{sceObject;}{sce object on which to compute PCA}
+\item{sceObject}{sce object on which to compute PCA}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{npcs;}{numeric value of how many components to compute (default is 20)}
+\item{npcs}{numeric value of how many components to compute (default is 20)}
 }
 \value{
-sceObject; updated sce object which now contains the computed principal components
+sceObject updated sce object which now contains the computed principal components
 }
 \description{
 seuratPCA

@@ -8,12 +8,12 @@ Computes the significant principal components from an input sce object (must con
 .computeSignificantPC(sceObject, geneNamesSeurat)
 }
 \arguments{
-\item{sceObject;}{sce object with pca computed}
+\item{sceObject}{sce object with pca computed}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 }
 \value{
-max_components; a numerical value indicating how many number of components are considered significant
+max_components a numerical value indicating how many number of components are considered significant
 }
 \description{
 .computeSignificantPC

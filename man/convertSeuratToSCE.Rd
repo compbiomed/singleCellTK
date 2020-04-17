@@ -8,18 +8,18 @@ Modifies the input sce object to include the updated assays from seurat object}
 convertSeuratToSCE(sce, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat)
 }
 \arguments{
-\item{sce;}{outdated sce object in which we wish to include the newly calculated assays from seurat object}
+\item{sce}{outdated sce object in which we wish to include the newly calculated assays from seurat object}
 
-\item{geneNames;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNames}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{seuratObject;}{updated seurat object that contains the newly calculated assays that we wish to store in the sce object}
+\item{seuratObject}{updated seurat object that contains the newly calculated assays that we wish to store in the sce object}
 
-\item{assaySlotSCE;}{the relevant assay slot in sce object (copy to)}
+\item{assaySlotSCE}{the relevant assay slot in sce object (copy to)}
 
-\item{assaySlotSeurat;}{the relevant assay slow in seurat object (copy from)}
+\item{assaySlotSeurat}{the relevant assay slow in seurat object (copy from)}
 }
 \value{
-sce; sce object that contains the newly added/modified assays from the seurat object
+sce sce object that contains the newly added/modified assays from the seurat object
 }
 \description{
 convertSeuratToSCE

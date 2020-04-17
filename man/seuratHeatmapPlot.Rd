@@ -8,13 +8,13 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
 seuratHeatmapPlot(plotObject, dims, ncol, labels)
 }
 \arguments{
-\item{plotObject;}{plot object computed from seuratComputeHeatmap() function}
+\item{plotObject}{plot object computed from seuratComputeHeatmap() function}
 
-\item{dims;}{numerical value of how many heatmaps to draw (default is 0)}
+\item{dims}{numerical value of how many heatmaps to draw (default is 0)}
 
-\item{ncol;}{numerical value indicating that in how many columns should the heatmaps be distrbuted (default is 2)}
+\item{ncol}{numerical value indicating that in how many columns should the heatmaps be distrbuted (default is 2)}
 
-\item{labels;}{list() of labels to draw on heatmaps}
+\item{labels}{list() of labels to draw on heatmaps}
 }
 \value{
 modified plot object

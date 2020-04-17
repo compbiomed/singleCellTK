@@ -28,8 +28,7 @@ importCellRangerV2(
   class = c("Matrix", "matrix"),
   delayedArray = TRUE,
   reference = NULL,
-  cellRangerOutsV2 = NULL,
-  gzipped = FALSE
+  cellRangerOutsV2 = NULL
 )
 
 importCellRangerV3(

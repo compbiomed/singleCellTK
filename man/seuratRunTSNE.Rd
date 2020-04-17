@@ -8,16 +8,16 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
 seuratRunTSNE(sceObject, geneNamesSeurat, reduction, dims)
 }
 \arguments{
-\item{sceObject;}{sce object on which to compute the tSNE}
+\item{sceObject}{sce object on which to compute the tSNE}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{reduction;}{selected reduction algorithm to use for computing tSNE ("pca" or "ica", default is "pca")}
+\item{reduction}{selected reduction algorithm to use for computing tSNE ("pca" or "ica", default is "pca")}
 
-\item{dims;}{numerical value of how many reduction components to use for tSNE computation (default is 10)}
+\item{dims}{numerical value of how many reduction components to use for tSNE computation (default is 10)}
 }
 \value{
-sceObject; updated sce object with tSNE computations stored
+Updated sce object with tSNE computations stored
 }
 \description{
 seuratRunTSNE

@@ -6,8 +6,8 @@
 \usage{
 runBBKNN(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   reducedDimName = "BBKNN",
   nComponents = 50L
 )
@@ -16,11 +16,11 @@ runBBKNN(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{reducedDimName}{character, default `"BBKNN"`. The name for the 

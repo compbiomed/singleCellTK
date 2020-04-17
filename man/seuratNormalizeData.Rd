@@ -14,16 +14,16 @@ seuratNormalizeData(
 )
 }
 \arguments{
-\item{sceObject;}{sce object to normalize}
+\item{sceObject}{sce object to normalize}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{normalizationMethod;}{selected normalization method (default is "LogNormalize")}
+\item{normalizationMethod}{selected normalization method (default is "LogNormalize")}
 
-\item{scaleFactor;}{numeric value that represents the scaling factor (default is 10000)}
+\item{scaleFactor}{numeric value that represents the scaling factor (default is 10000)}
 }
 \value{
-sceObject; normalized sce object
+sceObject normalized sce object
 }
 \description{
 seuratNormalizeData
