@@ -637,7 +637,7 @@ importCellRangerV2 <- function(
         matrixFileNames = "matrix.mtx",
         featuresFileNames = "genes.tsv",
         barcodesFileNames = "barcodes.tsv",
-        gzipped = gzipped,
+        gzipped = FALSE,
         class = class,
         delayedArray = delayedArray)
 
