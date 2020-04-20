@@ -214,6 +214,10 @@ if (!is.null(mergedDropletSCE)) {
     ## Export to flatfile
     fn <- file.path(directory, samplename, "FlatFile", "Droplets")
     exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn)
+
+    ## Export to Python AnnData
+    fn <- file.path(directory, samplename, "Python", "Droplets")
+    exportSCEtoAnnData(mergedDropletSCE, outputDir=fn, compression='gzip', sample=samplename)
 }
 if (!is.null(mergedFilteredSCE)) {
     ## Export to R        
@@ -223,4 +227,9 @@ if (!is.null(mergedFilteredSCE)) {
     ## Export to flatfile    
     fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
     exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn)
+
+    ## Export to Python AnnData
+    fn <- file.path(directory, samplename, "Python", "FilteredCells")
+    exportSCEtoAnnData(mergedFilteredSCE, outputDir=fn, compression='gzip', sample=samplename)
+
 }    

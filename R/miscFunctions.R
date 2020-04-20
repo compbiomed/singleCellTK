@@ -269,11 +269,23 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 .convertToMatrix <- function(x) {
   cn <- colnames(x)
   rn <- rownames(x)
+  limit <- (2^32/2-1)
+  dimN <- dim(x)
+  chuS <- floor(floor(limit/dimN[1]))
+  chuN <- ceiling(dimN[2]/chuS)
+  Mat <- list()
   
-  x <- methods::as(x, "dgCMatrix")
+  for (i in 1:chuN) {
+    startT <- Sys.time()
+    start <- (i-1)*chuS + 1
+    end <- min(i*chuS, dimN[2])
+    Mat[[i]] <- methods::as(x[, start:end], "Matrix")
+    endT <- Sys.time()
+    print(endT - startT)
+  }
+  x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
-  
   return(x)
 }
 
