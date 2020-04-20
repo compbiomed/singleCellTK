@@ -276,12 +276,9 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   Mat <- list()
   
   for (i in 1:chuN) {
-    startT <- Sys.time()
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
     Mat[[i]] <- methods::as(x[, start:end], "Matrix")
-    endT <- Sys.time()
-    print(endT - startT)
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn

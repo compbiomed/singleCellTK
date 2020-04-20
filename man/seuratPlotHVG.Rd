@@ -5,10 +5,12 @@
 \title{seuratPlotHVG
 Plot highly variable genes from input sce object (must have highly variable genes computations stored)}
 \usage{
-seuratPlotHVG(sceObject, geneNamesSeurat)
+seuratPlotHVG(inSCE, useAssay, geneNamesSeurat)
 }
 \arguments{
-\item{sceObject}{sce object that contains the highly variable genes computations}
+\item{inSCE}{(sce) object that contains the highly variable genes computations}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 }

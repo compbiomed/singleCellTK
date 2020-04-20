@@ -11,15 +11,15 @@ RUN buildDeps='libpq-dev build-essential libcurl4-openssl-dev libxml2-dev libssl
 	libv8-dev \
 	python3-pip && apt-get purge -y --auto-remove $buildDeps && echo
 
-RUN export CFLAGS="-O3 -march=nehalem" && pip3 install scrublet virtualenv
+RUN export CFLAGS="-O3 -march=nehalem" && pip3 install scrublet virtualenv scanpy
 
-#Add singleCellTK directory and script to docker (/tmp)
-RUN mkdir -p /SCTK_docker/ && mkdir /SCTK_docker/script && mkdir /SCTK_docker/modes
+#Add singleCellTK directory and script to docker
+RUN mkdir -p /SCTK_docker/ && mkdir /SCTK_docker/script && mkdir /SCTK_docker/modes && mkdir /SCTK_docker/singleCellTK
 
 ADD ./install_packages.R /SCTK_docker/script
-ADD ./SCTK_runQC.R /SCTK_docker/script
 ADD ./modes /SCTK_docker/modes
+ADD ./singleCellTK /SCTK_docker/singleCellTK
 
 RUN Rscript /SCTK_docker/script/install_packages.R
 
-ENTRYPOINT ["Rscript", "/SCTK_docker/script/SCTK_runQC.R"]
+ENTRYPOINT ["Rscript", "/SCTK_docker/singleCellTK/exec/SCTK_runQC.R"]

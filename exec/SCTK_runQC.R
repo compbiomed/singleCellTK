@@ -27,7 +27,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-p", "--preproc"),
         type = "character",
         default="CellRangerV3",
-        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"),
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
         help="Name of the sample. This will be prepended to the cell barcodes."),
@@ -134,34 +134,34 @@ for(i in 1:length(process)) {
         dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix", delayedArray=FALSE)
     } else if (preproc == "STARSolo") {
         dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
-        filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix")
+        filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
     } else if (preproc == "CellRangerV3") {
         if (!is.null(path)) {
             dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='raw', class = 'Matrix', delayedArray=FALSE)
-            filteredSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='filtered', class = "Matrix")
+            filteredSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType='filtered', class = "Matrix", delayedArray=FALSE)
         } else {
             dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = 'Matrix', delayedArray=FALSE)
-            filteredSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = 'Matrix', delayedArray=TRUE)
+            filteredSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = 'Matrix', delayedArray=FALSE)
         }
     } else if (preproc == "CellRangerV2") {
         if(is.null(ref)){
             stop("The name of genome reference needs to be specified.")
-        } else {
-            rawOuts <- paste0("outs/raw_gene_bc_matrices/", ref)
-            filterOuts <- paste0("outs/filtered_gene_bc_matrices/", ref)
         }
         if (!is.null(path)) {
             dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class='Matrix', delayedArray = FALSE, reference = ref, dataTypeV2='raw')
             filteredSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class='Matrix', delayedArray = FALSE, reference = ref, dataTypeV2='filtered')
         } else {
             dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = 'Matrix', delayedArray=FALSE)
-            filteredSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = 'Matrix', delayedArray=TRUE)
+            filteredSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = 'Matrix', delayedArray=FALSE)
         }
     } else if (preproc == "SEQC") {
         dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
     } else if (preproc == "Optimus") {
         dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename, delayedArray = FALSE)
         filteredSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
+    } else if (preproc == "DropEst") {
+        dropletSCE <- importDropEst(sampleDirs=path, dataType='raw', sampleNames=samplename, delayedArray=FALSE)
+        filteredSCE <- importDropEst(sampleDirs=path, dataType='filtered', sampleNames=samplename, delayedArray=FALSE)
     } else {
         stop(paste0("'", preproc, "' not supported."))
     }

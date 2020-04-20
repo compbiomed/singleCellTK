@@ -5,10 +5,12 @@
 \title{seuratRunTSNE
 Computes tSNE from the given sce object and stores the tSNE computations back into the sce object}
 \usage{
-seuratRunTSNE(sceObject, geneNamesSeurat, reduction, dims)
+seuratRunTSNE(inSCE, useAssay, geneNamesSeurat, reduction, dims)
 }
 \arguments{
-\item{sceObject}{sce object on which to compute the tSNE}
+\item{inSCE}{(sce) object on which to compute the tSNE}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
