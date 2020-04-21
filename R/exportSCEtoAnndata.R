@@ -51,14 +51,15 @@ exportSCEtoAnnData <- function(sce,
   if (!is(SummarizedExperiment::assay(sce), 'dgCMatrix')) {
     SummarizedExperiment::assay(sce) <- .convertToMatrix(SummarizedExperiment::assay(sce))
   }
-
+  
+  dir.create(outputDir, showWarnings = FALSE, recursive = TRUE)
   annData <- .sce2adata(sce,useAssay)
   fileName <- paste0(sample,".h5ad")
   filePath <- file.path(outputDir,fileName)
-  
+
   if (file.exists(filePath) && !isTRUE(overwrite)) {
     stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
-    }
+  }
 
   annData$write_h5ad(filePath,
                      compression = compression, 
