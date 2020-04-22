@@ -178,7 +178,7 @@ runScrublet <- function(inSCE,
       output[sceSampleInd, "scrublet_call"] <- result[[2]]
       
       ## Extract UMAP and TSNE coordinates 
-      if (is.null(nNeighbors)==TRUE && is.null(minDist)== TRUE){
+      if (is.null(nNeighbors) && is.null(minDist)){
         umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
       }else {
         umap_coordinates <- scrublet$get_umap(scr$manifold_obs_,
@@ -187,7 +187,7 @@ runScrublet <- function(inSCE,
       }
       reducedDim(inSCE,'UMAP') <- umap_coordinates
     
-    if (is.null(tsneAngle)==TRUE && is.null(tsnePerplexity)== TRUE){
+    if (is.null(tsneAngle) && is.null(tsnePerplexity)){
       tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
     }else {
       tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_,
@@ -209,7 +209,7 @@ runScrublet <- function(inSCE,
   
   ## add scrublet version to metadata
   version <- pkg_resources$require("scrublet")[[1]]
-  inSCE@metadata$runScrublet$packageVersion <- version
+  inSCE@metadata$scrublet$packageVersion <- version
   
   return(inSCE)
 }
