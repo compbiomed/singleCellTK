@@ -203,7 +203,7 @@ sce <- importCellRanger(
 # All genes are kept. 840 cell barcodes are extracted.
 sce <- importCellRangerV2(
     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
-    sampleDirs = "pbmc_4k_v2_800",
+    sampleDirs = "pbmc_4k_v2_200x800",
     sampleNames = "pbmc4k_800",
     reference = 'GRCh38',
     dataTypeV2 = "filtered")

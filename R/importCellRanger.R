@@ -597,8 +597,8 @@ importCellRanger <- function(
 #' # 2.1.0/pbmc4k
 #' # All genes are kept. 840 cell barcodes are extracted.
 #' sce <- importCellRangerV2(
-#'     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
-#'     sampleDirs = "pbmc_4k_v2_200x800",
+#'     cellRangerDirs = system.file("extdata/pbmc_4k_v2_200x800", package = "singleCellTK"),
+#'     sampleDirs = "pbmc_800",
 #'     sampleNames = "pbmc4k_800",
 #'     reference = 'GRCh38',
 #'     dataTypeV2 = "filtered")
@@ -662,7 +662,7 @@ importCellRangerV2 <- function(
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
 #' sce <- importCellRangerV2Sample(
-#'     dataDir = system.file("extdata/pbmc_4k_v2_200x800/outs/",
+#'     dataDir = system.file("extdata/pbmc_4k_v2_200x800/pbmc_800/outs/",
 #'         "filtered_gene_bc_matrices/GRCh38", package = "singleCellTK"),
 #'     sampleName = "pbmc800")
 #' @export

@@ -61,7 +61,6 @@ opt <- arguments$options
 process <- unlist(strsplit(opt$preproc, ','))
 sample <- unlist(strsplit(opt$sample, ','))
 directory <- unlist(strsplit(opt$directory, ','))
-reference <- unlist(strsplit(opt$ref, ','))
 gmt <- opt$gmt
 sep <- opt$delim
 if (!is.null(opt$base_path)) {
@@ -79,7 +78,11 @@ if (!is.null(opt$raw_expr_path)) {
 } else {
     RawDir <- opt$raw_expr_path
 }
-
+if (!is.null(opt$ref)) {
+    reference <- unlist(strsplit(opt$ref, ','))
+} else {
+    reference <- opt$ref
+}
 ## checking argument
 if (is.null(basepath)) {
     if (is.null(FilterDir) || is.null(RawDir)) {

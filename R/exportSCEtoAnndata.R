@@ -48,9 +48,13 @@ exportSCEtoAnnData <- function(sce,
             " correct Python environment.")
     return(sce)}
   
-  if (!is(SummarizedExperiment::assay(sce), 'dgCMatrix')) {
-    SummarizedExperiment::assay(sce) <- .convertToMatrix(SummarizedExperiment::assay(sce))
+  AssayName <- SummarizedExperiment::assayNames(sce)
+  for (assay in AssayName){
+    if (!is(SummarizedExperiment::assay(sce, assay), 'dgCMatrix')) {
+      SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
+    }
   }
+
   
   dir.create(outputDir, showWarnings = FALSE, recursive = TRUE)
   annData <- .sce2adata(sce,useAssay)

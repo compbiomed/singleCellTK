@@ -271,14 +271,15 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   rn <- rownames(x)
   limit <- (2^32/2-1)
   dimN <- dim(x)
-  chuS <- floor(floor(limit/dimN[1]))
-  chuN <- ceiling(dimN[2]/chuS)
+  chuS <- floor(floor(limit/dimN[1])) # size of chunk
+  chuN <- ceiling(dimN[2]/chuS) # number of chunks
   Mat <- list()
   
   for (i in 1:chuN) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    Mat[[i]] <- methods::as(x[, start:end], "Matrix")
+    Mat[[i]] <- methods::as(x[, start:end], "dgTMatrix")
+    Mat[[i]] <- methods::as(Mat[[i]], "dgCMatrix") #efficient way
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
