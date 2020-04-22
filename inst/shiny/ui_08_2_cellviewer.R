@@ -7,7 +7,7 @@ shinyPanelCellViewer <- fluidPage(
              column(3,
                     wellPanel(style = "background: floralwhite",
                       conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
-                        radioButtons("vlnbox", h5("Select a type of plot"), choices = c("Violin", "Box"))),
+                        checkboxInput("vlnboxcheck", "Violin plot", value = FALSE)),
                             # Section 1 - Assay Settings
                             actionButton("cv_button1", h4(strong("Select Coordinates")),style = "background: floralwhite"),
                             # open by default

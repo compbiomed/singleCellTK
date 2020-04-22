@@ -2053,7 +2053,7 @@ shinyServer(function(input, output, session) {
     }else if (input$viewertabs == "Bar Plot"){
       a <- a + geom_bar(stat = "identity")
     }else if (input$viewertabs == "Violin/Box Plot"){
-      if (input$vlnbox == "Box"){
+      if (input$vlnboxcheck == FALSE){
         a <- a + geom_boxplot()
       }else{
         a <- a + geom_violin()
