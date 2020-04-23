@@ -278,8 +278,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   for (i in 1:chuN) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    Mat[[i]] <- methods::as(x[, start:end], "dgTMatrix")
-    Mat[[i]] <- methods::as(Mat[[i]], "dgCMatrix") #efficient way
+    Mat[[i]] <- methods::as(x[, start:end], "Matrix") #By default, it's dgCMatrix
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn

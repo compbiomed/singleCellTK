@@ -36,7 +36,7 @@ Read the filtered barcodes, features, and matrices for all
 }
 \examples{
 sce <- importCellRangerV2Sample(
-    dataDir = system.file("extdata/pbmc_4k_v2_200x800/outs/",
+    dataDir = system.file("extdata/pbmc_4k_v2_200x800/pbmc_800/outs/",
         "filtered_gene_bc_matrices/GRCh38", package = "singleCellTK"),
     sampleName = "pbmc800")
 }
