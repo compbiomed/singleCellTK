@@ -278,7 +278,11 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   for (i in 1:chuN) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    Mat[[i]] <- methods::as(x[, start:end], "Matrix") #By default, it's dgCMatrix
+    if (is(x, 'DelayedMatrix')) {
+      Mat[[i]] <- methods::as(x[, start:end], "Matrix") # Efficient way to convert DelayedArray to dgCMatrix
+    } else {
+      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix") # Convert dgTMatrix to dgCMatrix
+    }
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn

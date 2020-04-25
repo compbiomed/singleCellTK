@@ -19,6 +19,75 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     }
 })
 
+#Output function 
+sceOutput <- function(dropletSCE, filteredSCE, samplename, directory){
+  mergedDropletSCE <- NULL
+  mergedFilteredSCE <- NULL
+  if (!is.null(filteredSCE) & !is.null(dropletSCE)) {
+    mergedDropletSCE <- mergeSCEColData(dropletSCE, filteredSCE)
+    mergedFilteredSCE <- mergeSCEColData(filteredSCE, dropletSCE)
+  } else {
+    mergedFilteredSCE <- filteredSCE
+  }
+  
+  ## Create directories and save objects
+  dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)
+  dir.create(file.path(directory, samplename, "R"), showWarnings = TRUE, recursive = TRUE)
+  dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recursive = TRUE)
+  dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
+  
+  if (!is.null(mergedDropletSCE)) {
+    ## Export to R 
+    fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
+    saveRDS(object = mergedDropletSCE, file = fn)
+    
+    ## Export to flatfile
+    fn <- file.path(directory, samplename, "FlatFile", "Droplets")
+    exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn)
+    
+    ## Export to Python AnnData
+    fn <- file.path(directory, samplename, "Python", "Droplets")
+    exportSCEtoAnnData(mergedDropletSCE, outputDir=fn, compression='gzip', sample=samplename)
+  }
+  if (!is.null(mergedFilteredSCE)) {
+    ## Export to R        
+    fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
+    saveRDS(object = mergedFilteredSCE, file = fn)
+    
+    ## Export to flatfile    
+    fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
+    exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn)
+    
+    ## Export to Python AnnData
+    fn <- file.path(directory, samplename, "Python", "FilteredCells")
+    exportSCEtoAnnData(mergedFilteredSCE, outputDir=fn, compression='gzip', sample=samplename)
+    
+  }
+}
+
+# Function of combining SingleCellExperiment object
+combineSCE <- function(sceList){
+  qcList <- sapply(sceList, function(x) {colnames(x@colData)})
+  qcMetNum <- sapply(qcList, length)
+  
+  if (var(qcMetNum) != 1) { ##some QC alrorithms failed for some samples
+    qcMetrics <- base::Reduce(union, qcList)
+    
+    for (i in seq_along(sceList)) {
+      sce <- sceList[[i]]
+      missQC <- qcMetrics[!qcMetrics %in% colnames(sce@colData)]
+  
+      if (length(missQC) != 0) {
+        missColDat <- S4Vectors::DataFrame(sapply(missQC, function(x){rep(NA, ncol(sce))}))
+        colData(sce) <- cbind(colData(sce), missColDat)
+        sceList[[i]] <- sce      
+      }
+    }
+  }
+  sce <- do.call(BiocGenerics::cbind, sceList)
+  return(sce)
+}
+
 ##Read in flags from command line using optparse
 option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
@@ -54,7 +123,11 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-R","--raw_expr_path"),
         type="character",
         default=NULL,
-        help="The directory contains raw gene count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'filtered_expr_path' and 'raw_expr_path' should also be specified."))
+        help="The directory contains raw gene count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'filtered_expr_path' and 'raw_expr_path' should also be specified."),
+    optparse::make_option(c("-S","--split_sample"),
+        type="logical",
+        default=FALSE,
+        help="Save SingleCellExperiment object for each sample. Default is FALSE. If TRUE, all samples will be combined and only one combimed SingleCellExperiment object will be saved."))
 
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
 opt <- arguments$options
@@ -63,6 +136,7 @@ sample <- unlist(strsplit(opt$sample, ','))
 directory <- unlist(strsplit(opt$directory, ','))
 gmt <- opt$gmt
 sep <- opt$delim
+split <- opt$split_sample
 if (!is.null(opt$base_path)) {
     basepath <- unlist(strsplit(opt$base_path, ','))
 } else { 
@@ -83,6 +157,7 @@ if (!is.null(opt$ref)) {
 } else {
     reference <- opt$ref
 }
+
 ## checking argument
 if (is.null(basepath)) {
     if (is.null(FilterDir) || is.null(RawDir)) {
@@ -184,55 +259,21 @@ for(i in 1:length(process)) {
         filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection)
     }
     
+    if (isTRUE(split)) {
+        sceOutput(dropletSCE=dropletSCE, filteredSCE=filteredSCE, samplename=samplename, directory=directory)
+    }
+
     dropletSCE_list[[samplename]] <- dropletSCE
     filteredSCE_list[[samplename]] <- filteredSCE
 }
 
-dropletSCE <- do.call(BiocGenerics::cbind, dropletSCE_list)
-filteredSCE <- do.call(BiocGenerics::cbind, filteredSCE_list)
+if (!isTRUE(split)){
+    dropletSCE <- combineSCE(dropletSCE_list)
+    filteredSCE <- combineSCE(filteredSCE_list)
 
-mergedDropletSCE <- NULL
-mergedFilteredSCE <- NULL
-if (!is.null(filteredSCE) & !is.null(dropletSCE)) {
-    mergedDropletSCE <- mergeSCEColData(dropletSCE, filteredSCE)
-    mergedFilteredSCE <- mergeSCEColData(filteredSCE, dropletSCE)
-} else {
-    mergedFilteredSCE <- filteredSCE
+    if (length(sample) > 1) {
+        samplename <- 'Combined'
+    }
+
+    sceOutput(dropletSCE=dropletSCE, filteredSCE=filteredSCE, samplename=samplename, directory=directory)
 }
-
-if (length(sample) > 1) {
-    samplename <- paste(sample, collapse='_')
-}
-## Create directories and save objects
-dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "R"), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
-
-if (!is.null(mergedDropletSCE)) {
-    ## Export to R 
-    fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
-    saveRDS(object = mergedDropletSCE, file = fn)
-    
-    ## Export to flatfile
-    fn <- file.path(directory, samplename, "FlatFile", "Droplets")
-    exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn)
-
-    ## Export to Python AnnData
-    fn <- file.path(directory, samplename, "Python", "Droplets")
-    exportSCEtoAnnData(mergedDropletSCE, outputDir=fn, compression='gzip', sample=samplename)
-}
-if (!is.null(mergedFilteredSCE)) {
-    ## Export to R        
-    fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
-    saveRDS(object = mergedFilteredSCE, file = fn)
-    
-    ## Export to flatfile    
-    fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
-    exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn)
-
-    ## Export to Python AnnData
-    fn <- file.path(directory, samplename, "Python", "FilteredCells")
-    exportSCEtoAnnData(mergedFilteredSCE, outputDir=fn, compression='gzip', sample=samplename)
-
-}    
