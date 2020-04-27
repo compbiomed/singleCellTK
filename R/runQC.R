@@ -68,19 +68,22 @@ runCellQC <- function(inSCE,
   if ("cxds" %in% algorithms) {
     inSCE <- runCxds(inSCE = inSCE,
       sample = sample,
-      seed = seed)
+      seed = seed,
+      estNdbl = TRUE)
   }
 
   if ("bcds" %in% algorithms) {
     inSCE <- runBcds(inSCE = inSCE,
       sample = sample,
-      seed = seed)
+      seed = seed,
+      estNdbl = TRUE)
   }
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
     inSCE <- runCxdsBcdsHybrid(inSCE = inSCE,
       sample = sample,
-      seed = seed)
+      seed = seed,
+      estNdbl = TRUE)
   }
 
   if ("decontX" %in% algorithms) {
