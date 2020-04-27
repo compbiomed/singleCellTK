@@ -169,7 +169,13 @@ runBcds <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ntop = nGene, ...))}, silent = TRUE)
+          try({result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ntop = nGene,
+                                                           srat = srat,
+                                                           verb = verb,
+                                                           estNdbl = estNdbl,
+                                                           varImp = varImp,
+                                                           nmax = nmax,
+                                                           retRes = retRes))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
