@@ -1681,6 +1681,18 @@ shinyServer(function(input, output, session) {
         choices = c(annotation_list))
       updateSelectInput(session, "ApproachSelect_Colorby",
         choices = c(approach_list))
+
+      approach_list2 <- list()
+      for (i in 1:length(approach_list)){
+        if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
+        }else{
+          annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
+        }
+      }
+      approach_list <- approach_list2
+      rm(approach_list2)
+
       updateSelectInput(session, "AdvancedMethodSelect_Colorby",
         choices = c(method_list))
       updateSelectInput(session, "GeneSelect_Assays_Colorby",
@@ -1701,12 +1713,15 @@ shinyServer(function(input, output, session) {
     }else if(input$viewertabs == "Bar Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }else if(input$viewertabs == "Violin/Box Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }else if (input$viewertabs == "Scatter Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }
   })
 
