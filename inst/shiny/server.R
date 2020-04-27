@@ -1698,15 +1698,19 @@ shinyServer(function(input, output, session) {
     if(input$viewertabs == "reducedDims Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("", approach_list))
+      shinyjs::delay(5,shinyjs::enable("QuickAccess"))
     }else if(input$viewertabs == "Bar Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }else if(input$viewertabs == "Violin/Box Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }else if (input$viewertabs == "Scatter Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }
   })
 
