@@ -13,6 +13,7 @@ blt <- NULL
 scgen <- NULL
 sc <- NULL
 bbknn <- NULL
+pkg_resources <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
@@ -24,6 +25,7 @@ bbknn <- NULL
   scgen <<- reticulate::import("scgen", delay_load = TRUE)
   sc <<- reticulate::import("scanpy", delay_load = TRUE)
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
+  pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
   blt <<- reticulate::import_builtins()
 }
 
