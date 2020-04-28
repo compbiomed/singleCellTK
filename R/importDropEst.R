@@ -104,7 +104,7 @@
 #' @return A \code{SingleCellExperiment} object containing the count matrix,
 #'  the feature annotations from DropEst as ColData, and any metadata from DropEst
 #' @examples
-#' # Example #1
+#' Example
 #' Example DropEst outputs were downloaded from the DropEst Github 
 #' (http://pklab.med.harvard.edu/viktor/dropest_paper/dropest_0.8.5.zip). 
 #' To run the dropest import function with the example dataset, 

@@ -45,7 +45,7 @@ If any annotations of ("saturation_info","merge_targets","reads_per_umi_per_cell
 found in the DropEst rds, they will be added to the SCE metadata field
 }
 \examples{
-# Example #1
+Example
 Example DropEst outputs were downloaded from the DropEst Github 
 (http://pklab.med.harvard.edu/viktor/dropest_paper/dropest_0.8.5.zip). 
 To run the dropest import function with the example dataset, 
