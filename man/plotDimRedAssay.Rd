@@ -12,8 +12,8 @@ plotDimRedAssay(
   useAssay = "logcounts",
   comp1 = NULL,
   comp2 = NULL,
-  pcX = NULL,
-  pcY = NULL,
+  dim1 = NULL,
+  dim2 = NULL,
   background = TRUE,
   size = 2,
   title = NULL,
@@ -37,10 +37,9 @@ Plot will be colored based on feature value.}
 
 \item{comp2}{label for y-axis}
 
-\item{pcX}{PCA component to be used for plotting(if applicable).
-Default is first PCA component for PCA data and NULL otherwise.}
+\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
 
-\item{pcY}{PCA component to be used for plotting(if applicable).
+\item{dim2}{2nd dimension to be used for plotting. Default is NULL.
 Default is second PCA component for PCA data and NULL otherwise.}
 
 \item{background}{adds grid to plot when TRUE. Default TRUE.}

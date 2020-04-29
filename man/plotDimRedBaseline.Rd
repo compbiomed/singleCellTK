@@ -11,15 +11,15 @@ plotDimRedBaseline(
   reducedDimName,
   conditionClass = NULL,
   useAssay,
-  labelClusters = F,
+  labelClusters = FALSE,
   comp1,
   comp2,
-  pcX,
-  pcY,
-  background,
-  size,
-  title,
-  titleSize
+  dim1 = NULL,
+  dim2 = NULL,
+  background = FALSE,
+  size = 2,
+  title = NULL,
+  titleSize = 15
 )
 }
 \arguments{
@@ -45,10 +45,9 @@ Default FALSE.}
 
 \item{comp2}{label for y-axis}
 
-\item{pcX}{PCA component to be used for plotting(if applicable).
-Default is first PCA component for PCA data and NULL otherwise.}
+\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
 
-\item{pcY}{PCA component to be used for plotting(if applicable).
+\item{dim2}{2nd dimension to be used for plotting. Default is NULL.
 Default is second PCA component for PCA data and NULL otherwise.}
 
 \item{background}{adds grid to plot when TRUE. Default TRUE.}

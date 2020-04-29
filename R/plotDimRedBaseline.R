@@ -11,9 +11,8 @@
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param comp1 label for x-axis
 #' @param comp2 label for y-axis
-#' @param pcX PCA component to be used for plotting(if applicable).
-#' Default is first PCA component for PCA data and NULL otherwise.
-#' @param pcY PCA component to be used for plotting(if applicable).
+#' @param dim1 1st dimension to be used for plotting. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
 #' Default is second PCA component for PCA data and NULL otherwise.
 #' @param background adds grid to plot when TRUE. Default TRUE.
 #' @param size size of dots. Default 2.
@@ -24,7 +23,6 @@
 #'
 #' @return a ggplot of the reduced dimensions.
 #' @export
-#'
 #' @examples
 #' plotDimRedBaseline(inSCE = mouseBrainSubsetSCE, colorBy = "No Color",
 #'            shape = "No Shape", reducedDimName = "TSNE_counts",
@@ -36,29 +34,29 @@ plotDimRedBaseline <- function(inSCE,
                                reducedDimName,
                                conditionClass = NULL,
                                useAssay,
-                               labelClusters = F,
+                               labelClusters = FALSE,
                                comp1,
                                comp2,
-                               pcX,
-                               pcY,
-                               background,
-                               size,
-                               title,
-                               titleSize) {
+                               dim1 = NULL,
+                               dim2 = NULL,
+                               background = FALSE,
+                               size = 2,
+                               title = NULL,
+                               titleSize = 15) {
     Df <- data.frame(SingleCellExperiment::reducedDim(inSCE,
                                                       reducedDimName))
     if (ncol(Df) > 2){
         warning("More than two dimensions. Using the first two.")
     }
-    if (!is.null(pcX) & !is.null(pcY)){
-        if (!(pcX %in% colnames(Df))){
-            stop("X dimension ", pcX, " is not in the reducedDim data")
+    if (!is.null(dim1) & !is.null(dim2)){
+        if (!(dim1 %in% colnames(Df))){
+            stop("X dimension ", dim1, " is not in the reducedDim data")
         }
-        if (!(pcY %in% colnames(Df))){
-            stop("Y dimension ", pcY, " is not in the reducedDim data")
+        if (!(dim2 %in% colnames(Df))){
+            stop("Y dimension ", dim2, " is not in the reducedDim data")
         }
-        xdim <- pcX
-        ydim <- pcY
+        xdim <- dim1
+        ydim <- dim2
     } else if (!is.null(comp1) & !is.null(comp2)){
         colnames(Df)[1] <- comp1
         colnames(Df)[2] <- comp2
@@ -156,10 +154,8 @@ plotDimRedBaseline <- function(inSCE,
 #' @param reducedDimName saved dimension reduction name in the SCtkExperiment object. Required.
 #' @param comp1 label for x-axis
 #' @param comp2 label for y-axis
-#' @param pcX PCA component to be used for plotting(if applicable).
-#' Default is first PCA component for PCA data and NULL otherwise.
-#' @param pcY PCA component to be used for plotting(if applicable).
-#' Default is second PCA component for PCA data and NULL otherwise.
+#' @param dim1 1st dimension to be used for plotting. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
 #' @param background adds grid to plot when TRUE. Default TRUE.
 #' @param size size of dots. Default 2.
 #' @param title title of plot. Default NULL.
@@ -182,8 +178,8 @@ plotDimRedColData <- function(inSCE,
                               conditionClass = NULL,
                               comp1 = NULL,
                               comp2 = NULL,
-                              pcX = NULL,
-                              pcY = NULL,
+                              dim1 = NULL,
+                              dim2 = NULL,
                               background = TRUE,
                               size = 2,
                               title = NULL,
@@ -203,8 +199,8 @@ plotDimRedColData <- function(inSCE,
                             useAssay = useAssay,
                             comp1 = comp1,
                             comp2 = comp2,
-                            pcX = pcX,
-                            pcY = pcY,
+                            dim1 = dim1,
+                            dim2 = dim2,
                             background = background,
                             size = size,
                             title = title,
@@ -226,9 +222,8 @@ plotDimRedColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param comp1 label for x-axis
 #' @param comp2 label for y-axis
-#' @param pcX PCA component to be used for plotting(if applicable).
-#' Default is first PCA component for PCA data and NULL otherwise.
-#' @param pcY PCA component to be used for plotting(if applicable).
+#' @param dim1 1st dimension to be used for plotting. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
 #' Default is second PCA component for PCA data and NULL otherwise.
 #' @param background adds grid to plot when TRUE. Default TRUE.
 #' @param size size of dots. Default 2.
@@ -249,8 +244,8 @@ plotDimRedAssay <- function(inSCE,
                               useAssay = "logcounts",
                               comp1 = NULL,
                               comp2 = NULL,
-                              pcX = NULL,
-                              pcY = NULL,
+                              dim1 = NULL,
+                              dim2 = NULL,
                               background = TRUE,
                               size = 2,
                               title = NULL,
@@ -270,8 +265,8 @@ plotDimRedAssay <- function(inSCE,
                             useAssay = useAssay,
                             comp1 = comp1,
                             comp2 = comp2,
-                            pcX = pcX,
-                            pcY = pcY,
+                            dim1 = dim1,
+                            dim2 = dim2,
                             background = background,
                             size = size,
                             title = title,
