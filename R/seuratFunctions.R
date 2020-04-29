@@ -171,6 +171,19 @@ seuratFindHVG <- function(inSCE, useAssay, geneNamesSeurat, hvgMethod, hvgNumber
     seuratObject <- convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat)
     seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+    if (hvgMethod == "vst") {
+        rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.variance.standardized
+        rowData(inSCE)$seurat_variableFeatures_vst_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.mean
+    } else if (hvgMethod == "dispersion") {
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+    }
+    else if (hvgMethod == "mean.var.plot") {
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_mvp_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+    }
     return(inSCE)
 }
 
@@ -247,7 +260,12 @@ convertSCEToSeurat <- function(inSCE, useAssay, geneNames) {
         rownames(seuratObject@assays$RNA@data) <- geneNames
     }
     if ("seuratScaledData" %in% names(assays(inSCE))) {
-        seuratObject@assays$RNA@scale.data <- assay(inSCE, "seuratScaledData")
+        if (class(assay(inSCE, "seuratScaledData")) != "matrix") {
+            seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, "seuratScaledData"))
+        }
+        else {
+            seuratObject@assays$RNA@scale.data <- assay(inSCE, "seuratScaledData")
+        }
         rownames(seuratObject@assays$RNA@data) <- geneNames
     }
     if (!is.null(inSCE@metadata[["seurat"]]) && length(inSCE@metadata[["seurat"]]@assays$RNA@var.features) > 0) {
@@ -346,7 +364,7 @@ seuratRunUMAP <- function(inSCE, useAssay, geneNamesSeurat, reduction, dims) {
 .seuratGetVariableFeatures <- function(inSCE, useAssay, geneNamesSeurat, numberOfFeatures) {
     seuratObject <- convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat)
     if (length(seuratObject@assays$RNA@var.features) > 0) {
-        return(print(seuratObject@assays$RNA@var.features[1:numberOfFeatures]))
+        return(seuratObject@assays$RNA@var.features[1:numberOfFeatures])
     }
 }
 
