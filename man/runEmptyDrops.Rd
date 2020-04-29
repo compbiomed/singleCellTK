@@ -4,7 +4,19 @@
 \alias{runEmptyDrops}
 \title{Identify empty droplets using \link[DropletUtils]{emptyDrops}.}
 \usage{
-runEmptyDrops(inSCE, sample = NULL, useAssay = "counts", ...)
+runEmptyDrops(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  lower = 100,
+  niters = 10000,
+  test.ambient = FALSE,
+  ignore = NULL,
+  alpha = NULL,
+  retain = NULL,
+  barcode.args = list(),
+  BPPARAM = SerialParam()
+)
 }
 \arguments{
 \item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.

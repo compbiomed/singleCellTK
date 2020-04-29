@@ -17,9 +17,11 @@
 #' @param forceDense Default \code{False} Write sparse data as a dense matrix.
 #' Refer anndata.write_h5ad documentation for details
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-#'
+#' }
+#' 
 #' @export
 
 exportSCEtoAnnData <- function(sce, 

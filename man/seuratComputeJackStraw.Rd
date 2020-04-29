@@ -5,10 +5,12 @@
 \title{seuratComputeJackStraw
 Compute jackstraw plot and store the computations in the input sce object}
 \usage{
-seuratComputeJackStraw(sceObject, geneNamesSeurat, dims)
+seuratComputeJackStraw(inSCE, useAssay, geneNamesSeurat, dims)
 }
 \arguments{
-\item{sceObject}{sce object on which to compute and store jackstraw plot}
+\item{inSCE}{(sce) object on which to compute and store jackstraw plot}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 

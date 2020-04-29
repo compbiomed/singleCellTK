@@ -6,16 +6,19 @@
 Computes the clusters from the input sce object and stores them back in sce object}
 \usage{
 seuratFindClusters(
-  sceObject,
+  inSCE,
+  useAssay,
   geneNamesSeurat,
   reduction,
   dims,
   algorithm,
-  group.singletons
+  groupSingletons
 )
 }
 \arguments{
-\item{sceObject}{sce object from which clusters should be computed and stored in}
+\item{inSCE}{(sce) object from which clusters should be computed and stored in}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting#'}
 
@@ -25,7 +28,7 @@ seuratFindClusters(
 
 \item{algorithm}{selected algorithm to compute clusters (default is "original Louvain algorithm")}
 
-\item{group.singletons}{boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)}
+\item{groupSingletons}{boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)}
 }
 \value{
 sceObject; updated sce object which now contains the computed clusters
