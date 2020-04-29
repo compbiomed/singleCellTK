@@ -1,4 +1,5 @@
 language: r
+  - oldrel
 cache: 
   - packages
   - pip
