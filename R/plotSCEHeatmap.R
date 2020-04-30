@@ -6,22 +6,24 @@
 #' @param index Valid index to subset the col/row.
 #' @return A data.frame object
 extractData <- function(inSCE, axis = NULL, columns = NULL, index = NULL){
+    if(is.null(axis) || !axis %in% c('col', 'row')){
+        stop("axis should be 'col' or 'row'.")
+    } else if(axis == 'col'){
+        data <- SummarizedExperiment::colData(inSCE)
+    } else if(axis == 'row'){
+        data <- SummarizedExperiment::rowData(inSCE)
+    }
+    if(!is.null(index)){
+        data <- data[index, , drop = FALSE]
+    }
     if(is.null(columns)){
-        return(NULL)
+        return(data.frame(row.names = rownames(data)))
     } else {
-        if(is.null(axis) || !axis %in% c('col', 'row')){
-            stop("axis should be 'col' or 'row'.")
-        } else if(axis == 'col'){
-            data <- SummarizedExperiment::colData(inSCE)
-        } else if(axis == 'row'){
-            data <- SummarizedExperiment::rowData(inSCE)
-        }
-        if(!is.null(index)){
-            data <- data[index,]
-        }
-        df <- data.frame(data[columns])
+        df <- data[, columns, drop = FALSE]
         for(i in colnames(df)){
             if(is.character(df[[i]]) || is.logical(df[[i]])){
+                # Only converting character and logical columns, but not integer
+                # cluster labels..
                 df[[i]] <- as.factor(df[[i]])
             }
         }
@@ -88,9 +90,9 @@ dataAnnotationColor <- function(inSCE, axis = NULL, colorGen = rainbow){
 #' Plot heatmap of using data stored in SingleCellExperiment Object
 #' @param inSCE
 #' @param useAssay
-#' @param featureIndex vector, default `NULL``, that can subset the input SCE
+#' @param featureIndex vector, default `NULL`, that can subset the input SCE
 #' object by rows (features)
-#' @param cellIndex vector, default `NULL``, that can subset the input SCE
+#' @param cellIndex vector, default `NULL`, that can subset the input SCE
 #' object by columns (cells)
 #' @param featureAnnotations data.frame, with `rownames` containing all the
 #' features going to be plotted, default NULL. Character columns should be
@@ -99,13 +101,13 @@ dataAnnotationColor <- function(inSCE, axis = NULL, colorGen = rainbow){
 #' cells going to be plotted, default NULL. Character columns should be
 #' factors.
 #' @param featureAnnotationColor A named list, default `NULL`. Customized color
-#' setting for features can be passed here. Should match the entries in
-#' the `featureAnnotations` or `rowDataName`. For each entry, there should be a
-#' list/vector of colors named with classes.
+#' setting for features. Should match the entries in the `featureAnnotations`
+#' or `rowDataName`. For each entry, there should be a list/vector of colors
+#' named with classes.
 #' @param cellAnnotationColor A named list, default `NULL`. Customized color
-#' setting for cells can be passed here. Should match the entries in
-#' the `cellAnnotations` or `colDataName`. For each entry, there should be a
-#' list/vector of colors named with classes.
+#' setting for cells. Should match the entries in the `cellAnnotations` or
+#' `colDataName`. For each entry, there should be a list/vector of colors named
+#' with classes.
 #' @param rowDataName character, default `NULL`. The column name(s) in
 #' `rowData` that need to be added to the annotation.
 #' @param colDataName character, default `NULL`. The column name(s) in
@@ -136,8 +138,8 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
     rowDataName = NULL, colDataName = NULL, rowSplitBy = NULL,
     colSplitBy = NULL, rowLabel = FALSE, colLabel = FALSE, rowDend = TRUE,
-    colDend = TRUE, scaleRow = scale, trim = c(-2, 2),
-                           ...){
+    colDend = TRUE, scaleRow = scale, trim = c(-2, 2), title = 'SCE Heatmap',
+    colorScheme = NULL, ...){
     # Check input
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('Input object is not a valid SingleCellExperiment object.')
@@ -148,18 +150,30 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     if(!all(rowDataName %in% names(SummarizedExperiment::rowData(inSCE)))){
         notIn <- !rowDataName %in% names(SummarizedExperiment::rowData(inSCE))
         notIn <- rowDataName[notIn]
-        stop('Specified columns ')
+        stop('rowDataName - Specified columns: ', paste(notIn, collapse = ', '),
+             ', not found. ')
     }
     if(!all(colDataName %in% names(SummarizedExperiment::colData(inSCE)))){
-        stop('')
+        notIn <- !colDataName %in% names(SummarizedExperiment::colData(inSCE))
+        notIn <- colDataName[notIn]
+        stop('colDataName - Specified columns: ', paste(notIn, collapse = ', '),
+             ', not found. ')
     }
     if(!is.null(rowSplitBy) &&
-       !rowSplitBy %in% c(rowDataName, names(featureAnnotations))){
-        stop('')
+       any(!rowSplitBy %in% c(rowDataName, names(featureAnnotations)))){
+        notIn <- !rowSplitBy %in% c(names(SummarizedExperiment::rowData(inSCE)),
+                                    featureAnnotations)
+        notIn <- rowSplitBy[notIn]
+        stop('rowSplitBy - Specified columns: ', paste(notIn, collapse = ', '),
+             ', not found. ')
     }
     if(!is.null(colSplitBy) &&
-       !colSplitBy %in% c(colDataName, names(cellAnnotations))){
-        stop('')
+       any(!colSplitBy %in% c(colDataName, names(cellAnnotations)))){
+        notIn <- !colSplitBy %in% c(names(SummarizedExperiment::colData(inSCE)),
+                                    cellAnnotations)
+        notIn <- colSplitBy[notIn]
+        stop('colSplitBy - Specified columns: ', paste(notIn, collapse = ', '),
+             ', not found. ')
     }
     if(is.null(featureIndex)){
         featureIndex <- 1:nrow(inSCE)
@@ -168,7 +182,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
         cellIndex <- 1:nrow(inSCE)
     }
     if (!is.null(scaleRow) && !is.function(scaleRow)) {
-            stop("'scaleRow' needs to be of class 'function'")
+        stop("'scaleRow' needs to be of class 'function'")
     }
     if (!is.null(trim) && length(trim) != 2) {
         stop("'trim' should be a 2 element vector specifying the lower",
@@ -176,32 +190,56 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     }
     inSCE <- inSCE[featureIndex, cellIndex]
     if(0 %in% dim(inSCE)){
-        stop('')
+        stop('Given indices specified 0-dim')
     }
     if(!is.null(featureAnnotations)){
         if(!all(rownames(inSCE) %in% rownames(featureAnnotations))){
-            stop('')
+            stop('Incomplete feature names in `featureAnnotations')
         } else {
-            featureAnnotations <- featureAnnotations[rownames(inSCE),]
+            featureAnnotations <-
+                featureAnnotations[rownames(inSCE), , drop = FALSE]
         }
     }
     if(!is.null(cellAnnotations)){
         if(!all(colnames(inSCE) %in% rownames(cellAnnotations))){
-            stop('')
+            stop('Incomplete cell names in cellAnnotations')
         } else {
-            cellAnnotations <- cellAnnotations[colnames(inSCE),]
+            cellAnnotations <- cellAnnotations[colnames(inSCE), , drop = FALSE]
         }
     }
-    # Extract info
+    if(is.null(colorScheme)){
+        colorScheme <- circlize::colorRamp2(c(trim[1], 0, trim[2]),
+                                       c('blue', 'white', 'red'))
+    } else {
+        if(!is.function(colorScheme)){
+            stop('`colorScheme` must be a function generated by ',
+                 'circlize::colorRamp2')
+        }
+        breaks <- attr(colorScheme, 'breaks')
+        if(breaks[1] != min(trim) || breaks[length(breaks)] != max(trim)){
+            stop('Breaks of `colorScheme` do not match with `trim`.')
+        }
+    }
+    # Extract
     mat <- SummarizedExperiment::assay(inSCE, useAssay)
+    ## rowData info
     rowDataExtract <- extractData(inSCE, 'row', rowDataName)
     rowDataColor <- dataAnnotationColor(inSCE, 'row')
     if(is.null(rowDataName)){
         rowDataColor <- NULL
     } else {
+        # Have to do an extraction because continuous values won't be in
+        # rowDataColor
         rowDataColor <- rowDataColor[rowDataName[rowDataName %in%
                                                      names(rowDataColor)]]
     }
+    if(!is.null(featureAnnotationColor)){
+        add <- setdiff(names(rowDataColor), names(featureAnnotationColor))
+        featureAnnotationColor <- c(rowDataColor[add], featureAnnotationColor)
+    } else {
+        featureAnnotationColor <- rowDataColor
+    }
+    ## colData info
     colDataExtract <- extractData(inSCE, 'col', colDataName)
     colDataColor <- dataAnnotationColor(inSCE, 'col')
     if(is.null(colDataName)){
@@ -210,22 +248,27 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
         colDataColor <- colDataColor[colDataName[colDataName %in%
                                                      names(colDataColor)]]
     }
+    if(!is.null(cellAnnotationColor)){
+        add <- setdiff(names(colDataColor), names(cellAnnotationColor))
+        cellAnnotationColor <- c(colDataColor[add], cellAnnotationColor)
+    } else {
+        cellAnnotationColor <- colDataColor
+    }
+    ## Merge with extra annotations
     if(is.null(featureAnnotations)){
         featureAnnotations <- rowDataExtract
     } else {
-        featureAnnotations <- cbind(rowDataExtract, featureAnnotations)
+        featureAnnotations <- data.frame(rowDataExtract, featureAnnotations)
     }
     if(is.null(cellAnnotations)){
         cellAnnotations <- colDataExtract
     } else {
-        cellAnnotations <- cbind(colDataExtract, cellAnnotations)
+        cellAnnotations <- data.frame(colDataExtract, cellAnnotations)
     }
-
     # Data process
-
     if (!is.null(scaleRow)) {
         cn <- colnames(mat)
-        mat <- t(base::apply(mat, 1, scaleRow))
+        mat <- t(apply(mat, 1, scaleRow))
         colnames(mat) <- cn
     }
     if (!is.null(trim)) {
@@ -233,32 +276,31 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
         mat[mat < trim[1]] <- trim[1]
         mat[mat > trim[2]] <- trim[2]
     }
-
     # Plot
     if(!is.null(featureAnnotations)){
         ra <- ComplexHeatmap::rowAnnotation(df = featureAnnotations,
-                                            col = rowDataColor)
+                                            col = featureAnnotationColor)
     } else {
         ra <- NULL
     }
     if(!is.null(cellAnnotations)){
         ca <- ComplexHeatmap::HeatmapAnnotation(df = cellAnnotations,
-                                                col = colDataColor)
+                                                col = cellAnnotationColor)
     } else {
         ca <- NULL
     }
     if(!is.null(rowSplitBy)){
-        rs <- featureAnnotations[[rowSplitBy]]
+        rs <- featureAnnotations[rowSplitBy]
     } else {
         rs <- NULL
     }
     if(!is.null(colSplitBy)){
-        cs <- cellAnnotations[[colSplitBy]]
+        cs <- cellAnnotations[colSplitBy]
     } else {
         cs <- NULL
     }
     hm <- ComplexHeatmap::Heatmap(mat, name = useAssay, left_annotation = ra,
-                                  top_annotation = ca,
+                                  top_annotation = ca, col = colorScheme,
                                   row_split = rs, column_split = cs,
                                   row_gap = unit(1, 'mm'),
                                   column_gap = unit(1, 'mm'),
@@ -267,5 +309,6 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
                                   show_row_dend = rowDend,
                                   show_column_names = colLabel,
                                   show_column_dend = colDend, ...)
-    return(hm)
+    HM <- ComplexHeatmap::draw(hm, column_title = title)
+    return(HM)
 }

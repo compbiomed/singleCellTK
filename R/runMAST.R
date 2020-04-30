@@ -86,6 +86,8 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
         index1 <- class %in% classGroup1
         if(is.null(classGroup2)){
             index2 <- !class %in% classGroup1
+        } else {
+            index2 <- class %in% classGroup2
         }
         cells1 <- colnames(inSCE[,index1])
         cells2 <- colnames(inSCE[,index2])

@@ -158,118 +158,40 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     return(regressionplot)
 }
 
-#' plotMASTHeatmap helper function
-#' Extract subsetted columns in factor class from col/rowData of SCE object
-#' @param inSCE
-#' @param axis choose from 'col' or 'row'
-#' @param columns character. column name(s) of col/rowData
-#' @param index The character/numeric/logical indices for subsetting.
-#' @return A formatted data.frame object
-extractData <- function(inSCE, axis = NULL, columns = NULL, index = NULL){
-    if(is.null(columns)){
-        return(NULL)
-    } else {
-        if(is.null(axis) || !axis %in% c('col', 'row')){
-            stop("axis should be 'col' or 'row'.")
-        } else if(axis == 'col'){
-            data <- SummarizedExperiment::colData(inSCE)
-        } else if(axis == 'row'){
-            data <- SummarizedExperiment::rowData(inSCE)
-        }
-        if(!is.null(index)){
-            data <- data[index,]
-        }
-        df <- data.frame(data[columns])
-        for(i in colnames(df)){
-            if(is.character(df[[i]]) || is.logical(df[[i]])){
-                df[[i]] <- as.factor(df[[i]])
-            }
-        }
-        return(df)
-    }
-}
-
-#' plotMASTHeatmap helper function
-#' Automatically setting the color list for the col/row annotation
-#' @param inSCE
-#' @param axis choose from 'col' or 'row'
-#' @param columns character. column name(s) of col/rowData
-#' @param index The character/numeric/logical indices for subsetting.
-#' @return A list object formatted as required by celda::semiHeatmap
-dataCol <- function(inSCE, axis = NULL, columns = NULL, index = NULL){
-    if(is.null(columns)){
-      return(NULL)
-    } else {
-        if(is.null(axis) || !axis %in% c('col', 'row')){
-            stop("axis should be 'col' or 'row'.")
-        } else if(axis == 'col'){
-            data <- SummarizedExperiment::colData(inSCE)
-        } else if(axis == 'row'){
-            data <- SummarizedExperiment::rowData(inSCE)
-        }
-        #if(!is.null(index)){
-        #    data <- data[index,]
-        #}
-        df <- data.frame(data[columns])
-        colList <- list()
-        for(i in colnames(df)){
-            if(is.factor(df[[i]])){
-                allLevels <- levels(df[[i]])
-            } else {
-                allLevels <- unique(df[[i]])
-            }
-            allLevels <- stringr::str_sort(allLevels, numeric = TRUE)
-            allCol <- celda::distinctColors(length(allLevels))
-            names(allCol) <- allLevels
-            if(!is.null(index)){
-                subseted <- df[index,i]
-                uniqSubseted <- as.vector(unique(subseted))
-                allCol <- allCol[names(allCol) %in% uniqSubseted]
-            }
-            colList[[i]] <- allCol
-        }
-        return(colList)
-    }
-}
-
 #' Heatmap visualization of DEG result called by MAST
 #'
 #' runMAST() has to be run in advance so that information is stored in the
-#' metadata of the input SCE object. This function is an modified version of
-#' celda::plotHeatmap(). Additional arguments are annotated in document. For
-#' others please refer to celda's document.
+#' metadata of the input SCE object. This function wraps plotSCEHeatmap.
 #' @param inSCE SingleCellExperiment object. Should be output of runMAST(),
 #' with DEG information saved in metadata.
-#' @param useResult character or numeric, default NULL. Specify which
+#' @param useResult character or numeric, default `NULL`. Specify which
 #' comparison result to plot. Character refers to metadata(inSCE)$MAST; numeric
 #' stands for index.
-#' @param onlyPos logical, default FALSE. Whether to only plot DEG with
+#' @param onlyPos logical, default `FALSE`. Whether to only plot DEG with
 #' positive log2_FC value.
-#' @param log2fcThreshold numeric, default 1. Only plot DEGs with the absolute
-#' values of log2FC larger than this value.
-#' @param fdrThreshold numeric, default 0.05. Only plot DEGs with FDR value
+#' @param log2fcThreshold numeric, default `1`. Only plot DEGs with the
+#' absolute values of log2FC larger than this value.
+#' @param fdrThreshold numeric, default `0.05`. Only plot DEGs with FDR value
 #' smaller than this value.
-#' @param labelColData character vector, default NULL. Column names in
-#' colData(inSCE), that needs to be annotated.
-#' @param main character, default useResult.
+#' @param ... Other arguments passed to `plotSCEHeatmap()`
+#' @return A ComplexHeatmap::Heatmap object
 #' @export
-#' @note Make it available to adjust the order of legends
 plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
-    log2fcThreshold = 1, fdrThreshold = 0.05, annotationCell = NULL,
-    annotationFeature = NULL, labelColData = NULL, labelRowData = NULL,
-    trim = c(-2, 2), colorScheme = c("divergent", "sequential"),
-    colorSchemeSymmetric = TRUE, colorSchemeCenter = 0, col = NULL,
-    annotationColor = NULL, breaks = NULL, hclustMethod = "ward.D2",
-    treeheightFeature = 30, treeheightCell = 30, silent = FALSE,
-    main = useResult, ...){
+    log2fcThreshold = 1, fdrThreshold = 0.05, ...){
     # Check
     checkMASTResult(inSCE, useResult)
+    extraArgs <- list(...)
     # Extract
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
-    useAssay <- result$useAssay
-    expres <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
-    expres <- featureNameDedup(expres)
+    if('useAssay' %in% names(extraArgs)){
+        useAssay <- extraArgs$useAssay
+        if(useAssay != result$useAssay){
+            warning("`useAssay` different to the one used when `runMAST()`")
+        }
+    } else {
+        useAssay <- result$useAssay
+    }
     ix1 <- result$select$ix1
     ix2 <- result$select$ix2
     filter <- which(deg$FDR < fdrThreshold & abs(deg$Log2_FC) > log2fcThreshold)
@@ -282,39 +204,36 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     }
     gene.ix <- rownames(inSCE) %in% deg.filtered$Gene
     cell.ix <- which(ix1 | ix2)
-    expres <- expres[gene.ix, cell.ix]
+    allGenes <- rownames(inSCE)[gene.ix]
+    allCells <- colnames(inSCE)[cell.ix]
     # Annotation organization
     ## Cells
     group <- vector()
     group[ix1] <- result$groupNames[1]
     group[ix2] <- result$groupNames[2]
     group <- factor(group[cell.ix], levels = result$groupNames)
-    if(!is.null(annotationCell)){
-        if(any(rownames(annotationCell) != colnames(expres))){
-            stop("Rownames of 'annotationCell' are not matching cells ",
-                 "involved in comparison")
+    if("cellAnnotations" %in% names(extraArgs)){
+        cellAnnotations <- extraArgs$cellAnnotations
+        if(!all(allCells %in% rownames(cellAnnotations))){
+            stop('Not all cells involved in comparison found in given ',
+                 '`cellAnnotations`. ')
         }
-        annotationCell <- data.frame(condition = group,
-                                     annotationCell)
+        cellAnnotations <- cellAnnotations[allCells, , drop = FALSE]
+        cellAnnotations <- data.frame(cellAnnotations, condition = group)
     } else {
-        annotationCell <- data.frame(condition = group,
-                                     row.names = colnames(expres))
-    }
-    if(!is.null(labelColData)){
-        if(!all(labelColData %in% names(SummarizedExperiment::colData(inSCE)))){
-            stop('Given "labelColData" not matching colData.')
-        }
-        extractedCol <- extractData(inSCE, 'col', labelColData, cell.ix)
-        annotationCell <- cbind(annotationCell, extractedCol)
-        colDataColor <- dataCol(inSCE, 'col', labelColData, cell.ix)
-        newEntries <- setdiff(names(colDataColor), names(annotationColor))
-        colDataColor <- colDataColor[newEntries]
-        annotationColor <- c(colDataColor, annotationColor)
+        cellAnnotations <- data.frame(condition = group,
+                                     row.names = allCells)
     }
     kCol <- celda::distinctColors(2)
     names(kCol) <- result$groupNames
-    if(!"comparisonGroup" %in% names(annotationColor)){
-        annotationColor <- c(list(condition = kCol), annotationColor)
+    if(!"cellAnnotationColor" %in% names(extraArgs)){
+        cellAnnotationColor <- list(condition = kCol)
+    } else {
+        cellAnnotationColor <- extraArgs$cellAnnotationColor
+        if(!"condition" %in% names(cellAnnotationColor)){
+            cellAnnotationColor <- c(list(condition = kCol),
+                                     cellAnnotationColor)
+        }
     }
     ## Genes
     regulation <- vector()
@@ -323,92 +242,57 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     regulation[rownames(inSCE) %in% genes.up] <- 'up'
     regulation[rownames(inSCE) %in% genes.down] <- 'down'
     regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
-    if(!is.null(annotationFeature)){
-        if(any(rownames(annotationFeature) != rownames(expres))){
-            stop("Rownames of 'annotationFeature' are not matching genes involved in comparison")
+    if("featureAnnotations" %in% names(extraArgs)){
+        featureAnnotations <- extraArgs$featureAnnotations
+        if(!all(allGenes %in% rownames(featureAnnotations))){
+            stop('Not all cells involved in comparison found in given ',
+                 '`cellAnnotations`. ')
         }
-        annotationFeature <- data.frame(regulation = regulation,
-                                        annotationFeature)
+        featureAnnotations <- featureAnnotations[allGenes, , drop = FALSE]
+        featureAnnotations <- data.frame(featureAnnotations,
+                                         regulation = regulation)
     } else {
-        annotationFeature <- data.frame(regulation = regulation,
-                                        row.names = rownames(expres))
-    }
-    if(!is.null(labelRowData)){
-        if(!all(labelRowData %in% names(SummarizedExperiment::rowData(inSCE)))){
-            stop('Given "labelRowData" not matching rowData.')
-        }
-        extractedRow <- extractData(inSCE, 'row', labelRowData, gene.ix)
-        annotationFeature <- cbind(annotationFeature, extractedRow)
-        rowDataColor <- dataCol(inSCE, 'row', labelRowData, gene.ix)
-        newEntries <- setdiff(names(rowDataColor), names(annotationColor))
-        rowDataColor <- rowDataColor[newEntries]
-        annotationColor <- c(rowDataColor, annotationColor)
+        featureAnnotations <- data.frame(regulation = regulation,
+                                      row.names = allGenes)
     }
     lCol <- celda::distinctColors(2)
     names(lCol) <- c('up', 'down')
-    if(!"regulation" %in% names(annotationColor)){
-        annotationColor <- c(list(regulation = lCol), annotationColor)
-    }
-    # celda::plotHeatmap remaining
-    colorScheme <- match.arg(colorScheme)
-
-    cn <- colnames(expres)
-    expres <- t(base::apply(expres, 1, scale))
-    colnames(expres) <- cn
-
-    if (!is.null(trim)) {
-        if (length(trim) != 2) {
-            stop("'trim' should be a 2 element vector specifying the lower",
-                 " and upper boundaries")
-        }
-        trim <- sort(trim)
-        expres[expres < trim[1]] <- trim[1]
-        expres[expres > trim[2]] <- trim[2]
-    }
-    uBoundRange <- max(expres, na.rm = TRUE)
-    lboundRange <- min(expres, na.rm = TRUE)
-
-    if (colorScheme == "divergent") {
-        if (colorSchemeSymmetric == TRUE) {
-            uBoundRange <- max(abs(uBoundRange), abs(lboundRange))
-            lboundRange <- -uBoundRange
-        }
-        if (is.null(col)) {
-            col <- colorRampPalette(c("#1E90FF", "#FFFFFF", "#CD2626"),
-                                    space = "Lab")(100)
-        }
-        colLen <- length(col)
-        if (is.null(breaks)) {
-           breaks <- c(seq(lboundRange, colorSchemeCenter,
-                           length.out = round(colLen/2) + 1),
-                       seq(colorSchemeCenter + 1e-06, uBoundRange,
-                           length.out = colLen - round(colLen/2)))
+    if(!"featureAnnotationColor" %in% names(extraArgs)){
+        featureAnnotationColor <- list(regulation = lCol)
+    } else {
+        featureAnnotationColor <- extraArgs$featureAnnotationColor
+        if(!"regulation" %in% names(featureAnnotationColor)){
+            featureAnnotationColor <- c(list(regulation = kCol),
+                                        featureAnnotationColor)
         }
     }
-    else {
-        if (is.null(col)) {
-            col <- colorRampPalette(c("#FFFFFF",
-                                      brewer.pal(n = 9, name = "Blues")))(100)
-        }
-        colLen <- length(col)
-        if (is.null(breaks)) {
-            breaks <- seq(lboundRange, uBoundRange, length.out = colLen)
-        }
+    # Plot
+    if('rowSplitBy' %in% names(extraArgs)){
+        rowSplitBy <- extraArgs$rowSplitBy
+    } else {
+        rowSplitBy <- 'regulation'
     }
-    sp <- celda:::semiPheatmap(mat = expres, color = col, breaks = breaks,
-        clusterCols = TRUE, clusterRows = TRUE,
-        annotationRow = annotationFeature, annotationCol = annotationCell,
-        annotationColors = annotationColor, legend = TRUE,
-        annotationLegend = TRUE, annotationNamesRow = TRUE,
-        annotationNamesCol = TRUE, showRownames = FALSE,
-        showColnames = FALSE, clusteringMethod = hclustMethod,
-        treeHeightRow = treeheightFeature, treeHeightCol = treeheightCell,
-        rowLabel = regulation, colLabel = group, silent = TRUE, main = main, ...)
-    if (!isTRUE(silent)) {
-        grid::grid.newpage()
-        grid::grid.draw(sp$gtable)
+    if('colSplitBy' %in% names(extraArgs)){
+        colSplitBy <- extraArgs$colSplitBy
+    } else {
+        colSplitBy <- 'condition'
     }
-    invisible(sp)
+    if('title' %in% names(extraArgs)){
+        title <- extraArgs$title
+    } else {
+        title <- useResult
+    }
+    extraArgs[c('useAssay', 'rowSplitBy', 'featureIndex', 'featureAnnotations',
+                'featureAnnotationColor', 'colSplitBy', 'cellIndex',
+                'cellAnnotations', 'cellAnnotationColor', 'title')] <- NULL
+    hm <- do.call('plotSCEHeatmap', c(list(inSCE = inSCE, useAssay = useAssay,
+        featureIndex = gene.ix, cellIndex = cell.ix,
+        featureAnnotations = featureAnnotations,
+        cellAnnotations = cellAnnotations,
+        featureAnnotationColor = featureAnnotationColor,
+        cellAnnotationColor = cellAnnotationColor, rowSplitBy = rowSplitBy,
+        colSplitBy = colSplitBy, title = title), extraArgs))
+    return(hm)
 }
 
 #' @describeIn MAST Identify adaptive thresholds
@@ -431,4 +315,20 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
     invisible(utils::capture.output(thres <- MAST::thresholdSCRNACountMatrix(
         SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
     return(thres)
+}
+
+Func1 <- function(a = NULL, b = NULL, c = NULL, d = NULL){
+    print(a)
+    print(b)
+    print(c)
+    print(d)
+}
+
+#' A wrapper of func1
+Func2 <- function(X = NULL, Y = NULL, ...){
+    # do some thing
+    dots <- list(...)
+    dots$a <- NULL
+    dots$b <- NULL
+    do.call('Func1', c(list(a = X+1, b = Y+1), dots))
 }
