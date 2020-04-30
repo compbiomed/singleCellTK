@@ -96,7 +96,6 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' @param packages Character Vector. List of packages to install. 
 #' @param selectEnvironment Boolean. Run \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} after installing all packages to select the virtual environment. Default TRUE.
 #' @param python The path to a Python interpreter, to be used with the created virtual environment. When NULL, the Python interpreter associated with the current session will be used. Default NULL.
-#' @param ... Other parameters to pass to \code{\link[reticulate]{conda_install}}. 
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallVirtualEnv(envname = "sctk-reticulate")

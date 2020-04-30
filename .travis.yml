@@ -6,7 +6,7 @@ r:
   - oldrel
 dist: trusty
 sudo: false
-warnings_are_errors: false
+warnings_are_errors: true
 bioc_required: true
 
 # Current version of xgboost fails install
