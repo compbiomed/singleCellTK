@@ -1,8 +1,9 @@
 language: r
-  - oldrel
 cache: 
   - packages
   - pip
+r:
+  - oldrel
 dist: trusty
 sudo: false
 warnings_are_errors: false
