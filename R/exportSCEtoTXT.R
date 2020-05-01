@@ -9,7 +9,7 @@
 #'  \code{TRUE}.
 #' @param gzipped Boolean. \code{TRUE} if the output files are to be
 #'  gzip compressed. \code{FALSE} otherwise. Default
-#'  \code{TRUE} to save disk space.
+#'  \code{TRUE}.
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")

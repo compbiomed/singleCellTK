@@ -4,7 +4,16 @@
 \alias{runCxds}
 \title{Find doublets/multiplets using \link[scds]{cxds}.}
 \usage{
-runCxds(inSCE, sample = NULL, seed = 12345, ...)
+runCxds(
+  inSCE,
+  sample = NULL,
+  seed = 12345,
+  ntop = 500,
+  binThresh = 0,
+  verb = FALSE,
+  retRes = FALSE,
+  estNdbl = FALSE
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
@@ -17,7 +26,15 @@ Default NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{...}{Additional arguments passed to \link[scds]{cxds}.}
+\item{ntop}{See \link[scds]{cxds} for more information. Default \code{500}.}
+
+\item{binThresh}{See \link[scds]{cxds} for more information. Default \code{0}.}
+
+\item{verb}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+
+\item{retRes}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+
+\item{estNdbl}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

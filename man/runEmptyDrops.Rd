@@ -4,7 +4,19 @@
 \alias{runEmptyDrops}
 \title{Identify empty droplets using \link[DropletUtils]{emptyDrops}.}
 \usage{
-runEmptyDrops(inSCE, sample = NULL, useAssay = "counts", ...)
+runEmptyDrops(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  lower = 100,
+  niters = 10000,
+  testAmbient = FALSE,
+  ignore = NULL,
+  alpha = NULL,
+  retain = NULL,
+  barcodeArgs = list(),
+  BPPARAM = BiocParallel::SerialParam()
+)
 }
 \arguments{
 \item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.
@@ -16,8 +28,21 @@ If NULL, then all cells will be processed together. Default NULL.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use.}
 
-\item{...}{Additional arguments to pass to \link[DropletUtils]{emptyDrops}.
-matrix.}
+\item{lower}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{niters}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{testAmbient}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{ignore}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{alpha}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{retain}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{barcodeArgs}{See \link[DropletUtils]{emptyDrops} for more information.}
+
+\item{BPPARAM}{See \link[DropletUtils]{emptyDrops} for more information.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the

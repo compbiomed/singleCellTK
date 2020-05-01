@@ -60,7 +60,6 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' frames instead of file paths. The default is FALSE.
 #' @param createLogCounts If TRUE, create a log2(counts+1) normalized assay
 #' and include it in the object. The default is TRUE
-#'
 #' @return a SCtkExperiment object
 #' @export
 #' @examples
@@ -71,7 +70,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <- simpleLog %@% function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
+createSCE <-  function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
 
@@ -265,18 +264,6 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   }
 }
 
-## Convert a matrix to a sparse matrix and preserve column/row names
-.convertToMatrix <- function(x) {
-  cn <- colnames(x)
-  rn <- rownames(x)
-
-  x <- methods::as(x, "dgCMatrix")
-  colnames(x) <- cn
-  rownames(x) <- rn
-
-  return(x)
-}
-
 #' Resolve duplicated feature names in a matrix
 #'
 #' Adds '-1', '-2', ... '-i' to multiple duplicated feature names
@@ -284,22 +271,22 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' resolved.
 #' @return The same matrix as input with rowname duplication resolved.
 featureNameDedup <- function(countmat){
-  if(!class(rownames(countmat)) == 'character'){
-    stop("No character feature name found.")
-  }
-  gene.table <- table(rownames(countmat))
-  gene.duplicates <- gene.table[gene.table > 1]
-  gene.duplicates.names <- names(gene.duplicates)
-  empty <- character(0)
-  if (!identical(empty, gene.duplicates.names)){
-    for (genename in gene.duplicates.names){
-      genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
-      indices <- which(grepl(genename, rownames(countmat)))
-      num <- length(indices)
-      for (i in 1:num){
-        rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
-      }
+    if(!class(rownames(countmat)) == 'character'){
+        stop("No character feature name found.")
     }
-  }
-  return(countmat)
+    gene.table <- table(rownames(countmat))
+    gene.duplicates <- gene.table[gene.table > 1]
+    gene.duplicates.names <- names(gene.duplicates)
+    empty <- character(0)
+    if (!identical(empty, gene.duplicates.names)){
+        for (genename in gene.duplicates.names){
+            genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
+            indices <- which(grepl(genename, rownames(countmat)))
+            num <- length(indices)
+            for (i in 1:num){
+                rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
+            }
+        }
+    }
+    return(countmat)
 }

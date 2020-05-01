@@ -65,9 +65,9 @@
 #' @param nPrinComps Integer. Number of principal components used to embed
 #'  the transcriptomes prior to k-nearest-neighbor graph construction.
 #'  Default 30.
-#'  @param tsneAngle Float. Determines angular size of a distant node as measured 
+#' @param tsneAngle Float. Determines angular size of a distant node as measured 
 #'  from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}. 
-#'  @param tsnePerplexity Integer. The number of nearest neighbors that
+#' @param tsnePerplexity Integer. The number of nearest neighbors that
 #'  is used in other manifold learning algorithms.
 #'  If default, it is set to 30. Default \code{NULL}.
 #' @param verbose Boolean. If \code{TRUE}, print progress updates. Default
