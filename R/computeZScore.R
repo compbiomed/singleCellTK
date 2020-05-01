@@ -19,10 +19,10 @@
 #' assay(sce, "countsZScore") <- computeZScore(assay(sce, "counts"))
 #'
 computeZScore <- function(counts) {
-    if (!is(counts, "DelayedArray")) {
+    if (!methods::is(counts, "DelayedArray")) {
         counts <- DelayedArray(counts)
     }
     counts <- (counts - DelayedMatrixStats::rowMeans2(counts)) / DelayedMatrixStats::rowSds(counts)
-    counts[is.nan(counts)] <- 0
+    counts[base::is.nan(counts)] <- 0
     return(counts)
 }

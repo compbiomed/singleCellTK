@@ -172,17 +172,17 @@ seuratFindHVG <- function(inSCE, useAssay, geneNamesSeurat, hvgMethod, hvgNumber
     seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
     if (hvgMethod == "vst") {
-        rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.variance.standardized
-        rowData(inSCE)$seurat_variableFeatures_vst_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.mean
+        rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.variance.standardized
+        rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.mean
     } else if (hvgMethod == "dispersion") {
-        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
-        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
-        rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
     }
     else if (hvgMethod == "mean.var.plot") {
-        rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
-        rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
-        rowData(inSCE)$seurat_variableFeatures_mvp_mean <- slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_mvp_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
     }
     return(inSCE)
 }
