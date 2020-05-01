@@ -1,10 +1,24 @@
-.runEmptyDrops <- function(barcode.matrix, ...) {
-
+.runEmptyDrops <- function(barcode.matrix, lower=100,
+                           niters=10000,
+                           test.ambient=FALSE,
+                           ignore=NULL, 
+                           alpha=NULL,
+                           retain=NULL,
+                           barcode.args=list(),
+                           BPPARAM=BiocParallel::SerialParam()) {
+  
   barcode.matrix <- .convertToMatrix(barcode.matrix)
-
-  result <- DropletUtils::emptyDrops(m = barcode.matrix, ...)
+  
+  result <- DropletUtils::emptyDrops(m = barcode.matrix, lower=100,
+                                     niters=10000,
+                                     test.ambient=FALSE,
+                                     ignore=NULL, 
+                                     alpha=NULL,
+                                     retain=NULL,
+                                     barcode.args=list(),
+                                     BPPARAM=BiocParallel::SerialParam())
   colnames(result) <- paste0("dropletUtils_emptyDrops_", colnames(result))
-
+  
   return(result)
 }
 
@@ -20,8 +34,14 @@
 #'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
 #'  If NULL, then all cells will be processed together. Default NULL.
 #' @param useAssay  A string specifying which assay in the SCE to use.
-#' @param ... Additional arguments to pass to \link[DropletUtils]{emptyDrops}.
-#'  matrix.
+#' @param lower See \link[DropletUtils]{emptyDrops} for more information.
+#' @param niters See \link[DropletUtils]{emptyDrops} for more information.
+#' @param testAmbient See \link[DropletUtils]{emptyDrops} for more information.
+#' @param ignore See \link[DropletUtils]{emptyDrops} for more information.
+#' @param alpha See \link[DropletUtils]{emptyDrops} for more information.
+#' @param retain See \link[DropletUtils]{emptyDrops} for more information.
+#' @param barcodeArgs See \link[DropletUtils]{emptyDrops} for more information.
+#' @param BPPARAM See \link[DropletUtils]{emptyDrops} for more information.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  \link[DropletUtils]{emptyDrops} output table appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -43,13 +63,20 @@
 #' @import DropletUtils
 #' @export
 runEmptyDrops <- function(inSCE,
-    sample = NULL,
-    useAssay = "counts",
-    ...
+                          sample = NULL,
+                          useAssay = "counts", 
+                          lower = 100,
+                          niters = 10000,
+                          testAmbient = FALSE,
+                          ignore = NULL, 
+                          alpha = NULL,
+                          retain = NULL,
+                          barcodeArgs = list(),
+                          BPPARAM = BiocParallel::SerialParam()
 ) {
   # getting the current argument values
-  current_params <- as.list(sys.call())
-  metadata_params <- inSCE@metadata$QCParams
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  
   
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
@@ -58,32 +85,44 @@ runEmptyDrops <- function(inSCE,
   } else {
     sample = rep(1, ncol(inSCE))
   }
-
+  
   message(date(), " ... Running 'emptyDrops'")
-
+  
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
-                dropletUtils_emptyDrops_total = integer(ncol(inSCE)),
-                dropletUtils_emptyDrops_logprob = numeric(ncol(inSCE)),
-                dropletUtils_emptyDrops_pvalue = numeric(ncol(inSCE)),
-                dropletUtils_emptyDrops_limited = logical(ncol(inSCE)),
-                dropletUtils_emptyDrops_fdr = numeric(ncol(inSCE)))
-
+                                 dropletUtils_emptyDrops_total = integer(ncol(inSCE)),
+                                 dropletUtils_emptyDrops_logprob = numeric(ncol(inSCE)),
+                                 dropletUtils_emptyDrops_pvalue = numeric(ncol(inSCE)),
+                                 dropletUtils_emptyDrops_limited = logical(ncol(inSCE)),
+                                 dropletUtils_emptyDrops_fdr = numeric(ncol(inSCE)))
+  
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
   for (i in seq_len(length(samples))) {
     sceSampleInd <- sample == samples[i]
     sceSample <- inSCE[, sceSampleInd]
-
+    
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-    result <- .runEmptyDrops(barcode.matrix = mat, ...)
-
+    result <- .runEmptyDrops(barcode.matrix = mat,
+                             lower = lower,
+                             niters = niters,
+                             test.ambient = testAmbient,
+                             ignore = ignore, 
+                             alpha = alpha,
+                             retain = retain,
+                             barcode.args = barcodeArgs,
+                             BPPARAM = BPPARAM)
+    
+    
     output[sceSampleInd, ] <- result
+    S4Vectors::metadata(output[sceSampleInd, ]) <- S4Vectors::metadata(result)
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
-  inSCE@metadata$QCParams <- metadata_params
-  inSCE@metadata$QCParams$runEmptyDrops <- current_params
+  inSCE@metadata = S4Vectors::metadata(output)
+  
+  inSCE@metadata$runEmptyDrops <- argsList[-1]
+  inSCE@metadata$runEmptyDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version
   
   return(inSCE)
 }

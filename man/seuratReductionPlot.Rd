@@ -5,10 +5,12 @@
 \title{seuratReductionPlot
 Plots the selected dimensionality reduction method}
 \usage{
-seuratReductionPlot(sceObject, geneNamesSeurat, reduction)
+seuratReductionPlot(inSCE, useAssay, geneNamesSeurat, reduction)
 }
 \arguments{
-\item{sceObject}{sce object which has the selected dimensionality reduction algorithm already computed and stored}
+\item{inSCE}{(sce) object which has the selected dimensionality reduction algorithm already computed and stored}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 

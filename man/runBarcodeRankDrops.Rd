@@ -4,7 +4,14 @@
 \alias{runBarcodeRankDrops}
 \title{Identify empty droplets using \link[DropletUtils]{barcodeRanks}.}
 \usage{
-runBarcodeRankDrops(inSCE, sample = NULL, useAssay = "counts", ...)
+runBarcodeRankDrops(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  lower = 100,
+  fitBounds = NULL,
+  df = 20
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
@@ -12,11 +19,15 @@ Must contain a raw counts matrix before empty droplets have been removed.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to
 \link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
-If NULL, then all cells will be processed together. Default NULL.}
+If NULL, then all cells will be processed together. Default \code{NULL}.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use.}
 
-\item{...}{Additional arguments to pass to \link[DropletUtils]{barcodeRanks}.}
+\item{lower}{See \link[DropletUtils]{emptyDrops} for more information. Default \code{100}.}
+
+\item{fitBounds}{See \link[DropletUtils]{emptyDrops} for more information. Default \code{NULL}.}
+
+\item{df}{See \link[DropletUtils]{emptyDrops} for more information. Default \code{20}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the

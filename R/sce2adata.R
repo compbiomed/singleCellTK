@@ -5,19 +5,19 @@
 #' interactive console. Mostly used senario is when you want to apply 
 #' reticulated Python function, which only works with an anndata.AnnData object.
 #' @param SCE A SingleCellExperiment object.
-#' @param mainAssay Character, default `"counts"`. The name of assay of
+#' @param useAssay Character, default `"counts"`. The name of assay of
 #' interests that will be set as the primary matrix of the output AnnData.
 #' Available options can be listed by `assayNames(SCE)`. Thee primary matrix 
 #' will be saved in `adata$X`, Other assays will be stored in `adata$obsm` 
 #' together with the low-dimension representations (for now). 
 #' @return A Python anndata.AnnData object
-.sce2adata <- function(SCE, mainAssay = 'counts') {
+.sce2adata <- function(SCE, useAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first
     stopifnot(class(SCE) == "SingleCellExperiment")
     
     # Extract information that correspond to AnnData structure
-    X <- t(SummarizedExperiment::assay(SCE, mainAssay))
+    X <- t(SummarizedExperiment::assay(SCE, useAssay))
     AnnData <- sc$AnnData(X = X)
     obs <- as.data.frame(colData(SCE))
     if(length(obs) > 0){
@@ -47,7 +47,7 @@
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
     for (i in 1:length(allAssayNames)) {
         oneName <- allAssayNames[i]
-        if (!oneName == mainAssay) {
+        if (!oneName == useAssay) {
             AnnData$obsm$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
         }
     }

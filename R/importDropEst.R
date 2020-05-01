@@ -43,7 +43,7 @@
                                  dataType, 
                                  rdsFileName, 
                                  sampleName = 'sample',
-                                 delayedArray = delayedArrary){
+                                 delayedArray = FALSE){
   ## Read DropEst RDS
   dropEst_rds <- .readDropEstFile(sampleDir,dataType,rdsFileName)
   if (dataType == 'filtered' && 'cm' %in% names(dropEst_rds)) {
@@ -85,10 +85,10 @@
 #' create a SingleCellExperiment object from either the raw or filtered counts matrix.
 #' Additionally parse through the RDS to obtain appropriate feature annotations as 
 #' SCE coldata, in addition to any metadata.
-#' @param sampleDir  A path to the directory containing the data files. Default "./".
-#' @param sampleName A User-defined sample name. This will be prepended to all cell barcode IDs.
+#' @param sampleDirs  A path to the directory containing the data files. Default "./".
+#' @param sampleNames A User-defined sample name. This will be prepended to all cell barcode IDs.
 #'  Default "sample".
-#'  @param dataType can be "filtered" or "raw". Default is "filtered"
+#' @param dataType can be "filtered" or "raw". Default \code{"filtered"}.
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
@@ -103,14 +103,6 @@
 #' found in the DropEst rds, they will be added to the SCE metadata field
 #' @return A \code{SingleCellExperiment} object containing the count matrix,
 #'  the feature annotations from DropEst as ColData, and any metadata from DropEst
-#' @examples
-#' # Example #1
-#' Example DropEst outputs were downloaded from the DropEst Github 
-#' (http://pklab.med.harvard.edu/viktor/dropest_paper/dropest_0.8.5.zip). 
-#' To run the dropest import function with the example dataset, 
-#' set the sampleDirs variable to the example dropEst provided in SCTK as follows-
-#' sce <- importDropEst(sampleDirs = c('path/to/dropest/folder/'), 
-#'                      dataType='filtered', sampleNames=c('sample'))
 #' @export
 importDropEst <- function(sampleDirs = NULL, 
                           dataType = c('filtered','raw'),

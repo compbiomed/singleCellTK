@@ -5,7 +5,9 @@
 \alias{sceBatches}
 \title{Example Single Cell RNA-Seq data in SingleCellExperiment object, with
 different batches annotated}
-\format{SingleCellExperiment}
+\format{
+SingleCellExperiment
+}
 \source{
 DOI: 10.2337/db16-0405 and 10.1016/j.cmet.2016.08.018
 }

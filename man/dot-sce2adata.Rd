@@ -5,12 +5,12 @@
 \title{Coverts SingleCellExperiment object from R to anndata.AnnData object in 
 Python}
 \usage{
-.sce2adata(SCE, mainAssay = "counts")
+.sce2adata(SCE, useAssay = "counts")
 }
 \arguments{
 \item{SCE}{A SingleCellExperiment object.}
 
-\item{mainAssay}{Character, default `"counts"`. The name of assay of
+\item{useAssay}{Character, default `"counts"`. The name of assay of
 interests that will be set as the primary matrix of the output AnnData.
 Available options can be listed by `assayNames(SCE)`. Thee primary matrix 
 will be saved in `adata$X`, Other assays will be stored in `adata$obsm` 
