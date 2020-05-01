@@ -9,7 +9,7 @@ exportSCEtoAnnData(
   sce,
   useAssay = "counts",
   outputDir = "./",
-  sample = "sample",
+  prefix = "sample",
   overwrite = TRUE,
   compression = c("None", "lzf", "gzip"),
   compressionOpts = NULL,
@@ -18,21 +18,25 @@ exportSCEtoAnnData(
 }
 \arguments{
 \item{sce}{\link[SingleCellExperiment]{SingleCellExperiment} R object to be
- exported.
- @param useAssay Character, default `"counts"`. The name of assay of
-interests that will be set as the primary matrix of the output AnnData.}
+exported.}
 
-\item{outputDir}{Path to the directory where .h5ad outputs will be written}
+\item{useAssay}{Character. The name of assay of
+interests that will be set as the primary matrix of the output AnnData.
+Default \code{"counts"}.}
+
+\item{outputDir}{Path to the directory where .h5ad outputs will be written. Default is the current working directory.}
+
+\item{prefix}{Prefix to use for the name of the output file. Default \code{"sample"}.}
 
 \item{overwrite}{Boolean. Default \code{TRUE}.}
 
-\item{compression}{Default \code{None}.If output file compression is required, this variable accepts
-'gzip' or 'lzf' as inputs.}
+\item{compression}{If output file compression is required, this variable accepts
+'gzip' or 'lzf' as inputs. Default \code{None}.}
+
+\item{compressionOpts}{Integer. Sets the compression level}
 
 \item{forceDense}{Default \code{False} Write sparse data as a dense matrix.
-Refer anndata.write_h5ad documentation for details}
-
-\item{compression_opts}{Integer. Default \code{NULL} Sets the compression level}
+Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.}
 }
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
@@ -42,7 +46,9 @@ are available as parameters to this export function and set to defaults. Default
 overridden at function call.
 }
 \examples{
+\dontrun{
 data(sce_chcl, package = "scds")
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
+}
 
 }

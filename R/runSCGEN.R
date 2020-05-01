@@ -56,7 +56,7 @@ runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
     nEpochs <- as.integer(nEpochs)
 
     ## Run algorithm
-    adata <- .sce2adata(inSCE, mainAssay = useAssay)
+    adata <- .sce2adata(inSCE, useAssay = useAssay)
     network = scgen$VAEArith(x_dimension = adata$n_vars)
     network$train(train_data = adata, n_epochs = nEpochs)
     corrAdata <- scgen$batch_removal(network, adata, batch_key = batch, 

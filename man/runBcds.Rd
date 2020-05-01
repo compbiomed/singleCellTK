@@ -28,7 +28,19 @@ Default NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{...}{Additional arguments passed to \link[scds]{bcds}.}
+\item{ntop}{See \link[scds]{bcds} for more information. Default \code{500}.}
+
+\item{srat}{See \link[scds]{bcds} for more information. Default \code{1}.}
+
+\item{verb}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+
+\item{retRes}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+
+\item{nmax}{See \link[scds]{bcds} for more information. Default \code{"tune"}.}
+
+\item{varImp}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+
+\item{estNdbl}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

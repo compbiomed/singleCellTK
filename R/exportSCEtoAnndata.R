@@ -7,29 +7,32 @@
 #' overridden at function call.
 #' @param sce \link[SingleCellExperiment]{SingleCellExperiment} R object to be
 #'  exported.
-#'  @param useAssay Character, default `"counts"`. The name of assay of
+#' @param useAssay Character. The name of assay of
 #' interests that will be set as the primary matrix of the output AnnData.
-#' @param outputDir Path to the directory where .h5ad outputs will be written
+#' Default \code{"counts"}. 
+#' @param outputDir Path to the directory where .h5ad outputs will be written. Default is the current working directory.
+#' @param prefix Prefix to use for the name of the output file. Default \code{"sample"}.
 #' @param overwrite Boolean. Default \code{TRUE}.
-#' @param compression Default \code{None}.If output file compression is required, this variable accepts
-#' 'gzip' or 'lzf' as inputs.
-#' @param compression_opts Integer. Default \code{NULL} Sets the compression level
+#' @param compression If output file compression is required, this variable accepts
+#' 'gzip' or 'lzf' as inputs. Default \code{None}.
+#' @param compressionOpts Integer. Sets the compression level
 #' @param forceDense Default \code{False} Write sparse data as a dense matrix.
-#' Refer anndata.write_h5ad documentation for details
+#' Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}. 
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-#'
+#' }
+#' 
 #' @export
-
 exportSCEtoAnnData <- function(sce, 
-                                useAssay='counts',
-                                outputDir="./",
-                                sample = "sample",
-                                overwrite=TRUE,
-                                compression= c('None','lzf','gzip'),
+                                useAssay = 'counts',
+                                outputDir = "./",
+                                prefix = "sample",
+                                overwrite = TRUE,
+                                compression = c('None','lzf','gzip'),
                                 compressionOpts = NULL,
-                                forceDense= c('False','True')){
+                                forceDense = c('False','True')){
   compression <- match.arg(compression)
   forceDense <- match.arg(forceDense)
   if (compression == 'None'){
@@ -58,12 +61,12 @@ exportSCEtoAnnData <- function(sce,
   
   dir.create(outputDir, showWarnings = FALSE, recursive = TRUE)
   annData <- .sce2adata(sce,useAssay)
-  fileName <- paste0(sample,".h5ad")
+  fileName <- paste0(prefix,".h5ad")
   filePath <- file.path(outputDir,fileName)
-
+  
   if (file.exists(filePath) && !isTRUE(overwrite)) {
     stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
-  }
+    }
 
   annData$write_h5ad(filePath,
                      compression = compression, 

@@ -13,16 +13,17 @@ importDropEst(
 )
 }
 \arguments{
+\item{sampleDirs}{A path to the directory containing the data files. Default "./".}
+
+\item{dataType}{can be "filtered" or "raw". Default \code{"filtered"}.}
+
 \item{rdsFileName}{File name prefix of the DropEst RDS output. default is "cell.counts"}
+
+\item{sampleNames}{A User-defined sample name. This will be prepended to all cell barcode IDs.
+Default "sample".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
-
-\item{sampleDir}{A path to the directory containing the data files. Default "./".}
-
-\item{sampleName}{A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".
-@param dataType can be "filtered" or "raw". Default is "filtered"}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count matrix,
@@ -43,13 +44,4 @@ If using filtered counts matrix, the colData dataframe is
 subset to contain features from the filtered counts matrix alone.
 If any annotations of ("saturation_info","merge_targets","reads_per_umi_per_cell") are 
 found in the DropEst rds, they will be added to the SCE metadata field
-}
-\examples{
-Example
-Example DropEst outputs were downloaded from the DropEst Github 
-(http://pklab.med.harvard.edu/viktor/dropest_paper/dropest_0.8.5.zip). 
-To run the dropest import function with the example dataset, 
-set the sampleDirs variable to the example dropEst provided in SCTK as follows-
-sce <- importDropEst(sampleDirs = c('path/to/dropest/folder/'), 
-                     dataType='filtered', sampleNames=c('sample'))
 }

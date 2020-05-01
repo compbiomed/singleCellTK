@@ -13,6 +13,7 @@ blt <- NULL
 scgen <- NULL
 sc <- NULL
 bbknn <- NULL
+pkg_resources <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
@@ -24,6 +25,7 @@ bbknn <- NULL
   scgen <<- reticulate::import("scgen", delay_load = TRUE)
   sc <<- reticulate::import("scanpy", delay_load = TRUE)
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
+  pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
   blt <<- reticulate::import_builtins()
 }
 
@@ -94,7 +96,6 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' @param packages Character Vector. List of packages to install. 
 #' @param selectEnvironment Boolean. Run \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} after installing all packages to select the virtual environment. Default TRUE.
 #' @param python The path to a Python interpreter, to be used with the created virtual environment. When NULL, the Python interpreter associated with the current session will be used. Default NULL.
-#' @param ... Other parameters to pass to \code{\link[reticulate]{conda_install}}. 
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallVirtualEnv(envname = "sctk-reticulate")

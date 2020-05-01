@@ -18,9 +18,6 @@ Update/Modify/Add an assay in the provided sce object}
 
 \item{assaySlotSeurat}{the assay slot in seurat object}
 }
-\value{
-
-}
 \description{
 .updateAssaySCE
 Update/Modify/Add an assay in the provided sce object

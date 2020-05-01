@@ -26,7 +26,15 @@ Default NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{...}{Additional arguments passed to \link[scds]{cxds}.}
+\item{ntop}{See \link[scds]{cxds} for more information. Default \code{500}.}
+
+\item{binThresh}{See \link[scds]{cxds} for more information. Default \code{0}.}
+
+\item{verb}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+
+\item{retRes}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+
+\item{estNdbl}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

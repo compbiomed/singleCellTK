@@ -60,7 +60,6 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' frames instead of file paths. The default is FALSE.
 #' @param createLogCounts If TRUE, create a log2(counts+1) normalized assay
 #' and include it in the object. The default is TRUE
-#'
 #' @return a SCtkExperiment object
 #' @export
 #' @examples
@@ -71,7 +70,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <- simpleLog %@% function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
+createSCE <-  function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
   
@@ -287,6 +286,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
+  
   return(x)
 }
 
