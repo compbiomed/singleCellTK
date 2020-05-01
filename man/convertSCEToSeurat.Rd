@@ -5,6 +5,7 @@
 \title{convertSCEToSeurat
 Converts sce object to seurat while retaining all assays and metadata}
 \usage{
+<<<<<<< HEAD
 convertSCEToSeurat(sce, geneNames)
 }
 \arguments{
@@ -14,6 +15,19 @@ convertSCEToSeurat(sce, geneNames)
 }
 \value{
 seuratObject; updated seurat object that contains all data from the input sce object
+=======
+convertSCEToSeurat(inSCE, useAssay, geneNames)
+}
+\arguments{
+\item{inSCE}{(sce) object to convert to seurat}
+
+\item{useAssay}{which assay to use from sce object}
+
+\item{geneNames}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+}
+\value{
+seuratObject updated seurat object that contains all data from the input sce object
+>>>>>>> bd24946455e5e80d4ff702cd0dbef15f465da293
 }
 \description{
 convertSCEToSeurat

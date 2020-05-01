@@ -5,19 +5,21 @@
 \title{seuratRunUMAP
 Computes UMAP from the given sce object and stores the UMAP computations back into the sce object}
 \usage{
-seuratRunUMAP(sceObject, geneNamesSeurat, reduction, dims)
+seuratRunUMAP(inSCE, useAssay, geneNamesSeurat, reduction, dims)
 }
 \arguments{
-\item{sceObject;}{sce object on which to compute the UMAP}
+\item{inSCE}{(sce) object on which to compute the UMAP}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{useAssay}{which assay to use from sce object}
 
-\item{reduction;}{selected reduction algorithm to use for computing UMAP ("pca" or "ica", default is "pca")}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{dims;}{numerical value of how many reduction components to use for UMAP computation (default is 10)}
+\item{reduction}{selected reduction algorithm to use for computing UMAP ("pca" or "ica", default is "pca")}
+
+\item{dims}{numerical value of how many reduction components to use for UMAP computation (default is 10)}
 }
 \value{
-sceObject; updated sce object with UMAP computations stored
+Updated sce object with UMAP computations stored
 }
 \description{
 seuratRunUMAP

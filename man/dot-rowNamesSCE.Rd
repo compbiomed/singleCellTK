@@ -5,10 +5,10 @@
 \title{.rowNamesSCE
 Retrieves a list of genenames/rownames/featurenames from sce object}
 \usage{
-.rowNamesSCE(sce)
+.rowNamesSCE(inSCE)
 }
 \arguments{
-\item{sce;}{sce object from which the genenames/rownames/featurenames should be extracted}
+\item{inSCE}{sce object from which the genenames/rownames/featurenames should be extracted}
 }
 \value{
 list() of genenames/rownames/featurenames

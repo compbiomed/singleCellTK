@@ -6,9 +6,9 @@
 \usage{
 runHarmony(
   inSCE,
-  exprs = "logcounts",
+  useAssay = "logcounts",
   pcInput = FALSE,
-  batchKey = "batch",
+  batch = "batch",
   reducedDimName = "HARMONY",
   nComponents = 50,
   theta = 5,
@@ -19,14 +19,14 @@ runHarmony(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
 \item{pcInput}{bool, default `FALSE`. Whether to do correction on a low-dim
-matrix. If `TRUE`, will look for `exprs` in `reducedDim(inSCE)`.}
+matrix. If `TRUE`, will look for `useAssay` in `reducedDim(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{reducedDimName}{character, default `"HARMONY"`. The name for the 
@@ -52,17 +52,6 @@ cells group by cell type rather than dataset-specific conditions.
 \examples{
  
 data('sceBatches', package = 'singleCellTK')
-sceBatches
-## class: SingleCellExperiment 
-## dim: 27610 1820 
-## metadata(0):
-## assays(3): normcounts logcounts
-## rownames(27610): GCG MALAT1 ... LOC102724004 LOC102724238
-## rowData names(0):
-## colnames(1820): reads.12732 reads.12733 ... Sample_1598 Sample_1600
-## colData names(2): cell_type1 batch
-## reducedDimNames(5): PCA
-## spikeNames(0):
 sceCorr <- runHarmony(sceBatches, nComponents = 10)
 }
 \references{

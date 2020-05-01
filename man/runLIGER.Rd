@@ -6,8 +6,8 @@
 \usage{
 runLIGER(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
+  useAssay = "logcounts",
+  batch = "batch",
   reducedDimName = "LIGER",
   nComponents = 20L,
   lambda = 5,
@@ -18,11 +18,11 @@ runLIGER(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
 \item{reducedDimName}{character, default `"LIGER"`. The name for the 

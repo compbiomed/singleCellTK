@@ -9,7 +9,7 @@ Converts a sce object to seurat object (using rds filepath)
 .sceToSeurat(filePath)
 }
 \arguments{
-\item{filePath;}{path of the rds file to convert to seurat object}
+\item{filePath}{path of the rds file to convert to seurat object}
 }
 \value{
 seurat object

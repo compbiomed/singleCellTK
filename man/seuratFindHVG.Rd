@@ -5,19 +5,21 @@
 \title{seuratFindHVG
 Find highly variable genes and store in the input sce object}
 \usage{
-seuratFindHVG(sceObject, geneNamesSeurat, hvgMethod, hvgNumber)
+seuratFindHVG(inSCE, useAssay, geneNamesSeurat, hvgMethod, hvgNumber)
 }
 \arguments{
-\item{sceObject;}{sce object to compute highly variable genes from and to store back to it}
+\item{inSCE}{(sce) object to compute highly variable genes from and to store back to it}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{useAssay}{which assay to use from sce object}
 
-\item{hvgMethod;}{selected method to use for computation of highly variable genes (default is "vst")}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{hvgNumber;}{numeric value of how many genes to select as highly variable (default is 2000)}
+\item{hvgMethod}{selected method to use for computation of highly variable genes (default is "vst")}
+
+\item{hvgNumber}{numeric value of how many genes to select as highly variable (default is 2000)}
 }
 \value{
-sceObject; updated sce object with highly variable genes computation stored
+sceObject updated sce object with highly variable genes computation stored
 }
 \description{
 seuratFindHVG

@@ -2,27 +2,11 @@
 shinyPanelSeurat <- fluidPage(
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
         bsCollapse(id = "SeuratUI", open = "Data Input",
-            bsCollapsePanel("Data Input",
-                fluidRow(
-                    column(4,
-                        panel(heading = "Input",
-                            fileInput(inputId = "sce_rds_file", label = "Input SingleCellExperiment RDS file", multiple = FALSE, accept = c(".rds"), buttonLabel = "Browse")
-                            )
-                        ),
-                    column(8,
-                        panel(heading = "Summary",
-                            verbatimTextOutput(outputId = "seurat_summary_output", placeholder = TRUE),
-                            verbatimTextOutput(outputId = "seurat_metadata_output", placeholder = TRUE)
-                            )
-                          )
-                        ),
-                            style = "primary"
-                            ),
-
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
                         panel(
+                            selectInput(inputId = "select_normalization_assay", label = "Select assay: ", choices = c()),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
@@ -248,32 +232,7 @@ shinyPanelSeurat <- fluidPage(
                                 )
                           )
                     ),
-                    style = "primary"),
-
-            bsCollapsePanel("Download Data",
-                fluidRow(
-                    column(4,
-                        fluidRow(
-                            column(12,
-                                panel(heading = "Seurat",
-                                    verbatimTextOutput(outputId = "download_seurat_summary"),
-                                    downloadButton(outputId = "download_seurat_object", label = "Download Seurat Object")
-                                    )
-                                   )
-                                )
-                          ),
-                            column(4,
-                                fluidRow(
-                                    column(12,
-                                        panel(heading = "SCE",
-                                            verbatimTextOutput(outputId = "download_sce_summary"),
-                                            downloadButton(outputId = "download_sce_object", label = "Download SCE Object")
-                                            )
-                                          )
-                                        )
-                                  )
-                    ),
                     style = "primary")
-       ),
+       )
     )
 # ----

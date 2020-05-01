@@ -9,7 +9,7 @@ Reads rds file (from a local path) and loads into sce object
 .rdsToSce(filePath)
 }
 \arguments{
-\item{filePath;}{path of the rds file to load}
+\item{filePath}{path of the rds file to load}
 }
 \value{
 sce object

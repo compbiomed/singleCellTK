@@ -5,17 +5,19 @@
 \title{seuratICA
 Computes ICA on the input sce object and stores the calculated independent components within the sce object}
 \usage{
-seuratICA(sceObject, geneNamesSeurat, nics)
+seuratICA(inSCE, useAssay, geneNamesSeurat, nics)
 }
 \arguments{
-\item{sceObject;}{sce object on which to compute ICA}
+\item{inSCE}{(sce) object on which to compute ICA}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{useAssay}{which assay to use from sce object}
 
-\item{nics;}{numeric value of how many components to compute (default is 20)}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+
+\item{nics}{numeric value of how many components to compute (default is 20)}
 }
 \value{
-sceObject; updated sce object which now contains the computed independent components
+sceObject updated sce object which now contains the computed independent components
 }
 \description{
 seuratICA

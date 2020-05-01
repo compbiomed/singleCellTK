@@ -20,8 +20,6 @@ sctkPythonInstallVirtualEnv(
 \item{selectEnvironment}{Boolean. Run \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} after installing all packages to select the virtual environment. Default TRUE.}
 
 \item{python}{The path to a Python interpreter, to be used with the created virtual environment. When NULL, the Python interpreter associated with the current session will be used. Default NULL.}
-
-\item{...}{Other parameters to pass to \code{\link[reticulate]{conda_install}}.}
 }
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package

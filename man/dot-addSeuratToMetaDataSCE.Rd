@@ -5,15 +5,15 @@
 \title{.addSeuratToMetaDataSCE
 Adds the input seurat object to the metadata slot of the input sce object (after removing the data matrices)}
 \usage{
-.addSeuratToMetaDataSCE(sce, seuratObject)
+.addSeuratToMetaDataSCE(inSCE, seuratObject)
 }
 \arguments{
-\item{sce;}{sce object to which seurat object should be added in the metadata slot (copy to)}
+\item{inSCE}{(sce) object to which seurat object should be added in the metadata slot (copy to)}
 
-\item{seuratObject;}{seurat object which should be added to the metadata slot of sce object (copy from)}
+\item{seuratObject}{seurat object which should be added to the metadata slot of sce object (copy from)}
 }
 \value{
-sce; updated sce object which now contains the seurat object in its metadata slot (excluding data matrices)
+updated sce object which now contains the seurat object in its metadata slot (excluding data matrices)
 }
 \description{
 .addSeuratToMetaDataSCE

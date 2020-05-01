@@ -17,7 +17,7 @@ exported.}
 
 \item{gzipped}{Boolean. \code{TRUE} if the output files are to be
 gzip compressed. \code{FALSE} otherwise. Default
-\code{TRUE} to save disk space.}
+\code{TRUE}.}
 }
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a

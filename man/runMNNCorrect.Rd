@@ -7,10 +7,9 @@ SingleCellExperiment object}
 \usage{
 runMNNCorrect(
   inSCE,
-  exprs = "logcounts",
-  batchKey = "batch",
-  reducedDimName = "MNN",
-  nHVG = 1000,
+  useAssay = "logcounts",
+  batch = "batch",
+  assayName = "MNN",
   k = 20,
   sigma = 0.1
 )
@@ -19,20 +18,15 @@ runMNNCorrect(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{exprs}{character, default `"logcounts"`. A string indicating the name 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
 of the assay requiring batch correction in "inSCE", should exist in 
 `assayNames(inSCE)`.}
 
-\item{batchKey}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the 
 field of `colData(inSCE)` that defines different batches.}
 
-\item{reducedDimName}{character, default `"MNN"`. The name for the 
-corrected low-dimensional representation.}
-
-\item{nHVG}{integer, default `1000`. The number of top highly variable genes 
-to select per batch. Afterwards the intersection of all HVG sets will be 
-taken for running , thus the exact dimensionality of the resulting
-reducedDim is not certain.}
+\item{assayName}{character, default `"MNN"`. The name for the corrected 
+full-sized expression matrix.}
 
 \item{k}{integer, default `20`. Specifies the number of nearest neighbours to 
 consider when defining MNN pairs. This should be interpreted as the minimum 

@@ -5,14 +5,16 @@
 \title{seuratComputeHeatmap
 Computes the heatmap plot object from the pca slot in the input sce object}
 \usage{
-seuratComputeHeatmap(sceObject, geneNamesSeurat, dims)
+seuratComputeHeatmap(inSCE, useAssay, geneNamesSeurat, dims)
 }
 \arguments{
-\item{sceObject;}{sce object from which to compute heatmap (pca should be computed)}
+\item{inSCE}{(sce) object from which to compute heatmap (pca should be computed)}
 
-\item{geneNamesSeurat;}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{useAssay}{which assay to use from sce object}
 
-\item{dims;}{numerical value indicating how many components to use for the computation of heatmap plot object (default is number of pca components computed)}
+\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+
+\item{dims}{numerical value indicating how many components to use for the computation of heatmap plot object (default is number of pca components computed)}
 }
 \value{
 plot object
