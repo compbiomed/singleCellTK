@@ -1,6 +1,60 @@
 shinyPanelFS_DimRed <- fluidPage(
   tabsetPanel(
-    tabPanel("Feature Selection", "filler"),
+    tabPanel("Feature Selection",
+        fluidRow(
+                    column(4,
+                        fluidRow(
+                            column(12,
+                                panel(heading = "Compute HVG",
+                                    selectInput(
+                                        inputId = "hvgMethodFS",
+                                        label = "Select HVG method: ",
+                                        choices = c(
+                                        "Seurat - vst" = "vst", 
+                                        "Seurat - mean.var.plot" = "mean.var.plot", 
+                                        "Seurat - dispersion" = "dispersion",
+                                        "Scran - modelGeneVar" = "modelGeneVar")),
+                                    selectInput(
+                                        inputId = "assaySelectFS",
+                                        label = "Select assay:",
+                                        choices = currassays),
+                                    textInput(
+                                        inputId = "hvgNoFeaturesFS",
+                                        label = "Select number of features to find: ",
+                                        value = "2000"),
+                                    actionButton(
+                                        inputId = "findHvgButtonFS",
+                                        label = "Find HVG")
+                                     )
+                                  )
+                                ),
+                        br(),
+                        fluidRow(
+                            column(12,
+                                panel(heading = "Display HVG",
+                                    textInput(
+                                        inputId = "hvgNoFeaturesViewFS",
+                                        label = "Select number of features to display: ",
+                                        value = "100"),
+                                    verbatimTextOutput(
+                                        outputId = "hvgOutputFS",
+                                        placeholder = TRUE)
+                                     )
+                                  )
+                                )
+                          ),
+                     column(8,
+                        fluidRow(
+                            column(12,
+                                panel(heading = "Plot",
+                                    plotOutput(
+                                        outputId = "plotFS")
+                                     )
+                                  )
+                                )
+                           )
+                    )
+    ),
     tabPanel("Run New Dimensional Reduction",
       # SHINYJS COLLAPSE --------------------------
       # Section 1 - Assay Settings
