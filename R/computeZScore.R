@@ -12,12 +12,9 @@
 #'
 #' @examples
 #' 
-#' library(TENxPBMCData)
-#' sce <- TENxPBMCData("pbmc3k")
-#' rownames(sce) <- rowData(sce)$Symbol_TENx
-#' colnames(sce) <- colData(sce)$Barcode
-#' assay(sce, "countsZScore") <- computeZScore(assay(sce, "counts"))
-#'
+#' data(sce_chcl, package = "scds")
+#' assay(sce_chcl, "countsZScore") <- computeZScore(assay(sce_chcl, "counts"))
+#' 
 computeZScore <- function(counts) {
     if (!methods::is(counts, "DelayedArray")) {
         counts <- DelayedArray(counts)

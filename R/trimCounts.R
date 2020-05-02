@@ -13,12 +13,8 @@
 #' @export
 #'
 #' @examples
-#' 
-#' library(TENxPBMCData)
-#' sce <- TENxPBMCData("pbmc3k")
-#' rownames(sce) <- rowData(sce)$Symbol_TENx
-#' colnames(sce) <- colData(sce)$Barcode
-#' assay(sce, "countsTrimmed") <- trimCounts(assay(sce, "counts"), c(10, -10))
+#' data(sce_chcl, package = "scds")
+#' assay(sce_chcl, "countsTrimmed") <- trimCounts(assay(sce_chcl, "counts"), c(10, -10))
 #'
 trimCounts <- function(counts, trimValue = c(10,-10)) {
   counts[counts > trimValue[1]] <- trimValue[1]

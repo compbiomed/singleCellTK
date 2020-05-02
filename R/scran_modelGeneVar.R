@@ -6,13 +6,9 @@
 #' @export
 #' @author Irzam Sarfraz
 #' @example
-#' library(Seurat)
-#' library(TENxPBMCData)
-#' sce <- TENxPBMCData("pbmc3k")
-#' rownames(sce) <- rowData(sce)$Symbol_TENx
-#' colnames(sce) <- colData(sce)$Barcode
-#' sce <- scran_modelGeneVar(sce, "counts")
-#' print(head(rowData(sce)))
+#' data(sce_chcl, package = "scds")
+#' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
+#' print(head(rowData(sce_chcl)))
 
 scran_modelGeneVar <- function(inSCE, assayName) {
     tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, assayName)))

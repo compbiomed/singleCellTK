@@ -259,7 +259,7 @@ convertSCEToSeurat <- function(inSCE, useAssay, geneNames) {
         rownames(seuratObject@assays$RNA@data) <- geneNames
     }
     if ("seuratScaledData" %in% names(assays(inSCE))) {
-        if (class(assay(inSCE, "seuratScaledData")) != "matrix") {
+        if (!inherits(assay(inSCE, "seuratScaledData"), "matrix")) {
             seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, "seuratScaledData"))
         }
         else {

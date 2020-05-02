@@ -9,13 +9,9 @@
 #' @export
 #' @author Irzam Sarfraz
 #' @example
-#' library(Seurat)
-#' library(TENxPBMCData)
-#' sce <- TENxPBMCData("pbmc3k")
-#' rownames(sce) <- rowData(sce)$Symbol_TENx
-#' colnames(sce) <- colData(sce)$Barcode
-#' sce <- scran_modelGeneVar(sce, "counts")
-#' topGenes <- getTopHVG(sce, "scran_modelGeneVar_bio", 10) #return top 10 variable genes
+#' data(sce_chcl, package = "scds")
+#' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
+#' topGenes <- getTopHVG(sce_chcl, "scran_modelGeneVar_bio", 10) #return top 10 variable genes
 #' print(topGenes)
 
 getTopHVG <- function(inSCE, varianceColumnName, n = 2000) {
