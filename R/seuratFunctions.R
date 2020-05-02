@@ -55,7 +55,7 @@
 
 #' .rowNamesSCE
 #' Retrieves a list of genenames/rownames/featurenames from sce object
-#' @param sce sce object from which the genenames/rownames/featurenames should be extracted
+#' @param inSCE sce object from which the genenames/rownames/featurenames should be extracted
 #' @return list() of genenames/rownames/featurenames
 .rowNamesSCE <- function(inSCE) {
     return(rownames(inSCE))
@@ -209,7 +209,6 @@ seuratReductionPlot <- function(inSCE, useAssay, geneNamesSeurat, reduction) {
 #' @param seuratObject from which we have to copy the assay (copy from)
 #' @param assaySlotSCE the assay slot in sce object
 #' @param assaySlotSeurat the assay slot in seurat object
-#' @return
 .updateAssaySCE <- function(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat) {
     assay(inSCE, assaySlotSCE) <- NULL
     assay(inSCE, assaySlotSCE) <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
@@ -223,9 +222,9 @@ seuratReductionPlot <- function(inSCE, useAssay, geneNamesSeurat, reduction) {
 #' @return inSCE output object
 #' @export
 convertSeuratToSCE <- function(seuratObject) {
-    inSCE <- as.SingleCellExperiment(seuratObject)
+    inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
     assay(inSCE, "seuratNormalizedData") <- methods::slot(seuratObject@assays$RNA, "data")
-    if (length(slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
+    if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
         assay(inSCE, "seuratScaledData") <- methods::slot(seuratObject@assays$RNA, "scale.data")
     }
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)

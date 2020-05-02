@@ -50,7 +50,7 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
     reducedDimName <- gsub(' ', '_', reducedDimName)
     
     ## Run algorithm
-    adata <- .sce2adata(inSCE, mainAssay = useAssay)
+    adata <- .sce2adata(inSCE, useAssay = useAssay)
     sc$tl$pca(adata, n_comps = nComponents)
     bbknn$bbknn(adata, batch_key = batch, n_pcs = nComponents)
     sc$tl$umap(adata, n_components = nComponents)

@@ -8,8 +8,9 @@ runCxdsBcdsHybrid(
   inSCE,
   sample = NULL,
   seed = 12345,
-  cxdsArgs = NULL,
-  bcdsArgs = NULL,
+  nTop = 500,
+  cxdsArgs = list(),
+  bcdsArgs = list(),
   verb = FALSE,
   estNdbl = FALSE,
   force = FALSE
@@ -26,7 +27,18 @@ Default NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{...}{Additional arguments passed to \link[scds]{cxds_bcds_hybrid}.}
+\item{nTop}{The number of top varialbe genes to consider. Used in both \code{csds}
+and \code{bcds}. Default \code{500}.}
+
+\item{cxdsArgs}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.}
+
+\item{bcdsArgs}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.}
+
+\item{verb}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.}
+
+\item{estNdbl}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.}
+
+\item{force}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
