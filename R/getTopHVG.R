@@ -1,9 +1,8 @@
 #' getTopHVG
-#' Extracts the top variable genes from an input singleCellExperiment object based on
-#' a selected column from rowData
+#' Extracts the top variable genes from an input singleCellExperiment object
 #' @param inSCE an input singleCellExperiment object
-#' @param varianceColumnName represents which column from rowData of input singleCellExperiment
-#' object should be raanked to generate the top most variable genes
+#' @param method represents which method to use for variable gene extraction from
+#' either Seurat "vst", "mean.var.plot", "dispersion" or Scran "modelGeneVar"
 #' @param n number of top variable genes to extract
 #' @return list of top variable gene names
 #' @export
@@ -11,13 +10,38 @@
 #' @example
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-#' topGenes <- getTopHVG(sce_chcl, "scran_modelGeneVar_bio", 10) #return top 10 variable genes
+#' topGenes <- getTopHVG(sce_chcl, "vst", 10) #return top 10 variable genes
 #' print(topGenes)
 
-getTopHVG <- function(inSCE, varianceColumnName, n = 2000) {
-    variance <- rowData(inSCE)[varianceColumnName]
-    featureNames <- rownames(inSCE)
-    tempDataFrame <- data.frame(featureNames, variance)
-    tempDataFrame <- tempDataFrame[order(-tempDataFrame[varianceColumnName]),]
-    return(as.character(tempDataFrame$featureNames[1:n]))
+getTopHVG <- function(inSCE, method, n = 2000) {
+    topGenes <- list()
+    if(method == "vst" || method == "dispersion" || method == "modelGeneVarrun"){
+        varianceColumnName = ""
+        if(method == "vst"){
+            varianceColumnName = "seurat_variableFeatures_vst_varianceStandardized"
+        }
+        else if(method == "dispersion"){
+            varianceColumnName = "seurat_variableFeatures_dispersion_dispersion"
+        }
+        else if(method == "modelGeneVar"){
+            varianceColumnName = "scran_modelGeneVar_bio"
+        }
+        tempDataFrame <- data.frame(
+            featureNames = rownames(inSCE), 
+            variance = rowData(inSCE)[varianceColumnName])
+        tempDataFrame <- tempDataFrame[order(-tempDataFrame[varianceColumnName]),]
+        topGenes <- as.character(tempDataFrame$featureNames[1:n])
+    }
+    else if(method == "mean.var.plot"){
+        tempDataFrame <- data.frame(
+            featureNames = rownames(inSCE), 
+            mean = rowData(inSCE)$seurat_variableFeatures_mvp_mean, 
+            disp = rowData(inSCE)$seurat_variableFeatures_mvp_dispersion, 
+            dispScaled = rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled)
+        tempDataFrame <- tempDataFrame[order(-tempDataFrame$disp),]
+        means.use <- (tempDataFrame[, "mean"] > 0.1) & (tempDataFrame[, "mean"] < 8)
+        dispersions.use <- (tempDataFrame[, "dispScaled"] > 1) & (tempDataFrame[, "dispScaled"] < Inf)
+        topGenes <- as.character(tempDataFrame$featureNames[which(x = means.use & dispersions.use)])[1:n]
+    }
+    return(topGenes)
 }
