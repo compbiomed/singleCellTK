@@ -15,7 +15,7 @@
 
 getTopHVG <- function(inSCE, method, n = 2000) {
     topGenes <- list()
-    if(method == "vst" || method == "dispersion" || method == "modelGeneVarrun"){
+    if(method == "vst" || method == "dispersion" || method == "modelGeneVar"){
         varianceColumnName = ""
         if(method == "vst"){
             varianceColumnName = "seurat_variableFeatures_vst_varianceStandardized"
