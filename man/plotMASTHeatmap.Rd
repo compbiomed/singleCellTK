@@ -39,3 +39,6 @@ A ComplexHeatmap::Heatmap object
 runMAST() has to be run in advance so that information is stored in the
 metadata of the input SCE object. This function wraps plotSCEHeatmap.
 }
+\author{
+Yichen Wang
+}

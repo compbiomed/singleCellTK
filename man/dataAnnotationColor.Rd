@@ -22,3 +22,6 @@ categorical entries in row/colData.
 \description{
 Generate distinct colors for all categorical col/rowData entries.
 }
+\author{
+Yichen Wang
+}

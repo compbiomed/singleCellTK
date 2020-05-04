@@ -104,3 +104,6 @@ An ComplexHeatmap::Heatmap object
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object
 }
+\author{
+Yichen Wang
+}

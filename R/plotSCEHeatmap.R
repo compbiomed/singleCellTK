@@ -39,6 +39,7 @@ extractData <- function(inSCE, axis = NULL, columns = NULL, index = NULL){
 #' `celda::distinctColors`.
 #' @return An list object containing distinct colors mapped to all possible
 #' categorical entries in row/colData.
+#' @author Yichen Wang
 dataAnnotationColor <- function(inSCE, axis = NULL, 
                                 colorGen = grDevices::rainbow){
     if(!is.null(axis) && axis == 'col'){
@@ -139,6 +140,7 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param ... Arguments passed to ComplexHeatmap::Heatmap()
 #' @return An ComplexHeatmap::Heatmap object
 #' @export
+#' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     cellIndex = NULL, featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
