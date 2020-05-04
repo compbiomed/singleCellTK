@@ -124,6 +124,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
+    updateSelectInput(session, "assaySelectFS", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
@@ -157,8 +160,6 @@ shinyServer(function(input, output, session) {
     toggle(id = "console")
   })
 
-
-  
 
   # js$disableTabs()
   
@@ -387,7 +388,7 @@ shinyServer(function(input, output, session) {
         importedrds <- readRDS(input$rdsFileSeurat$datapath)
         if (methods::is(importedrds, "Seurat")) {
             vals$original <- convertSeuratToSCE(importedrds)
-            seuratWorkflow$sce_rds_file <- importedrds
+            seuratWorkflow$sce_rds_file <- importedrds #for seurat workflow
         }
         else {
             vals$original <- NULL
@@ -828,63 +829,73 @@ shinyServer(function(input, output, session) {
   observeEvent(input$modifyAssay, {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
-      if (input$assayModifyAction == "log") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
+            showNotification("Assay does not exist!", type = "error")
         } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
+            showNotification("Assay name cannot be empty!", type = "error")
         } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
+            showNotification("Assay name already exists! Use another assay name!", type = "error")
         } else {
-          assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            if (input$assayModifyAction == "log") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+                }
+            }
+            else if (input$assayModifyAction == "log1p") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+                }
+            }
+            else if (input$assayModifyAction == "z.score") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+                }
+            }
+            else {
+                showNotification("Error during assay transformation!", type = "error")
+            } 
           updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "cpm") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssayOutname) <- apply(assay(vals$counts, input$modifyAssaySelect), 2, function(x) { x / (sum(x) / 1000000) })
-          updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "rename") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssayOutname) <- assay(vals$counts, input$modifyAssaySelect)
-          assay(vals$counts, input$modifyAssaySelect) <- NULL
-          updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "delete") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssaySelect) <- NULL
-          updateAssayInputs()
-        }
-      } else {
-        shinyalert::shinyalert("Error!", "Assay Modify Action Does Not Exist!",
-                               type = "error")
-      }
+        } 
     })
   })
+
+    observeEvent(input$normalizeAssay, {
+    req(vals$counts)
+    withBusyIndicatorServer("normalizeAssay", {
+        if (input$normalizeLibrarySelect == "seurat") {
+            vals$counts <- seuratNormalizeData(vals$counts, input$normalizeAssaySelect, seuratWorkflow$geneNamesSeurat, input$normalizeAssayMethodSelect, as.numeric(input$normalizationScaleFactor))
+            updateAssayInputs()
+        }
+        else if (input$normalizeLibrarySelect == "cpm") {
+        if (!(input$normalizeAssaySelect %in% names(assays(vals$counts)))) {
+        shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else if (input$normalizeAssayOutname == "") {
+        shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else if (input$normalizeAssayOutname %in% names(assays(vals$counts))) {
+        shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
+                                 type = "error")
+        } else {
+        assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(assay(vals$counts, input$normalizeAssaySelect))
+        updateAssayInputs()
+        }
+        }
+    })
+})
+
 
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
@@ -2930,6 +2941,66 @@ shinyServer(function(input, output, session) {
   }, height = 600)
 
   #-----------------------------------------------------------------------------
+  # Page 4.1: Feature Selection
+  #-----------------------------------------------------------------------------
+    observeEvent(input$findHvgButtonFS, {
+        if (!is.null(vals$counts)) {
+            if (input$hvgMethodFS == "vst"
+                || input$hvgMethodFS == "mean.var.plot"
+                || input$hvgMethodFS == "dispersion") {
+                withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+                    vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+                    if (input$hvgMethodFS == "vst") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = log(rowData(vals$counts)$seurat_variableFeatures_vst_mean), y = rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized)) + geom_point(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Standardized Variance")
+                    }
+                    else if (input$hvgMethodFS == "mean.var.plot") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$seurat_variableFeatures_mvp_mean, y = rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled)) + geom_point(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Dispersion")
+                    }
+                    else if (input$hvgMethodFS == "dispersion") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, y = rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled)) + geom_point(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Dispersion")
+                    }
+                })
+                showNotification("Find HVG Complete")
+            }
+            else if (input$hvgMethodFS == "modelGeneVar") {
+                withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+                    vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
+                    vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$scran_modelGeneVar_mean, y = rowData(vals$counts)$scran_modelGeneVar_totalVariance)) + geom_point(aes(x = subset(rowData(vals$counts)$scran_modelGeneVar_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$scran_modelGeneVar_totalVariance, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$scran_modelGeneVar_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$scran_modelGeneVar_totalVariance, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Average Expression", y = "Variance")
+                })
+                showNotification("Scran modelGeneVar processing complete!")
+            }
+        }
+        else if (is.null(vals$counts)) {
+            showNotification("Please input dataset (rds file) before computing highly variable genes!", type = "error")
+        }
+        else {
+            showNotification("An error occurred while computing highly variable genes!", type = "error")
+        }
+    })
+
+    output$plotFS <- renderPlot({
+        if (!is.null(vals$hvgPlotFS)) {
+            vals$hvgPlotFS
+        }
+    })
+
+    observe({
+        if (!is.null(vals$vfplot)) {
+            if (!is.na(as.numeric(input$hvgNoFeaturesViewFS))) {
+                vals$hvgPlotFS <- vals$vfplot
+            }
+        }
+    })
+
+    output$hvgOutputFS <- renderText({
+    if (!is.null(vals$counts)) {
+      if (!is.null(vals$vfplot)) {
+        getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))
+      }
+    }
+ })
+
+  #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
   shinyjs::onclick("Diffex_hideAllSections", allSections(
@@ -3902,30 +3973,25 @@ shinyServer(function(input, output, session) {
     #Upload sce object (rds file)
     observeEvent(seuratWorkflow$sce_rds_file, {
         if (!is.null(seuratWorkflow$sce_rds_file)) {
-            withProgress(message = "Uploading", max = 1, value = 1, {
-                if (!methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a filepath
+                if (!methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a sce filepath
                     seuratWorkflow$seuratObject <- .sceToSeurat(seuratWorkflow$sce_rds_file$datapath)
-                    seuratWorkflow$inSCE <- .rdsToSce(seuratWorkflow$sce_rds_file$datapath)
                 }
                 else if (methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a seurat object
-                    seuratWorkflow$inSCE <- vals$original
                     seuratWorkflow$seuratObject <- seuratWorkflow$sce_rds_file
                 }
-                seuratWorkflow$geneNamesSCE <- .rowNamesSCE(seuratWorkflow$inSCE)
+                vals$counts@metadata$seuratSelectedAssay <- names(assays(vals$counts))[1]
+                seuratWorkflow$geneNamesSCE <- .rowNamesSCE(vals$counts)
                 seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
-                updateSelectInput(session = session, inputId = "select_normalization_assay", choices = names(assays(vals$counts)))
-        })
-        updateCollapse(session = session, "SeuratUI", style = list("Data Input" = "danger"))
-        showNotification("Upload complete")
+                updateSelectInput(session = session, inputId = "seuratSelectNormalizationAssay", choices = names(assays(vals$counts)))
         }     
     })
 
     #Display highly variable genes
     output$hvg_output <- renderText({
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
-                    .seuratGetVariableFeatures(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$hvg_no_features_view)
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
+                    .seuratGetVariableFeatures(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_no_features_view)
                 }
             }
         }
@@ -3933,11 +3999,12 @@ shinyServer(function(input, output, session) {
 
     #Perform normalization
     observeEvent(input$normalize_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
+        if (!is.null(vals$counts)) {
             withProgress(message = "Normalizing", max = 1, value = 1, {
-                seuratWorkflow$inSCE@metadata$selected_assay <- input$select_normalization_assay
-                seuratWorkflow$inSCE <- seuratNormalizeData(inSCE = seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, geneNames = seuratWorkflow$geneNamesSeurat, input$normalization_method, as.numeric(input$scale_factor))
-            })
+                vals$counts@metadata$seuratSelectedAssay <- input$seuratSelectNormalizationAssay
+                vals$counts <- seuratNormalizeData(inSCE = vals$counts, useAssay = input$seuratSelectNormalizationAssay, geneNames = seuratWorkflow$geneNamesSeurat, input$normalization_method, as.numeric(input$scale_factor))
+                updateAssayInputs()
+           })
             updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
             showNotification("Normalization Complete")
         }
@@ -3948,9 +4015,10 @@ shinyServer(function(input, output, session) {
 
     #Perform scaling
     observeEvent(input$scale_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
+        if (!is.null(vals$counts)) {
             withProgress(message = "Scaling", max = 1, value = 1, {
-                seuratWorkflow$inSCE <- seuratScaleData(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$model.use, input$do.scale, input$do.center, input$scale.max)
+                vals$counts <- seuratScaleData(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$model.use, input$do.scale, input$do.center, input$scale.max)
+                updateAssayInputs()
             })
             updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
             showNotification("Scale Complete")
@@ -3962,31 +4030,31 @@ shinyServer(function(input, output, session) {
 
     #Run PCA
     observeEvent(input$run_pca_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if ((length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
                     withProgress(message = "Running PCA", max = 1, value = 1, {
-                        seuratWorkflow$inSCE <- seuratPCA(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)[["pca"]])[2]
+                        vals$counts <- seuratPCA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["pca"]])[2]
                     })
                     withProgress(message = "Plotting PCA", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "pca")
+                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "pca")
                     })
                     if (input$pca_compute_elbow) {
                         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)
-                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, seuratWorkflow$numberOfReductionComponents$significantPC)
+                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
+                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, seuratWorkflow$numberOfReductionComponents$significantPC)
                         })
                     }
                     if (input$pca_compute_jackstraw) {
                         withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-                            seuratWorkflow$inSCE <- seuratComputeJackStraw(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            vals$counts <- seuratComputeJackStraw(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
                         })
                     }
                     if (input$pca_compute_heatmap) {
                         withProgress(message = "Generating Heatmap Plot", max = 1, value = 1, {
-                            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
                             updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
                         })
                     }
@@ -4001,19 +4069,22 @@ shinyServer(function(input, output, session) {
                 }
             }
         }
+        else {
+            showNotification("Please input dataset (rds file) before computing pca!", type = "error")
+        }
     })
 
     #Run ICA
     observeEvent(input$run_ica_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if ((length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
                     withProgress(message = "Running ICA", max = 1, value = 1, {
-                        seuratWorkflow$inSCE <- seuratICA(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$ica_no_components)
-                        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)[["ica"]])[2]
+                        vals$counts <- seuratICA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$ica_no_components)
+                        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["ica"]])[2]
                     })
                     withProgress(message = "Plotting ICA", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "ica")
+                        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "ica")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
                     showNotification("ICA Complete")
@@ -4023,32 +4094,46 @@ shinyServer(function(input, output, session) {
                 }
             }
         }
+        else {
+            showNotification("Please input dataset (rds file) before computing ica!", type = "error")
+        }
     })
 
     #Find HVG
     observeEvent(input$find_hvg_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
+         if (!is.null(vals$counts)
+                && "seuratNormalizedData" %in% assayNames(vals$counts)
+                    && "seuratScaledData" %in% assayNames(vals$counts)) {
             withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-                seuratWorkflow$inSCE <- seuratFindHVG(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$hvg_method, as.numeric(input$hvg_no_features))
+                vals$counts <- seuratFindHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_method, as.numeric(input$hvg_no_features))
             })
             withProgress(message = "Plotting HVG", max = 1, value = 1, {
-                seuratWorkflow$plotObject$HVG <- seuratPlotHVG(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat)
+                seuratWorkflow$plotObject$HVG <- seuratPlotHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
             })
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
             showNotification("Find HVG Complete")
         }
-        else {
+        else if (is.null(vals$counts)) {
             showNotification("Please input dataset (rds file) before computing highly variable genes!", type = "error")
+        }
+        else if (!"seuratNormalizedData" %in% assayNames(vals$counts)) {
+            showNotification("Please normalize data before computing highly variable genes!", type = "error")
+        }
+        else if (!"seuratScaledData" %in% assayNames(vals$counts)) {
+            showNotification("Please scale data before computing highly variable genes!", type = "error")
+        }
+        else {
+            showNotification("An error occurred while computing highly variable genes!", type = "error")
         }
     })
 
     #Find clusters
     observeEvent(input$find_clusters_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
                     withProgress(message = "Finding clusters", max = 1, value = 1, {
-                        seuratWorkflow$inSCE <- seuratFindClusters(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, groupSingletons = input$group.singletons)
+                        vals$counts <- seuratFindClusters(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, groupSingletons = input$group.singletons)
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
                     showNotification("Find Clusters Complete")
@@ -4057,19 +4142,25 @@ shinyServer(function(input, output, session) {
                     showNotification("Please compute pca/ica before processing clusters!", type = "error")
                 }
             }
+            else {
+                    showNotification("Please normalize data before computing umap!", type = "error")
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing clusters!", type = "error")
         }
     })
 
     #Run tSNE
     observeEvent(input$run_tsne_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
                     withProgress(message = "Running tSNE", max = 1, value = 1, {
-                        seuratWorkflow$inSCE <- seuratRunTSNE(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$reduction_tsne_method, input$reduction_tsne_count)
+                        vals$counts <- seuratRunTSNE(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_tsne_method, input$reduction_tsne_count)
                     })
                     withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "tsne")
+                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "tsne")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("tSNE Complete")
@@ -4079,18 +4170,21 @@ shinyServer(function(input, output, session) {
                 }
             }
         }
+        else {
+            showNotification("Please input dataset (rds file) before computing tsne!", type = "error")
+        }
     })
 
     #Run UMAP
     observeEvent(input$run_umap_button, {
-        if (!is.null(seuratWorkflow$inSCE)) {
-            if (!is.null(seuratWorkflow$inSCE@metadata[["seurat"]])) {
-                if (!is.null(slot(seuratWorkflow$inSCE@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
                     withProgress(message = "Running UMAP", max = 1, value = 1, {
-                        seuratWorkflow$inSCE <- seuratRunUMAP(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, input$reduction_umap_method, input$reduction_umap_count)
+                        vals$counts <- seuratRunUMAP(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_umap_method, input$reduction_umap_count)
                     })
                     withProgress(message = "Plotting UMAP", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(seuratWorkflow$inSCE, useAssay = seuratWorkflow$inSCE@metadata$selected_assay, seuratWorkflow$geneNamesSeurat, "umap")
+                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "umap")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("UMAP Complete")
@@ -4099,6 +4193,9 @@ shinyServer(function(input, output, session) {
                     showNotification("Please compute pca/ica before processing umap!", type = "error")
                 }
             }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing umap!", type = "error")
         }
     })
 
@@ -4125,56 +4222,56 @@ shinyServer(function(input, output, session) {
 
     #Draw HVG plot
     output$plot_hvg <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$HVG)) {
             seuratWorkflow$plotObject$HVG
         }
     })
 
     #Draw PCA plot
     output$plot_pca <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$PCA)) {
             seuratWorkflow$plotObject$PCA
         }
     })
 
     #Draw Elbow (pca) plot
     output$plot_elbow <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$Elbow)) {
             seuratWorkflow$plotObject$Elbow
         }
     })
 
     #Draw Jackstraw (pca) plot
     output$plot_jackstraw <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$JackStraw)) {
             seuratWorkflow$plotObject$JackStraw
         }
     })
 
     #Draw heatmap (pca) plot
     output$plot_heatmap <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$Heatmap)) {
             seuratWorkflow$plotObject$Heatmap
         }
     })
 
     #Draw ICA plot
     output$plot_ica <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$ICA)) {
             seuratWorkflow$plotObject$ICA
         }
     })
 
     #Draw tSNE plot
     output$plot_tsne <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$TSNE)) {
             seuratWorkflow$plotObject$TSNE
         }
     })
 
     #Draw UMAP plot
     output$plot_umap <- renderPlot({
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
+        if (!is.null(seuratWorkflow$plotObject$UMAP)) {
             seuratWorkflow$plotObject$UMAP
         }
     })
