@@ -185,7 +185,7 @@ runScrublet <- function(inSCE,
                                               n_neighbors=as.integer(nNeighbors), 
                                               min_dist=minDist)
       }
-      reducedDim(inSCE,'UMAP') <- umap_coordinates
+      reducedDim(inSCE,'scrublet_UMAP') <- umap_coordinates
     
     if (is.null(tsneAngle) && is.null(tsnePerplexity)){
       tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
@@ -194,7 +194,7 @@ runScrublet <- function(inSCE,
                                             angle=tsneAngle, 
                                             perplexity=as.integer(tsnePerplexity))
     }
-    reducedDim(inSCE,'TSNE') <- tsne_coordinates
+    reducedDim(inSCE,'scrublet_TSNE') <- tsne_coordinates
   }
     
     colData(inSCE) = cbind(colData(inSCE), output)

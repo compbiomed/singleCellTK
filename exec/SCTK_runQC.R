@@ -47,7 +47,7 @@ sceOutput <- function(dropletSCE, filteredSCE, samplename, directory){
     
         ## Export to Python AnnData
         fn <- file.path(directory, samplename, "Python", "Droplets")
-        exportSCEtoAnnData(mergedDropletSCE, outputDir=fn, compression='gzip', sample=samplename)
+        exportSCEtoAnnData(mergedDropletSCE, outputDir=fn, compression='gzip', prefix=samplename)
     }
 
     if (!is.null(mergedFilteredSCE)) {
@@ -61,7 +61,7 @@ sceOutput <- function(dropletSCE, filteredSCE, samplename, directory){
         
         ## Export to Python AnnData
         fn <- file.path(directory, samplename, "Python", "FilteredCells")
-        exportSCEtoAnnData(mergedFilteredSCE, outputDir=fn, compression='gzip', sample=samplename)
+        exportSCEtoAnnData(mergedFilteredSCE, outputDir=fn, compression='gzip', prefix=samplename)
   }
 }
 

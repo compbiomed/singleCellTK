@@ -53,7 +53,7 @@ exportSCEtoAnnData <- function(sce,
   
   AssayName <- SummarizedExperiment::assayNames(sce)
   for (assay in AssayName){
-    if (!is(SummarizedExperiment::assay(sce, assay), 'dgCMatrix')) {
+    if (!methods::is(SummarizedExperiment::assay(sce, assay), 'dgCMatrix')) {
       SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
     }
   }
