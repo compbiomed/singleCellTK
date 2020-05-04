@@ -41,7 +41,7 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), 'Gene']
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -99,7 +99,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), 'Gene']
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -237,8 +237,8 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     }
     ## Genes
     regulation <- vector()
-    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, Gene]
-    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, Gene]
+    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, 'Gene']
+    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, 'Gene']
     regulation[rownames(inSCE) %in% genes.up] <- 'up'
     regulation[rownames(inSCE) %in% genes.down] <- 'down'
     regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
@@ -295,11 +295,12 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     return(hm)
 }
 
-#' @describeIn MAST Identify adaptive thresholds
-#'
+#' MAST Identify adaptive thresholds
+#' @param inSCE SingleCellExperiment object
+#' @param useAssay character, default `"logcounts"`
 #' @return thresholdGenes(): list of thresholded counts (on natural scale),
 #' thresholds, bins, densities estimated on each bin, and the original data from
-#' MAST::thresholdSCRNACountMatrix
+#' `MAST::thresholdSCRNACountMatrix`
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -315,20 +316,4 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
     invisible(utils::capture.output(thres <- MAST::thresholdSCRNACountMatrix(
         SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
     return(thres)
-}
-
-Func1 <- function(a = NULL, b = NULL, c = NULL, d = NULL){
-    print(a)
-    print(b)
-    print(c)
-    print(d)
-}
-
-#' A wrapper of func1
-Func2 <- function(X = NULL, Y = NULL, ...){
-    # do some thing
-    dots <- list(...)
-    dots$a <- NULL
-    dots$b <- NULL
-    do.call('Func1', c(list(a = X+1, b = Y+1), dots))
 }

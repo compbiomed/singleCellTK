@@ -264,6 +264,18 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   }
 }
 
+## Convert a matrix to a sparse matrix and preserve column/row names
+.convertToMatrix <- function(x) {
+  cn <- colnames(x)
+  rn <- rownames(x)
+  
+  x <- methods::as(x, "dgCMatrix")
+  colnames(x) <- cn
+  rownames(x) <- rn
+  
+  return(x)
+}
+
 #' Resolve duplicated feature names in a matrix
 #'
 #' Adds '-1', '-2', ... '-i' to multiple duplicated feature names

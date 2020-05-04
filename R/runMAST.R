@@ -142,18 +142,21 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
     zlmCond <- MAST::zlm(~condition + cngeneson, sca)
     summaryCond <- MAST::summary(zlmCond, doLRT = "conditionc1")
     summaryDt <- summaryCond$datatable
-    contrast <- component <- primerid <- coef <- ci.hi <- ci.lo <- `Pr(>Chisq)` <- fdr <- NULL
-    fcHurdle <- merge(summaryDt[contrast == "conditionc1" &
-        component == "H", .(primerid, `Pr(>Chisq)`)], summaryDt[contrast ==
-            "conditionc1" & component == "logFC", .(primerid, coef,
-              ci.hi, ci.lo)], by = "primerid")
-    fcHurdle[, `:=`(fdr, stats::p.adjust(`Pr(>Chisq)`, "fdr"))]
+    fcHurdle <- merge(summaryDt[summaryDt$contrast == "conditionc1" &
+                                summaryDt$component == "H", 
+                                c('primerid', 'Pr(>Chisq)')],
+                      summaryDt[summaryDt$contrast == "conditionc1" & 
+                                summaryDt$component == "logFC", 
+                                c('primerid', 'coef', 'ci.hi', 'ci.lo')],
+                      by = "primerid")
+    fcHurdle$fdr <- stats::p.adjust(fcHurdle$`Pr(>Chisq)`, "fdr")
     if (is.null(log2fcThreshold)) {
       fcHurdleSig <- fcHurdle
     } else {
-      fcHurdleSig <- merge(fcHurdle[fdr < fdrThreshold & abs(coef) >
-          log2fcThreshold], data.table::as.data.table(S4Vectors::mcols(sca)),
-        by = "primerid")
+      fcHurdleSig <- merge(fcHurdle[fcHurdle$fdr < fdrThreshold & 
+                                    abs(fcHurdle$coef) > log2fcThreshold], 
+                                    data.table::as.data.table(S4Vectors::mcols(sca)),
+                           by = "primerid")
       if (onlyPos) {
         fcHurdleSig <- fcHurdleSig[which(fcHurdleSig$log2fc >
             0), ]
