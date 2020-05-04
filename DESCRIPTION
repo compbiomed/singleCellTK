@@ -39,6 +39,7 @@ Imports:
     cluster,
     ComplexHeatmap,
     data.table,
+    DelayedMatrixStats,
     DESeq2,
     DT,
     ggplot2,
