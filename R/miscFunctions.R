@@ -150,9 +150,11 @@ createSCE <-  function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #' @return The filtered single cell object.
 #' @export
 #' @examples
+#' \dontrun{
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
 #'                                     deletesamples="X1772063061_G11")
+#' }
 filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
                          removeNoExpress=TRUE, removeBottom=0.5,
                          minimumDetectGenes=1700, filterSpike=TRUE){

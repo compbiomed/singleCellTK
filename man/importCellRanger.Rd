@@ -200,11 +200,11 @@ sce <- importCellRanger(
 # The following filtered feature, cell, and matrix files were downloaded from
 # https://support.10xgenomics.com/single-cell-gene-expression/datasets/
 # 2.1.0/pbmc4k
-# All genes are kept. 840 cell barcodes are extracted.
+# Top 20 genes are kept. 20 cell barcodes are extracted.
 sce <- importCellRangerV2(
     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
-    sampleDirs = "pbmc_4k_v2_200x400",
-    sampleNames = "pbmc4k_400",
+    sampleDirs = "pbmc_4k_v2_20x20",
+    sampleNames = "pbmc4k_20",
     reference = 'GRCh38',
     dataTypeV2 = "filtered")
 sce <- importCellRangerV3(
