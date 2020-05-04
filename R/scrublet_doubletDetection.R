@@ -79,8 +79,9 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' \dontrun{
-#' data(sce_chcl, package = "scds")
-#' sce <- runScrublet(sce_chcl)
+#' data(subDroplet, package = "singleCellTK")
+#' sce <- subDroplet[, colData(subDroplet)$type != 'EmptyDroplet']
+#' sce <- runScrublet(sce)
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
