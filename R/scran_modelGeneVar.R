@@ -5,7 +5,7 @@
 #' @return inSCE updated singleCellExperiment object that contains variable feature metrics in rowData
 #' @export
 #' @author Irzam Sarfraz
-#' @example
+#' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
 #' print(head(rowData(sce_chcl)))

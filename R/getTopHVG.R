@@ -7,7 +7,7 @@
 #' @return list of top variable gene names
 #' @export
 #' @author Irzam Sarfraz
-#' @example
+#' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
 #' topGenes <- getTopHVG(sce_chcl, "vst", 10) #return top 10 variable genes

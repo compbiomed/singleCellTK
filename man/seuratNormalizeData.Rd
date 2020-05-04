@@ -10,8 +10,8 @@ seuratNormalizeData(
   inSCE,
   useAssay,
   geneNamesSeurat,
-  normalizationMethod,
-  scaleFactor
+  normalizationMethod = "LogNormalize",
+  scaleFactor = 10000
 )
 }
 \arguments{
