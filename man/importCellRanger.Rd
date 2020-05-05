@@ -24,9 +24,11 @@ importCellRangerV2(
   cellRangerDirs = NULL,
   sampleDirs = NULL,
   sampleNames = NULL,
-  dataType = c("filtered", "raw"),
+  dataTypeV2 = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = TRUE,
+  reference = NULL,
+  cellRangerOutsV2 = NULL
 )
 
 importCellRangerV3(
@@ -86,10 +88,14 @@ multiple genomes when running Cell Ranger pipeline. Probable options
 include "outs/filtered_feature_bc_matrix/", "outs/raw_feature_bc_matrix/",
 "outs/filtered_gene_bc_matrix/", "outs/raw_gene_bc_matrix/".}
 
-\item{dataType}{The type of output to import. Whether to import the
-filtered or the raw data. Can be one of "filtered" or
-"raw". Default "filtered". When \code{dataType} is specified,
-\code{cellRangerDirs} will be ignored.}
+\item{dataType}{Character. The type of data to import. Can be one of
+"filtered" (which is equivalent to
+\code{cellRangerOuts = "outs/filtered_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/filtered_gene_bc_matrix/"}) or "raw" (which
+is equivalent to
+\code{cellRangerOuts = "outs/raw_feature_bc_matrix/"} or
+\code{cellRangerOuts = "outs/raw_gene_bc_matrix/"}). Default
+"filtered" which imports the counts for filtered cell barcodes only.}
 
 \item{matrixFileNames}{Character vector. Filenames for the Market Exchange
 Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
@@ -133,6 +139,26 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+
+\item{dataTypeV2}{Character. The type of output to import for
+Cellranger version below 3.0.0. Whether to import the filtered or the 
+raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
+\code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will 
+be ignored.}
+
+\item{reference}{Character vector. The reference genome names. 
+Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
+\code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
+Otherwise, make sure the length and order match the output of
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed 
+for Cellranger version below 3.0.0.}
+
+\item{cellRangerOutsV2}{Character vector. The intermediate paths
+to filtered or raw cell barcode, feature, and matrix files for each 
+sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and 
+\code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has 
+length 1, it assumes that all samples use the same genome reference and 
+the function will load only filtered or raw data.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count
@@ -171,6 +197,16 @@ sce <- importCellRanger(
     sampleDirs = "hgmm_1k_v3_20x20",
     sampleNames = "hgmm1kv3",
     dataType = "filtered")
+# The following filtered feature, cell, and matrix files were downloaded from
+# https://support.10xgenomics.com/single-cell-gene-expression/datasets/
+# 2.1.0/pbmc4k
+# Top 20 genes are kept. 20 cell barcodes are extracted.
+sce <- importCellRangerV2(
+    cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+    sampleDirs = "pbmc_4k_v2_20x20",
+    sampleNames = "pbmc4k_20",
+    reference = 'GRCh38',
+    dataTypeV2 = "filtered")
 sce <- importCellRangerV3(
     cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
     sampleDirs = "hgmm_1k_v3_20x20",

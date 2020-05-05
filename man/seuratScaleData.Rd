@@ -9,10 +9,10 @@ seuratScaleData(
   inSCE,
   useAssay,
   geneNamesSeurat,
-  model.use,
-  do.scale,
-  do.center,
-  scale.max
+  model.use = "linear",
+  do.scale = TRUE,
+  do.center = TRUE,
+  scale.max = 10
 )
 }
 \arguments{

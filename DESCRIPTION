@@ -65,6 +65,7 @@ Imports:
     scran,
     Seurat,
     shiny,
+    shinyDirectoryInput,
     shinyFiles,
     shinyjs,
     shinyBS,
@@ -105,7 +106,8 @@ Suggests:
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
-    joshua-d-campbell/liger
+    joshua-d-campbell/liger,
+    joshua-d-campbell/shiny-directory-input
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

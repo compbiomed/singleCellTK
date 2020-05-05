@@ -176,6 +176,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
 #' @param ... Other arguments passed to `plotSCEHeatmap()`
 #' @return A ComplexHeatmap::Heatmap object
 #' @export
+#' @author Yichen Wang
 plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     log2fcThreshold = 1, fdrThreshold = 0.05, ...){
     # Check
