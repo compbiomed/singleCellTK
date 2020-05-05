@@ -5,14 +5,14 @@
 \title{Construct SCE object from Cell Ranger V2 output for a single sample}
 \usage{
 importCellRangerV2Sample(
-  sampleDir = NULL,
+  dataDir = NULL,
   sampleName = NULL,
   class = c("Matrix", "matrix"),
   delayedArray = TRUE
 )
 }
 \arguments{
-\item{sampleDir}{A path to the directory containing the data files. Default "./".}
+\item{dataDir}{A path to the directory containing the data files. Default "./".}
 
 \item{sampleName}{A User-defined sample name. This will be prepended to all cell barcode IDs.
 Default "sample".}
@@ -31,6 +31,12 @@ A \code{SingleCellExperiment} object containing the count
 }
 \description{
 Read the filtered barcodes, features, and matrices for all
- samples from Cell Ranger V3 output. Files are assumed to be named
+ samples from Cell Ranger V2 output. Files are assumed to be named
  "matrix.mtx", "genes.tsv", and "barcodes.tsv".
+}
+\examples{
+sce <- importCellRangerV2Sample(
+    dataDir = system.file("extdata/pbmc_4k_v2_20x20/outs/",
+        "filtered_gene_bc_matrices/GRCh38", package = "singleCellTK"),
+    sampleName = "pbmc4k_20")
 }

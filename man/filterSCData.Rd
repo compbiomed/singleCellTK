@@ -42,7 +42,9 @@ The filtered single cell object.
 Filter Genes and Samples from a Single Cell Object
 }
 \examples{
+\dontrun{
 data("mouseBrainSubsetSCE")
 mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
                                     deletesamples="X1772063061_G11")
+}
 }

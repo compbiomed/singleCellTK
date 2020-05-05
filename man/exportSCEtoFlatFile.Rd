@@ -25,7 +25,9 @@ Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 The items in the 'metadata' slot remain stored in list and are saved in an RDS file.
 }
 \examples{
+\dontrun{
 data(sce_chcl, package = "scds")
 exportSCEtoFlatFile(sce_chcl, "sce_chcl")
+}
 
 }
