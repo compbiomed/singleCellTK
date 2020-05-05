@@ -1,8 +1,10 @@
 #' Check if the specified MAST result in SCtkExperiment object is complete.
 #' But does not garantee the biological correctness.
-#' @param inSCE SCtkExperiment object. `runMAST()` has to be run in advance.
-#' @param useResult character. A string specifying the `comparisonName` used.
-checkMASTResult <- function(inSCE, useResult){
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' \code{runMAST()} has to be run in advance.
+#' @param useResult character. A string specifying the \code{comparisonName}
+#' used when running \code{runMAST()}.
+.checkMASTResultExists <- function(inSCE, useResult){
     if(!inherits(inSCE, 'SingleCellExperiment')){
         stop('Given object is not a valid SingleCellExperiment object.')
     }
@@ -18,30 +20,32 @@ checkMASTResult <- function(inSCE, useResult){
         stop(paste0('"', useResult, '"', ' result is not complete. '),
              'You might need to rerun it.')
     }
-
-    return(TRUE)
 }
 
 #' plot the violin plot to show visualize the expression distribution of DEGs
 #' identified by MAST
-#' @param inSCE SCtkExperiment object. `runMAST()` has to be run in advance.
-#' @param useResult character. A string specifying the `comparisonName` used.
-#' @param threshP logical, default FALSE. Whether to plot threshold values from
-#' adaptive thresholding, instead of using the assay used by `runMAST()`
-#' @param nrow integer, default 6. Number of rows in the plot grid.
-#' @param ncol integer, default 6. Number of columns in the plot grid.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' \code{runMAST()} has to be run in advance.
+#' @param useResult character. A string specifying the \code{comparisonName}
+#' used when running \code{runMAST()}.
+#' @param threshP logical. Whether to plot threshold values from adaptive
+#' thresholding, instead of using the assay used by \code{runMAST()}. Default
+#' \code{FALSE}.
+#' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
+#' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @return A ggplot object of MAST violin plot
 #' @export
 plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
                            nrow = 6, ncol = 6){
     #TODO: DO we split the up/down regulation too?
     # Check
-    checkMASTResult(inSCE, useResult)
+    .checkMASTResultExists(inSCE, useResult)
     # Extract
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), 'Gene']
+    Gene <- NULL
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -82,24 +86,28 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
 
 #' plot the linear regression to show visualize the expression the of DEGs
 #' identified by MAST
-#' @param inSCE SCtkExperiment object. `runMAST()` has to be run in advance.
-#' @param useResult character. A string specifying the `comparisonName` used.
-#' @param threshP logical, default FALSE. Whether to plot threshold values from
-#' adaptive thresholding, instead of using the assay used by `runMAST()`
-#' @param nrow integer, default 6. Number of rows in the plot grid.
-#' @param ncol integer, default 6. Number of columns in the plot grid.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' \code{runMAST()} has to be run in advance.
+#' @param useResult character. A string specifying the \code{comparisonName}
+#' used when running \code{runMAST()}.
+#' @param threshP logical. Whether to plot threshold values from adaptive
+#' thresholding, instead of using the assay used by \code{runMAST()}. Default
+#' \code{FALSE}.
+#' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
+#' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @return A ggplot object of MAST linear regression
 #' @export
 plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
                                nrow = 6, ncol = 6){
     #TODO: DO we split the up/down regulation too?
     # Check
-    checkMASTResult(inSCE, useResult)
+    .checkMASTResultExists(inSCE, useResult)
     # Extract
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), 'Gene']
+    Gene <- NULL
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -162,36 +170,73 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
 #'
 #' runMAST() has to be run in advance so that information is stored in the
 #' metadata of the input SCE object. This function wraps plotSCEHeatmap.
-#' @param inSCE SingleCellExperiment object. Should be output of runMAST(),
-#' with DEG information saved in metadata.
-#' @param useResult character or numeric, default `NULL`. Specify which
-#' comparison result to plot. Character refers to metadata(inSCE)$MAST; numeric
-#' stands for index.
-#' @param onlyPos logical, default `FALSE`. Whether to only plot DEG with
-#' positive log2_FC value.
-#' @param log2fcThreshold numeric, default `1`. Only plot DEGs with the
-#' absolute values of log2FC larger than this value.
-#' @param fdrThreshold numeric, default `0.05`. Only plot DEGs with FDR value
-#' smaller than this value.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' \code{runMAST()} has to be run in advance.
+#' @param useResult character. A string specifying the \code{comparisonName}
+#' used when running \code{runMAST()}.
+#' @param onlyPos logical. Whether to only plot DEG with positive log2_FC
+#' value. Default \code{FALSE}.
+#' @param log2fcThreshold numeric. Only plot DEGs with the absolute values of
+#' log2FC larger than this value. Default \code{1}.
+#' @param fdrThreshold numeric. Only plot DEGs with FDR value smaller than this
+#' value. Default \code{0.05}.
+#' @param useAssay character. A string specifying an assay of expression value
+#' to plot. By default the assay used for \code{runMAST()} will be used.
+#' Default \code{NULL}.
+#' @param featureAnnotations \code{data.frame}, with \code{rownames} containing
+#' all the features going to be plotted. Character columns should be factors.
+#' Default \code{NULL}.
+#' @param cellAnnotations \code{data.frame}, with \code{rownames} containing
+#' all the cells going to be plotted. Character columns should be factors.
+#' Default \code{NULL}.
+#' @param featureAnnotationColor A named list. Customized color settings for
+#' feature labeling. Should match the entries in the \code{featureAnnotations}
+#' or \code{rowDataName}. For each entry, there should be a list/vector of
+#' colors named with categories. Default \code{NULL}.
+#' @param cellAnnotationColor A named list. Customized color settings for
+#' cell labeling. Should match the entries in the \code{cellAnnotations} or
+#' \code{colDataName}. For each entry, there should be a list/vector of colors
+#' named with categories. Default \code{NULL}.
+#' @param rowDataName character. The column name(s) in \code{rowData} that need
+#' to be added to the annotation. Default \code{NULL}.
+#' @param colDataName character. The column name(s) in \code{colData} that need
+#' to be added to the annotation. Default \code{NULL}.
+#' @param rowSplitBy character. Do semi-heatmap based on the grouping of
+#' this(these) annotation(s). Should exist in either \code{rowDataName} or
+#' \code{names(featureAnnotations)}. Default \code{"regulation"}.
+#' @param colSplitBy character. Do semi-heatmap based on the grouping of
+#' this(these) annotation(s). Should exist in either \code{colDataName} or
+#' \code{names(cellAnnotations)}. Default \code{"condition"}.
+#' @param title character. Main title of the heatmap. Default
+#' \code{"MAST Result: <useResult>"}.
 #' @param ... Other arguments passed to `plotSCEHeatmap()`
 #' @return A ComplexHeatmap::Heatmap object
 #' @export
 #' @author Yichen Wang
-plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
-    log2fcThreshold = 1, fdrThreshold = 0.05, ...){
+plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
+    log2fcThreshold = 1, fdrThreshold = 0.05, useAssay = NULL,
+    featureAnnotations = NULL, cellAnnotations = NULL,
+    featureAnnotationColor = NULL, cellAnnotationColor = NULL,
+    rowDataName = NULL, colDataName = NULL, colSplitBy = 'condition',
+    rowSplitBy = 'regulation', title = paste0("MAST Result: ", useResult), ...){
     # Check
-    checkMASTResult(inSCE, useResult)
+    .checkMASTResultExists(inSCE, useResult)
     extraArgs <- list(...)
+    warnArgs <- c('featureIndex', 'cellIndex')
+    if(any(warnArgs %in% names(extraArgs))){
+        warning('"', paste(warnArgs[warnArgs %in% names(extraArgs)],
+                           collapse = ', '), '" are not allowed at this point.')
+        extraArgs[c('cellIndex', 'featureIndex')] <- NULL
+    }
     # Extract
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
-    if('useAssay' %in% names(extraArgs)){
-        useAssay <- extraArgs$useAssay
-        if(useAssay != result$useAssay){
-            warning("`useAssay` different to the one used when `runMAST()`")
-        }
-    } else {
+    if(is.null(useAssay)){
         useAssay <- result$useAssay
+    } else {
+        if(useAssay != result$useAssay){
+            warning("`useAssay` is different to the one used for `runMAST()`")
+        }
     }
     ix1 <- result$select$ix1
     ix2 <- result$select$ix2
@@ -213,8 +258,7 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
     group[ix1] <- result$groupNames[1]
     group[ix2] <- result$groupNames[2]
     group <- factor(group[cell.ix], levels = result$groupNames)
-    if("cellAnnotations" %in% names(extraArgs)){
-        cellAnnotations <- extraArgs$cellAnnotations
+    if(!is.null(cellAnnotations)){
         if(!all(allCells %in% rownames(cellAnnotations))){
             stop('Not all cells involved in comparison found in given ',
                  '`cellAnnotations`. ')
@@ -223,76 +267,57 @@ plotMASTHeatmap <- function(inSCE, useResult = NULL, onlyPos = FALSE,
         cellAnnotations <- data.frame(cellAnnotations, condition = group)
     } else {
         cellAnnotations <- data.frame(condition = group,
-                                     row.names = allCells)
+                                      row.names = allCells)
     }
     kCol <- celda::distinctColors(2)
     names(kCol) <- result$groupNames
-    if(!"cellAnnotationColor" %in% names(extraArgs)){
-        cellAnnotationColor <- list(condition = kCol)
-    } else {
-        cellAnnotationColor <- extraArgs$cellAnnotationColor
+    if(!is.null(cellAnnotationColor)){
         if(!"condition" %in% names(cellAnnotationColor)){
             cellAnnotationColor <- c(list(condition = kCol),
                                      cellAnnotationColor)
         }
+    } else {
+        cellAnnotationColor <- list(condition = kCol)
     }
+
     ## Genes
     regulation <- vector()
-    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, 'Gene']
-    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, 'Gene']
+    Gene <- NULL # Unused variable, to pass the R CMD check.
+    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, Gene]
+    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, Gene]
     regulation[rownames(inSCE) %in% genes.up] <- 'up'
     regulation[rownames(inSCE) %in% genes.down] <- 'down'
     regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
-    if("featureAnnotations" %in% names(extraArgs)){
-        featureAnnotations <- extraArgs$featureAnnotations
+    if(!is.null(featureAnnotations)){
         if(!all(allGenes %in% rownames(featureAnnotations))){
-            stop('Not all cells involved in comparison found in given ',
-                 '`cellAnnotations`. ')
+            stop('Not all genes involved in comparison found in given ',
+                 '`featureAnnotations`. ')
         }
         featureAnnotations <- featureAnnotations[allGenes, , drop = FALSE]
         featureAnnotations <- data.frame(featureAnnotations,
                                          regulation = regulation)
     } else {
         featureAnnotations <- data.frame(regulation = regulation,
-                                      row.names = allGenes)
+                                         row.names = allGenes)
     }
     lCol <- celda::distinctColors(2)
     names(lCol) <- c('up', 'down')
-    if(!"featureAnnotationColor" %in% names(extraArgs)){
-        featureAnnotationColor <- list(regulation = lCol)
-    } else {
-        featureAnnotationColor <- extraArgs$featureAnnotationColor
+    if(!is.null(featureAnnotationColor)){
         if(!"regulation" %in% names(featureAnnotationColor)){
-            featureAnnotationColor <- c(list(regulation = kCol),
+            featureAnnotationColor <- c(list(regulation = lCol),
                                         featureAnnotationColor)
         }
+    } else {
+        featureAnnotationColor <- list(regulation = lCol)
     }
     # Plot
-    if('rowSplitBy' %in% names(extraArgs)){
-        rowSplitBy <- extraArgs$rowSplitBy
-    } else {
-        rowSplitBy <- 'regulation'
-    }
-    if('colSplitBy' %in% names(extraArgs)){
-        colSplitBy <- extraArgs$colSplitBy
-    } else {
-        colSplitBy <- 'condition'
-    }
-    if('title' %in% names(extraArgs)){
-        title <- extraArgs$title
-    } else {
-        title <- useResult
-    }
-    extraArgs[c('useAssay', 'rowSplitBy', 'featureIndex', 'featureAnnotations',
-                'featureAnnotationColor', 'colSplitBy', 'cellIndex',
-                'cellAnnotations', 'cellAnnotationColor', 'title')] <- NULL
-    hm <- do.call('plotSCEHeatmap', c(list(inSCE = inSCE, useAssay = useAssay,
+    hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay,
         featureIndex = gene.ix, cellIndex = cell.ix,
         featureAnnotations = featureAnnotations,
         cellAnnotations = cellAnnotations,
         featureAnnotationColor = featureAnnotationColor,
         cellAnnotationColor = cellAnnotationColor, rowSplitBy = rowSplitBy,
-        colSplitBy = colSplitBy, title = title), extraArgs))
+        colSplitBy = colSplitBy, title = title)
     return(hm)
 }
 

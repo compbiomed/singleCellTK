@@ -1,48 +1,60 @@
 #' runMAST
 #'
-#' Run MAST for differential expression analysis on a SCtkExperiment object.
+#' Run MAST for differential expression analysis on a
+#' \linkS4class{SingleCellExperiment} inherited object.
 #'
-#' @param inSCE SCtkExperiment object
-#' @param useAssay character, default "logcounts". A string specifying which
-#' assay to use for the MAST calculations.
-#' @param index1 character/numeric/logical, default NULL. A vector that
-#' specifies which cells are of interests.
-#' @param index2 character/numeric/logical, default NULL. A vector that
-#' specifies which cells are being compared with those specified by `index1`.
-#' If NULL, `index1` cells will be comapred with all other cells.
-#' @param class character/numeric or factor, default NULL. A vector/factor of
-#' `ncol(inSCE)` elements, or a single string that specifies a colname of
-#' `colData(inSCE)`.
-#' @param classGroup1 character/numeric, default NULL. Specifying which
-#' "levels" given in `class` are of interests.
-#' @param classGroup2 character/numeric, default NULL. Specifying which
-#' "levels" given in `class` will be compared with those specified by
-#' `classGroup1`. If NULL, `classGroup1` cells will be compared with all other
-#' cells.
-#' @param comparisonName character. A string naming the DEG experiment.
-#' @param groupName1 character. A string naming the first comparison group.
-#' @param groupName2 character. A string naming the second comparison group.
-#' @param useThresh logical, default FALSE. Whether to use adaptive
-#' thresholding to filter genes.
-#' @param freqExpressed numeric, default 0.1. A threshold that the genes
-#' expressed in less than this fraction of cells will be removed.
-#' @param onlyPos logical, default FALSE. Whether to only output DEG with
-#' positive log2_FC value.
-#' @param log2fcThreshold numeric, default NULL. Only out put DEGs with the
-#' absolute values of log2FC larger than this value.
-#' @param fdrThreshold numeric, default 1. Only out put DEGs with FDR value
-#' smaller than this value.
-#' @return The input SCtkExperiment object with `metadata(inSCE)$MAST`` updated
-#' with the results: a list named by `comparisonName`, with `groupNames`
-#' containing the naming of the two conditions, `useAssay` storing the assay
-#' name that was used for calculation, `select` storing the cell selection
-#' indices (logical) for each condition, and `result` storing a `data.frame` of
+#' Condition group can be set by one and only one of the two ways: setting
+#' \code{index1} and \code{index2}, or setting \code{class}, \code{classGroup1}
+#' and \code{classGroup2}.
+#'
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param useAssay character. A string specifying which assay to use for the
+#' MAST calculations. Default \code{"logcounts"}.
+#' @param index1 Any type of indices that can subset a
+#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+#' which cells are of interests. Default \code{NULL}.
+#' @param index2 Any type of indices that can subset a
+#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
+#' which cells are being compared with those specified by \code{index1}. If
+#' \code{NULL}, \code{index1} cells will be comapred with all other cells.
+#' Default \code{NULL}.
+#' @param class A vector/factor with \code{ncol(inSCE)} elements, or a single
+#' string that specifies a column name of \code{colData(inSCE)}. Default
+#' \code{NULL}.
+#' @param classGroup1 a vector specifying which "levels" given in \code{class}
+#' are of interests. Default \code{NULL}.
+#' @param classGroup2 a vector specifying which "levels" given in \code{class}
+#' will be compared with those specified by \code{classGroup1}. If \code{NULL},
+#' \code{classGroup1} cells will be compared with all other cells.
+#' @param comparisonName A string naming the DEG experiment. Will be required
+#' in downstream plotting functions.
+#' @param groupName1 A string naming the first comparison group - the condition
+#' you are interested in.
+#' @param groupName2 A string naming the second comparison group - the
+#' condition that the first group is being compared with.
+#' @param useThresh Whether to use adaptive thresholding to filter genes.
+#' Default \code{FALSE}.
+#' @param freqExpressed A numeric threshold that the genes expressed in less
+#' than this fraction of cells will be removed. Default \code{0.1}.
+#' @param onlyPos Whether to only output DEG with positive log2_FC value.
+#' Default \code{FALSE}.
+#' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
+#' larger than this value. Default \code{NULL}
+#' @param fdrThreshold Only out put DEGs with FDR value smaller than this
+#' value. Default \code{1}
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{metadata(inSCE)$MAST} updated with the results: a list named by
+#' \code{comparisonName}, with \code{$groupNames} containing the naming of the
+#' two conditions, \code{$useAssay} storing the assay name that was used for
+#' calculation, \code{$select} storing the cell selection indices (logical) for
+#' each condition, and \code{$result} storing a \code{\link{data.frame}} of
 #' the DEGs summary.
 #' @export
 #' @examples
 #' data(sceBatch)
 #' sce.deg <- runMAST(sceBatch, class = "cell_type", comparisonName = 'aVSb',
-#'                    classGroup1 = 'alpha', classGroup2 = 'beta')
+#'                    classGroup1 = 'alpha', classGroup2 = 'beta',
+#'                    groupName1 = 'a', groupName2 = 'b')
 runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
                     class = NULL, classGroup1 = NULL, classGroup2 = NULL,
                     comparisonName, groupName1, groupName2, useThresh = FALSE,
@@ -143,18 +155,18 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
     summaryCond <- MAST::summary(zlmCond, doLRT = "conditionc1")
     summaryDt <- summaryCond$datatable
     fcHurdle <- merge(summaryDt[summaryDt$contrast == "conditionc1" &
-                                summaryDt$component == "H", 
+                                summaryDt$component == "H",
                                 c('primerid', 'Pr(>Chisq)')],
-                      summaryDt[summaryDt$contrast == "conditionc1" & 
-                                summaryDt$component == "logFC", 
+                      summaryDt[summaryDt$contrast == "conditionc1" &
+                                summaryDt$component == "logFC",
                                 c('primerid', 'coef', 'ci.hi', 'ci.lo')],
                       by = "primerid")
     fcHurdle$fdr <- stats::p.adjust(fcHurdle$`Pr(>Chisq)`, "fdr")
     if (is.null(log2fcThreshold)) {
       fcHurdleSig <- fcHurdle
     } else {
-      fcHurdleSig <- merge(fcHurdle[fcHurdle$fdr < fdrThreshold & 
-                                    abs(fcHurdle$coef) > log2fcThreshold], 
+      fcHurdleSig <- merge(fcHurdle[fcHurdle$fdr < fdrThreshold &
+                                    abs(fcHurdle$coef) > log2fcThreshold],
                                     data.table::as.data.table(S4Vectors::mcols(sca)),
                            by = "primerid")
       if (onlyPos) {
