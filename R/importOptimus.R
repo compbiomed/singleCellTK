@@ -10,7 +10,7 @@
   #  sparse <- reticulate::import("scipy.sparse")
   #  np <- reticulate::import("numpy")
   if (!reticulate::py_module_available(module = "scipy.sparse")) {
-    stop("Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda() 
+    stop("Error!", "Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda() 
          or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
          make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
          restarted since the module installation. Alternatively, scipy can be installed on the local machine
@@ -18,7 +18,7 @@
          can be used to select the correct Python environment.")
   }
   if (!reticulate::py_module_available(module = "numpy")) {
-    stop("Cannot find python module 'numpy', please install Conda and run sctkPythonInstallConda() 
+    stop("Error!", "Cannot find python module 'numpy', please install Conda and run sctkPythonInstallConda() 
          or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
          make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
          restarted since the module installation. Alternatively, numpy can be installed on the local machine
