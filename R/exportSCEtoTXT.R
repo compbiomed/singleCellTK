@@ -11,9 +11,11 @@
 #'  gzip compressed. \code{FALSE} otherwise. Default
 #'  \code{TRUE}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-#'
+#' }
+#' 
 #' @export
 exportSCEtoFlatFile <- function(sce,
                      outputDir = "./",
