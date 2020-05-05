@@ -51,6 +51,15 @@ exportSCEtoAnnData <- function(sce,
             " correct Python environment.")
     return(sce)}
   
+  AssayName <- SummarizedExperiment::assayNames(sce)
+  for (assay in AssayName){
+    if (!methods::is(SummarizedExperiment::assay(sce, assay), 'dgCMatrix')) {
+      SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
+    }
+  }
+
+  
+  dir.create(outputDir, showWarnings = FALSE, recursive = TRUE)
   annData <- .sce2adata(sce,useAssay)
   fileName <- paste0(prefix,".h5ad")
   filePath <- file.path(outputDir,fileName)

@@ -31,10 +31,10 @@
     } else {
         AnnData$var_names <- rownames(SCE)
     }
-    uns  <- S4Vectors::metadata(SCE)
-    if(length(uns) > 0){
-        AnnData$uns <- uns    
-    }
+    # uns  <- S4Vectors::metadata(SCE)
+    # if(length(uns) > 0){
+    #     AnnData$uns <- uns    
+    # }
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
     if(length(obsmNames) > 0){
         for (i in 1:length(obsmNames)) {
