@@ -10,7 +10,7 @@
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-#' topGenes <- getTopHVG(sce_chcl, "vst", 10) #return top 10 variable genes
+#' topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10) #return top 10 variable genes
 #' print(topGenes)
 
 getTopHVG <- function(inSCE, method, n = 2000) {
