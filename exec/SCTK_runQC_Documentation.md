@@ -69,6 +69,8 @@ The arguments are as follows:
 
 -t, --delim. Delimiter used in GMT file. Default "\t".
 
+-r, --reference. The name of genome reference. This is only required for CellRangerV2 data.
+
 ## Analyzing genes sets
 
 Quantifying the level of gene sets can be useful quality control. For example, the percentage of counts from mitochondrial genes can be an indicator or cell stress or death. 
@@ -76,52 +78,53 @@ Quantifying the level of gene sets can be useful quality control. For example, t
 Users can pass a [GMT](http://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats) file to the pipeline with one row for each gene set. The first column should be the name of the gene set (e.g. mito). 
 The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
 
-## QC Outputs
-This pipeline will run several QC algorithms. The QC metrics will be stored as `colData` within the outputed `singleCellExperiment` object in the R directory or in the file `colData.txt.gz` within the FlatFile directory. Here is a list of the currently available QC outputs:
+## Docker and Singularity Images
 
-### General metrics
+singleCellTK is available to use with both Docker and Singularity. The tool usage is similar to that of the command line interface. Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. 
 
-| Output name | Description | Package |
-| --- | --- | --- |
-| sum | Total transcript counts in cell | scater |
-| detected | Total genes detected in cell | scater |
-| percent_top | Numeric value, the percentage of counts assigned to the percent_topage of most highly expressed genes. Each column of the matrix corresponds to an entry of the sorted percent_top, in increasing order | scater |
-| subsets_mito_sum | Number of total mitochonrial transcript counts per cell | scater |
-| subsets_mito_detected | Number of mitochondrial genes detected per cell | scater |
-| subsets_mito_percent | Percentage of mitochondial transcript counts out of total gene counts | scater |
+### Docker
 
+singleCellTK docker image is available from [Docker Hub](https://hub.docker.com/r/rz2333/sctk_0.1.1). If you have not used docker before, you can follow the instruction to install and set up docker in [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux). 
 
-### Metrics on Droplet matrix
+The Docker image can be obtained by running: 
+```
+docker pull rz2333/sctk:1.7.2
+```
 
-| Output name | Description | Package |
-| --- | --- | --- |
-| dropletUtils_emptyDrops_total | Integer, spicifies the total UMI count for each barcode | dropletUtils |
-| dropletUtils_emptyDrops_pvalue | Numeric, the Monte Carlo p-value under the null model | dropletUtils |
-| dropletUtils_emptyDrops_logprob | Numeric, the barcode's count log-probability of a vector under the null model | dropletUtils |
-| dropletUtils_emptyDrops_fdr | Numeric, false discovery rate. Suggested fdr cut-off is 1% | dropletUtils |
-| dropletUtils_emptyDrops_limited | Logical, indicates if a lower p-value could be obtained by increasing niters, a number of iterations for Monte Carlo p-value calculations | dropletUtils |
-| dropletUtils_barcodeRank_knee | Numeric, specifies total count at the knee point | dropletUtils |
-| dropletUtils_barcodeRank_inflection | Numeric,  specifies total count at the inflection point | dropletUtils |
+To perform quality control with singleCellTK docker, use the following code:
 
-### Metrics for doublet detection
+```
+docker run --rm -v /path/to/data:/SCTK_docker \
+-it rz2333/sctk:1.7.2 \
+-b /SCTK_docker/cellranger \
+-p CellRangerV3 \
+-s pbmc_100x100 \
+-o /SCTK_docker/result/tenx_v3_pbmc \
+-g /SCTK_docker/mitochondrial_human_symbol.gmt
+```
 
-| Output name | Description | Package |
-| --- | --- | --- |
-| doubletFinder_doublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet using artificially generated doublets | doubletFinder |
-| doubletFinder_doublet_label | Whether the cell is deemed a doublet or not by the algorithm. Will be "Singlet" or "Doublet" | doubletFinder |
-| scds_cxds_score | Numeric value that determines how likely a cell is a doublet, based on co-expression of gene pairs | scds |
-| scds_bcds_score | Numeric value that determines how likely a cell is a doublet, using artificially generated doublets | scds |
-| scds_hybrid_score | Numeric value that determines how likely a cell is a doublet, uses both cxds and bcds algorithm | scds |
-| scran_doubletCells_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scran |
-| scrublet_score | Numeric value that determines how likely a cell in the counts matrix is a doublet | scrublet |
-| scrublet_call | Whether the cell is deemed a doublet or not by the algorithm. Will be  | scrublet |
+The container could not access files in your local host system. That's why we need -v argument is to mount your data directory (/path/to/data) to container (/SCTK_docker). /SCTK_docker is not visible in your host system but container could read and write files in that directory. That's why the path of all the input files starts with /SCTK_docker but not /path/to/data. To learn more about volumes, please check out [this post](https://docs.docker.com/storage/volumes/).
 
-### Metrics for ambient RNA contamination
+### Singularity
 
-| Output name | Description | Package |
-| --- | --- | --- |
-| decontX_contamination | Probability of contamination determined by decontX | celda |
-| decontX_clusters | Clusters determined by Celda, a clustering algorithm that runs in the background of decontX | celda |
+The Singulatiry image can easily be built using Docker Hub as a source:
+
+```
+singularity build sctk-0.1.1.sif docker://rz2333/sctk:1.7.2
+```
+
+The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
+
+```
+singularity run sctk-0.1.1.sif \
+-b ./cellranger \
+-p CellRangerV3 \
+-s pbmc_100x100 \
+-o ./result/tenx_v3_pbmc \
+-g ./mitochondrial_human_symbol.gmt
+```
+
+The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. This problem will be fixed in future to make it compatible with older cpu architectures. 
 
 
 ## Documentation of tools that are currently available within the pipeline:
@@ -131,6 +134,8 @@ This pipeline will run several QC algorithms. The QC metrics will be stored as `
 #### Doublet Detection
 * [doubletCells](https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html) from the package [scran](http://bioconductor.org/packages/release/bioc/html/scran.html)
 * [cxds](https://rdrr.io/bioc/scds/man/cxds.html), [bcds](https://rdrr.io/bioc/scds/man/bcds.html), and [cxds_bcds_hybrid](https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html) from the package [scds](http://bioconductor.org/packages/release/bioc/html/scds.html)
+* [doubletFinder](https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html) from the package [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder)
+* [Scrublet](https://bioconda.github.io/recipes/scrublet/README.html) from the package [scrublet](https://github.com/allonkleinlab/scrublet)
 
 #### Ambient RNA detection
 * [decontX](https://rdrr.io/bioc/celda/man/decontX.html) from the package [celda](https://bioconductor.org/packages/release/bioc/html/celda.html)

@@ -5,18 +5,17 @@
 \title{Construct SCE object from Cell Ranger V3 output for a single sample}
 \usage{
 importCellRangerV3Sample(
-  sampleDir = "./",
+  dataDir = "./",
   sampleName = "sample",
   class = c("Matrix", "matrix"),
   delayedArray = TRUE
 )
 }
 \arguments{
-\item{sampleDir}{A path to the directory containing the data files. Default
-"./".}
+\item{dataDir}{A path to the directory containing the data files. Default "./".}
 
-\item{sampleName}{A User-defined sample name. This will be prepended to all
-cell barcode IDs. Default "sample".}
+\item{sampleName}{A User-defined sample name. This will be prepended to all cell barcode IDs.
+Default "sample".}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
@@ -37,7 +36,7 @@ Read the filtered barcodes, features, and matrices for all
 }
 \examples{
 sce <- importCellRangerV3Sample(
-    sampleDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
+    dataDir = system.file("extdata/hgmm_1k_v3_20x20/outs/",
         "filtered_feature_bc_matrix", package = "singleCellTK"),
     sampleName = "hgmm1kv3")
 }

@@ -150,9 +150,11 @@ createSCE <-  function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
 #' @return The filtered single cell object.
 #' @export
 #' @examples
+#' \dontrun{
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
 #'                                     deletesamples="X1772063061_G11")
+#' }
 filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
                          removeNoExpress=TRUE, removeBottom=0.5,
                          minimumDetectGenes=1700, filterSpike=TRUE){
@@ -268,8 +270,22 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 .convertToMatrix <- function(x) {
   cn <- colnames(x)
   rn <- rownames(x)
+  limit <- (2^32/2-1)
+  dimN <- dim(x)
+  chuS <- floor(floor(limit/dimN[1])) # size of chunk
+  chuN <- ceiling(dimN[2]/chuS) # number of chunks
+  Mat <- list()
   
-  x <- methods::as(x, "dgCMatrix")
+  for (i in 1:chuN) {
+    start <- (i-1)*chuS + 1
+    end <- min(i*chuS, dimN[2])
+    if (methods::is(x, 'DelayedMatrix')) {
+      Mat[[i]] <- methods::as(x[, start:end], "Matrix") # Efficient way to convert DelayedArray to dgCMatrix
+    } else {
+      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix") # Convert dgTMatrix to dgCMatrix
+    }
+  }
+  x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
   
