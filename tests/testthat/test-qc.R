@@ -5,16 +5,8 @@ library('Seurat')
 library('testthat')
 
 data(sce_chcl, package = "scds")
-
+sapply(paste0('./R/',list.files("./R",pattern="*.R")),source)
 context("Testing QC functions")
-
-test_that("Testing scrublet",{
-  sce <- runScrublet(sce_chcl)
-  expect_equal(class(colData(sce)$scrublet_score), 'numeric')
-  expect_equal(class(colData(sce)$scrublet_call), 'logical')
-  expect_equal(dim(reducedDim(sce,'TSNE')), c(dim(sce)[1],2))
-  expect_equal(dim(reducedDim(sce,'UMAP')), c(dim(sce)[1],2))
-})
 
 test_that("Testing scds",{
   sce <- runCxdsBcdsHybrid(sce_chcl)
@@ -45,4 +37,13 @@ test_that(desc = "Testing DoubletFinder",  {
   expect_equal(class(colData(sce)$doubletFinder_doublet_score_Resolution_1), "numeric")
 })
 
-
+test_that("Testing scrublet",{
+  if (!reticulate::py_module_available("scanpy") || (!reticulate::py_module_available("scrublet"))){
+    skip("scrublet or scanpy not available. Skipping testing importOptimus")
+  }
+  sce <- runScrublet(sce_chcl)
+  expect_equal(class(colData(sce)$scrublet_score), 'numeric')
+  expect_equal(class(colData(sce)$scrublet_call), 'logical')
+  expect_equal(dim(reducedDim(sce,'TSNE')), c(dim(sce)[1],2))
+  expect_equal(dim(reducedDim(sce,'UMAP')), c(dim(sce)[1],2))
+})
