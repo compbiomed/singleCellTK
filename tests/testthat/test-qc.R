@@ -1,7 +1,9 @@
 library('SummarizedExperiment')
 library('SingleCellExperiment')
+library('singleCellTK')
 library('Seurat')
 library('testthat')
+
 data(sce_chcl, package = "scds")
 
 context("Testing QC functions")
@@ -35,7 +37,7 @@ test_that(desc = "Testing scran", {
   sce <- runDoubletCells(sce_chcl)
   expect_equal(length(colData(sce)$scran_doubletCells_Score),ncol(sce_chcl))
   expect_equal(class(colData(sce)$scran_doubletCells_Score), "numeric")
-})
+}) 
 
 test_that(desc = "Testing DoubletFinder",  {
   sce <- runDoubletFinder(sce_chcl, seuratPcs = 1:3, seuratNfeatures = 100, seuratRes = 1)
