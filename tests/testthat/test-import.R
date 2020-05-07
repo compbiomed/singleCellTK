@@ -5,7 +5,6 @@ library('testthat')
 library('singleCellTK')
 
 input_dir <- file.path("./inst/extdata/")
-sapply(paste0('./R/',list.files("./R",pattern="*.R")),source)
 
 context("Testing import functions")
 

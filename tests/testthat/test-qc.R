@@ -5,7 +5,7 @@ library('Seurat')
 library('testthat')
 
 data(sce_chcl, package = "scds")
-sapply(paste0('./R/',list.files("./R",pattern="*.R")),source)
+
 context("Testing QC functions")
 
 test_that("Testing scds",{
