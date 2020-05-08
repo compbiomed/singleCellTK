@@ -11,14 +11,14 @@
 
 \item{axis}{Choose from \code{"col"} or \code{"row"}.}
 
-\item{columns}{character vector. The columns needed to be extracted. If 
-\code{NULL}, will return an empty \code{\link{data.frame}} with matched row 
+\item{columns}{character vector. The columns needed to be extracted. If
+\code{NULL}, will return an empty \code{data.frame} with matched row
 names. Default \code{NULL}.}
 
 \item{index}{Valid index to subset the col/row.}
 }
 \value{
-A \code{\link{data.frame}} object.
+A \code{data.frame} object.
 }
 \description{
 Extract columns from row/colData and transfer to factors
