@@ -1,11 +1,13 @@
 #' Extract columns from row/colData and transfer to factors
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param axis Choose from "col" or "row"
-#' @param columns character vector, default NULL (return NULL). The columns
-#' needed to be extracted.
+#' @param axis Choose from \code{"col"} or \code{"row"}.
+#' @param columns character vector. The columns needed to be extracted. If 
+#' \code{NULL}, will return an empty \code{\link{data.frame}} with matched row 
+#' names. Default \code{NULL}.
 #' @param index Valid index to subset the col/row.
-#' @return A data.frame object
-.extractSCEAnnotation <- function(inSCE, axis = NULL, columns = NULL, index = NULL){
+#' @return A \code{\link{data.frame}} object.
+.extractSCEAnnotation <- function(inSCE, axis = NULL, columns = NULL, 
+                                  index = NULL){
     if(is.null(axis) || !axis %in% c('col', 'row')){
         stop("axis should be 'col' or 'row'.")
     } else if(axis == 'col'){
@@ -33,12 +35,12 @@
 
 #' Generate distinct colors for all categorical col/rowData entries.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param axis Choose from "col" or "row"
-#' @param colorGen function, default `rainbow`. A function that generates color
-#' code vector by giving an integer for the number of colors. Alternatively,
-#' `celda::distinctColors`.
-#' @return An list object containing distinct colors mapped to all possible
-#' categorical entries in row/colData.
+#' @param axis Choose from \code{"col"} or \code{"row"}.
+#' @param colorGen A function that generates color code vector by giving an 
+#' integer for the number of colors. Alternatively, 
+#' \code{\link{celda::distinctColors}}. Default \code{\link{rainbow}}.
+#' @return A \code{\link{list}} object containing distinct colors mapped to all 
+#' possible categorical entries in \code{rowData} or \code{colData}.
 #' @author Yichen Wang
 dataAnnotationColor <- function(inSCE, axis = NULL,
                                 colorGen = grDevices::rainbow){

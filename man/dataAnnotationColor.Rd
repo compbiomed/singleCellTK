@@ -7,17 +7,17 @@
 dataAnnotationColor(inSCE, axis = NULL, colorGen = grDevices::rainbow)
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{axis}{Choose from "col" or "row"}
+\item{axis}{Choose from \code{"col"} or \code{"row"}.}
 
-\item{colorGen}{function, default `rainbow`. A function that generates color
-code vector by giving an integer for the number of colors. Alternatively,
-`celda::distinctColors`.}
+\item{colorGen}{A function that generates color code vector by giving an 
+integer for the number of colors. Alternatively, 
+\code{\link{celda::distinctColors}}. Default \code{\link{rainbow}}.}
 }
 \value{
-An list object containing distinct colors mapped to all possible
-categorical entries in row/colData.
+A \code{\link{list}} object containing distinct colors mapped to all 
+possible categorical entries in \code{rowData} or \code{colData}.
 }
 \description{
 Generate distinct colors for all categorical col/rowData entries.

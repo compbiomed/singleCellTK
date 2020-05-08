@@ -21,7 +21,7 @@ plotSCEHeatmap(
   colLabel = FALSE,
   rowDend = TRUE,
   colDend = TRUE,
-  scaleRow = scale,
+  scale = TRUE,
   trim = c(-2, 2),
   title = "SCE Heatmap",
   colorScheme = NULL,
@@ -29,77 +29,74 @@ plotSCEHeatmap(
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{character. A string indicating the assay name that 
+\item{useAssay}{character. A string indicating the assay name that
 provides the expression level to plot.}
 
-\item{featureIndex}{vector, default `NULL`, that can subset the input SCE
-object by rows (features)}
+\item{featureIndex}{A vector that can subset the input SCE object by rows
+(features). Default \code{NULL}.}
 
-\item{cellIndex}{vector, default `NULL`, that can subset the input SCE
-object by columns (cells)}
+\item{cellIndex}{A vector that can subset the input SCE object by columns
+(cells). Default \code{NULL}.}
 
-\item{featureAnnotations}{data.frame, with `rownames` containing all the
-features going to be plotted, default NULL. Character columns should be
-factors.}
+\item{featureAnnotations}{\code{data.frame}, with \code{rownames} containing
+all the features going to be plotted. Character columns should be factors.
+Default \code{NULL}.}
 
-\item{cellAnnotations}{data.frame, with `rownames` containing all the
-cells going to be plotted, default NULL. Character columns should be
-factors.}
+\item{cellAnnotations}{\code{data.frame}, with \code{rownames} containing
+all the cells going to be plotted. Character columns should be factors.
+Default \code{NULL}.}
 
-\item{featureAnnotationColor}{A named list, default `NULL`. Customized color
-setting for features. Should match the entries in the `featureAnnotations`
-or `rowDataName`. For each entry, there should be a list/vector of colors
-named with classes.}
+\item{featureAnnotationColor}{A named list. Customized color settings for
+feature labeling. Should match the entries in the \code{featureAnnotations}
+or \code{rowDataName}. For each entry, there should be a list/vector of
+colors named with categories. Default \code{NULL}.}
 
-\item{cellAnnotationColor}{A named list, default `NULL`. Customized color
-setting for cells. Should match the entries in the `cellAnnotations` or
-`colDataName`. For each entry, there should be a list/vector of colors named
-with classes.}
+\item{cellAnnotationColor}{A named list. Customized color settings for
+cell labeling. Should match the entries in the \code{cellAnnotations} or
+\code{colDataName}. For each entry, there should be a list/vector of colors
+named with categories. Default \code{NULL}.}
 
-\item{rowDataName}{character, default `NULL`. The column name(s) in
-`rowData` that need to be added to the annotation.}
+\item{rowDataName}{character. The column name(s) in \code{rowData} that need
+to be added to the annotation. Default \code{NULL}.}
 
-\item{colDataName}{character, default `NULL`. The column name(s) in
-`colData` that need to be added to the annotation}
+\item{colDataName}{character. The column name(s) in \code{colData} that need
+to be added to the annotation. Default \code{NULL}.}
 
-\item{rowSplitBy}{A single character, default `NULL`. Do semi-heatmap based
-on the grouping of this annotation. Should exist in either `rowDataName` or
-`names(featureAnnotations)`.}
+\item{rowSplitBy}{character. Do semi-heatmap based on the grouping of
+this(these) annotation(s). Should exist in either \code{rowDataName} or
+\code{names(featureAnnotations)}. Default \code{NULL}.}
 
-\item{colSplitBy}{A single character, default `NULL`. Do semi-heatmap based
-on the grouping of this annotation. Should exist in either `colDataName` or
-`names(cellAnnotations)`.}
+\item{colSplitBy}{character. Do semi-heatmap based on the grouping of
+this(these) annotation(s). Should exist in either \code{colDataName} or
+\code{names(cellAnnotations)}. Default \code{NULL}.}
 
-\item{rowLabel}{A single logical, default `FALSE`. Whether to display all
-the feature names.}
+\item{rowLabel}{Whether to display all the feature names. Default
+\code{FALSE}.}
 
-\item{colLabel}{A single logical, default `FALSE`. Whether to display all
-the cell names.}
+\item{colLabel}{Whether to display all the cell names. Default \code{FALSE}.}
 
-\item{rowDend}{A single logical, default `True`. Whether to display row
-dendrogram.}
+\item{rowDend}{Whether to display row dendrogram. Default \code{TRUE}.}
 
-\item{colDend}{A single logical, default `True`. Whether to display column
-dendrogram.}
+\item{colDend}{Whether to display column dendrogram. Default \code{TRUE}.}
 
-\item{scaleRow}{function, default `scale`. A function to be applied to each
-row to scale the data.}
+\item{scale}{Whether to perform z-score scaling on each row. Default
+\code{TRUE}.}
 
-\item{trim}{A 2-element numeric vector, default `c(-2, 2)`. Values outside
-of this range will be their nearst bound.}
+\item{trim}{A 2-element numeric vector. Values outside of this range will be
+trimmed to their nearst bound. Default \code{c(-2, 2)}}
 
-\item{title}{character, default `"SCE Heatmap"`. The main title of the whole 
-plot.}
+\item{title}{The main title of the whole plot. Default \code{"SCE Heatmap"}}
 
-\item{colorScheme}{function, default NULL. A function that generates color 
-code by giving a value. Can be generated by `colorRamp2()`.}
+\item{colorScheme}{function. A function that generates color code by giving
+a value. Can be generated by \code{\link{circlize::colorRamp2}}.
+Default \code{NULL}.}
 
-\item{...}{Arguments passed to ComplexHeatmap::Heatmap()}
+\item{...}{Other arguments passed to \code{\link{ComplexHeatmap::Heatmap}}.}
 }
 \value{
-An ComplexHeatmap::Heatmap object
+An \code{\link{ComplexHeatmap::Heatmap}} object
 }
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object

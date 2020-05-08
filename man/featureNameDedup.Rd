@@ -7,7 +7,7 @@
 featureNameDedup(countmat)
 }
 \arguments{
-\item{countmat}{matrix, with row names as feature names that need to be
+\item{countmat}{matrix, with row names as feature names that need to be 
 resolved.}
 }
 \value{

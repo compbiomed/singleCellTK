@@ -8,16 +8,19 @@ identified by MAST}
 plotMASTViolin(inSCE, useResult, threshP = FALSE, nrow = 6, ncol = 6)
 }
 \arguments{
-\item{inSCE}{SCtkExperiment object. `runMAST()` has to be run in advance.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
+\code{runMAST()} has to be run in advance.}
 
-\item{useResult}{character. A string specifying the `comparisonName` used.}
+\item{useResult}{character. A string specifying the \code{comparisonName}
+used when running \code{runMAST()}.}
 
-\item{threshP}{logical, default FALSE. Whether to plot threshold values from
-adaptive thresholding, instead of using the assay used by `runMAST()`}
+\item{threshP}{logical. Whether to plot threshold values from adaptive
+thresholding, instead of using the assay used by \code{runMAST()}. Default
+\code{FALSE}.}
 
-\item{nrow}{integer, default 6. Number of rows in the plot grid.}
+\item{nrow}{Integer. Number of rows in the plot grid. Default \code{6}.}
 
-\item{ncol}{integer, default 6. Number of columns in the plot grid.}
+\item{ncol}{Integer. Number of columns in the plot grid. Default \code{6}.}
 }
 \value{
 A ggplot object of MAST violin plot

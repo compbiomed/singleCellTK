@@ -23,64 +23,77 @@ runMAST(
 )
 }
 \arguments{
-\item{inSCE}{SCtkExperiment object}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{character, default "logcounts". A string specifying which
-assay to use for the MAST calculations.}
+\item{useAssay}{character. A string specifying which assay to use for the
+MAST calculations. Default \code{"logcounts"}.}
 
-\item{index1}{character/numeric/logical, default NULL. A vector that
-specifies which cells are of interests.}
+\item{index1}{Any type of indices that can subset a
+\linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+which cells are of interests. Default \code{NULL}.}
 
-\item{index2}{character/numeric/logical, default NULL. A vector that
-specifies which cells are being compared with those specified by `index1`.
-If NULL, `index1` cells will be comapred with all other cells.}
+\item{index2}{Any type of indices that can subset a
+\linkS4class{SingleCellExperiment} inherited object by cells. specifies
+which cells are being compared with those specified by \code{index1}. If
+\code{NULL}, \code{index1} cells will be comapred with all other cells.
+Default \code{NULL}.}
 
-\item{class}{character/numeric or factor, default NULL. A vector/factor of
-`ncol(inSCE)` elements, or a single string that specifies a colname of
-`colData(inSCE)`.}
+\item{class}{A vector/factor with \code{ncol(inSCE)} elements, or a single
+string that specifies a column name of \code{colData(inSCE)}. Default
+\code{NULL}.}
 
-\item{classGroup1}{character/numeric, default NULL. Specifying which
-"levels" given in `class` are of interests.}
+\item{classGroup1}{a vector specifying which "levels" given in \code{class}
+are of interests. Default \code{NULL}.}
 
-\item{classGroup2}{character/numeric, default NULL. Specifying which
-"levels" given in `class` will be compared with those specified by
-`classGroup1`. If NULL, `classGroup1` cells will be compared with all other
-cells.}
+\item{classGroup2}{a vector specifying which "levels" given in \code{class}
+will be compared with those specified by \code{classGroup1}. If \code{NULL},
+\code{classGroup1} cells will be compared with all other cells.}
 
-\item{comparisonName}{character. A string naming the DEG experiment.}
+\item{comparisonName}{A string naming the DEG experiment. Will be required
+in downstream plotting functions.}
 
-\item{groupName1}{character. A string naming the first comparison group.}
+\item{groupName1}{A string naming the first comparison group - the condition
+you are interested in.}
 
-\item{groupName2}{character. A string naming the second comparison group.}
+\item{groupName2}{A string naming the second comparison group - the
+condition that the first group is being compared with.}
 
-\item{useThresh}{logical, default FALSE. Whether to use adaptive
-thresholding to filter genes.}
+\item{useThresh}{Whether to use adaptive thresholding to filter genes.
+Default \code{FALSE}.}
 
-\item{freqExpressed}{numeric, default 0.1. A threshold that the genes
-expressed in less than this fraction of cells will be removed.}
+\item{freqExpressed}{A numeric threshold that the genes expressed in less
+than this fraction of cells will be removed. Default \code{0.1}.}
 
-\item{onlyPos}{logical, default FALSE. Whether to only output DEG with
-positive log2_FC value.}
+\item{onlyPos}{Whether to only output DEG with positive log2_FC value.
+Default \code{FALSE}.}
 
-\item{log2fcThreshold}{numeric, default NULL. Only out put DEGs with the
-absolute values of log2FC larger than this value.}
+\item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
+larger than this value. Default \code{NULL}}
 
-\item{fdrThreshold}{numeric, default 1. Only out put DEGs with FDR value
-smaller than this value.}
+\item{fdrThreshold}{Only out put DEGs with FDR value smaller than this
+value. Default \code{1}}
 }
 \value{
-The input SCtkExperiment object with `metadata(inSCE)$MAST`` updated
-with the results: a list named by `comparisonName`, with `groupNames`
-containing the naming of the two conditions, `useAssay` storing the assay
-name that was used for calculation, `select` storing the cell selection
-indices (logical) for each condition, and `result` storing a `data.frame` of
+The input \linkS4class{SingleCellExperiment} object with
+\code{metadata(inSCE)$MAST} updated with the results: a list named by
+\code{comparisonName}, with \code{$groupNames} containing the naming of the
+two conditions, \code{$useAssay} storing the assay name that was used for
+calculation, \code{$select} storing the cell selection indices (logical) for
+each condition, and \code{$result} storing a \code{\link{data.frame}} of
 the DEGs summary.
 }
 \description{
-Run MAST for differential expression analysis on a SCtkExperiment object.
+Run MAST for differential expression analysis on a
+\linkS4class{SingleCellExperiment} inherited object.
+}
+\details{
+Condition group can be set by one and only one of the two ways: setting
+\code{index1} and \code{index2}, or setting \code{class}, \code{classGroup1}
+and \code{classGroup2}.
 }
 \examples{
 data(sceBatch)
 sce.deg <- runMAST(sceBatch, class = "cell_type", comparisonName = 'aVSb',
-                   classGroup1 = 'alpha', classGroup2 = 'beta')
+                   classGroup1 = 'alpha', classGroup2 = 'beta',
+                   groupName1 = 'a', groupName2 = 'b')
 }
