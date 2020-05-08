@@ -1,12 +1,12 @@
 #' Extract columns from row/colData and transfer to factors
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param axis Choose from \code{"col"} or \code{"row"}.
-#' @param columns character vector. The columns needed to be extracted. If 
-#' \code{NULL}, will return an empty \code{\link{data.frame}} with matched row 
+#' @param columns character vector. The columns needed to be extracted. If
+#' \code{NULL}, will return an empty \code{\link{data.frame}} with matched row
 #' names. Default \code{NULL}.
 #' @param index Valid index to subset the col/row.
 #' @return A \code{\link{data.frame}} object.
-.extractSCEAnnotation <- function(inSCE, axis = NULL, columns = NULL, 
+.extractSCEAnnotation <- function(inSCE, axis = NULL, columns = NULL,
                                   index = NULL){
     if(is.null(axis) || !axis %in% c('col', 'row')){
         stop("axis should be 'col' or 'row'.")
@@ -34,16 +34,19 @@
 }
 
 #' Generate distinct colors for all categorical col/rowData entries.
+#' Character columns will be considered as well as all-integer columns. Any
+#' column with all-distinct values will be excluded.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param axis Choose from \code{"col"} or \code{"row"}.
-#' @param colorGen A function that generates color code vector by giving an 
-#' integer for the number of colors. Alternatively, 
-#' \code{\link{celda::distinctColors}}. Default \code{\link{rainbow}}.
-#' @return A \code{\link{list}} object containing distinct colors mapped to all 
-#' possible categorical entries in \code{rowData} or \code{colData}.
+#' @param colorGen A function that generates color code vector by giving an
+#' integer for the number of colors. Alternatively,
+#' \code{\link{grDevices::rainbow}}. Default \code{\link{distinctColors}}.
+#' @return A \code{\link{list}} object containing distinct colors mapped to all
+#' possible categorical entries in \code{rowData(inSCE)} or
+#' \code{colData(inSCE)}.
 #' @author Yichen Wang
 dataAnnotationColor <- function(inSCE, axis = NULL,
-                                colorGen = grDevices::rainbow){
+                                colorGen = distinctColors){
     if(!is.null(axis) && axis == 'col'){
         data <- SummarizedExperiment::colData(inSCE)
     } else if(!is.null(axis) && axis == 'row'){
@@ -65,13 +68,16 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
         } else {
             uniqLevel <- unique(column)
         }
-        nColor <- nColor + length(uniqLevel)
+        if(!length(uniqLevel) == nrow(data)){
+            # Don't generate color for all-uniq annotation (such as IDs/symbols)
+            nColor <- nColor + length(uniqLevel)
+        }
     }
     allColors <- colorGen(nColor)
     nUsed <- 0
     allColorMap <- list()
     for(i in names(data)){
-        column <- data[[i]] # Double bracket to extract the vector
+        column <- data[[i]]
         if(is.numeric(column)){
             if(!all(as.integer(column) == column)){
                 # Temporarily the way to tell whether numeric categorical
@@ -83,10 +89,12 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
         } else {
             uniqLevel <- unique(column)
         }
-        subColors <- allColors[(nUsed+1):(nUsed+length(uniqLevel))]
-        names(subColors) <- uniqLevel
-        allColorMap[[i]] <- subColors
-        nUsed <- nUsed + length(uniqLevel)
+        if(!length(uniqLevel) == nrow(data)){
+            subColors <- allColors[(nUsed+1):(nUsed+length(uniqLevel))]
+            names(subColors) <- uniqLevel
+            allColorMap[[i]] <- subColors
+            nUsed <- nUsed + length(uniqLevel)
+        }
     }
     return(allColorMap)
 }
@@ -96,9 +104,18 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param useAssay character. A string indicating the assay name that
 #' provides the expression level to plot.
 #' @param featureIndex A vector that can subset the input SCE object by rows
-#' (features). Default \code{NULL}.
+#' (features). Alternatively, it can be a vector identifying features in
+#' another feature list indicated by \code{featureIndexBy}. Default \code{NULL}.
 #' @param cellIndex A vector that can subset the input SCE object by columns
-#' (cells). Default \code{NULL}.
+#' (cells). Alternatively, it can be a vector identifying cells in another
+#' cell list indicated by \code{featureIndexBy}. Default \code{NULL}.
+#' @param featureIndexBy A single character specifying a column name of
+#' \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
+#' where we search for the non-rowname feature indices. Default
+#' \code{"rownames"}.
+#' @param cellIndexBy A single character specifying a column name of
+#' \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
+#' where we search for the non-rowname cell indices. Default \code{"rownames"}.
 #' @param featureAnnotations \code{data.frame}, with \code{rownames} containing
 #' all the features going to be plotted. Character columns should be factors.
 #' Default \code{NULL}.
@@ -123,9 +140,14 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param colSplitBy character. Do semi-heatmap based on the grouping of
 #' this(these) annotation(s). Should exist in either \code{colDataName} or
 #' \code{names(cellAnnotations)}. Default \code{NULL}.
-#' @param rowLabel Whether to display all the feature names. Default
-#' \code{FALSE}.
-#' @param colLabel Whether to display all the cell names. Default \code{FALSE}.
+#' @param rowLabel Use a logical for whether to display all the feature names,
+#' a single character to display a column of \code{rowData(inSCE)} annotation,
+#' a vector of the same length as full/subset \code{nrow(inSCE)} to display
+#' customized info. Default \code{FALSE}.
+#' @param colLabel Use a logical for whether to display all the cell names, a
+#' single character to display a column of \code{colData(inSCE)} annotation,
+#' a vector of the same length as full/subset \code{ncol(inSCE)} to display
+#' customized info. Default \code{FALSE}.
 #' @param rowDend Whether to display row dendrogram. Default \code{TRUE}.
 #' @param colDend Whether to display column dendrogram. Default \code{TRUE}.
 #' @param scale Whether to perform z-score scaling on each row. Default
@@ -141,12 +163,14 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @export
 #' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
-    cellIndex = NULL, featureAnnotations = NULL, cellAnnotations = NULL,
+    cellIndex = NULL, featureIndexBy = 'rownames', cellIndexBy = 'rownames',
+    featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
     rowDataName = NULL, colDataName = NULL, rowSplitBy = NULL,
     colSplitBy = NULL, rowLabel = FALSE, colLabel = FALSE, rowDend = TRUE,
     colDend = TRUE, scale = TRUE, trim = c(-2, 2),
-    title = 'SCE Heatmap', colorScheme = NULL, ...){
+    title = 'SCE Heatmap', rowTitle = 'Genes', colTitle = 'Cells',
+    colorScheme = NULL, ...){
     # Check input
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('Input object is not a valid SingleCellExperiment object.')
@@ -184,15 +208,117 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     }
     if(is.null(featureIndex)){
         featureIndex <- 1:nrow(inSCE)
+    } else {
+        if(is.character(featureIndexBy) && length(featureIndexBy) == 1){
+            if(!featureIndexBy == 'rownames'){
+                # Search by a column in rowData
+                featureIndex <- celda::retrieveFeatureIndex(featureIndex,
+                                                            inSCE,
+                                                            featureIndexBy)
+            }
+        } else if(length(featureIndexBy) == nrow(inSCE)){
+            # featureIndexBy is vector or single-col/row matrix
+            featureIndex <- celda::retrieveFeatureIndex(featureIndex,
+                                                        featureIndexBy,
+                                                        '')
+        } else {
+            stop('Given "featureIndexBy" not valid. Please give a single ',
+                 'character to specify a column in rowData(inSCE) or a vector ',
+                 'as long as nrow(inSCE) where you search for "featureIndex".')
+        }
+    }
+    ### Force index as numeric
+    if(is.character(featureIndex)){
+        featureIndex <- which(featureIndex %in% rownames(inSCE))
+    } else if(is.logical(featureIndex)){
+        featureIndex <- which(featureIndex)
     }
     if(is.null(cellIndex)){
-        cellIndex <- 1:nrow(inSCE)
+        cellIndex <- 1:ncol(inSCE)
+    } else {
+        if(is.character(cellIndexBy) && length(cellIndexBy) == 1){
+            if(!cellIndexBy == 'rownames'){
+                # Search by a column in colData
+                if(!cellIndexBy %in%
+                   names(SummarizedExperiment::colData(inSCE))){
+                    stop('"cellIndexBy": ', cellIndexBy, ' is not a column of ',
+                         'colData(inSCE)')
+                }
+                searchIn <- SummarizedExperiment::colData(inSCE)[[cellIndexBy]]
+                cellIndex <- celda::retrieveFeatureIndex(cellIndex,
+                                                            searchIn,
+                                                            '')
+            }
+        } else if(length(cellIndexBy) == ncol(inSCE)){
+            # featureIndexBy is vector or single-col/row matrix
+            cellIndex <- celda::retrieveFeatureIndex(cellIndex,
+                                                        cellIndexBy,
+                                                        '')
+        } else {
+            stop('Given "cellIndexBy" not valid. Please give a single ',
+                 'character to specify a column in colData(inSCE) or a vector ',
+                 'as long as ncol(inSCE) where you search for "cellIndex".')
+        }
     }
+    ### Force index as numeric
+    if(is.character(cellIndex)){
+        cellIndex <- which(cellIndex %in% colnames(inSCE))
+    } else if (is.logical(cellIndex)){
+        cellIndex <- which(cellIndex)
+    }
+    ## Customized row text labeling
+    rowLabelText <- rownames(inSCE)[featureIndex]
+    if(!is.logical(rowLabel)){
+        if(is.character(rowLabel) && length(rowLabel) == 1){
+            if(!rowLabel %in% names(SummarizedExperiment::rowData(inSCE))){
+                stop('"rowLabel": ', rowLabel, ' is not a column of ',
+                     'rowData(inSCE).')
+            }
+            rowLabelText <- SummarizedExperiment::rowData(inSCE)[featureIndex,
+                                                                 rowLabel]
+            rowLabel <- TRUE
+        } else if(length(rowLabel) == nrow(inSCE)){
+            rowLabelText <- rowLabel[featureIndex]
+            rowLabel <- TRUE
+        } else if(length(rowLabel) == length(featureIndex)){
+            rowLabelText <- rowLabel
+            rowLabel <- TRUE
+        } else {
+            stop('Invalid "rowLabel". Use TRUE/FALSE, a column name of ',
+                 'rowData(inSCE), or a vector as the same length of ',
+                 'nrow(inSCE) or the subsetted number of features.')
+        }
+    }
+    ## Customized col text labeling
+    colLabelText <- colnames(inSCE)[cellIndex]
+    if(!is.logical(colLabel)){
+        if(is.character(colLabel) && length(colLabel) == 1){
+            if(!colLabel %in% names(SummarizedExperiment::colData(inSCE))){
+                stop('"colLabel": ', colLabel, ' is not a column of ',
+                     'colData(inSCE).')
+            }
+            colLabelText <- SummarizedExperiment::colData(inSCE)[cellIndex,
+                                                                 colLabel]
+            colLabel <- TRUE
+        } else if(length(colLabel) == ncol(inSCE)){
+            colLabelText <- colLabel[cellIndex]
+            colLabel <- TRUE
+        } else if(length(colLabel) == length(cellIndex)){
+            colLabelText <- colLabel
+            colLabel <- TRUE
+        } else {
+            stop('Invalid "colLabel". Use TRUE/FALSE, a column name of ',
+                 'colData(inSCE), or a vector as the same length of ',
+                 'ncol(inSCE) or the subsetted number of cells.')
+        }
+    }
+
+    inSCE <- inSCE[featureIndex, cellIndex]
+
     if (!is.null(trim) && length(trim) != 2) {
         stop("'trim' should be a 2 element vector specifying the lower",
              " and upper boundaries")
     }
-    inSCE <- inSCE[featureIndex, cellIndex]
     if(0 %in% dim(inSCE)){
         stop('Given indices specified 0-dim')
     }
@@ -308,12 +434,12 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     } else {
         cs <- NULL
     }
+    rownames(mat) <- rowLabelText
+    colnames(mat) <- colLabelText
     hm <- ComplexHeatmap::Heatmap(mat, name = useAssay, left_annotation = ra,
                                   top_annotation = ca, col = colorScheme,
                                   row_split = rs, column_split = cs,
-                                  row_gap = grid::unit(1, 'mm'),
-                                  column_gap = grid::unit(1, 'mm'),
-                                  row_title = 'Genes', column_title = 'Cells',
+                                  row_title = rowTitle, column_title = colTitle,
                                   show_row_names = rowLabel,
                                   show_row_dend = rowDend,
                                   show_column_names = colLabel,
