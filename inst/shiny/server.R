@@ -874,27 +874,48 @@ shinyServer(function(input, output, session) {
     observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
-        if (input$normalizeLibrarySelect == "seurat") {
-            vals$counts <- seuratNormalizeData(vals$counts, input$normalizeAssaySelect, seuratWorkflow$geneNamesSeurat, input$normalizeAssayMethodSelect, as.numeric(input$normalizationScaleFactor))
-            updateAssayInputs()
+      if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
+        stop("Selected assay does not exist!")
+      }
+      else if(input$normalizeAssayOutname == ""){
+        stop("Assay Name cannot be empty!")
+      }
+      else if(input$normalizeAssayOutname %in% names(assays(vals$counts))){
+        stop("Your selected Assay Name already exists! Try another Assay Name!")
+      }
+      else{
+        if (input$normalizeAssayMethodSelect == "LogNormalize"
+            || input$normalizeAssayMethodSelect == "CLR"
+            || input$normalizeAssayMethodSelect == "RC") {
+          vals$counts <- seuratNormalizeData(
+            inSCE = vals$counts,
+            newAssayName = input$normalizeAssayOutname,
+            useAssay = input$normalizeAssaySelect,
+            geneNamesSeurat = seuratWorkflow$geneNamesSeurat, 
+            normalizationMethod = input$normalizeAssayMethodSelect, 
+            scaleFactor = as.numeric(input$normalizationScaleFactor))
+          updateAssayInputs()
         }
-        else if (input$normalizeLibrarySelect == "cpm") {
-        if (!(input$normalizeAssaySelect %in% names(assays(vals$counts)))) {
-        shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$normalizeAssayOutname == "") {
-        shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$normalizeAssayOutname %in% names(assays(vals$counts))) {
-        shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-        assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(assay(vals$counts, input$normalizeAssaySelect))
-        updateAssayInputs()
+        else if (input$normalizeAssayMethodSelect == "cpm") {
+          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+            x = assay(vals$counts, input$normalizeAssaySelect))
+          updateAssayInputs()
         }
-        }
+      }
     })
 })
+    
+    observeEvent(input$normalizeAssayMethodSelect, {
+      if(input$normalizeAssayMethodSelect == "LogNormalize") {
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratLogNormalize")
+      } else if(input$normalizeAssayMethodSelect == "CLR"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratCLR")
+      } else if(input$normalizeAssayMethodSelect == "RC"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
+      } else if(input$normalizeAssayMethodSelect == "cpm"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "CPMCounts")
+      }
+    })
 
 
   output$colDataDataFrame <- DT::renderDataTable({
@@ -4002,7 +4023,7 @@ shinyServer(function(input, output, session) {
         if (!is.null(vals$counts)) {
             withProgress(message = "Normalizing", max = 1, value = 1, {
                 vals$counts@metadata$seuratSelectedAssay <- input$seuratSelectNormalizationAssay
-                vals$counts <- seuratNormalizeData(inSCE = vals$counts, useAssay = input$seuratSelectNormalizationAssay, geneNames = seuratWorkflow$geneNamesSeurat, input$normalization_method, as.numeric(input$scale_factor))
+                vals$counts <- seuratNormalizeData(inSCE = vals$counts, useAssay = input$seuratSelectNormalizationAssay, geneNames = seuratWorkflow$geneNamesSeurat, normalizationMethod = input$normalization_method, scaleFactor = as.numeric(input$scale_factor))
                 updateAssayInputs()
            })
             updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))

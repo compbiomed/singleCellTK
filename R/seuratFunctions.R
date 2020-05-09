@@ -88,9 +88,9 @@
 #' @param scaleFactor numeric value that represents the scaling factor (default is 10000)
 #' @return sceObject normalized sce object
 #' @export
-seuratNormalizeData <- function(inSCE, useAssay, geneNamesSeurat, normalizationMethod = "LogNormalize", scaleFactor = 10000) {
+seuratNormalizeData <- function(inSCE, newAssayName = "seuratNormalizedData", useAssay, geneNamesSeurat, normalizationMethod = "LogNormalize", scaleFactor = 10000) {
     seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat), normalization.method = normalizationMethod, scale.factor = scaleFactor)
-    inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, "seuratNormalizedData", "data")
+    inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, newAssayName, "data")
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
     inSCE@metadata$selected_assay <- useAssay
     return(inSCE)
