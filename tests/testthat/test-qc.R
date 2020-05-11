@@ -44,6 +44,6 @@ test_that("Testing scrublet",{
   sce <- runScrublet(sce_chcl)
   expect_equal(class(colData(sce)$scrublet_score), 'numeric')
   expect_equal(class(colData(sce)$scrublet_call), 'logical')
-  expect_equal(dim(reducedDim(sce,'TSNE')), c(dim(sce)[1],2))
-  expect_equal(dim(reducedDim(sce,'UMAP')), c(dim(sce)[1],2))
+  expect_equal(dim(reducedDim(sce,'scrublet_TSNE')), c(dim(sce)[1],2))
+  expect_equal(dim(reducedDim(sce,'scrublet_UMAP')), c(dim(sce)[1],2))
 })
