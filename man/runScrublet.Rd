@@ -10,6 +10,7 @@ runScrublet(
   useAssay = "counts",
   simDoubletRatio = 2,
   nNeighbors = NULL,
+  minDist = NULL,
   expectedDoubletRate = 0.1,
   stdevDoubletRate = 0.02,
   syntheticDoubletUmiSubsampling = 1,
@@ -23,6 +24,8 @@ runScrublet(
   meanCenter = TRUE,
   normalizeVariance = TRUE,
   nPrinComps = 30L,
+  tsneAngle = NULL,
+  tsnePerplexity = NULL,
   verbose = TRUE,
   seed = 12345
 )
@@ -44,6 +47,9 @@ the number of observed transcriptomes. Default 2.0.}
 \item{nNeighbors}{Integer. Number of neighbors used to construct the KNN
 graph of observed transcriptomes and simulated doublets. If \code{NULL},
 this is set to \code{round(0.5 * sqrt(n_cells))}. Default \code{NULL}.}
+
+\item{minDist}{Float Determines how tightly UMAP packs points together. If \code{NULL},
+this is set to 0.1. Default \code{NULL}.}
 
 \item{expectedDoubletRate}{The estimated doublet rate for the experiment.
 Default 0.1.}
@@ -103,6 +109,13 @@ reduction, unless \code{meanCenter} is \code{TRUE}. Default \code{TRUE}.}
 the transcriptomes prior to k-nearest-neighbor graph construction.
 Default 30.}
 
+\item{tsneAngle}{Float. Determines angular size of a distant node as measured 
+from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}.}
+
+\item{tsnePerplexity}{Integer. The number of nearest neighbors that
+is used in other manifold learning algorithms.
+If default, it is set to 30. Default \code{NULL}.}
+
 \item{verbose}{Boolean. If \code{TRUE}, print progress updates. Default
 \code{TRUE}.}
 
@@ -125,7 +138,8 @@ A wrapper function that calls \code{scrub_doublets} from python
 }
 \examples{
 \dontrun{
-data(sce_chcl, package = "scds")
-sce <- runScrublet(sce_chcl)
+data(subDroplet, package = "singleCellTK")
+sce <- subDroplet[, colData(subDroplet)$type != 'EmptyDroplet']
+sce <- runScrublet(sce)
 }
 }

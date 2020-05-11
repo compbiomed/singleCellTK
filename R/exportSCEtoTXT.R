@@ -9,11 +9,13 @@
 #'  \code{TRUE}.
 #' @param gzipped Boolean. \code{TRUE} if the output files are to be
 #'  gzip compressed. \code{FALSE} otherwise. Default
-#'  \code{TRUE} to save disk space.
+#'  \code{TRUE}.
 #' @examples
+#' \dontrun{
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-#'
+#' }
+#' 
 #' @export
 exportSCEtoFlatFile <- function(sce,
                      outputDir = "./",
@@ -67,7 +69,7 @@ exportSCEtoFlatFile <- function(sce,
     }
     for (i in seq_along(SummarizedExperiment::assays(sce))) {
       message(date(), " .. Writing assay '", assayNames[i], "'")
-      assaypath <- file.path(path, paste0(assayNames[i], ".mtx"))
+      assaypath <- file.path(assaysFolder, paste0(assayNames[i], ".mtx"))
       
       .checkOverwrite(assaypath, overwrite)
       mat <- .convertToMatrix(SummarizedExperiment::assays(sce)[[i]])
@@ -137,7 +139,7 @@ exportSCEtoFlatFile <- function(sce,
       for (i in reducedDimNames) {
         message(date(), " .. Writing reducedDim '", i, "'")
         data <- SingleCellExperiment::reducedDim(sce, i, withDimnames = TRUE)
-        reducedDimNamePath <- file.path(path, i)
+        reducedDimNamePath <- file.path(reducedDimsFolder, i)
         .writeSCEFile(data, reducedDimNamePath, overwrite, gzipped)
       }
     }

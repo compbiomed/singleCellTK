@@ -4,7 +4,9 @@
 \name{emptyDropsSceExample}
 \alias{emptyDropsSceExample}
 \title{Example PBMC_1k_v3_33538x20 SingleCellExperiment Object}
-\format{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
+\format{
+A \link[SingleCellExperiment]{SingleCellExperiment} object.
+}
 \usage{
 emptyDropsSceExample
 }

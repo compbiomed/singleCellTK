@@ -5,14 +5,16 @@
 \title{seuratPCA
 Computes PCA on the input sce object and stores the calculated principal components within the sce object}
 \usage{
-seuratPCA(sceObject, geneNamesSeurat, npcs)
+seuratPCA(inSCE, useAssay, geneNamesSeurat, nPCs)
 }
 \arguments{
-\item{sceObject}{sce object on which to compute PCA}
+\item{inSCE}{(sce) object on which to compute PCA}
+
+\item{useAssay}{which assay to use from sce object}
 
 \item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 
-\item{npcs}{numeric value of how many components to compute (default is 20)}
+\item{nPCs}{numeric value of how many components to compute (default is 20)}
 }
 \value{
 sceObject updated sce object which now contains the computed principal components

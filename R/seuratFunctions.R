@@ -55,7 +55,7 @@
 
 #' .rowNamesSCE
 #' Retrieves a list of genenames/rownames/featurenames from sce object
-#' @param sce sce object from which the genenames/rownames/featurenames should be extracted
+#' @param inSCE sce object from which the genenames/rownames/featurenames should be extracted
 #' @return list() of genenames/rownames/featurenames
 .rowNamesSCE <- function(inSCE) {
     return(rownames(inSCE))
@@ -88,10 +88,11 @@
 #' @param scaleFactor numeric value that represents the scaling factor (default is 10000)
 #' @return sceObject normalized sce object
 #' @export
-seuratNormalizeData <- function(inSCE, useAssay, geneNamesSeurat, normalizationMethod, scaleFactor) {
+seuratNormalizeData <- function(inSCE, useAssay, geneNamesSeurat, normalizationMethod = "LogNormalize", scaleFactor = 10000) {
     seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat), normalization.method = normalizationMethod, scale.factor = scaleFactor)
     inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, "seuratNormalizedData", "data")
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+    inSCE@metadata$selected_assay <- useAssay
     return(inSCE)
 }
 
@@ -106,7 +107,7 @@ seuratNormalizeData <- function(inSCE, useAssay, geneNamesSeurat, normalizationM
 #' @param scale.max maximum numeric value to return for scaled data (default is 10)
 #' @return sceObject scaled sce object
 #' @export
-seuratScaleData <- function(inSCE, useAssay, geneNamesSeurat, model.use, do.scale, do.center, scale.max) {
+seuratScaleData <- function(inSCE, useAssay, geneNamesSeurat, model.use = "linear", do.scale = TRUE, do.center = TRUE, scale.max = 10) {
     seuratObject <- Seurat::ScaleData(convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat), model.use = model.use, do.scale = do.scale, do.center = do.center, scale.max = as.double(scale.max))
     inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, "seuratScaledData", "scale.data")
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -170,6 +171,19 @@ seuratFindHVG <- function(inSCE, useAssay, geneNamesSeurat, hvgMethod, hvgNumber
     seuratObject <- convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat)
     seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+    if (hvgMethod == "vst") {
+        rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.variance.standardized
+        rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$vst.mean
+    } else if (hvgMethod == "dispersion") {
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+    }
+    else if (hvgMethod == "mean.var.plot") {
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion
+        rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
+        rowData(inSCE)$seurat_variableFeatures_mvp_mean <- methods::slot(inSCE@metadata[["seurat"]], "assays")[["RNA"]]@meta.features$mvp.mean
+    }
     return(inSCE)
 }
 
@@ -209,7 +223,6 @@ seuratReductionPlot <- function(inSCE, useAssay, geneNamesSeurat, reduction) {
 #' @param seuratObject from which we have to copy the assay (copy from)
 #' @param assaySlotSCE the assay slot in sce object
 #' @param assaySlotSeurat the assay slot in seurat object
-#' @return
 .updateAssaySCE <- function(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat) {
     assay(inSCE, assaySlotSCE) <- NULL
     assay(inSCE, assaySlotSCE) <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
@@ -223,9 +236,9 @@ seuratReductionPlot <- function(inSCE, useAssay, geneNamesSeurat, reduction) {
 #' @return inSCE output object
 #' @export
 convertSeuratToSCE <- function(seuratObject) {
-    inSCE <- as.SingleCellExperiment(seuratObject)
+    inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
     assay(inSCE, "seuratNormalizedData") <- methods::slot(seuratObject@assays$RNA, "data")
-    if (length(slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
+    if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
         assay(inSCE, "seuratScaledData") <- methods::slot(seuratObject@assays$RNA, "scale.data")
     }
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -246,7 +259,12 @@ convertSCEToSeurat <- function(inSCE, useAssay, geneNames) {
         rownames(seuratObject@assays$RNA@data) <- geneNames
     }
     if ("seuratScaledData" %in% names(assays(inSCE))) {
-        seuratObject@assays$RNA@scale.data <- assay(inSCE, "seuratScaledData")
+        if (!inherits(assay(inSCE, "seuratScaledData"), "matrix")) {
+            seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, "seuratScaledData"))
+        }
+        else {
+            seuratObject@assays$RNA@scale.data <- assay(inSCE, "seuratScaledData")
+        }
         rownames(seuratObject@assays$RNA@data) <- geneNames
     }
     if (!is.null(inSCE@metadata[["seurat"]]) && length(inSCE@metadata[["seurat"]]@assays$RNA@var.features) > 0) {
@@ -345,7 +363,7 @@ seuratRunUMAP <- function(inSCE, useAssay, geneNamesSeurat, reduction, dims) {
 .seuratGetVariableFeatures <- function(inSCE, useAssay, geneNamesSeurat, numberOfFeatures) {
     seuratObject <- convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat)
     if (length(seuratObject@assays$RNA@var.features) > 0) {
-        return(print(seuratObject@assays$RNA@var.features[1:numberOfFeatures]))
+        return(seuratObject@assays$RNA@var.features[1:numberOfFeatures])
     }
 }
 

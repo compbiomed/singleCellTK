@@ -18,6 +18,8 @@
 #' @param nNeighbors Integer. Number of neighbors used to construct the KNN
 #'  graph of observed transcriptomes and simulated doublets. If \code{NULL},
 #'  this is set to \code{round(0.5 * sqrt(n_cells))}. Default \code{NULL}.
+#' @param minDist Float Determines how tightly UMAP packs points together. If \code{NULL},
+#'  this is set to 0.1. Default \code{NULL}.
 #' @param expectedDoubletRate The estimated doublet rate for the experiment.
 #'  Default 0.1.
 #' @param stdevDoubletRate Uncertainty in the expected doublet rate.
@@ -63,6 +65,11 @@
 #' @param nPrinComps Integer. Number of principal components used to embed
 #'  the transcriptomes prior to k-nearest-neighbor graph construction.
 #'  Default 30.
+#' @param tsneAngle Float. Determines angular size of a distant node as measured 
+#'  from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}. 
+#' @param tsnePerplexity Integer. The number of nearest neighbors that
+#'  is used in other manifold learning algorithms.
+#'  If default, it is set to 30. Default \code{NULL}.
 #' @param verbose Boolean. If \code{TRUE}, print progress updates. Default
 #'  \code{TRUE}.
 #' @param seed Seed for the random number generator. Default 12345.
@@ -72,8 +79,9 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' \dontrun{
-#' data(sce_chcl, package = "scds")
-#' sce <- runScrublet(sce_chcl)
+#' data(subDroplet, package = "singleCellTK")
+#' sce <- subDroplet[, colData(subDroplet)$type != 'EmptyDroplet']
+#' sce <- runScrublet(sce)
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
@@ -82,6 +90,7 @@ runScrublet <- function(inSCE,
   useAssay = "counts",
   simDoubletRatio = 2.0,
   nNeighbors = NULL,
+  minDist = NULL,
   expectedDoubletRate = 0.1,
   stdevDoubletRate = 0.02,
   syntheticDoubletUmiSubsampling = 1.0,
@@ -95,6 +104,8 @@ runScrublet <- function(inSCE,
   meanCenter = TRUE,
   normalizeVariance = TRUE,
   nPrinComps = 30L,
+  tsneAngle = NULL,
+  tsnePerplexity = NULL,
   verbose = TRUE,
   seed = 12345) {
 
@@ -143,7 +154,7 @@ runScrublet <- function(inSCE,
 
       mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
       mat <- .convertToMatrix(mat)
-
+      
       scr <- scrublet$Scrublet(counts_matrix = t(mat),
         sim_doublet_ratio = simDoubletRatio,
         n_neighbors = nNeighbors,
@@ -166,8 +177,27 @@ runScrublet <- function(inSCE,
 
       output[sceSampleInd, "scrublet_score"] <- result[[1]]
       output[sceSampleInd, "scrublet_call"] <- result[[2]]
+      
+      ## Extract UMAP and TSNE coordinates 
+      if (is.null(nNeighbors) && is.null(minDist)){
+        umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
+      }else {
+        umap_coordinates <- scrublet$get_umap(scr$manifold_obs_,
+                                              n_neighbors=as.integer(nNeighbors), 
+                                              min_dist=minDist)
+      }
+      reducedDim(inSCE,'scrublet_UMAP') <- umap_coordinates
+    
+    if (is.null(tsneAngle) && is.null(tsnePerplexity)){
+      tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
+    }else {
+      tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_,
+                                            angle=tsneAngle, 
+                                            perplexity=as.integer(tsnePerplexity))
     }
-
+    reducedDim(inSCE,'scrublet_TSNE') <- tsne_coordinates
+  }
+    
     colData(inSCE) = cbind(colData(inSCE), output)
   }, silent = TRUE)
 
@@ -177,8 +207,10 @@ runScrublet <- function(inSCE,
   }
   
   inSCE@metadata$runScrublet <- argsList[-1]
-  ## Add scrublet version
-  ##inSCE@metadata$runScrublet$packageVersion <- packageDescription("scrublet")$Version
+  
+  ## add scrublet version to metadata
+  version <- pkg_resources$require("scrublet")[[1]]
+  inSCE@metadata$scrublet$packageVersion <- version
   
   return(inSCE)
 }

@@ -39,6 +39,7 @@ Imports:
     cluster,
     ComplexHeatmap,
     data.table,
+    DelayedMatrixStats,
     DESeq2,
     DT,
     ggplot2,
@@ -63,6 +64,7 @@ Imports:
     scran,
     Seurat,
     shiny,
+    shinyDirectoryInput,
     shinyFiles,
     shinyjs,
     shinyBS,
@@ -88,7 +90,7 @@ Imports:
     zinbwave,
     harmony,
     V8
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests:
     testthat,
     Rsubread,
@@ -104,7 +106,8 @@ Suggests:
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
-    joshua-d-campbell/liger
+    joshua-d-campbell/liger,
+    joshua-d-campbell/shiny-directory-input
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

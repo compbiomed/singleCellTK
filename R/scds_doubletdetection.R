@@ -10,7 +10,11 @@
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param ... Additional arguments passed to \link[scds]{cxds}.
+#' @param ntop See \link[scds]{cxds} for more information. Default \code{500}.
+#' @param binThresh See \link[scds]{cxds} for more information. Default \code{0}.
+#' @param verb See \link[scds]{cxds} for more information. Default \code{FALSE}.
+#' @param retRes See \link[scds]{cxds} for more information. Default \code{FALSE}.
+#' @param estNdbl See \link[scds]{cxds} for more information. Default \code{FALSE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -20,7 +24,6 @@
 #' data(sce_chcl, package = "scds")
 #' sce <- runCxds(sce_chcl)
 #' @export
-#' @import scds
 runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -67,10 +70,10 @@ runCxds <- function(inSCE,
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample,
                                                            ntop = nGene, 
-                                                           binThresh = 0, 
-                                                           verb = FALSE, 
-                                                           retRes = FALSE,
-                                                           estNdbl = FALSE))}, silent = TRUE)
+                                                           binThresh = binThresh, 
+                                                           verb = verb, 
+                                                           retRes = retRes,
+                                                           estNdbl = estNdbl))}, silent = TRUE)
           nGene <- nGene - 100
         }  
         
@@ -92,7 +95,7 @@ runCxds <- function(inSCE,
     colData(inSCE) = cbind(colData(inSCE), output)
     
     inSCE@metadata$runCxds <- argsList[-1]
-    inSCE@metadata$runCxds$packageVersion <- packageDescription("scds")$Version
+    inSCE@metadata$runCxds$packageVersion <- utils::packageDescription("scds")$Version
 
     return(inSCE)
 }
@@ -110,7 +113,13 @@ runCxds <- function(inSCE,
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param ... Additional arguments passed to \link[scds]{bcds}.
+#' @param ntop See \link[scds]{bcds} for more information. Default \code{500}. 
+#' @param srat See \link[scds]{bcds} for more information. Default \code{1}.
+#' @param verb See \link[scds]{bcds} for more information. Default \code{FALSE}.
+#' @param retRes See \link[scds]{bcds} for more information. Default \code{FALSE}.
+#' @param nmax See \link[scds]{bcds} for more information. Default \code{"tune"}.
+#' @param varImp See \link[scds]{bcds} for more information. Default \code{FALSE}.
+#' @param estNdbl See \link[scds]{bcds} for more information. Default \code{FALSE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{bcds} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -120,7 +129,6 @@ runCxds <- function(inSCE,
 #' data(sce_chcl, package = "scds")
 #' sce <- runBcds(sce_chcl)
 #' @export
-#' @import scds
 runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -146,7 +154,6 @@ runBcds <- function(inSCE,
     
     ## Getting current arguments
     argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-    
 
     ## Define result matrix for all samples
     if (estNdbl) {
@@ -169,7 +176,16 @@ runBcds <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::bcds(sce = sceSample, ntop = nGene, ...))}, silent = TRUE)
+          try({result <- withr::with_seed(seed,
+            scds::bcds(sce = sceSample,
+                       ntop = nGene,
+                       srat = srat, 
+                       verb = verb,
+                       retRes = retRes,
+                       nmax = nmax, 
+                       varImp = varImp,
+                       estNdbl = estNdbl
+            ))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
@@ -192,7 +208,7 @@ runBcds <- function(inSCE,
     colData(inSCE) = cbind(colData(inSCE), output)
     
     inSCE@metadata$runBcds <- argsList[-1]
-    inSCE@metadata$runBcds$packageVersion <- packageDescription("scds")$Version
+    inSCE@metadata$runBcds$packageVersion <- utils::packageDescription("scds")$Version
 
     return(inSCE)
 }
@@ -210,7 +226,13 @@ runBcds <- function(inSCE,
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param ... Additional arguments passed to \link[scds]{cxds_bcds_hybrid}.
+#' @param nTop The number of top varialbe genes to consider. Used in both \code{csds}
+#' and \code{bcds}. Default \code{500}. 
+#' @param cxdsArgs See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.
+#' @param bcdsArgs See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.
+#' @param verb See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
+#' @param estNdbl See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
+#' @param force See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -221,12 +243,12 @@ runBcds <- function(inSCE,
 #' data(sce_chcl, package = "scds")
 #' sce <- runCxdsBcdsHybrid(sce_chcl)
 #' @export
-#' @import scds
 runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    cxdsArgs = NULL,
-    bcdsArgs = NULL, 
+    nTop = 500,
+    cxdsArgs = list(),
+    bcdsArgs = list(), 
     verb = FALSE,
     estNdbl = FALSE,
     force = FALSE) {
@@ -267,11 +289,11 @@ runCxdsBcdsHybrid <- function(inSCE,
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, 
-                                                                       cxdsArgs=list(ntop = nGene), 
-                                                                       bcdsArgs=list(ntop = nGene), 
-                                                                       verb = FALSE,
-                                                                       estNdbl = FALSE,
-                                                                       force = FALSE))}, silent = TRUE)
+                                                                       cxdsArgs=c(list(ntop = nGene), cxdsArgs), 
+                                                                       bcdsArgs=c(list(ntop = nGene), bcdsArgs), 
+                                                                       verb = verb,
+                                                                       estNdbl = estNdbl,
+                                                                       force = force))}, silent = TRUE)
           nGene <- nGene - 100
         }  
 
@@ -293,7 +315,7 @@ runCxdsBcdsHybrid <- function(inSCE,
     colData(inSCE) = cbind(colData(inSCE), output)
     
     inSCE@metadata$runCxdsBcdsHybrid <- argsList[-1]
-    inSCE@metadata$runCxdsBcdsHybrid$packageVersion <- packageDescription("scds")$Version
+    inSCE@metadata$runCxdsBcdsHybrid$packageVersion <- utils::packageDescription("scds")$Version
 
     return(inSCE)
 }

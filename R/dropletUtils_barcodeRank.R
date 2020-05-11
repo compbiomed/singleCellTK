@@ -28,11 +28,13 @@
 #'  droplet-based single-cell RNA sequencing experiment.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #'  Must contain a raw counts matrix before empty droplets have been removed.
+#' @param useAssay  A string specifying which assay in the SCE to use.
 #' @param sample Character vector. Indicates which sample each cell belongs to
 #'  \link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
-#'  If NULL, then all cells will be processed together. Default NULL.
-#' @param ... Additional arguments to pass to \link[DropletUtils]{barcodeRanks}.
-#' @param useAssay  A string specifying which assay in the SCE to use.
+#'  If NULL, then all cells will be processed together. Default \code{NULL}.
+#' @param lower See \link[DropletUtils]{emptyDrops} for more information. Default \code{100}.
+#' @param fitBounds See \link[DropletUtils]{emptyDrops} for more information. Default \code{NULL}. 
+#' @param df See \link[DropletUtils]{emptyDrops} for more information. Default \code{20}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  \link[DropletUtils]{barcodeRanks} output table appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -54,9 +56,9 @@
 runBarcodeRankDrops <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts", 
-                                lower=100, 
-                                fit.bounds=NULL, 
-                                df=20
+                                lower = 100, 
+                                fitBounds = NULL, 
+                                df = 20
 ) {
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
@@ -83,9 +85,9 @@ runBarcodeRankDrops <- function(inSCE,
     sceSample <- inSCE[, sceSampleInd]
     
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-    result <- .runBarcodeRankDrops(barcode.matrix = mat, lower=100,
-                                   fit.bounds=NULL, 
-                                   df=20)
+    result <- .runBarcodeRankDrops(barcode.matrix = mat, lower=lower,
+                                   fit.bounds=fitBounds, 
+                                   df=df)
     
     output[sceSampleInd, ] <- result
   }
@@ -93,7 +95,7 @@ runBarcodeRankDrops <- function(inSCE,
   colData(inSCE) = cbind(colData(inSCE), output)
   
   inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
-  inSCE@metadata$runBarcodeRankDrops$packageVersion <- packageDescription("DropletUtils")$Version
+  inSCE@metadata$runBarcodeRankDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version
   
   return(inSCE)
 }
