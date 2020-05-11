@@ -5,7 +5,7 @@ if ("scRNAseq" %in% rownames(installed.packages())){
 }
 
 
-shinyPanelUpload <- fluidPage(
+shinyPanelImport <- fluidPage(
   useShinyjs(),
   tags$style(appCSS),
   tags$div(
@@ -26,7 +26,7 @@ shinyPanelUpload <- fluidPage(
     class = "container",
     h1("Upload"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
-      "(help)", target = "_blank")),
+              "(help)", target = "_blank")),
     tags$hr(),
     tags$div(id = "uploadAlert", alertText),
     hidden(wellPanel(id = "annotationData",
@@ -59,20 +59,20 @@ shinyPanelUpload <- fluidPage(
     #   )
     # )),
     h3("Choose data source:"),
-    radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
+    radioButtons("uploadChoice", label = NULL, c("Import from a preprocessing tool" = 'directory',
+                                                 "Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",
-												 "Upload Seurat RDS File" = "rds_seurat",
-                                                 "Use example data" = "example",
-                                                 "Import from a preprocessing tool" = 'directory')
+                                                 "Upload Seurat RDS File" = "rds_seurat",
+                                                 "Use example data" = "example")
     ),
     tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
-      h3("Upload data in tab separated text format:"),
-      fluidRow(
-        column(width = 4,
-          wellPanel(
-            h4("Example count file:"),
-            HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
+                     h3("Upload data in tab separated text format:"),
+                     fluidRow(
+                       column(width = 4,
+                              wellPanel(
+                                h4("Example count file:"),
+                                HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
                  <th>Cell1</th><th>Cell2</th><th>&#x2026;</th><th>CellN</th>
                  </tr></thead><tbody><tr class="odd"><td>Gene1</td><td>0</td>
                  <td>0</td><td>&#x2026;</td><td>0</td></tr><tr class="even">
@@ -83,77 +83,77 @@ shinyPanelUpload <- fluidPage(
                  <td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd">
                  <td>GeneM</td><td>10</td><td>10</td><td>&#x2026;</td><td>10</td>
                  </tr></tbody></table>'),
-            tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
-                   "Download an example count file here.", target = "_blank"),
-            tags$br(),
-            tags$br(),
-            fileInput(
-              "countsfile",
-              HTML(
-                paste("Input assay (eg. counts, required):",
-                tags$span(style = "color:red", "*", sep = ""))
-              ),
-              accept = c(
-                "text/csv", "text/comma-separated-values",
-                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
-              )
-            )
-          ),
-          h4("Input Assay Type:"),
-          selectInput("inputAssayType", label = NULL,
-                      c("counts", "normcounts", "logcounts", "cpm",
-                        "logcpm", "tpm", "logtpm")
-          ),
-          checkboxInput("createLogcounts",
-                        "Also create log2 input assay on upload", value = TRUE)
-        ),
-        column(width = 4,
-          wellPanel(
-            h4("Example sample annotation file:"),
-            HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
+                                tags$a(href = "https://drive.google.com/open?id=1n0CtM6phfkWX0O6xRtgPPg6QuPFP6pY8",
+                                       "Download an example count file here.", target = "_blank"),
+                                tags$br(),
+                                tags$br(),
+                                fileInput(
+                                  "countsfile",
+                                  HTML(
+                                    paste("Input assay (eg. counts, required):",
+                                          tags$span(style = "color:red", "*", sep = ""))
+                                  ),
+                                  accept = c(
+                                    "text/csv", "text/comma-separated-values",
+                                    "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+                                  )
+                                )
+                              ),
+                              h4("Input Assay Type:"),
+                              selectInput("inputAssayType", label = NULL,
+                                          c("counts", "normcounts", "logcounts", "cpm",
+                                            "logcpm", "tpm", "logtpm")
+                              ),
+                              checkboxInput("createLogcounts",
+                                            "Also create log2 input assay on upload", value = TRUE)
+                       ),
+                       column(width = 4,
+                              wellPanel(
+                                h4("Example sample annotation file:"),
+                                HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
                  <th>Annot1</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
                  <td>Cell1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
                  <td>Cell2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
                  <td>Cell3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
                  <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>CellN</td>
                  <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
-            tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
-                   "Download an example annotation file here.", target = "_blank"),
-            tags$br(),
-            tags$br(),
-            fileInput(
-              "annotFile", "Sample annotations (optional):",
-              accept = c(
-                "text/csv", "text/comma-separated-values",
-                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
-              )
-            )
-          )
-        ),
-        column(width = 4,
-          wellPanel(
-            h4("Example feature file:"),
-            HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
+                                tags$a(href = "https://drive.google.com/open?id=10IDmZQUiASN4wnzO4-WRJQopKvxCNu6J",
+                                       "Download an example annotation file here.", target = "_blank"),
+                                tags$br(),
+                                tags$br(),
+                                fileInput(
+                                  "annotFile", "Sample annotations (optional):",
+                                  accept = c(
+                                    "text/csv", "text/comma-separated-values",
+                                    "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+                                  )
+                                )
+                              )
+                       ),
+                       column(width = 4,
+                              wellPanel(
+                                h4("Example feature file:"),
+                                HTML('<table class="table"><thead><tr class="header"><th>Gene</th>
                <th>Annot2</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
                  <td>Gene1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
                  <td>Gene2</td><td>a</td><td>&#x2026;</td></tr><tr class="odd">
                  <td>Gene3</td><td>b</td><td>&#x2026;</td></tr><tr class="even">
                  <td>&#x2026;</td><td>&#x2026;</td><td>&#x2026;</td></tr><tr class="odd"><td>GeneM</td>
                  <td>b</td><td>&#x2026;</td></tr></tbody></table>'),
-            tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
-                  "Download an example feature file here.", target = "_blank"),
-            tags$br(),
-            tags$br(),
-            fileInput(
-              "featureFile", "Feature annotations (optional):",
-              accept = c(
-                "text/csv", "text/comma-separated-values",
-                "text/tab-separated-values", "text/plain", ".csv", ".tsv"
-              )
-            )
-          )
-        )
-      )
+                                tags$a(href = "https://drive.google.com/open?id=1gxXaZPq5Wrn2lNHacEVaCN2a_FHNvs4O",
+                                       "Download an example feature file here.", target = "_blank"),
+                                tags$br(),
+                                tags$br(),
+                                fileInput(
+                                  "featureFile", "Feature annotations (optional):",
+                                  accept = c(
+                                    "text/csv", "text/comma-separated-values",
+                                    "text/tab-separated-values", "text/plain", ".csv", ".tsv"
+                                  )
+                                )
+                              )
+                       )
+                     )
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
@@ -216,7 +216,7 @@ shinyPanelUpload <- fluidPage(
         word-wrap: break-word;
       }
       ")),
-      h3("Choose an Algorithm"),
+      h3("Choose a Preprocessing Tool:"),
       radioButtons("algoChoice", label = NULL, c("Cell Ranger v2" = "cellRanger2",
                                                  "Cell Ranger v3" = "cellRanger3",
                                                  "STARsolo" = "starSolo",
@@ -267,34 +267,36 @@ shinyPanelUpload <- fluidPage(
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Sample Directory")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample ID")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove"))
           ),
           tags$div(id = "newSampleSS"),
           tags$br(),
           tags$br(),
           actionButton("addSSSample", "Add a Sample"),
-          actionButton("removeSSSample", "Remove Last Sample")
+          actionButton("clearAllSS", "Clear Samples")
         ),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "algoChoice"),
         wellPanel(
-          h5("Please select the directory that contains your /bus_ouput/genecount directory as your base directory.")
+          h5("Please select your /genecount directory as your base directory.")
         ),
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Sample Directory")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample ID")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove"))
           ),
           tags$div(id = "newSampleBUS"),
           tags$br(),
           tags$br(),
           actionButton("addBUSSample", "Add a Sample"),
-          actionButton("removeBUSSample", "Remove Last Sample")
+          actionButton("clearAllBUS", "Clear Samples")
         ),
       ),
       conditionalPanel(
@@ -305,15 +307,16 @@ shinyPanelUpload <- fluidPage(
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Sample Directory")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample ID")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove"))
           ),
           tags$div(id = "newSampleSEQ"),
           tags$br(),
           tags$br(),
           actionButton("addSEQSample", "Add a Sample"),
-          actionButton("removeSEQSample", "Remove Last Sample")
+          actionButton("clearAllSEQ", "Clear Samples")
         ),
       ),
       conditionalPanel(
@@ -324,21 +327,21 @@ shinyPanelUpload <- fluidPage(
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Sample Directory")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample ID")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove"))
           ),
           tags$div(id = "newSampleOpt"),
           tags$br(),
           tags$br(),
           actionButton("addOptSample", "Add a Sample"),
-          actionButton("removeOptSample", "Remove Last Sample")
+          actionButton("clearAllOpt", "Clear Samples")
         ),
       ),
       
       tags$br(),
       tags$br(),
-      # actionButton("clearSamples", "Clear All Samples")
     ),
     
     withBusyIndicatorUI(
