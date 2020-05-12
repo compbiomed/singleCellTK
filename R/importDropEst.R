@@ -73,7 +73,7 @@
   
   ## Add SCE metadata
   sce_metadata <- .extractMetadata(dropEst_rds)
-  metadata(sce) <- sce_metadata
+  sce@metadata$dropEst <- sce_metadata
   
   return(sce)
 }
@@ -103,6 +103,12 @@
 #' found in the DropEst rds, they will be added to the SCE metadata field
 #' @return A \code{SingleCellExperiment} object containing the count matrix,
 #'  the feature annotations from DropEst as ColData, and any metadata from DropEst
+#' @examples
+#' # Example results were generated as per instructions from the developers of dropEst described in
+#' # https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
+#' sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
+#'                      sampleNames = 'scg71')
+
 #' @export
 importDropEst <- function(sampleDirs = NULL, 
                           dataType = c('filtered','raw'),
