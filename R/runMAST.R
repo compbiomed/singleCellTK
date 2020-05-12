@@ -51,8 +51,8 @@
 #' the DEGs summary.
 #' @export
 #' @examples
-#' data(sceBatch)
-#' sce.deg <- runMAST(sceBatch, class = "cell_type", comparisonName = 'aVSb',
+#' data('sceBatches', package = 'singleCellTK')
+#' sce.deg <- runMAST(sceBatches, class = "cell_type", comparisonName = 'aVSb',
 #'                    classGroup1 = 'alpha', classGroup2 = 'beta',
 #'                    groupName1 = 'a', groupName2 = 'b')
 runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
