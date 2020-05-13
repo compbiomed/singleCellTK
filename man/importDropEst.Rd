@@ -45,3 +45,9 @@ subset to contain features from the filtered counts matrix alone.
 If any annotations of ("saturation_info","merge_targets","reads_per_umi_per_cell") are
 found in the DropEst rds, they will be added to the SCE metadata field
 }
+\examples{
+# Example results were generated as per instructions from the developers of dropEst described in
+# https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
+sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
+                     sampleNames = 'scg71')
+}
