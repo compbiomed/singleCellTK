@@ -13,6 +13,7 @@
 #' @param useAssay  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param seed Seed for the random number generator. Default 12345.
+#' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
@@ -49,63 +50,63 @@ runCellQC <- function(inSCE,
   if ("scrublet" %in% algorithms) {
 
     inSCE <- do.call(runScrublet, 
-      c(inSCE = inSCE, 
+      c(list(inSCE = inSCE, 
         sample = sample,
         useAssay = useAssay,
-        seed = seed, 
+        seed = seed), 
         paramsList[["scrublet"]]))
   }
 
   if ("doubletCells" %in% algorithms) {
     inSCE <- do.call(runDoubletCells, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
       useAssay = useAssay,
-      seed = seed,
+      seed = seed),
       paramsList[["doubletCells"]]))
   }
 
   if ("doubletFinder" %in% algorithms) {
     inSCE <- do.call(runDoubletFinder, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
-      seed = seed,
+      seed = seed),
       paramsList[["doubletFinder"]]))
   }
 
   if ("cxds" %in% algorithms) {
     inSCE <- do.call(runCxds, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE,
+      estNdbl = TRUE),
       paramsList[["cxds"]]))
   }
 
   if ("bcds" %in% algorithms) {
     inSCE <- do.call(runBcds, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE,
+      estNdbl = TRUE),
       paramsList[["bcds"]]))
   }
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
     inSCE <- do.call(runCxdsBcdsHybrid, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE,
+      estNdbl = TRUE),
       paramsList[["cxds_bcds_hybrid"]]))
   }
 
   if ("decontX" %in% algorithms) {
     inSCE <- do.call(runDecontX, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
       useAssay = useAssay,
-      seed = seed,
+      seed = seed),
       paramsList[["decontX"]]))
   }
 
@@ -124,6 +125,7 @@ runCellQC <- function(inSCE,
 #'  Algorithms will be run on cells from each sample separately.
 #' @param useAssay  A string specifying which assay contains the count
 #'  matrix for droplets.
+#' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
@@ -149,17 +151,17 @@ runDropletQC <- function(inSCE,
 
   if (any("emptyDrops" %in% algorithms)) {
     inSCE <- do.call(runEmptyDrops, 
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
-      useAssay = useAssay,
+      useAssay = useAssay),
       paramsList[["emptyDrops"]]))
   }
 
   if (any("barcodeRanks" %in% algorithms)) {
     inSCE <- do.call(runBarcodeRankDrops,
-      c(inSCE = inSCE,
+      c(list(inSCE = inSCE,
       sample = sample,
-      useAssay = useAssay,
+      useAssay = useAssay),
       paramsList[["barcodeRanks"]]))
   }
 
