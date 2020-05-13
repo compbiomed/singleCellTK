@@ -8,7 +8,7 @@
 
   ## Now importing these functions in 'reticulate_setup.R' file
   #  sparse <- reticulate::import("scipy.sparse")
-  #  np <- reticulate::import("numpy")
+  #  numpy <- reticulate::import("numpy")
   if (!reticulate::py_module_available(module = "scipy.sparse")) {
     stop("Error!", "Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda() 
          or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
