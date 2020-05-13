@@ -30,7 +30,8 @@ runCellQC <- function(inSCE,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
   useAssay = "counts",
-  seed = 12345) {
+  seed = 12345,
+  paramsList = NULL) {
 
   nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder"))
@@ -46,51 +47,66 @@ runCellQC <- function(inSCE,
   }
 
   if ("scrublet" %in% algorithms) {
-    inSCE <- runScrublet(inSCE = inSCE,
-      sample = sample,
-      useAssay = useAssay,
-      seed = seed)
+
+    inSCE <- do.call(runScrublet, 
+      c(inSCE = inSCE, 
+        sample = sample,
+        useAssay = useAssay,
+        seed = seed, 
+        paramsList[["scrublet"]]))
   }
 
   if ("doubletCells" %in% algorithms) {
-    inSCE <- runDoubletCells(inSCE = inSCE,
+    inSCE <- do.call(runDoubletCells, 
+      c(inSCE = inSCE,
       sample = sample,
       useAssay = useAssay,
-      seed = seed)
+      seed = seed,
+      paramsList[["doubletCells"]]))
   }
 
   if ("doubletFinder" %in% algorithms) {
-    inSCE <- runDoubletFinder(inSCE = inSCE,
+    inSCE <- do.call(runDoubletFinder, 
+      c(inSCE = inSCE,
       sample = sample,
-      seed = seed)
+      seed = seed,
+      paramsList[["doubletFinder"]]))
   }
 
   if ("cxds" %in% algorithms) {
-    inSCE <- runCxds(inSCE = inSCE,
+    inSCE <- do.call(runCxds, 
+      c(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE)
+      estNdbl = TRUE,
+      paramsList[["cxds"]]))
   }
 
   if ("bcds" %in% algorithms) {
-    inSCE <- runBcds(inSCE = inSCE,
+    inSCE <- do.call(runBcds, 
+      c(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE)
+      estNdbl = TRUE,
+      paramsList[["bcds"]]))
   }
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
-    inSCE <- runCxdsBcdsHybrid(inSCE = inSCE,
+    inSCE <- do.call(runCxdsBcdsHybrid, 
+      c(inSCE = inSCE,
       sample = sample,
       seed = seed,
-      estNdbl = TRUE)
+      estNdbl = TRUE,
+      paramsList[["cxds_bcds_hybrid"]]))
   }
 
   if ("decontX" %in% algorithms) {
-    inSCE <- runDecontX(inSCE = inSCE,
+    inSCE <- do.call(runDecontX, 
+      c(inSCE = inSCE,
       sample = sample,
       useAssay = useAssay,
-      seed = seed)
+      seed = seed,
+      paramsList[["decontX"]]))
   }
 
   return(inSCE)
@@ -119,7 +135,8 @@ runCellQC <- function(inSCE,
 runDropletQC <- function(inSCE,
   algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
   sample = NULL,
-  useAssay = "counts") {
+  useAssay = "counts",
+  paramsList = NULL) {
 
   nonmatch <- setdiff(algorithms, c("QCMetrics", "emptyDrops", "barcodeRanks"))
   if(length(nonmatch) > 0) {
@@ -131,15 +148,19 @@ runDropletQC <- function(inSCE,
   }
 
   if (any("emptyDrops" %in% algorithms)) {
-    inSCE <- runEmptyDrops(inSCE = inSCE,
+    inSCE <- do.call(runEmptyDrops, 
+      c(inSCE = inSCE,
       sample = sample,
-      useAssay = useAssay)
+      useAssay = useAssay,
+      paramsList[["emptyDrops"]]))
   }
 
   if (any("barcodeRanks" %in% algorithms)) {
-    inSCE <- runBarcodeRankDrops(inSCE = inSCE,
+    inSCE <- do.call(runBarcodeRankDrops,
+      c(inSCE = inSCE,
       sample = sample,
-      useAssay = useAssay)
+      useAssay = useAssay,
+      paramsList[["barcodeRanks"]]))
   }
 
   return(inSCE)

@@ -108,6 +108,14 @@ constructSCE <- function(data, samplename){
     return(sce)
 }
 
+## Function to parse arguments from yaml file
+parseConfig <- function(sctkConfig, arguments){
+  for (i in seq_along(arguments)) {
+    arg <- arguments[i]
+    assign(arg, sctkConfig[[arg]], envir = parent.frame())
+  }
+}
+
 ##Read in flags from command line using optparse
 option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
@@ -155,7 +163,11 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-f","--filtered_data"),
         type="character",
         default=NULL,
-        help="The full path of the RDS file or Matrix file of the filtered gene count matrix. This would be use only when --preproc is SceRDS or CountMatrix."))
+        help="The full path of the RDS file or Matrix file of the filtered gene count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
+    optparse::make_option(c("-y", "--yamlFile"),
+        type="character",
+        default='./sctk_qc.yaml',
+        help="YAML file containing parameters called by singleCellTK QC functions. Please check documentation for details."))
 
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -172,6 +184,7 @@ RawDir <- opt$raw_expr_path
 Reference <- opt$genome
 RawFile <- opt$raw_data
 FilterFile <- opt$filtered_data
+yamlFile <- opt$yamlFile
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt$base_path, ",")) } 
 
@@ -184,6 +197,16 @@ if (!is.null(Reference)) { Reference <- unlist(strsplit(opt$genome, ",")) }
 if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt$raw_data, ",")) }
 
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt$filtered_data, ",")) } 
+
+## Parse parameters for QC algorithms
+if (!is.null(yamlFile)) {
+    arguments <- c('Params')
+    qcParams <- yaml::read_yaml(yamlFile)
+    parseConfig(qcParams, arguments)
+} else {
+    Params <- list()
+}
+
 
 ## checking argument
 if (is.null(RawFile) & is.null(RawFile)) {
@@ -300,7 +323,7 @@ for(i in 1:length(process)) {
     
     if (!is.null(dropletSCE)) {
         message(paste0(date(), " .. Running droplet QC"))        
-        dropletSCE <- runDropletQC(inSCE = dropletSCE)
+        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
         
         if (is.null(filteredSCE)) {
             ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
@@ -310,7 +333,7 @@ for(i in 1:length(process)) {
     
     if (!is.null(filteredSCE)) {
         message(paste0(date(), " .. Running cell QC"))        
-        filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection)
+        filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection, paramsList=Params)
     }
     
     if (isTRUE(split)) {
