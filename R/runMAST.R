@@ -194,7 +194,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
-#' @param clusterCol One single character to specify a column in
+#' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
 #' @param useThresh Whether to use adaptive thresholding to filter genes.

@@ -120,7 +120,7 @@ Default \code{NULL}.}
 \item{...}{Other arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.}
 }
 \value{
-An \code{\link[ComplexHeatmap]{Heatmap}} object
+A \code{\link[ComplexHeatmap]{Heatmap}} object
 }
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object

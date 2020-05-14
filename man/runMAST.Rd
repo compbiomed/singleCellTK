@@ -13,8 +13,8 @@ runMAST(
   classGroup1 = NULL,
   classGroup2 = NULL,
   comparisonName,
-  groupName1,
-  groupName2,
+  groupName1 = NULL,
+  groupName2 = NULL,
   useThresh = FALSE,
   freqExpressed = 0.1,
   onlyPos = FALSE,
@@ -92,8 +92,8 @@ Condition group can be set by one and only one of the two ways: setting
 and \code{classGroup2}.
 }
 \examples{
-data(sceBatch)
-sce.deg <- runMAST(sceBatch, class = "cell_type", comparisonName = 'aVSb',
+data('sceBatches', package = 'singleCellTK')
+sce.deg <- runMAST(sceBatches, class = "cell_type", comparisonName = 'aVSb',
                    classGroup1 = 'alpha', classGroup2 = 'beta',
                    groupName1 = 'a', groupName2 = 'b')
 }
