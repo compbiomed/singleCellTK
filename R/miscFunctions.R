@@ -292,3 +292,29 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   return(x)
 }
 
+#' Resolve duplicated feature names in a matrix
+#' 
+#' Adds '-1', '-2', ... '-i' to multiple duplicated feature names
+#' @param countmat matrix, with row names as feature names that need to be 
+#' resolved.
+#' @return The same matrix as input with rowname duplication resolved.
+featureNameDedup <- function(countmat){
+    if(!class(rownames(countmat)) == 'character'){
+        stop("No character feature name found.")
+    }
+    gene.table <- table(rownames(countmat))
+    gene.duplicates <- gene.table[gene.table > 1]
+    gene.duplicates.names <- names(gene.duplicates)
+    empty <- character(0)
+    if (!identical(empty, gene.duplicates.names)){
+        for (genename in gene.duplicates.names){
+            genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
+            indices <- which(grepl(genename, rownames(countmat)))
+            num <- length(indices)
+            for (i in 1:num){
+                rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
+            }
+        }
+    }
+    return(countmat)
+}

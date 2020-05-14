@@ -45,9 +45,11 @@ Imports:
     ggplot2,
     ggplotify,
     ggtree,
+    ggrepel,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
+    harmony,
     liger,
     limma,
     MAST,
@@ -88,7 +90,6 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    harmony,
     V8
 RoxygenNote: 7.1.0
 Suggests:
@@ -108,6 +109,7 @@ Remotes:
     joshua-d-campbell/harmony,
     joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input
+    joshua-d-campbell/celda
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
