@@ -45,6 +45,7 @@ Imports:
     ggplot2,
     ggplotify,
     ggtree,
+    ggrepel,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
