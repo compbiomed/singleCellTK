@@ -10,7 +10,6 @@
 #' @param shape add shapes to each condition.
 #' @param reducedDimName saved dimension reduction name in the SCtkExperiment
 #'  object. Required.
-#' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param xlab label for x-axis
 #' @param ylab label for y-axis
 #' @param dim1 1st dimension to be used for plotting. Default is NULL.
@@ -30,7 +29,6 @@
                        shape,
                        reducedDimName,
                        conditionClass = NULL,
-                       useAssay,
                        labelClusters = FALSE,
                        xlab,
                        ylab,
@@ -89,7 +87,7 @@
   )) +
     ggplot2::geom_point(size = dotsize, alpha = transparency)
   if (!is.null(colorBy)) {
-    g <- g + ggplot2::aes(color = color)
+    g <- g + ggplot2::aes_string(color = "color")
   }
   if (!is.null(shape)) {
     g <- g + ggplot2::aes_string(shape = "shape") +
@@ -111,7 +109,7 @@
     g <- g + ggplot2::labs(color = "")
   }
 
-  if (isTRUE(labelClusters)) {
+  if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
     centroidList <- lapply(unique(colorBy), function(x) {
       df.sub <- Df[Df$color == x, ]
       median.1 <- stats::median(df.sub[, 1])
@@ -139,7 +137,7 @@
     ) +
       ggrepel::geom_text_repel(
         data = centroid,
-        mapping = ggplot2::aes(label = color),
+        mapping = ggplot2::aes_string(label = "color"),
         show.legend = F,
         color = "black"
       )
@@ -215,7 +213,6 @@ plotSCEDimReduceColData <- function(inSCE,
     conditionClass = conditionClass,
     shape = shape,
     reducedDimName = reducedDimName,
-    useAssay = useAssay,
     xlab = xlab,
     ylab = ylab,
     dim1 = dim1,
@@ -293,7 +290,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
     shape = shape,
     transparency = 1,
     reducedDimName = reducedDimName,
-    useAssay = useAssay,
     xlab = xlab,
     ylab = ylab,
     dim1 = dim1,
@@ -364,10 +360,10 @@ plotSCEScatter <- function(inSCE,
                            titleSize = 15,
                            labelClusters = TRUE,
                            legendTitle = NULL) {
-  if (!slot %in% slotNames(inSCE)) {
+  if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'slotNames' if you are unsure the specified
-             slot exists.")
+             Please run 'methods::slotNames' if you are unsure the
+	     specified slot exists.")
   }
 
   sceSubset <- do.call(slot, args = list(inSCE))
@@ -407,7 +403,6 @@ plotSCEScatter <- function(inSCE,
     conditionClass = conditionClass,
     shape = shape,
     reducedDimName = reducedDimName,
-    useAssay = useAssay,
     xlab = xlab,
     ylab = ylab,
     dim1 = dim1,
@@ -489,9 +484,11 @@ plotSCEScatter <- function(inSCE,
     p <- p + ggplot2::geom_boxplot(width = 0.1)
   }
   if (dots == TRUE) {
-    p <- p + ggplot2::geom_jitter(height = 0,
-                                  size = dotSize,
-                                  alpha = transparency)
+    p <- p + ggplot2::geom_jitter(
+      height = 0,
+      size = dotSize,
+      alpha = transparency
+    )
   }
   if (defaultTheme == TRUE) {
     p <- .ggSCTKTheme(p)
@@ -744,10 +741,10 @@ plotSCEViolin <- function(inSCE,
                           defaultTheme = TRUE,
                           title = NULL,
                           titleSize = NULL) {
-  if (!slot %in% slotNames(inSCE)) {
+  if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'slotNames' if you are unsure the specified
-             slot exists.")
+             Please run 'methods::slotNames' if you are unsure the
+	 specified slot exists.")
   }
 
   sceSubset <- do.call(slot, args = list(inSCE))

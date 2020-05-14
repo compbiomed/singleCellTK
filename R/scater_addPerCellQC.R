@@ -119,7 +119,7 @@ runPerCellQC <- function(inSCE,
 
   argsList = argsList[!names(argsList) %in% ("...")]
   S4Vectors::metadata(inSCE)$scater$addPerCellQC <- argsList[-1]
-  S4Vectors::metadata(inSCE)$scater$addPerCellQC$packageVersion <- packageDescription("scran")$Version
+  S4Vectors::metadata(inSCE)$scater$addPerCellQC$packageVersion <- utils::packageDescription("scran")$Version
 
   if(is.null(geneSets)){
       geneSets = as.character(geneSets)

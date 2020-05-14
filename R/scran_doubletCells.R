@@ -74,7 +74,7 @@ runDoubletCells <- function(inSCE,
 
   argsList = argsList[!names(argsList) %in% ("...")]
   inSCE@metadata$runDoubletCells <- argsList[-1]
-  inSCE@metadata$runDoubletCells$packageVersion <- packageDescription("scran")$Version
+  inSCE@metadata$runDoubletCells$packageVersion <- utils::packageDescription("scran")$Version
   colData(inSCE) = cbind(colData(inSCE), output)
 
   return(inSCE)

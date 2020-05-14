@@ -10,7 +10,6 @@
   shape,
   reducedDimName,
   conditionClass = NULL,
-  useAssay,
   labelClusters = FALSE,
   xlab,
   ylab,
@@ -38,8 +37,6 @@ object. Required.}
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
 class. Default NULL.}
-
-\item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.
 Default FALSE.}

@@ -5,7 +5,9 @@
 \alias{mouseBrainSubsetSCE}
 \title{Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
 subset}
-\format{SCtkExperiment}
+\format{
+SCtkExperiment
+}
 \source{
 DOI: 10.1126/science.aaa1934
 }

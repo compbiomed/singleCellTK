@@ -35,7 +35,7 @@ runDecontX <- function(inSCE,
   inSCE <- celda::decontX(x = inSCE, batch = sample, assayName = useAssay, ...)
   argsList = argsList[!names(argsList) %in% ("...")]
   inSCE@metadata$runDecontX <- argsList[-1]
-  inSCE@metadata$runDecontX$packageVersion <- packageDescription("celda")$Version
+  inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
 
   return(inSCE)
 }

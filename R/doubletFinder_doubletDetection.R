@@ -122,7 +122,7 @@ runDoubletFinder <- function(inSCE,
 
     argsList = argsList[!names(argsList) %in% ("...")]
     inSCE@metadata$runDoubletFinder <- argsList[-1]
-    inSCE@metadata$runDoubletFinder$packageVersion <- packageDescription("DoubletFinder")$Version
+    inSCE@metadata$runDoubletFinder$packageVersion <- utils::packageDescription("DoubletFinder")$Version
 
     colData(inSCE) = cbind(colData(inSCE), output)
     }
