@@ -108,8 +108,8 @@ Remotes:
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
     joshua-d-campbell/liger,
-    joshua-d-campbell/shiny-directory-input
-    joshua-d-campbell/celda
+    joshua-d-campbell/shiny-directory-input,
+    campbio/celda@RELEASE_3_11
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
