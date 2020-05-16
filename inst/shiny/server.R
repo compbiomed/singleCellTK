@@ -365,7 +365,7 @@ shinyServer(function(input, output, session) {
         for (prev in list.dirs(prevPath, recursive = FALSE)) {
           count <- count+1
           removeUI(
-            selector = paste0("#sampleRow", count),
+            selector = paste0("#sampleRow", count)
           )
         }
         # create a new table for the selected directory
@@ -380,7 +380,7 @@ shinyServer(function(input, output, session) {
               ui = fluidRow(
                 id = paste0("sampleRow", count),
                 column(6, basename(sample)),
-                column(6, textAreaInput(paste0("sampleName", count), "Sample Name", resize = "none", value = basename(sample))),
+                column(6, textAreaInput(paste0("sampleName", count), "Sample Name", resize = "none", value = basename(sample)))
               )
             )
           }
@@ -758,8 +758,7 @@ shinyServer(function(input, output, session) {
         vals$original <- createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
-                                   assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts)
+                                   assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
@@ -812,7 +811,9 @@ shinyServer(function(input, output, session) {
             if (entry$isDataFile) {
               sce <- importCellRangerV2Sample(
                 sampleDir = entry$sample,
-                sampleName = entry$name
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
               )
             } else {
               sce <- importCellRangerV2(
@@ -820,18 +821,24 @@ shinyServer(function(input, output, session) {
                 sampleDirs = entry$sample,
                 sampleNames = entry$name,
                 dataType = c("filtered"),
-                class = c("Matrix", "matrix"),
-                delayedArray = TRUE)
+                class = "Matrix",
+                delayedArray = FALSE)
             }
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
           }
         } else if (input$algoChoice == "cellRanger3") {
           for (entry in importCR3Files$files) {
             if (entry$isDataFile) {
               sce <- importCellRangerV3Sample(
                 sampleDir = entry$sample,
-                sampleName = entry$name
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
               )
             } else {
               sce <- importCellRangerV3(
@@ -839,39 +846,47 @@ shinyServer(function(input, output, session) {
                 sampleDirs = entry$sample,
                 sampleNames = entry$name,
                 dataType = c("filtered"),
-                class = c("Matrix", "matrix"),
-                delayedArray = TRUE)
+                class = "Matrix",
+                delayedArray = FALSE)
             }
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
           }
         } else if (input$algoChoice == "starSolo") {
-          print("star")
           vals$original <- importSTARsolo(
             STARsoloDirs = importSSFiles$bases,
-            samples = importSSFiles$ids
+            samples = importSSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "busTools") {
-          print("bus")
           vals$original <- importBUStools(
             BUStoolsDirs = importBUSFiles$bases,
             samples = importBUSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "seqc") {
-          print("seqc")
           vals$original <- importSEQC(
             seqcDirs = importSEQFiles$bases,
             samples = importSEQFiles$ids,
             prefix = importSEQFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "optimus") {
-          print("opt")
           vals$original <- importOptimus(
             OptimusDirs = importOptFiles$bases,
-            samples = importOptFiles$samples
+            samples = importOptFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         }
       }
+      
       if (!is.null(vals$original)) {
         # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
@@ -880,17 +895,6 @@ shinyServer(function(input, output, session) {
         updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateSelectInput(session, "deletesamplelist",
-                          choices = colnames(vals$counts))
-        insertUI(
-          selector = "#uploadAlert",
-          ## wrap element in a div with id for ease of removal
-          ui = tags$div(
-            class = "alert alert-success alert-dismissible",
-            HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
-                 </span> Successfully Uploaded! <button type='button' \
-                 class='close' data-dismiss='alert'>&times;</button>"))
-        )
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -952,69 +956,28 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
 
-  #Render data table if there are fewer than 50 samples
-  output$contents <- DT::renderDataTable({
-    req(vals$counts)
-    if (!is.null(getShinyOption("inputSCEset"))){
-      updateGeneNames()
-    }
-    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, options = list(scrollX = TRUE), rownames = FALSE)
-
-  #Render histogram of read counts per cell
-  output$countshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Reads per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-                      type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #Render histogram of genes detected per cell
-  output$geneshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Genes detected per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                                function(x) sum(x > 0)), type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
   #random downsample of samples
-  observeEvent(input$downsampleGo, {
-    req(vals$counts)
-    withBusyIndicatorServer("downsampleGo", {
-      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
-      updateNumSamples()
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
-      vals$enrichRes <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$downsampleGo, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("downsampleGo", {
+#      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
+#      updateNumSamples()
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$gsvaLimma <- NULL
+#      vals$visplotobject <- NULL
+#      vals$enrichRes <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Render summary table
   output$summarycontents <- renderTable({
@@ -1024,49 +987,10 @@ shinyServer(function(input, output, session) {
     } else {
       assaySelect <- input$filterAssaySelect
     }
-    singleCellTK::summarizeTable(inSCE = vals$counts,
-                                 useAssay = "counts",
-                                 expressionCutoff = input$minDetectGene)
-  })
+    singleCellTK::summarizeSCE(inSCE = vals$counts,
+                                 useAssay = "counts")
+  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
-  #Filter the data based on the options
-  observeEvent(input$filterData, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("filterData", {
-        deletesamples <- input$deletesamplelist
-        vals$counts <- filterSCData(inSCE = vals$counts,
-                                    useAssay = input$filterAssaySelect,
-                                     deletesamples = deletesamples,
-                                    removeNoExpress = input$removeNoexpress,
-                                    removeBottom = 0.01 * input$LowExpression,
-                                    minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
-        vals$diffexheatmapplot <- NULL
-        vals$combatstatus <- ""
-        vals$diffexgenelist <- NULL
-        vals$gsvaRes <- NULL
-        vals$gsvaLimma <- NULL
-        vals$visplotobject <- NULL
-        vals$enrichRes <- NULL
-        vals$diffexBmName <- NULL
-        diffExValues$diffExList <- NULL
-        vals$dimRedPlot <- NULL
-        vals$dimRedPlot_geneExp <- NULL
-        vals$dendrogram <- NULL
-        vals$pcX <- NULL
-        vals$pcY <- NULL
-        #Refresh things for the clustering tab
-        updateGeneNames()
-        updateEnrichDB()
-        if (!is.null(input$deletesamplelist)){
-          updateSelectInput(session, "deletesamplelist",
-                            choices = colnames(vals$counts))
-        }
-      })
-    }
-  })
 
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
@@ -1075,8 +999,8 @@ shinyServer(function(input, output, session) {
     }
     else{
       vals$counts <- vals$original
-      updateSelectInput(session, "deletesamplelist",
-                        choices = colnames(vals$counts))
+      #updateSelectInput(session, "deletesamplelist",
+      #                  choices = colnames(vals$counts))
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$diffexgenelist <- NULL
@@ -1136,102 +1060,102 @@ shinyServer(function(input, output, session) {
   })
 
   #Filter the selected samples
-  observeEvent(input$runFilterSample, {
-    withBusyIndicatorServer("runFilterSample", {
-      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
-      vals$counts <- vals$counts[, filter]
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$gsvaLimma <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-      updateNumSamples()
-    })
-  })
+#  observeEvent(input$runFilterSample, {
+#    withBusyIndicatorServer("runFilterSample", {
+#      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
+#      vals$counts <- vals$counts[, filter]
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$gsvaLimma <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#      updateNumSamples()
+#    })
+#  })
 
-  observeEvent(input$filteredFeature, {
-    output$filterFeatureOptions <- renderUI({
-      if (input$filteredFeature != "none")({
-        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
-          L <- vector("list", 3)
-          L[[1]] <- renderText("Select features to keep")
-          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                              list(checkboxGroupInput("filterFeatureChoices",
-                                                      label = NULL,
-                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
-          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
-          return(L)
-        } else {
-          L <- list(renderText("Annotation must have fewer than 100 options"))
-          return(L)
-        }
-      }) else {
-        L <- list()
-      }
-    })
-  })
+#  observeEvent(input$filteredFeature, {
+#    output$filterFeatureOptions <- renderUI({
+#      if (input$filteredFeature != "none")({
+#        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
+#          L <- vector("list", 3)
+#          L[[1]] <- renderText("Select features to keep")
+#          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
+#                              list(checkboxGroupInput("filterFeatureChoices",
+#                                                      label = NULL,
+#                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
+#          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
+#          return(L)
+#        } else {
+#          L <- list(renderText("Annotation must have fewer than 100 options"))
+#          return(L)
+#        }
+#      }) else {
+#        L <- list()
+#      }
+#    })
+#  })
 
-  observeEvent(input$orgOrganism, {
-    library(input$orgOrganism, character.only = TRUE)
-    indb <- get(paste(input$orgOrganism))
-    output$orgConvertColumns <- renderUI({
-      tagList(
-        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
-        selectInput("orgToCol", "Select To Annotation:", columns(indb))
-      )
-    })
-  })
+#  observeEvent(input$orgOrganism, {
+#    library(input$orgOrganism, character.only = TRUE)
+#    indb <- get(paste(input$orgOrganism))
+#    output$orgConvertColumns <- renderUI({
+#      tagList(
+#        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
+#        selectInput("orgToCol", "Select To Annotation:", columns(indb))
+#      )
+#    })
+#  })
 
-  observeEvent(input$convertGenes, {
-    req(vals$counts)
-    withBusyIndicatorServer("convertGenes", {
-      vals$counts <- convertGeneIDs(inSCE = vals$counts,
-                                    inSymbol = input$orgFromCol,
-                                    outSymbol = input$orgToCol,
-                                    database = input$orgOrganism)
-      updateGeneNames()
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$convertGenes, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("convertGenes", {
+#      vals$counts <- convertGeneIDs(inSCE = vals$counts,
+#                                    inSymbol = input$orgFromCol,
+#                                    outSymbol = input$orgToCol,
+#                                    database = input$orgOrganism)
+#      updateGeneNames()
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Filter the selected features
-  observeEvent(input$runFilterFeature, {
-    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
-    vals$counts <- vals$counts[filter, ]
-    updateGeneNames()
-    vals$diffexgenelist <- NULL
-    vals$gsvaRes <- NULL
-    vals$enrichRes <- NULL
-    vals$visplotobject <- NULL
-    vals$diffexheatmapplot <- NULL
-    vals$diffexBmName <- NULL
-    diffExValues$diffExList <- NULL
-    vals$dimRedPlot <- NULL
-    vals$dimRedPlot_geneExp <- NULL
-    vals$dendrogram <- NULL
-    vals$pcX <- NULL
-    vals$pcY <- NULL
-  })
+#  observeEvent(input$runFilterFeature, {
+#    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
+#    vals$counts <- vals$counts[filter, ]
+#    updateGeneNames()
+#    vals$diffexgenelist <- NULL
+#    vals$gsvaRes <- NULL
+#    vals$enrichRes <- NULL
+#    vals$visplotobject <- NULL
+#    vals$diffexheatmapplot <- NULL
+#    vals$diffexBmName <- NULL
+#    diffExValues$diffExList <- NULL
+#    vals$dimRedPlot <- NULL
+#    vals$dimRedPlot_geneExp <- NULL
+#    vals$dendrogram <- NULL
+#    vals$pcX <- NULL
+#    vals$pcY <- NULL
+#  })
 
   #disable the downloadSCE button if no object is loaded
   isAssayResult <- reactive(is.null(vals$counts))
@@ -1336,11 +1260,11 @@ shinyServer(function(input, output, session) {
 })
 
 
-  output$colDataDataFrame <- DT::renderDataTable({
-    if (!is.null(vals$counts)){
-      data.frame(colData(vals$counts))
-    }
-  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
+#  output$colDataDataFrame <- DT::renderDataTable({
+#    if (!is.null(vals$counts)){
+#      data.frame(colData(vals$counts))
+#    }
+#  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
 
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))

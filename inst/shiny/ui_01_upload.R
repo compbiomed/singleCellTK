@@ -28,36 +28,10 @@ shinyPanelUpload <- fluidPage(
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
       "(help)", target = "_blank")),
     tags$hr(),
-    tags$div(id = "uploadAlert", alertText),
     hidden(wellPanel(id = "annotationData",
-                     h4("Data summary:"),
+                     h3("Data summary"),
                      tableOutput("summarycontents"))), 
-    # hidden(wellPanel(id="annotationData",
-    #   sidebarLayout(
-    #     sidebarPanel(
-    #       h4("Modify Annotation Data:"),
-    #       selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-    #       uiOutput("annotModifyUI"),
-    #       uiOutput("annotModifyUIHelpText"),
-    #       tags$hr(),
-    #       downloadButton("downloadcolData", "Download Annotation Data"),
-    #       tags$hr(),
-    #       fileInput(
-    #         "newAnnotFile", "Upload and replace annotation data:",
-    #         accept = c(
-    #           "text/csv",
-    #           "text/comma-separated-values",
-    #           ".csv"
-    #         )
-    #       )
-    #     ),
-    #     mainPanel(
-    #       tags$h4("Annotation data(colData):"),
-    #       tags$br(),
-    #       DT::dataTableOutput("colDataDataFrame")
-    #     )
-    #   )
-    # )),
+
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",
@@ -103,9 +77,7 @@ shinyPanelUpload <- fluidPage(
           selectInput("inputAssayType", label = NULL,
                       c("counts", "normcounts", "logcounts", "cpm",
                         "logcpm", "tpm", "logtpm")
-          ),
-          checkboxInput("createLogcounts",
-                        "Also create log2 input assay on upload", value = TRUE)
+          )
         ),
         column(width = 4,
           wellPanel(
