@@ -863,6 +863,9 @@ shinyServer(function(input, output, session) {
                     assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
                 }
             }
+            else if(input$assayModifyAction == "trim"){
+              assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssaySelect), c(input$trimUpperValueAssay, input$trimLowerValueAssay))            
+            }
             else {
                 showNotification("Error during assay transformation!", type = "error")
             } 
@@ -882,6 +885,9 @@ shinyServer(function(input, output, session) {
       }
       else if(input$normalizeAssayOutname %in% names(assays(vals$counts))){
         stop("Your selected Assay Name already exists! Try another Assay Name!")
+      }
+      else if(input$normalizeAssaySelect == ""){
+        stop("Please select an assay before proceeding with normalization!")
       }
       else{
         if (input$normalizeAssayMethodSelect == "LogNormalize"

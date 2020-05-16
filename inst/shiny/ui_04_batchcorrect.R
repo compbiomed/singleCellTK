@@ -41,23 +41,19 @@ shinyPanelBatchcorrect <- fluidPage(
                     column(
                         width = 12,
                         panel(
-                            heading = "Assay Options",
+                            heading = "Transformation, Scaling, and Trimming",
                             selectInput(
                                 "assayModifyAction",
-                                "Assay Actions:",
+                                "Options:",
                                 c(
                                 "Log Transform" = "log",
                                 "log1p" = "log1p",
-                                "Z-Score" = "z.score"
+                                "Z-Score" = "z.score",
+                                "Trim" = "trim"
                                 )
                             ),
                             selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction != 'delete' 
-                                    && input.assayModifyAction != 'seurat.scale'",
-                                textInput("modifyAssayOutname", "Assay Name", "",
-                                placeholder = "What should the assay be called?")
-                            ),
+                            textInput("modifyAssayOutname", "Assay Name", "", placeholder = "What should the assay be called?"),
                             conditionalPanel(
                                 condition = "input.assayModifyAction == 'seurat.scale'",
                                 selectInput(
@@ -81,13 +77,16 @@ shinyPanelBatchcorrect <- fluidPage(
                                     value = "10"
                                     )
                             ),
-                            materialSwitch(
+                            conditionalPanel(
+                              condition = "input.assayModifyAction != 'trim'",
+                              materialSwitch(
                                 inputId = "trimAssayCheckbox",
                                 label = "Trim Assay",
                                 value = FALSE
+                              )
                             ),
                             conditionalPanel(
-                                condition = "input.trimAssayCheckbox == true",
+                                condition = "input.trimAssayCheckbox == true || input.assayModifyAction == 'trim'",
                                 numericInput(
                                     inputId = "trimUpperValueAssay",
                                     label = "Specify upper trim value",
