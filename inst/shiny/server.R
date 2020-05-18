@@ -176,13 +176,10 @@ shinyServer(function(input, output, session) {
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
   shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
   shinyFiles::shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  # shinyFileChoose(input, "barcodes", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  # shinyFileChoose(input, "features", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  # shinyFileChoose(input, "matrix", roots = volumes, session = session, restrictions = system.file(package = "base"))
   base <- reactive(input$base)
-  output$base <- renderText({
-    shinyFiles::parseDirPath(volumes, base())
-  })
+  # output$base <- renderText({
+  #   parseDirPath(volumes, base())
+  # })
   sample <- reactive(input$sample)
   output$sample <- renderText({
     shinyFiles::parseDirPath(volumes, sample())
@@ -191,8 +188,13 @@ shinyServer(function(input, output, session) {
   output$sampleFile <- renderText({
     shinyFiles::parseFilePaths(volumes, sampleFile())$datapath
   })
-  importCR2Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
-  importCR3Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  output$base = renderText({
+    shinyDirectoryInput::readDirectoryInput(session, 'directory')
+  })
+  # importCR2Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importCR2Files <- reactiveValues(files = list(), id_count = 0)
+  # importCR3Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importCR3Files <- reactiveValues(files = list(), id_count = 0)
   importSSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importBUSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importSEQFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
@@ -217,12 +219,194 @@ shinyServer(function(input, output, session) {
     )
   }
   
+  importModal <- function(failed = FALSE) {
+    modalDialog(
+      h3("Base Directory"),
+      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      textInput("sampleName", "*This name must match your sample's directory name."),
+      h3("Sample ID"),
+      textInput("sampleID", "*This is the name you would like to give your sample."),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("modalOk", "OK")
+      )
+    )
+  }
+  
+  importCRModal <- function() {
+    modalDialog(
+      h3("Add a Cell Ranger Sample"),
+      tags$br(),
+      h4("Option 1 - Select a directory containing multiple sample directories (and no other directories)."),
+      actionButton("crOpt1", "Add"),
+      tags$br(),
+      h4("Option 2 - Select a single sample directory."),
+      actionButton("crOpt2", "Add"),
+      tags$br(),
+      h4("Option 3 - Select a directory containing your data files (barcodes.tsv, features.tsv, matrix.mtx)."),
+      actionButton("crOpt3", "Add"),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("crOK", "OK")
+      )
+    )
+  }
+  # Upload a sample directory (parent of 'outs' directory)
+  importCRSDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Sample Directory"),
+      shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
+      textInput("sampleID", ""),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("SDirOK", "OK")
+      )
+    )
+  }
+  # Upload a data directory (parent of 'data files')
+  importCRDDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Data Directory"),
+      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      textInput("sampleID", "*This field is mandatory when uploading a data directory"),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("DDirOK", "OK")
+      )
+    )
+  }
+  # Upload a base directory (parent of possibly multiple sample directories)
+  importCRBDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Base Directory"),
+      shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
+      wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
+      
+      tags$div(id = "bDirTable"),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("BDirOK", "OK")
+      )
+    )
+  }
+  
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$directory
+    },
+    handlerExpr = {
+      if (input$directory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'directory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'directory', value = path)
+      }
+    }
+  )
+  
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$sDirectory
+    },
+    handlerExpr = {
+      if (input$sDirectory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'sDirectory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'sDirectory', value = path)
+        if (!is.na(path)) {
+          updateTextInput(session, "sampleID", value = basename(path))
+        }
+      }
+    }
+  )
+  
+  # event listener for the base directory modal (need to populate table for sample names)
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$bDirectory
+    },
+    handlerExpr = {
+      if (input$bDirectory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'bDirectory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'bDirectory', value = path)
+        # clear the previous table of sample names
+        prevPath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+        count <- 0
+        for (prev in list.dirs(prevPath, recursive = FALSE)) {
+          count <- count+1
+          removeUI(
+            selector = paste0("#sampleRow", count)
+          )
+        }
+        # create a new table for the selected directory
+        count <- 0
+        if (!is.na(path)) {
+          counts <- vector()
+          for (sample in list.dirs(path, recursive = FALSE)) {
+            count <- count+1
+            counts <- c(counts, count)
+            insertUI(
+              selector = "#bDirTable",
+              ui = fluidRow(
+                id = paste0("sampleRow", count),
+                column(6, basename(sample)),
+                column(6, textAreaInput(paste0("sampleName", count), "Sample Name", resize = "none", value = basename(sample)))
+              )
+            )
+          }
+        }
+      }
+    }
+  )
+  
   # event listeners for "Add Sample" buttons
   observeEvent(input$addCR2Sample, {
-    showModal(importModal())
+    showModal(importCRModal())
+  })
+  observeEvent(input$crOpt1, {
+    removeModal()
+    showModal(importCRBDir())
+  })
+  observeEvent(input$crOpt2, {
+    removeModal()
+    showModal(importCRSDir())
+  })
+  observeEvent(input$crOpt3, {
+    removeModal()
+    showModal(importCRDDir())
   })
   observeEvent(input$addCR3Sample, {
-    showModal(importModal())
+    showModal(importCRModal())
   })
   observeEvent(input$addSSSample, {
     showModal(importModal())
@@ -237,48 +421,289 @@ shinyServer(function(input, output, session) {
     showModal(importModal())
   })
   
-  # event listeners for "Remove Last Sample" buttons
-  observeEvent(input$removeCR2Sample, {
-    selector <- paste("#newSampleCR2", length(importCR2Files$bases), sep = "")
-    importCR2Files$bases <- head(importCR2Files$bases, -1)
-    importCR2Files$samples <- head(importCR2Files$samples, -1)
-    importCR2Files$ids <- head(importCR2Files$ids, -1)
-    removeUI(selector = selector)
+  # event listeners for "Remove Sample" buttons
+  observeEvent(input$clearAllCR2, {
+    for (entry in importCR2Files$files) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    importCR2Files$files <- list()
   })
-  observeEvent(input$removeCR3Sample, {
-    selector <- paste("#newSampleCR3", length(importCR3Files$bases), sep = "")
-    importCR3Files$bases <- head(importCR3Files$bases, -1)
-    importCR3Files$samples <- head(importCR3Files$samples, -1)
-    importCR3Files$ids <- head(importCR3Files$ids, -1)
-    removeUI(selector = selector)
+  observeEvent(input$clearAllCR3, {
+    for (entry in importCR3Files$files) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    importCR3Files$files <- list()
   })
   observeEvent(input$removeSSSample, {
-    selector <- paste("#newSampleSS", length(importSSFiles$bases), sep = "")
+    selector <- paste0("#newSampleSS", length(importSSFiles$bases))
     importSSFiles$bases <- head(importSSFiles$bases, -1)
     importSSFiles$samples <- head(importSSFiles$samples, -1)
     importSSFiles$ids <- head(importSSFiles$ids, -1)
     removeUI(selector = selector)
   })
   observeEvent(input$removeBUSSample, {
-    selector <- paste("#newSampleBUS", length(importBUSFiles$bases), sep = "")
+    selector <- paste0("#newSampleBUS", length(importBUSFiles$bases))
     importBUSFiles$bases <- head(importBUSFiles$bases, -1)
     importBUSFiles$samples <- head(importBUSFiles$samples, -1)
     importBUSFiles$ids <- head(importBUSFiles$ids, -1)
     removeUI(selector = selector)
   })
   observeEvent(input$removeSEQSample, {
-    selector <- paste("#newSampleSEQ", length(importSEQFiles$bases), sep = "")
+    selector <- paste0("#newSampleSEQ", length(importSEQFiles$bases))
     importSEQFiles$bases <- head(importSEQFiles$bases, -1)
     importSEQFiles$samples <- head(importSEQFiles$samples, -1)
     importSEQFiles$ids <- head(importSEQFiles$ids, -1)
     removeUI(selector = selector)
   })
   observeEvent(input$removeOptSample, {
-    selector <- paste("#newSampleOpt", length(importOptFiles$bases), sep = "")
+    selector <- paste0("#newSampleOpt", length(importOptFiles$bases))
     importOptFiles$bases <- head(importOptFiles$bases, -1)
     importOptFiles$samples <- head(importOptFiles$samples, -1)
     importOptFiles$ids <- head(importOptFiles$ids, -1)
     removeUI(selector = selector)
+  })
+  
+  # event listeners for Cell Ranger import modals' OK buttons
+  # sample directory
+  observeEvent(input$SDirOK, {
+    samplePath <- shinyDirectoryInput::readDirectoryInput(session, 'sDirectory')
+    # make sure a directory is selected
+    if (identical(samplePath, character(0))) {
+      showModal(importCRSDir(failed = TRUE))
+    } else {
+      # add the files to the appropriate reactiveValues
+      if (input$algoChoice == "cellRanger2") {
+        id <- paste0("snewSampleCR2", importCR2Files$id_count)
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+                      sample = basename(samplePath), name = input$sampleID, id = id)
+        importCR2Files$files <- c(importCR2Files$files, list(entry))
+        importCR2Files$id_count <- importCR2Files$id_count + 1
+        selector <- "#newSampleCR2"
+      } else {
+        id <- paste0("snewSampleCR3", importCR3Files$id_count)
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+                      sample = basename(samplePath), name = input$sampleID, id = id)
+        importCR3Files$files <- c(importCR3Files$files, list(entry))
+        importCR3Files$id_count <- importCR3Files$id_count + 1
+        selector <- "#newSampleCR3"
+      }
+      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+      # add row for new sample in UI
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+          column(3, dirname(samplePath)),
+          column(3, basename(samplePath)),
+          column(3, input$sampleID),
+          column(3, actionButton(paste0("remove", id), "X"))
+        )
+      )
+      # handler to remove the sample that was just added
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        # based on algoChoice, create vector saying which items to keep
+        # remove appropriate item from appropriate reactiveValues
+        if (input$algoChoice == "cellRanger2") {
+          toRemove <- vector()
+          for (entry in importCR2Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR2Files$files <- importCR2Files$files[toRemove]
+        } else {
+          toRemove <- vector()
+          for (entry in importCR3Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR3Files$files <- importCR3Files$files[toRemove]
+        }
+      })
+      removeModal()
+    }
+  })
+  
+  # data directory 
+  observeEvent(input$DDirOK, {
+    dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    if ((!nzchar(input$sampleID)) || (identical(dataPath, character(0)))) {
+      showModal(importCRDDir(failed = TRUE))
+    } else {
+      if (input$algoChoice == "cellRanger2") {
+        id <- paste0("dnewSampleCR2", importCR2Files$id_count)
+        entry <- list(isDataFile = TRUE, base = "", sample = dataPath, name = input$sampleID, id = id)
+        importCR2Files$files <- c(importCR2Files$files, list(entry))
+        importCR2Files$id_count <- importCR2Files$id_count + 1
+        selector <- "#newSampleCR2"
+      } else {
+        id <- paste0("dnewSampleCR3", importCR3Files$id_count)
+        entry <- list(isDataFile = TRUE, base = "", sample = dataPath, name = input$sampleID, id = id)
+        importCR3Files$files <- c(importCR3Files$files, list(entry))
+        importCR3Files$id_count <- importCR3Files$id_count + 1
+        selector <- "#newSampleCR3"
+      }
+      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+          column(3, dataPath),
+          column(3, ""),
+          column(3, input$sampleID),
+          column(3, actionButton(paste0("remove", id), "X"))
+        )
+      )
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        if (input$algoChoice == "cellRanger2") {
+          toRemove <- vector()
+          for (entry in importCR2Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR2Files$files <- importCR2Files$files[toRemove]
+        } else {
+          toRemove <- vector()
+          for (entry in importCR3Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR3Files$files <- importCR3Files$files[toRemove]
+        }
+      })
+      removeModal()
+    }
+  })
+  
+  # base directory
+  observeEvent(input$BDirOK, {
+    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+    # if the user doesn't specify a base directory, show the modal again with the warning message
+    if (identical(basePath, character(0))) {
+      showModal(importCRBDir(failed = TRUE))
+    } else {
+      allDirs <- list.dirs(basePath, recursive = FALSE)
+      # if we are adding a new CellRangerV2 sample
+      if (input$algoChoice == "cellRanger2") {
+        allUI <- vector()
+        allIDs <- vector()
+        count <- 0
+        for (sample in allDirs) {
+          count <- count + 1
+          name <- input[[paste0("sampleName", count)]]
+          if (!nzchar(name)) {
+            name <- basename(sample)
+          }
+          id <- paste0("bnewSampleCR2", importCR2Files$id_count)
+          entry <- list(isDataFile = FALSE, base = substr(basePath, 1, nchar(basePath)-1), sample = basename(sample), name = name, id = id)
+          importCR2Files$files <- c(importCR2Files$files, list(entry))
+          fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+          removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+          ui_i <- fluidRow(
+            id = id,
+            tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+            column(3, basePath),
+            column(3, basename(sample)),
+            column(3, name),
+            column(3, actionButton(paste0("remove", id), "X"))
+          )
+          importCR2Files$id_count <- importCR2Files$id_count + 1
+          allUI <- c(allUI, list(ui_i))
+          allIDs <- c(allIDs, id)
+        }
+        selector <- "#newSampleCR2"
+      } else { # if we are adding a new CellRangerV3 sample
+        allUI <- vector()
+        allIDs <- vector()
+        count <- 0
+        for (sample in allDirs) {
+          count <- count + 1
+          name <- input[[paste0("sampleName", count)]]
+          if (!nzchar(name)) {
+            name <- basename(sample)
+          }
+          id <- paste0("bnewSampleCR3", importCR3Files$id_count)
+          entry <- list(isDataFile = FALSE, base = substr(basePath, 1, nchar(basePath)-1), sample = basename(sample), name = name, id = id)
+          importCR3Files$files <- c(importCR3Files$files, list(entry))
+          fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+          removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+          ui_i <- fluidRow(
+            id = id,
+            tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+            column(3, basePath),
+            column(3, basename(sample)),
+            column(3, name),
+            column(3, actionButton(paste0("remove", id), "X"))
+          )
+          importCR3Files$id_count <- importCR3Files$id_count + 1
+          allUI <- c(allUI, list(ui_i))
+          allIDs <- c(allIDs, id)
+        }
+        selector <- "#newSampleCR3"
+      }
+      # insert all the new sample rows
+      for (i in seq_along(allUI)) {
+        insertUI(
+          selector = selector,
+          ui = allUI[i]
+        )
+      }
+      # create event handlers for all the remove buttons
+      # from: https://stackoverflow.com/questions/40038749/r-shiny-how-to-write-loop-for-observeevent
+      lapply(
+        X = allIDs,
+        FUN = function(id_i){
+          observeEvent(input[[paste0("remove", id_i)]], {
+            removeUI(
+              selector = paste0("#", id_i)
+            )
+            if (input$algoChoice == "cellRanger2") {
+              toRemove <- vector()
+              for (entry in importCR2Files$files) {
+                if (entry$id == id_i) {
+                  toRemove <- c(toRemove, FALSE)
+                } else {
+                  toRemove <- c(toRemove, TRUE)
+                }
+              }
+              importCR2Files$files <- importCR2Files$files[toRemove]
+            } else {
+              toRemove <- vector()
+              for (entry in importCR3Files$files) {
+                if (entry$id == id_i) {
+                  toRemove <- c(toRemove, FALSE)
+                } else {
+                  toRemove <- c(toRemove, TRUE)
+                }
+              }
+              importCR3Files$files <- importCR3Files$files[toRemove]
+            }
+          })
+        }
+      )
+      removeModal()
+    }
   })
   
   # event handler for pressing OK on the import modal
@@ -288,42 +713,30 @@ shinyServer(function(input, output, session) {
     if ((!nzchar(input$sampleID)) || (!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
       showModal(importModal(failed = TRUE))
     } else {
-      if (input$algoChoice == "cellRanger2") {
-        importCR2Files$bases <- c(importCR2Files$bases, basePath)
-        importCR2Files$samples <- c(importCR2Files$samples, input$sampleName)
-        importCR2Files$ids <- c(importCR2Files$ids, input$sampleID)
-        selector <- "#newSampleCR2"
-        id <- paste("newSampleCR2", length(importCR2Files$bases), sep = "")
-      } else if (input$algoChoice == "cellRanger3") {
-        importCR3Files$bases <- c(importCR3Files$bases, basePath)
-        importCR3Files$samples <- c(importCR3Files$samples, input$sampleName)
-        importCR3Files$ids <- c(importCR3Files$ids, input$sampleID)
-        selector <- "#newSampleCR3"
-        id <- paste("newSampleCR3", length(importCR3Files$bases), sep = "")
-      } else if (input$algoChoice == "starSolo") {
+      if (input$algoChoice == "starSolo") {
         importSSFiles$bases <- c(importSSFiles$bases, basePath)
         importSSFiles$samples <- c(importSSFiles$samples, input$sampleName)
         importSSFiles$ids <- c(importSSFiles$ids, input$sampleID)
         selector <- "#newSampleSS"
-        id <- paste("newSampleSS", length(importSSFiles$bases), sep = "")
+        id <- paste0("newSampleSS", length(importSSFiles$bases))
       } else if (input$algoChoice == "busTools") {
         importBUSFiles$bases <- c(importBUSFiles$bases, basePath)
         importBUSFiles$samples <- c(importBUSFiles$samples, input$sampleName)
         importBUSFiles$ids <- c(importBUSFiles$ids, input$sampleID)
         selector <- "#newSampleBUS"
-        id <- paste("newSampleBUS", length(importBUSFiles$bases), sep = "")
+        id <- paste0("newSampleBUS", length(importBUSFiles$bases))
       } else if (input$algoChoice == "seqc") {
         importSEQFiles$bases <- c(importSEQFiles$bases, basePath)
         importSEQFiles$samples <- c(importSEQFiles$samples, input$sampleName)
         importSEQFiles$ids <- c(importSEQFiles$ids, input$sampleID)
         selector <- "#newSampleSEQ"
-        id <- paste("newSampleSEQ", length(importSEQFiles$bases), sep = "")
+        id <- paste0("newSampleSEQ", length(importSEQFiles$bases))
       } else if (input$algoChoice == "optimus") {
         importOptFiles$bases <- c(importOptFiles$bases, basePath)
         importOptFiles$samples <- c(importOptFiles$samples, input$sampleName)
         importOptFiles$ids <- c(importOptFiles$ids, input$sampleID)
         selector <- "#newSampleOpt"
-        id <- paste("newSampleOpt", length(importOptFiles$bases), sep = "")
+        id <- paste0("newSampleOpt", length(importOptFiles$bases))
       }
       insertUI(
         selector = selector,
@@ -345,8 +758,7 @@ shinyServer(function(input, output, session) {
         vals$original <- createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
-                                   assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts)
+                                   assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
@@ -354,11 +766,11 @@ shinyServer(function(input, output, session) {
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
           vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
-                                     annotFile = maits$cdat,
-                                     featureFile = maits$fdat,
-                                     assayName = "logtpm",
-                                     inputDataFrames = TRUE,
-                                     createLogCounts = FALSE))
+                                                         annotFile = maits$cdat,
+                                                         featureFile = maits$fdat,
+                                                         assayName = "logtpm",
+                                                         inputDataFrames = TRUE,
+                                                         createLogCounts = FALSE))
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -387,52 +799,94 @@ shinyServer(function(input, output, session) {
       } else if (input$uploadChoice == "rds_seurat") {
         importedrds <- readRDS(input$rdsFileSeurat$datapath)
         if (methods::is(importedrds, "Seurat")) {
-            vals$original <- convertSeuratToSCE(importedrds)
-            seuratWorkflow$sce_rds_file <- importedrds #for seurat workflow
+          vals$original <- convertSeuratToSCE(importedrds)
+          seuratWorkflow$sce_rds_file <- importedrds #for seurat workflow
         }
         else {
-            vals$original <- NULL
+          vals$original <- NULL
         }
       } else if (input$uploadChoice == "directory") {
         if (input$algoChoice == "cellRanger2") {
-          print("CR2")
+          for (entry in importCR2Files$files) {
+            if (entry$isDataFile) {
+              sce <- importCellRangerV2Sample(
+                sampleDir = entry$sample,
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
+              )
+            } else {
+              sce <- importCellRangerV2(
+                cellRangerDirs = substr(entry$base, 1, nchar(entry$base)-1),
+                sampleDirs = entry$sample,
+                sampleNames = entry$name,
+                dataType = c("filtered"),
+                class = "Matrix",
+                delayedArray = FALSE)
+            }
+            
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
+          }
         } else if (input$algoChoice == "cellRanger3") {
-          print("CR3")
-          vals$original <- importCellRangerV3(
-            cellRangerDirs = importCR3Files$bases,
-            sampleDirs = importCR3Files$samples,
-            sampleNames = importCR3Files$ids,
-            dataType = c("filtered"),
-            class = c("Matrix", "matrix"),
-            delayedArray = TRUE
-          )
+          for (entry in importCR3Files$files) {
+            if (entry$isDataFile) {
+              sce <- importCellRangerV3Sample(
+                sampleDir = entry$sample,
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
+              )
+            } else {
+              sce <- importCellRangerV3(
+                cellRangerDirs = entry$base,
+                sampleDirs = entry$sample,
+                sampleNames = entry$name,
+                dataType = c("filtered"),
+                class = "Matrix",
+                delayedArray = FALSE)
+            }
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
+          }
         } else if (input$algoChoice == "starSolo") {
-          print("star")
           vals$original <- importSTARsolo(
             STARsoloDirs = importSSFiles$bases,
-            samples = importSSFiles$ids
+            samples = importSSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "busTools") {
-          print("bus")
           vals$original <- importBUStools(
             BUStoolsDirs = importBUSFiles$bases,
             samples = importBUSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "seqc") {
-          print("seqc")
           vals$original <- importSEQC(
             seqcDirs = importSEQFiles$bases,
             samples = importSEQFiles$ids,
             prefix = importSEQFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         } else if (input$algoChoice == "optimus") {
-          print("opt")
           vals$original <- importOptimus(
             OptimusDirs = importOptFiles$bases,
-            samples = importOptFiles$samples
+            samples = importOptFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
           )
         }
       }
+      
       if (!is.null(vals$original)) {
         # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
@@ -441,17 +895,6 @@ shinyServer(function(input, output, session) {
         updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateSelectInput(session, "deletesamplelist",
-                          choices = colnames(vals$counts))
-        insertUI(
-          selector = "#uploadAlert",
-          ## wrap element in a div with id for ease of removal
-          ui = tags$div(
-            class = "alert alert-success alert-dismissible",
-            HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
-                 </span> Successfully Uploaded! <button type='button' \
-                 class='close' data-dismiss='alert'>&times;</button>"))
-        )
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -513,69 +956,28 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
 
-  #Render data table if there are fewer than 50 samples
-  output$contents <- DT::renderDataTable({
-    req(vals$counts)
-    if (!is.null(getShinyOption("inputSCEset"))){
-      updateGeneNames()
-    }
-    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, options = list(scrollX = TRUE), rownames = FALSE)
-
-  #Render histogram of read counts per cell
-  output$countshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Reads per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-                      type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #Render histogram of genes detected per cell
-  output$geneshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Genes detected per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                                function(x) sum(x > 0)), type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
   #random downsample of samples
-  observeEvent(input$downsampleGo, {
-    req(vals$counts)
-    withBusyIndicatorServer("downsampleGo", {
-      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
-      updateNumSamples()
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
-      vals$enrichRes <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$downsampleGo, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("downsampleGo", {
+#      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
+#      updateNumSamples()
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$gsvaLimma <- NULL
+#      vals$visplotobject <- NULL
+#      vals$enrichRes <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Render summary table
   output$summarycontents <- renderTable({
@@ -585,49 +987,10 @@ shinyServer(function(input, output, session) {
     } else {
       assaySelect <- input$filterAssaySelect
     }
-    singleCellTK::summarizeTable(inSCE = vals$counts,
-                                 useAssay = "counts",
-                                 expressionCutoff = input$minDetectGene)
-  })
+    singleCellTK::summarizeSCE(inSCE = vals$counts,
+                                 useAssay = "counts")
+  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
-  #Filter the data based on the options
-  observeEvent(input$filterData, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("filterData", {
-        deletesamples <- input$deletesamplelist
-        vals$counts <- filterSCData(inSCE = vals$counts,
-                                    useAssay = input$filterAssaySelect,
-                                     deletesamples = deletesamples,
-                                    removeNoExpress = input$removeNoexpress,
-                                    removeBottom = 0.01 * input$LowExpression,
-                                    minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
-        vals$diffexheatmapplot <- NULL
-        vals$combatstatus <- ""
-        vals$diffexgenelist <- NULL
-        vals$gsvaRes <- NULL
-        vals$gsvaLimma <- NULL
-        vals$visplotobject <- NULL
-        vals$enrichRes <- NULL
-        vals$diffexBmName <- NULL
-        diffExValues$diffExList <- NULL
-        vals$dimRedPlot <- NULL
-        vals$dimRedPlot_geneExp <- NULL
-        vals$dendrogram <- NULL
-        vals$pcX <- NULL
-        vals$pcY <- NULL
-        #Refresh things for the clustering tab
-        updateGeneNames()
-        updateEnrichDB()
-        if (!is.null(input$deletesamplelist)){
-          updateSelectInput(session, "deletesamplelist",
-                            choices = colnames(vals$counts))
-        }
-      })
-    }
-  })
 
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
@@ -636,8 +999,8 @@ shinyServer(function(input, output, session) {
     }
     else{
       vals$counts <- vals$original
-      updateSelectInput(session, "deletesamplelist",
-                        choices = colnames(vals$counts))
+      #updateSelectInput(session, "deletesamplelist",
+      #                  choices = colnames(vals$counts))
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$diffexgenelist <- NULL
@@ -697,102 +1060,102 @@ shinyServer(function(input, output, session) {
   })
 
   #Filter the selected samples
-  observeEvent(input$runFilterSample, {
-    withBusyIndicatorServer("runFilterSample", {
-      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
-      vals$counts <- vals$counts[, filter]
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$gsvaLimma <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-      updateNumSamples()
-    })
-  })
+#  observeEvent(input$runFilterSample, {
+#    withBusyIndicatorServer("runFilterSample", {
+#      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
+#      vals$counts <- vals$counts[, filter]
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$gsvaLimma <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#      updateNumSamples()
+#    })
+#  })
 
-  observeEvent(input$filteredFeature, {
-    output$filterFeatureOptions <- renderUI({
-      if (input$filteredFeature != "none")({
-        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
-          L <- vector("list", 3)
-          L[[1]] <- renderText("Select features to keep")
-          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                              list(checkboxGroupInput("filterFeatureChoices",
-                                                      label = NULL,
-                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
-          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
-          return(L)
-        } else {
-          L <- list(renderText("Annotation must have fewer than 100 options"))
-          return(L)
-        }
-      }) else {
-        L <- list()
-      }
-    })
-  })
+#  observeEvent(input$filteredFeature, {
+#    output$filterFeatureOptions <- renderUI({
+#      if (input$filteredFeature != "none")({
+#        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
+#          L <- vector("list", 3)
+#          L[[1]] <- renderText("Select features to keep")
+#          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
+#                              list(checkboxGroupInput("filterFeatureChoices",
+#                                                      label = NULL,
+#                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
+#          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
+#          return(L)
+#        } else {
+#          L <- list(renderText("Annotation must have fewer than 100 options"))
+#          return(L)
+#        }
+#      }) else {
+#        L <- list()
+#      }
+#    })
+#  })
 
-  observeEvent(input$orgOrganism, {
-    library(input$orgOrganism, character.only = TRUE)
-    indb <- get(paste(input$orgOrganism))
-    output$orgConvertColumns <- renderUI({
-      tagList(
-        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
-        selectInput("orgToCol", "Select To Annotation:", columns(indb))
-      )
-    })
-  })
+#  observeEvent(input$orgOrganism, {
+#    library(input$orgOrganism, character.only = TRUE)
+#    indb <- get(paste(input$orgOrganism))
+#    output$orgConvertColumns <- renderUI({
+#      tagList(
+#        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
+#        selectInput("orgToCol", "Select To Annotation:", columns(indb))
+#      )
+#    })
+#  })
 
-  observeEvent(input$convertGenes, {
-    req(vals$counts)
-    withBusyIndicatorServer("convertGenes", {
-      vals$counts <- convertGeneIDs(inSCE = vals$counts,
-                                    inSymbol = input$orgFromCol,
-                                    outSymbol = input$orgToCol,
-                                    database = input$orgOrganism)
-      updateGeneNames()
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$convertGenes, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("convertGenes", {
+#      vals$counts <- convertGeneIDs(inSCE = vals$counts,
+#                                    inSymbol = input$orgFromCol,
+#                                    outSymbol = input$orgToCol,
+#                                    database = input$orgOrganism)
+#      updateGeneNames()
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Filter the selected features
-  observeEvent(input$runFilterFeature, {
-    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
-    vals$counts <- vals$counts[filter, ]
-    updateGeneNames()
-    vals$diffexgenelist <- NULL
-    vals$gsvaRes <- NULL
-    vals$enrichRes <- NULL
-    vals$visplotobject <- NULL
-    vals$diffexheatmapplot <- NULL
-    vals$diffexBmName <- NULL
-    diffExValues$diffExList <- NULL
-    vals$dimRedPlot <- NULL
-    vals$dimRedPlot_geneExp <- NULL
-    vals$dendrogram <- NULL
-    vals$pcX <- NULL
-    vals$pcY <- NULL
-  })
+#  observeEvent(input$runFilterFeature, {
+#    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
+#    vals$counts <- vals$counts[filter, ]
+#    updateGeneNames()
+#    vals$diffexgenelist <- NULL
+#    vals$gsvaRes <- NULL
+#    vals$enrichRes <- NULL
+#    vals$visplotobject <- NULL
+#    vals$diffexheatmapplot <- NULL
+#    vals$diffexBmName <- NULL
+#    diffExValues$diffExList <- NULL
+#    vals$dimRedPlot <- NULL
+#    vals$dimRedPlot_geneExp <- NULL
+#    vals$dendrogram <- NULL
+#    vals$pcX <- NULL
+#    vals$pcY <- NULL
+#  })
 
   #disable the downloadSCE button if no object is loaded
   isAssayResult <- reactive(is.null(vals$counts))
@@ -897,11 +1260,11 @@ shinyServer(function(input, output, session) {
 })
 
 
-  output$colDataDataFrame <- DT::renderDataTable({
-    if (!is.null(vals$counts)){
-      data.frame(colData(vals$counts))
-    }
-  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
+#  output$colDataDataFrame <- DT::renderDataTable({
+#    if (!is.null(vals$counts)){
+#      data.frame(colData(vals$counts))
+#    }
+#  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
 
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))

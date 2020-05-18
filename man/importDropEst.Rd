@@ -32,16 +32,22 @@ A \code{SingleCellExperiment} object containing the count matrix,
 \description{
 imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
 create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as 
+Additionally parse through the RDS to obtain appropriate feature annotations as
 SCE coldata, in addition to any metadata.
 }
 \details{
 \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
-counts matrix stored as "cm" in the DropEst rds output. 
+counts matrix stored as "cm" in the DropEst rds output.
 ColData is obtained from the DropEst corresponding to "mean_reads_per_umi","aligned_reads_per_cell",
 "aligned_umis_per_cell","requested_umis_per_cb","requested_reads_per_cb"
-If using filtered counts matrix, the colData dataframe is 
+If using filtered counts matrix, the colData dataframe is
 subset to contain features from the filtered counts matrix alone.
-If any annotations of ("saturation_info","merge_targets","reads_per_umi_per_cell") are 
+If any annotations of ("saturation_info","merge_targets","reads_per_umi_per_cell") are
 found in the DropEst rds, they will be added to the SCE metadata field
+}
+\examples{
+# Example results were generated as per instructions from the developers of dropEst described in
+# https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
+sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
+                     sampleNames = 'scg71')
 }

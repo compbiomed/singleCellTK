@@ -43,6 +43,8 @@ runDoubletCells <- function(inSCE,
     seed = 12345,
     ...
 ) {
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -71,6 +73,9 @@ runDoubletCells <- function(inSCE,
     output[sceSampleInd, ] <- result
   }
 
+  argsList = argsList[!names(argsList) %in% ("...")]
+  inSCE@metadata$runDoubletCells <- argsList[-1]
+  inSCE@metadata$runDoubletCells$packageVersion <- utils::packageDescription("scran")$Version
   colData(inSCE) = cbind(colData(inSCE), output)
 
   return(inSCE)

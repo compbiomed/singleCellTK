@@ -73,12 +73,13 @@ runDoubletFinder <- function(inSCE,
                              useAssay = "counts",
 			     sample = NULL,
                              seed = 12345,
-                             seuratNfeatures = 2000,                             
+                             seuratNfeatures = 2000,
                              seuratPcs = 1:15,
                              seuratRes = c(0.5, 1, 1.5, 2),
                              formationRate = 0.075,
                              verbose = FALSE){
 
+  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -92,8 +93,8 @@ runDoubletFinder <- function(inSCE,
     doubletScore <- rep(NA, ncol(inSCE))
     doubletLabel <- rep(NA, ncol(inSCE))
     allSampleNumbers <- sort(unique(sample))
-    
-    
+
+
     for (res in seuratRes){
     output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
             doubletFinder_doublet_score = numeric(ncol(inSCE)),
@@ -101,7 +102,7 @@ runDoubletFinder <- function(inSCE,
 
     ## Loop through each sample and run doubletFinder
     samples <- unique(sample)
-	
+
     for (i in seq_len(length(samples))) {
     	sceSampleInd <- sample == samples[i]
     	sceSample <- inSCE[, sceSampleInd]
@@ -116,9 +117,13 @@ runDoubletFinder <- function(inSCE,
 	output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
 	output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
 	}
-    
+
     colnames(output) <- paste0(colnames(output), "_Resolution_", res)
-    
+
+    argsList = argsList[!names(argsList) %in% ("...")]
+    inSCE@metadata$runDoubletFinder <- argsList[-1]
+    inSCE@metadata$runDoubletFinder$packageVersion <- utils::packageDescription("DoubletFinder")$Version
+
     colData(inSCE) = cbind(colData(inSCE), output)
     }
     return(inSCE)
