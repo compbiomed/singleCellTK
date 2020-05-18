@@ -902,9 +902,25 @@ shinyServer(function(input, output, session) {
             scaleFactor = as.numeric(input$normalizationScaleFactor))
           updateAssayInputs()
         }
-        else if (input$normalizeAssayMethodSelect == "cpm") {
+        else if (input$normalizeAssayMethodSelect == "CPM") {
           assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
+          updateAssayInputs()
+        }
+        else if(input$normalizeAssayMethodSelect == "LNC"){
+          vals$counts <- scater::logNormCounts(
+            x = vals$counts, 
+            name = input$normalizeAssayOutname,
+            exprs_values = input$normalizeAssaySelect)
+          updateAssayInputs()
+        }
+        else if(input$normalizeAssayMethodSelect == "SCT"){
+          vals$counts <- seuratSCTransform(
+            inSCE = vals$counts,
+            newAssayName = input$normalizeAssayOutname,
+            useAssay = input$normalizeAssaySelect,
+            geneNamesSeurat = seuratWorkflow$geneNamesSeurat
+          )
           updateAssayInputs()
         }
       }
@@ -918,8 +934,12 @@ shinyServer(function(input, output, session) {
         updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratCLR")
       } else if(input$normalizeAssayMethodSelect == "RC"){
         updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
-      } else if(input$normalizeAssayMethodSelect == "cpm"){
+      } else if(input$normalizeAssayMethodSelect == "CPM"){
         updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "CPMCounts")
+      } else if(input$normalizeAssayMethodSelect == "LNC"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "logNormCountsScater")
+      } else if(input$normalizeAssayMethodSelect == "SCT"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SCTransform")
       }
     })
 

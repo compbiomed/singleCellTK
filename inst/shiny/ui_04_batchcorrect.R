@@ -18,7 +18,9 @@ shinyPanelBatchcorrect <- fluidPage(
                                     "Seurat - LogNormalize" = "LogNormalize",
                                     "Seurat - CLR" = "CLR",
                                     "Seurat - RC" = "RC",
-                                    "CPM" = "cpm")
+                                    "Seurat - SCTransform" = "SCT",
+                                    "Scater - logNormCounts" = "LNC",
+                                    "CPM" = "CPM")
                                 ),
                             selectInput("normalizeAssaySelect", "Select Assay:", currassays),
                             conditionalPanel(

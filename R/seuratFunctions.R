@@ -221,11 +221,12 @@ seuratReductionPlot <- function(inSCE, useAssay, geneNamesSeurat, reduction) {
 #' @param inSCE (sce) object to which we have to add assay to (copy to)
 #' @param geneNames for consistent formatting
 #' @param seuratObject from which we have to copy the assay (copy from)
-#' @param assaySlotSCE the assay slot in sce object
-#' @param assaySlotSeurat the assay slot in seurat object
-.updateAssaySCE <- function(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat) {
+#' @param assaySlotSCE the counts slot from assay in sce object
+#' @param assaySlotSeurat the counts slot from given assay of seurat object
+#' @param slotSeurat which assay to use in seurat object (by default it is "RNA")
+.updateAssaySCE <- function(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat, slotSeurat = "RNA") {
     assay(inSCE, assaySlotSCE) <- NULL
-    assay(inSCE, assaySlotSCE) <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
+    assay(inSCE, assaySlotSCE) <- methods::slot(Seurat::GetAssay(seuratObject, slotSeurat), assaySlotSeurat)
     rownames(inSCE) <- geneNames
     return(inSCE)
 }
@@ -426,6 +427,24 @@ seuratComputeHeatmap <- function(inSCE, useAssay, geneNamesSeurat, dims) {
 seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
     componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
     return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
+}
+
+
+#' seuratSCTransform
+#' Runs the SCTransform function from seurat library to transform the input data
+#' @param inSCE the input sce object containing the counts
+#' @param newAssayName name for the transformed counts assay (default is "SCTCounts")
+#' @param useAssay which counts assay to use from input sce object for transformation
+#' @param geneNamesSeurat genenames for consistent formatting
+#' @export
+seuratSCTransform <- function(inSCE, newAssayName = "SCTCounts", useAssay, geneNamesSeurat) {
+    seuratObject <- Seurat::SCTransform(
+        object = convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat),
+        assay = "RNA",
+        new.assay.name = "SCTransform",
+        do.correct.umi = FALSE)
+    inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, newAssayName, "data", slotSeurat = "SCTransform")
+    return(inSCE)
 }
 
 # ----
