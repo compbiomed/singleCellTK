@@ -2,43 +2,47 @@
 #'
 #' Creates a table of summary metrics from an input SCtkExperiment.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to summarize. Default is "counts"
-#' @param expressionCutoff Count number of samples with fewer than
-#' expressionCutoff genes. The default is 1700.
+#' @param inSCE Input SCtkExperiment object. 
+#' @param useAssay Indicate which assay to summarize. Default \code{"counts"}.
+#' @param sampleVariableName Variable name in \code{colData} denoting which
+#' sample each cell belongs to. If \code{NULL}, all cells will be assumed
+#' to come from the same sample. Default \code{"sample"}.
 #'
-#' @return A data.frame object of summary metrics.
+#' @return A data.frame of summary metrics per sample.
+#' @importFrom Matrix colSums
+#' @importFrom DelayedArray colSums
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
-#' summarizeTable(mouseBrainSubsetSCE)
+#' summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
 #'
-summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
-  return(
-    data.frame(
-      "Metric" = c(
-        "Number of Samples",
-        "Number of Genes",
-        "Average number of reads per cell",
-        "Average number of genes per cell",
-        paste0("Samples with <", expressionCutoff, " detected genes"),
-        "Genes with no expression across all samples"
-      ),
-      "Value" = c(
-        ncol(inSCE),
-        nrow(inSCE),
-        as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay)))),
-        as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay) > 0))),
-        sum(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay) != 0) <
-            expressionCutoff),
-        sum(DelayedArray::rowSums(
-          SummarizedExperiment::assay(inSCE, useAssay)) == 0)
-      )
-    )
-  )
+summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"){
+  
+  if(is.null(sampleVariableName)) {
+    sampleVariable <- rep("Sample", ncol(inSCE))
+  } else {
+    if(!(sampleVariableName %in% colnames(colData(inSCE)))) {
+      stop(paste0("'", sampleVariableName, "' was not found in the 'colData' of 'inSCE'."))
+    }
+    sampleVariable <- colData(inSCE)[,sampleVariableName]  
+  }
+  
+  numCells <- table(sampleVariable)
+  var <- colSums(SummarizedExperiment::assay(inSCE, useAssay))
+  meanCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = mean)
+  medianCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = stats::median)
+  var2 <- colSums(SummarizedExperiment::assay(inSCE, useAssay) > 0)
+  meanDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = mean)
+  medianDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = stats::median)
+  
+  df <- data.frame("Sample" = names(numCells),
+                   "Number of Cells" = as.integer(round(as.numeric(numCells))),
+                   "Mean counts per cell" = as.integer(round(meanCounts[,2])),
+                   "Median counts per cell" = as.integer(round(medianCounts[,2])),
+                   "Mean features detected per cell" = as.integer(round(meanDetected[,2])),
+                   "Median features detected per cell" = as.integer(round(medianDetected[,2])),
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  return(df)
 }
 
 #' Create a SCtkExperiment object
@@ -70,7 +74,7 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
 #' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
 #'                     featureFile = row_annot, assayName = "counts",
 #'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <-  function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
+createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
                       assayName="counts", inputDataFrames=FALSE,
                       createLogCounts=TRUE){
   
@@ -292,3 +296,29 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   return(x)
 }
 
+#' Resolve duplicated feature names in a matrix
+#' 
+#' Adds '-1', '-2', ... '-i' to multiple duplicated feature names
+#' @param countmat matrix, with row names as feature names that need to be 
+#' resolved.
+#' @return The same matrix as input with rowname duplication resolved.
+featureNameDedup <- function(countmat){
+    if(!class(rownames(countmat)) == 'character'){
+        stop("No character feature name found.")
+    }
+    gene.table <- table(rownames(countmat))
+    gene.duplicates <- gene.table[gene.table > 1]
+    gene.duplicates.names <- names(gene.duplicates)
+    empty <- character(0)
+    if (!identical(empty, gene.duplicates.names)){
+        for (genename in gene.duplicates.names){
+            genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
+            indices <- which(grepl(genename, rownames(countmat)))
+            num <- length(indices)
+            for (i in 1:num){
+                rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
+            }
+        }
+    }
+    return(countmat)
+}

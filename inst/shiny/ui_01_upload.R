@@ -28,36 +28,10 @@ shinyPanelUpload <- fluidPage(
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
       "(help)", target = "_blank")),
     tags$hr(),
-    tags$div(id = "uploadAlert", alertText),
     hidden(wellPanel(id = "annotationData",
-                     h4("Data summary:"),
+                     h3("Data summary"),
                      tableOutput("summarycontents"))), 
-    # hidden(wellPanel(id="annotationData",
-    #   sidebarLayout(
-    #     sidebarPanel(
-    #       h4("Modify Annotation Data:"),
-    #       selectInput("annotModifyChoice", "Select Annotation:", c("none", clusterChoice)),
-    #       uiOutput("annotModifyUI"),
-    #       uiOutput("annotModifyUIHelpText"),
-    #       tags$hr(),
-    #       downloadButton("downloadcolData", "Download Annotation Data"),
-    #       tags$hr(),
-    #       fileInput(
-    #         "newAnnotFile", "Upload and replace annotation data:",
-    #         accept = c(
-    #           "text/csv",
-    #           "text/comma-separated-values",
-    #           ".csv"
-    #         )
-    #       )
-    #     ),
-    #     mainPanel(
-    #       tags$h4("Annotation data(colData):"),
-    #       tags$br(),
-    #       DT::dataTableOutput("colDataDataFrame")
-    #     )
-    #   )
-    # )),
+
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
                                                  "Upload SCtkExperiment RDS File" = "rds",
@@ -103,9 +77,7 @@ shinyPanelUpload <- fluidPage(
           selectInput("inputAssayType", label = NULL,
                       c("counts", "normcounts", "logcounts", "cpm",
                         "logcpm", "tpm", "logtpm")
-          ),
-          checkboxInput("createLogcounts",
-                        "Also create log2 input assay on upload", value = TRUE)
+          )
         ),
         column(width = 4,
           wellPanel(
@@ -218,63 +190,57 @@ shinyPanelUpload <- fluidPage(
       ")),
       h3("Choose an Algorithm"),
       radioButtons("algoChoice", label = NULL, c("Cell Ranger v2" = "cellRanger2",
-                                                   "Cell Ranger v3" = "cellRanger3",
-                                                   "STARsolo" = "starSolo",
-                                                   "BUStools" = "busTools",
-                                                   "SEQC" = "seqc",
-                                                   "Optimus" = "optimus")
+                                                 "Cell Ranger v3" = "cellRanger3",
+                                                 "STARsolo" = "starSolo",
+                                                 "BUStools" = "busTools",
+                                                 "SEQC" = "seqc",
+                                                 "Optimus" = "optimus")
       ),
       tags$br(),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger2'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
-        ),
-        
-        wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample Directory")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove")),
           ),
           tags$div(id = "newSampleCR2"),
           tags$br(),
           tags$br(),
           actionButton("addCR2Sample", "Add a Sample"),
-          actionButton("removeCR2Sample", "Remove Last Sample")
+          actionButton("clearAllCR2", "Clear Samples")
         ),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
-        ),
-        
-        wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
-            column(4, tags$b("Sample Name")),
-            column(4, tags$b("Base Directory")),
+            column(3, tags$b("Base Directory")),
+            column(3, tags$b("Sample Directory")),
+            column(3, tags$b("Sample Name")),
+            column(3, tags$b("Remove")),
           ),
           tags$div(id = "newSampleCR3"),
           tags$br(),
           tags$br(),
           actionButton("addCR3Sample", "Add a Sample"),
-          actionButton("removeCR3Sample", "Remove Last Sample")
+          actionButton("clearAllCR3", "Clear Samples")
         ),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+          h5("Please select the directory that contains your /Gene directory as your base directory. ")
         ),
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
             column(4, tags$b("Sample Name")),
+            column(4, tags$b("Sample Directory")),
             column(4, tags$b("Base Directory")),
           ),
           tags$div(id = "newSampleSS"),
@@ -287,13 +253,13 @@ shinyPanelUpload <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+          h5("Please select the directory that contains your /bus_ouput/genecount directory as your base directory.")
         ),
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
             column(4, tags$b("Sample Name")),
+            column(4, tags$b("Sample Directory")),
             column(4, tags$b("Base Directory")),
           ),
           tags$div(id = "newSampleBUS"),
@@ -306,13 +272,13 @@ shinyPanelUpload <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'seqc'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+          h5("Please select the directory that contains your sample files as your base directory.")
         ),
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
             column(4, tags$b("Sample Name")),
+            column(4, tags$b("Sample Directory")),
             column(4, tags$b("Base Directory")),
           ),
           tags$div(id = "newSampleSEQ"),
@@ -325,13 +291,13 @@ shinyPanelUpload <- fluidPage(
       conditionalPanel(
         condition = sprintf("input['%s'] == 'optimus'", "algoChoice"),
         wellPanel(
-          h5("The barcodes, features, and matrix files in your sample directories must be gzipped")
+          h5("Please select the directory that contains the following four directories - call-MergeCountFiles, call-MergeCellMetrics, call-MergeGeneMetrics, call-RunEmptyDrops - as your base directory.")
         ),
         wellPanel(
           h4("Current Samples:"),
           fluidRow(
-            column(4, tags$b("Sample ID")),
             column(4, tags$b("Sample Name")),
+            column(4, tags$b("Sample Directory")),
             column(4, tags$b("Base Directory")),
           ),
           tags$div(id = "newSampleOpt"),

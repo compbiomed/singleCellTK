@@ -16,7 +16,7 @@ trimCounts(counts, trimValue = c(10, -10))
 trimmed counts matrix
 }
 \description{
-Trims an input count matrix such that each value greater than a 
+Trims an input count matrix such that each value greater than a
 threshold value and each value less than a provided
 lower threshold value is trimmed to the lower treshold value.
 }
