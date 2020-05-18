@@ -33,8 +33,9 @@
 #' doublet_detection/bycell.html}
 #' @seealso \link[scran]{doubletCells}
 #' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDoubletCells(emptyDropsSceExample)
+#' data(sceQCExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runDoubletCells(sce)
 #' @export
 runDoubletCells <- function(inSCE,
     sample = NULL,

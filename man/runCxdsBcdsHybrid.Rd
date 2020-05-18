@@ -55,6 +55,7 @@ A wrapper function for \link[scds]{cxds_bcds_hybrid}. Annotate
  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
 }
 \examples{
-data(sce_chcl, package = "scds")
-sce <- runCxdsBcdsHybrid(sce_chcl)
+data(sceQCExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- runCxdsBcdsHybrid(sce)
 }
