@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    combatstatus = "",
+    batchCorrStatus = "",
     diffexgenelist = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
@@ -61,14 +61,10 @@ shinyServer(function(input, output, session) {
                       choices = pdataOptions)
     updateSelectInput(session, "subCovariate",
                       choices = pdataOptions)
-    updateSelectInput(session, "batchVarPlot",
-                      choices = c("none", pdataOptions))
-    updateSelectInput(session, "conditionVarPlot",
-                      choices = c("none", pdataOptions))
-    updateSelectInput(session, "combatBatchVar",
-                      choices = pdataOptions)
-    updateSelectInput(session, "combatConditionVar",
-                      choices = pdataOptions)
+    updateSelectInput(session, "batchCorrCond",
+                      choices = c('None', pdataOptions))
+    updateSelectInput(session, "batchCorrVar",
+                      choices = c('None', pdataOptions))
     updateSelectInput(session, "hurdlecondition",
                       choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
@@ -119,7 +115,7 @@ shinyServer(function(input, output, session) {
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
-    updateSelectInput(session, "combatAssay", choices = currassays)
+    updateSelectInput(session, "batchCorrAssay", choices = currassays)
     updateSelectInput(session, "diffexAssay", choices = currassays)
     updateSelectInput(session, "mastAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
@@ -145,6 +141,7 @@ shinyServer(function(input, output, session) {
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
     updateSelectInput(session, "delRedDimType", choices = currreddim)
+    updateSelectInput(session, "FastMNNReddim", choices = currreddim)
   }
 
   updateEnrichDB <- function(){
@@ -155,14 +152,14 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
-  
+
   observeEvent(input$consoleToggle, {
     toggle(id = "console")
   })
 
 
   # js$disableTabs()
-  
+
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
@@ -171,7 +168,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   # Upload data through shiny app
-  
+
   # Components for uploading directories if user is importing from a preprocessing step
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
   shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
@@ -199,7 +196,7 @@ shinyServer(function(input, output, session) {
   importBUSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importSEQFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importOptFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
-  
+
   importModal <- function(failed = FALSE) {
     modalDialog(
       h3("Sample ID"),
@@ -218,7 +215,7 @@ shinyServer(function(input, output, session) {
       )
     )
   }
-  
+
   importModal <- function(failed = FALSE) {
     modalDialog(
       h3("Base Directory"),
@@ -227,17 +224,17 @@ shinyServer(function(input, output, session) {
       textInput("sampleName", "*This name must match your sample's directory name."),
       h3("Sample ID"),
       textInput("sampleID", "*This is the name you would like to give your sample."),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("modalOk", "OK")
       )
     )
   }
-  
+
   importCRModal <- function() {
     modalDialog(
       h3("Add a Cell Ranger Sample"),
@@ -250,7 +247,7 @@ shinyServer(function(input, output, session) {
       tags$br(),
       h4("Option 3 - Select a directory containing your data files (barcodes.tsv, features.tsv, matrix.mtx)."),
       actionButton("crOpt3", "Add"),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("crOK", "OK")
@@ -265,10 +262,10 @@ shinyServer(function(input, output, session) {
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sampleID", ""),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("SDirOK", "OK")
@@ -282,10 +279,10 @@ shinyServer(function(input, output, session) {
       shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
       textInput("sampleID", "*This field is mandatory when uploading a data directory"),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("DDirOK", "OK")
@@ -298,19 +295,19 @@ shinyServer(function(input, output, session) {
       h3("Base Directory"),
       shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
       wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
-      
+
       tags$div(id = "bDirTable"),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("BDirOK", "OK")
       )
     )
   }
-  
+
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
     ignoreNULL = TRUE,
@@ -326,7 +323,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
     ignoreNULL = TRUE,
@@ -345,7 +342,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # event listener for the base directory modal (need to populate table for sample names)
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
@@ -388,7 +385,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # event listeners for "Add Sample" buttons
   observeEvent(input$addCR2Sample, {
     showModal(importCRModal())
@@ -420,7 +417,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addOptSample, {
     showModal(importModal())
   })
-  
+
   # event listeners for "Remove Sample" buttons
   observeEvent(input$clearAllCR2, {
     for (entry in importCR2Files$files) {
@@ -462,7 +459,7 @@ shinyServer(function(input, output, session) {
     importOptFiles$ids <- head(importOptFiles$ids, -1)
     removeUI(selector = selector)
   })
-  
+
   # event listeners for Cell Ranger import modals' OK buttons
   # sample directory
   observeEvent(input$SDirOK, {
@@ -474,14 +471,14 @@ shinyServer(function(input, output, session) {
       # add the files to the appropriate reactiveValues
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", importCR2Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sampleID, id = id)
         importCR2Files$files <- c(importCR2Files$files, list(entry))
         importCR2Files$id_count <- importCR2Files$id_count + 1
         selector <- "#newSampleCR2"
       } else {
         id <- paste0("snewSampleCR3", importCR3Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sampleID, id = id)
         importCR3Files$files <- c(importCR3Files$files, list(entry))
         importCR3Files$id_count <- importCR3Files$id_count + 1
@@ -533,8 +530,8 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
-  # data directory 
+
+  # data directory
   observeEvent(input$DDirOK, {
     dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
     if ((!nzchar(input$sampleID)) || (identical(dataPath, character(0)))) {
@@ -595,7 +592,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # base directory
   observeEvent(input$BDirOK, {
     basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
@@ -705,7 +702,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
     samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
@@ -750,7 +747,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # Event listener for "Upload" button
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
@@ -824,11 +821,11 @@ shinyServer(function(input, output, session) {
                 class = "Matrix",
                 delayedArray = FALSE)
             }
-            
+
             if(is.null(vals$original)) {
-              vals$original <- sce 
+              vals$original <- sce
             } else {
-              vals$original <- cbind(vals$original, sce)  
+              vals$original <- cbind(vals$original, sce)
             }
           }
         } else if (input$algoChoice == "cellRanger3") {
@@ -850,9 +847,9 @@ shinyServer(function(input, output, session) {
                 delayedArray = FALSE)
             }
             if(is.null(vals$original)) {
-              vals$original <- sce 
+              vals$original <- sce
             } else {
-              vals$original <- cbind(vals$original, sce)  
+              vals$original <- cbind(vals$original, sce)
             }
           }
         } else if (input$algoChoice == "starSolo") {
@@ -886,7 +883,7 @@ shinyServer(function(input, output, session) {
           )
         }
       }
-      
+
       if (!is.null(vals$original)) {
         # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
@@ -1228,9 +1225,9 @@ shinyServer(function(input, output, session) {
             }
             else {
                 showNotification("Error during assay transformation!", type = "error")
-            } 
+            }
           updateAssayInputs()
-        } 
+        }
     })
   })
 
@@ -2282,7 +2279,9 @@ shinyServer(function(input, output, session) {
   observe({
     if (!is.null(vals$counts)){
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
+      if (!is.null(input$ApproachSelect_Xaxis) &
+          !input$ApproachSelect_Xaxis == '' &
+          len > 0){
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -2294,7 +2293,9 @@ shinyServer(function(input, output, session) {
   observe({
     if (!is.null(vals$counts)){
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
+      if (!is.null(input$ApproachSelect_Yaxis) &
+          !input$ApproachSelect_Yaxis == '' &
+          len > 0){
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -2307,7 +2308,9 @@ shinyServer(function(input, output, session) {
   observe({
     if (!is.null(vals$counts)){
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Colorby) & len > 0){
+      if (!is.null(input$ApproachSelect_Colorby) &
+          !input$ApproachSelect_Colorby == '' &
+          len > 0){
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
@@ -3223,7 +3226,7 @@ shinyServer(function(input, output, session) {
 
 
   #-----------------------------------------------------------------------------
-  # Page 4: Batch Correction
+  # Page 4: Batch Correction ####
   #-----------------------------------------------------------------------------
 
   observeEvent(input$toggleNormalization, {
@@ -3237,12 +3240,43 @@ shinyServer(function(input, output, session) {
       updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
     }
   })
-  
+
+  output$batchVarPlot <- renderPlot({
+    if (!is.null(vals$counts) &
+        #!is.null(input$batchVarPlot) &
+        !is.null(input$batchCorrCond) &
+        input$batchCorrVar != "None" &
+        input$batchCorrCond != "None" &
+        input$batchCorrVar != input$batchCorrCond){
+      plotBatchVariance(inSCE = vals$counts,
+                        useAssay = input$batchCorrAssay,
+                        batch = input$batchCorrVar,
+                        condition = input$batchCorrCond)
+    }
+  })#, height = 500, width = 500)
+
+  plotCorrectedBatchVar <- function(resultAssay, pcInput = FALSE){
+    output$batchVarCorrectedPlot <- renderPlot({
+      if (!is.null(vals$counts) &
+          #!is.null(input$batchVarPlot) &
+          !is.null(input$batchCorrCond) &
+          input$batchCorrVar != "None" &
+          input$batchCorrCond != "None" &
+          input$batchCorrVar != input$batchCorrCond){
+        plotBatchVariance(inSCE = vals$counts,
+                          useAssay = resultAssay,
+                          batch = input$batchCorrVar,
+                          condition = input$batchCorrCond,
+                          pcInput = pcInput)
+      }
+    })#, height = 500, width = 500)
+  }
+
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){
         selectInput("combatRefBatch", "Choose Reference Batch:",
-                    unique(sort(colData(vals$counts)[, input$combatBatchVar])))
+                    unique(sort(colData(vals$counts)[, input$batchCorrVar])))
       }
     }
   })
@@ -3253,55 +3287,183 @@ shinyServer(function(input, output, session) {
     }
     else{
       withBusyIndicatorServer("combatRun", {
-        if (input$batchMethod == "ComBat"){
-          #check for zeros
-          if (any(rowSums(assay(vals$counts, input$combatAssay)) == 0)){
-            shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
-          } else {
-            saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-            if (input$combatRef){
-              assay(vals$counts, saveassayname) <-
-                ComBatSCE(inSCE = vals$counts, batch = input$combatBatchVar,
-                          useAssay = input$combatAssay,
-                          par.prior = input$combatParametric,
-                          covariates = input$combatConditionVar,
-                          mean.only = input$combatMeanOnly,
-                          ref.batch = input$combatRefBatch)
-            } else {
-              assay(vals$counts, saveassayname) <-
-                ComBatSCE(inSCE = vals$counts, batch = input$combatBatchVar,
-                          useAssay = input$combatAssay,
-                          par.prior = input$combatParametric,
-                          covariates = input$combatConditionVar,
-                          mean.only = input$combatMeanOnly)
-            }
-            updateAssayInputs()
-            vals$combatstatus <- "ComBat Complete"
-          }
+        #check for zeros
+        if (any(rowSums(assay(vals$counts, input$batchCorrAssay)) == 0)){
+          shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
         } else {
-          shinyalert::shinyalert("Error!", "Unsupported Batch Correction Method", type = "error")
+          saveassayname <- gsub(" ", "_", input$combatSaveAssay)
+          if (input$combatRef){
+            assay(vals$counts, saveassayname) <-
+              ComBatSCE(inSCE = vals$counts, batch = input$batchCorrVar,
+                        useAssay = input$batchCorrAssay,
+                        par.prior = input$combatParametric,
+                        covariates = input$batchCorrCond,
+                        mean.only = input$combatMeanOnly,
+                        ref.batch = input$combatRefBatch)
+          } else {
+            assay(vals$counts, saveassayname) <-
+              ComBatSCE(inSCE = vals$counts, batch = input$batchCorrVar,
+                        useAssay = input$batchCorrAssay,
+                        par.prior = input$combatParametric,
+                        covariates = input$batchCorrCond,
+                        mean.only = input$combatMeanOnly)
+          }
+          updateAssayInputs()
+          plotCorrectedBatchVar(saveassayname)
+          shinyalert::shinyalert('Success!', 'ComBat completed.', type = 'success')
+          vals$batchCorrStatus <- "ComBat Complete"
         }
       })
     }
   })
 
-  output$combatStatus <- renderUI({
-    h2(vals$combatstatus)
+  observeEvent(input$FastMNNRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("FastMNNRun", {
+        saveassayname <- gsub(" ", "_", input$FastMNNSaveReddim)
+        if(isTRUE(input$FastMNNPcInput)){
+          fmnnAssay <- input$FastMNNReddim
+        } else {
+          fmnnAssay <- input$batchCorrAssay
+        }
+        vals$counts <- runFastMNN(vals$counts,
+                                  useAssay = fmnnAssay,
+                                  batch = input$batchCorrVar,
+                                  reducedDimName = saveassayname,
+                                  pcInput = input$FastMNNPcInput
+        )
+        updateReddimInputs()
+        plotCorrectedBatchVar(saveassayname, pcInput = TRUE)
+        shinyalert::shinyalert('Success!', 'FastMNN completed.', type = 'success')
+        vals$batchCorrStatus <- "FastMNN Complete"
+      }
+      )
+    }
   })
 
-  output$combatBoxplot <- renderPlot({
-    if (!is.null(vals$counts) &
-        !is.null(input$batchVarPlot) &
-        !is.null(input$conditionVarPlot) &
-        input$batchVarPlot != "none" &
-        input$conditionVarPlot != "none" &
-        input$batchVarPlot != input$conditionVarPlot){
-      plotBatchVariance(inSCE = vals$counts,
-                        useAssay = input$combatAssay,
-                        batch = input$batchVarPlot,
-                        condition = input$conditionVarPlot)
+  observeEvent(input$limmaRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("limmaRun", {
+        saveassayname <- gsub(" ", "_", input$limmaSaveAssay)
+        vals$counts <- runLimmaBC(vals$counts,
+                                  useAssay = input$batchCorrAssay,
+                                  batch = input$batchCorrVar,
+                                  assayName = saveassayname)
+        updateAssayInputs()
+        plotCorrectedBatchVar(saveassayname)
+        shinyalert::shinyalert('Success!', 'Limma completed.', type = 'success')
+        vals$batchCorrStatus <- "Limma Complete"
+      }
+      )
     }
-  }, height = 600)
+  })
+
+  observeEvent(input$ligerRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    }
+    else{
+      withBusyIndicatorServer("ligerRun", {
+        #check for zeros
+        if (any(rowSums(assay(vals$counts, input$batchCorrAssay)) == 0)){
+          shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
+        } else {
+          saveassayname <- gsub(" ", "_", input$ligerSaveReddim)
+          vals$counts <-
+            runLIGER(inSCE = vals$counts,
+                     useAssay = input$batchCorrAssay,
+                     batch = input$batchCorrVar,
+                     reducedDimName = saveassayname,
+                     nComponents = input$ligerNComp,
+                     lambda = input$ligerLambda,
+                     resolution = input$ligerResolution)
+          updateReddimInputs()
+          plotCorrectedBatchVar(saveassayname, pcInput = TRUE)
+          shinyalert::shinyalert('Success!', 'LIGER completed.', type = 'success')
+          vals$batchCorrStatus <- "LIGER Complete"
+        }
+      })
+    }
+  })
+
+  observeEvent(input$MNNRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("MNNRun", {
+        saveassayname <- gsub(" ", "_", input$MNNSaveAssay)
+        if(is.na(as.numeric(input$MNNSigma))){
+          vals$batchCorrStatus <- ""
+          stop("Sigma value must be numeric.")
+        } else {
+          sigma <- as.numeric(input$MNNSigma)
+        }
+        vals$counts <- runMNNCorrect(vals$counts,
+                                     useAssay = input$batchCorrAssay,
+                                     batch = input$batchCorrVar,
+                                     k = input$MNNK, sigma = sigma,
+                                     assayName = saveassayname)
+        updateAssayInputs()
+        plotCorrectedBatchVar(saveassayname)
+        shinyalert::shinyalert('Success!', 'MNN completed.', type = 'success')
+        vals$batchCorrStatus <- "MNN Complete"
+      }
+      )
+    }
+  })
+
+  output$scMergeNBatch <- renderUI({
+    if(!is.null(vals$counts) &&
+       !is.null(input$batchCorrVar) &&
+       !input$batchCorrVar == 'None'){
+      nBatch <- length(unique(SummarizedExperiment::colData(vals$counts)[[input$batchCorrVar]]))
+      span(paste0("Please input ", nBatch, " integer(s), separated by ','."))
+    }
+  })
+
+  observeEvent(input$scMergeRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("scMergeRun", {
+        saveassayname <- gsub(" ", "_", input$scMergeSaveAssay)
+        if(input$scMergeSEGOpt == 1){
+          seg <- NULL
+        } else if(input$scMergeSEGOpt == 2){
+          data("SEG")
+          seg <- SEG[[input$scMergeSEGSpecies]]
+        } else {
+          seg <- str_trim(scan(text = input$scMergeSEGCustom,
+                               sep='\n', what = 'character'))
+        }
+        if(isTRUE(input$scMergeAutoKmk)){
+          kmk <- NULL
+        } else {
+          kmk <- scan(text = input$scMergeUserKmk, sep=',')
+        }
+        vals$counts <- runSCMerge(inSCE = vals$counts,
+                                  useAssay = input$batchCorrAssay,
+                                  batch = input$batchCorrVar,
+                                  cellType = input$batchCorrCond,
+                                  seg = seg, kmeansK = kmk,
+                                  assayName = saveassayname
+        )
+        updateAssayInputs()
+        plotCorrectedBatchVar(saveassayname)
+        shinyalert::shinyalert('Success!', 'scMerge completed.', type = 'success')
+        vals$batchCorrStatus <- "scMerge Complete"
+      }
+      )
+    }
+  })
+
+  output$batchCorrStatus <- renderUI({
+    span(vals$batchCorrStatus, style = "color:green;margin-top:10px;")
+  })
 
   #-----------------------------------------------------------------------------
   # Page 4.1: Feature Selection
@@ -4346,7 +4508,7 @@ shinyServer(function(input, output, session) {
                 seuratWorkflow$geneNamesSCE <- .rowNamesSCE(vals$counts)
                 seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
                 updateSelectInput(session = session, inputId = "seuratSelectNormalizationAssay", choices = names(assays(vals$counts)))
-        }     
+        }
     })
 
     #Display highly variable genes

@@ -10,7 +10,8 @@
 #' Required
 #' @param condition The column in the annotation data that corresponds to
 #' condition. Optional
-#'
+#' @param pcInput A logical scalar indicating whether \code{useAssay} is in
+#' \code{names(reducedDims(inSCE))}. Default \code{FALSE}.
 #' @return A boxplot of variation explained by batch, condition, and
 #' batch+condition (if applicable).
 #' @export
@@ -22,35 +23,34 @@
 #'   plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
 #' }
 #'
-plotBatchVariance <- function(inSCE, useAssay="logcounts", batch,
-                              condition=NULL){
-  nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
+plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
+                              condition=NULL, pcInput = FALSE){
+  if(isTRUE(pcInput)){
+    mat <- t(SingleCellExperiment::reducedDim(inSCE, useAssay))
+  } else {
+    mat <- SummarizedExperiment::assay(inSCE, useAssay)
+  }
+  batchCol <- SummarizedExperiment::colData(inSCE)[, batch]
+  nlb <- nlevels(as.factor(batchCol))
   if (nlb <= 1){
     batchMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
   } else {
-    batchMod <- stats::model.matrix(
-      ~as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
+    batchMod <- stats::model.matrix(~as.factor(batchCol))
   }
+  condCol <- SingleCellExperiment::colData(inSCE)[, condition]
   if (is.null(condition)){
     stop("condition required for now")
   } else {
-    nlc <- nlevels(as.factor(
-      SingleCellExperiment::colData(inSCE)[, condition]))
+    nlc <- nlevels(as.factor(condCol))
     if (nlc <= 1){
       condMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
     } else {
-      condMod <- stats::model.matrix(
-        ~as.factor(SingleCellExperiment::colData(inSCE)[, condition]))
+      condMod <- stats::model.matrix(~as.factor(condCol))
     }
   }
-
   mod <- cbind(condMod, batchMod[, -1])
-
-  condTest <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCE, useAssay),
-                                mod, batchMod)
-  batchTest <- batchqc_f.pvalue(
-    SummarizedExperiment::assay(inSCE, useAssay), mod, condMod)
-
+  condTest <- batchqc_f.pvalue(mat, mod, batchMod)
+  batchTest <- batchqc_f.pvalue(mat, mod, condMod)
   r2Full <- condTest$r2Full
   condR2 <- batchTest$r2Reduced
   batchR2 <- condTest$r2Reduced
