@@ -43,7 +43,7 @@ sceOutput <- function(dropletSCE, filteredSCE, samplename, directory){
     
         ## Export to flatfile
         fn <- file.path(directory, samplename, "FlatFile", "Droplets")
-        exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn)
+        exportSCEtoFlatFile(mergedDropletSCE, outputDir = fn, sample=samplename)
     
         ## Export to Python AnnData
         fn <- file.path(directory, samplename, "Python", "Droplets")
@@ -57,7 +57,7 @@ sceOutput <- function(dropletSCE, filteredSCE, samplename, directory){
         
         ## Export to flatfile    
         fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
-        exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn)
+        exportSCEtoFlatFile(mergedFilteredSCE, outputDir = fn, , sample=samplename)
         
         ## Export to Python AnnData
         fn <- file.path(directory, samplename, "Python", "FilteredCells")
@@ -116,6 +116,36 @@ parseConfig <- function(sctkConfig, arguments){
   }
 }
 
+### extract parameters
+getSceParams <- function(inSCE, 
+                         skip = c("scrublet", "runDecontX"), 
+                         ignore = c("algorithms", "estimates","contamination","z"), 
+                         directory = NULL, 
+                         samplename = '',
+                         writeYAML = TRUE) {
+  
+  meta <- metadata(inSCE)
+  algos <- names(meta)[!names(meta) %in% skip]
+  outputs <- '---'
+  parList <- list()
+  dir <- file.path(directory, samplename)
+  
+  for (algo in algos) {
+    params <- meta[[algo]]
+    if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
+    params <- params[which(!names(params) %in% ignore)]
+    parList[[algo]] <- params
+  }
+
+  outputs <- paste(outputs, as.yaml(parList), sep='\n')
+  if (isTRUE(writeYAML)) {
+    filename <- paste0(samplename, '_QCParameters.yaml')
+    cat(outputs, file=file.path(dir, filename))
+  } else {
+    return(outputs)
+  }
+}
+
 ## Function to generate HTAN Level3 and Level4 metafile
 generateHTANMeta <- function(dropletSCE, 
                              filteredSCE, 
@@ -124,10 +154,12 @@ generateHTANMeta <- function(dropletSCE,
                              qcMetric = c('ColData', 'DecontXUMAP', 'ScrubletTSNE', 'ScrubletUMAP')) {
   level3List <- list()
   level4List <- list()
-  #qcMetricOut <- 
   
   directory <- file.path(basename(dir), samplename)
+  filterDir <- file.path(directory, 'FlatFile', 'FilteredCells')
+  rawDir <- file.path(directory, 'FlatFile', 'Droplets')
   
+    
   WorkFlowData = c(
     WorkFlow = 'singleCellTK QC pipeline', 
     WorkFlowVer = paste('singleCellTK', sessionInfo()$otherPkgs$singleCellTK$Version, sep=':'),
@@ -145,23 +177,23 @@ generateHTANMeta <- function(dropletSCE,
                   MedianReads = median(colData(dropletSCE)$sum),
                   MedianGenes = median(colData(dropletSCE)$detected),
                   DataType = 'Droplet Matrix',
-                  FileName = file.path(directory, 'FlatFile', 'Droplets', 'assays', 'counts.mtx.gz')), 
+                  FileName = file.path(rawDir, 'assays', paste0(samplename,'_counts.mtx.gz'))), 
 
     'decontX' = c( CellNum = ncol(filteredSCE),
                       MedianReads = median(Matrix::colSums(assay(filteredSCE, 'decontXcounts'))),
                       MedianGenes = median(apply(assay(filteredSCE, 'decontXcounts'), 2, function(x){sum(x>0)})),
                       DataType = 'Decontamined cell matrix return returned by runDecontX',
-                      FileName = file.path(directory, 'FlatFile', 'FilteredCells', 'assays', 'decontXcounts.mtx.gz')), 
+                      FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz'))), 
 
     'Filtered' = c( CellNum = ncol(filteredSCE),
                        MedianReads = median(colData(filteredSCE)$sum),
                        MedianGenes = median(colData(filteredSCE)$detected),
                        DataType = 'Cell Matrix', 
-                       FileName = file.path(directory, 'FlatFile', 'FilteredCells', 'assays', 'counts.mtx.gz'),
-                       ColData = file.path(directory, 'FlatFile', 'FilteredCells', 'colData.txt.gz'),
-                       DecontXUMAP = file.path(directory, 'FlatFile', 'FilteredCells', 'reducedDims', 'decontX_UMAP.txt.gz'),
-                       ScrubletTSNE = file.path(directory, 'FlatFile', 'FilteredCells', 'reducedDims', 'scrublet_TSNE.txt.gz'),
-                       ScrubletUMAP = file.path(directory, 'FlatFile', 'FilteredCells', 'reducedDims', 'scrublet_TSNE.txt.gz')
+                       FileName = file.path(filterDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
+                       ColData = file.path(filterDir, paste0(samplename,'_colData.txt.gz')),
+                       DecontXUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
+                       ScrubletTSNE = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
+                       ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz'))
     ))
   
 
@@ -186,7 +218,7 @@ generateHTANMeta <- function(dropletSCE,
           HTAN_PARENT_FILE_ID = data[[type]]['FileName'], 
           FILE_NAME = data[[type]][metric],
           WORKFLOW_TYPE = WorkFlowData[metric],
-          WORKFLOW_PARAMETERS = '',
+          WORKFLOW_PARAMETERS = file.path(directory, paste0(samplename, '_QCParameters.yaml')),
           WORKFLOW_VERSION = WorkFlowData['WorkFlowVer'])
       }
     }
@@ -247,7 +279,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         help="The full path of the RDS file or Matrix file of the filtered gene count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
-        default='./sctk_qc.yaml',
+        default=NULL,
         help="YAML file containing parameters called by singleCellTK QC functions. Please check documentation for details."))
 
 ## Define arguments
@@ -349,7 +381,7 @@ if (!is.null(gmt)) {
 level3Meta <- list()
 level4Meta <- list()
 
-for(i in 1:seq_along(process)) {
+for(i in seq_along(process)) {
     preproc <- process[i]
     samplename <- sample[i]
     path <- basepath[i]
@@ -423,8 +455,17 @@ for(i in 1:seq_along(process)) {
     if (isTRUE(split)) {
         sceOutput(dropletSCE=dropletSCE, filteredSCE=filteredSCE, samplename=samplename, directory=directory)
         
+        ## Get parameters of QC functions
+        getSceParams(inSCE = filteredSCE, 
+        			 directory = directory, 
+        			 samplename = samplename,
+        			 writeYAML = TRUE)
+
         ## generate meta data
-	  	meta <- generateHTANMeta(dropletSCE, filteredSCE, samplename, directory)
+	  	meta <- generateHTANMeta(dropletSCE = dropletSCE, 
+	  							 filteredSCE = filteredSCE, 
+	  							 samplename = samplename, 
+	  							 dir = directory)
 	  	level3Meta[[i]] <- meta[[1]]
 	  	level4Meta[[i]] <- meta[[2]]
     }
@@ -443,6 +484,12 @@ if (!isTRUE(split)){
 
     sceOutput(dropletSCE=dropletSCE, filteredSCE=filteredSCE, samplename=samplename, directory=directory)
 
+    ## Get parameters of QC functions
+    getSceParams(inSCE = filteredSCE, 
+    			 directory = directory, 
+    			 samplename = samplename,
+    			 writeYAML = TRUE)
+
     ## generate meta data
   	meta <- generateHTANMeta(dropletSCE, filteredSCE, samplename, directory)
   	level3Meta[[i]] <- meta[[1]]
@@ -452,5 +499,5 @@ if (!isTRUE(split)){
 HTANLevel3 <- do.call(base::rbind, level3Meta)
 HTANLevel4 <- do.call(base::rbind, level4Meta)
 write.csv(HTANLevel3, file = file.path(directory, 'level3Meta.csv'))
-write.csv(HTANLevel4, file = file.path(directory, 'level3Meta.csv'))
+write.csv(HTANLevel4, file = file.path(directory, 'level4Meta.csv'))
 
