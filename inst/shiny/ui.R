@@ -24,14 +24,19 @@ library(celda)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
+library(shinyWidgets);
+library(shinyBS);
+library(shinyjqui);
+library(Seurat);
+library(ggplotify);
+library(ggplot2);
+library(cowplot);
 library(tidyverse)
 library(dplyr)
 library(readxl)
 library(broom)
 library(RColorBrewer)
 library(grDevices)
-
-
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -123,7 +128,7 @@ source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
-
+source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 
 
 jsCode <- "
@@ -182,8 +187,8 @@ shinyUI(
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
-        tabPanel("CELDA", shinyPanelCelda),
-        tabPanel("Seurat", h1("Seurat")),
+        tabPanel("Celda", shinyPanelCelda),
+        tabPanel("Seurat", shinyPanelSeurat),
         tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
@@ -191,14 +196,14 @@ shinyUI(
                  tabPanel("Gene Visualization", shinyPanelViewers),
                  tabPanel("Cell Viewer", shinyPanelCellViewer)),
       footer = includeHTML("www/footer.html"),
-      # fluidRow(
-      #   column(12, id = "consoleDiv",
-      #          actionButton(inputId="consoleToggle", label = "Show/Hide Console Log"),
-      #          verbatimTextOutput(outputId="console"),
-      #          tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
-      #          tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
-      #   )
-      # )
+      fluidRow(
+        column(12, id = "consoleDiv",
+               actionButton(inputId="consoleToggle", label = "Console Log"),
+               hidden(verbatimTextOutput(outputId="console")),
+               tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
+               tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
+        )
+      ),
       useShinyjs(),
       extendShinyjs(text = jsCode)
     )

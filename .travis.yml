@@ -1,20 +1,48 @@
 language: r
-cache: packages
+cache: 
+  - packages
+  - pip
+r:
+  - oldrel
 dist: trusty
 sudo: false
-warnings_are_errors: false
+warnings_are_errors: true
 bioc_required: true
+
+# Current version of xgboost fails install
+# Need to force install older version using 'devtools::install_version'
+#    which is done in 'before_install' (see below) 
+# However 'remotes::dev_package_deps' will try to auto upgrade packages
+#    Therefore, a new install command is used with 'upgrade="never"'
+# These parts can be deleted once the xgboost error is fixed
+
 before_install:
-- Rscript -e 'update.packages(ask = FALSE)'
+  - pyenv install 3.6.1
+  - pyenv global 3.6.1
+  - Rscript -e 'install.packages("devtools")'
+  - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
+  - pip install --upgrade pip
+  - pip install scipy scrublet scanpy scanorama scgen bbknn
+
+install:
+- R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
+
+addons:
+  apt:
+    packages:
+      - libv8-dev
+
 r_build_args: "--no-build-vignettes"
 r_check_args: "--no-vignettes --no-build-vignettes --as-cran"
 r_github_packages:
   - jimhester/lintr
+  - compbio/celda
 notifications:
   slack:
     secure: sw/He3WX7Fs61DTufgG9hx7fWDhwx57zv+dYB4sr30LgKyIJNbZYSU76ZN4oPwHFGAJ0eyk/22XCuKF8/seSB2ArQuc4kFlsaeWWg1CxDqW9iR0zs91MJL3lJoUOSayy5WcWbsUxD+x8GcB37FCgoTXcveN956bfgrDb2nGrFY6QMSVsnkWi/kiMdzhR4VPzOfmAUZUcr1aDU3WN4ROwbDg89zCfu9HbVKZwyQdYZk7L2Pgg8xGIcGZkaMN1MMD/r0Wc2aVYqCOcn5qO/9CaspEBf7cd6ejVzgAl/LM4dTIPlx9E6ekQGwJXpt1Qxyc0sqVSQWFZvFkWyV3wkqX8pfSXV6ojlP2cGJt+PSQXwLHj0TKWYx7yHbw+55da/b//SVLZVHl+P6VXxQBe2hmFD6sCk3V3uq2CkxzI52bK4Wv4RRncVKIZEpFZOc9P2ik5mf6pICmLHwttlbHeDjJbQ+raYftF704xb1sOxapLwuy+c2SWKPeqOiimfZNgOK+J7JbvQvpnaiHN+3CA3wQXs1auKBwI+swvsZPAzeKssnLv/0AQmX8ckVzvXJzUvl1J73c9V2zG2F44xmIsXwzruEp6leSbeXcLifrfbfQdmaHzq4M/Z83o/fwGRzdWfG7YXDyPIabik7DOMrSUvF+wLGVTjOart8HrA4eVEkKFnRE=
 r_packages:
 - covr
+- xgboost
 after_success:
 - Rscript -e 'library(covr); codecov()'
 env:
