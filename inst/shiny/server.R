@@ -155,14 +155,15 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInput(session, "enrichDb", choices = c("ALL", enrDB))
   }
-  
+
   observeEvent(input$consoleToggle, {
     toggle(id = "console")
   })
 
 
+
   # js$disableTabs()
-  
+
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
@@ -765,6 +766,7 @@ shinyServer(function(input, output, session) {
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
+
           vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
                                                          annotFile = maits$cdat,
                                                          featureFile = maits$fdat,
@@ -2225,6 +2227,7 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
+
   #-+-+-+-+-+-For Input Observe##############
   observe({
     # is there an error or not
@@ -2244,9 +2247,19 @@ shinyServer(function(input, output, session) {
       approach_list <- names(reducedDims(vals$counts))
       #from colData
       annotation_list <- names(colData(vals$counts))
+      annotation_list2 <- list()
+      for (i in 1:length(annotation_list)){
+        if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
+        }else{
+          annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
+        }
+      }
+      annotation_list <- annotation_list2
+      rm(annotation_list2)
 
       updateSelectInput(session, "QuickAccess",
-        choices = c("",approach_list,"Custom"))
+        choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
         choices = c(approach_list))
       updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
@@ -2277,12 +2290,34 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$viewertabs, {
+    approach_list <- names(reducedDims(vals$counts))
+    if(input$viewertabs == "reducedDims Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("", approach_list))
+      shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+    }else if(input$viewertabs == "Bar Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+    }else if(input$viewertabs == "Violin/Box Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+    }else if (input$viewertabs == "Scatter Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
+      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+    }
+  })
+
   #-+-+-+-+-+-For Advanced Input Observe##############
   ###ApproachSelect to DimensionSelect X-Axis
-  observe({
+  observeEvent(input$ApproachSelect_Xaxis, {
     if (!is.null(vals$counts)){
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
+
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -2291,10 +2326,12 @@ shinyServer(function(input, output, session) {
     }
   })
   ###ApproachSelect to DimensionSelect Y-Axis
-  observe({
+  observeEvent(input$ApproachSelect_Yaxis, {
     if (!is.null(vals$counts)){
+
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
+
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -2304,10 +2341,12 @@ shinyServer(function(input, output, session) {
     }
   })
   ###ApproachSelect to DimensionSelect Colorby
-  observe({
+  observeEvent(input$ApproachSelect_Colorby, {
     if (!is.null(vals$counts)){
+
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Colorby) & len > 0){
+
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
@@ -2390,7 +2429,7 @@ shinyServer(function(input, output, session) {
     }
   })#observe_end
 
-  #-+-+-+-+-+-Observe Color bye###################################################
+  #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
   observe({
     if (!is.null(vals$counts)){
@@ -2616,7 +2655,23 @@ shinyServer(function(input, output, session) {
     }
   })###observe_end
 
-
+# Plotting function
+  plotfun <- function(a, p){
+    if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+      a <- a + geom_point(size = input$adjustsize, alpha = input$adjustalpha)
+    }else if (input$viewertabs == "Bar Plot"){
+      a <- a + geom_bar(stat = "identity")
+    }else if (input$viewertabs == "Violin/Box Plot"){
+      if (input$vlnboxcheck == FALSE){
+        a <- a + geom_boxplot()
+      }else{
+        a <- a + geom_violin()
+      }
+    }else if (input$viewertabs == "Bubble Plot"){
+      a <- a + geom_point(size = p, alpha = input$adjustalpha)
+    }
+    return(a)
+  }
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
@@ -2876,41 +2931,43 @@ shinyServer(function(input, output, session) {
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
-      xname = paste0(input$QuickAccess, 1)
+      xname <- paste0(input$QuickAccess, 1)
     }else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
-      xname = input$adjustxlab
+      xname <- input$adjustxlab
     }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
-      xname = paste0(input$ApproachSelect_Xaxis,substr(input$ColumnSelect_Xaxis,2,2))
+      xname <- paste0(input$ApproachSelect_Xaxis,"_",substr(input$ColumnSelect_Xaxis,
+        str_length(input$ColumnSelect_Xaxis),str_length(input$ColumnSelect_Xaxis)))
     }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
-      xname = paste0(input$GeneSelect_Assays_Xaxis)
+      xname <- input$GeneSelect_Assays_Xaxis
     }else{
-      xname = paste0(input$AnnotationSelect_Xaxis)
+      xname <- input$AnnotationSelect_Xaxis
     }
 
     ###Yaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
-      yname = paste0(input$QuickAccess, 2)
+      yname <- paste0(input$QuickAccess, 2)
     }else if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab != ""){
-      yname = input$adjustylab
+      yname <- input$adjustylab
     }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
-      yname = paste0(input$ApproachSelect_Yaxis,substr(input$ColumnSelect_Yaxis,2,2))
+      yname <- paste0(input$ApproachSelect_Yaxis,"_",substr(input$ColumnSelect_Yaxis,
+        str_length(input$ColumnSelect_Yaxis),str_length(input$ColumnSelect_Yaxis)))
     }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
-      yname = paste0(input$GeneSelect_Assays_Yaxis)
-
+      yname <- input$GeneSelect_Assays_Yaxis
     }else{
-      yname = paste0(input$AnnotationSelect_Yaxis)
+      yname <- input$AnnotationSelect_Yaxis
     }
 
     ###Yaxis label name
     if(input$TypeSelect_Colorby != 'Pick a Color'){
-      if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-        legendname = paste0(input$ApproachSelect_Colorby,substr(input$ColumnSelect_Colorby,2,2))
-
-      }else if(input$TypeSelect_Colorby == 'Expression Assays'){
-        legendname = paste0(input$GeneSelect_Assays_Colorby)
-
+      if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
+        legendname <- paste0(input$ApproachSelect_Colorby,"_",substr(input$ColumnSelect_Colorby,
+          str_length(input$ColumnSelect_Colorby),str_length(input$ColumnSelect_Colorby)))
+      }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
+        legendname <- input$GeneSelect_Assays_Colorby
+      }else if(input$adjustlegendtitle == ""){
+        legendname <- input$AnnotationSelect_Colorby
       }else{
-        legendname = paste0(input$AnnotationSelect_Colorby)
+        legendname <- input$adjustlegendtitle
       }
     }
 
@@ -2921,21 +2978,19 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
+        a <- plotfun(a, xy$color)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }
-      #if not uniform
-      else{
+      }else{
+        #if not uniform
         #ggplot#none
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
-          theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) +  labs(color= legendname)
-
+          theme_classic() + xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -2943,11 +2998,11 @@ shinyServer(function(input, output, session) {
         }else{
           a = a + scale_color_distiller(palette = input$adjustbrewer)
         }
-        #ggplotly#none
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
-        ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600) }
+        ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
+        }
       #else_end
 
     }#if_none_end
@@ -2969,12 +3024,12 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        a <- plotfun(a, xy$color)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -2984,13 +3039,12 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level>25
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -3024,12 +3078,12 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        a <- plotfun(a, xy$color)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -3039,13 +3093,12 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level<25,Continous
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -3053,7 +3106,6 @@ shinyServer(function(input, output, session) {
         }else{
           a = a + scale_color_distiller(palette = input$adjustbrewer)
         }
-
         #ggplotly#Integer,level<25,Continous
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
@@ -3076,12 +3128,12 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        a <- plotfun(a, xy$color)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -3091,13 +3143,12 @@ shinyServer(function(input, output, session) {
         #ggplot#Integer,level<25,Categorical
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -3128,12 +3179,12 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        a <- plotfun(a, xy$color)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -3143,13 +3194,12 @@ shinyServer(function(input, output, session) {
         #ggplot2#Numeric,noninteger
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -3176,12 +3226,12 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
-          geom_point(color = input$Col, size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname))
+        a <- plotfun(a, xy$color)
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
@@ -3191,13 +3241,12 @@ shinyServer(function(input, output, session) {
         #ggplot3#
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          geom_point(size = input$adjustsize, alpha = input$adjustalpha) +
           theme_classic() +
           theme(legend.title = element_blank(),
             strip.background = element_blank()) +
           facet_wrap(~groupby) +
           xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-
+        a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
             a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
@@ -3237,7 +3286,7 @@ shinyServer(function(input, output, session) {
       updateActionButton(session, "toggleAssayDetails", icon=icon("caret-down", lib="font-awesome"))
     }
   })
-  
+
   output$selectCombatRefBatchUI <- renderUI({
     if (!is.null(vals$counts)){
       if (input$combatRef){
