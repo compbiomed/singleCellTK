@@ -5,7 +5,14 @@
 \title{.updateAssaySCE
 Update/Modify/Add an assay in the provided sce object}
 \usage{
-.updateAssaySCE(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat)
+.updateAssaySCE(
+  inSCE,
+  geneNames,
+  seuratObject,
+  assaySlotSCE,
+  assaySlotSeurat,
+  slotSeurat = "RNA"
+)
 }
 \arguments{
 \item{inSCE}{(sce) object to which we have to add assay to (copy to)}
@@ -14,9 +21,11 @@ Update/Modify/Add an assay in the provided sce object}
 
 \item{seuratObject}{from which we have to copy the assay (copy from)}
 
-\item{assaySlotSCE}{the assay slot in sce object}
+\item{assaySlotSCE}{the counts slot from assay in sce object}
 
-\item{assaySlotSeurat}{the assay slot in seurat object}
+\item{assaySlotSeurat}{the counts slot from given assay of seurat object}
+
+\item{slotSeurat}{which assay to use in seurat object (by default it is "RNA")}
 }
 \description{
 .updateAssaySCE

@@ -8,6 +8,7 @@ Normalizes the sce object according to the input parameters}
 \usage{
 seuratNormalizeData(
   inSCE,
+  newAssayName = "seuratNormalizedData",
   useAssay,
   geneNamesSeurat,
   normalizationMethod = "LogNormalize",
