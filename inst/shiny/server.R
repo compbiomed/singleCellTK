@@ -1236,6 +1236,22 @@ shinyServer(function(input, output, session) {
         } 
     })
   })
+  
+  observeEvent(input$assayModifyAction,{
+    if (input$assayModifyAction == "log"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+    }
+    else if (input$assayModifyAction == "log1p"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+    }
+    else if (input$assayModifyAction == "z.score") {
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+    }
+    else if(input$assayModifyAction == "trim"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+    }
+    
+  })
 
     observeEvent(input$normalizeAssay, {
     req(vals$counts)
