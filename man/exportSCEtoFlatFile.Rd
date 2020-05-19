@@ -24,6 +24,8 @@ exported.}
 \item{gzipped}{Boolean. \code{TRUE} if the output files are to be
 gzip compressed. \code{FALSE} otherwise. Default
 \code{TRUE}.}
+
+\item{sample}{Name of the sample. It will be used as the prefix of file names.}
 }
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a

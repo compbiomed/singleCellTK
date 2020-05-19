@@ -10,6 +10,7 @@
 #' @param gzipped Boolean. \code{TRUE} if the output files are to be
 #'  gzip compressed. \code{FALSE} otherwise. Default
 #'  \code{TRUE}.
+#' @param sample Name of the sample. It will be used as the prefix of file names. 
 #' @examples
 #' \dontrun{
 #' data(sce_chcl, package = "scds")
