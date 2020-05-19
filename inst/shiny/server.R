@@ -7,6 +7,8 @@ internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  # library(fs)
+  # library(shinyFiles)
 
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
@@ -122,6 +124,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
+    updateSelectInput(session, "assaySelectFS", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
@@ -157,7 +162,6 @@ shinyServer(function(input, output, session) {
 
 
 
-
   # js$disableTabs()
 
   # Close app on quit
@@ -167,30 +171,608 @@ shinyServer(function(input, output, session) {
   # Page 1: Upload
   #-----------------------------------------------------------------------------
 
-  #Upload data through shiny app
+  # Upload data through shiny app
+  
+  # Components for uploading directories if user is importing from a preprocessing step
+  volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
+  shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  shinyFiles::shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  base <- reactive(input$base)
+  # output$base <- renderText({
+  #   parseDirPath(volumes, base())
+  # })
+  sample <- reactive(input$sample)
+  output$sample <- renderText({
+    shinyFiles::parseDirPath(volumes, sample())
+  })
+  sampleFile <- reactive(input$sampleFile)
+  output$sampleFile <- renderText({
+    shinyFiles::parseFilePaths(volumes, sampleFile())$datapath
+  })
+  output$base = renderText({
+    shinyDirectoryInput::readDirectoryInput(session, 'directory')
+  })
+  # importCR2Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importCR2Files <- reactiveValues(files = list(), id_count = 0)
+  # importCR3Files <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importCR3Files <- reactiveValues(files = list(), id_count = 0)
+  importSSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importBUSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importSEQFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  importOptFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
+  
+  importModal <- function(failed = FALSE) {
+    modalDialog(
+      h3("Sample ID"),
+      textInput("sampleID", "*This is the name you would like to give your sample."),
+      h3("Sample Name"),
+      textInput("sampleName", "*This name must match your sample's directory name."),
+      h3("Base Directory"),
+      shinyFiles::shinyDirButton("base", "Choose Directory ", "Please select a folder"),
+      verbatimTextOutput("base", placeholder = TRUE),
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("modalOk", "OK")
+      )
+    )
+  }
+  
+  importModal <- function(failed = FALSE) {
+    modalDialog(
+      h3("Base Directory"),
+      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      textInput("sampleName", "*This name must match your sample's directory name."),
+      h3("Sample ID"),
+      textInput("sampleID", "*This is the name you would like to give your sample."),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("modalOk", "OK")
+      )
+    )
+  }
+  
+  importCRModal <- function() {
+    modalDialog(
+      h3("Add a Cell Ranger Sample"),
+      tags$br(),
+      h4("Option 1 - Select a directory containing multiple sample directories (and no other directories)."),
+      actionButton("crOpt1", "Add"),
+      tags$br(),
+      h4("Option 2 - Select a single sample directory."),
+      actionButton("crOpt2", "Add"),
+      tags$br(),
+      h4("Option 3 - Select a directory containing your data files (barcodes.tsv, features.tsv, matrix.mtx)."),
+      actionButton("crOpt3", "Add"),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("crOK", "OK")
+      )
+    )
+  }
+  # Upload a sample directory (parent of 'outs' directory)
+  importCRSDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Sample Directory"),
+      shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
+      textInput("sampleID", ""),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("SDirOK", "OK")
+      )
+    )
+  }
+  # Upload a data directory (parent of 'data files')
+  importCRDDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Data Directory"),
+      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      h3("Sample Name"),
+      textInput("sampleID", "*This field is mandatory when uploading a data directory"),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("DDirOK", "OK")
+      )
+    )
+  }
+  # Upload a base directory (parent of possibly multiple sample directories)
+  importCRBDir <- function(failed = FALSE) {
+    modalDialog(
+      h3("Base Directory"),
+      shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
+      wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
+      
+      tags$div(id = "bDirTable"),
+      
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("BDirOK", "OK")
+      )
+    )
+  }
+  
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$directory
+    },
+    handlerExpr = {
+      if (input$directory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'directory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'directory', value = path)
+      }
+    }
+  )
+  
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$sDirectory
+    },
+    handlerExpr = {
+      if (input$sDirectory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'sDirectory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'sDirectory', value = path)
+        if (!is.na(path)) {
+          updateTextInput(session, "sampleID", value = basename(path))
+        }
+      }
+    }
+  )
+  
+  # event listener for the base directory modal (need to populate table for sample names)
+  # see https://github.com/wleepang/shiny-directory-input
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$bDirectory
+    },
+    handlerExpr = {
+      if (input$bDirectory > 0) {
+        # condition prevents handler execution on initial app launch
+        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'bDirectory'),
+                                               caption="Choose a directory")
+        shinyDirectoryInput::updateDirectoryInput(session, 'bDirectory', value = path)
+        # clear the previous table of sample names
+        prevPath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+        count <- 0
+        for (prev in list.dirs(prevPath, recursive = FALSE)) {
+          count <- count+1
+          removeUI(
+            selector = paste0("#sampleRow", count)
+          )
+        }
+        # create a new table for the selected directory
+        count <- 0
+        if (!is.na(path)) {
+          counts <- vector()
+          for (sample in list.dirs(path, recursive = FALSE)) {
+            count <- count+1
+            counts <- c(counts, count)
+            insertUI(
+              selector = "#bDirTable",
+              ui = fluidRow(
+                id = paste0("sampleRow", count),
+                column(6, basename(sample)),
+                column(6, textAreaInput(paste0("sampleName", count), "Sample Name", resize = "none", value = basename(sample)))
+              )
+            )
+          }
+        }
+      }
+    }
+  )
+  
+  # event listeners for "Add Sample" buttons
+  observeEvent(input$addCR2Sample, {
+    showModal(importCRModal())
+  })
+  observeEvent(input$crOpt1, {
+    removeModal()
+    showModal(importCRBDir())
+  })
+  observeEvent(input$crOpt2, {
+    removeModal()
+    showModal(importCRSDir())
+  })
+  observeEvent(input$crOpt3, {
+    removeModal()
+    showModal(importCRDDir())
+  })
+  observeEvent(input$addCR3Sample, {
+    showModal(importCRModal())
+  })
+  observeEvent(input$addSSSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addBUSSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addSEQSample, {
+    showModal(importModal())
+  })
+  observeEvent(input$addOptSample, {
+    showModal(importModal())
+  })
+  
+  # event listeners for "Remove Sample" buttons
+  observeEvent(input$clearAllCR2, {
+    for (entry in importCR2Files$files) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    importCR2Files$files <- list()
+  })
+  observeEvent(input$clearAllCR3, {
+    for (entry in importCR3Files$files) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    importCR3Files$files <- list()
+  })
+  observeEvent(input$removeSSSample, {
+    selector <- paste0("#newSampleSS", length(importSSFiles$bases))
+    importSSFiles$bases <- head(importSSFiles$bases, -1)
+    importSSFiles$samples <- head(importSSFiles$samples, -1)
+    importSSFiles$ids <- head(importSSFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeBUSSample, {
+    selector <- paste0("#newSampleBUS", length(importBUSFiles$bases))
+    importBUSFiles$bases <- head(importBUSFiles$bases, -1)
+    importBUSFiles$samples <- head(importBUSFiles$samples, -1)
+    importBUSFiles$ids <- head(importBUSFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeSEQSample, {
+    selector <- paste0("#newSampleSEQ", length(importSEQFiles$bases))
+    importSEQFiles$bases <- head(importSEQFiles$bases, -1)
+    importSEQFiles$samples <- head(importSEQFiles$samples, -1)
+    importSEQFiles$ids <- head(importSEQFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  observeEvent(input$removeOptSample, {
+    selector <- paste0("#newSampleOpt", length(importOptFiles$bases))
+    importOptFiles$bases <- head(importOptFiles$bases, -1)
+    importOptFiles$samples <- head(importOptFiles$samples, -1)
+    importOptFiles$ids <- head(importOptFiles$ids, -1)
+    removeUI(selector = selector)
+  })
+  
+  # event listeners for Cell Ranger import modals' OK buttons
+  # sample directory
+  observeEvent(input$SDirOK, {
+    samplePath <- shinyDirectoryInput::readDirectoryInput(session, 'sDirectory')
+    # make sure a directory is selected
+    if (identical(samplePath, character(0))) {
+      showModal(importCRSDir(failed = TRUE))
+    } else {
+      # add the files to the appropriate reactiveValues
+      if (input$algoChoice == "cellRanger2") {
+        id <- paste0("snewSampleCR2", importCR2Files$id_count)
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+                      sample = basename(samplePath), name = input$sampleID, id = id)
+        importCR2Files$files <- c(importCR2Files$files, list(entry))
+        importCR2Files$id_count <- importCR2Files$id_count + 1
+        selector <- "#newSampleCR2"
+      } else {
+        id <- paste0("snewSampleCR3", importCR3Files$id_count)
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+                      sample = basename(samplePath), name = input$sampleID, id = id)
+        importCR3Files$files <- c(importCR3Files$files, list(entry))
+        importCR3Files$id_count <- importCR3Files$id_count + 1
+        selector <- "#newSampleCR3"
+      }
+      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+      # add row for new sample in UI
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+          column(3, dirname(samplePath)),
+          column(3, basename(samplePath)),
+          column(3, input$sampleID),
+          column(3, actionButton(paste0("remove", id), "X"))
+        )
+      )
+      # handler to remove the sample that was just added
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        # based on algoChoice, create vector saying which items to keep
+        # remove appropriate item from appropriate reactiveValues
+        if (input$algoChoice == "cellRanger2") {
+          toRemove <- vector()
+          for (entry in importCR2Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR2Files$files <- importCR2Files$files[toRemove]
+        } else {
+          toRemove <- vector()
+          for (entry in importCR3Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR3Files$files <- importCR3Files$files[toRemove]
+        }
+      })
+      removeModal()
+    }
+  })
+  
+  # data directory 
+  observeEvent(input$DDirOK, {
+    dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    if ((!nzchar(input$sampleID)) || (identical(dataPath, character(0)))) {
+      showModal(importCRDDir(failed = TRUE))
+    } else {
+      if (input$algoChoice == "cellRanger2") {
+        id <- paste0("dnewSampleCR2", importCR2Files$id_count)
+        entry <- list(isDataFile = TRUE, base = "", sample = dataPath, name = input$sampleID, id = id)
+        importCR2Files$files <- c(importCR2Files$files, list(entry))
+        importCR2Files$id_count <- importCR2Files$id_count + 1
+        selector <- "#newSampleCR2"
+      } else {
+        id <- paste0("dnewSampleCR3", importCR3Files$id_count)
+        entry <- list(isDataFile = TRUE, base = "", sample = dataPath, name = input$sampleID, id = id)
+        importCR3Files$files <- c(importCR3Files$files, list(entry))
+        importCR3Files$id_count <- importCR3Files$id_count + 1
+        selector <- "#newSampleCR3"
+      }
+      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+          column(3, dataPath),
+          column(3, ""),
+          column(3, input$sampleID),
+          column(3, actionButton(paste0("remove", id), "X"))
+        )
+      )
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        if (input$algoChoice == "cellRanger2") {
+          toRemove <- vector()
+          for (entry in importCR2Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR2Files$files <- importCR2Files$files[toRemove]
+        } else {
+          toRemove <- vector()
+          for (entry in importCR3Files$files) {
+            if (entry$id == id) {
+              toRemove <- c(toRemove, FALSE)
+            } else {
+              toRemove <- c(toRemove, TRUE)
+            }
+          }
+          importCR3Files$files <- importCR3Files$files[toRemove]
+        }
+      })
+      removeModal()
+    }
+  })
+  
+  # base directory
+  observeEvent(input$BDirOK, {
+    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+    # if the user doesn't specify a base directory, show the modal again with the warning message
+    if (identical(basePath, character(0))) {
+      showModal(importCRBDir(failed = TRUE))
+    } else {
+      allDirs <- list.dirs(basePath, recursive = FALSE)
+      # if we are adding a new CellRangerV2 sample
+      if (input$algoChoice == "cellRanger2") {
+        allUI <- vector()
+        allIDs <- vector()
+        count <- 0
+        for (sample in allDirs) {
+          count <- count + 1
+          name <- input[[paste0("sampleName", count)]]
+          if (!nzchar(name)) {
+            name <- basename(sample)
+          }
+          id <- paste0("bnewSampleCR2", importCR2Files$id_count)
+          entry <- list(isDataFile = FALSE, base = substr(basePath, 1, nchar(basePath)-1), sample = basename(sample), name = name, id = id)
+          importCR2Files$files <- c(importCR2Files$files, list(entry))
+          fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+          removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+          ui_i <- fluidRow(
+            id = id,
+            tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+            column(3, basePath),
+            column(3, basename(sample)),
+            column(3, name),
+            column(3, actionButton(paste0("remove", id), "X"))
+          )
+          importCR2Files$id_count <- importCR2Files$id_count + 1
+          allUI <- c(allUI, list(ui_i))
+          allIDs <- c(allIDs, id)
+        }
+        selector <- "#newSampleCR2"
+      } else { # if we are adding a new CellRangerV3 sample
+        allUI <- vector()
+        allIDs <- vector()
+        count <- 0
+        for (sample in allDirs) {
+          count <- count + 1
+          name <- input[[paste0("sampleName", count)]]
+          if (!nzchar(name)) {
+            name <- basename(sample)
+          }
+          id <- paste0("bnewSampleCR3", importCR3Files$id_count)
+          entry <- list(isDataFile = FALSE, base = substr(basePath, 1, nchar(basePath)-1), sample = basename(sample), name = name, id = id)
+          importCR3Files$files <- c(importCR3Files$files, list(entry))
+          fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+          removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+          ui_i <- fluidRow(
+            id = id,
+            tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+            column(3, basePath),
+            column(3, basename(sample)),
+            column(3, name),
+            column(3, actionButton(paste0("remove", id), "X"))
+          )
+          importCR3Files$id_count <- importCR3Files$id_count + 1
+          allUI <- c(allUI, list(ui_i))
+          allIDs <- c(allIDs, id)
+        }
+        selector <- "#newSampleCR3"
+      }
+      # insert all the new sample rows
+      for (i in seq_along(allUI)) {
+        insertUI(
+          selector = selector,
+          ui = allUI[i]
+        )
+      }
+      # create event handlers for all the remove buttons
+      # from: https://stackoverflow.com/questions/40038749/r-shiny-how-to-write-loop-for-observeevent
+      lapply(
+        X = allIDs,
+        FUN = function(id_i){
+          observeEvent(input[[paste0("remove", id_i)]], {
+            removeUI(
+              selector = paste0("#", id_i)
+            )
+            if (input$algoChoice == "cellRanger2") {
+              toRemove <- vector()
+              for (entry in importCR2Files$files) {
+                if (entry$id == id_i) {
+                  toRemove <- c(toRemove, FALSE)
+                } else {
+                  toRemove <- c(toRemove, TRUE)
+                }
+              }
+              importCR2Files$files <- importCR2Files$files[toRemove]
+            } else {
+              toRemove <- vector()
+              for (entry in importCR3Files$files) {
+                if (entry$id == id_i) {
+                  toRemove <- c(toRemove, FALSE)
+                } else {
+                  toRemove <- c(toRemove, TRUE)
+                }
+              }
+              importCR3Files$files <- importCR3Files$files[toRemove]
+            }
+          })
+        }
+      )
+      removeModal()
+    }
+  })
+  
+  # event handler for pressing OK on the import modal
+  observeEvent(input$modalOk, {
+    samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
+    basePath <- shinyFiles::parseDirPath(volumes, input$base)
+    if ((!nzchar(input$sampleID)) || (!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
+      showModal(importModal(failed = TRUE))
+    } else {
+      if (input$algoChoice == "starSolo") {
+        importSSFiles$bases <- c(importSSFiles$bases, basePath)
+        importSSFiles$samples <- c(importSSFiles$samples, input$sampleName)
+        importSSFiles$ids <- c(importSSFiles$ids, input$sampleID)
+        selector <- "#newSampleSS"
+        id <- paste0("newSampleSS", length(importSSFiles$bases))
+      } else if (input$algoChoice == "busTools") {
+        importBUSFiles$bases <- c(importBUSFiles$bases, basePath)
+        importBUSFiles$samples <- c(importBUSFiles$samples, input$sampleName)
+        importBUSFiles$ids <- c(importBUSFiles$ids, input$sampleID)
+        selector <- "#newSampleBUS"
+        id <- paste0("newSampleBUS", length(importBUSFiles$bases))
+      } else if (input$algoChoice == "seqc") {
+        importSEQFiles$bases <- c(importSEQFiles$bases, basePath)
+        importSEQFiles$samples <- c(importSEQFiles$samples, input$sampleName)
+        importSEQFiles$ids <- c(importSEQFiles$ids, input$sampleID)
+        selector <- "#newSampleSEQ"
+        id <- paste0("newSampleSEQ", length(importSEQFiles$bases))
+      } else if (input$algoChoice == "optimus") {
+        importOptFiles$bases <- c(importOptFiles$bases, basePath)
+        importOptFiles$samples <- c(importOptFiles$samples, input$sampleName)
+        importOptFiles$ids <- c(importOptFiles$ids, input$sampleID)
+        selector <- "#newSampleOpt"
+        id <- paste0("newSampleOpt", length(importOptFiles$bases))
+      }
+      insertUI(
+        selector = selector,
+        ui = fluidRow(
+          id = id,
+          column(4, input$sampleID),
+          column(4, input$sampleName),
+          column(4, basePath)
+        )
+      )
+      removeModal()
+    }
+  })
+  
+  # Event listener for "Upload" button
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- withConsoleRedirect(createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- createSCE(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
-                                   assayName = input$inputAssayType,
-                                   createLogCounts = input$createLogcounts))
+                                   assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
-          print("mouse stuff selected")
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
-          vals$original <- createSCE(assayFile = t(maits$expressionmat),
-                                     annotFile = maits$cdat,
-                                     featureFile = maits$fdat,
-                                     assayName = "logtpm",
-                                     inputDataFrames = TRUE,
-                                     createLogCounts = FALSE)
-          # withConsoleRedirect(sayHello("John", 12)) #TESTER FOR CALLING A DECORATED FUNCTION
 
+          vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
+                                                         annotFile = maits$cdat,
+                                                         featureFile = maits$fdat,
+                                                         assayName = "logtpm",
+                                                         inputDataFrames = TRUE,
+                                                         createLogCounts = FALSE))
           rm(maits)
         } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
           data(fluidigm, package = "scRNAseq")
@@ -212,10 +794,101 @@ shinyServer(function(input, output, session) {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (methods::is(importedrds, "SummarizedExperiment")) {
           vals$original <- importedrds
+          seuratWorkflow$sce_rds_file <- input$rdsFile #for seurat workflow
         } else {
           vals$original <- NULL
         }
+      } else if (input$uploadChoice == "rds_seurat") {
+        importedrds <- readRDS(input$rdsFileSeurat$datapath)
+        if (methods::is(importedrds, "Seurat")) {
+          vals$original <- convertSeuratToSCE(importedrds)
+          seuratWorkflow$sce_rds_file <- importedrds #for seurat workflow
+        }
+        else {
+          vals$original <- NULL
+        }
+      } else if (input$uploadChoice == "directory") {
+        if (input$algoChoice == "cellRanger2") {
+          for (entry in importCR2Files$files) {
+            if (entry$isDataFile) {
+              sce <- importCellRangerV2Sample(
+                sampleDir = entry$sample,
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
+              )
+            } else {
+              sce <- importCellRangerV2(
+                cellRangerDirs = substr(entry$base, 1, nchar(entry$base)-1),
+                sampleDirs = entry$sample,
+                sampleNames = entry$name,
+                dataType = c("filtered"),
+                class = "Matrix",
+                delayedArray = FALSE)
+            }
+            
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
+          }
+        } else if (input$algoChoice == "cellRanger3") {
+          for (entry in importCR3Files$files) {
+            if (entry$isDataFile) {
+              sce <- importCellRangerV3Sample(
+                sampleDir = entry$sample,
+                sampleName = entry$name,
+                class = "Matrix",
+                delayedArray = FALSE
+              )
+            } else {
+              sce <- importCellRangerV3(
+                cellRangerDirs = entry$base,
+                sampleDirs = entry$sample,
+                sampleNames = entry$name,
+                dataType = c("filtered"),
+                class = "Matrix",
+                delayedArray = FALSE)
+            }
+            if(is.null(vals$original)) {
+              vals$original <- sce 
+            } else {
+              vals$original <- cbind(vals$original, sce)  
+            }
+          }
+        } else if (input$algoChoice == "starSolo") {
+          vals$original <- importSTARsolo(
+            STARsoloDirs = importSSFiles$bases,
+            samples = importSSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
+          )
+        } else if (input$algoChoice == "busTools") {
+          vals$original <- importBUStools(
+            BUStoolsDirs = importBUSFiles$bases,
+            samples = importBUSFiles$ids,
+            class = "Matrix",
+            delayedArray = FALSE
+          )
+        } else if (input$algoChoice == "seqc") {
+          vals$original <- importSEQC(
+            seqcDirs = importSEQFiles$bases,
+            samples = importSEQFiles$ids,
+            prefix = importSEQFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
+          )
+        } else if (input$algoChoice == "optimus") {
+          vals$original <- importOptimus(
+            OptimusDirs = importOptFiles$bases,
+            samples = importOptFiles$samples,
+            class = "Matrix",
+            delayedArray = FALSE
+          )
+        }
       }
+      
       if (!is.null(vals$original)) {
         # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
@@ -224,17 +897,6 @@ shinyServer(function(input, output, session) {
         updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateSelectInput(session, "deletesamplelist",
-                          choices = colnames(vals$counts))
-        insertUI(
-          selector = "#uploadAlert",
-          ## wrap element in a div with id for ease of removal
-          ui = tags$div(
-            class = "alert alert-success alert-dismissible",
-            HTML("<span class='glyphicon glyphicon-ok' aria-hidden='true'> \
-                 </span> Successfully Uploaded! <button type='button' \
-                 class='close' data-dismiss='alert'>&times;</button>"))
-        )
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -296,116 +958,41 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
 
-  #Render data table if there are fewer than 50 samples
-  output$contents <- DT::renderDataTable({
-    req(vals$counts)
-    if (!is.null(getShinyOption("inputSCEset"))){
-      updateGeneNames()
-    }
-    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, options = list(scrollX = TRUE), rownames = FALSE)
-
-  #Render histogram of read counts per cell
-  output$countshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Reads per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-                      type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #Render histogram of genes detected per cell
-  output$geneshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Genes detected per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                                function(x) sum(x > 0)), type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
   #random downsample of samples
-  observeEvent(input$downsampleGo, {
-    req(vals$counts)
-    withBusyIndicatorServer("downsampleGo", {
-      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
-      updateNumSamples()
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
-      vals$enrichRes <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$downsampleGo, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("downsampleGo", {
+#      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
+#      updateNumSamples()
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$gsvaLimma <- NULL
+#      vals$visplotobject <- NULL
+#      vals$enrichRes <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-    singleCellTK::summarizeTable(inSCE = vals$counts,
-                                 useAssay = input$filterAssaySelect,
-                                 expressionCutoff = input$minDetectGene)
-  })
+    if(is.null(input$filterAssaySelect)) {
+      assaySelect <- "counts"
+    } else {
+      assaySelect <- input$filterAssaySelect
+    }
+    singleCellTK::summarizeSCE(inSCE = vals$counts,
+                                 useAssay = "counts")
+  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
-  #Filter the data based on the options
-  observeEvent(input$filterData, {
-    if (is.null(vals$original)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("filterData", {
-        deletesamples <- input$deletesamplelist
-        vals$counts <- filterSCData(inSCE = vals$counts,
-                                    useAssay = input$filterAssaySelect,
-                                     deletesamples = deletesamples,
-                                    removeNoExpress = input$removeNoexpress,
-                                    removeBottom = 0.01 * input$LowExpression,
-                                    minimumDetectGenes = input$minDetectGene) #TODO: user decides to filter spikeins
-        vals$diffexheatmapplot <- NULL
-        vals$combatstatus <- ""
-        vals$diffexgenelist <- NULL
-        vals$gsvaRes <- NULL
-        vals$gsvaLimma <- NULL
-        vals$visplotobject <- NULL
-        vals$enrichRes <- NULL
-        vals$diffexBmName <- NULL
-        diffExValues$diffExList <- NULL
-        vals$dimRedPlot <- NULL
-        vals$dimRedPlot_geneExp <- NULL
-        vals$dendrogram <- NULL
-        vals$pcX <- NULL
-        vals$pcY <- NULL
-        #Refresh things for the clustering tab
-        updateGeneNames()
-        updateEnrichDB()
-        if (!is.null(input$deletesamplelist)){
-          updateSelectInput(session, "deletesamplelist",
-                            choices = colnames(vals$counts))
-        }
-      })
-    }
-  })
 
   #Reset the data to the original uploaded dataset
   observeEvent(input$resetData, {
@@ -414,8 +1001,8 @@ shinyServer(function(input, output, session) {
     }
     else{
       vals$counts <- vals$original
-      updateSelectInput(session, "deletesamplelist",
-                        choices = colnames(vals$counts))
+      #updateSelectInput(session, "deletesamplelist",
+      #                  choices = colnames(vals$counts))
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$diffexgenelist <- NULL
@@ -475,102 +1062,102 @@ shinyServer(function(input, output, session) {
   })
 
   #Filter the selected samples
-  observeEvent(input$runFilterSample, {
-    withBusyIndicatorServer("runFilterSample", {
-      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
-      vals$counts <- vals$counts[, filter]
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$gsvaLimma <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-      updateNumSamples()
-    })
-  })
+#  observeEvent(input$runFilterSample, {
+#    withBusyIndicatorServer("runFilterSample", {
+#      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
+#      vals$counts <- vals$counts[, filter]
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$combatstatus <- ""
+#      vals$gsvaLimma <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#      updateNumSamples()
+#    })
+#  })
 
-  observeEvent(input$filteredFeature, {
-    output$filterFeatureOptions <- renderUI({
-      if (input$filteredFeature != "none")({
-        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
-          L <- vector("list", 3)
-          L[[1]] <- renderText("Select features to keep")
-          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
-                              list(checkboxGroupInput("filterFeatureChoices",
-                                                      label = NULL,
-                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
-          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
-          return(L)
-        } else {
-          L <- list(renderText("Annotation must have fewer than 100 options"))
-          return(L)
-        }
-      }) else {
-        L <- list()
-      }
-    })
-  })
+#  observeEvent(input$filteredFeature, {
+#    output$filterFeatureOptions <- renderUI({
+#      if (input$filteredFeature != "none")({
+#        if (length(unique(rowData(vals$counts)[, input$filteredFeature])) < 100){
+#          L <- vector("list", 3)
+#          L[[1]] <- renderText("Select features to keep")
+#          L[[2]] <- wellPanel(style = "overflow-y:scroll; max-height: 100px",
+#                              list(checkboxGroupInput("filterFeatureChoices",
+#                                                      label = NULL,
+#                                                      choices = unique(rowData(vals$counts)[, input$filteredFeature]))))
+#          L[[3]] <- list(actionButton("runFilterFeature", "Filter"))
+#          return(L)
+#        } else {
+#          L <- list(renderText("Annotation must have fewer than 100 options"))
+#          return(L)
+#        }
+#      }) else {
+#        L <- list()
+#      }
+#    })
+#  })
 
-  observeEvent(input$orgOrganism, {
-    library(input$orgOrganism, character.only = TRUE)
-    indb <- get(paste(input$orgOrganism))
-    output$orgConvertColumns <- renderUI({
-      tagList(
-        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
-        selectInput("orgToCol", "Select To Annotation:", columns(indb))
-      )
-    })
-  })
+#  observeEvent(input$orgOrganism, {
+#    library(input$orgOrganism, character.only = TRUE)
+#    indb <- get(paste(input$orgOrganism))
+#    output$orgConvertColumns <- renderUI({
+#      tagList(
+#        selectInput("orgFromCol", "Select From Annotation:", columns(indb)),
+#        selectInput("orgToCol", "Select To Annotation:", columns(indb))
+#      )
+#    })
+#  })
 
-  observeEvent(input$convertGenes, {
-    req(vals$counts)
-    withBusyIndicatorServer("convertGenes", {
-      vals$counts <- convertGeneIDs(inSCE = vals$counts,
-                                    inSymbol = input$orgFromCol,
-                                    outSymbol = input$orgToCol,
-                                    database = input$orgOrganism)
-      updateGeneNames()
-      vals$diffexgenelist <- NULL
-      vals$gsvaRes <- NULL
-      vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
-      vals$dimRedPlot <- NULL
-      vals$dimRedPlot_geneExp <- NULL
-      vals$dendrogram <- NULL
-      vals$pcX <- NULL
-      vals$pcY <- NULL
-    })
-  })
+#  observeEvent(input$convertGenes, {
+#    req(vals$counts)
+#    withBusyIndicatorServer("convertGenes", {
+#      vals$counts <- convertGeneIDs(inSCE = vals$counts,
+#                                    inSymbol = input$orgFromCol,
+#                                    outSymbol = input$orgToCol,
+#                                    database = input$orgOrganism)
+#      updateGeneNames()
+#      vals$diffexgenelist <- NULL
+#      vals$gsvaRes <- NULL
+#      vals$enrichRes <- NULL
+#      vals$visplotobject <- NULL
+#      vals$diffexheatmapplot <- NULL
+#      vals$diffexBmName <- NULL
+#      diffExValues$diffExList <- NULL
+#      vals$dimRedPlot <- NULL
+#      vals$dimRedPlot_geneExp <- NULL
+#      vals$dendrogram <- NULL
+#      vals$pcX <- NULL
+#      vals$pcY <- NULL
+#    })
+#  })
 
   #Filter the selected features
-  observeEvent(input$runFilterFeature, {
-    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
-    vals$counts <- vals$counts[filter, ]
-    updateGeneNames()
-    vals$diffexgenelist <- NULL
-    vals$gsvaRes <- NULL
-    vals$enrichRes <- NULL
-    vals$visplotobject <- NULL
-    vals$diffexheatmapplot <- NULL
-    vals$diffexBmName <- NULL
-    diffExValues$diffExList <- NULL
-    vals$dimRedPlot <- NULL
-    vals$dimRedPlot_geneExp <- NULL
-    vals$dendrogram <- NULL
-    vals$pcX <- NULL
-    vals$pcY <- NULL
-  })
+#  observeEvent(input$runFilterFeature, {
+#    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
+#    vals$counts <- vals$counts[filter, ]
+#    updateGeneNames()
+#    vals$diffexgenelist <- NULL
+#    vals$gsvaRes <- NULL
+#    vals$enrichRes <- NULL
+#    vals$visplotobject <- NULL
+#    vals$diffexheatmapplot <- NULL
+#    vals$diffexBmName <- NULL
+#    diffExValues$diffExList <- NULL
+#    vals$dimRedPlot <- NULL
+#    vals$dimRedPlot_geneExp <- NULL
+#    vals$dendrogram <- NULL
+#    vals$pcX <- NULL
+#    vals$pcY <- NULL
+#  })
 
   #disable the downloadSCE button if no object is loaded
   isAssayResult <- reactive(is.null(vals$counts))
@@ -607,69 +1194,79 @@ shinyServer(function(input, output, session) {
   observeEvent(input$modifyAssay, {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
-      if (input$assayModifyAction == "log") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
+        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
+            showNotification("Assay does not exist!", type = "error")
         } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
+            showNotification("Assay name cannot be empty!", type = "error")
         } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
+            showNotification("Assay name already exists! Use another assay name!", type = "error")
         } else {
-          assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            if (input$assayModifyAction == "log") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+                }
+            }
+            else if (input$assayModifyAction == "log1p") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+                }
+            }
+            else if (input$assayModifyAction == "z.score") {
+                if (input$trimAssayCheckbox) {
+                    assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+                    assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+                }
+                else {
+                    assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+                }
+            }
+            else {
+                showNotification("Error during assay transformation!", type = "error")
+            } 
           updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "cpm") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssayOutname) <- apply(assay(vals$counts, input$modifyAssaySelect), 2, function(x) { x / (sum(x) / 1000000) })
-          updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "rename") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname == "") {
-          shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-          shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssayOutname) <- assay(vals$counts, input$modifyAssaySelect)
-          assay(vals$counts, input$modifyAssaySelect) <- NULL
-          updateAssayInputs()
-        }
-      } else if (input$assayModifyAction == "delete") {
-        if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))){
-          shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else {
-          assay(vals$counts, input$modifyAssaySelect) <- NULL
-          updateAssayInputs()
-        }
-      } else {
-        shinyalert::shinyalert("Error!", "Assay Modify Action Does Not Exist!",
-                               type = "error")
-      }
+        } 
     })
   })
 
-  output$colDataDataFrame <- DT::renderDataTable({
-    if (!is.null(vals$counts)){
-      data.frame(colData(vals$counts))
-    }
-  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
+    observeEvent(input$normalizeAssay, {
+    req(vals$counts)
+    withBusyIndicatorServer("normalizeAssay", {
+        if (input$normalizeLibrarySelect == "seurat") {
+            vals$counts <- seuratNormalizeData(vals$counts, input$normalizeAssaySelect, seuratWorkflow$geneNamesSeurat, input$normalizeAssayMethodSelect, as.numeric(input$normalizationScaleFactor))
+            updateAssayInputs()
+        }
+        else if (input$normalizeLibrarySelect == "cpm") {
+        if (!(input$normalizeAssaySelect %in% names(assays(vals$counts)))) {
+        shinyalert::shinyalert("Error!", "Assay does not exist!",
+                                 type = "error")
+        } else if (input$normalizeAssayOutname == "") {
+        shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else if (input$normalizeAssayOutname %in% names(assays(vals$counts))) {
+        shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
+                                 type = "error")
+        } else {
+        assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(assay(vals$counts, input$normalizeAssaySelect))
+        updateAssayInputs()
+        }
+        }
+    })
+})
+
+
+#  output$colDataDataFrame <- DT::renderDataTable({
+#    if (!is.null(vals$counts)){
+#      data.frame(colData(vals$counts))
+#    }
+#  }, options = list(scrollX = TRUE, scrollY = "40vh", pageLength = 30))
 
   #disable downloadcolData button if the data is not present
   isColDataResult <- reactive(is.null(vals$counts))
@@ -1718,7 +2315,9 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect X-Axis
   observeEvent(input$ApproachSelect_Xaxis, {
     if (!is.null(vals$counts)){
-      if (input$ApproachSelect_Xaxis != ""){
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
+
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
@@ -1729,7 +2328,10 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Y-Axis
   observeEvent(input$ApproachSelect_Yaxis, {
     if (!is.null(vals$counts)){
-      if (input$ApproachSelect_Yaxis != ""){
+
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
+
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -1741,7 +2343,10 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Colorby
   observeEvent(input$ApproachSelect_Colorby, {
     if (!is.null(vals$counts)){
-      if (input$ApproachSelect_Colorby != ""){
+
+      len <- length(SingleCellExperiment::reducedDims(vals$counts))
+      if (!is.null(input$ApproachSelect_Colorby) & len > 0){
+
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
@@ -2748,6 +3353,66 @@ shinyServer(function(input, output, session) {
   }, height = 600)
 
   #-----------------------------------------------------------------------------
+  # Page 4.1: Feature Selection
+  #-----------------------------------------------------------------------------
+    observeEvent(input$findHvgButtonFS, {
+        if (!is.null(vals$counts)) {
+            if (input$hvgMethodFS == "vst"
+                || input$hvgMethodFS == "mean.var.plot"
+                || input$hvgMethodFS == "dispersion") {
+                withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+                    vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+                    if (input$hvgMethodFS == "vst") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = log(rowData(vals$counts)$seurat_variableFeatures_vst_mean), y = rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized)) + geom_point(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Standardized Variance")
+                    }
+                    else if (input$hvgMethodFS == "mean.var.plot") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$seurat_variableFeatures_mvp_mean, y = rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled)) + geom_point(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Dispersion")
+                    }
+                    else if (input$hvgMethodFS == "dispersion") {
+                        vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, y = rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled)) + geom_point(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Dispersion")
+                    }
+                })
+                showNotification("Find HVG Complete")
+            }
+            else if (input$hvgMethodFS == "modelGeneVar") {
+                withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+                    vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
+                    vals$vfplot <- ggplot() + geom_point(aes(x = rowData(vals$counts)$scran_modelGeneVar_mean, y = rowData(vals$counts)$scran_modelGeneVar_totalVariance)) + geom_point(aes(x = subset(rowData(vals$counts)$scran_modelGeneVar_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS))), y = subset(rowData(vals$counts)$scran_modelGeneVar_totalVariance, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = subset(rowData(vals$counts)$scran_modelGeneVar_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), y = subset(rowData(vals$counts)$scran_modelGeneVar_totalVariance, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Average Expression", y = "Variance")
+                })
+                showNotification("Scran modelGeneVar processing complete!")
+            }
+        }
+        else if (is.null(vals$counts)) {
+            showNotification("Please input dataset (rds file) before computing highly variable genes!", type = "error")
+        }
+        else {
+            showNotification("An error occurred while computing highly variable genes!", type = "error")
+        }
+    })
+
+    output$plotFS <- renderPlot({
+        if (!is.null(vals$hvgPlotFS)) {
+            vals$hvgPlotFS
+        }
+    })
+
+    observe({
+        if (!is.null(vals$vfplot)) {
+            if (!is.na(as.numeric(input$hvgNoFeaturesViewFS))) {
+                vals$hvgPlotFS <- vals$vfplot
+            }
+        }
+    })
+
+    output$hvgOutputFS <- renderText({
+    if (!is.null(vals$counts)) {
+      if (!is.null(vals$vfplot)) {
+        getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))
+      }
+    }
+ })
+
+  #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression
   #-----------------------------------------------------------------------------
   shinyjs::onclick("Diffex_hideAllSections", allSections(
@@ -3709,4 +4374,347 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+
+    #-----------------------------------------------------------------------------
+    # Page 8: Seurat Workflow
+    #-----------------------------------------------------------------------------
+
+    #reactive values object to store all objects to be used in seurat workflow
+    seuratWorkflow <- reactiveValues()
+
+    #Upload sce object (rds file)
+    observeEvent(seuratWorkflow$sce_rds_file, {
+        if (!is.null(seuratWorkflow$sce_rds_file)) {
+                if (!methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a sce filepath
+                    seuratWorkflow$seuratObject <- .sceToSeurat(seuratWorkflow$sce_rds_file$datapath)
+                }
+                else if (methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a seurat object
+                    seuratWorkflow$seuratObject <- seuratWorkflow$sce_rds_file
+                }
+                vals$counts@metadata$seuratSelectedAssay <- names(assays(vals$counts))[1]
+                seuratWorkflow$geneNamesSCE <- .rowNamesSCE(vals$counts)
+                seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
+                updateSelectInput(session = session, inputId = "seuratSelectNormalizationAssay", choices = names(assays(vals$counts)))
+        }     
+    })
+
+    #Display highly variable genes
+    output$hvg_output <- renderText({
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
+                    .seuratGetVariableFeatures(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_no_features_view)
+                }
+            }
+        }
+    })
+
+    #Perform normalization
+    observeEvent(input$normalize_button, {
+        if (!is.null(vals$counts)) {
+            withProgress(message = "Normalizing", max = 1, value = 1, {
+                vals$counts@metadata$seuratSelectedAssay <- input$seuratSelectNormalizationAssay
+                vals$counts <- seuratNormalizeData(inSCE = vals$counts, useAssay = input$seuratSelectNormalizationAssay, geneNames = seuratWorkflow$geneNamesSeurat, input$normalization_method, as.numeric(input$scale_factor))
+                updateAssayInputs()
+           })
+            updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
+            showNotification("Normalization Complete")
+        }
+        else {
+            showNotification("Please input dataset (rds file) before normalizing data!", type = "error")
+        }
+    })
+
+    #Perform scaling
+    observeEvent(input$scale_button, {
+        if (!is.null(vals$counts)) {
+            withProgress(message = "Scaling", max = 1, value = 1, {
+                vals$counts <- seuratScaleData(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$model.use, input$do.scale, input$do.center, input$scale.max)
+                updateAssayInputs()
+            })
+            updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
+            showNotification("Scale Complete")
+        }
+        else {
+            showNotification("Please input dataset (rds file) before scaling data!", type = "error")
+        }
+    })
+
+    #Run PCA
+    observeEvent(input$run_pca_button, {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+                    withProgress(message = "Running PCA", max = 1, value = 1, {
+                        vals$counts <- seuratPCA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["pca"]])[2]
+                    })
+                    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "pca")
+                    })
+                    if (input$pca_compute_elbow) {
+                        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
+                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, seuratWorkflow$numberOfReductionComponents$significantPC)
+                        })
+                    }
+                    if (input$pca_compute_jackstraw) {
+                        withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+                            vals$counts <- seuratComputeJackStraw(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                        })
+                    }
+                    if (input$pca_compute_heatmap) {
+                        withProgress(message = "Generating Heatmap Plot", max = 1, value = 1, {
+                            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
+                            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
+                        })
+                    }
+                    addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+                    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+                    showNotification("PCA Complete")
+                }
+                else {
+                    showNotification("Please scale data and find highly variable genes before computing pca!", type = "error")
+                }
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing pca!", type = "error")
+        }
+    })
+
+    #Run ICA
+    observeEvent(input$run_ica_button, {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
+                    withProgress(message = "Running ICA", max = 1, value = 1, {
+                        vals$counts <- seuratICA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$ica_no_components)
+                        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["ica"]])[2]
+                    })
+                    withProgress(message = "Plotting ICA", max = 1, value = 1, {
+                        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "ica")
+                    })
+                    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+                    showNotification("ICA Complete")
+                }
+                else {
+                    showNotification("Please scale data and find highly variable genes before computing ica!", type = "error")
+                }
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing ica!", type = "error")
+        }
+    })
+
+    #Find HVG
+    observeEvent(input$find_hvg_button, {
+         if (!is.null(vals$counts)
+                && "seuratNormalizedData" %in% assayNames(vals$counts)
+                    && "seuratScaledData" %in% assayNames(vals$counts)) {
+            withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+                vals$counts <- seuratFindHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_method, as.numeric(input$hvg_no_features))
+            })
+            withProgress(message = "Plotting HVG", max = 1, value = 1, {
+                seuratWorkflow$plotObject$HVG <- seuratPlotHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
+            })
+            updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
+            showNotification("Find HVG Complete")
+        }
+        else if (is.null(vals$counts)) {
+            showNotification("Please input dataset (rds file) before computing highly variable genes!", type = "error")
+        }
+        else if (!"seuratNormalizedData" %in% assayNames(vals$counts)) {
+            showNotification("Please normalize data before computing highly variable genes!", type = "error")
+        }
+        else if (!"seuratScaledData" %in% assayNames(vals$counts)) {
+            showNotification("Please scale data before computing highly variable genes!", type = "error")
+        }
+        else {
+            showNotification("An error occurred while computing highly variable genes!", type = "error")
+        }
+    })
+
+    #Find clusters
+    observeEvent(input$find_clusters_button, {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
+                    withProgress(message = "Finding clusters", max = 1, value = 1, {
+                        vals$counts <- seuratFindClusters(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, groupSingletons = input$group.singletons)
+                    })
+                    updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
+                    showNotification("Find Clusters Complete")
+                }
+                else {
+                    showNotification("Please compute pca/ica before processing clusters!", type = "error")
+                }
+            }
+            else {
+                    showNotification("Please normalize data before computing umap!", type = "error")
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing clusters!", type = "error")
+        }
+    })
+
+    #Run tSNE
+    observeEvent(input$run_tsne_button, {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
+                    withProgress(message = "Running tSNE", max = 1, value = 1, {
+                        vals$counts <- seuratRunTSNE(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_tsne_method, input$reduction_tsne_count)
+                    })
+                    withProgress(message = "Plotting tSNE", max = 1, value = 1, {
+                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "tsne")
+                    })
+                    updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+                    showNotification("tSNE Complete")
+                }
+                else {
+                    showNotification("Please compute pca/ica before processing tsne!", type = "error")
+                }
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing tsne!", type = "error")
+        }
+    })
+
+    #Run UMAP
+    observeEvent(input$run_umap_button, {
+        if (!is.null(vals$counts)) {
+            if (!is.null(vals$counts@metadata[["seurat"]])) {
+                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
+                    withProgress(message = "Running UMAP", max = 1, value = 1, {
+                        vals$counts <- seuratRunUMAP(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_umap_method, input$reduction_umap_count)
+                    })
+                    withProgress(message = "Plotting UMAP", max = 1, value = 1, {
+                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "umap")
+                    })
+                    updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+                    showNotification("UMAP Complete")
+                }
+                else {
+                    showNotification("Please compute pca/ica before processing umap!", type = "error")
+                }
+            }
+        }
+        else {
+            showNotification("Please input dataset (rds file) before computing umap!", type = "error")
+        }
+    })
+
+    #Display the number of significant PC computed
+    output$pca_significant_pc_output <- renderText({
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
+            seuratWorkflow$numberOfReductionComponents$significantPC
+        }
+    })
+
+    #Update pca significant slider maximum value with total number of computed principal components
+    observe({
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$pca)) {
+            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$pca)
+        }
+    })
+
+    #Update pca significant slider current value with computed significant PC value
+    observe({
+        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
+            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = seuratWorkflow$numberOfReductionComponents$significantPC)
+        }
+    })
+
+    #Draw HVG plot
+    output$plot_hvg <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$HVG)) {
+            seuratWorkflow$plotObject$HVG
+        }
+    })
+
+    #Draw PCA plot
+    output$plot_pca <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$PCA)) {
+            seuratWorkflow$plotObject$PCA
+        }
+    })
+
+    #Draw Elbow (pca) plot
+    output$plot_elbow <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$Elbow)) {
+            seuratWorkflow$plotObject$Elbow
+        }
+    })
+
+    #Draw Jackstraw (pca) plot
+    output$plot_jackstraw <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$JackStraw)) {
+            seuratWorkflow$plotObject$JackStraw
+        }
+    })
+
+    #Draw heatmap (pca) plot
+    output$plot_heatmap <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$Heatmap)) {
+            seuratWorkflow$plotObject$Heatmap
+        }
+    })
+
+    #Draw ICA plot
+    output$plot_ica <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$ICA)) {
+            seuratWorkflow$plotObject$ICA
+        }
+    })
+
+    #Draw tSNE plot
+    output$plot_tsne <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$TSNE)) {
+            seuratWorkflow$plotObject$TSNE
+        }
+    })
+
+    #Draw UMAP plot
+    output$plot_umap <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$UMAP)) {
+            seuratWorkflow$plotObject$UMAP
+        }
+    })
+
+    #Update tsne, umap and clustering selected number of principal components input
+    observe({
+        if (input$reduction_umap_method == "pca") {
+            updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_slider)
+        }
+        else if (input$reduction_umap_method == "ica") {
+            updateTextInput(session = session, inputId = "reduction_umap_count", value = seuratWorkflow$numberOfReductionComponents$ica)
+        }
+        if (input$reduction_clustering_method == "pca") {
+            updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_slider)
+        }
+        else if (input$reduction_clustering_method == "ica") {
+            updateTextInput(session = session, inputId = "reduction_clustering_count", value = seuratWorkflow$numberOfReductionComponents$ica)
+        }
+        if (input$reduction_tsne_method == "pca") {
+            updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_slider)
+        }
+        else if (input$reduction_tsne_method == "ica") {
+            updateTextInput(session = session, inputId = "reduction_tsne_count", value = seuratWorkflow$numberOfReductionComponents$ica)
+        }
+    })
+
+    #Customize heatmap (pca) with selected options
+    observeEvent(input$plot_heatmap_pca_button, {
+        if (!is.null(input$picker_dimheatmap_components_pca)) {
+            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(seuratWorkflow$plotObject$HeatmapCompute, length(input$picker_dimheatmap_components_pca), input$slider_dimheatmap_pca, input$picker_dimheatmap_components_pca)
+        }
+    })
+
 })

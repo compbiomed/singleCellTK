@@ -4,8 +4,14 @@
 \alias{plotTSNE}
 \title{Plot t-SNE plot on dimensionality reduction data run from t-SNE method.}
 \usage{
-plotTSNE(inSCE, colorBy = "No Color", shape = "No Shape",
-  reducedDimName = "TSNE", runTSNE = FALSE, useAssay = "logcounts")
+plotTSNE(
+  inSCE,
+  colorBy = "No Color",
+  shape = "No Shape",
+  reducedDimName = "TSNE",
+  runTSNE = FALSE,
+  useAssay = "logcounts"
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
