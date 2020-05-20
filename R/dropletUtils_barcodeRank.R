@@ -1,4 +1,3 @@
-
 .runBarcodeRankDrops <- function(barcode.matrix, lower=100, 
                                  fit.bounds=NULL, 
                                  df=20) {
@@ -12,12 +11,12 @@
   
   knee.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$knee)
   inflection.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$inflection)
-  
   result <- cbind(knee.ix, inflection.ix)
   colnames(result) <- c("dropletUtils_barcodeRank_knee",
                         "dropletUtils_barcodeRank_inflection")
+  rank <- output[!duplicated(output@listData$rank), c('rank', 'total')]
   
-  return(result)
+  return(list(result, rank))
 }
 
 
@@ -53,6 +52,8 @@
 #' data(emptyDropsSceExample, package = "singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE = emptyDropsSceExample)
 #' @export
+
+
 runBarcodeRankDrops <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts", 
@@ -72,11 +73,13 @@ runBarcodeRankDrops <- function(inSCE,
   
   ##  Getting current arguments values
   argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-  
+  rank <- list()
+
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
                                  dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
-                                 dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)))
+                                 dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)),
+                                 dropletUtils_BarcodeRank_Rank = integer(ncol(inSCE)))
   
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
@@ -85,17 +88,18 @@ runBarcodeRankDrops <- function(inSCE,
     sceSample <- inSCE[, sceSampleInd]
     
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-    result <- .runBarcodeRankDrops(barcode.matrix = mat, lower=lower,
-                                   fit.bounds=fitBounds, 
-                                   df=df)
+    resultList <- .runBarcodeRankDrops(barcode.matrix = mat, lower=lower,
+                                       fit.bounds=fitBounds, 
+                                       df=df)
     
-    output[sceSampleInd, ] <- result
+    output[sceSampleInd, ] <- resultList[[1]]
+    rank[[samples[i]]] <- resultList[[2]]
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
   
   inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
   inSCE@metadata$runBarcodeRankDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version
-  
+  inSCE@metadata$runBarcodeRankDrops$rank <- rank
   return(inSCE)
 }

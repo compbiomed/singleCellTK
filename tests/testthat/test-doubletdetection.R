@@ -1,7 +1,9 @@
 # doublet detection algorithms
 library(singleCellTK)
 context("Testing doublet detection algorithms")
-sce <- mouseBrainSubsetSCE
+#sce <- mouseBrainSubsetSCE
+data(sceQCExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 
 test_that(desc = "Testing runDoubletCells", {
 	sceres <- runDoubletCells(sce)

@@ -13,7 +13,8 @@ runCellQC(
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
   useAssay = "counts",
-  seed = 12345
+  seed = 12345,
+  paramsList = NULL
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ Algorithms will be run on cells from each sample separately.}
 matrix for cells.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
+
+\item{paramsList}{A list containing parameters for QC functions. Default NULL.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the

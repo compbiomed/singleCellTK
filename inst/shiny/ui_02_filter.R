@@ -52,7 +52,7 @@ shinyPanelFilter <- fluidPage(
                        checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
                        numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
                        numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
-                       selectInput("deletesamplelist", "Select Samples:", sampleChoice, multiple = TRUE),
+                       #selectInput("deletesamplelist", "Select Samples:", sampleChoice, multiple = TRUE),
                        fluidRow(
                          column(6, withBusyIndicatorUI(actionButton("filterData", "Filter Data"))),
                          column(6, actionButton("resetData", "Reset All"))
@@ -120,19 +120,19 @@ shinyPanelFilter <- fluidPage(
         ),
         mainPanel(
           wellPanel(
-            style = "background-color:transparent",
+            #style = "background-color:transparent",
             # h4("Summary Contents:"),
             # tableOutput("summarycontents"),
-            tags$hr(),
-            h4("Counts Histogram:"),
-            plotlyOutput("countshist"),
-            tags$hr(),
-            h4("Genes Histogram:"),
-            plotlyOutput("geneshist"),
-            tags$hr(),
-            h4("Data Table:"),
-            helpText("Note: Shows table only if samples < 50"),
-            DT::dataTableOutput("contents")
+            #tags$hr(),
+            #h4("Counts Histogram:"),
+            #plotlyOutput("countshist"),
+            #tags$hr(),
+            #h4("Genes Histogram:"),
+            #plotlyOutput("geneshist"),
+            #tags$hr(),
+            #h4("Data Table:"),
+            #helpText("Note: Shows table only if samples < 50"),
+            #DT::dataTableOutput("contents")
           )
         )
       )

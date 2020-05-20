@@ -2,43 +2,47 @@
 #'
 #' Creates a table of summary metrics from an input SCtkExperiment.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to summarize. Default is "counts"
-#' @param expressionCutoff Count number of samples with fewer than
-#' expressionCutoff genes. The default is 1700.
+#' @param inSCE Input SCtkExperiment object. 
+#' @param useAssay Indicate which assay to summarize. Default \code{"counts"}.
+#' @param sampleVariableName Variable name in \code{colData} denoting which
+#' sample each cell belongs to. If \code{NULL}, all cells will be assumed
+#' to come from the same sample. Default \code{"sample"}.
 #'
-#' @return A data.frame object of summary metrics.
+#' @return A data.frame of summary metrics per sample.
+#' @importFrom Matrix colSums
+#' @importFrom DelayedArray colSums
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
-#' summarizeTable(mouseBrainSubsetSCE)
+#' summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
 #'
-summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
-  return(
-    data.frame(
-      "Metric" = c(
-        "Number of Samples",
-        "Number of Genes",
-        "Average number of reads per cell",
-        "Average number of genes per cell",
-        paste0("Samples with <", expressionCutoff, " detected genes"),
-        "Genes with no expression across all samples"
-      ),
-      "Value" = c(
-        ncol(inSCE),
-        nrow(inSCE),
-        as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay)))),
-        as.integer(mean(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay) > 0))),
-        sum(DelayedArray::colSums(
-          SummarizedExperiment::assay(inSCE, useAssay) != 0) <
-            expressionCutoff),
-        sum(DelayedArray::rowSums(
-          SummarizedExperiment::assay(inSCE, useAssay)) == 0)
-      )
-    )
-  )
+summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"){
+  
+  if(is.null(sampleVariableName)) {
+    sampleVariable <- rep("Sample", ncol(inSCE))
+  } else {
+    if(!(sampleVariableName %in% colnames(colData(inSCE)))) {
+      stop(paste0("'", sampleVariableName, "' was not found in the 'colData' of 'inSCE'."))
+    }
+    sampleVariable <- colData(inSCE)[,sampleVariableName]  
+  }
+  
+  numCells <- table(sampleVariable)
+  var <- colSums(SummarizedExperiment::assay(inSCE, useAssay))
+  meanCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = mean)
+  medianCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = stats::median)
+  var2 <- colSums(SummarizedExperiment::assay(inSCE, useAssay) > 0)
+  meanDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = mean)
+  medianDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = stats::median)
+  
+  df <- data.frame("Sample" = names(numCells),
+                   "Number of Cells" = as.integer(round(as.numeric(numCells))),
+                   "Mean counts per cell" = as.integer(round(meanCounts[,2])),
+                   "Median counts per cell" = as.integer(round(medianCounts[,2])),
+                   "Mean features detected per cell" = as.integer(round(meanDetected[,2])),
+                   "Median features detected per cell" = as.integer(round(medianDetected[,2])),
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  return(df)
 }
 
 #' Create a SCtkExperiment object

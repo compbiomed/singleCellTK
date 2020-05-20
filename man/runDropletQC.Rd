@@ -8,7 +8,8 @@ runDropletQC(
   inSCE,
   algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
   sample = NULL,
-  useAssay = "counts"
+  useAssay = "counts",
+  paramsList = NULL
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ Algorithms will be run on cells from each sample separately.}
 
 \item{useAssay}{A string specifying which assay contains the count
 matrix for droplets.}
+
+\item{paramsList}{A list containing parameters for QC functions. Default NULL.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
