@@ -2,7 +2,8 @@
 # QC algorithms for all barcodes, pre-filter
 library(singleCellTK)
 context("Testing dropletUtils algorithms")
-sce <- emptyDropsSceExample
+#sce <- emptyDropsSceExample
+data(sceQCExample, package = "singleCellTK")
 
 test_that(desc = "Testing runBarcodeRankDrops", {
         sceres <- runBarcodeRankDrops(inSCE = sce)
