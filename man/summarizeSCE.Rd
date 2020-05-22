@@ -4,7 +4,7 @@
 \alias{summarizeSCE}
 \title{Summarize SCtkExperiment}
 \usage{
-summarizeSCE(inSCE, useAssay = "counts", sampleVariableName = "sample")
+summarizeSCE(inSCE, useAssay = "counts", sampleVariableName = NULL)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object.}

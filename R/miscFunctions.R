@@ -16,7 +16,7 @@
 #' data("mouseBrainSubsetSCE")
 #' summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
 #'
-summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"){
+summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = NULL){
   
   if(is.null(sampleVariableName)) {
     sampleVariable <- rep("Sample", ncol(inSCE))
