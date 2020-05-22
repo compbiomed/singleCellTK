@@ -80,11 +80,9 @@
 
 #' @name importDropEst
 #' @rdname importDropEst
-#' @title Create a SingleCellExperiment Object from DropEst output
-#' @description imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-#' create a SingleCellExperiment object from either the raw or filtered counts matrix.
-#' Additionally parse through the RDS to obtain appropriate feature annotations as
-#' SCE coldata, in addition to any metadata.
+#' @title Create a SCE Object from DropEst output
+#' @description imports the RDS file created by DropEst and
+#' creates a \link[SingleCellExperiment]{SingleCellExperiment} object from either the raw or filtered counts matrix.
 #' @param sampleDirs  A path to the directory containing the data files. Default "./".
 #' @param sampleNames A User-defined sample name. This will be prepended to all cell barcode IDs.
 #'  Default "sample".

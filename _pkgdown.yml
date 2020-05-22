@@ -1,105 +1,36 @@
 template:
   params:
-    bootswatch: yeti
-
+    bootswatch: cosmo
 reference:
-  - title: Shiny App
-    contents:
-    - singleCellTK
-  - title: Data Summary and Filtering
-    contents:
-    - filterSCData
-    - summarizeTable
-    - convertGeneIDs
-  - title: Dimensionality Reduction and Clustering
-    contents:
-    - getPCA
-    - getTSNE
-    - getBiomarker
-    - getClusterInputData
-    - plotBiomarker
-    - plotPCA
-    - plotTSNE
-  - title: Batch Correction
-    contents:
-    - plotBatchVariance
-    - ComBatSCE
-    - runBBKNN
-    - runHarmony
-    - runLimmaBC
-    - runSCGEN
-    - runSeurat3Integration
-    - runFastMNN
-    - runLIGER
-    - runMNNCorrect
-    - runSCANORAMA
-    - runSCMerge
-    - runZINBWaVE
-  - title: Differential Expression
-    contents:
-    - scDiffEx
-    - scDiffExANOVA
-    - scDiffExDESeq2
-    - scDiffExlimma
-    - plotDiffEx
-    - MAST
-    - MASTregression
-    - MASTviolin
-    - thresholdGenes
-  - title: Pathway Activity Analysis
-    contents:
-    - gsvaPlot
-    - gsvaSCE
-  - title: Sample Size
-    contents:
-    - calcEffectSizes
-    - DownsampleCells
-    - DownsampleDepth
-    - generateSimulatedData
-    - iterateSimulations
-    - subDiffEx
-    - subDiffExANOVA
-    - subDiffExttest
-  - title: Data
-    contents:
-    - mouseBrainSubsetSCE
-  - title: SCtkExperiment
-    contents:
-    - createSCE
-    - starts_with("SCtkExperiment")
-    - starts_with("pcaVariances")
-  - title: Alignment
-    contents:
-    - alignSingleCellData
-    - parseRsubreadLogs
-
+- title: "Importing scRNA-seq data"
+- contents:
+  - starts_with("import")
+- title: "Quality Control & Preprocessing"
+- contents:
+  - starts_with("run")
+- title: "Visualization"
+- contents: 
+  - starts_with("plot")
+- title: "Exporting Results"
+- contents: 
+  - starts_with("export")
 navbar:
   title: "singleCellTK"
   left:
-    - text: "Introduction to singleCellTK"
-      href: articles/v01-Introduction_to_singleCellTK.html
-    - text: "Interactive Shiny Analysis"
-      menu:
-        - text: "1: Upload"
-          href: articles/v03-tab01_Upload.html
-        - text: "2: Data Summary and Filtering"
-          href: articles/v04-tab02_Data-Summary-and-Filtering.html
-        - text: "3: Visualization and Clustering"
-          href: articles/v05-tab03_Visualization-and-Clustering.html
-        - text: "4: Batch Correction"
-          href: articles/v06-tab04_Batch-Correction.html
-        - text: "5: Differential Expression"
-          href: articles/v07-tab05_Differential-Expression.html
-        - text: "6: Pathway Activity Analysis"
-          href: articles/v08-tab06_Pathway-Activity-Analysis.html
-        - text: "7: Sample Size"
-          href: articles/v09-tab07_Sample-Size.html
+    - text: "Introduction to SingleCellToolKit"
+      href: articles/intro_to_sctk.html
     - text: "Command Line Analysis"
       menu:
-        - text: "Processing and Visualizing Data"
-          href: articles/v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
-        - text: "Aligning and Quantifying scRNA-Seq Data"
-          href: articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html
+        - text: "Example Workflow"
+          href: articles/example_workflow.html
+        - text: "Import data into SCTK"
+          href: articles/import_scRNAseq_data_as_SCE.html
+        - text: "Perform Quality Control"
+          href: articles/run_qc.html
+        - text: "Visualize Results"
+          href: articles/visualize_results.html
+        - text: "Export Data"
+          href: articles/export.html
     - text: "Reference"
       href: reference/index.html
   right:
