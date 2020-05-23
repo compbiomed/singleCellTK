@@ -71,10 +71,11 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
 #' @return sceObject scaled sce object
 #' @export
 seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData", model = "linear", scale = TRUE, center = TRUE, scaleMax = 10) {
-    seuratObject <- Seurat::ScaleData(convertSCEToSeurat(inSCE, useAssay), features = rownames(inSCE), model.use = model, do.scale = scale, do.center = center, scale.max = as.double(scaleMax), verbose = FALSE)
-    inSCE <- .updateAssaySCE(inSCE, seuratObject, scaledAssayName, "scale.data")
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    return(inSCE)
+  seuratObject <- convertSCEToSeurat(inSCE, useAssay)
+  seuratObject <- Seurat::ScaleData(seuratObject, features = rownames(seuratObject), model.use = model, do.scale = scale, do.center = center, scale.max = as.double(scaleMax), verbose = FALSE)
+  inSCE <- .updateAssaySCE(inSCE, seuratObject, scaledAssayName, "scale.data")
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  return(inSCE)
 }
 
 #' seuratFindHVG
@@ -332,7 +333,7 @@ seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica")
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }
-  return(Seurat::DimHeatmap(seuratObject, dims = 1:dims, nfeatures = 30, reduction = useReduction, fast = fast, combine = combine, raster = raster))
+  return(Seurat::DimHeatmap(seuratObject, dims = 1:dims, nfeatures = nfeatures, reduction = useReduction, fast = fast, combine = combine, raster = raster))
 }
 
 #' seuratHeatmapPlot
