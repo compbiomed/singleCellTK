@@ -1,4 +1,4 @@
-exampleDatasets <- c("mouseBrainSubset", "maits")
+exampleDatasets <- c() ## Need to add final small example data here
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
@@ -34,8 +34,7 @@ shinyPanelUpload <- fluidPage(
 
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
-                                                 "Upload SCtkExperiment RDS File" = "rds",
-												 "Upload Seurat RDS File" = "rds_seurat",
+                                                 "Upload SingleCellExperiment or Seurat object stored in an RDS File" = "rds",
                                                  "Use example data" = "example",
                                                  "Import from a preprocessing tool" = 'directory')
     ),
