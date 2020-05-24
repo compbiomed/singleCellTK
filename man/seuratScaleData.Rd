@@ -8,27 +8,27 @@ Scales the input sce object according to the input parameters}
 seuratScaleData(
   inSCE,
   useAssay,
-  geneNamesSeurat,
-  model.use = "linear",
-  do.scale = TRUE,
-  do.center = TRUE,
-  scale.max = 10
+  scaledAssayName = "seuratScaledData",
+  model = "linear",
+  scale = TRUE,
+  center = TRUE,
+  scaleMax = 10
 )
 }
 \arguments{
 \item{inSCE}{(sce) object to scale}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing normalized counts to scale.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{scaledAssayName}{Name of new assay containing scaled data. Default \code{seuratScaledData}.}
 
-\item{model.use}{selected model to use for scaling data (default is "linear")}
+\item{model}{selected model to use for scaling data. Default \code{"linear"}.}
 
-\item{do.scale}{boolean if data should be scaled or not (TRUE or FALSE, default is TRUE)}
+\item{scale}{boolean if data should be scaled or not. Default \code{TRUE}.}
 
-\item{do.center}{boolean if data should be centered or not (TRUE or FALSE, default is TRUE)}
+\item{center}{boolean if data should be centered or not. Default \code{TRUE}}
 
-\item{scale.max}{maximum numeric value to return for scaled data (default is 10)}
+\item{scaleMax}{maximum numeric value to return for scaled data. Default \code{10}.}
 }
 \value{
 sceObject scaled sce object

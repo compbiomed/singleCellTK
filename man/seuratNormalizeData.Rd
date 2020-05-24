@@ -10,7 +10,7 @@ seuratNormalizeData(
   inSCE,
   newAssayName = "seuratNormalizedData",
   useAssay,
-  geneNamesSeurat,
+  normAssayName = "seuratNormData",
   normalizationMethod = "LogNormalize",
   scaleFactor = 10000
 )
@@ -18,13 +18,13 @@ seuratNormalizeData(
 \arguments{
 \item{inSCE}{(sce) object to normalize}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing raw counts to use for normalization.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{normAssayName}{Name of new assay containing normalized data. Default \code{seuratNormData}.}
 
-\item{normalizationMethod}{selected normalization method (default is "LogNormalize")}
+\item{normalizationMethod}{selected normalization method. Default \code{"LogNormalize"}.}
 
-\item{scaleFactor}{numeric value that represents the scaling factor (default is 10000)}
+\item{scaleFactor}{numeric value that represents the scaling factor. Default \code{10000}.}
 }
 \value{
 sceObject normalized sce object

@@ -5,6 +5,7 @@
 \title{.updateAssaySCE
 Update/Modify/Add an assay in the provided sce object}
 \usage{
+<<<<<<< HEAD
 .updateAssaySCE(
   inSCE,
   geneNames,
@@ -13,11 +14,12 @@ Update/Modify/Add an assay in the provided sce object}
   assaySlotSeurat,
   slotSeurat = "RNA"
 )
+=======
+.updateAssaySCE(inSCE, seuratObject, assaySlotSCE, assaySlotSeurat)
+>>>>>>> upstream/devel
 }
 \arguments{
 \item{inSCE}{(sce) object to which we have to add assay to (copy to)}
-
-\item{geneNames}{for consistent formatting}
 
 \item{seuratObject}{from which we have to copy the assay (copy from)}
 

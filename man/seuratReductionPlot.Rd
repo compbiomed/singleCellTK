@@ -5,16 +5,12 @@
 \title{seuratReductionPlot
 Plots the selected dimensionality reduction method}
 \usage{
-seuratReductionPlot(inSCE, useAssay, geneNamesSeurat, reduction)
+seuratReductionPlot(inSCE, useReduction = c("pca", "ica", "tsne", "umap"))
 }
 \arguments{
 \item{inSCE}{(sce) object which has the selected dimensionality reduction algorithm already computed and stored}
 
-\item{useAssay}{which assay to use from sce object}
-
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
-
-\item{reduction}{one of selected algorithm from pca, ica, tsne and umap}
+\item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
 }
 \value{
 plot object

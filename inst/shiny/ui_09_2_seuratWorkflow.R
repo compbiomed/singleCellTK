@@ -224,7 +224,9 @@ shinyPanelSeurat <- fluidPage(
                                 panel(
                                     selectInput(inputId = "reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                     textInput(inputId = "reduction_clustering_count", label = "Select number of reduction components: ", value = "20"),
-                                    selectInput(inputId = "algorithm.use", label = "Select model for scaling: ", choices = c("original Louvain algorithm", "Louvain algorithm with multilevel refinement", "SLM algorithm")),
+                                    selectInput(inputId = "algorithm.use", label = "Selectclustering algorithm: ", choices = list("Original Louvain algorithm" = "louvain",
+                                                                                                                               "Louvain algorithm with multilevel refinement" = "multilevel",
+                                                                                                                               "SLM algorithm" = "SLM")),
                                     materialSwitch(inputId = "group.singletons", label = "Group singletons?", value = TRUE),
                                     actionButton(inputId = "find_clusters_button", "Find Clusters")
                                     )

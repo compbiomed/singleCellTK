@@ -755,55 +755,38 @@ shinyServer(function(input, output, session) {
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       if (input$uploadChoice == "files"){
-        vals$original <- createSCE(assayFile = input$countsfile$datapath,
+        vals$original <- importFromFiles(assayFile = input$countsfile$datapath,
                                    annotFile = input$annotFile$datapath,
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
-        if (input$selectExampleData == "mouseBrainSubset"){
-          data(list = paste0(input$selectExampleData, "SCE"))
-          vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
-        } else if (input$selectExampleData == "maits"){
-          data(maits, package = "MAST")
-          vals$original <- withConsoleRedirect(createSCE(assayFile = t(maits$expressionmat),
-                                                         annotFile = maits$cdat,
-                                                         featureFile = maits$fdat,
-                                                         assayName = "logtpm",
-                                                         inputDataFrames = TRUE,
-                                                         createLogCounts = FALSE))
-          rm(maits)
-        } else if (input$selectExampleData == "fluidigm_pollen_et_al") {
-          data(fluidigm, package = "scRNAseq")
-          tempsce <- as(fluidigm, "SingleCellExperiment")
-          vals$original <- as(tempsce, "SCtkExperiment")
-          rm(fluidigm, tempsce)
+        if (input$selectExampleData == "fluidigm_pollen_et_al") {
+          temp <- scRNAseq::ReprocessedFluidigmData()
+          temp$sample <- paste0(colData(temp)$Biological_Condition, "_", colData(temp)$Coverage_Type)
         } else if (input$selectExampleData == "th2_mahata_et_al") {
-          data(th2, package = "scRNAseq")
-          tempsce <- as(th2, "SingleCellExperiment")
-          vals$original <- as(tempsce, "SCtkExperiment")
-          rm(th2, tempsce)
+          temp <- scRNAseq::ReprocessedTh2Data()
+          temp$sample <- "sample"
         } else if (input$selectExampleData == "allen_tasic_et_al") {
-          data(allen, package = "scRNAseq")
-          tempsce <- as(allen, "SingleCellExperiment")
-          vals$original <- as(tempsce, "SCtkExperiment")
-          rm(allen, tempsce)
+          temp <- scRNAseq::ReprocessedAllenData()
+          temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
         }
+        
+        # Convert to sparseMatrix
+        for(i in seq_along(names(assays(temp)))) {
+          assay(temp, i) <- .convertToMatrix(assay(temp, i))
+        }
+        
+        vals$original <- temp
+        rm(temp)
+        
       } else if (input$uploadChoice == "rds") {
         importedrds <- readRDS(input$rdsFile$datapath)
-        if (methods::is(importedrds, "SummarizedExperiment")) {
+        if (base::inherits(importedrds, "SummarizedExperiment")) {
           vals$original <- importedrds
-          seuratWorkflow$sce_rds_file <- input$rdsFile #for seurat workflow
-        } else {
-          vals$original <- NULL
-        }
-      } else if (input$uploadChoice == "rds_seurat") {
-        importedrds <- readRDS(input$rdsFileSeurat$datapath)
-        if (methods::is(importedrds, "Seurat")) {
+        } else if (base::inherits(importedrds, "Seurat")) {
           vals$original <- convertSeuratToSCE(importedrds)
-          seuratWorkflow$sce_rds_file <- importedrds #for seurat workflow
-        }
-        else {
-          vals$original <- NULL
+        } else {
+          showNotification("The '.rds' file should contain a 'SingleCellExperiment' or 'Seurat' object.", type = "error")
         }
       } else if (input$uploadChoice == "directory") {
         if (input$algoChoice == "cellRanger2") {
@@ -888,7 +871,6 @@ shinyServer(function(input, output, session) {
       }
       
       if (!is.null(vals$original)) {
-        # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
         updateColDataNames()
         updateNumSamples()
@@ -987,8 +969,7 @@ shinyServer(function(input, output, session) {
     } else {
       assaySelect <- input$filterAssaySelect
     }
-    singleCellTK::summarizeSCE(inSCE = vals$counts,
-                                 useAssay = "counts")
+    singleCellTK::summarizeSCE(inSCE = vals$counts)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
 
@@ -1256,6 +1237,7 @@ shinyServer(function(input, output, session) {
     observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
+<<<<<<< HEAD
       if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
         stop("Selected assay does not exist!")
       }
@@ -1280,6 +1262,15 @@ shinyServer(function(input, output, session) {
             normalizationMethod = input$normalizeAssayMethodSelect, 
             scaleFactor = as.numeric(input$normalizationScaleFactor))
           updateAssayInputs()
+=======
+        if (input$normalizeLibrarySelect == "seurat") {
+            vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+                                               useAssay = input$normalizeAssaySelect,
+                                               normAssayName = "seuratNormData",
+                                               normalizationMethod = input$normalizeAssayMethodSelect,
+                                               scaleFactor = as.numeric(input$normalizationScaleFactor))
+            updateAssayInputs()
+>>>>>>> upstream/devel
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
           assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
@@ -1527,46 +1518,48 @@ shinyServer(function(input, output, session) {
     }
     })
 
-  observe({
-    output$geneExpPlot <- renderPlot({
-    if (input$colorGeneBy == "Manual Input") {
-      if (is.null(input$colorGenes)){
-        ggplot2::ggplot() + ggplot2::theme_bw() +
-          ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-          ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-      } else {
-        if (input$axisNames == TRUE) {
-          if (input$dimRedAxis1 == "" & input$dimRedAxis2 == "") {
-            shinyalert::shinyalert("Error", text = "Enter axis names", type = "error")
-          } else {
-            comp1 <- input$dimRedAxis1
-            comp2 <- input$dimRedAxis2
-          }
-        } else {
-          comp1 <- NULL
-          comp2 <- NULL
-        }
-        #shinyjs doesn't have any visibility functions so have used the following conditions
-        if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
-          vals$pcX <- input$pcX
-          vals$pcY <- input$pcY
-        } else {
-          vals$pcX <- NULL
-          vals$pcY <- NULL
-        }
-        vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(inSCE = vals$counts,
-                                                               gene = input$colorGenes,
-                                                               binary = input$colorBinary,
-                                                               shape = input$shapeBy,
-                                                               useAssay = input$dimRedAssaySelect,
-                                                               reducedDimName = input$usingReducedDims,
-                                                               comp1 = comp1, comp2 = comp2,
-                                                               x = vals$pcX, y = vals$pcY)
-        vals$dimRedPlot_geneExp
-      }
-    }
-  })
-  })
+  # This code is commented out b/c it was causing a major lag whenever anything else was being
+  # updated. Maybe it needs to be changed to observeEvent? - Josh
+  # observe({
+  #   output$geneExpPlot <- renderPlot({
+  #   if (input$colorGeneBy == "Manual Input") {
+  #     if (is.null(input$colorGenes)){
+  #       ggplot2::ggplot() + ggplot2::theme_bw() +
+  #         ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
+  #         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
+  #     } else {
+  #       if (input$axisNames == TRUE) {
+  #         if (input$dimRedAxis1 == "" & input$dimRedAxis2 == "") {
+  #           shinyalert::shinyalert("Error", text = "Enter axis names", type = "error")
+  #         } else {
+  #           comp1 <- input$dimRedAxis1
+  #           comp2 <- input$dimRedAxis2
+  #         }
+  #       } else {
+  #         comp1 <- NULL
+  #         comp2 <- NULL
+  #       }
+  #       #shinyjs doesn't have any visibility functions so have used the following conditions
+  #       if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
+  #         vals$pcX <- input$pcX
+  #         vals$pcY <- input$pcY
+  #       } else {
+  #         vals$pcX <- NULL
+  #         vals$pcY <- NULL
+  #       }
+  #       vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(inSCE = vals$counts,
+  #                                                              gene = input$colorGenes,
+  #                                                              binary = input$colorBinary,
+  #                                                              shape = input$shapeBy,
+  #                                                              useAssay = input$dimRedAssaySelect,
+  #                                                              reducedDimName = input$usingReducedDims,
+  #                                                              comp1 = comp1, comp2 = comp2,
+  #                                                              x = vals$pcX, y = vals$pcY)
+  #       vals$dimRedPlot_geneExp
+  #     }
+  #   }
+  # })
+  # })
 
   output$clusterPlot <- renderPlotly({
     req(vals$dimRedPlot)
@@ -2288,397 +2281,397 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
-  #-+-+-+-+-+-For Input Observe##############
-  observe({
-    # is there an error or not
-    if (is.null(vals$counts)) {
-      # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      #colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
-      #color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
-      #color_seqdiv <- rownames(color_table[which(color_table$category == "div"
-      #                                           |color_table$category == "seq"),])
-      #from sce
-      cell_list <- BiocGenerics::colnames(vals$counts)
-      gene_list <- BiocGenerics::rownames(vals$counts)
-      #from assays
-      method_list <- names(assays(vals$counts))
-      #from reduced
-      approach_list <- names(reducedDims(vals$counts))
-      #from colData
-      annotation_list <- names(colData(vals$counts))
-
-      updateSelectInput(session, "QuickAccess",
-        choices = c("",approach_list,"Custom"))
-      updateSelectInput(session, "ApproachSelect_Xaxis",
-        choices = c(approach_list))
-      updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
-        choices = c(method_list))
-      updateSelectInput(session, "GeneSelect_Assays_Xaxis",
-        choices = c(gene_list))
-      updateSelectInput(session, "AnnotationSelect_Xaxis",
-        choices = c(annotation_list))
-      updateSelectInput(session, "ApproachSelect_Yaxis",
-        choices = c(approach_list))
-      updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
-        choices = c(method_list))
-      updateSelectInput(session, "GeneSelect_Assays_Yaxis",
-        choices = c(gene_list))
-      updateSelectInput(session, "AnnotationSelect_Yaxis",
-        choices = c(annotation_list))
-      updateSelectInput(session, "ApproachSelect_Colorby",
-        choices = c(approach_list))
-      updateSelectInput(session, "AdvancedMethodSelect_Colorby",
-        choices = c(method_list))
-      updateSelectInput(session, "GeneSelect_Assays_Colorby",
-        choices = c(gene_list))
-      updateSelectInput(session, "AnnotationSelect_Colorby",
-        choices = c(annotation_list))
-      updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
-      updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:",
-        choices = c("RdYlBu",color_seqdiv))
-    }
-  })
-
-  #-+-+-+-+-+-For Advanced Input Observe##############
-  ###ApproachSelect to DimensionSelect X-Axis
-  observe({
-    if (!is.null(vals$counts)){
-      len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
-        Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
-        xs <- colnames(Df)
-        updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
-        rm(Df)
-      }
-    }
-  })
-  ###ApproachSelect to DimensionSelect Y-Axis
-  observe({
-    if (!is.null(vals$counts)){
-      len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
-        Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
-        xs2 <- colnames(Df2)
-        xs2 <- sort(xs2, decreasing = TRUE)
-        updateSelectInput(session, "ColumnSelect_Yaxis", choices = c(xs2))
-        rm(Df2)
-      }
-    }
-  })
-  ###ApproachSelect to DimensionSelect Colorby
-  observe({
-    if (!is.null(vals$counts)){
-      len <- length(SingleCellExperiment::reducedDims(vals$counts))
-      if (!is.null(input$ApproachSelect_Colorby) & len > 0){
-        Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
-        xs3 <- colnames(Df3)
-        updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
-        rm(Df3)
-      }
-    }
-  })
-
-  #-+-+-+-+-+-Observe Group by###################################################
-  ###Observe Radio Button Select Value Type
-  observe({
-    if (!is.null(vals$counts)){
-      if (input$adjustgroupby !=  'None'){
-        #Integer,level>25#
-        if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))
-          #Integer,level<25#
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          shinyjs::enable("SelectValueType")
-          #Numeric,noninteger#
-        }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))
-          #Categorical#
-        }else{
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))}
-      }
-    }
-  })#observe_end
-
-  ###Observe Check Box Check Binning & Text Input Number of Bins:
-
-  observe({
-    if (!is.null(vals$counts)){
-      if (input$adjustgroupby !=  'None'){
-        #Integer,level>25#
-        if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Integer,level<25,continuous
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
-          &input$SelectValueType == "Continuous"){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Integer,level<25,Categorical
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
-          &input$SelectValueType == "Categorical"){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::disable("adjustbinning")
-          #Numeric,noninteger
-        }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Categorical
-        }else{updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::disable("adjustbinning")
-        }
-      }
-    }
-  })#observe_end
-
-  #-+-+-+-+-+-Observe Color bye###################################################
-  ###Observe Radio Button Select Value Type
-  observe({
-    if (!is.null(vals$counts)){
-      if (input$TypeSelect_Colorby != 'Pick a Color'){
-        ###If Cell Annotation###############################################################
-        if(input$TypeSelect_Colorby == 'Cell Annotation'){
-          ###If Cell Annotation numeric
-          if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
-          }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
-            &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::enable("SelectColorType")
-
-          }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-
-          ###If ReducedData##########################################################
-        }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-          Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
-          if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
-            Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-            ###If ReducedData numeric
-
-            if(!is.numeric(Dfcolor[,1])){
-              updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-                choices = c("Categorical", "Continuous"),
-                selected = "Categorical")
-              shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
-            }else if(is.integer(Dfcolor[,1])
-              &length(levels(as.factor(Dfcolor[,1])))<=25){
-              updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-                choices = c("Categorical", "Continuous"),
-                selected = "Categorical")
-              shinyjs::enable("SelectColorType")
-
-            }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Continuous")
-              shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-          }
-          ###If Expression Assays###########################################################
-        }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
-        if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
-          Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-
-          if(!is.numeric(Dfassay[,1])){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
-          }else if(is.integer(Dfassay[,1])
-            &length(levels(as.factor(Dfassay[,1])))<=25){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::enable("SelectColorType")
-
-          }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-        }
-        }
-      }
-    }
-  })###observe_end
-
-  ###Observe Check Box Check Binning & Text Input Number of Bins:
-  observe({
-    if (!is.null(vals$counts)){
-      ###If Cell Annotation###############################################################
-      if(input$TypeSelect_Colorby != 'Pick a Color'){
-
-        if(input$TypeSelect_Colorby == 'Cell Annotation'){
-          if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
-            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-          }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
-            &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
-            &input$SelectColorType == 'Categorical'){
-            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-          }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
-            &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
-            &input$SelectColorType == 'Continuous'){
-
-            shinyjs::enable("checkColorbinning")
-            if(input$checkColorbinning == TRUE){
-              shinyjs::enable("adjustColorbinning")
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-            else{
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
-          }else{
-
-            shinyjs::enable("checkColorbinning")
-            if(input$checkColorbinning == TRUE){
-              shinyjs::enable("adjustColorbinning")
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-            else{
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-          }
-
-
-          ###If Reduce Dimensions##############################################################
-        }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-          Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
-          if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
-            Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-
-            if(!is.numeric(Dfcolor[,1])){
-              updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-              shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-            }else if(is.integer(Dfcolor[,1])
-              &length(levels(as.factor(Dfcolor[,1])))<=25
-              &input$SelectColorType == 'Categorical'){
-              updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-              shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-            }else if(is.integer(Dfcolor[,1])
-              &length(levels(as.factor(Dfcolor[,1])))<=25
-              &input$SelectColorType == 'Continuous'){
-
-              shinyjs::enable("checkColorbinning")
-              if(input$checkColorbinning == TRUE){
-                shinyjs::enable("adjustColorbinning")
-                updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-              else{
-                shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-                updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
-            }else{
-
-              shinyjs::enable("checkColorbinning")
-              if(input$checkColorbinning == TRUE){
-                shinyjs::enable("adjustColorbinning")
-                updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-              else{
-                shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-                updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-            }
-          }
-
-
-          ###If Expression Assays##########################################################
-        }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
-        if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
-          Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-
-          if(!is.numeric(Dfassay[,1])){
-            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-          }else if(is.integer(Dfassay[,1])
-            &length(levels(as.factor(Dfassay[,1])))<=25
-            &input$SelectColorType == 'Categorical'){
-            updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
-            shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
-            shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-            updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
-          }else if(is.integer(Dfassay[,1])
-            &length(levels(as.factor(Dfassay[,1])))<=25
-            &input$SelectColorType == 'Continuous'){
-
-            shinyjs::enable("checkColorbinning")
-            if(input$checkColorbinning == TRUE){
-              shinyjs::enable("adjustColorbinning")
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-            else{
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
-          }else{
-
-            shinyjs::enable("checkColorbinning")
-            if(input$checkColorbinning == TRUE){
-              shinyjs::enable("adjustColorbinning")
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
-            else{
-              shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
-              updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))
-            }
-          }
-        }
-        }#Dfassay_end
-      }#ifnot_end
-    }
-  })###observe_end
-
+  # #-+-+-+-+-+-For Input Observe##############
+  # observe({
+  #   # is there an error or not
+  #   if (is.null(vals$counts)) {
+  #     # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+  #   } else {
+  #     #colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
+  #     #color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
+  #     #color_seqdiv <- rownames(color_table[which(color_table$category == "div"
+  #     #                                           |color_table$category == "seq"),])
+  #     #from sce
+  #     cell_list <- BiocGenerics::colnames(vals$counts)
+  #     gene_list <- BiocGenerics::rownames(vals$counts)
+  #     #from assays
+  #     method_list <- names(assays(vals$counts))
+  #     #from reduced
+  #     approach_list <- names(reducedDims(vals$counts))
+  #     #from colData
+  #     annotation_list <- names(colData(vals$counts))
+  # 
+  #     updateSelectInput(session, "QuickAccess",
+  #       choices = c("",approach_list,"Custom"))
+  #     updateSelectInput(session, "ApproachSelect_Xaxis",
+  #       choices = c(approach_list))
+  #     updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
+  #       choices = c(method_list))
+  #     updateSelectInput(session, "GeneSelect_Assays_Xaxis",
+  #       choices = c(gene_list))
+  #     updateSelectInput(session, "AnnotationSelect_Xaxis",
+  #       choices = c(annotation_list))
+  #     updateSelectInput(session, "ApproachSelect_Yaxis",
+  #       choices = c(approach_list))
+  #     updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
+  #       choices = c(method_list))
+  #     updateSelectInput(session, "GeneSelect_Assays_Yaxis",
+  #       choices = c(gene_list))
+  #     updateSelectInput(session, "AnnotationSelect_Yaxis",
+  #       choices = c(annotation_list))
+  #     updateSelectInput(session, "ApproachSelect_Colorby",
+  #       choices = c(approach_list))
+  #     updateSelectInput(session, "AdvancedMethodSelect_Colorby",
+  #       choices = c(method_list))
+  #     updateSelectInput(session, "GeneSelect_Assays_Colorby",
+  #       choices = c(gene_list))
+  #     updateSelectInput(session, "AnnotationSelect_Colorby",
+  #       choices = c(annotation_list))
+  #     updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
+  #     updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:",
+  #       choices = c("RdYlBu",color_seqdiv))
+  #   }
+  # })
+  # 
+  # #-+-+-+-+-+-For Advanced Input Observe##############
+  # ###ApproachSelect to DimensionSelect X-Axis
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     len <- length(SingleCellExperiment::reducedDims(vals$counts))
+  #     if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
+  #       Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
+  #       xs <- colnames(Df)
+  #       updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
+  #       rm(Df)
+  #     }
+  #   }
+  # })
+  # ###ApproachSelect to DimensionSelect Y-Axis
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     len <- length(SingleCellExperiment::reducedDims(vals$counts))
+  #     if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
+  #       Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
+  #       xs2 <- colnames(Df2)
+  #       xs2 <- sort(xs2, decreasing = TRUE)
+  #       updateSelectInput(session, "ColumnSelect_Yaxis", choices = c(xs2))
+  #       rm(Df2)
+  #     }
+  #   }
+  # })
+  # ###ApproachSelect to DimensionSelect Colorby
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     len <- length(SingleCellExperiment::reducedDims(vals$counts))
+  #     if (!is.null(input$ApproachSelect_Colorby) & len > 0){
+  #       Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
+  #       xs3 <- colnames(Df3)
+  #       updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
+  #       rm(Df3)
+  #     }
+  #   }
+  # })
+  # 
+  # #-+-+-+-+-+-Observe Group by###################################################
+  # ###Observe Radio Button Select Value Type
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     if (input$adjustgroupby !=  'None'){
+  #       #Integer,level>25#
+  #       if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #         & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
+  #         updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Continuous")
+  #         shinyjs::delay(5,shinyjs::disable("SelectValueType"))
+  #         #Integer,level<25#
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #         & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25){
+  #         updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Categorical")
+  #         shinyjs::enable("SelectValueType")
+  #         #Numeric,noninteger#
+  #       }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
+  #         updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Continuous")
+  #         shinyjs::delay(5,shinyjs::disable("SelectValueType"))
+  #         #Categorical#
+  #       }else{
+  #         updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Categorical")
+  #         shinyjs::delay(5,shinyjs::disable("SelectValueType"))}
+  #     }
+  #   }
+  # })#observe_end
+  # 
+  # ###Observe Check Box Check Binning & Text Input Number of Bins:
+  # 
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     if (input$adjustgroupby !=  'None'){
+  #       #Integer,level>25#
+  #       if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #         &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
+  #         updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+  #         shinyjs::delay(5,shinyjs::disable("checkbinning"))
+  #         shinyjs::enable("adjustbinning")
+  #         #Integer,level<25,continuous
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #         &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
+  #         &input$SelectValueType == "Continuous"){
+  #         updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+  #         shinyjs::delay(5,shinyjs::disable("checkbinning"))
+  #         shinyjs::enable("adjustbinning")
+  #         #Integer,level<25,Categorical
+  #       }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+  #         &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
+  #         &input$SelectValueType == "Categorical"){
+  #         updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
+  #         shinyjs::delay(5,shinyjs::disable("checkbinning"))
+  #         shinyjs::disable("adjustbinning")
+  #         #Numeric,noninteger
+  #       }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
+  #         updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
+  #         shinyjs::delay(5,shinyjs::disable("checkbinning"))
+  #         shinyjs::enable("adjustbinning")
+  #         #Categorical
+  #       }else{updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
+  #         shinyjs::delay(5,shinyjs::disable("checkbinning"))
+  #         shinyjs::disable("adjustbinning")
+  #       }
+  #     }
+  #   }
+  # })#observe_end
+  # 
+  # #-+-+-+-+-+-Observe Color bye###################################################
+  # ###Observe Radio Button Select Value Type
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     if (input$TypeSelect_Colorby != 'Pick a Color'){
+  #       ###If Cell Annotation###############################################################
+  #       if(input$TypeSelect_Colorby == 'Cell Annotation'){
+  #         ###If Cell Annotation numeric
+  #         if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+  #           updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #             choices = c("Categorical", "Continuous"),
+  #             selected = "Categorical")
+  #           shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+  # 
+  # 
+  #         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
+  #           updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #             choices = c("Categorical", "Continuous"),
+  #             selected = "Categorical")
+  #           shinyjs::enable("SelectColorType")
+  # 
+  #         }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Continuous")
+  #           shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+  # 
+  #         ###If ReducedData##########################################################
+  #       }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+  #         Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+  #         if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+  #           Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+  #           ###If ReducedData numeric
+  # 
+  #           if(!is.numeric(Dfcolor[,1])){
+  #             updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #               choices = c("Categorical", "Continuous"),
+  #               selected = "Categorical")
+  #             shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+  # 
+  # 
+  #           }else if(is.integer(Dfcolor[,1])
+  #             &length(levels(as.factor(Dfcolor[,1])))<=25){
+  #             updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #               choices = c("Categorical", "Continuous"),
+  #               selected = "Categorical")
+  #             shinyjs::enable("SelectColorType")
+  # 
+  #           }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #             choices = c("Categorical", "Continuous"),
+  #             selected = "Continuous")
+  #             shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+  #         }
+  #         ###If Expression Assays###########################################################
+  #       }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+  #       if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+  #         Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+  # 
+  #         if(!is.numeric(Dfassay[,1])){
+  #           updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #             choices = c("Categorical", "Continuous"),
+  #             selected = "Categorical")
+  #           shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+  # 
+  # 
+  #         }else if(is.integer(Dfassay[,1])
+  #           &length(levels(as.factor(Dfassay[,1])))<=25){
+  #           updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #             choices = c("Categorical", "Continuous"),
+  #             selected = "Categorical")
+  #           shinyjs::enable("SelectColorType")
+  # 
+  #         }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  #           choices = c("Categorical", "Continuous"),
+  #           selected = "Continuous")
+  #           shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
+  #       }
+  #       }
+  #     }
+  #   }
+  # })###observe_end
+  # 
+  # ###Observe Check Box Check Binning & Text Input Number of Bins:
+  # observe({
+  #   if (!is.null(vals$counts)){
+  #     ###If Cell Annotation###############################################################
+  #     if(input$TypeSelect_Colorby != 'Pick a Color'){
+  # 
+  #       if(input$TypeSelect_Colorby == 'Cell Annotation'){
+  #         if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+  #           updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #           shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #           shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #           updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+  #           &input$SelectColorType == 'Categorical'){
+  #           updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #           shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #           shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #           updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+  #           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
+  #           &input$SelectColorType == 'Continuous'){
+  # 
+  #           shinyjs::enable("checkColorbinning")
+  #           if(input$checkColorbinning == TRUE){
+  #             shinyjs::enable("adjustColorbinning")
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #           else{
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+  # 
+  #         }else{
+  # 
+  #           shinyjs::enable("checkColorbinning")
+  #           if(input$checkColorbinning == TRUE){
+  #             shinyjs::enable("adjustColorbinning")
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #           else{
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+  #         }
+  # 
+  # 
+  #         ###If Reduce Dimensions##############################################################
+  #       }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+  #         Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+  #         if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+  #           Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+  # 
+  #           if(!is.numeric(Dfcolor[,1])){
+  #             updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #           }else if(is.integer(Dfcolor[,1])
+  #             &length(levels(as.factor(Dfcolor[,1])))<=25
+  #             &input$SelectColorType == 'Categorical'){
+  #             updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #           }else if(is.integer(Dfcolor[,1])
+  #             &length(levels(as.factor(Dfcolor[,1])))<=25
+  #             &input$SelectColorType == 'Continuous'){
+  # 
+  #             shinyjs::enable("checkColorbinning")
+  #             if(input$checkColorbinning == TRUE){
+  #               shinyjs::enable("adjustColorbinning")
+  #               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #             else{
+  #               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+  # 
+  #           }else{
+  # 
+  #             shinyjs::enable("checkColorbinning")
+  #             if(input$checkColorbinning == TRUE){
+  #               shinyjs::enable("adjustColorbinning")
+  #               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #             else{
+  #               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+  #           }
+  #         }
+  # 
+  # 
+  #         ###If Expression Assays##########################################################
+  #       }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+  #       if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+  #         Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+  # 
+  #         if(!is.numeric(Dfassay[,1])){
+  #           updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #           shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #           shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #           updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #         }else if(is.integer(Dfassay[,1])
+  #           &length(levels(as.factor(Dfassay[,1])))<=25
+  #           &input$SelectColorType == 'Categorical'){
+  #           updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
+  #           shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
+  #           shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #           updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
+  # 
+  #         }else if(is.integer(Dfassay[,1])
+  #           &length(levels(as.factor(Dfassay[,1])))<=25
+  #           &input$SelectColorType == 'Continuous'){
+  # 
+  #           shinyjs::enable("checkColorbinning")
+  #           if(input$checkColorbinning == TRUE){
+  #             shinyjs::enable("adjustColorbinning")
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #           else{
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
+  # 
+  #         }else{
+  # 
+  #           shinyjs::enable("checkColorbinning")
+  #           if(input$checkColorbinning == TRUE){
+  #             shinyjs::enable("adjustColorbinning")
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
+  # 
+  #           else{
+  #             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
+  #             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))
+  #           }
+  #         }
+  #       }
+  #       }#Dfassay_end
+  #     }#ifnot_end
+  #   }
+  # })###observe_end
+  # 
 
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
@@ -4396,35 +4389,9 @@ shinyServer(function(input, output, session) {
     #reactive values object to store all objects to be used in seurat workflow
     seuratWorkflow <- reactiveValues()
 
-    #Upload sce object (rds file)
-    observeEvent(seuratWorkflow$sce_rds_file, {
-        if (!is.null(seuratWorkflow$sce_rds_file)) {
-                if (!methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a sce filepath
-                    seuratWorkflow$seuratObject <- .sceToSeurat(seuratWorkflow$sce_rds_file$datapath)
-                }
-                else if (methods::is(seuratWorkflow$sce_rds_file, "Seurat")) { #sce_rds_file is a seurat object
-                    seuratWorkflow$seuratObject <- seuratWorkflow$sce_rds_file
-                }
-                vals$counts@metadata$seuratSelectedAssay <- names(assays(vals$counts))[1]
-                seuratWorkflow$geneNamesSCE <- .rowNamesSCE(vals$counts)
-                seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
-                updateSelectInput(session = session, inputId = "seuratSelectNormalizationAssay", choices = names(assays(vals$counts)))
-        }     
-    })
-
-    #Display highly variable genes
-    output$hvg_output <- renderText({
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0) {
-                    .seuratGetVariableFeatures(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_no_features_view)
-                }
-            }
-        }
-    })
-
     #Perform normalization
     observeEvent(input$normalize_button, {
+<<<<<<< HEAD
         if (!is.null(vals$counts)) {
             withProgress(message = "Normalizing", max = 1, value = 1, {
                 vals$counts@metadata$seuratSelectedAssay <- input$seuratSelectNormalizationAssay
@@ -4437,192 +4404,216 @@ shinyServer(function(input, output, session) {
         else {
             showNotification("Please input dataset (rds file) before normalizing data!", type = "error")
         }
+=======
+      if (!is.null(vals$counts)) {
+        withProgress(message = "Normalizing", max = 1, value = 1, {
+          vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+                                             useAssay = input$seuratSelectNormalizationAssay,
+                                             normAssayName = "seuratNormData",
+                                             normalizationMethod = input$normalization_method,
+                                             scaleFactor = as.numeric(input$scale_factor))
+          updateAssayInputs()
+        })
+        updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
+        showNotification("Normalization Complete")
+    }
+>>>>>>> upstream/devel
     })
 
     #Perform scaling
     observeEvent(input$scale_button, {
         if (!is.null(vals$counts)) {
             withProgress(message = "Scaling", max = 1, value = 1, {
-                vals$counts <- seuratScaleData(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$model.use, input$do.scale, input$do.center, input$scale.max)
+                vals$counts <- seuratScaleData(inSCE = vals$counts,
+                                               useAssay = "seuratNormData",
+                                               scaledAssayName = "seuratScaledData",
+                                               model = input$model.use,
+                                               scale = input$do.scale,
+                                               center = input$do.center,
+                                               scaleMax = input$scale.max)
                 updateAssayInputs()
             })
             updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
             showNotification("Scale Complete")
         }
         else {
-            showNotification("Please input dataset (rds file) before scaling data!", type = "error")
-        }
-    })
-
-    #Run PCA
-    observeEvent(input$run_pca_button, {
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
-                    withProgress(message = "Running PCA", max = 1, value = 1, {
-                        vals$counts <- seuratPCA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["pca"]])[2]
-                    })
-                    withProgress(message = "Plotting PCA", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "pca")
-                    })
-                    if (input$pca_compute_elbow) {
-                        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
-                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, seuratWorkflow$numberOfReductionComponents$significantPC)
-                        })
-                    }
-                    if (input$pca_compute_jackstraw) {
-                        withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-                            vals$counts <- seuratComputeJackStraw(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                        })
-                    }
-                    if (input$pca_compute_heatmap) {
-                        withProgress(message = "Generating Heatmap Plot", max = 1, value = 1, {
-                            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$pca_no_components)
-                            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
-                        })
-                    }
-                    addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-                    addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-                    addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-                    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-                    showNotification("PCA Complete")
-                }
-                else {
-                    showNotification("Please scale data and find highly variable genes before computing pca!", type = "error")
-                }
-            }
-        }
-        else {
-            showNotification("Please input dataset (rds file) before computing pca!", type = "error")
-        }
-    })
-
-    #Run ICA
-    observeEvent(input$run_ica_button, {
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if ((length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@scale.data) > 0) && (length(slot(vals$counts@metadata[["seurat"]], "assays")[["RNA"]]@var.features) > 0)) {
-                    withProgress(message = "Running ICA", max = 1, value = 1, {
-                        vals$counts <- seuratICA(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$ica_no_components)
-                        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)[["ica"]])[2]
-                    })
-                    withProgress(message = "Plotting ICA", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "ica")
-                    })
-                    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-                    showNotification("ICA Complete")
-                }
-                else {
-                    showNotification("Please scale data and find highly variable genes before computing ica!", type = "error")
-                }
-            }
-        }
-        else {
-            showNotification("Please input dataset (rds file) before computing ica!", type = "error")
+            showNotification("Please perform normalization before scaling the data.", type = "error")
         }
     })
 
     #Find HVG
     observeEvent(input$find_hvg_button, {
-         if (!is.null(vals$counts)
-                && "seuratNormalizedData" %in% assayNames(vals$counts)
-                    && "seuratScaledData" %in% assayNames(vals$counts)) {
-            withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-                vals$counts <- seuratFindHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$hvg_method, as.numeric(input$hvg_no_features))
-            })
-            withProgress(message = "Plotting HVG", max = 1, value = 1, {
-                seuratWorkflow$plotObject$HVG <- seuratPlotHVG(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat)
-            })
-            updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
-            showNotification("Find HVG Complete")
+      if (!is.null(vals$counts)
+          && "seuratNormData" %in% assayNames(vals$counts)
+          && "seuratScaledData" %in% assayNames(vals$counts)) {
+        withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+          vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                       useAssay = "seuratScaledData",
+                                       hvgMethod = input$hvg_method,
+                                       hvgNumber = as.numeric(input$hvg_no_features))
+        })
+        withProgress(message = "Plotting HVG", max = 1, value = 1, {
+          seuratWorkflow$plotObject$HVG <- seuratPlotHVG(vals$counts)
+        })
+        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
+        showNotification("Find HVG Complete")
+      }
+      else if (!"seuratNormData" %in% assayNames(vals$counts)) {
+        showNotification("Please normalize data before computing highly variable genes.", type = "error")
+      }
+      else if (!"seuratScaledData" %in% assayNames(vals$counts)) {
+        showNotification("Please scale data before computing highly variable genes.", type = "error")
+      }
+      else {
+        showNotification("An error occurred while computing highly variable genes.", type = "error")
+      }
+    })
+    
+    #Display highly variable genes
+    output$hvg_output <- renderText({
+      if (!is.null(vals$counts)) {
+        if (!is.null(vals$counts@metadata$seurat$obj)) {
+          if (length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) > 0) {
+            .seuratGetVariableFeatures(vals$counts, input$hvg_no_features_view)
+          }
         }
-        else if (is.null(vals$counts)) {
-            showNotification("Please input dataset (rds file) before computing highly variable genes!", type = "error")
+      }
+    })
+    
+    #Run PCA
+    observeEvent(input$run_pca_button, {
+        req(vals$counts)
+        withProgress(message = "Running PCA", max = 1, value = 1, {
+        vals$counts <- seuratPCA(inSCE = vals$counts,
+                                                 useAssay = "seuratScaledData",
+                                                 reducedDimName = "seuratPCA",
+                                                 nPCs = input$pca_no_components)
+                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
+        })
+        withProgress(message = "Plotting PCA", max = 1, value = 1, {
+                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(inSCE = vals$counts,
+                                                                             useReduction = "pca")
+        })
+        if (input$pca_compute_elbow) {
+          withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(vals$counts)
+                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(inSCE = vals$counts,
+                                                                               significantPC = seuratWorkflow$numberOfReductionComponents$significantPC)
+          })
         }
-        else if (!"seuratNormalizedData" %in% assayNames(vals$counts)) {
-            showNotification("Please normalize data before computing highly variable genes!", type = "error")
+        if (input$pca_compute_jackstraw) {
+          withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+                            vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                                  useAssay = "seuratScaledData",
+                                                                  dims = input$pca_no_components)
+                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(inSCE = vals$counts,
+                                                                                       dims = input$pca_no_components)
+          })
         }
-        else if (!"seuratScaledData" %in% assayNames(vals$counts)) {
-            showNotification("Please scale data before computing highly variable genes!", type = "error")
+        if (input$pca_compute_heatmap) {
+          withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                             useAssay = "seuratScaledData",
+                                                                             useReduction = "pca",
+                                                                             dims = input$pca_no_components,
+                                                                             combine = FALSE,
+                                                                             fast = FALSE)
+            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
+          })
         }
-        else {
-            showNotification("An error occurred while computing highly variable genes!", type = "error")
-        }
+        addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+        showNotification("PCA Complete")
+    })
+
+    #Run ICA
+    observeEvent(input$run_ica_button, {
+        req(vals$counts)
+        withProgress(message = "Running ICA", max = 1, value = 1, {
+          vals$counts <- seuratICA(inSCE = vals$counts,
+                                                 useAssay = "seuratScaledData",
+                                                 reducedDimName = "seuratICA",
+                                                 nics = input$ica_no_components)
+          seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
+        })
+        withProgress(message = "Plotting ICA", max = 1, value = 1, {
+          seuratWorkflow$plotObject$ICA <- seuratReductionPlot(inSCE = vals$counts,
+                                                                             useReduction = "ica")
+          })
+        updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+        showNotification("ICA Complete")
     })
 
     #Find clusters
     observeEvent(input$find_clusters_button, {
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
-                    withProgress(message = "Finding clusters", max = 1, value = 1, {
-                        vals$counts <- seuratFindClusters(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, reduction = input$reduction_clustering_method, dims = input$reduction_clustering_count, algorithm = input$algorithm.use, groupSingletons = input$group.singletons)
-                    })
-                    updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
-                    showNotification("Find Clusters Complete")
-                }
-                else {
-                    showNotification("Please compute pca/ica before processing clusters!", type = "error")
-                }
-            }
-            else {
-                    showNotification("Please normalize data before computing umap!", type = "error")
-            }
-        }
-        else {
-            showNotification("Please input dataset (rds file) before computing clusters!", type = "error")
-        }
+      req(vals$counts)
+#      if (!is.null(vals$counts@metadata[["seurat"]])) {
+#        if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
+          withProgress(message = "Finding clusters", max = 1, value = 1, {
+            vals$counts <- seuratFindClusters(inSCE = vals$counts,
+                                              useAssay = "seuratScaledData",
+                                              useReduction = input$reduction_clustering_method,
+                                              dims = input$reduction_clustering_count,
+                                              algorithm = input$algorithm.use,
+                                              groupSingletons = input$group.singletons)
+          })
+          updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
+          showNotification("Find Clusters Complete")
+          
+        #} else {
+        #  showNotification("Please compute PCA or ICA before processing clusters.", type = "error")
+        #}
+      #} else {
+      #  showNotification("Please normalize, scale, and perform dimensionality reduction on the data before computing UMAP", type = "error")
+      #}
     })
 
     #Run tSNE
     observeEvent(input$run_tsne_button, {
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
+        req(vals$counts)
+#        if (!is.null(vals$counts@metadata[["seurat"]])) {
+#                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
                     withProgress(message = "Running tSNE", max = 1, value = 1, {
-                        vals$counts <- seuratRunTSNE(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_tsne_method, input$reduction_tsne_count)
+                        vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+                                                     useReduction = input$reduction_tsne_method,
+                                                     reducedDimName = "seuratTSNE",
+                                                     dims = input$reduction_tsne_count)
                     })
                     withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "tsne")
+                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "tsne")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("tSNE Complete")
-                }
-                else {
-                    showNotification("Please compute pca/ica before processing tsne!", type = "error")
-                }
-            }
-        }
-        else {
-            showNotification("Please input dataset (rds file) before computing tsne!", type = "error")
-        }
+#                } else {
+#                    showNotification("Please compute PCA or ICA before runnibg tSNE.", type = "error")
+#                }
+#        }
     })
 
     #Run UMAP
     observeEvent(input$run_umap_button, {
-        if (!is.null(vals$counts)) {
-            if (!is.null(vals$counts@metadata[["seurat"]])) {
-                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
+        req(vals$counts)
+#        if (!is.null(vals$counts@metadata[["seurat"]])) {
+#                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
                     withProgress(message = "Running UMAP", max = 1, value = 1, {
-                        vals$counts <- seuratRunUMAP(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, input$reduction_umap_method, input$reduction_umap_count)
+                        vals$counts <- seuratRunUMAP(inSCE = vals$counts,
+                                                     useReduction = input$reduction_umap_method,
+                                                     reducedDimName = "seuratUMAP",
+                                                     dims = input$reduction_umap_count)
                     })
                     withProgress(message = "Plotting UMAP", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(vals$counts, useAssay = vals$counts@metadata$seuratSelectedAssay, seuratWorkflow$geneNamesSeurat, "umap")
+                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "umap")
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("UMAP Complete")
-                }
-                else {
-                    showNotification("Please compute pca/ica before processing umap!", type = "error")
-                }
-            }
-        }
-        else {
-            showNotification("Please input dataset (rds file) before computing umap!", type = "error")
-        }
+#                } else {
+#                    showNotification("Please compute PCA or ICA before running UMAP.", type = "error")
+#                }
+#            }
     })
 
     #Display the number of significant PC computed
@@ -4727,7 +4718,10 @@ shinyServer(function(input, output, session) {
     #Customize heatmap (pca) with selected options
     observeEvent(input$plot_heatmap_pca_button, {
         if (!is.null(input$picker_dimheatmap_components_pca)) {
-            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(seuratWorkflow$plotObject$HeatmapCompute, length(input$picker_dimheatmap_components_pca), input$slider_dimheatmap_pca, input$picker_dimheatmap_components_pca)
+            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute,
+                                                                   dims = length(input$picker_dimheatmap_components_pca),
+                                                                   ncol = input$slider_dimheatmap_pca,
+                                                                   labels = input$picker_dimheatmap_components_pca)
         }
     })
 

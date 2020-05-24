@@ -5,14 +5,21 @@
 \title{convertSCEToSeurat
 Converts sce object to seurat while retaining all assays and metadata}
 \usage{
-convertSCEToSeurat(inSCE, useAssay, geneNames)
+convertSCEToSeurat(
+  inSCE,
+  countsAssay = NULL,
+  normAssay = NULL,
+  scaledAssay = NULL
+)
 }
 \arguments{
-\item{inSCE}{(sce) object to convert to seurat}
+\item{inSCE}{A \code{SingleCellExperiment} object to convert to a Seurat object.}
 
-\item{useAssay}{which assay to use from sce object}
+\item{countsAssay}{which assay to use from sce object for raw counts. Default \code{NULL}.}
 
-\item{geneNames}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{normAssay}{Which assay to use from sce object for normalized data. Default \code{NULL}.}
+
+\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}.}
 }
 \value{
 seuratObject updated seurat object that contains all data from the input sce object
