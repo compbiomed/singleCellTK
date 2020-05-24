@@ -1237,7 +1237,6 @@ shinyServer(function(input, output, session) {
     observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
-<<<<<<< HEAD
       if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
         stop("Selected assay does not exist!")
       }
@@ -1254,23 +1253,12 @@ shinyServer(function(input, output, session) {
         if (input$normalizeAssayMethodSelect == "LogNormalize"
             || input$normalizeAssayMethodSelect == "CLR"
             || input$normalizeAssayMethodSelect == "RC") {
-          vals$counts <- seuratNormalizeData(
-            inSCE = vals$counts,
-            newAssayName = input$normalizeAssayOutname,
-            useAssay = input$normalizeAssaySelect,
-            geneNamesSeurat = seuratWorkflow$geneNamesSeurat, 
-            normalizationMethod = input$normalizeAssayMethodSelect, 
-            scaleFactor = as.numeric(input$normalizationScaleFactor))
+          vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+                                             useAssay = input$normalizeAssaySelect,
+                                             normAssayName = "seuratNormData",
+                                             normalizationMethod = input$normalizeAssayMethodSelect,
+                                             scaleFactor = as.numeric(input$normalizationScaleFactor))
           updateAssayInputs()
-=======
-        if (input$normalizeLibrarySelect == "seurat") {
-            vals$counts <- seuratNormalizeData(inSCE = vals$counts,
-                                               useAssay = input$normalizeAssaySelect,
-                                               normAssayName = "seuratNormData",
-                                               normalizationMethod = input$normalizeAssayMethodSelect,
-                                               scaleFactor = as.numeric(input$normalizationScaleFactor))
-            updateAssayInputs()
->>>>>>> upstream/devel
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
           assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
@@ -4391,20 +4379,6 @@ shinyServer(function(input, output, session) {
 
     #Perform normalization
     observeEvent(input$normalize_button, {
-<<<<<<< HEAD
-        if (!is.null(vals$counts)) {
-            withProgress(message = "Normalizing", max = 1, value = 1, {
-                vals$counts@metadata$seuratSelectedAssay <- input$seuratSelectNormalizationAssay
-                vals$counts <- seuratNormalizeData(inSCE = vals$counts, useAssay = input$seuratSelectNormalizationAssay, geneNames = seuratWorkflow$geneNamesSeurat, normalizationMethod = input$normalization_method, scaleFactor = as.numeric(input$scale_factor))
-                updateAssayInputs()
-           })
-            updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
-            showNotification("Normalization Complete")
-        }
-        else {
-            showNotification("Please input dataset (rds file) before normalizing data!", type = "error")
-        }
-=======
       if (!is.null(vals$counts)) {
         withProgress(message = "Normalizing", max = 1, value = 1, {
           vals$counts <- seuratNormalizeData(inSCE = vals$counts,
@@ -4417,7 +4391,6 @@ shinyServer(function(input, output, session) {
         updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
         showNotification("Normalization Complete")
     }
->>>>>>> upstream/devel
     })
 
     #Perform scaling

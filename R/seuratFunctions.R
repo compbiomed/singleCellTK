@@ -51,15 +51,9 @@
 #' @param scaleFactor numeric value that represents the scaling factor. Default \code{10000}.
 #' @return sceObject normalized sce object
 #' @export
-<<<<<<< HEAD
-seuratNormalizeData <- function(inSCE, newAssayName = "seuratNormalizedData", useAssay, geneNamesSeurat, normalizationMethod = "LogNormalize", scaleFactor = 10000) {
-    seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat), normalization.method = normalizationMethod, scale.factor = scaleFactor)
-    inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, newAssayName, "data")
-=======
 seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
     seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
     inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
->>>>>>> upstream/devel
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
     inSCE@metadata$seurat$normAssay <- normAssayName
     return(inSCE)
@@ -214,87 +208,6 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
     return(plot)
 }
 
-<<<<<<< HEAD
-#' .updateAssaySCE
-#' Update/Modify/Add an assay in the provided sce object
-#' @param inSCE (sce) object to which we have to add assay to (copy to)
-#' @param geneNames for consistent formatting
-#' @param seuratObject from which we have to copy the assay (copy from)
-#' @param assaySlotSCE the counts slot from assay in sce object
-#' @param assaySlotSeurat the counts slot from given assay of seurat object
-#' @param slotSeurat which assay to use in seurat object (by default it is "RNA")
-.updateAssaySCE <- function(inSCE, geneNames, seuratObject, assaySlotSCE, assaySlotSeurat, slotSeurat = "RNA") {
-    assay(inSCE, assaySlotSCE) <- NULL
-    assay(inSCE, assaySlotSCE) <- methods::slot(Seurat::GetAssay(seuratObject, slotSeurat), assaySlotSeurat)
-    rownames(inSCE) <- geneNames
-    return(inSCE)
-}
-
-#' convertSeuratToSCE
-#' Converts the input seurat object to a sce object
-#' @param seuratObject input object
-#' @return inSCE output object
-#' @export
-convertSeuratToSCE <- function(seuratObject) {
-    inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
-    assay(inSCE, "seuratNormalizedData") <- methods::slot(seuratObject@assays$RNA, "data")
-    if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
-        assay(inSCE, "seuratScaledData") <- methods::slot(seuratObject@assays$RNA, "scale.data")
-    }
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    return(inSCE)
-}
-
-#' convertSCEToSeurat
-#' Converts sce object to seurat while retaining all assays and metadata
-#' @param inSCE (sce) object to convert to seurat
-#' @param useAssay which assay to use from sce object
-#' @param geneNames a list of rowames/genenames/featurenames for seurat object for consistent formatting
-#' @return seuratObject updated seurat object that contains all data from the input sce object
-#' @export
-convertSCEToSeurat <- function(inSCE, useAssay, geneNames) {
-    seuratObject <- Seurat::CreateSeuratObject(counts = assay(inSCE, useAssay))
-    if ("seuratNormalizedData" %in% names(assays(inSCE))) {
-        seuratObject@assays$RNA@data <- assay(inSCE, "seuratNormalizedData")
-        rownames(seuratObject@assays$RNA@data) <- geneNames
-    }
-    if ("seuratScaledData" %in% names(assays(inSCE))) {
-        if (!inherits(assay(inSCE, "seuratScaledData"), "matrix")) {
-            seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, "seuratScaledData"))
-        }
-        else {
-            seuratObject@assays$RNA@scale.data <- assay(inSCE, "seuratScaledData")
-        }
-        rownames(seuratObject@assays$RNA@data) <- geneNames
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && length(inSCE@metadata[["seurat"]]@assays$RNA@var.features) > 0) {
-        seuratObject@assays$RNA@var.features <- inSCE@metadata[["seurat"]]@assays$RNA@var.features
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@reductions$pca)) {
-        seuratObject@reductions$pca <- inSCE@metadata[["seurat"]]@reductions$pca
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@assays$RNA@meta.features)) {
-        seuratObject@assays$RNA@meta.features <- inSCE@metadata[["seurat"]]@assays$RNA@meta.features
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@reductions$ica)) {
-        seuratObject@reductions$ica <- inSCE@metadata[["seurat"]]@reductions$ica
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@reductions$tsne)) {
-        seuratObject@reductions$tsne <- inSCE@metadata[["seurat"]]@reductions$tsne
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@reductions$umap)) {
-        seuratObject@reductions$umap <- inSCE@metadata[["seurat"]]@reductions$umap
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@meta.data)) {
-        seuratObject@meta.data <- inSCE@metadata[["seurat"]]@meta.data
-    }
-    if (!is.null(inSCE@metadata[["seurat"]]) && !is.null(inSCE@metadata[["seurat"]]@commands)) {
-        seuratObject@commands <- inSCE@metadata[["seurat"]]@commands
-    }
-    return(seuratObject)
-}
-=======
->>>>>>> upstream/devel
 
 #' seuratFindClusters
 #' Computes the clusters from the input sce object and stores them back in sce object
@@ -437,35 +350,17 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 }
 
 
-<<<<<<< HEAD
-#' seuratSCTransform
-#' Runs the SCTransform function from seurat library to transform the input data
-#' @param inSCE the input sce object containing the counts
-#' @param newAssayName name for the transformed counts assay (default is "SCTCounts")
-#' @param useAssay which counts assay to use from input sce object for transformation
-#' @param geneNamesSeurat genenames for consistent formatting
-#' @export
-seuratSCTransform <- function(inSCE, newAssayName = "SCTCounts", useAssay, geneNamesSeurat) {
-    seuratObject <- Seurat::SCTransform(
-        object = convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat),
-        assay = "RNA",
-        new.assay.name = "SCTransform",
-        do.correct.umi = FALSE)
-    inSCE <- .updateAssaySCE(inSCE, geneNamesSeurat, seuratObject, newAssayName, "data", slotSeurat = "SCTransform")
-    return(inSCE)
-}
-
-=======
 
 #' .updateAssaySCE
 #' Update/Modify/Add an assay in the provided sce object
 #' @param inSCE (sce) object to which we have to add assay to (copy to)
 #' @param seuratObject from which we have to copy the assay (copy from)
-#' @param assaySlotSCE the assay slot in sce object
-#' @param assaySlotSeurat the assay slot in seurat object
-.updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, assaySlotSeurat) {
+#' @param assaySlotSCE the counts slot from assay in sce object
+#' @param assaySlotSeurat the counts slot from assay in seurat object
+#' @param slotSeurat assay to retrieve from seurat object (default is 'RNA')
+.updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, assaySlotSeurat, slotSeurat = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL
-  temp.matrix <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
+  temp.matrix <- methods::slot(Seurat::GetAssay(seuratObject, slotSeurat), assaySlotSeurat)
   rownames(temp.matrix) <- rownames(inSCE)
   colnames(temp.matrix) <- colnames(inSCE)
   assay(inSCE, assaySlotSCE) <- temp.matrix
@@ -573,6 +468,20 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   return(seuratObject)
 }
 
+#' seuratSCTransform
+#' Runs the SCTransform function from seurat library to transform the input data
+#' @param inSCE the input sce object containing the counts
+#' @param normAssayName Name for the new normalized counts assay (default is "SCTCounts")
+#' @param useAssay which counts assay to use from input sce object for transformation
+#' @export
+seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay, geneNamesSeurat) {
+    seuratObject <- Seurat::SCTransform(
+                            object = convertSCEToSeurat(inSCE, useAssay, geneNamesSeurat),
+        assay = "RNA",
+        new.assay.name = "SCTransform",
+        do.correct.umi = FALSE)
+    inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data", slotSeurat = "SCTransform")
+    return(inSCE)
+}
 
->>>>>>> upstream/devel
 # ----
