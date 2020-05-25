@@ -90,7 +90,9 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    V8
+    V8,
+    scRNAseq,
+    TENxPBMCData
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
@@ -100,7 +102,6 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    scRNAseq,
     xtable,
     spelling,
     org.Mm.eg.db
