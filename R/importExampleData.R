@@ -41,6 +41,7 @@
 #' \dontrun{
 #' sce <- importExampleData("pbmc3k")
 #' }
+#' @export
 importExampleData <- function(dataset, class = c("Matrix", "matrix"),
                               delayedArray = FALSE) {
   class <- match.arg(class)

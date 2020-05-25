@@ -7,7 +7,7 @@ if ("scRNAseq" %in% rownames(installed.packages())){
 if ("TENxPBMCData" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "PBMC 3K (10X)" = "pbmc3k",
-                       "PBMC_4K (10X)" =  "pbmc4k",
+                       "PBMC 4K (10X)" =  "pbmc4k",
                        "PBMC 6K (10X)" = "pbmc6k",
                        "PBMC 8K (10X)" = "pbmc8k",
                        "PBMC 33K (10X)" = "pbmc33k",
