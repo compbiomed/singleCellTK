@@ -760,25 +760,7 @@ shinyServer(function(input, output, session) {
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
-        if (input$selectExampleData == "fluidigm_pollen_et_al") {
-          temp <- scRNAseq::ReprocessedFluidigmData()
-          temp$sample <- paste0(colData(temp)$Biological_Condition, "_", colData(temp)$Coverage_Type)
-        } else if (input$selectExampleData == "th2_mahata_et_al") {
-          temp <- scRNAseq::ReprocessedTh2Data()
-          temp$sample <- "sample"
-        } else if (input$selectExampleData == "allen_tasic_et_al") {
-          temp <- scRNAseq::ReprocessedAllenData()
-          temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
-        }
-        
-        # Convert to sparseMatrix
-        for(i in seq_along(names(assays(temp)))) {
-          assay(temp, i) <- .convertToMatrix(assay(temp, i))
-        }
-        
-        vals$original <- temp
-        rm(temp)
-        
+        vals$original <- importExampleData(dataset = input$selectExampleData)
       } else if (input$uploadChoice == "rds") {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (base::inherits(importedrds, "SummarizedExperiment")) {
@@ -870,8 +852,16 @@ shinyServer(function(input, output, session) {
         }
       }
       
+      # Add sample variable if it was not included
+      if(is.null(colData(vals$original)$sample)) {
+        colData(vals$original)$sample = "sample"
+      }
+      
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
+        
+        # ToDo: Remove these automatic updates and replace with 
+        # observeEvents functions that activate upon the tab selection
         updateColDataNames()
         updateNumSamples()
         updateAssayInputs()
@@ -964,12 +954,11 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-    if(is.null(input$filterAssaySelect)) {
-      assaySelect <- "counts"
-    } else {
-      assaySelect <- input$filterAssaySelect
-    }
-    singleCellTK::summarizeSCE(inSCE = vals$counts)
+    
+    # Setting 'useAssay=NULL' assumes that the first assay is the one to count
+    singleCellTK::summarizeSCE(inSCE = vals$counts,
+                               useAssay = NULL,
+                               sampleVariableName = "sample")
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
 
