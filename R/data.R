@@ -31,7 +31,7 @@
 #' @format A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @keywords datasets
 #' @examples
-#' data("sceQCExample")
+#' data("scExample")
 "sce"
 
 #' Example PBMC_1k_v3_33538x20 SingleCellExperiment Object

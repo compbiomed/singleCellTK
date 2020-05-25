@@ -1,0 +1,239 @@
+#' Export data in SingleCellExperiment object
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object 
+#' that contains the data. QC metrics are stored in colData of the 
+#' singleCellExperiment object.
+#' @param samplename Sample name. This will be used as name of subdirectories
+#' and the prefix of flat file output. Default is 'sample'.
+#' @param type Type of data. The type of data stored in SingleCellExperiment object. 
+#' It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix). 
+#' @param directory Output directory. Default is './'.
+#' @param format The format of output. It currently supports flat files, rds files
+#' and python h5 files. It can output multiple formats. Default: c('R', 'Python', 'Flatfile'). 
+#' @export
+exportSCE <- function(inSCE, 
+                      samplename = "sample", 
+                      directory = "./", 
+                      type = "Cells",
+                      format = c("R", "Python", "FlatFile")) {
+  
+    if (any(!format %in% c("R", "Python", "FlatFile"))) {
+        stop("Output format must be 'R', 'Python' or 'FlatFile'. ", 
+             "Other format is not supported now. ")
+    }
+
+    ## Create directories and save objects
+    dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)
+  
+    if ("R" %in% format) {
+        ## Export to R
+        fp <- file.path(directory, samplename, "R")
+        dir.create(fp, showWarnings = TRUE, recursive = TRUE)
+        fn <- file.path(fp, paste0(samplename , paste0("_", type, ".rds"))) 
+        saveRDS(object = inSCE, file = fn)
+    } 
+
+    if ("FlatFile" %in% format) {
+        ## Export to flatfile
+        fp <- file.path(directory, samplename, "FlatFile")
+        dir.create(fp, showWarnings = TRUE, recursive = TRUE)
+        fn <- file.path(fp, type)
+        exportSCEtoFlatFile(inSCE, outputDir = fn, sample=samplename)
+    }
+
+    if ("Python" %in% format) {
+        ## Export to Python AnnData
+        fp <- file.path(directory, samplename, "Python")
+        dir.create(fp, showWarnings = TRUE, recursive = TRUE)
+        fn <- file.path(fp, type)
+        exportSCEtoAnnData(inSCE, outputDir=fn, compression='gzip', prefix=samplename)
+    }
+}
+
+
+#' Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
+#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects 
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+#' objects in sceList. The colData is merged.  
+#' @export
+combineSCE <- function(sceList) {
+    qcList <- sapply(sceList, function(x) {colnames(x@colData)})
+    qcMetNum <- sapply(qcList, length)
+  
+    if (stats::var(qcMetNum) != 1) { ##some QC alrorithms failed for some samples
+        qcMetrics <- base::Reduce(union, qcList)
+    
+    for (i in seq_along(sceList)) {
+        sce <- sceList[[i]]
+        missQC <- qcMetrics[!qcMetrics %in% colnames(sce@colData)]
+  
+        if (length(missQC) != 0) {
+            missColDat <- S4Vectors::DataFrame(sapply(missQC, function(x){rep(NA, ncol(sce))}))
+            colData(sce) <- cbind(colData(sce), missColDat)
+            sceList[[i]] <- sce      
+        }
+    }
+  }
+    sce <- do.call(BiocGenerics::cbind, sceList)
+    return(sce)
+}
+
+#' Generate manifest file for droplet and cell count data
+#' @param dropletSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' droplet count matrix data
+#' @param cellSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' cell count matrix data
+#' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects
+#' @param dir The output directory of the SCTK QC pipeline. 
+#' @param HTAN Whether generate manifest file with the format required by HTAN. Default is TRUE. 
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+#' objects in sceList. The colData is merged.  
+#' @export
+generateMeta <- function(dropletSCE, 
+                          cellSCE, 
+                          samplename, 
+                          dir,
+                          HTAN=TRUE) {
+  level3List <- list()
+  level4List <- list()
+  
+  directory <- file.path(basename(dir), samplename)
+  filterDir <- file.path(directory, 'FlatFile', 'Cells')
+  rawDir <- file.path(directory, 'FlatFile', 'Droplets')
+  
+  
+  WorkFlowData = c(
+    WorkFlow = 'singleCellTK QC pipeline', 
+    WorkFlowVer = paste('singleCellTK', utils::sessionInfo()$otherPkgs$singleCellTK$Version, sep=':'),
+    ParRaw = 'Ran perCellQC, EmptyDrops and barcodeRankDrops using singleCellTK',
+    ParFiltered = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    PardecontX = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    ColData = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    DecontXUMAP = 'UMAP dimension reduction generated by decontX',
+    ScrubletTSNE = 'tSNE dimension reduction generated by Scrublet',
+    ScrubletUMAP = 'UMAP dimension reduction generated by Scrublet'
+  )
+  
+  data <- list(
+    'Raw' = c(CellNum = ncol(dropletSCE),
+              MedianReads = stats::median(colData(dropletSCE)$sum),
+              MedianGenes = stats::median(colData(dropletSCE)$detected),
+              DataType = 'Droplet Matrix',
+              FileName = file.path(rawDir, 'assays', paste0(samplename,'_counts.mtx.gz'))), 
+    
+    'decontX' = c(CellNum = ncol(cellSCE),
+                  MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
+                  MedianGenes = stats::median(apply(assay(cellSCE, 'decontXcounts'), 2, function(x){sum(x>0)})),
+                  DataType = 'Decontaminated cell matrix return returned by runDecontX',
+                  FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz'))), 
+    
+    'Filtered' = c(CellNum = ncol(cellSCE),
+                   MedianReads = stats::median(colData(cellSCE)$sum),
+                   MedianGenes = stats::median(colData(cellSCE)$detected),
+                   DataType = 'Cell Matrix', 
+                   FileName = file.path(filterDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
+                   ColData = file.path(filterDir, paste0(samplename,'_colData.txt.gz')),
+                   DecontXUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
+                   ScrubletTSNE = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
+                   ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz'))
+    ))
+
+  for (type in c('Raw', 'Filtered', 'decontX')) {
+    level3List[[type]] <- data.frame(
+      SAMPLE = samplename, DATA_TYPE = data[[type]]['DataType'],
+      MATRIX_TYPE = 'Raw Counts', DATA_CATEGORY = 'Gene Expression',
+      CELL_MEDIAN_NUM_READS = data[[type]]['MedianReads'],
+      CELL_MEDIAN_NUM_GENES = data[[type]]['MedianGenes'],
+      CELL_TOTAL = data[[type]]['CellNum'],
+      FILE_NAME = data[[type]]['FileName'],
+      WORKFLOW_TYPE = WorkFlowData['WorkFlow'],
+      WORKFLOW_PARAMETERS = WorkFlowData[paste0('Par', type)],
+      WORKFLOW_VERSION = WorkFlowData['WorkFlowVer'],
+      stringsAsFactors = FALSE)
+    
+    if (isTRUE(HTAN)) {
+      level3List[[type]] <- cbind(level3List[[type]],HTAN_BIOSPECIMEN_ID = samplename,
+                                  HTAN_PARENT_ID = '', HTAN_PARENT_FILE_ID = '')
+    } 
+       
+    if (type == 'Filtered') {
+      for (metric in c('ColData', 'DecontXUMAP', 'ScrubletTSNE', 'ScrubletUMAP')) {
+        level4List[[metric]] <- data.frame(   
+          SAMPLE = samplename, FILE_NAME = data[[type]][metric], 
+          WORKFLOW_TYPE = WorkFlowData[metric],
+          WORKFLOW_PARAMETERS = file.path(directory, paste0(samplename, '_QCParameters.yaml')),
+          WORKFLOW_VERSION = WorkFlowData['WorkFlowVer'])
+        if (isTRUE(HTAN)) {
+          level4List[[metric]] <- cbind(level4List[[metric]],  HTAN_BIOSPECIMEN_ID = samplename,
+                                        HTAN_PARENT_ID = '',HTAN_PARENT_FILE_ID = data[[type]]['FileName'])
+        }
+      }
+    }
+  }
+  
+  level3Meta <- do.call(base::rbind, level3List)
+  level4Meta <- do.call(base::rbind, level4List)
+  return(list(level3Meta, level4Meta))
+}
+
+#' Extract QC parameters from the SingleCellExperiment object
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object. 
+#' @param skip Skip extracting the parameters of the provided QC functions. 
+#' @param ignore Skip extracting the content within QC functions.
+#' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.
+#' @param writeYAML Whether output yaml file to store parameters. Default if TRUE. If FALSE, 
+#' return character object.   
+#' @export
+getSceParams <- function(inSCE, 
+                         skip = c("scrublet", "runDecontX"), 
+                         ignore = c("algorithms", "estimates","contamination","z"), 
+                         directory = NULL, 
+                         samplename = '',
+                         writeYAML = TRUE) {
+  
+  meta <- metadata(inSCE)
+  algos <- names(meta)[!names(meta) %in% skip]
+  outputs <- '---'
+  parList <- list()
+  dir <- file.path(directory, samplename)
+  
+  for (algo in algos) {
+    params <- meta[[algo]]
+    if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
+    params <- params[which(!names(params) %in% ignore)]
+    parList[[algo]] <- params
+  }
+
+  outputs <- paste(outputs, yaml::as.yaml(parList), sep='\n')
+  if (isTRUE(writeYAML)) {
+    filename <- paste0(samplename, '_QCParameters.yaml')
+    cat(outputs, file=file.path(dir, filename))
+  } else {
+    return(outputs)
+  }
+}
+
+
+#' Create SingleCellExperiment object from csv or txt input
+#' @param data A \link[data.table]{data.table} object containing the count matrix. 
+#' @param samplename The sample name of the data.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' the count matrix.  
+#' @export
+constructSCE <- function(data, samplename) {
+    gene <- data[[1]]
+    data <- data[, -1]
+    barcode <- colnames(data)
+    mat <- methods::as(data, "Matrix")
+    dimnames(mat) <- list(gene, barcode)
+    coln <- paste(samplename, barcode, sep = '_')
+  
+    sce <- SingleCellExperiment::SingleCellExperiment(
+        assays = list(counts = mat))
+    SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(feature = gene)
+    SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(barcode,
+        column_name = coln,
+        sample = samplename,
+        row.names = coln)
+  
+    return(sce)
+}
