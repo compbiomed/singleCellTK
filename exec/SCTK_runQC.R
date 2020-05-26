@@ -27,6 +27,15 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
   }
 }
 
+## Check whether python module is available
+if (!reticulate::py_module_available(module = "scrublet")) {
+    stop("Cannot find python module 'scrublet'. ",
+            "Scrublet can be installed on the local machine",
+            "with pip (e.g. pip install --user scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+}
+
 ##Read in flags from command line using optparse
 option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
