@@ -135,7 +135,7 @@ order match the output of
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
 \link[Matrix]{readMM} function), or "matrix" (as returned by
-\link[base]{matrix} function). Default "Matrix".}
+\link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}

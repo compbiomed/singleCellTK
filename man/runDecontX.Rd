@@ -30,7 +30,7 @@ A wrapper function for \link[celda]{decontX}. Identify
 }
 \examples{
 \dontrun{
-data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runDecontX(emptyDropsSceExample)
+data(sceQCExample, package = "singleCellTK")
+sce <- runDecontX(sce)
 }
 }

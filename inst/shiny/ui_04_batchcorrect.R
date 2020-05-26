@@ -134,14 +134,24 @@ shinyPanelBatchcorrect <- fluidPage(
         div(style="display: inline-block;vertical-align:top; width: 200px;",
             selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice)),
         div(style="display: inline-block;vertical-align:top; width: 150px;",
-            selectInput("batchCorrCond", "Select Condition:", clusterChoice))
+            selectInput("batchCorrCond", "Select Condition (optional):", clusterChoice))
       )
     ),
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("ComBat", "FastMNN", "LIGER", "Limma", "MNN", "scMerge")),
+                    c("BBKNN", "ComBat", "FastMNN", "Harmony", "LIGER", "Limma",
+                      "MNN", "scMerge", "Seurat3 Integration", "ZINBWaVE")),
+        # BBKNN ####
+        conditionalPanel(
+          condition = "input.batchCorrMethods == 'BBKNN'",
+          numericInput("BBKNNNComp", label = "Number of output dimension:",
+                       value = 50L, min = 2, max = 100000, step = 1),
+          textInput("BBKNNSaveReddim", "ReducedDim Name to Use:",
+                    value = "BBKNN"),
+          withBusyIndicatorUI(actionButton("BBKNNRun", "Run"))
+        ),
         # ComBat ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'ComBat'",
@@ -164,10 +174,32 @@ shinyPanelBatchcorrect <- fluidPage(
                         value = FALSE),
           conditionalPanel(
             condition = 'input.FastMNNPcInput == true',
-            selectInput('FastMNNReddim', "Select Reduced dimension:", currreddim)
+            selectInput('FastMNNReddim', "Select Reduced dimension:",
+                        currreddim)
           ),
-          textInput("FastMNNSaveReddim", "ReducedDim Name to Use:", value = "FastMNN"),
+          textInput("FastMNNSaveReddim", "ReducedDim Name to Use:",
+                    value = "FastMNN"),
           withBusyIndicatorUI(actionButton("FastMNNRun", "Run"))
+        ),
+        # Harmony ####
+        conditionalPanel(
+          condition = "input.batchCorrMethods == 'Harmony'",
+          checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
+                        value = FALSE),
+          conditionalPanel(
+            condition = 'input.HarmonyPcInput == true',
+            selectInput('HarmonyReddim', "Select Reduced dimension:",
+                        currreddim)
+          ),
+          numericInput("HarmonyNComp", label = "Number of output dimension:",
+                       value = 50L, min = 2, max = 100000, step = 1),
+          textInput("HarmonyTheta", "Theta value", value = '5',
+                    placeholder = "Type a number"),
+          numericInput("HarmonyNIter", "Number of iteration",
+                       value = 10L, min = 1, step = 1),
+          textInput("HarmonySaveReddim", "ReducedDim Name to Use:",
+                    value = "Harmony"),
+          withBusyIndicatorUI(actionButton("HarmonyRun", "Run"))
         ),
         # LIGER ####
         conditionalPanel(
@@ -215,16 +247,41 @@ shinyPanelBatchcorrect <- fluidPage(
           conditionalPanel(
             condition = 'input.scMergeSEGOpt == 3',
             textAreaInput("scMergeSEGCustom", "Use customized SEG:",
-                          placeholder = "paste them here.\nOne per line with no symbol separator.")
+              placeholder = "paste them here.\nOne per line with no symbol separator.")
           ),
-          checkboxInput("scMergeAutoKmk", "Automatically detect Kmeans-K", value = TRUE),
+          checkboxInput("scMergeAutoKmk", "Automatically detect Kmeans-K",
+                        value = TRUE),
           conditionalPanel(
             condition = "input.scMergeAutoKmk == false",
             uiOutput('scMergeNBatch'),
             textInput('scMergeUserKmk', label = NULL)
           ),
-          textInput("scMergeSaveAssay", "Assay Name to Use:", value = "scMerge"),
+          textInput("scMergeSaveAssay", "Assay Name to Use:",
+                    value = "scMerge"),
           withBusyIndicatorUI(actionButton("scMergeRun", "Run"))
+        ),
+        # Seurat3 Integration ####
+        conditionalPanel(
+          condition = "input.batchCorrMethods == 'Seurat3 Integration'",
+          uiOutput('Srt3IntNAnchUI'),
+          textInput("Srt3IntSaveAssay", "Assay Name to Use:",
+                    value = "Seurat3Int"),
+          withBusyIndicatorUI(actionButton("Srt3IntRun", "Run"))
+        ),
+        # ZINBWaVE ####
+        conditionalPanel(
+          condition = "input.batchCorrMethods == 'ZINBWaVE'",
+          span("Test on small example not passed yet, don't run.",
+               style = 'color:red;'),
+          uiOutput('zinbwaveNHvgUI'),
+          uiOutput('zinbwaveEpsUI'),
+          numericInput('zinbwaveNIter', 'Max number of iteration:',
+                       value = 10, step = 1),
+          numericInput('zinbwaveNComp', 'Number of dimensions to output:',
+                       value = 50, min = 2, step = 1),
+          textInput("zinbwaveSaveReddim", "ReducedDim Name to Use:",
+                    value = "ZINBWaVE"),
+          withBusyIndicatorUI(actionButton("zinbwaveRun", "Run"))
         ),
         uiOutput("batchCorrStatus")
       ),
@@ -236,17 +293,21 @@ shinyPanelBatchcorrect <- fluidPage(
             style='border-right: 1px solid #CCCCCC',
             h4('Original Variance'),
             plotOutput('batchVarPlot',
-                       height = "500px", width = "500px"),
+                       height = "300px", width = "300px"),
+            plotOutput('batchOriPCA',
+                       height = "300px", width = "300px")
           ),
           column(
             width = 6,
             h4("Corrected Variance"),
             plotOutput('batchVarCorrectedPlot',
-                       height = "500px", width = "500px")
+                       height = "300px", width = "300px"),
+            plotOutput('batchCorrReddim',
+                       height = "300px", width = "300px")
           )
         ), tags$head(tags$style("
-           .batchVarPlotRow{height:560px;
-                            width:1050px;
+           .batchVarPlotRow{height:650px;
+                            width:650px;
                             background-color: #ECF0F1;
            }"
            )

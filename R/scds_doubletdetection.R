@@ -21,8 +21,9 @@
 #'  \emph{cxds_score} and optionally \emph{cxds_call}.
 #'  Please refer to the documentation of \link[scds]{cxds} for details.
 #' @examples
-#' data(sce_chcl, package = "scds")
-#' sce <- runCxds(sce_chcl)
+#' data(sceQCExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runCxds(sce)
 #' @export
 runCxds <- function(inSCE,
     sample = NULL,
@@ -126,8 +127,9 @@ runCxds <- function(inSCE,
 #'  \emph{bcds_score} and optionally \emph{bcds_call}.
 #'  Please refer to the documentation of \link[scds]{bcds} for details.
 #' @examples
-#' data(sce_chcl, package = "scds")
-#' sce <- runBcds(sce_chcl)
+#' data(sceQCExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runBcds(sce)
 #' @export
 runBcds <- function(inSCE,
     sample = NULL,
@@ -240,8 +242,9 @@ runBcds <- function(inSCE,
 #'  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
 #'  details.
 #' @examples
-#' data(sce_chcl, package = "scds")
-#' sce <- runCxdsBcdsHybrid(sce_chcl)
+#' data(sceQCExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runCxdsBcdsHybrid(sce)
 #' @export
 runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,

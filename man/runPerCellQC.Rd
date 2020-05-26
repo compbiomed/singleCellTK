@@ -39,8 +39,8 @@ A wrapper function for \link[celda]{decontX}. Identify
  potential contamination from experimental factors such as ambient RNA.
 }
 \examples{
-data(emptyDropsSceExample, package = "singleCellTK")
-mito.ix = grep("^MT-", rowData(emptyDropsSceExample)$feature_name)
-geneSet <- list("Mito"=rownames(emptyDropsSceExample)[mito.ix])
-sce <- runPerCellQC(emptyDropsSceExample, geneSetList = geneSet)
+data(qcSceExample, package = "singleCellTK")
+mito.ix = grep("^MT-", rowData(sce)$feature_name)
+geneSet <- list("Mito"=rownames(sce)[mito.ix])
+sce <- runPerCellQC(sce, geneSetList = geneSet)
 }
