@@ -91,6 +91,8 @@ Imports:
     R.utils,
     zinbwave,
     V8,
+    scRNAseq,
+    TENxPBMCData,
     yaml
 RoxygenNote: 7.1.0
 Suggests:
@@ -101,7 +103,6 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    scRNAseq,
     xtable,
     spelling,
     org.Mm.eg.db

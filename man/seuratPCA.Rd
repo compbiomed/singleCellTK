@@ -5,16 +5,16 @@
 \title{seuratPCA
 Computes PCA on the input sce object and stores the calculated principal components within the sce object}
 \usage{
-seuratPCA(inSCE, useAssay, geneNamesSeurat, nPCs)
+seuratPCA(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute PCA}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing scaled counts to use in PCA.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{reducedDimName}{Name of new reducedDims object containing Seurat PCA. Default \code{seuratPCA}.}
 
-\item{nPCs}{numeric value of how many components to compute (default is 20)}
+\item{nPCs}{numeric value of how many components to compute. Default \code{20}.}
 }
 \value{
 sceObject updated sce object which now contains the computed principal components
