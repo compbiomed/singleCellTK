@@ -179,6 +179,7 @@ generateMeta <- function(dropletSCE,
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object. 
 #' @param skip Skip extracting the parameters of the provided QC functions. 
 #' @param ignore Skip extracting the content within QC functions.
+#' @param directory The output directory of the SCTK_runQC.R pipeline.
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.
 #' @param writeYAML Whether output yaml file to store parameters. Default if TRUE. If FALSE, 
 #' return character object.   
@@ -186,11 +187,11 @@ generateMeta <- function(dropletSCE,
 getSceParams <- function(inSCE, 
                          skip = c("scrublet", "runDecontX"), 
                          ignore = c("algorithms", "estimates","contamination","z"), 
-                         directory = NULL, 
+                         directory = './', 
                          samplename = '',
                          writeYAML = TRUE) {
   
-  meta <- metadata(inSCE)
+  meta <- S4Vectors::metadata(inSCE)
   algos <- names(meta)[!names(meta) %in% skip]
   outputs <- '---'
   parList <- list()

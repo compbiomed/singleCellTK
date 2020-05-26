@@ -9,7 +9,7 @@ exportSCE(
   samplename = "sample",
   directory = "./",
   type = "Cells",
-  format = c("R", "Python", "FlatFile")
+  format = c("R", "Python", "FlatFile", "HTAN")
 )
 }
 \arguments{

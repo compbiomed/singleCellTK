@@ -8,7 +8,7 @@ getSceParams(
   inSCE,
   skip = c("scrublet", "runDecontX"),
   ignore = c("algorithms", "estimates", "contamination", "z"),
-  directory = NULL,
+  directory = "./",
   samplename = "",
   writeYAML = TRUE
 )
@@ -19,6 +19,8 @@ getSceParams(
 \item{skip}{Skip extracting the parameters of the provided QC functions.}
 
 \item{ignore}{Skip extracting the content within QC functions.}
+
+\item{directory}{The output directory of the SCTK_runQC.R pipeline.}
 
 \item{samplename}{The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.}
 

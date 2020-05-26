@@ -90,7 +90,8 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    V8
+    V8,
+    yaml
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
