@@ -14,10 +14,10 @@ exportSCE <- function(inSCE,
                       samplename = "sample", 
                       directory = "./", 
                       type = "Cells",
-                      format = c("R", "Python", "FlatFile")) {
+                      format = c("R", "Python", "FlatFile", "HTAN")) {
   
-    if (any(!format %in% c("R", "Python", "FlatFile"))) {
-        stop("Output format must be 'R', 'Python' or 'FlatFile'. ", 
+    if (any(!format %in% c("R", "Python", "FlatFile", "HTAN"))) {
+        stop("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. ", 
              "Other format is not supported now. ")
     }
 

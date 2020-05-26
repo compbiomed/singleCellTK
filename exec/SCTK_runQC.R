@@ -32,7 +32,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
         help="Base path for the output from the preprocessing algorithm"),
-    optparse::make_option(c("-p", "--preproc"),
+    optparse::make_option(c("-P", "--preproc"),
         type = "character",
         default="CellRangerV3",
         help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'"),
@@ -55,7 +55,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
         help="The name of genome reference. This is only required for CellRangerV2 data."), 
-    optparse::make_option(c("-F","--cell_data_path"),
+    optparse::make_option(c("-C","--cell_data_path"),
         type="character",
         default=NULL,
         help="The directory contains cell count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
@@ -71,10 +71,14 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
         help="The full path of the RDS file or Matrix file of the raw gene count matrix. This would be provided only when --preproc is SceRDS or CountMatrix."),
-    optparse::make_option(c("-f","--cell_data"),
+    optparse::make_option(c("-c","--cell_data"),
         type="character",
         default=NULL,
         help="The full path of the RDS file or Matrix file of the cell count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
+    optparse::make_option(c("-F", "--outputFormat"),
+        type="character",
+        default=NULL,
+        help="The output format of this QC pipeline. Currently, it supports RDS, Flatfile, Python AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -96,6 +100,7 @@ Reference <- opt$genome
 RawFile <- opt$raw_data
 FilterFile <- opt$cell_data
 yamlFile <- opt$yamlFile
+formats <- opt$outputFormat
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt$base_path, ",")) } 
 
@@ -108,6 +113,8 @@ if (!is.null(Reference)) { Reference <- unlist(strsplit(opt$genome, ",")) }
 if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt$raw_data, ",")) }
 
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt$cell_data, ",")) } 
+
+if (!is.null(formats)) { formats <- unlist(strsplit(opt$outputFormat, ",")) } 
 
 ## Parse parameters for QC algorithms
 if (!is.null(yamlFile)) {
@@ -261,17 +268,26 @@ for(i in seq_along(process)) {
     }
 
     if (isTRUE(split)) {
-        exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets")
-        exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells")
+        exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         
         ## Get parameters of QC functions
         getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         ## generate meta data
-	  	  meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename, 
-          dir = directory, HTAN=TRUE)
-	  	  level3Meta[[i]] <- meta[[1]]
-	  	  level4Meta[[i]] <- meta[[2]]
+        if ("HTAN" %in% formats) {
+            if (!"FlatFile" %in% formats) {
+                warning("When FlatFile is not selected as the output format, ",
+                        "FlatFile output specified in the HTAN manifest file will not exists.")  
+            }
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                               dir = directory, HTAN=TRUE)
+        } else if ("FlatFile" %in% formats) {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                               dir = directory, HTAN=FALSE)   
+        } 
+	  	level3Meta[[i]] <- meta[[1]]
+	  	level4Meta[[i]] <- meta[[2]]
     }
 
     dropletSCE_list[[samplename]] <- mergedDropletSCE
@@ -286,15 +302,24 @@ if (!isTRUE(split)){
         samplename <- paste(sample, collapse="-")
     }
 
-    exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets")
-    exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells")
+    exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+    exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
     ## Get parameters of QC functions
     getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
     ## generate meta data
-    meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-      dir = directory, HTAN=TRUE)
+    if ("HTAN" %in% formats) {
+        if (!"FlatFile" %in% formats) {
+            warning("When FlatFile is not selected as the output format, ",
+                    "FlatFile output specified in the HTAN manifest file will not exists.")  
+        }
+      meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                           dir = directory, HTAN=TRUE)
+    } else if ("FlatFile" %in% formats) {
+        meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                           dir = directory, HTAN=FALSE)   
+    }
   	level3Meta <- list(meta[[1]])
   	level4Meta <- list(meta[[2]])
 }
