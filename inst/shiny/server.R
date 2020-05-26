@@ -172,7 +172,7 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   # Upload data through shiny app
-  
+
   # Components for uploading directories if user is importing from a preprocessing step
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
   shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
@@ -200,7 +200,7 @@ shinyServer(function(input, output, session) {
   importBUSFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importSEQFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
   importOptFiles <- reactiveValues(bases = vector(), samples = vector(), ids = vector())
-  
+
   importModal <- function(failed = FALSE) {
     modalDialog(
       h3("Sample ID"),
@@ -219,7 +219,7 @@ shinyServer(function(input, output, session) {
       )
     )
   }
-  
+
   importModal <- function(failed = FALSE) {
     modalDialog(
       h3("Base Directory"),
@@ -228,17 +228,17 @@ shinyServer(function(input, output, session) {
       textInput("sampleName", "*This name must match your sample's directory name."),
       h3("Sample ID"),
       textInput("sampleID", "*This is the name you would like to give your sample."),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("modalOk", "OK")
       )
     )
   }
-  
+
   importCRModal <- function() {
     modalDialog(
       h3("Add a Cell Ranger Sample"),
@@ -251,7 +251,7 @@ shinyServer(function(input, output, session) {
       tags$br(),
       h4("Option 3 - Select a directory containing your data files (barcodes.tsv, features.tsv, matrix.mtx)."),
       actionButton("crOpt3", "Add"),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("crOK", "OK")
@@ -266,10 +266,10 @@ shinyServer(function(input, output, session) {
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sampleID", ""),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("SDirOK", "OK")
@@ -283,10 +283,10 @@ shinyServer(function(input, output, session) {
       shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
       textInput("sampleID", "*This field is mandatory when uploading a data directory"),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("DDirOK", "OK")
@@ -299,19 +299,19 @@ shinyServer(function(input, output, session) {
       h3("Base Directory"),
       shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
       wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
-      
+
       tags$div(id = "bDirTable"),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("BDirOK", "OK")
       )
     )
   }
-  
+
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
     ignoreNULL = TRUE,
@@ -327,7 +327,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
     ignoreNULL = TRUE,
@@ -346,7 +346,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # event listener for the base directory modal (need to populate table for sample names)
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
@@ -389,7 +389,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   # event listeners for "Add Sample" buttons
   observeEvent(input$addCR2Sample, {
     showModal(importCRModal())
@@ -421,7 +421,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addOptSample, {
     showModal(importModal())
   })
-  
+
   # event listeners for "Remove Sample" buttons
   observeEvent(input$clearAllCR2, {
     for (entry in importCR2Files$files) {
@@ -463,7 +463,7 @@ shinyServer(function(input, output, session) {
     importOptFiles$ids <- head(importOptFiles$ids, -1)
     removeUI(selector = selector)
   })
-  
+
   # event listeners for Cell Ranger import modals' OK buttons
   # sample directory
   observeEvent(input$SDirOK, {
@@ -475,14 +475,14 @@ shinyServer(function(input, output, session) {
       # add the files to the appropriate reactiveValues
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", importCR2Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sampleID, id = id)
         importCR2Files$files <- c(importCR2Files$files, list(entry))
         importCR2Files$id_count <- importCR2Files$id_count + 1
         selector <- "#newSampleCR2"
       } else {
         id <- paste0("snewSampleCR3", importCR3Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sampleID, id = id)
         importCR3Files$files <- c(importCR3Files$files, list(entry))
         importCR3Files$id_count <- importCR3Files$id_count + 1
@@ -534,8 +534,8 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
-  # data directory 
+
+  # data directory
   observeEvent(input$DDirOK, {
     dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
     if ((!nzchar(input$sampleID)) || (identical(dataPath, character(0)))) {
@@ -596,7 +596,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # base directory
   observeEvent(input$BDirOK, {
     basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
@@ -706,7 +706,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
     samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
@@ -751,7 +751,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # Event listener for "Upload" button
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
@@ -826,11 +826,11 @@ shinyServer(function(input, output, session) {
                 class = "Matrix",
                 delayedArray = FALSE)
             }
-            
+
             if(is.null(vals$original)) {
-              vals$original <- sce 
+              vals$original <- sce
             } else {
-              vals$original <- cbind(vals$original, sce)  
+              vals$original <- cbind(vals$original, sce)
             }
           }
         } else if (input$algoChoice == "cellRanger3") {
@@ -852,9 +852,9 @@ shinyServer(function(input, output, session) {
                 delayedArray = FALSE)
             }
             if(is.null(vals$original)) {
-              vals$original <- sce 
+              vals$original <- sce
             } else {
-              vals$original <- cbind(vals$original, sce)  
+              vals$original <- cbind(vals$original, sce)
             }
           }
         } else if (input$algoChoice == "starSolo") {
@@ -888,7 +888,7 @@ shinyServer(function(input, output, session) {
           )
         }
       }
-      
+
       if (!is.null(vals$original)) {
         # withConsoleRedirect({print(vals$original)})
         vals$counts <- vals$original
@@ -1230,9 +1230,9 @@ shinyServer(function(input, output, session) {
             }
             else {
                 showNotification("Error during assay transformation!", type = "error")
-            } 
+            }
           updateAssayInputs()
-        } 
+        }
     })
   })
 
@@ -2229,7 +2229,7 @@ shinyServer(function(input, output, session) {
 
 
   #-+-+-+-+-+-For Input Observe##############
-  observe({
+  observeEvent(input$shinyPanelCellViewer,{
     # is there an error or not
     if (is.null(vals$counts)) {
       # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -2257,7 +2257,6 @@ shinyServer(function(input, output, session) {
       }
       annotation_list <- annotation_list2
       rm(annotation_list2)
-
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
@@ -2328,10 +2327,8 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Y-Axis
   observeEvent(input$ApproachSelect_Yaxis, {
     if (!is.null(vals$counts)){
-
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Yaxis) & len > 0){
-
         Df2 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Yaxis))
         xs2 <- colnames(Df2)
         xs2 <- sort(xs2, decreasing = TRUE)
@@ -2343,10 +2340,8 @@ shinyServer(function(input, output, session) {
   ###ApproachSelect to DimensionSelect Colorby
   observeEvent(input$ApproachSelect_Colorby, {
     if (!is.null(vals$counts)){
-
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Colorby) & len > 0){
-
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
         updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
@@ -2357,7 +2352,7 @@ shinyServer(function(input, output, session) {
 
   #-+-+-+-+-+-Observe Group by###################################################
   ###Observe Radio Button Select Value Type
-  observe({
+  observeEvent(input$adjustgroupby, {
     if (!is.null(vals$counts)){
       if (input$adjustgroupby !=  'None'){
         #Integer,level>25#
@@ -2391,8 +2386,7 @@ shinyServer(function(input, output, session) {
   })#observe_end
 
   ###Observe Check Box Check Binning & Text Input Number of Bins:
-
-  observe({
+  observeEvent(input$checkbinning, {
     if (!is.null(vals$counts)){
       if (input$adjustgroupby !=  'None'){
         #Integer,level>25#
@@ -2431,7 +2425,7 @@ shinyServer(function(input, output, session) {
 
   #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
-  observe({
+  observeEvent(input$TypeSelect_Colorby, {
     if (!is.null(vals$counts)){
       if (input$TypeSelect_Colorby != 'Pick a Color'){
         ###If Cell Annotation###############################################################
@@ -2442,41 +2436,33 @@ shinyServer(function(input, output, session) {
               choices = c("Categorical", "Continuous"),
               selected = "Categorical")
             shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
           }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
             &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
             updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
               choices = c("Categorical", "Continuous"),
               selected = "Categorical")
             shinyjs::enable("SelectColorType")
-
           }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
             choices = c("Categorical", "Continuous"),
             selected = "Continuous")
             shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-
           ###If ReducedData##########################################################
         }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
           Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
           if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
             Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
             ###If ReducedData numeric
-
             if(!is.numeric(Dfcolor[,1])){
               updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
                 choices = c("Categorical", "Continuous"),
                 selected = "Categorical")
               shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
             }else if(is.integer(Dfcolor[,1])
               &length(levels(as.factor(Dfcolor[,1])))<=25){
               updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
                 choices = c("Categorical", "Continuous"),
                 selected = "Categorical")
               shinyjs::enable("SelectColorType")
-
             }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
               choices = c("Categorical", "Continuous"),
               selected = "Continuous")
@@ -2486,21 +2472,17 @@ shinyServer(function(input, output, session) {
         }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
         if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
           Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-
           if(!is.numeric(Dfassay[,1])){
             updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
               choices = c("Categorical", "Continuous"),
               selected = "Categorical")
             shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-
-
           }else if(is.integer(Dfassay[,1])
             &length(levels(as.factor(Dfassay[,1])))<=25){
             updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
               choices = c("Categorical", "Continuous"),
               selected = "Categorical")
             shinyjs::enable("SelectColorType")
-
           }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
             choices = c("Categorical", "Continuous"),
             selected = "Continuous")
@@ -2510,9 +2492,8 @@ shinyServer(function(input, output, session) {
       }
     }
   })###observe_end
-
   ###Observe Check Box Check Binning & Text Input Number of Bins:
-  observe({
+  observeEvent(input$checkbinning, {
     if (!is.null(vals$counts)){
       ###If Cell Annotation###############################################################
       if(input$TypeSelect_Colorby != 'Pick a Color'){
@@ -2531,39 +2512,30 @@ shinyServer(function(input, output, session) {
             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
           }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
             &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
             &input$SelectColorType == 'Continuous'){
-
             shinyjs::enable("checkColorbinning")
             if(input$checkColorbinning == TRUE){
               shinyjs::enable("adjustColorbinning")
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
             else{
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
           }else{
-
             shinyjs::enable("checkColorbinning")
             if(input$checkColorbinning == TRUE){
               shinyjs::enable("adjustColorbinning")
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
             else{
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
           }
-
-
           ###If Reduce Dimensions##############################################################
         }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
           Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
           if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
             Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-
             if(!is.numeric(Dfcolor[,1])){
               updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
               shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
@@ -2577,27 +2549,21 @@ shinyServer(function(input, output, session) {
               shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
             }else if(is.integer(Dfcolor[,1])
               &length(levels(as.factor(Dfcolor[,1])))<=25
               &input$SelectColorType == 'Continuous'){
-
               shinyjs::enable("checkColorbinning")
               if(input$checkColorbinning == TRUE){
                 shinyjs::enable("adjustColorbinning")
                 updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
               else{
                 shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
                 updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
             }else{
-
               shinyjs::enable("checkColorbinning")
               if(input$checkColorbinning == TRUE){
                 shinyjs::enable("adjustColorbinning")
                 updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
               else{
                 shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
                 updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
@@ -2615,7 +2581,6 @@ shinyServer(function(input, output, session) {
             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
           }else if(is.integer(Dfassay[,1])
             &length(levels(as.factor(Dfassay[,1])))<=25
             &input$SelectColorType == 'Categorical'){
@@ -2623,7 +2588,6 @@ shinyServer(function(input, output, session) {
             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
           }else if(is.integer(Dfassay[,1])
             &length(levels(as.factor(Dfassay[,1])))<=25
             &input$SelectColorType == 'Continuous'){
@@ -2632,18 +2596,14 @@ shinyServer(function(input, output, session) {
             if(input$checkColorbinning == TRUE){
               shinyjs::enable("adjustColorbinning")
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
             else{
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
-
           }else{
-
             shinyjs::enable("checkColorbinning")
             if(input$checkColorbinning == TRUE){
               shinyjs::enable("adjustColorbinning")
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))}
-
             else{
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))
@@ -4395,7 +4355,7 @@ shinyServer(function(input, output, session) {
                 seuratWorkflow$geneNamesSCE <- .rowNamesSCE(vals$counts)
                 seuratWorkflow$geneNamesSeurat <- .rowNamesSeurat(seuratWorkflow$seuratObject)
                 updateSelectInput(session = session, inputId = "seuratSelectNormalizationAssay", choices = names(assays(vals$counts)))
-        }     
+        }
     })
 
     #Display highly variable genes
