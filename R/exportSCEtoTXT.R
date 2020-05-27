@@ -161,4 +161,3 @@ exportSCEtoFlatFile <- function(sce,
   }
 }
 
-

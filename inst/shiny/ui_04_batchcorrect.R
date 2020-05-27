@@ -12,34 +12,29 @@ shinyPanelBatchcorrect <- fluidPage(
                         panel(
                             heading = "Normalization Options",
                             selectInput(
-                                inputId = "normalizeLibrarySelect",
+                                inputId = "normalizeAssayMethodSelect",
                                 label = "Select normalization:",
                                 choices = c(
-                                    "Seurat" = "seurat",
-                                    "CPM" = "cpm")
+                                    "Seurat - LogNormalize" = "LogNormalize",
+                                    "Seurat - CLR" = "CLR",
+                                    "Seurat - RC" = "RC",
+                                    "Seurat - SCTransform" = "SCT",
+                                    "Scater - logNormCounts" = "LNC",
+                                    "CPM" = "CPM")
                                 ),
                             selectInput("normalizeAssaySelect", "Select Assay:", currassays),
                             conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'seurat'",
-                                selectInput(
-                                    inputId = "normalizeAssayMethodSelect",
-                                    label = "Select normalization method: ",
-                                    choices = c("LogNormalize", "CLR", "RC")
-                                    ),
+                                condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
+                                              || input.normalizeAssayMethodSelect == 'CLR'
+                                              || input.normalizeAssayMethodSelect == 'RC'",
                                 textInput(
                                 inputId = "normalizationScaleFactor",
                                 label = "Set scaling factor: ",
                                 value = "10000"
                                     )
                             ),
-                            conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'cpm'",
-                                conditionalPanel(
-                                    condition = "input.assayModifyAction != 'delete'",
-                                    textInput("normalizeAssayOutname", "Assay Name", "",
-                                    placeholder = "What should the assay be called?")
-                                    ),
-                                ),      
+                            textInput("normalizeAssayOutname", "Assay Name", "",
+                            placeholder = "What should the assay be called?"),
                             withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
                         )
                     )
@@ -48,23 +43,19 @@ shinyPanelBatchcorrect <- fluidPage(
                     column(
                         width = 12,
                         panel(
-                            heading = "Assay Options",
+                            heading = "Transformation, Scaling, and Trimming",
                             selectInput(
                                 "assayModifyAction",
-                                "Assay Actions:",
+                                "Options:",
                                 c(
                                 "Log Transform" = "log",
                                 "log1p" = "log1p",
-                                "Z-Score" = "z.score"
+                                "Z-Score" = "z.score",
+                                "Trim" = "trim"
                                 )
                             ),
                             selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction != 'delete' 
-                                    && input.assayModifyAction != 'seurat.scale'",
-                                textInput("modifyAssayOutname", "Assay Name", "",
-                                placeholder = "What should the assay be called?")
-                            ),
+                            textInput("modifyAssayOutname", "Assay Name", "", placeholder = "What should the assay be called?"),
                             conditionalPanel(
                                 condition = "input.assayModifyAction == 'seurat.scale'",
                                 selectInput(
@@ -88,13 +79,16 @@ shinyPanelBatchcorrect <- fluidPage(
                                     value = "10"
                                     )
                             ),
-                            materialSwitch(
+                            conditionalPanel(
+                              condition = "input.assayModifyAction != 'trim'",
+                              materialSwitch(
                                 inputId = "trimAssayCheckbox",
                                 label = "Trim Assay",
                                 value = FALSE
+                              )
                             ),
                             conditionalPanel(
-                                condition = "input.trimAssayCheckbox == true",
+                                condition = "input.trimAssayCheckbox == true || input.assayModifyAction == 'trim'",
                                 numericInput(
                                     inputId = "trimUpperValueAssay",
                                     label = "Specify upper trim value",
