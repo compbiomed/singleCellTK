@@ -42,7 +42,7 @@
 #' sce <- importExampleData("pbmc3k")
 #' }
 #' @export
-importExampleData <- function(dataset, class = c("Matrix", "matrix"),
+importExampleData <- simpleLog %@% function(dataset, class = c("Matrix", "matrix"),
                               delayedArray = FALSE) {
   class <- match.arg(class)
   
