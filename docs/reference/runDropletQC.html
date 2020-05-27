@@ -80,7 +80,7 @@ empty droplets in single cell RNA-seq data" />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/intro_to_sctk.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -89,9 +89,6 @@ empty droplets in single cell RNA-seq data" />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/example_workflow.html">Example Workflow</a>
-    </li>
     <li>
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
@@ -186,7 +183,7 @@ of <code>inSCE</code>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>emptyDropsSceExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDropletQC</span>(<span class='no'>emptyDropsSceExample</span>,
-  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='fu'>colData</span>(<span class='no'>emptyDropsSceExample</span>)$<span class='no'>sample</span>)</div><div class='output co'>#&gt; <span class='message'>Fri May 22 14:15:10 2020 ... Running 'perCellQCMetrics'</span></div><div class='output co'>#&gt; <span class='error'>Error: 'addPerCellQC' is not an exported object from 'namespace:scater'</span></div></pre>
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='fu'>colData</span>(<span class='no'>emptyDropsSceExample</span>)$<span class='no'>sample</span>)</div><div class='output co'>#&gt; <span class='message'>Wed May 27 12:30:31 2020 ... Running 'perCellQCMetrics'</span></div><div class='output co'>#&gt; <span class='error'>Error: 'addPerCellQC' is not an exported object from 'namespace:scater'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

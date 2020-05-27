@@ -18,11 +18,9 @@ navbar:
   title: "singleCellTK"
   left:
     - text: "Introduction to SingleCellToolKit"
-      href: articles/intro_to_sctk.html
+      href: articles/introduction_to_SCTK.html
     - text: "Command Line Analysis"
       menu:
-        - text: "Example Workflow"
-          href: articles/example_workflow.html
         - text: "Import data into SCTK"
           href: articles/import_scRNAseq_data_as_SCE.html
         - text: "Perform Quality Control"
