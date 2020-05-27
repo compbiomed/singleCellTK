@@ -23,8 +23,18 @@ navbar:
       menu:
         - text: "Import data into SCTK"
           href: articles/import_scRNAseq_data_as_SCE.html
-        - text: "Perform Quality Control"
+        - text: "Quality Control"
           href: articles/run_qc.html
+        - text: "Normalization"
+          href: articles/normalization.html
+        - text: "Batch Correction"
+          href: articles/batch_correction.html
+        - text: "Variability"
+          href: articles/variability.html
+        - text: "Feature Selection"
+          href: articles/feature_selection.html
+        - text: "Differential Expression"
+          href: articles/differential_expression.html
         - text: "Visualize Results"
           href: articles/visualize_results.html
         - text: "Export Data"

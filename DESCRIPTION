@@ -15,7 +15,8 @@ Authors@R:c(person(given=c("Joshua","D."), family="Campbell", email="camp@bu.edu
     comment = c(ORCID = "0000-0002-6247-6595")),
     person(given="Yusuke", family="Koga", email="ykoga07@bu.edu", role=c("aut")),
     person(given=c("Shruthi"), family="Bandyadka", email="sbandya@bu.edu", role=c("aut")), 
-    person(given=c("Anastasia"), family="Leshchyk", email="aleshchk@bu.edu", role=c("aut")))
+    person(given=c("Anastasia"), family="Leshchyk", email="aleshchk@bu.edu", role=c("aut")),
+    person(given=c("Rui"), family="Hong", role=c("aut")))
 Maintainer: Joshua D. Campbell, Ph.D. <camp@bu.edu>
 Depends:
     R (>= 3.6.0),

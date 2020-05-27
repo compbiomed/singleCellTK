@@ -43,16 +43,6 @@ or from this repository:
 devtools::install_github("compbiomed/singleCellTK",ref="devel")
 ```
 
-### R 3.4 Version
-
-If you are still running an earlier version of R than 3.5, you can install
-the following version from this repository:
-
-```r
-# install.packages("devtools")
-devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
-```
-
 #### Troubleshooting Installation
 
 For the majority of users, the commands above will install the latest version
