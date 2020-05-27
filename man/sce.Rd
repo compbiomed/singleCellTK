@@ -30,6 +30,6 @@ run the functions in this package. The results should not be
 used for drawing scientific conclusions.
 }
 \examples{
-data("sceQCExample")
+data("scExample")
 }
 \keyword{datasets}
