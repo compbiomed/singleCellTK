@@ -2943,7 +2943,7 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         a <- plotfun(a, xy$color)
-        a <- plotSCEDimReduceColData(inSCE = val$counts,
+        a <- plotSCEDimReduceColData(inSCE = vals$counts,
           reducedDimName = input$QuickAccess)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
