@@ -1196,6 +1196,9 @@ shinyServer(function(input, output, session) {
                     assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
                 }
             }
+            else if(input$assayModifyAction == "trim"){
+              assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssaySelect), c(input$trimUpperValueAssay, input$trimLowerValueAssay))            
+            }
             else {
                 showNotification("Error during assay transformation!", type = "error")
             } 
@@ -1203,35 +1206,89 @@ shinyServer(function(input, output, session) {
         } 
     })
   })
+  
+  observeEvent(input$assayModifyAction,{
+    if (input$assayModifyAction == "log"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+    }
+    else if (input$assayModifyAction == "log1p"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+    }
+    else if (input$assayModifyAction == "z.score") {
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+    }
+    else if(input$assayModifyAction == "trim"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+    }
+    
+  })
 
     observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
-        if (input$normalizeLibrarySelect == "seurat") {
-            vals$counts <- seuratNormalizeData(inSCE = vals$counts,
-                                               useAssay = input$normalizeAssaySelect,
-                                               normAssayName = "seuratNormData",
-                                               normalizationMethod = input$normalizeAssayMethodSelect,
-                                               scaleFactor = as.numeric(input$normalizationScaleFactor))
-            updateAssayInputs()
+      if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
+        stop("Selected assay does not exist!")
+      }
+      else if(input$normalizeAssayOutname == ""){
+        stop("Assay Name cannot be empty!")
+      }
+      else if(input$normalizeAssayOutname %in% names(assays(vals$counts))){
+        stop("Your selected Assay Name already exists! Try another Assay Name!")
+      }
+      else if(input$normalizeAssaySelect == ""){
+        stop("Please select an assay before proceeding with normalization!")
+      }
+      else{
+        if (input$normalizeAssayMethodSelect == "LogNormalize"
+            || input$normalizeAssayMethodSelect == "CLR"
+            || input$normalizeAssayMethodSelect == "RC") {
+          vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+                                             useAssay = input$normalizeAssaySelect,
+                                             normAssayName = input$normalizeAssayOutname,
+                                             normalizationMethod = input$normalizeAssayMethodSelect,
+                                             scaleFactor = as.numeric(input$normalizationScaleFactor))
+          updateAssayInputs()
         }
-        else if (input$normalizeLibrarySelect == "cpm") {
-        if (!(input$normalizeAssaySelect %in% names(assays(vals$counts)))) {
-        shinyalert::shinyalert("Error!", "Assay does not exist!",
-                                 type = "error")
-        } else if (input$normalizeAssayOutname == "") {
-        shinyalert::shinyalert("Error!", "Invalid output name!",
-                                 type = "error")
-        } else if (input$normalizeAssayOutname %in% names(assays(vals$counts))) {
-        shinyalert::shinyalert("Error!", "Output name already exists! Delete to Rename.",
-                                 type = "error")
-        } else {
-        assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(assay(vals$counts, input$normalizeAssaySelect))
-        updateAssayInputs()
+        else if (input$normalizeAssayMethodSelect == "CPM") {
+          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+            x = assay(vals$counts, input$normalizeAssaySelect))
+          updateAssayInputs()
         }
+        else if(input$normalizeAssayMethodSelect == "LNC"){
+          vals$counts <- scater_logNormCounts(
+            inSCE = vals$counts,
+            logAssayName = input$normalizeAssayOutname,
+            useAssay = input$normalizeAssaySelect
+          )
+          updateAssayInputs()
         }
+        else if(input$normalizeAssayMethodSelect == "SCT"){
+          vals$counts <- seuratSCTransform(
+            inSCE = vals$counts,
+            normAssayName = input$normalizeAssayOutname,
+            useAssay = input$normalizeAssaySelect
+          )
+          updateAssayInputs()
+        }
+      }
     })
 })
+    
+    observeEvent(input$normalizeAssayMethodSelect, {
+      if(input$normalizeAssayMethodSelect == "LogNormalize") {
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratLogNormalize")
+      } else if(input$normalizeAssayMethodSelect == "CLR"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratCLR")
+      } else if(input$normalizeAssayMethodSelect == "RC"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
+      } else if(input$normalizeAssayMethodSelect == "CPM"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "CPMCounts")
+      } else if(input$normalizeAssayMethodSelect == "LNC"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterLogNormCounts")
+      } else if(input$normalizeAssayMethodSelect == "SCT"){
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratSCTransform")
+      }
+    })
 
 
 #  output$colDataDataFrame <- DT::renderDataTable({
