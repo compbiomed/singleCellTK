@@ -28,6 +28,8 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
                             assayName = "counts", inputDataFrames = FALSE,
                             class = c("Matrix", "matrix"), delayedArray = FALSE){
   
+  class <- match.arg(class)
+  
   if (inputDataFrames){
     countsin <- assayFile
     annotin <- annotFile
