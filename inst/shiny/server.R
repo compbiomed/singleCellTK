@@ -2943,6 +2943,8 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         a <- plotfun(a, xy$color)
+        a <- plotSCEDimReduceColData(inSCE = val$counts,
+          reducedDimName = input$QuickAccess)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         #if not uniform
