@@ -2963,6 +2963,9 @@ shinyServer(function(input, output, session) {
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
+        color <- xy$color
+        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
+          colorBy = color)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
         }
       #else_end
