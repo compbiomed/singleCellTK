@@ -3,20 +3,18 @@
 \name{seuratSCTransform}
 \alias{seuratSCTransform}
 \title{seuratSCTransform
-Runs the SCTransform function from seurat library to transform the input data}
+Runs the \code{SCTransform} function from \code{Seurat} library to transform/normalize the input data}
 \usage{
-seuratSCTransform(inSCE, newAssayName = "SCTCounts", useAssay, geneNamesSeurat)
+seuratSCTransform(inSCE, normAssayName = "SCTCounts", useAssay = "counts")
 }
 \arguments{
-\item{inSCE}{the input sce object containing the counts}
+\item{inSCE}{Input \code{SingleCellExperiment} object}
 
-\item{newAssayName}{name for the transformed counts assay (default is "SCTCounts")}
+\item{normAssayName}{Name for the output data assay. Default \code{"SCTCounts"}.}
 
-\item{useAssay}{which counts assay to use from input sce object for transformation}
-
-\item{geneNamesSeurat}{genenames for consistent formatting}
+\item{useAssay}{Name for the input data assay. Default \code{"counts"}.}
 }
 \description{
 seuratSCTransform
-Runs the SCTransform function from seurat library to transform the input data
+Runs the \code{SCTransform} function from \code{Seurat} library to transform/normalize the input data
 }

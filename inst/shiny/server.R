@@ -1244,7 +1244,7 @@ shinyServer(function(input, output, session) {
             || input$normalizeAssayMethodSelect == "RC") {
           vals$counts <- seuratNormalizeData(inSCE = vals$counts,
                                              useAssay = input$normalizeAssaySelect,
-                                             normAssayName = "seuratNormData",
+                                             normAssayName = input$normalizeAssayOutname,
                                              normalizationMethod = input$normalizeAssayMethodSelect,
                                              scaleFactor = as.numeric(input$normalizationScaleFactor))
           updateAssayInputs()
@@ -1264,9 +1264,8 @@ shinyServer(function(input, output, session) {
         else if(input$normalizeAssayMethodSelect == "SCT"){
           vals$counts <- seuratSCTransform(
             inSCE = vals$counts,
-            newAssayName = input$normalizeAssayOutname,
-            useAssay = input$normalizeAssaySelect,
-            geneNamesSeurat = seuratWorkflow$geneNamesSeurat
+            normAssayName = input$normalizeAssayOutname,
+            useAssay = input$normalizeAssaySelect
           )
           updateAssayInputs()
         }
@@ -1284,9 +1283,9 @@ shinyServer(function(input, output, session) {
       } else if(input$normalizeAssayMethodSelect == "CPM"){
         updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "CPMCounts")
       } else if(input$normalizeAssayMethodSelect == "LNC"){
-        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "logNormCountsScater")
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterLogNormCounts")
       } else if(input$normalizeAssayMethodSelect == "SCT"){
-        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SCTransform")
+        updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratSCTransform")
       }
     })
 

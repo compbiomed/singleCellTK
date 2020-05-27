@@ -15,7 +15,7 @@ convertSCEToSeurat(
 \arguments{
 \item{inSCE}{A \code{SingleCellExperiment} object to convert to a Seurat object.}
 
-\item{countsAssay}{which assay to use from sce object for raw counts. Default \code{NULL}.}
+\item{countsAssay}{Which assay to use from sce object for raw counts. Default \code{NULL}.}
 
 \item{normAssay}{Which assay to use from sce object for normalized data. Default \code{NULL}.}
 
