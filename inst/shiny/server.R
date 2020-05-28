@@ -4,7 +4,6 @@ options(useFancyQuotes = FALSE)
 options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
-source("partials.R", local = TRUE) #creates several partial UI components
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -129,7 +128,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInput(session, "assaySelectFS", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
-    updateSelectInput(session, "qcAssaySelect", choices = currassays)
+    # updateSelectInput(session, "qcAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
     updateSelectInput(session, "celdaAssay", choices = currassays)
@@ -965,7 +964,157 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "convertGenes", class = "btn-block")
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
+  
+  qc_choice_list <- list("doubletCells", "cxds", "bcds",
+                      "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
+  
+  # Event handler for "Select All" button in QC checklist
+  observe({
+    if(input$selectallQC == 0) return(NULL) 
+    else if (input$selectallQC%%2 == 0) {
+      updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list)
+    } else {
+      updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list, selected=qc_choice_list)
+    }
+  })
+  
+  qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE, 
+                      geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
+    modalDialog(
+      h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
+      if (!is.null(assays))
+        selectInput("qcAssaySelect", paste0("Select assay for ", requireAssayStr), assays),
+      if (geneSetList)
+        tags$hr(),
+      if (geneSetList)
+        h4(tags$b("Parameters for QCMetrics:")),
+      if (geneSetList)
+        selectInput("geneSetList", "Select Gene Set List", assays),
+      if (geneSetListLocation)
+        selectInput("geneLocation", "Select Gene Set List Location", assays),
+      if (geneSetCollection)
+        selectInput("geneCollection", "Select Gene Set Collection", assays),
 
+      if (failed)
+        div(tags$b("Please fill out all the required fields", style = "color: red;")),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("modalRunQC", "Run")
+      )
+    )
+  }
+  
+  findOverlapping <- function(arr1, arr2) {
+    filter <- vector()
+    for (x in arr1) {
+      if (x %in% arr2) {
+        filter <- c(filter, TRUE)
+      } else {
+        filter <- c(filter, FALSE)
+      }
+    }
+    return(arr1[filter])
+  }
+  
+  observeEvent(input$runQC, {
+    if (is.null(input$qcAlgos)) {
+      insertUI(
+        selector = "#qcPageErrors",
+        ui = wellPanel(id = "noSelected", tags$b("Please select at least one algorithm.", style = "color: red;"))
+      )
+    } else if (is.null(vals$counts)) {
+      insertUI(
+        selector = "#qcPageErrors",
+        ui = wellPanel(id = "noSCE", tags$b("Please upload a sample first.", style = "color: red;"))
+      )
+    } else {
+      qcAlgosList <- strsplit(input$qcAlgos, " ")
+      currassays <- names(assays(vals$counts))
+      requireAssay <- list("QCMetrics", "scrublet", "doubletCells", "decontX")
+      requireAssayArr <- findOverlapping(qcAlgosList, requireAssay)
+      
+      removeUI(
+        selector = "#noSelected"
+      )
+      removeUI(
+        selector = "#noSCE"
+      )
+      if ("QCMetrics" %in% qcAlgosList) {
+        showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, requireAssayStr = paste(requireAssayArr, collapse = ', ')))
+      } else if (length(requireAssayArr) > 0) {
+        showModal(qcModal(assays = currassays, requireAssayStr = paste(requireAssayArr, collapse = ', ')))
+      } else {
+        runHandler(qcAlgosList)
+      }
+    }
+  })
+  
+  observeEvent(input$modalRunQC, {
+    qcAlgosList <- strsplit(input$qcAlgos, " ")
+    currassays <- names(assays(vals$counts))
+    if (is.null(input$qcAssaySelect)) {
+      if ("QCMetrics" %in% qcAlgosList) {
+        showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
+      } else if ("scrublet" %in% qcAlgosList){
+        showModal(qcModal(assays = currassays, failed=TRUE))
+      } else if ("doubletCells" %in% qcAlgosList) {
+        showModal(qcModal(assays = currassays, failed = TRUE))
+      } else if ("decontX" %in% qcAlgosList) {
+        showModal(qcModal(assays = currassays, failed = TRUE))
+      }
+    } else {
+      removeModal()
+      runHandler(qcAlgosList)
+    }
+  })
+  
+  runHandler <- function(qcAlgosList) {
+    print(input$qcAssaySelect)
+    if ("QCMetrics" %in% qcAlgosList) {
+      afterQC <- runCellQC(inSCE = vals$original,
+                           algorithms = qcAlgosList,
+                           sample = NULL,
+                           geneSetList = input$geneSetList,
+                           geneSetListLocation = input$geneLocation,
+                           geneSetCollection = input$geneCollection,
+                           useAssay = input$qcAssaySelect)
+    } else if ("scrublet" %in% qcAlgosList){
+      afterQC <- runCellQC(inSCE = vals$original,
+                           algorithms = qcAlgosList,
+                           sample = NULL,
+                           useAssay = input$qcAssaySelect)
+    } else if ("doubletCells" %in% qcAlgosList) {
+      afterQC <- runCellQC(inSCE = vals$original,
+                           algorithms = qcAlgosList,
+                           sample = NULL,
+                           useAssay = input$qcAssaySelect)
+    } else if ("decontX" %in% qcAlgosList) {
+      afterQC <- runCellQC(inSCE = vals$original,
+                           algorithms = qcAlgosList,
+                           sample = NULL,
+                           useAssay = input$qcAssaySelect)
+    } else {
+      afterQC <- runCellQC(inSCE = vals$original,
+                           algorithms = qcAlgosList,
+                           sample = NULL)
+    }
+    print(afterQC)
+    # UNCOMMENT BELOW to show summary table after QC (must uncomment in ui_02_qc as well)
+    # output$qcSummary <- renderTable({
+    #   req(afterQC)
+    #   if(is.null(input$qcAssaySelect)) {
+    #     assaySelect <- "counts"
+    #   } else {
+    #     assaySelect <- input$qcAssaySelect
+    #   }
+    #   singleCellTK::summarizeTable(inSCE = afterQC,
+    #                                useAssay = "counts",
+    #                                expressionCutoff = input$minDetectGene)
+    # })
+    # shinyjs::show(id="qcData")
+  }
+  
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     req(vals$counts)
