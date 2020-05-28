@@ -92,7 +92,8 @@ Imports:
     zinbwave,
     V8,
     scRNAseq,
-    TENxPBMCData
+    TENxPBMCData,
+    yaml
 RoxygenNote: 7.1.0
 Suggests:
     testthat,

@@ -102,3 +102,57 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
   }
   return(list(p = p, r2Full = r2Full, r2Reduced = r2Reduced))
 }
+
+#' Plot mean feature value in each batch of a SingleCellExperiment object
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param useAssay The name of the assay that stores the value to plot. Use
+#' \code{useReddim} for dimension reduced matrix instead. Default \code{NULL}.
+#' @param useReddim The name of the dimension reduced matrix that stores the
+#' value to plot. Default \code{NULL}.
+#' @param batch The column name of \code{colData(inSCE)} that indicates the
+#' batch annotation. Default \code{"batch"}.
+#' @param xlab label for x-axis. Default \code{"batch"}.
+#' @param ylab label for y-axis. Default \code{"Feature Mean"}.
+#' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
+#' @return ggplot
+#' @export
+plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
+  batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
+  if(!inherits(inSCE, 'SingleCellExperiment')){
+    stop("'inSCE' must inherit from 'SingleCellExperiment'.")
+  }
+  if(is.null(useAssay) & is.null(useReddim)){
+    stop("Either `useAssay` or `useReddim` has to be specified.")
+  } else if(!is.null(useAssay) & !is.null(useReddim)){
+    stop("Only one of `useAssay` and `useReddim` can be specified.")
+  }
+  if(!is.null(useAssay)){
+    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+      stop("'useAssay' not found in 'inSCE'.")
+    }
+    mat <- SummarizedExperiment::assay(inSCE, useAssay)
+  }
+  if(!is.null(useReddim)){
+    if(!useReddim %in% SingleCellExperiment::reducedDimNames(inSCE)){
+      stop("'useReddim not found in 'inSCE'.")
+    }
+    mat <- t(SingleCellExperiment::reducedDim(inSCE, useReddim))
+  }
+  if(is.null(batch)){
+    stop("Batch annotation has to be given.")
+  } else{
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+      stop("'batch' not found in 'inSCE'.")
+    }
+  }
+  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
+  uniqBatch <- as.vector(unique(batchCol)) #as.vector in case batchCol is factor
+  allMeans <- numeric()
+  groupBy <- character()
+  for(i in uniqBatch){
+    allMeans <- c(allMeans, DelayedArray::rowMeans(mat[,batchCol == i]))
+    groupBy <- c(groupBy, rep(i, nrow(inSCE)))
+  }
+  p <- .ggViolin(allMeans, groupby = groupBy, xlab = xlab, ylab = ylab, ...)
+  return(p)
+}

@@ -126,20 +126,11 @@ shinyPanelBatchcorrect <- fluidPage(
         )
     ),
   tabPanel("Batch Correction",
-    fluidRow(
-      panel(
-        heading = "Basic input option:",
-        div(style="display: inline-block;vertical-align:top; width: 150px;",
-            selectInput("batchCorrAssay", "Select Assay:", currassays)),
-        div(style="display: inline-block;vertical-align:top; width: 200px;",
-            selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice)),
-        div(style="display: inline-block;vertical-align:top; width: 150px;",
-            selectInput("batchCorrCond", "Select Condition (optional):", clusterChoice))
-      )
-    ),
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
+        selectInput("batchCorrAssay", "Select Assay:", currassays),
+        selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
                     c("BBKNN", "ComBat", "FastMNN", "Harmony", "LIGER", "Limma",
                       "MNN", "scMerge", "Seurat3 Integration", "ZINBWaVE")),
@@ -155,6 +146,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # ComBat ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'ComBat'",
+          selectInput("combatCond", "Select Condition of Covariance:",
+                      clusterChoice),
           radioButtons("combatParametric", "Adjustments:",
                        c("Parametric", "Non-parametric"),
                        selected = "Parametric"),
@@ -256,6 +249,7 @@ shinyPanelBatchcorrect <- fluidPage(
             uiOutput('scMergeNBatch'),
             textInput('scMergeUserKmk', label = NULL)
           ),
+          selectInput("scMergeCT", "Cell Type Annotation:", clusterChoice),
           textInput("scMergeSaveAssay", "Assay Name to Use:",
                     value = "scMerge"),
           withBusyIndicatorUI(actionButton("scMergeRun", "Run"))
@@ -286,31 +280,38 @@ shinyPanelBatchcorrect <- fluidPage(
         uiOutput("batchCorrStatus")
       ),
       mainPanel(
-        h3("Variance explained by batch and condition"),
         fluidRow(class = "batchVarPlotRow",
-          column(
-            width = 6,
-            style='border-right: 1px solid #CCCCCC',
-            h4('Original Variance'),
-            plotOutput('batchVarPlot',
-                       height = "300px", width = "300px"),
-            plotOutput('batchOriPCA',
-                       height = "300px", width = "300px")
-          ),
-          column(
-            width = 6,
-            h4("Corrected Variance"),
-            plotOutput('batchVarCorrectedPlot',
-                       height = "300px", width = "300px"),
-            plotOutput('batchCorrReddim',
-                       height = "300px", width = "300px")
+          panel(heading = "Visualization",
+            column(
+              width = 4,
+              style='border-right: 1px solid #CCCCCC',
+              h4('Original Status'),
+              plotOutput('batchOriVar',
+                height = "300px", width = "300px"),
+              plotOutput('batchOriPCA',
+                height = "300px", width = "300px")
+            ),
+            column(
+              width = 4,
+              h4("Corrected Status"),
+              plotOutput('batchCorrVar',
+                height = "300px", width = "300px"),
+              plotOutput('batchCorrReddim',
+                height = "300px", width = "300px")
+            ),
+            column(
+              width = 4,
+              h3("Visualization Setting"),
+              selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
+              selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
+              selectInput("batchCheckCond", "Additional Condition (optional)",
+                clusterChoice),
+              radioButtons('batchCheckResType', "Result Type",
+                choiceNames = c("assay", "reducedDim"),
+                choiceValues = c(1, 2)),
+              uiOutput("batchCheckResUI")
+            )
           )
-        ), tags$head(tags$style("
-           .batchVarPlotRow{height:650px;
-                            width:650px;
-                            background-color: #ECF0F1;
-           }"
-           )
         )
       )
     )

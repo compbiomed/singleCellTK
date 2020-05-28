@@ -352,14 +352,15 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 
 
 #' .updateAssaySCE
-#' Update/Modify/Add an assay in the provided sce object
-#' @param inSCE (sce) object to which we have to add assay to (copy to)
-#' @param seuratObject from which we have to copy the assay (copy from)
-#' @param assaySlotSCE the assay slot in sce object
-#' @param assaySlotSeurat the assay slot in seurat object
-.updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, assaySlotSeurat) {
+#' Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object
+#' @param inSCE Input SingleCellExperiment object
+#' @param seuratObject Input Seurat object
+#' @param assaySlotSCE Selected assay to update in the input SingleCellExperiment object
+#' @param seuratDataSlot Selected data slot from the Seurat object. Default \code{"counts"}.
+#' @param seuratAssaySlot Selected assay from Seurat object. Default \code{"RNA"}.
+.updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, seuratDataSlot = "counts", seuratAssaySlot = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL
-  temp.matrix <- methods::slot(seuratObject@assays$RNA, assaySlotSeurat)
+  temp.matrix <- methods::slot(Seurat::GetAssay(seuratObject, seuratAssaySlot), seuratDataSlot)
   rownames(temp.matrix) <- rownames(inSCE)
   colnames(temp.matrix) <- colnames(inSCE)
   assay(inSCE, assaySlotSCE) <- temp.matrix
@@ -386,7 +387,7 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' convertSCEToSeurat
 #' Converts sce object to seurat while retaining all assays and metadata
 #' @param inSCE A \code{SingleCellExperiment} object to convert to a Seurat object.
-#' @param countsAssay which assay to use from sce object for raw counts. Default \code{NULL}.
+#' @param countsAssay Which assay to use from sce object for raw counts. Default \code{NULL}.
 #' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
 #' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
 #' @return seuratObject updated seurat object that contains all data from the input sce object
@@ -467,5 +468,21 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   return(seuratObject)
 }
 
+#' seuratSCTransform
+#' Runs the \link[Seurat]{SCTransform} function to transform/normalize the input data
+#' @param inSCE Input SingleCellExperiment object
+#' @param normAssayName Name for the output data assay. Default \code{"SCTCounts"}.
+#' @param useAssay Name for the input data assay. Default \code{"counts"}.
+#' @export
+seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts") {
+    seuratObject <- base::suppressWarnings(Seurat::SCTransform(
+                            object = convertSCEToSeurat(inSCE, useAssay),
+                            assay = "RNA",
+                            new.assay.name = "SCTransform",
+                            do.correct.umi = FALSE,
+                            verbose = TRUE))
+    inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
+    return(inSCE)
+}
 
 # ----
