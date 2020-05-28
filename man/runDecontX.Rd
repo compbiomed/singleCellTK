@@ -13,7 +13,7 @@ runDecontX(inSCE, sample = NULL, useAssay = "counts", ...)
 Default NULL. \link[celda]{decontX} will be run on cells from each
 sample separately.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\item{useAssay}{A string specifying which assay in the SCE to use. Default
 'counts'.}
 
 \item{...}{Additional arguments to pass to \link[celda]{decontX}.}
@@ -21,7 +21,7 @@ sample separately.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  'decontX_Contamination' and 'decontX_Clusters' added to the
- \link[SummarizedExperiment]{colData} slot. Additionally, the 
+ \link[SummarizedExperiment]{colData} slot. Additionally, the
 decontaminated counts will be added as an assay called 'decontXCounts'.
 }
 \description{
@@ -30,7 +30,7 @@ A wrapper function for \link[celda]{decontX}. Identify
 }
 \examples{
 \dontrun{
-data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runDecontX(emptyDropsSceExample)
+data(sceQCExample, package = "singleCellTK")
+sce <- runDecontX(sce)
 }
 }

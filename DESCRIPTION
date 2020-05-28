@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.7.1
+Version: 1.7.5
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
@@ -45,9 +45,11 @@ Imports:
     ggplot2,
     ggplotify,
     ggtree,
+    ggrepel,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
+    harmony,
     liger,
     limma,
     MAST,
@@ -88,8 +90,10 @@ Imports:
     DoubletFinder,
     R.utils,
     zinbwave,
-    harmony,
-    V8
+    V8,
+    scRNAseq,
+    TENxPBMCData,
+    yaml
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
@@ -99,7 +103,6 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
-    scRNAseq,
     xtable,
     spelling,
     org.Mm.eg.db
@@ -107,7 +110,8 @@ Remotes:
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
     joshua-d-campbell/liger,
-    joshua-d-campbell/shiny-directory-input
+    joshua-d-campbell/shiny-directory-input,
+    campbio/celda@RELEASE_3_11
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

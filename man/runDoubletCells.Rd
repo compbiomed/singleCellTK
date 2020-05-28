@@ -36,8 +36,9 @@ This function is a wrapper function for \link[scran]{doubletCells}.
  \link[SummarizedExperiment]{colData} of \code{inSCE}.
 }
 \examples{
-data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runDoubletCells(emptyDropsSceExample)
+data(sceQCExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- runDoubletCells(sce)
 }
 \references{
 Lun ATL (2018). Detecting doublet cells with scran.

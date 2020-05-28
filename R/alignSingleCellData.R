@@ -219,7 +219,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
 
   #createsceset from the count file, multiqcdata, and annotations if they exist
   # (validate the sample names are right)
-  scobject <- createSCE(assayFile = countframe,
+  scobject <- importFromFiles(assayFile = countframe,
                         annotFile = sampleAnnotations,
                         featureFile = featureAnnotations,
                         inputDataFrames = TRUE)

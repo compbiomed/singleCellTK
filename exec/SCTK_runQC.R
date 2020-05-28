@@ -1,8 +1,8 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/env Rscript --vanilla
 
 ##Check to see if necessary packages are installed
 #CRAN packages
-cran.packages <- c("optparse")
+cran.packages <- c("optparse", "yaml")
 
 cran.package.check <- lapply(cran.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
@@ -11,24 +11,40 @@ cran.package.check <- lapply(cran.packages, FUN = function(x) {
 })
 
 #Bioconductor packages
-bioc.packages <- c("singleCellTK")
+bioc.packages <- c("singleCellTK", "celda")
 
 bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
-        BiocManager::install("singleCellTK")
+        BiocManager::install(x)
     }
 })
 
+## Function to parse arguments from yaml file
+.parseConfig <- function(sctkConfig, arguments) {
+  for (i in seq_along(arguments)) {
+    arg <- arguments[i]
+    assign(arg, sctkConfig[[arg]], envir = parent.frame())
+  }
+}
+
+## Check whether python module is available
+if (!reticulate::py_module_available(module = "scrublet")) {
+    stop("Cannot find python module 'scrublet'. ",
+            "Scrublet can be installed on the local machine",
+            "with pip (e.g. pip install --user scanpy) and then the 'use_python()'",
+            " function from the 'reticulate' package can be used to select the",
+            " correct Python environment.")
+}
 
 ##Read in flags from command line using optparse
 option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
         help="Base path for the output from the preprocessing algorithm"),
-    optparse::make_option(c("-p", "--preproc"),
+    optparse::make_option(c("-P", "--preproc"),
         type = "character",
         default="CellRangerV3",
-        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus','DropEst'"),
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
         help="Name of the sample. This will be prepended to the cell barcodes."),
@@ -43,116 +59,281 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-t","--delim"),
         type="character",
         default="\t",
-        help="Delimiter used in GMT file"))
+        help="Delimiter used in GMT file"),
+    optparse::make_option(c("-G","--genome"),
+        type="character",
+        default=NULL,
+        help="The name of genome reference. This is only required for CellRangerV2 data."), 
+    optparse::make_option(c("-C","--cell_data_path"),
+        type="character",
+        default=NULL,
+        help="The directory contains cell count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
+    optparse::make_option(c("-R","--raw_data_path"),
+        type="character",
+        default=NULL,
+        help="The directory contains raw droplet count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
+    optparse::make_option(c("-S","--split_sample"),
+        type="logical",
+        default=FALSE,
+        help="Save SingleCellExperiment object for each sample. Default is FALSE. If TRUE, all samples will be combined and only one combimed SingleCellExperiment object will be saved."),
+    optparse::make_option(c("-r","--raw_data"),
+        type="character",
+        default=NULL,
+        help="The full path of the RDS file or Matrix file of the raw gene count matrix. This would be provided only when --preproc is SceRDS or CountMatrix."),
+    optparse::make_option(c("-c","--cell_data"),
+        type="character",
+        default=NULL,
+        help="The full path of the RDS file or Matrix file of the cell count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
+    optparse::make_option(c("-F", "--outputFormat"),
+        type="character",
+        default=NULL,
+        help="The output format of this QC pipeline. Currently, it supports RDS, Flatfile, Python AnnData and HTAN."),
+    optparse::make_option(c("-y", "--yamlFile"),
+        type="character",
+        default=NULL,
+        help="YAML file containing parameters called by singleCellTK QC functions. Please check documentation for details."))
 
-opt <- optparse::parse_args(optparse::OptionParser(option_list=option_list))
-path <- opt$base_path
-preproc <- opt$preproc
-samplename <- opt$sample
-directory <- opt$directory
+## Define arguments
+arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
+opt <- arguments$options
+process <- unlist(strsplit(opt$preproc, ","))
+sample <- unlist(strsplit(opt$sample, ","))
+directory <- unlist(strsplit(opt$directory, ","))
 gmt <- opt$gmt
 sep <- opt$delim
+split <- opt$split_sample
+basepath <- opt$base_path
+FilterDir <- opt$cell_data_path 
+RawDir <- opt$raw_data_path
+Reference <- opt$genome
+RawFile <- opt$raw_data
+FilterFile <- opt$cell_data
+yamlFile <- opt$yamlFile
+formats <- opt$outputFormat
 
-if (is.na(samplename)){
-  stop("A sample name is required. Please specify using the -s flag.")
-}
+if (!is.null(basepath)) { basepath <- unlist(strsplit(opt$base_path, ",")) } 
 
-if(is.na(droplet.path) && is.na(filtered.path)){
-  stop("Either the droplet counts or the filtered counts file path need to be specified.")
-}
+if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt$cell_data_path, ",")) } 
 
-## Use appropriate import function for preprocessing tool
-dropletSCE <- NULL
-filteredSCE <- NULL
-if (preproc == "BUStools") {
-  dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix")
-} else if(preproc == "STARSolo"){
-  dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix")
-  filteredSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix")
-} else if(preproc == "CellRangerV3"){
-  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = TRUE, cellRangerOuts = "outs/filtered_feature_bc_matrix", class = "Matrix")
-} else if(preproc == "CellRangerV2"){
-  dropletSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/raw_feature_bc_matrix", class = "Matrix")
-  filteredSCE <- importCellRanger(cellRangerDirs = path, samples = samplename, gzipped = FALSE, cellRangerOuts = "outs/filtered_gene_bc_matrix", class = "Matrix")
-} else if(preproc == "SEQC"){
-  dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix")
-} else if(preproc == "Optimus"){
-  dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename)
-  filteredSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
-} else if(preproc == "DropEst"){
-  dropletSCE <- importDropEst(sampleDirs = path,sampleNames = samplename, dataType = 'raw')
-  filteredSCE <- importDropEst(sampleDirs = path,sampleNames = samplename, dataType = 'filtered')
-}else {
-  stop(paste0("'", preproc, "' not supported."))
-}
+if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt$raw_data_path, ",")) } 
 
-## Read in gene sets for QC
-geneSetCollection <- NULL
-if(!is.null(gmt)) {
-  geneSetCollection <- GSEABase::getGmt(gmt, sep=sep)
-}
+if (!is.null(Reference)) { Reference <- unlist(strsplit(opt$genome, ",")) } 
 
-## Run QC functions
-if(!is.null(dropletSCE)) {
-  message(paste0(date(), " .. Running droplet QC"))    
-  dropletSCE <- runDropletQC(inSCE = dropletSCE)
-  
-  if(is.null(filteredSCE)) {
-    ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
-    filteredSCE <- dropletSCE[,ix]
-  }  
-}
+if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt$raw_data, ",")) }
 
-if(!is.null(filteredSCE)) {
-  message(paste0(date(), " .. Running cell QC"))    
-  filteredSCE <- runCellQC(inSCE = filteredSCE, geneSetCollection = geneSetCollection)
-}  
+if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt$cell_data, ",")) } 
 
+if (!is.null(formats)) { formats <- unlist(strsplit(opt$outputFormat, ",")) } 
 
-## Merge singleCellExperiment objects
-mergedDropletSCE <- NULL
-mergedFilteredSCE <- NULL
-if(!is.null(filteredSCE) & !is.null(dropletSCE)) {
-  mergedDropletSCE <- mergeSCEColData(dropletSCE, filteredSCE)
-  mergedFilteredSCE <- mergeSCEColData(filteredSCE, dropletSCE)
+## Parse parameters for QC algorithms
+if (!is.null(yamlFile)) {
+    arguments <- c('Params')
+    qcParams <- yaml::read_yaml(yamlFile)
+    .parseConfig(qcParams, arguments)
 } else {
-  mergedFilteredSCE <- filteredSCE
+    Params <- list()
 }
 
-## Create directories and save objects
-dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "R"), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "Python"), showWarnings = TRUE, recursive = TRUE)
-dir.create(file.path(directory, samplename, "FlatFile"), showWarnings = TRUE, recursive = TRUE)
 
-if(!is.null(mergedDropletSCE)){
-  ## Export to R 
-  fn <- file.path(directory, samplename, "R", paste0(samplename , "_Droplets.rds"))
-  saveRDS(object = mergedDropletSCE, file = fn)
-  
-  ## Export to flatfile
-  fn <- file.path(directory, samplename, "FlatFile", "Droplets")
-  writeSCE(mergedDropletSCE, outputDir = fn)
-  
-  ## Export to Python
-  fn <- file.path(directory, samplename, "Anndata", "Droplets")
-  exportSCEtoAnnData(sce=mergedDropletSCE,outputDir = fn, sample = samplename)
+## Checking argument
+if (is.null(RawFile) & is.null(RawFile)) {
+    if (is.null(basepath)) {
+        if ((is.null(FilterDir) || is.null(RawDir))) {
+            warning("Both 'cell_data_path' and 'raw_data_path' need to be specified when 'base_path' is NULL.")
+        } else {
+            # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
+            if (length(FilterDir) != length(RawDir)) {
+                stop("The length of '--cell_data_path' should be the same as the length of '--raw_data_path'.")
+            }
+            if (length(FilterDir) != length(sample)) {
+                stop("The length of '--cell_data_path' should be the same as the length of '--sample'.")
+            }
+            if (length(FilterDir) != length(process)) {
+                stop('The length of "--cell_data_path" should be the same as ',
+                         'the length of "--preproc"!')
+            }
+        }
+    } else {
+        if (length(basepath) != length(process)) {
+            stop('The length of "--base_path" should be the same as ',
+                     'the length of "--preproc"!')
+        }
+        if (length(basepath) != length(sample)) {
+            stop('The length of "--base_path" should be the same as ',
+                     'the length of "--sample"!')    
+        }
+    }
+
+    if (length(Reference) != sum(process == 'CellRangerV2')) {
+        stop('The length of "--ref" should be the same as ',
+                 'the number of "CellRangerV2" in the "--preproc"!')        
+    }        
 }
-if(!is.null(mergedFilteredSCE)) {
-  ## Export to R    
-  fn <- file.path(directory, samplename, "R", paste0(samplename , "_FilteredCells.rds"))
-  saveRDS(object = mergedFilteredSCE, file = fn)
 
-  ## Export to flatfile  
-  fn <- file.path(directory, samplename, "FlatFile", "FilteredCells")
-  writeSCE(mergedFilteredSCE, outputDir = fn)
-  
-  ## Export to Python
-  fn <- file.path(directory, samplename, "Anndata", "FilteredCells")
-  exportSCEtoAnnData(sce=mergedFilteredSCE,outputDir = fn, sample = samplename)
-}  
+if (!is.null(RawFile) | !is.null(FilterFile)) {
+    if (length(RawFile) != length(FilterFile)) {
+         stop("The length of '--raw_data' and '--cell_data' should be the same when '--preproc' is SceRDS or CountMatrix.")
+    }
+    if (length(FilterFile) != length(sample)) {
+        stop("The length of '--cell_data' should be the same as the length of '--sample'.")
+    }
+    if (length(FilterFile) != length(process)) {
+        stop('The length of "--cell_data" should be the same as ',
+                 'the length of "--preproc"!')
+    }
+}
 
 
+## Prepare for QC
+dropletSCE_list <- list()
+cellSCE_list <- list()
+geneSetCollection <- NULL
+if (!is.null(gmt)) {
+    geneSetCollection <- GSEABase::getGmt(gmt, sep=sep)
+}
 
-sessionInfo()
+level3Meta <- list()
+level4Meta <- list()
+
+for(i in seq_along(process)) {
+    preproc <- process[i]
+    samplename <- sample[i]
+    path <- basepath[i]
+    raw <- RawDir[i]
+    fil <- FilterDir[i]
+    ref <- Reference[i]
+    rawFile <- RawFile[i]
+    filFile <- FilterFile[i]
+    dropletSCE <- NULL
+    cellSCE <- NULL
+
+    if (preproc == "BUStools") {
+        dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix", delayedArray=FALSE)
+    } else if (preproc == "STARSolo") {
+        dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+        cellSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+    } else if (preproc == "CellRangerV3") {
+        if (!is.null(path)) {
+            dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
+            cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
+        } else {
+            dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            cellSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        }
+    } else if (preproc == "CellRangerV2") {
+        if(is.null(ref)){
+            stop("The name of genome reference needs to be specified.")
+        }
+        if (!is.null(path)) {
+            dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
+            cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
+        } else {
+            dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            cellSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        }
+    } else if (preproc == "SEQC") {
+        dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
+    } else if (preproc == "Optimus") {
+        dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename, delayedArray = FALSE)
+        cellSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
+    } else if (preproc == "DropEst") {
+        dropletSCE <- importDropEst(sampleDirs=path, dataType="raw", sampleNames=samplename, delayedArray=FALSE)
+        cellSCE <- importDropEst(sampleDirs=path, dataType="filtered", sampleNames=samplename, delayedArray=FALSE)
+    } else if (preproc == "SceRDS") {
+        dropletSCE <- readRDS(rawFile)
+        cellSCE <- readRDS(filFile)
+    } else if (preproc == "CountMatrix") {
+        dropletMM <- data.table::fread(rawFile)
+        dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
+        cellMM <- data.table::fread(filFile)
+        cellSCE <- constructSCE(data = cellMM, samplename = samplename)
+    } else {
+        stop(paste0("'", preproc, "' not supported."))
+    }
+    
+    if (!is.null(dropletSCE)) {
+        message(paste0(date(), " .. Running droplet QC"))        
+        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+        
+        if (is.null(cellSCE)) {
+            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+            cellSCE <- dropletSCE[,ix]
+        }    
+    }
+    
+    if (!is.null(cellSCE)) {
+        message(paste0(date(), " .. Running cell QC"))        
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+    }
+    
+    ## merge colData of dropletSCE and FilteredSCE
+    mergedDropletSCE <- NULL
+    mergedFilteredSCE <- NULL
+    if (!is.null(cellSCE) & !is.null(dropletSCE)) {
+        mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
+        mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
+    } else {
+        mergedFilteredSCE <- cellSCE
+    }
+
+    if (isTRUE(split)) {
+        exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+        
+        ## Get parameters of QC functions
+        getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+
+        ## generate meta data
+        if ("HTAN" %in% formats) {
+            if (!"FlatFile" %in% formats) {
+                warning("When FlatFile is not selected as the output format, ",
+                        "FlatFile output specified in the HTAN manifest file will not exists.")  
+            }
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                               dir = directory, HTAN=TRUE)
+        } else if ("FlatFile" %in% formats) {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                               dir = directory, HTAN=FALSE)   
+        } 
+	  	level3Meta[[i]] <- meta[[1]]
+	  	level4Meta[[i]] <- meta[[2]]
+    }
+
+    dropletSCE_list[[samplename]] <- mergedDropletSCE
+    cellSCE_list[[samplename]] <- mergedFilteredSCE
+}
+
+if (!isTRUE(split)){
+    dropletSCE <- combineSCE(dropletSCE_list)
+    cellSCE <- combineSCE(cellSCE_list)
+
+    if (length(sample) > 1) {
+        samplename <- paste(sample, collapse="-")
+    }
+
+    exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+    exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+
+    ## Get parameters of QC functions
+    getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+
+    ## generate meta data
+    if ("HTAN" %in% formats) {
+        if (!"FlatFile" %in% formats) {
+            warning("When FlatFile is not selected as the output format, ",
+                    "FlatFile output specified in the HTAN manifest file will not exists.")  
+        }
+      meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                           dir = directory, HTAN=TRUE)
+    } else if ("FlatFile" %in% formats) {
+        meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                           dir = directory, HTAN=FALSE)   
+    }
+  	level3Meta <- list(meta[[1]])
+  	level4Meta <- list(meta[[2]])
+}
+
+HTANLevel3 <- do.call(base::rbind, level3Meta)
+HTANLevel4 <- do.call(base::rbind, level4Meta)
+write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))

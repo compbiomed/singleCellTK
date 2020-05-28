@@ -24,5 +24,6 @@ Rscript SCTK_runQC.R \
  -p Preprocessing \
  -g TRUE \
  -s SampleName \
- -o Directory
+ -o Directory \
+ -r Reference
 
