@@ -2247,16 +2247,18 @@ shinyServer(function(input, output, session) {
       approach_list <- names(reducedDims(vals$counts))
       #from colData
       annotation_list <- names(colData(vals$counts))
-      annotation_list2 <- list()
-      for (i in 1:length(annotation_list)){
-        if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
-          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
-        }else{
-          annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
+      if (length(annotation_list) > 0){
+        annotation_list2 <- list()
+        for (i in 1:length(annotation_list)){
+          if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
+            annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
+          }else{
+            annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
+          }
         }
+        annotation_list <- annotation_list2
+        rm(annotation_list2)
       }
-      annotation_list <- annotation_list2
-      rm(annotation_list2)
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
@@ -2738,7 +2740,6 @@ shinyServer(function(input, output, session) {
         }else if(is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2965,7 +2966,7 @@ shinyServer(function(input, output, session) {
         }
         color <- xy$color
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          colorBy = color)
+          colorBy = color, conditionClass = "factor")
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
         }
       #else_end
