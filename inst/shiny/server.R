@@ -2227,7 +2227,6 @@ shinyServer(function(input, output, session) {
   color_seqdiv <- rownames(color_table[which(color_table$category == "div"
     |color_table$category == "seq"),])
 
-
   #-+-+-+-+-+-For Input Observe##############
   observeEvent(input$shinyPanelCellViewer,{
     # is there an error or not
@@ -2289,15 +2288,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "QuickAccess",
         choices = c("", approach_list))
       shinyjs::delay(5,shinyjs::enable("QuickAccess"))
-    }else if(input$viewertabs == "Bar Plot"){
-      updateSelectInput(session, "QuickAccess",
-        choices = c("Custom"))
-      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
-    }else if(input$viewertabs == "Violin/Box Plot"){
-      updateSelectInput(session, "QuickAccess",
-        choices = c("Custom"))
-      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
-    }else if (input$viewertabs == "Scatter Plot"){
+    }else{
       updateSelectInput(session, "QuickAccess",
         choices = c("Custom"))
       shinyjs::delay(5,shinyjs::disable("QuickAccess"))
@@ -2310,7 +2301,6 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       len <- length(SingleCellExperiment::reducedDims(vals$counts))
       if (!is.null(input$ApproachSelect_Xaxis) & len > 0){
-
         Df <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Xaxis))
         xs <- colnames(Df)
         updateSelectInput(session, "ColumnSelect_Xaxis", choices = c(xs))
