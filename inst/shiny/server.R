@@ -2282,7 +2282,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$viewertabs, {
+  observeEvent(input$shinyPanelCellViewer, {
     approach_list <- names(reducedDims(vals$counts))
     if(input$viewertabs == "reducedDims Plot"){
       updateSelectInput(session, "QuickAccess",
