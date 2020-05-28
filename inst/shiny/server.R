@@ -2231,21 +2231,13 @@ shinyServer(function(input, output, session) {
   #-+-+-+-+-+-For Input Observe##############
   observeEvent(input$shinyPanelCellViewer,{
     # is there an error or not
-    if (is.null(vals$counts)) {
-      # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      #colorbrewer_list <- rownames(RColorBrewer::brewer.pal.info)
-      #color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
-      #color_seqdiv <- rownames(color_table[which(color_table$category == "div"
-      #                                           |color_table$category == "seq"),])
-      #from sce
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    }else{
       cell_list <- BiocGenerics::colnames(vals$counts)
       gene_list <- BiocGenerics::rownames(vals$counts)
-      #from assays
       method_list <- names(assays(vals$counts))
-      #from reduced
       approach_list <- names(reducedDims(vals$counts))
-      #from colData
       annotation_list <- names(colData(vals$counts))
       if (length(annotation_list) > 0){
         annotation_list2 <- list()
@@ -2499,14 +2491,12 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       ###If Cell Annotation###############################################################
       if(input$TypeSelect_Colorby != 'Pick a Color'){
-
         if(input$TypeSelect_Colorby == 'Cell Annotation'){
           if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
             updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
             shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
             updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
           }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
             &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
             &input$SelectColorType == 'Categorical'){
@@ -2543,7 +2533,6 @@ shinyServer(function(input, output, session) {
               shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
               shinyjs::delay(5,shinyjs::disable("adjustColorbinning"))
               updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("ggplot","Celda"))
-
             }else if(is.integer(Dfcolor[,1])
               &length(levels(as.factor(Dfcolor[,1])))<=25
               &input$SelectColorType == 'Categorical'){
@@ -2571,13 +2560,10 @@ shinyServer(function(input, output, session) {
                 updateSelectizeInput(session,"adjustbrewer", label = "Color Palettes:", choices = c("RdYlBu",color_seqdiv))}
             }
           }
-
-
           ###If Expression Assays##########################################################
         }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
         if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
           Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-
           if(!is.numeric(Dfassay[,1])){
             updateCheckboxInput(session,"checkColorbinning","Perform Binning", value = FALSE)
             shinyjs::delay(5,shinyjs::disable("checkColorbinning"))
@@ -2593,7 +2579,6 @@ shinyServer(function(input, output, session) {
           }else if(is.integer(Dfassay[,1])
             &length(levels(as.factor(Dfassay[,1])))<=25
             &input$SelectColorType == 'Continuous'){
-
             shinyjs::enable("checkColorbinning")
             if(input$checkColorbinning == TRUE){
               shinyjs::enable("adjustColorbinning")
@@ -2644,7 +2629,6 @@ shinyServer(function(input, output, session) {
       xy <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$QuickAccess))
       colnames(xy) <- c("X_input","Y_input")
       xy <- cbind(xy,data.frame(colData(vals$counts)))
-
     }else{
       ###Custom
       #X_axis
@@ -2665,7 +2649,6 @@ shinyServer(function(input, output, session) {
         colnames(Dfx2) <- c("X_input")
         rm(Dfx)
       }
-
       #Y_axis
       ##ReduceDIm
       if(input$TypeSelect_Yaxis == "Reduced Dimensions"){
@@ -2691,9 +2674,7 @@ shinyServer(function(input, output, session) {
     }#ConditionalCustom_end
 
     #-+-+-+-+-+-cellviewer prepare2 : choose color#####################
-
     ####Cell Annotation if numeric, Categorical, check###
-
     if(input$TypeSelect_Colorby != 'Pick a Color'){
       ####Cell Annotation if numeric, Categorical, check###
       if(input$TypeSelect_Colorby == 'Cell Annotation'){
@@ -2703,7 +2684,6 @@ shinyServer(function(input, output, session) {
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
           &input$SelectColorType == 'Categorical'){
@@ -2712,22 +2692,18 @@ shinyServer(function(input, output, session) {
           total_colors$Color <- as.factor(total_colors$Color)
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == FALSE){
-
           total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
           &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2736,7 +2712,6 @@ shinyServer(function(input, output, session) {
           xy <- cbind(xy,color1)
           rm(color1)
           rm(total_colors)
-
         }else if(is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
@@ -2749,24 +2724,20 @@ shinyServer(function(input, output, session) {
           rm(color1)
           rm(total_colors)
         }else{
-
           total_colors <- colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
         }
-
         ####Reduced Dimensions if numeric, Categorical, check###
       }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
         Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
         Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-
         if(!is.numeric(Dfcolor[,1])){
           total_colors <- Dfcolor[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfcolor[,1])
           &length(levels(as.factor(Dfcolor[,1])))<=25
           &input$SelectColorType == 'Categorical'){
@@ -2775,22 +2746,18 @@ shinyServer(function(input, output, session) {
           total_colors$Color <- as.factor(total_colors$Color)
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfcolor[,1])
           &length(levels(as.factor(Dfcolor[,1])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == FALSE){
-
           total_colors <- Dfcolor[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfcolor[,1])
           &length(levels(as.factor(Dfcolor[,1])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- Dfcolor[,1] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2799,11 +2766,9 @@ shinyServer(function(input, output, session) {
           xy <- cbind(xy,color1)
           rm(color1)
           rm(total_colors)
-
         }else if(is.numeric(Dfcolor[,1])
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- Dfcolor[,1] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2812,25 +2777,20 @@ shinyServer(function(input, output, session) {
           xy <- cbind(xy,color1)
           rm(color1)
           rm(total_colors)
-
         }else{
-
           total_colors <- Dfcolor[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
         }
-
       }else{
         Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
         Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-
         if(!is.numeric(Dfassay[,1])){
           total_colors <- Dfassay[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfassay[,1])
           &length(levels(as.factor(Dfassay[,1])))<=25
           &input$SelectColorType == 'Categorical'){
@@ -2839,22 +2799,18 @@ shinyServer(function(input, output, session) {
           total_colors$Color <- as.factor(total_colors$Color)
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfassay[,1])
           &length(levels(as.factor(Dfassay[,1])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == FALSE){
-
           total_colors <- Dfassay[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
-
         }else if(is.integer(Dfassay[,1])
           &length(levels(as.factor(Dfassay[,1])))<=25
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- Dfassay[,1] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2863,11 +2819,9 @@ shinyServer(function(input, output, session) {
           xy <- cbind(xy,color1)
           rm(color1)
           rm(total_colors)
-
         }else if(is.numeric(Dfassay[,1])
           &input$SelectColorType == 'Continuous'
           &input$checkColorbinning == TRUE){
-
           total_colors <- Dfassay[,1] %>% data.frame()
           color1 <- cut(total_colors[,1], breaks = seq(from = min(total_colors)-1,
             to = max(total_colors)+1,
@@ -2876,17 +2830,13 @@ shinyServer(function(input, output, session) {
           xy <- cbind(xy,color1)
           rm(color1)
           rm(total_colors)
-
         }else{
-
           total_colors <- Dfassay[,1] %>% data.frame()
           colnames(total_colors) <- c("Color")
           xy <- cbind(xy,total_colors)
           rm(total_colors)
         }
-
       }
-
     }#ifnotUniform_end
 
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
@@ -2903,7 +2853,6 @@ shinyServer(function(input, output, session) {
     }else{
       xname <- input$AnnotationSelect_Xaxis
     }
-
     ###Yaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
       yname <- paste0(input$QuickAccess, 2)
@@ -2933,7 +2882,6 @@ shinyServer(function(input, output, session) {
     }
 
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
-
     if (input$adjustgroupby == "None"){
       #if uniform
       if(input$TypeSelect_Colorby == 'Pick a Color'){
@@ -2968,15 +2916,10 @@ shinyServer(function(input, output, session) {
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           colorBy = color, conditionClass = "factor")
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
-        }
-      #else_end
-
-    }#if_none_end
-
-    ###Integer,level>25
-    else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+      }
+    }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
       & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
-      #data manage#Integer,level>25
+      #Integer,level>25
       total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
       c1 <- cut(total_features, breaks = seq(from = min(total_features)-1,
         to = max(total_features)+1,
@@ -2986,7 +2929,6 @@ shinyServer(function(input, output, session) {
       c1$groupby <- as.factor(c1$groupby)
       xy <- cbind(xy,c1)
       rm(c1)
-
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
@@ -3000,8 +2942,7 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }
-      else{
+      }else{
         #ggplot#Integer,level>25
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
@@ -3024,13 +2965,10 @@ shinyServer(function(input, output, session) {
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
-    }
-
-    ###Integer,level<25,continuous
-    else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+    } else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
       &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
       &input$SelectValueType == "Continuous"){
-      #data manage#Integer,level<25,Continuous
+      #Integer,level<25,Continuous
       total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
       c1 <- cut(total_features, breaks = seq(from = min(total_features)-1,
         to = max(total_features)+1,
@@ -3040,7 +2978,6 @@ shinyServer(function(input, output, session) {
       c1$groupby <- as.factor(c1$groupby)
       xy <- cbind(xy,c1)
       rm(c1)
-
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
@@ -3054,9 +2991,8 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }#ifUniform_end
-      else{
-        #ggplot#Integer,level<25,Continous
+      }else{
+        #Integer,level<25,Continous
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
           theme_classic() +
@@ -3078,19 +3014,15 @@ shinyServer(function(input, output, session) {
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notUniform_End
-    }#condition_End
-
-    ###Integer,level<25,Categorical
-    else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
+    }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
       &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
       &input$SelectValueType == "Categorical"){
-      #data manage#Integer,level<25,Categorical
+      #Integer,level<25,Categorical
       c1 <- colData(vals$counts)@listData[[input$adjustgroupby]] %>% data.frame()
       colnames(c1) <- c("groupby")
       c1$groupby <- as.factor(c1$groupby)
       xy <- cbind(xy,c1)
       rm(c1)
-
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
@@ -3104,9 +3036,8 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }#uniform_end
-      else{
-        #ggplot#Integer,level<25,Categorical
+      }else{
+        #Integer,level<25,Categorical
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
           theme_classic() +
@@ -3117,8 +3048,10 @@ shinyServer(function(input, output, session) {
         a <- plotfun(a, xy$color)
         if(!is.numeric(xy$Color)){
           if(input$adjustbrewer == 'Celda'){
-            a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
-          else{a = a + theme(legend.text=element_text(size=12))}
+            a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))
+          }else{
+            a = a + theme(legend.text=element_text(size=12))
+          }
         }else{
           a = a + scale_color_distiller(palette = input$adjustbrewer)
         }
@@ -3128,11 +3061,8 @@ shinyServer(function(input, output, session) {
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notuniform_End
-    }#condition_End
-
-    ###Numeric,noninteger
-    else if (is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
-      #data manage#Numeric,noninteger
+    }else if (is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
+      #Numeric,noninteger
       total_features <- colData(vals$counts)@listData[[input$adjustgroupby]]
       c1 <- cut(total_features,
         breaks = seq(from = min(total_features)-1, to = max(total_features)+1,
@@ -3141,7 +3071,6 @@ shinyServer(function(input, output, session) {
       c1$groupby <- as.factor(c1$groupby)
       xy <- cbind(xy,c1)
       rm(c1)
-
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input") +
@@ -3179,11 +3108,8 @@ shinyServer(function(input, output, session) {
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }#notUniform_end
-    }#condition_end
-
-    ###else,Categorical
-    else{
-      #data manage#cate
+    }else{
+      #categorical
       c1 <- colData(vals$counts)@listData[[input$adjustgroupby]] %>% data.frame()
       colnames(c1) <- c("groupby")
       c1$groupby <- as.factor(c1$groupby)
@@ -3202,8 +3128,7 @@ shinyServer(function(input, output, session) {
           a <- a + ggtitle(input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }#ifUniform_end
-      else{
+      }else{
         #ggplot3#
         a <- ggplot(data = xy) +
           aes_string(x= "X_input", y= "Y_input", color = "Color") +
@@ -3228,7 +3153,6 @@ shinyServer(function(input, output, session) {
 
       }#notUniform_end
     }#condition_end
-
   })#Cellviewer_end
   output$scatter <- renderPlotly({cellviewer()})
   #
