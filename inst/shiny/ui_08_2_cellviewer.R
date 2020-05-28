@@ -96,10 +96,7 @@ shinyPanelCellViewer <- fluidPage(
 
                                             selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL))
 ),
-
-
                               #-+-+-+-+-+-group by###################################
-
                               tags$hr(),
                               shinyjs::useShinyjs(),
                               # Section 1 - Assay Settings
@@ -117,9 +114,7 @@ shinyPanelCellViewer <- fluidPage(
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
-
              )),#sidebarPanel_end
-
              #-+-+-+-+-+-mainPanel#################################
              column(9,wellPanel(style = "background: floralwhite",
                                 plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8),
@@ -136,13 +131,13 @@ shinyPanelCellViewer <- fluidPage(
                                 #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
                                 tags$hr(),
-                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:"))),
-                                  textInput("adjustlegendtitle", h5(strong("Legend title:"))))),
-                                fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
-                                         column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
-                                         column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
-                                         column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
-                                  )
+                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:")))),
+                                  column(6,textInput("adjustlegendtitle", h5(strong("Legend title:")))),
+                                  column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
+                                  column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
+                                  column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
+                                  column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
+                                )
              ))
         )#fluidrow_end
            # )#well_end
