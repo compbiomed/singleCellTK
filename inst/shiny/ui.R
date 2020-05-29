@@ -175,7 +175,7 @@ shinyUI(
       navbarMenu(
         "Differential Expression & Marker Selection",
         tabPanel("Differential Expression", shinyPanelDiffex),
-        tabPanel("MAST", shinyPanelMAST)
+        tabPanel("MAST - Differential Expression", shinyPanelMASTDE)
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",

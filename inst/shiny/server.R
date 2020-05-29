@@ -71,6 +71,12 @@ shinyServer(function(input, output, session) {
                       choices = c('None', pdataOptions))
     updateSelectInput(session, "batchCheckCond",
                       choices = c('None', pdataOptions))
+    updateSelectInput(session, "mastC1Class",
+                      choices = c('None', pdataOptions))
+    updateSelectInput(session, "mastC2G1Col",
+                      choices = c(pdataOptions))
+    updateSelectInput(session, "mastC2G2Col",
+                      choices = c(pdataOptions))
     updateSelectInput(session, "hurdlecondition",
                       choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
@@ -205,7 +211,7 @@ shinyServer(function(input, output, session) {
   importBUSFiles <- reactiveValues(files = list(), id_count = 0)
   importSEQFiles <- reactiveValues(files = list(), id_count = 0)
   importOptFiles <- reactiveValues(files = list(), id_count = 0)
-  
+
   # modal to import all preprocessed data except for CellRanger data
   importModal <- function(failed=FALSE, needsDir=FALSE) {
     modalDialog(
@@ -216,7 +222,7 @@ shinyServer(function(input, output, session) {
         h3("Sample ID"),
       if (needsDir)
         textInput("sampleID", "*This name must match your sample's directory name."),
-      
+
       h3("Base Directory"),
       shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
       if (failed)
@@ -228,7 +234,7 @@ shinyServer(function(input, output, session) {
       )
     )
   }
-  
+
   # modal to import CellRanger data
   importCRModal <- function() {
     modalDialog(
@@ -257,7 +263,7 @@ shinyServer(function(input, output, session) {
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sSampleID", ""),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
 
@@ -274,7 +280,7 @@ shinyServer(function(input, output, session) {
       shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
       textInput("dSampleID", "*This field is mandatory when uploading a data directory"),
-      
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
 
@@ -413,7 +419,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$addOptSample, {
     showModal(importModal())
   })
-  
+
   # function to clear all uploaded files from vectors and UI
   clearAllFiles <- function(fileReactive) {
     for (entry in fileReactive$files) {
@@ -453,14 +459,14 @@ shinyServer(function(input, output, session) {
       # add the files to the appropriate reactiveValues
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", importCR2Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sSampleID, id = id)
         importCR2Files$files <- c(importCR2Files$files, list(entry))
         importCR2Files$id_count <- importCR2Files$id_count + 1
         selector <- "#newSampleCR2"
       } else {
         id <- paste0("snewSampleCR3", importCR3Files$id_count)
-        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"), 
+        entry <- list(isDataFile = FALSE, base = paste0(dirname(samplePath), "/"),
                       sample = basename(samplePath), name = input$sSampleID, id = id)
         importCR3Files$files <- c(importCR3Files$files, list(entry))
         importCR3Files$id_count <- importCR3Files$id_count + 1
@@ -946,21 +952,21 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "convertGenes", class = "btn-block")
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
-  
+
   qc_choice_list <- list("doubletCells", "cxds", "bcds",
                       "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
-  
+
   # Event handler for "Select All" button in QC checklist
   observe({
-    if(input$selectallQC == 0) return(NULL) 
+    if(input$selectallQC == 0) return(NULL)
     else if (input$selectallQC%%2 == 0) {
       updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list)
     } else {
       updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list, selected=qc_choice_list)
     }
   })
-  
-  qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE, 
+
+  qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE,
                       geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
     modalDialog(
       h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
@@ -980,14 +986,14 @@ shinyServer(function(input, output, session) {
 
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
-      
+
       footer = tagList(
         modalButton("Cancel"),
         actionButton("modalRunQC", "Run")
       )
     )
   }
-  
+
   findOverlapping <- function(arr1, arr2) {
     filter <- vector()
     for (x in arr1) {
@@ -999,7 +1005,7 @@ shinyServer(function(input, output, session) {
     }
     return(arr1[filter])
   }
-  
+
   observeEvent(input$runQC, {
     if (is.null(input$qcAlgos)) {
       insertUI(
@@ -1016,7 +1022,7 @@ shinyServer(function(input, output, session) {
       currassays <- names(assays(vals$counts))
       requireAssay <- list("QCMetrics", "scrublet", "doubletCells", "decontX")
       requireAssayArr <- findOverlapping(qcAlgosList, requireAssay)
-      
+
       removeUI(
         selector = "#noSelected"
       )
@@ -1032,7 +1038,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   observeEvent(input$modalRunQC, {
     qcAlgosList <- strsplit(input$qcAlgos, " ")
     currassays <- names(assays(vals$counts))
@@ -1051,7 +1057,7 @@ shinyServer(function(input, output, session) {
       runHandler(qcAlgosList)
     }
   })
-  
+
   runHandler <- function(qcAlgosList) {
     print(input$qcAssaySelect)
     if ("QCMetrics" %in% qcAlgosList) {
@@ -1097,7 +1103,7 @@ shinyServer(function(input, output, session) {
     # })
     # shinyjs::show(id="qcData")
   }
-  
+
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     req(vals$counts)
@@ -4466,109 +4472,332 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 5.2: MAST
+  # Page 5.2: MAST ####
   #-----------------------------------------------------------------------------
+  ## MAST - condition determination method1 ####
+  output$mastC1G1UI <- renderUI({
+    if(!is.null(vals$counts) &
+       !input$mastC1Class == "None"){
+      classCol <- colData(vals$counts)[[input$mastC1Class]]
+      classChoices <- sort(as.vector(unique(classCol)))
+      selectInput(inputId = "mastC1G1", label = "Select Condition(s)",
+                  choices = classChoices, multiple = TRUE)
+    } else {
+      selectInput(inputId = "mastC1G1", label = "Select Condition(s)",
+        choices = NULL, multiple = TRUE)
+    }
+  })
 
-  #For conditions with more than two factors, select the factor of interest
-  output$hurdleconditionofinterestUI <- renderUI({
-    if (!is.null(vals$counts)){
-      if (length(unique(colData(vals$counts)[, input$hurdlecondition])) > 2){
-        selectInput("hurdleconditionofinterest",
-                    "Select Factor of Interest",
-                    unique(sort(colData(vals$counts)[, input$hurdlecondition])))
+  output$mastC1G2UI <- renderUI({
+    if(!is.null(vals$counts) &
+        !input$mastC1Class == "None"){
+      classCol <- colData(vals$counts)[[input$mastC1Class]]
+      classChoices <- sort(as.vector(unique(classCol)))
+      selectInput(inputId = "mastC1G2", label = "Select Condition(s)",
+        choices = classChoices, multiple = TRUE)
+    } else {
+      selectInput(inputId = "mastC1G2", label = "Select Condition(s)",
+        choices = NULL, multiple = TRUE)
+    }
+  })
+
+  output$mastC1G1CellCheckUI <- renderUI({
+    if(!is.null(input$mastC1G1) &
+       length(input$mastC1G1) > 0){
+      g1Idx <- colData(vals$counts)[[input$mastC1Class]] %in% input$mastC1G1
+      g1Cells <- colnames(vals$counts)[g1Idx]
+      g1CellsText <- paste(g1Cells, collapse = "\n")
+      textAreaInput("mastC1G1CellCheck", "Cells selected:", g1CellsText,
+        height = '100px', placeholder = "Nothing selected")
+    } else {
+      textAreaInput("mastC1G1CellCheck", "Cells selected:", NULL,
+        height = '100px', placeholder = "Nothing selected")
+    }
+  })
+
+  output$mastC1G2CellCheckUI <- renderUI({
+    if(!is.null(input$mastC1G2) &
+        length(input$mastC1G2) > 0){
+      g2Idx <- colData(vals$counts)[[input$mastC1Class]] %in% input$mastC1G2
+      g2Cells <- colnames(vals$counts)[g2Idx]
+      g2CellsText <- paste(g2Cells, collapse = "\n")
+      textAreaInput("mastC1G2CellCheck", "Cells selected:", g2CellsText,
+        height = '100px', placeholder = "Nothing selected")
+    } else {
+      textAreaInput("mastC1G2CellCheck", "Cells selected:", NULL,
+        height = '100px', placeholder = "Nothing selected")
+    }
+  })
+
+  output$mastC1G1NCell <- renderUI({
+    if(!is.null(input$mastC1G1CellCheck)){
+      if(!input$mastC1G1CellCheck == ""){
+        cellList <- str_trim(scan(text = input$mastC1G1CellCheck,
+          sep='\n', what = 'character'))
+        cellList <- unique(cellList)
+        nCell <- length(which(cellList %in% colnames(vals$counts)))
+      } else {
+        nCell <- 0
       }
-    }
-  })
-
-  #Run MAST differential expression
-  observeEvent(input$runDEhurdle, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      withBusyIndicatorServer("runDEhurdle", {
-        #run diffex to get gene list and pvalues
-        vals$mastgenelist <- MAST(inSCE = vals$counts,
-                                  useAssay = input$mastAssay,
-                                  condition = input$hurdlecondition,
-                                  interest.level = input$hurdleconditionofinterest,
-                                  freqExpressed = input$hurdlethresh,
-                                  fcThreshold = input$FCthreshold,
-                                  p.value = input$hurdlepvalue,
-                                  useThresh = input$useAdaptThresh)
-      })
+      nCell <- 0
     }
+    msg <- paste0("Totally ", nCell, " cell(s) selected.")
+    span(msg, style = 'margin-left:10px')
   })
 
-  observeEvent(input$runThreshPlot, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+  output$mastC1G2NCell <- renderUI({
+    if(!is.null(input$mastC1G2CellCheck)){
+      if(!input$mastC1G2CellCheck == ""){
+        cellList <- str_trim(scan(text = input$mastC1G2CellCheck,
+          sep='\n', what = 'character'))
+        cellList <- unique(cellList)
+        nCell <- length(which(cellList %in% colnames(vals$counts)))
+      } else {
+        nCell <- 0
+      }
+    } else {
+      nCell <- 0
     }
-    else{
-      withBusyIndicatorServer("runThreshPlot", {
-        output$threshplot <- renderPlot({
-          vals$thres <- thresholdGenes(inSCE = vals$counts,
-                                       useAssay = input$mastAssay)
-          par(mfrow = c(5, 4))
-          plot(vals$thres)
-          par(mfrow = c(1, 1))
-        }, height = 600)
-      })
+    msg <- paste0("Totally ", nCell, " cell(s) selected.")
+    span(msg, style = 'margin-left:10px')
+  })
+  ## MAST - condition determination method2 ####
+  ## condition 1 table operation vvvv
+  output$mastC2G1Table <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      data.frame(colData(vals$counts)[,input$mastC2G1Col])
     }
+  }, filter = "top", server = TRUE
+  )
+  mastC2G1Table_proxy <- DT::dataTableProxy("mastC2G1Table")
+
+  observeEvent(input$mastC2G1Table_addAll, {
+    DT::selectRows(mastC2G1Table_proxy,
+      sort(unique(c(input$mastC2G1Table_rows_selected,
+                    input$mastC2G1Table_rows_all))))
   })
 
-  output$hurdleviolin <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      MASTviolin(inSCE = vals$counts, useAssay = input$mastAssay,
-                 fcHurdleSig = vals$mastgenelist,
-                 condition = input$hurdlecondition,
-                 threshP = input$useAdaptThresh)
-    }
-  }, height = 600)
-
-  output$hurdlelm <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      MASTregression(inSCE = vals$counts, useAssay = input$mastAssay,
-                     fcHurdleSig = vals$mastgenelist,
-                     condition = input$hurdlecondition,
-                     threshP = input$useAdaptThresh)
-    }
-  }, height = 600)
-
-  output$hurdleHeatmap <- renderPlot({
-    if (!(is.null(vals$mastgenelist))){
-      draw(plotDiffEx(vals$counts, useAssay = input$mastAssay,
-                      condition = input$hurdlecondition,
-                      geneList = vals$mastgenelist$Gene,
-                      annotationColors = "auto", columnTitle = "MAST"))
-    }
-  }, height = 600)
-
-  #Create the MAST results table
-  output$mastresults <- DT::renderDataTable({
-    if (!is.null(vals$mastgenelist)){
-      vals$mastgenelist
-    }
+  observeEvent(input$mastC2G1Table_clear, {
+    DT::selectRows(mastC2G1Table_proxy, NULL)
   })
 
-  #disable mast dowload button if the mastgenelist data is null
-  isMastGeneListResult <- reactive(is.null(vals$mastgenelist))
+  output$mastC2G1info <- renderUI({
+    nCell <- length(input$mastC2G1Table_rows_selected)
+    p(paste0("Totally ", nCell, " cells selected for ", input$mastG1Name))
+  })
+  ## condition 1 table operation ^^^^
+  ## condition 2 table operation vvvv
+  output$mastC2G2Table <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      data.frame(colData(vals$counts)[,input$mastC2G2Col])
+    }
+  }, filter = "top", server = TRUE
+  )
+  mastC2G2Table_proxy <- DT::dataTableProxy("mastC2G2Table")
+
+  observeEvent(input$mastC2G2Table_addAll, {
+    DT::selectRows(mastC2G2Table_proxy,
+      sort(unique(c(input$mastC2G2Table_rows_selected,
+        input$mastC2G2Table_rows_all))))
+  })
+
+  observeEvent(input$mastC2G2Table_clear, {
+    DT::selectRows(mastC2G2Table_proxy, NULL)
+  })
+
+  output$mastC2G2info <- renderUI({
+    nCell <- length(input$mastC2G2Table_rows_selected)
+    p(paste0("Totally ", nCell, " cells selected for ", input$mastG2Name))
+  })
+  ## condition 2 table operation ^^^^
+  ## MAST - condition determination method3 ####
+  output$mastC3G1NCell <- renderUI({
+    if(!is.null(input$mastC3G1Cell)){
+      if(!input$mastC3G1Cell == ""){
+        cellList <- str_trim(scan(text = input$mastC3G1Cell,
+          sep='\n', what = 'character'))
+        cellList <- unique(cellList)
+        nCell <- length(which(cellList %in% colnames(vals$counts)))
+      } else {
+        nCell <- 0
+      }
+    } else {
+      nCell <- 0
+    }
+    msg <- paste0("Totally ", nCell, " valid cell name(s) entered.")
+    span(msg, style = 'margin-left:10px')
+  })
+
+  output$mastC3G2NCell <- renderUI({
+    if(!is.null(input$mastC3G2Cell)){
+      if(!input$mastC3G2Cell == ""){
+        cellList <- str_trim(scan(text = input$mastC3G2Cell,
+          sep='\n', what = 'character'))
+        cellList <- unique(cellList)
+        nCell <- length(which(cellList %in% colnames(vals$counts)))
+      } else {
+        nCell <- 0
+      }
+    } else {
+      nCell <- 0
+    }
+    msg <- paste0("Totally ", nCell, " valid cell name(s) entered.")
+    span(msg, style = 'margin-left:10px')
+  })
+  ## MAST - other check ####
+  output$mastCompNameUI <- renderUI({
+    if(!is.null(vals$counts)){
+      if("MAST" %in% names(S4Vectors::metadata(vals$counts))){
+        nRes <- length(names(S4Vectors::metadata(vals$counts)$MAST))
+        autoinc <- nRes + 1
+      } else {
+        autoinc <- 1
+      }
+    } else {
+      autoinc <- 1
+    }
+    textInput("mastCompName", "Experiment Name:", paste0("Comparison", autoinc),
+              placeholder = 'Required.')
+  })
+
+  mastNameIsDup <- reactive({
+    if(!is.null(vals$counts) &&
+        "MAST" %in% names(metadata(vals$counts)) &&
+        !is.null(input$mastCompName)){
+      allRes <- names(metadata(vals$counts)$MAST)
+      input$mastCompName %in% allRes
+    } else {
+      FALSE
+    }
+  })
   observe({
-    if (isMastGeneListResult()) {
-      shinyjs::disable("downloadHurdleResult")
+    if(mastNameIsDup()){
+      output$mastNameWarn <- renderUI({
+        span("Entered name is already there, will be overwritten!",
+          style = 'color:red;')
+      })
     } else {
-      shinyjs::enable("downloadHurdleResult")
+      output$mastNameWarn <- renderUI({
+        span("")
+      })
+    }
+  })
+  ## MAST - apply calculation ####
+  observeEvent(input$runMAST, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("runMAST", {
+        if(input$mastCondMethod == 1){
+          vals$counts <- runMAST(inSCE = vals$counts,
+            useAssay = input$mastAssay, class = input$mastC1Class,
+            classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
+            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+            comparisonName = input$mastCompName,
+            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+            log2fcThreshold = input$mastFCThresh,
+            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+        } else if(input$mastCondMethod == 2){
+          vals$counts <- runMAST(inSCE = vals$counts,
+            useAssay = input$mastAssay,
+            index1 = input$mastC2G1Table_rows_selected,
+            index2 = input$mastC2G2Table_rows_selected,
+            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+            comparisonName = input$mastCompName,
+            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+            log2fcThreshold = input$mastFCThresh,
+            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+        } else {
+          g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
+                                 sep='\n', what = 'character'))
+          g1CellList <- sort(unique(g1CellList))
+          g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
+                                 sep='\n', what = 'character'))
+          g2CellList <- sort(unique(g2CellList))
+          vals$counts <- runMAST(inSCE = vals$counts,
+            useAssay = input$mastAssay, index1 = g1CellList,
+            index2 = g2CellList, groupName1 = input$mastG1Name,
+            groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
+            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+            log2fcThreshold = input$mastFCThresh,
+            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+        }
+        shinyalert::shinyalert("Success",
+          text = "MAST Differential Expression completed.", type = "success")
+        allResName <- names(metadata(vals$counts)$MAST)
+        updateSelectInput(session, "mastResSel", choices = allResName)
+      })
     }
   })
 
-  #download mast results
-  output$downloadHurdleResult <- downloadHandler(
+  output$mastResSelUI <- renderUI({
+    if(!is.null(vals$counts)){
+      res <- names(metadata(vals$counts)$MAST)
+      selectInput("mastResSel", "Select Result to Visualize", res)
+    }
+  })
+
+  output$threshplot <- renderPlot({
+    if(!is.null(vals$counts)){
+      vals$thres <- thresholdGenes(inSCE = vals$counts,
+        useAssay = input$mastAssay)
+      par(mfrow = c(5, 4))
+      plot(vals$thres)
+      par(mfrow = c(1, 1))
+    }
+  }, height = 800)
+
+  output$mastresults <- DT::renderDataTable({
+    if(!is.null(input$mastResSel)){
+      metadata(vals$counts)$MAST[[input$mastResSel]]$result
+    }
+  }, filter = 'top')
+
+  isMastResult <- reactive(is.null(input$mastResSel) ||
+      input$mastResSel == "")
+  observe({
+    if (isMastResult()) {
+      shinyjs::disable("mastDownload")
+    } else {
+      shinyjs::enable("mastDownload")
+    }
+  })
+
+  output$mastDownload <- downloadHandler(
     filename = function() {
-      paste("mast_results-", Sys.Date(), ".csv", sep = "")
+      paste0("mastResult_", input$mastResSel, ".csv")
     },
     content = function(file) {
-      utils::write.csv(vals$mastgenelist, file)
+      utils::write.csv(metadata(vals$counts)$MAST[[input$mastResSel]]$result,
+                       file)
     }
   )
+
+  output$hurdleviolin <- renderPlot({
+    if(!is.null(input$mastResSel) &&
+       !input$mastResSel == ""){
+      plotMASTViolin(inSCE = vals$counts, useResult = input$mastResSel,
+                     threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+    }
+  })
+
+  output$hurdlelm <- renderPlot({
+    if(!is.null(input$mastResSel) &&
+       !input$mastResSel == ""){
+      plotMASTRegression(inSCE = vals$counts, useResult = input$mastResSel,
+                         threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+    }
+  })
+
+  output$hurdleHeatmap <- renderPlot({
+    if(!is.null(input$mastResSel) &&
+       !input$mastResSel == ""){
+      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel)
+    }
+  })
+
+
 
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
