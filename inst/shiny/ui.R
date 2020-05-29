@@ -197,7 +197,7 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
-                 tabPanel("Cell Viewer", shinyPanelCellViewer), actionButton("cellViewerButton", "Cell Viewer")),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer, actionButton("cellViewerButton", "Cell Viewer"))),
       footer = includeHTML("www/footer.html"),
       fluidRow(
         column(12, id = "consoleDiv",
