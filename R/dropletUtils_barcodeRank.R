@@ -72,7 +72,9 @@ runBarcodeRankDrops <- function(inSCE,
   message(paste0(date(), " ... Running 'barcodeRanks'"))
   
   ##  Getting current arguments values
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
   rank <- list()
 
   ## Define result matrix for all samples
