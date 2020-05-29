@@ -2228,10 +2228,10 @@ shinyServer(function(input, output, session) {
     |color_table$category == "seq"),])
 
   #-+-+-+-+-+-For Input Observe##############
-  observeEvent({if(input$tooltitle == "shinyPanelCellViewer") TRUE else return()},{
+  observeEvent(input$shinyPanelCellViewer,{
     # is there an error or not
     if (is.null(vals$counts)){
-      #shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }else{
       cell_list <- BiocGenerics::colnames(vals$counts)
       gene_list <- BiocGenerics::rownames(vals$counts)
