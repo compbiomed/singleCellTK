@@ -2228,7 +2228,7 @@ shinyServer(function(input, output, session) {
     |color_table$category == "seq"),])
 
   #-+-+-+-+-+-For Input Observe##############
-  observeEvent(input$shinyPanelCellViewer,{
+  observeEvent(input$cellViewerButton,{
     # is there an error or not
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
