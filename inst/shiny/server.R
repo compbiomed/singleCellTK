@@ -2228,7 +2228,7 @@ shinyServer(function(input, output, session) {
     |color_table$category == "seq"),])
 
   #-+-+-+-+-+-For Input Observe##############
-  observeEvent(input$shinyPanelCellViewer,{
+  observeEvent({if(input$tooltitle == "shinyPanelCellViewer") TRUE else return()},{
     # is there an error or not
     if (is.null(vals$counts)){
       #shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -2238,7 +2238,6 @@ shinyServer(function(input, output, session) {
       method_list <- names(assays(vals$counts))
       approach_list <- names(reducedDims(vals$counts))
       annotation_list <- names(colData(vals$counts))
-      if (length(annotation_list) > 0){
         annotation_list2 <- list()
         for (i in 1:length(annotation_list)){
           if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
@@ -2249,7 +2248,6 @@ shinyServer(function(input, output, session) {
         }
         annotation_list <- annotation_list2
         rm(annotation_list2)
-      }
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
