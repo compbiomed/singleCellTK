@@ -2,7 +2,7 @@
 % Please edit documentation in R/runZINBWaVE.R
 \name{runZINBWaVE}
 \alias{runZINBWaVE}
-\title{Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object}
+\title{Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object}
 \usage{
 runZINBWaVE(
   inSCE,
@@ -19,39 +19,39 @@ runZINBWaVE(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name
+of the assay requiring batch correction in "inSCE", should exist in
 `assayNames(inSCE)`.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the
 field of `colData(inSCE)` that defines different batches.}
 
-\item{reducedDimName}{character, default `"zinbwave"`. The name for the 
+\item{reducedDimName}{character, default `"zinbwave"`. The name for the
 corrected low-dimensional representation.}
 
-\item{nHVG}{integer, default `1000`. Number of highly variable genes to use 
+\item{nHVG}{integer, default `1000`. Number of highly variable genes to use
 when fitting the model}
 
-\item{nComponents}{integer, default `50L`. Number of principle components or 
+\item{nComponents}{integer, default `50L`. Number of principle components or
 dimensionality to generate in the resulting reducedDim.}
 
-\item{epsilon}{integer, default `1000`. Algorithmic parameter, by default, the 
-epsilon parameter is set to the number of genes. We empirically found that a 
+\item{epsilon}{integer, default `1000`. Algorithmic parameter, by default, the
+epsilon parameter is set to the number of genes. We empirically found that a
 high epsilon is often required to obtained a good low-level representation.}
 
 \item{nIter}{integer, default `10`. The max number of iterations to perform.}
 }
 \description{
-A general and flexible zero-inflated negative binomial model that can be 
-used to provide a low-dimensional representations of scRNAseq data. The 
-model accounts for zero inflation (dropouts), over-dispersion, and the count 
-nature of the data. The model also accounts for the difference in library 
+A general and flexible zero-inflated negative binomial model that can be
+used to provide a low-dimensional representations of scRNAseq data. The
+model accounts for zero inflation (dropouts), over-dispersion, and the count
+nature of the data. The model also accounts for the difference in library
 sizes and optionally for batch effects and/or other covariates.
 }
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runZINBWaVE(sceBatches, nIter=5, filterParams=c(3, 3))
+sceCorr <- runZINBWaVE(sceBatches, nIter=5)
 }
 }
 \references{
