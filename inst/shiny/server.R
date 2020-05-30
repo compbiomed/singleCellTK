@@ -5266,7 +5266,8 @@ shinyServer(function(input, output, session) {
         })
         withProgress(message = "Plotting PCA", max = 1, value = 1, {
                         seuratWorkflow$plotObject$PCA <- seuratReductionPlot(inSCE = vals$counts,
-                                                                             useReduction = "pca")
+                                                                             useReduction = "pca",
+                                                                             showLegend = FALSE)
         })
         if (input$pca_compute_elbow) {
           withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
@@ -5314,7 +5315,8 @@ shinyServer(function(input, output, session) {
         })
         withProgress(message = "Plotting ICA", max = 1, value = 1, {
           seuratWorkflow$plotObject$ICA <- seuratReductionPlot(inSCE = vals$counts,
-                                                                             useReduction = "ica")
+                                                               useReduction = "ica",
+                                                               showLegend = FALSE)
           })
         updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
         showNotification("ICA Complete")
@@ -5357,7 +5359,8 @@ shinyServer(function(input, output, session) {
                     })
                     withProgress(message = "Plotting tSNE", max = 1, value = 1, {
                         seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(inSCE = vals$counts,
-                                                                              useReduction = "tsne")
+                                                                              useReduction = "tsne",
+                                                                              showLegend = FALSE)
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("tSNE Complete")
@@ -5380,7 +5383,8 @@ shinyServer(function(input, output, session) {
                     })
                     withProgress(message = "Plotting UMAP", max = 1, value = 1, {
                         seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(inSCE = vals$counts,
-                                                                              useReduction = "umap")
+                                                                              useReduction = "umap",
+                                                                              showLegend = FALSE)
                     })
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("UMAP Complete")

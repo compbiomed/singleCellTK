@@ -197,11 +197,16 @@ seuratPlotHVG <- function(inSCE) {
 #' Plots the selected dimensionality reduction method
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
+#' @param showLengend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{TRUE}.
 #' @return plot object
 #' @export
-seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap")) {
+seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = TRUE) {
     seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+    if(showLegend){
+      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+    }else{
+      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
+    }
     if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
         plot$data$ident <- seuratObject@meta.data$seurat_clusters
     }
