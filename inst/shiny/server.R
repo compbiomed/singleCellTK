@@ -5498,5 +5498,24 @@ shinyServer(function(input, output, session) {
                                                                    labels = input$picker_dimheatmap_components_pca)
         }
     })
+    
+    #Enable/Disable PCA plot panels not selected for computation
+    observeEvent(input$pca_compute_elbow,{
+      shinyjs::toggleState(
+        selector = "a[data-value='Elbow Plot']",
+        condition = input$pca_compute_elbow)
+    })
+    
+    observeEvent(input$pca_compute_jackstraw,{
+      shinyjs::toggleState(
+        selector = "a[data-value='JackStraw Plot']",
+        condition = input$pca_compute_jackstraw)      
+    })
+    
+    observeEvent(input$pca_compute_heatmap,{
+      shinyjs::toggleState(
+        selector = "a[data-value='Heatmap Plot']",
+        condition = input$pca_compute_heatmap)      
+    })
 
 })
