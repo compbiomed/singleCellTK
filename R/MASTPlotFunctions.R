@@ -44,8 +44,7 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    Gene <- NULL
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -106,8 +105,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    Gene <- NULL
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -126,6 +124,9 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     sca <- suppressMessages(MAST::FromMatrix(expres, cData = cdat))
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
+    if(length(unique(SummarizedExperiment::colData(sca)$cngeneson)) < 2){
+        stop("Standardized cellular detection rate not various, unable to plot.")
+    }
     if(threshP){
         #TODO: if nrow*ncol < `min_per_bin`` below, there would be an error.
         invisible(utils::capture.output(thres <-
@@ -139,6 +140,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     # Calculate
     resData <- NULL
     for (i in unique(flatDat$primerid)){
+        print(i)
         resdf <- flatDat[flatDat$primerid == i, ]
         resdf$lmPred <- stats::lm(
             stats::as.formula(paste0(useAssay, "~cngeneson+", 'condition')),
@@ -282,9 +284,8 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 
     ## Genes
     regulation <- vector()
-    Gene <- NULL # Unused variable, to pass the R CMD check.
-    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, Gene]
-    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, Gene]
+    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, "Gene"]
+    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, "Gene"]
     regulation[rownames(inSCE) %in% genes.up] <- 'up'
     regulation[rownames(inSCE) %in% genes.down] <- 'down'
     regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
