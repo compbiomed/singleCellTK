@@ -201,7 +201,7 @@ seuratPlotHVG <- function(inSCE) {
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap")) {
     seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
     if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
         plot$data$ident <- seuratObject@meta.data$seurat_clusters
     }
