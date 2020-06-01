@@ -17,9 +17,14 @@ exportSCE <- function(inSCE,
                       format = c("R", "Python", "FlatFile", "HTAN")) {
   
     if (any(!format %in% c("R", "Python", "FlatFile", "HTAN"))) {
-        stop("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. ", 
-             "Other format is not supported now. ")
+        warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. ", 
+             "Other format is not supported now. ", 
+             "Only output the supported formats in the provided options. ")
     }
+
+    format <- format[format %in% c("R", "Python", "FlatFile", "HTAN")]
+    message("The output format is [", 
+            paste(format, collapse = ","), "]. ")
 
     ## Create directories and save objects
     dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)

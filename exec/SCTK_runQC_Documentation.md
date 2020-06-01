@@ -14,7 +14,7 @@ The script will automatically try to install the "singleCellTK" package from Bio
 
 ```
 library(devtools)
-install_github("compbiomed/singleCellTK@importQC")
+install_github("compbiomed/singleCellTK@devel")
 ```
 
 ## Running the pipeline
@@ -59,7 +59,7 @@ The arguments are as follows:
 
 -b, --base_path. Base path for the output from the preprocessing algorithm
 
--p, --preproc. Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"
+-P, --preproc. Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"
 
 -s, --sample. Name of the sample. This will be prepended to the cell barcodes.
 
@@ -80,52 +80,53 @@ The second column for each gene set in the GMT file (i.e. the description) shoul
 
 ## Docker and Singularity Images
 
-singleCellTK is available to use with both Docker and Singularity. The tool usage is similar to that of the command line interface. Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. 
+singleCellTK is available to use with both Docker and Singularity. This container be used as a portal to the singleCellTK command line interface. The work was done in R. The singleCellTK docker image is available from [Docker Hub](https://hub.docker.com/r/campbio/sctk_qc).
 
 ### Docker
 
-singleCellTK docker image is available from [Docker Hub](https://hub.docker.com/r/rz2333/sctk_0.1.1). If you have not used docker before, you can follow the instruction to install and set up docker in [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux). 
+ If you have not used docker before, you can follow the instruction to install and set up docker in [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux). 
 
 The Docker image can be obtained by running: 
 ```
-docker pull rz2333/sctk:1.7.2
+docker pull campbio/sctk_qc
 ```
 
-To perform quality control with singleCellTK docker, use the following code:
+Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. In the below example, mount is created for the input and output directory using argument -v. Here is an example code to perform quanlity control of CellRangerV3 data singleCellTK docker:
 
 ```
 docker run --rm -v /path/to/data:/SCTK_docker \
--it rz2333/sctk:1.7.2 \
+-it campbio/sctk_qc:1.7.5 \
 -b /SCTK_docker/cellranger \
--p CellRangerV3 \
+-P CellRangerV3 \
 -s pbmc_100x100 \
 -o /SCTK_docker/result/tenx_v3_pbmc \
--g /SCTK_docker/mitochondrial_human_symbol.gmt
+-g /SCTK_docker/mitochondrial_human_symbol.gmt \
+-S TRUE \
+-F R,Python,Flatfile,HTAN
 ```
 
-The container could not access files in your local host system. That's why we need -v argument is to mount your data directory (/path/to/data) to container (/SCTK_docker). /SCTK_docker is not visible in your host system but container could read and write files in that directory. That's why the path of all the input files starts with /SCTK_docker but not /path/to/data. To learn more about volumes, please check out [this post](https://docs.docker.com/storage/volumes/).
+The usage of each argument is the same as the original command line interface. To learn more about mounted volumes, please check out [this post](https://docs.docker.com/storage/volumes/).
 
 ### Singularity
 
 The Singulatiry image can easily be built using Docker Hub as a source:
 
 ```
-singularity build sctk-0.1.1.sif docker://rz2333/sctk:1.7.2
+singularity pull docker://campbio/sctk_qc:1.7.5
 ```
 
 The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
 
 ```
-singularity run sctk-0.1.1.sif \
+singularity run sctk_qc_0.1.5.sif \
 -b ./cellranger \
--p CellRangerV3 \
+-P CellRangerV3 \
 -s pbmc_100x100 \
 -o ./result/tenx_v3_pbmc \
 -g ./mitochondrial_human_symbol.gmt
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. This problem will be fixed in future to make it compatible with older cpu architectures. 
-
+The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
