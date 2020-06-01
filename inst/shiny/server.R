@@ -26,6 +26,7 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
+    mastFMRCbin = 0,
     diffexheatmapplot = NULL,
     diffexBmName = NULL,
     celdaMod = NULL,
@@ -83,6 +84,9 @@ shinyServer(function(input, output, session) {
                       choices = pdataOptions)
     updateSelectInput(session, "mastHMSplitCol",
                       choices = c('None', 'condition', pdataOptions))
+    updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
+    updateSelectInput(session, "mastFMHMcolData",
+                      choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
                       choices = pdataOptions)
     updateSelectInput(session, "selectReadDepthCondition",
@@ -115,6 +119,8 @@ shinyServer(function(input, output, session) {
                       choices = selectRowData)
     updateSelectInput(session, "mastHMSplitRow",
                       choices = c('None', 'regulation', selectRowData))
+    updateSelectInput(session, "mastFMHMrowData",
+                      choices = selectRowData)
   }
 
   updateNumSamples <- function(){
@@ -143,6 +149,8 @@ shinyServer(function(input, output, session) {
                       choices = c("", vals$batchResAssay))
     updateSelectInput(session, "diffexAssay", choices = currassays)
     updateSelectInput(session, "mastAssay", choices = currassays)
+    updateSelectInput(session, "mastFMAssay", choices = currassays)
+    updateSelectInput(session, "mastFMHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
@@ -4840,8 +4848,88 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #-----------------------------------------------------------------------------
+  # Page 5.3: MAST - Find Marker ####
+  #-----------------------------------------------------------------------------
+  # MAST findMarker RUN ####
+  observeEvent(input$runMASTFM, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("runMASTFM", {
+        vals$counts <- findMarkerDiffExp(vals$counts,
+          useAssay = input$mastFMAssay, cluster = input$mastFMCluster,
+          log2fcThreshold = input$mastFMLogFC, fdrThreshold = input$mastFMFDR,
+          useThresh = input$mastFMUseThresh, freqExpressed = input$mastFMFreq)
+        shinyalert::shinyalert("Success", "MAST Find Marker completed.",
+                               "success")
+      })
+    }
+  })
+  # MAST findMarker ResultTable ####
+  output$mastFMResClusterUI <- renderUI({
+    if(!is.null(vals$counts) &&
+       !is.null(input$mastFMCluster) &&
+       'findMarker' %in% names(metadata(vals$counts))){
+      allCluster <- colData(vals$counts)[[input$mastFMCluster]]
+      allCluster <- sort(as.vector(unique(allCluster)))
+      checkboxGroupInput("mastFMResCluster", "View Results for Cluster",
+                         choices = c('All', allCluster), selected = 'All',
+                         inline = TRUE)
+    }
+  })
 
+  output$mastFMResTable <- DT::renderDataTable({
+    if(!is.null(vals$counts) &&
+       'findMarker' %in% names(metadata(vals$counts))){
+      fullTable <- metadata(vals$counts)$findMarker
+      if('All' %in% input$mastFMResCluster){
+        fullTable
+      } else {
+        fullTable[fullTable[[input$mastFMCluster]] %in% input$mastFMResCluster,]
+      }
+    }
+  }, filter = "top")
 
+  isMastFMResult <- reactive(!is.null(vals$counts) &&
+                             !is.null(metadata(vals$counts)$findMarker))
+  observe({
+    if (isMastFMResult()) {
+      shinyjs::enable("mastFMDownload")
+    } else {
+      shinyjs::disable("mastFMDownload")
+    }
+  })
+
+  output$mastFMDownload <- downloadHandler(
+    filename = function() {
+      paste0("mastMarkerResult_", input$mastFMCluster, ".csv")
+    },
+    content = function(file) {
+      utils::write.csv(metadata(vals$counts)$findMarker, file)
+    }
+  )
+
+  # MAST findMarker Heatmap ####
+  output$mastFMHMAssayUI <- renderUI({
+    if(!is.null(vals$counts)){
+      allAssay <- assayNames(vals$counts)
+      selectInput('mastFMHMAssay', "Assay to plot", allAssay,
+                  selected = input$mastFMAssay)
+    }
+  })
+
+  output$mastFMHeatmap <- renderPlot({
+    if(!is.null(vals$counts) &&
+       'findMarker' %in% names(metadata(vals$counts)) &&
+       !is.null(input$mastFMHMAssay)){
+      plotMarkerDiffExp(inSCE = vals$counts, useAssay = input$mastFMHMAssay,
+        orderBy = input$mastFMHMOrder, log2fcThreshold = input$mastFMHMFC,
+        fdrThreshold = input$mastFMHMFDR, decreasing = input$mastFMHMdec,
+        rowDataName = input$mastFMHMrowData, colDataName = input$mastFMHMcolData
+      )
+    }
+  })
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------

@@ -126,7 +126,7 @@ shinyPanelMASTDE <- fluidPage(
         tabPanel("Adaptive thresholding", plotOutput("threshplot")),
         tabPanel("Results Table",
           DT::dataTableOutput("mastresults"),
-          downloadButton("mastDownload", "Download Results", height = "800px")),
+          downloadButton("mastDownload", "Download Results")),
         tabPanel(
           "Violin Plot",
           panel(
