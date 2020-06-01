@@ -127,9 +127,80 @@ shinyPanelMASTDE <- fluidPage(
         tabPanel("Results Table",
           DT::dataTableOutput("mastresults"),
           downloadButton("mastDownload", "Download Results", height = "800px")),
-        tabPanel("Violin Plot", plotOutput("hurdleviolin", height = "800px")),
-        tabPanel("Linear Model", plotOutput("hurdlelm", height = "800px")),
-        tabPanel("Heatmap", plotOutput("hurdleHeatmap", height = "800px"))
+        tabPanel(
+          "Violin Plot",
+          panel(
+            fluidRow(
+              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
+                  p('Plot the top')),
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
+                  numericInput('mastVioNrow', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 12px;",
+                  p('x')),
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
+                  numericInput('mastVioNcol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 10px;",
+                  p('=')),
+              div(style="display: inline-block;vertical-align:center; width: 20px;",
+                  uiOutput('mastVioTotalUI')),
+              div(style="display: inline-block;vertical-align:center; width: 40px;",
+                  p('genes')),
+            ),
+            checkboxInput('mastVioUseThresh', 'plot threshold values from adaptive thresholding',
+                               value = FALSE, width = '800px')
+          ),
+          plotOutput("hurdleviolin", height = "800px")
+        ),
+        tabPanel(
+          "Linear Model",
+          panel(
+            fluidRow(
+              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
+                  p('Plot the top')),
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
+                  numericInput('mastRegNrow', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 12px;",
+                  p('x')),
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
+                  numericInput('mastRegNcol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 10px;",
+                  p('=')),
+              div(style="display: inline-block;vertical-align:center; width: 20px;",
+                  uiOutput('mastRegTotalUI')),
+              div(style="display: inline-block;vertical-align:center; width: 40px;",
+                  p('genes')),
+            ),
+            checkboxInput('mastRegUseThresh', 'plot threshold values from adaptive thresholding',
+                          value = FALSE, width = '800px')
+          ),
+          plotOutput("hurdlelm", height = "800px")
+        ),
+        tabPanel(
+          "Heatmap",
+          sidebarLayout(
+            sidebarPanel(
+              checkboxInput('mastHMPosOnly', "Only up-regulated",
+                            value = FALSE),
+              numericInput("mastHMFC", "Aboslute log2FC value greater than:",
+                           value = 1, min = 0, step = 0.05),
+              numericInput("mastHMFDR", "FDR value less than", value = 0.05,
+                           max = 1, step = 0.01),
+              selectInput("mastHMcolData", "Additional cell annotation",
+                          choices = clusterChoice, multiple = TRUE),
+              selectInput("mastHMrowData", "Additional feature annotation",
+                          choices = featureChoice, multiple = TRUE),
+              selectInput("mastHMSplitCol", "Split columns by", multiple = TRUE,
+                          choices = c('None', 'condition', clusterChoice),
+                          selected = 'condition'),
+              selectInput("mastHMSplitRow", "Split rows by", multiple = TRUE,
+                          choices = c('None', 'regulation', featureChoice),
+                          selected = 'regulation')
+            ),
+            mainPanel(
+              plotOutput("hurdleHeatmap", height = "800px")
+            )
+          )
+        )
       )
     )
   )

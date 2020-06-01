@@ -33,10 +33,12 @@
 #' \code{FALSE}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
+#' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
+#' ggplot. Default \code{TRUE}.
 #' @return A ggplot object of MAST violin plot
 #' @export
 plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
-                           nrow = 6, ncol = 6){
+                           nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkMASTResultExists(inSCE, useResult)
@@ -80,6 +82,9 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
                             ncol = ncol) +
         ggplot2::geom_violin() +
         ggplot2::ggtitle(paste0("Violin Plot for ", useResult))
+    if(isTRUE(defaultTheme)){
+        violinplot <- .ggSCTKTheme(violinplot)
+    }
     return(violinplot)
 }
 
@@ -93,11 +98,13 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
 #' thresholding, instead of using the assay used by \code{runMAST()}. Default
 #' \code{FALSE}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
+#' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
+#' ggplot. Default \code{TRUE}.
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @return A ggplot object of MAST linear regression
 #' @export
 plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
-                               nrow = 6, ncol = 6){
+                               nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkMASTResultExists(inSCE, useResult)
@@ -140,7 +147,6 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     # Calculate
     resData <- NULL
     for (i in unique(flatDat$primerid)){
-        print(i)
         resdf <- flatDat[flatDat$primerid == i, ]
         resdf$lmPred <- stats::lm(
             stats::as.formula(paste0(useAssay, "~cngeneson+", 'condition')),
@@ -164,7 +170,11 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
                       ggplot2::geom_line(ggplot2::aes_string(y = "lmPred"),
                                          lty = 1) +
                       ggplot2::xlab("Standardized Cellular Detection Rate") +
-                      ggplot2::ggtitle("Linear Model Plot")
+                      ggplot2::ggtitle(paste0("Linear Model Plot for ",
+                                              useResult))
+    if(isTRUE(defaultTheme)){
+        regressionplot <- .ggSCTKTheme(regressionplot)
+    }
     return(regressionplot)
 }
 
@@ -315,7 +325,8 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay,
         featureIndex = gene.ix, cellIndex = cell.ix,
         featureAnnotations = featureAnnotations,
-        cellAnnotations = cellAnnotations,
+        cellAnnotations = cellAnnotations, rowDataName = rowDataName,
+        colDataName = colDataName,
         featureAnnotationColor = featureAnnotationColor,
         cellAnnotationColor = cellAnnotationColor, rowSplitBy = rowSplitBy,
         colSplitBy = colSplitBy, title = title)

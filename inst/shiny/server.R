@@ -79,6 +79,10 @@ shinyServer(function(input, output, session) {
                       choices = c(pdataOptions))
     updateSelectInput(session, "hurdlecondition",
                       choices = pdataOptions)
+    updateSelectInput(session, "mastHMcolData",
+                      choices = pdataOptions)
+    updateSelectInput(session, "mastHMSplitCol",
+                      choices = c('None', 'condition', pdataOptions))
     updateSelectInput(session, "pathwayPlotVar",
                       choices = pdataOptions)
     updateSelectInput(session, "selectReadDepthCondition",
@@ -104,8 +108,13 @@ shinyServer(function(input, output, session) {
   }
 
   updateFeatureAnnots <- function(){
+    selectRowData <- colnames(rowData(vals$counts))
     updateSelectInput(session, "filteredFeature",
-                      choices = c("none", colnames(rowData(vals$counts))))
+                      choices = c("none", selectRowData))
+    updateSelectInput(session, "mastHMrowData",
+                      choices = selectRowData)
+    updateSelectInput(session, "mastHMSplitRow",
+                      choices = c('None', 'regulation', selectRowData))
   }
 
   updateNumSamples <- function(){
@@ -4774,26 +4783,60 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  output$mastVioTotalUI <- renderUI({
+    topN <- input$mastVioNrow * input$mastVioNcol
+    p(as.character(topN))
+  })
+
   output$hurdleviolin <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
       plotMASTViolin(inSCE = vals$counts, useResult = input$mastResSel,
-                     threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+                     threshP = input$mastVioUseThresh,
+                     nrow = input$mastVioNrow, ncol = input$mastVioNcol)
     }
+  })
+
+  output$mastRegTotalUI <- renderUI({
+    topN <- input$mastRegNrow * input$mastRegNcol
+    p(as.character(topN))
   })
 
   output$hurdlelm <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
       plotMASTRegression(inSCE = vals$counts, useResult = input$mastResSel,
-                         threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+                         threshP = input$mastRegUseThresh,
+                         nrow = input$mastRegNrow, ncol = input$mastRegNcol)
     }
   })
 
   output$hurdleHeatmap <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
-      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel)
+      if(length(input$mastHMSplitCol) == 1 && input$mastHMSplitCol == 'None'){
+        colSplitBy <- NULL
+      } else if(!'None' %in% input$mastHMSplitCol){
+        colSplitBy <- input$mastHMSplitCol
+      } else {
+        whereNone <- input$mastHMSplitCol %in% 'None'
+        colSplitBy <- input$mastHMSplitCol
+        colSplitBy <- colSplitBy[!whereNone]
+      }
+      if(length(input$mastHMSplitRow) == 1 && input$mastHMSplitRow == 'None'){
+        rowSplitBy <- NULL
+      } else if(!'None' %in% input$mastHMSplitRow){
+        rowSplitBy <- input$mastHMSplitRow
+      } else {
+        whereNone <- input$mastHMSplitRow %in% 'None'
+        rowSplitBy <- input$mastHMSplitRow
+        rowSplitBy <- rowSplitBy[!whereNone]
+      }
+      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel,
+        onlyPos = input$mastHMPosOnly, log2fcThreshold = input$mastHMFC,
+        fdrThreshold = input$mastHMFDR, rowDataName = input$mastHMrowData,
+        colDataName = input$mastHMcolData, colSplitBy = colSplitBy,
+        rowSplitBy = rowSplitBy)
     }
   })
 
