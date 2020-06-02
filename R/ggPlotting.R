@@ -25,25 +25,29 @@
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
-                       colorBy,
-                       shape,
-                       reducedDimName,
-                       conditionClass = NULL,
-                       labelClusters = FALSE,
-                       xlab,
-                       ylab,
-                       dim1 = NULL,
-                       dim2 = NULL,
-                       dotsize = 2,
-                       transparency = 1,
-                       defaultTheme = TRUE,
-                       title = NULL,
-                       titleSize = 15,
-                       legendTitle = NULL) {
+  colorBy,
+  shape,
+  reducedDimName,
+  conditionClass = NULL,
+  labelClusters = FALSE,
+  xlab,
+  ylab,
+  dim1 = NULL,
+  dim2 = NULL,
+  bin = NULL,
+  binLabel = NULL,
+  dotsize = 2,
+  transparency = 1,
+  defaultTheme = TRUE,
+  title = NULL,
+  titleSize = 15,
+  legendTitle = NULL) {
+
   Df <- data.frame(SingleCellExperiment::reducedDim(
     inSCE,
     reducedDimName
   ))
+
   if (ncol(Df) > 2) {
     warning("More than two dimensions. Using the first two.")
   }
@@ -67,35 +71,62 @@
     xdim <- colnames(Df)[1]
     ydim <- colnames(Df)[2]
   }
+
+  if (!is.null(conditionClass)){
+    if (conditionClass %in% c("character", "factor", "numeric")) {
+      if (conditionClass == "character") {
+        colorBy <- as.character(colorBy)
+      } else if (conditionClass == "factor") {
+        colorBy <- as.factor(colorBy)
+      } else if (conditionClass == "numeric") {
+        colorBy <- as.numeric(colorBy)
+      }
+    }
+  }
+
+  if (!is.null(bin)){
+    colorBy <- .binSCTK(value = colorBy,
+      bin = bin,
+      binLabel = binLabel)
+  }
+
   if (length(colorBy) == 1) {
     if (colorBy == "No Color") {
       colorBy <- NULL
     }
   }
+
   if (shape == "No Shape") {
     shape <- NULL
   }
+
   if (!is.null(colorBy)) {
     Df$color <- colorBy
   }
+
   if (!is.null(shape)) {
     Df$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
   }
+
   Df$Sample <- colnames(inSCE)
   g <- ggplot2::ggplot(Df, ggplot2::aes_string(xdim, ydim,
     label = "Sample"
-  )) +
+    )) +
     ggplot2::geom_point(size = dotsize, alpha = transparency)
+
   if (!is.null(colorBy)) {
     g <- g + ggplot2::aes_string(color = "color")
   }
+
   if (!is.null(shape)) {
     g <- g + ggplot2::aes_string(shape = "shape") +
       ggplot2::labs(shape = shape)
   }
+
   if (defaultTheme == TRUE) {
     g <- .ggSCTKTheme(g)
   }
+
   if (!is.null(title)) {
     g <- g + ggplot2::ggtitle(label = title) +
       ggplot2::theme(plot.title = ggplot2::element_text(
@@ -103,6 +134,7 @@
         size = titleSize
       ))
   }
+
   if (!is.null(legendTitle)) {
     g <- g + ggplot2::labs(color = legendTitle)
   } else {
@@ -134,7 +166,7 @@
       mapping = ggplot2::aes_string(x = xdim, y = ydim),
       size = 0,
       alpha = 0
-    ) +
+      ) +
       ggrepel::geom_text_repel(
         data = centroid,
         mapping = ggplot2::aes_string(label = "color"),
@@ -142,7 +174,6 @@
         color = "black"
       )
   }
-
   return(g)
 }
 
@@ -802,3 +833,46 @@ plotSCEViolin <- function(inSCE,
   return(p)
 }
 
+.binSCTK <- function(value, bin, binLabel = NULL) {
+
+  if(!is.null(binLabel)){
+
+    if(length(bin) == 1){
+
+      if(bin != length(binLabel)){
+
+        stop("'binLabel' must be equal to the bin length")
+
+      }
+
+    }else if(length(bin) > 1){
+
+      if(bin != length(binLabel)+1){
+
+        stop("'binLabel' must be equal to the bin length")
+
+      }
+
+    }
+
+  }
+
+  
+
+  # Since binning will only be done on numeric values, coerces
+
+  #all values into numeric values.
+
+  # Alternatively, could force users to only be able to use fxn
+
+  #on numeric values
+
+  value <- as.numeric(as.character(value))
+
+  
+
+  value.bin <- cut(x = value, breaks = bin, labels = binLabel)
+
+  return(value.bin)
+
+}
