@@ -74,7 +74,11 @@ plotSCEDimReduceColData <- function(inSCE,
   titleSize = 15,
   labelClusters = TRUE,
   legendTitle = NULL) {
-  colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
+  if (colorBy != "No Color"){
+    colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
+  }else{
+    colorPlot <- "No Color"
+  }
 
   g <- .ggScatter(
     inSCE = inSCE,
@@ -102,7 +106,7 @@ plotSCEDimReduceColData <- function(inSCE,
 
 
 .ggScatter <- function(inSCE,
-  colorBy,
+  colorBy = "No Color",
   shape,
   reducedDimName,
   conditionClass = NULL,
