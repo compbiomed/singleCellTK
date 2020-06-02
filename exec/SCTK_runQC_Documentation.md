@@ -22,19 +22,31 @@ install_github("compbiomed/singleCellTK@devel")
 To run the pipeline script, users will need to download the 'SCTK_runQC.R' and run the following code:
 
 ```
-Rscript SCTK_runQC.R -p /base/path -p Preprocessing_Algorithm -s SampleName -o Output_Directory
+Rscript SCTK_runQC.R \
+-b /base/path \
+-P Preprocessing_Algorithm \
+-s SampleName \
+-o Output_Directory \
+-S TRUE \
+-F R,Python,FlatFile,HTAN
 ```
 
 or 
 
 ```
-SCTK_runQC.R -p /base/path/ -p Preprocessing_Algorithm -s SampleName -o Output_Directory
+SCTK_runQC.R \
+-b /base/path/ \
+-P Preprocessing_Algorithm \
+-s SampleName \
+-o Output_Directory \
+-S TRUE \
+-F R,Python,FlatFile,HTAN
 ```
 
 if the Rscript executable can be found in your environment with the command
 
 ```
-/usr/bin/env Rscript
+/usr/bin/env Rscript --vanilla
 ```
 
 
@@ -55,21 +67,106 @@ Some tools prepend the sample name onto the output files instead of making a sep
 
 ## Arguments
 
-The arguments are as follows:
+### Required arguments
+The required arguments are as follows:
 
--b, --base_path. Base path for the output from the preprocessing algorithm
+-b, --base_path (required). Base path for the output from the preprocessing algorithm
 
--P, --preproc. Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus'"
+-P, --preproc (required). Algorithm used for preprocessing. One of One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'. 
 
--s, --sample. Name of the sample. This will be prepended to the cell barcodes.
+-s, --sample (required). Name of the sample. This will be prepended to the cell barcodes.
 
--o, --directory. Output directory. A new subdirectory will be created with the name "sample". R, Python, and FlatFile directories will be created under the "sample" directory containing the data containers with QC metrics. Default ".".
+-o, --directory (required). Output directory. A new subdirectory will be created with the name "sample". R, Python, and FlatFile directories will be created under the "sample" directory containing the data containers with QC metrics. Default ".".
 
--g, --gmt. GMT file containing gene sets for quality control. 
+-F, --outputFormat (required). The output format of this QC pipeline. Currently, it supports R (RDS), FlatFile, Python (AnnData) and HTAN.
 
--t, --delim. Delimiter used in GMT file. Default "\t".
+-S, --split_sample (required). Save SingleCellExperiment object for each sample. Default is TRUE. If FALSE, the data of all samples will be combined into one SingleCellExperiment object and this object will be outputed.
 
--r, --reference. The name of genome reference. This is only required for CellRangerV2 data.
+### Optional arguments
+The optional arguments are as follows. Their usage depend on type of data set and user-defined behaviour. 
+
+-g, --gmt (optional). GMT file containing gene sets for quality control. 
+
+-t, --delim (optional, required when -g is specified). Delimiter used in GMT file. Default "\t".
+
+-r, --reference (optional). The name of genome reference. This is only required for CellRangerV2 data.
+
+-G, --genome (optional). The name of genome reference. This is only required for CellRangerV2 data.
+
+-y, --yaml (optional). YAML file containing parameters called by singleCellTK QC functions. Please check the following documentation for details. 
+
+-c, --cell_data (optional). The full path of the RDS file or Matrix file of the cell matrix. This would be use only when --preproc is SceRDS or CountMatrix.
+
+-r, --raw_data (optional). The full path of the RDS file or Matrix file of the droplet matrix. This would be provided only when --preproc is SceRDS or CountMatrix.
+
+-C, --cell_data_path (optional). The directory contains cell matrix, which has gene symbol/ID as rownames and cell barcodes as colnames. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should be specified.
+
+-R, --raw_data_path (optional). The directory contains droplet matrix, which has gene symbol/ID as rownames and droplet barcodes as colnames. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified.
+
+## Methods to load CellrangerV2 or CellrangerV3 data set
+This pipeline enables different ways to import CellrangerV2/CellrangerV3 for flexibility. 
+
+1. If the cellranger data set is saved in the default [cellranger output directory](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview), you can load the data by running following code: 
+
+For CellRangerV3:
+```
+Rscript SCTK_runQC.R \
+-b /base/path \
+-P CellRangerV3 \
+-s SampleName \
+-o Output_Directory \
+-S TRUE \
+-F R,Python,FlatFile,HTAN
+```
+
+For CellRangerV2, the reference used by cellranger needs to be specified by -G/--genome:
+```
+Rscript SCTK_runQC.R \
+-b /base/path \
+-P CellRangerV2 \
+-s SampleName \
+-o Output_Directory \
+-S TRUE \
+-G hg19 \
+-F R,Python,FlatFile,HTAN
+```
+
+2. If the cell matrix and droplet matrix have been moved out of the cellranger output directory, you can specified directories using -R and -C:
+```
+Rscript SCTK_runQC.R \
+-P CellRangerV2 \
+-C /path/to/cell/matrix \
+-R /path/to/droplet/matrix \
+-s SampleName \
+-o Output_Directory \
+-S TRUE \
+-F R,Python,FlatFile,HTAN
+```
+In this case, you must skip -b arguments and you can also skip -G argument for CellRangerV2 data.
+
+## Methods to load data set stored in RDS file or txt file (matrix)
+1. If you data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:
+```
+Rscript SCTK_runQC.R \
+-P SceRDS \
+-s Samplename \
+-o Output_Directory \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-r /path/to/rds/file/droplet.RDS \
+-c /path/to/rds/file/cell.RDS
+```
+
+2. If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:
+```
+Rscript SCTK_runQC.R \
+-P CountMatrix \
+-s Samplename \
+-o Output_Directory \
+-S TRUE \
+-r /path/to/matrix/file/droplet.txt \
+-f path/to/matrix/file/cell.txt
+```
 
 ## Analyzing genes sets
 
@@ -118,7 +215,7 @@ singularity pull docker://campbio/sctk_qc:1.7.5
 The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
 
 ```
-singularity run sctk_qc_0.1.5.sif \
+singularity run sctk_qc_1.7.5.sif \
 -b ./cellranger \
 -P CellRangerV3 \
 -s pbmc_100x100 \
