@@ -72,7 +72,7 @@ The required arguments are as follows:
 
 -b, --base_path (required). Base path for the output from the preprocessing algorithm
 
--P, --preproc (required). Algorithm used for preprocessing. One of One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'. 
+-P, --preproc (required). Algorithm used for preprocessing. One of One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS' and 'CountMatrix'. 
 
 -s, --sample (required). Name of the sample. This will be prepended to the cell barcodes.
 
@@ -83,7 +83,7 @@ The required arguments are as follows:
 -S, --split_sample (required). Save SingleCellExperiment object for each sample. Default is TRUE. If FALSE, the data of all samples will be combined into one SingleCellExperiment object and this object will be outputed.
 
 ### Optional arguments
-The optional arguments are as follows. Their usage depend on type of data set and user-defined behaviour. 
+The optional arguments are as follows. Their usage depend on type of data and user-defined behaviour. 
 
 -g, --gmt (optional). GMT file containing gene sets for quality control. 
 
@@ -174,6 +174,8 @@ Quantifying the level of gene sets can be useful quality control. For example, t
 
 Users can pass a [GMT](http://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats) file to the pipeline with one row for each gene set. The first column should be the name of the gene set (e.g. mito). 
 The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
+
+## Understanding outputs
 
 ## Docker and Singularity Images
 

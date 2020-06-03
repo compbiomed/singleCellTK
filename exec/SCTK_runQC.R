@@ -134,6 +134,22 @@ if (!is.null(yamlFile)) {
     Params <- list()
 }
 
+### checking output formats
+if (!all(formats %in% c("R", "Python", "FlatFile", "HTAN"))) {
+    warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
+         paste(formats[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
+         " is not supported now. ") #             "Only output the supported formats in the provided options. "
+}
+
+formats <- formats[formats %in% c("R", "Python", "FlatFile", "HTAN")]
+message("The output format is [", 
+        paste(formats, collapse = ","), "]. ")
+
+if (length(formats) == 0) {
+    warning("None of the provided format is supported now. Therefore, the output ", 
+        "will be R, Python, FlatFile and HTAN. ")
+    formats <- c("R", "Python", "FlatFile", "HTAN")
+}
 
 ## Checking argument
 if (is.null(RawFile) & is.null(RawFile)) {
@@ -263,7 +279,8 @@ for(i in seq_along(process)) {
     
     if (!is.null(cellSCE)) {
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+            paramsList=Params, algorithms=c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "scrublet", "decontX"))
     }
     
     ## merge colData of dropletSCE and FilteredSCE

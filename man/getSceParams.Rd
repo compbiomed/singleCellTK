@@ -7,7 +7,8 @@
 getSceParams(
   inSCE,
   skip = c("scrublet", "runDecontX"),
-  ignore = c("algorithms", "estimates", "contamination", "z"),
+  ignore = c("algorithms", "estimates", "contamination", "z", "sample", "rank",
+    "BPPARAM", "batch", "geneSetCollection"),
   directory = "./",
   samplename = "",
   writeYAML = TRUE
