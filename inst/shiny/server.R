@@ -3072,38 +3072,21 @@ shinyServer(function(input, output, session) {
       xy <- cbind(xy,c1)
       rm(c1)
       if(input$TypeSelect_Colorby == 'Pick a Color'){
-        a <- ggplot(data = xy) +
-          aes_string(x= "X_input", y= "Y_input") +
-          theme_classic() +
-          theme(legend.title = element_blank(),
-            strip.background = element_blank()) +
-          facet_wrap(~groupby) +
-          xlab(xname) + ylab(paste0("\n",yname))
-        a <- plotfun(a, xy$color)
-        if (input$adjusttitle != ""){
-          a <- a + ggtitle(input$adjusttitle)
-        }
+        a <- plotSCEDimReduceColData(inSCE = vals$counts,
+          reducedDimName = input$QuickAccess, xlab = xname, ylab = yname,
+          title = input$adjusttitle, groupBy = input$adjustgroupby)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
-        #ggplot3#
-        a <- ggplot(data = xy) +
-          aes_string(x= "X_input", y= "Y_input", color = "Color") +
-          theme_classic() +
-          theme(legend.title = element_blank(),
-            strip.background = element_blank()) +
-          facet_wrap(~groupby) +
-          xlab(xname) + ylab(paste0("\n",yname)) + labs(color= legendname)
-        a <- plotfun(a, xy$color)
-        if(!is.numeric(xy$Color)){
-          if(input$adjustbrewer == 'Celda'){
-            a = a + scale_color_manual(values = celda::distinctColors(length(levels(xy$Color)))) + theme(legend.text=element_text(size=12))}
-          else{a = a + theme(legend.text=element_text(size=12))}
-        }else{
-          a = a + scale_color_distiller(palette = input$adjustbrewer)
-        }
-        #ggplotly3#
-        if (input$adjusttitle != ""){
-          a <- a + ggtitle(input$adjusttitle)
+        if(input$TypeSelect_ColorBy == "Expression Assays"){
+          a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
+            conditionClass = "factor", xlab = xname, ylab = yname,
+            title = input$adjusttitle, legendTitle = legendname,
+            useAssay = input$AdvancedMethodSelect_Colorby,
+            feature = input$GeneSelect_Assays_Colorby, groupBy = input$adjustgroupby)
+        }else if(input$TypeSelect_ColorBy == "Cell Annotation"){
+          a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
+            colorBy = input$AnnotationSelect_Colorby, conditionClass = "factor", xlab = xname, ylab = yname,
+            title = input$adjusttitle, legendTitle = legendname, groupBy = input$adjustgroupby)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
 
