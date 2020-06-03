@@ -9,13 +9,15 @@ plotSCEScatter(
   slot,
   annotation,
   feature = NULL,
-  shape = "No Shape",
+  shape = NULL,
   reducedDimName = NULL,
   conditionClass = NULL,
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
   dim2 = NULL,
+  bin = NULL,
+  binLabel = NULL,
   dotsize = 2,
   transparency = 1,
   defaultTheme = TRUE,
@@ -35,7 +37,7 @@ options: "assays", "colData", "metadata"}
 \item{annotation}{Desired vector within the slot used for plotting.}
 
 \item{feature}{name of feature stored in assay of SingleCellExperiment
-object. Will be used only if "assays" slot is chosen. Deafult NULL.}
+object. Will be used only if "assays" slot is chosen. Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
@@ -46,24 +48,34 @@ object. Required.}
 are NULL, "factor" or "numeric". If NULL, class will default to the original
 class. Default NULL.}
 
-\item{xlab}{label for x-axis}
+\item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
-\item{ylab}{label for y-axis}
+\item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
+\item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
-\item{dim2}{2nd dimension to be used for plotting. Default is NULL.
+\item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
+ the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+ the index of the dimension to be plotted. Default is NULL.
 Default is second PCA component for PCA data and NULL otherwise.}
 
-\item{dotsize}{size of dots. Default 2.}
+\item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+If more than one value, will bin numeric values using values as a cut point.}
 
-\item{transparency}{transparency of the dots, values will be 0-1. Default 1.}
+\item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
+Default NULL.}
+
+\item{dotsize}{Size of dots. Default 2.}
+
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 
-\item{title}{title of plot. Default NULL.}
+\item{title}{Title of plot. Default NULL.}
 
-\item{titleSize}{size of title of plot. Default 15.}
+\item{titleSize}{Size of title of plot. Default 15.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
