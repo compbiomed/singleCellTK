@@ -2853,11 +2853,10 @@ shinyServer(function(input, output, session) {
 
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     if (input$adjustgroupby == "None"){
-      #if uniform
       if(input$TypeSelect_Colorby == 'Pick a Color'){
         a <- plotSCEDimReduceColData(inSCE = vals$counts,
           reducedDimName = input$QuickAccess, xlab = xname, ylab = yname,
-          title = input$adjusttitle, legendTitle = legendname)
+          title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         if(input$TypeSelect_ColorBy == "Reduced Dimensions"){
