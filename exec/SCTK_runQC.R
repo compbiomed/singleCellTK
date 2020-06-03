@@ -310,10 +310,10 @@ for(i in seq_along(process)) {
                                dir = directory, HTAN=TRUE)
         } else if ("FlatFile" %in% formats) {
             meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                               dir = directory, HTAN=FALSE)   
+                               dir = directory, HTAN=FALSE)
+            level3Meta[[i]] <- meta[[1]]
+            level4Meta[[i]] <- meta[[2]]   
         } 
-	  	level3Meta[[i]] <- meta[[1]]
-	  	level4Meta[[i]] <- meta[[2]]
     }
 
     dropletSCE_list[[samplename]] <- mergedDropletSCE
@@ -345,12 +345,14 @@ if (!isTRUE(split)){
     } else if ("FlatFile" %in% formats) {
         meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
                            dir = directory, HTAN=FALSE)   
+        level3Meta <- list(meta[[1]])
+        level4Meta <- list(meta[[2]])
     }
-  	level3Meta <- list(meta[[1]])
-  	level4Meta <- list(meta[[2]])
 }
 
-HTANLevel3 <- do.call(base::rbind, level3Meta)
-HTANLevel4 <- do.call(base::rbind, level4Meta)
-write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
-write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+if ("FlatFile" %in% formats) {
+    HTANLevel3 <- do.call(base::rbind, level3Meta)
+    HTANLevel4 <- do.call(base::rbind, level4Meta)
+    write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+    write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+}
