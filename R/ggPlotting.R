@@ -215,7 +215,8 @@ plotSCEDimReduceColData <- function(inSCE,
   }
 
   if (!is.null(groupBy)){
-    g <- g + facet_wrap(~groupBy)
+    groups <- as.factor(colData(sce)@listData[[groupBy]])
+    g <- g + facet_wrap(~groups)
   }
 
   if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
