@@ -2590,28 +2590,10 @@ shinyServer(function(input, output, session) {
     }
   })###observe_end
 
-# Plotting function
-  plotfun <- function(a, p){
-    if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
-      a <- a + geom_point(size = input$adjustsize, alpha = input$adjustalpha)
-    }else if (input$viewertabs == "Bar Plot"){
-      a <- a + geom_bar(stat = "identity")
-    }else if (input$viewertabs == "Violin/Box Plot"){
-      if (input$vlnboxcheck == FALSE){
-        a <- a + geom_boxplot()
-      }else{
-        a <- a + geom_violin()
-      }
-    }else if (input$viewertabs == "Bubble Plot"){
-      a <- a + geom_point(size = p, alpha = input$adjustalpha)
-    }
-    return(a)
-  }
-
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
     if(input$QuickAccess == ""){
-
+      #shiny alert?
     }else if(input$QuickAccess != "Custom"){
       ###QuickAccess for ReduceData
       xy <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$QuickAccess))
@@ -2873,15 +2855,9 @@ shinyServer(function(input, output, session) {
     if (input$adjustgroupby == "None"){
       #if uniform
       if(input$TypeSelect_Colorby == 'Pick a Color'){
-        a <- ggplot(data = xy) +
-          aes_string(x= "X_input", y= "Y_input") +
-          theme_classic() + xlab(xname) + ylab(paste0("\n",yname))
-        if (input$adjusttitle != ""){
-          a <- a + ggtitle(input$adjusttitle)
-        }
-        a <- plotfun(a, xy$color)
         a <- plotSCEDimReduceColData(inSCE = vals$counts,
-          reducedDimName = input$QuickAccess)
+          reducedDimName = input$QuickAccess, xlab = xname, ylab = yname,
+          title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         #if not uniform
@@ -2902,7 +2878,8 @@ shinyServer(function(input, output, session) {
         }
         color <- xy$color
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          colorBy = color, conditionClass = "factor")
+          colorBy = color, conditionClass = "factor", xlab = xname, ylab = yname,
+          title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
