@@ -2859,11 +2859,7 @@ shinyServer(function(input, output, session) {
           title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
-        if(input$TypeSelect_ColorBy == "Reduced Dimensions"){
-          a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-            colorBy = color, conditionClass = "factor", xlab = xname, ylab = yname,
-            title = input$adjusttitle, legendTitle = legendname)
-        }else if(input$TypeSelect_ColorBy == "Expression Assays"){
+        if(input$TypeSelect_ColorBy == "Expression Assays"){
           a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
             conditionClass = "factor", xlab = xname, ylab = yname,
             title = input$adjusttitle, legendTitle = legendname,
@@ -2871,7 +2867,7 @@ shinyServer(function(input, output, session) {
             feature = input$GeneSelect_Assays_Colorby)
         }else if(input$TypeSelect_ColorBy == "Cell Annotation"){
           a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-            colorBy = color, conditionClass = "factor", xlab = xname, ylab = yname,
+            colorBy = input$AnnotationSelect_Colorby, conditionClass = "factor", xlab = xname, ylab = yname,
             title = input$adjusttitle, legendTitle = legendname)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
