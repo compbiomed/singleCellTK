@@ -73,7 +73,8 @@ plotSCEDimReduceColData <- function(inSCE,
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
-  legendTitle = NULL) {
+  legendTitle = NULL,
+  groupBy = NULL) {
   if (colorBy != "No Color"){
     colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }else{
@@ -98,7 +99,8 @@ plotSCEDimReduceColData <- function(inSCE,
     title = title,
     titleSize = titleSize,
     labelClusters = labelClusters,
-    legendTitle = legendTitle
+    legendTitle = legendTitle,
+    groupBy = groupBy
   )
 
   return(g)
@@ -122,7 +124,8 @@ plotSCEDimReduceColData <- function(inSCE,
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
-  legendTitle = NULL) {
+  legendTitle = NULL,
+  groupBy = NULL) {
   Df <- data.frame(SingleCellExperiment::reducedDim(
     inSCE,
     reducedDimName
@@ -209,6 +212,10 @@ plotSCEDimReduceColData <- function(inSCE,
     g <- g + ggplot2::labs(color = legendTitle)
   } else {
     g <- g + ggplot2::labs(color = "")
+  }
+
+  if (!is.null(groupBy)){
+    g <- g + facet_wrap(~groupBy)
   }
 
   if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
@@ -328,7 +335,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      defaultTheme = TRUE,
                                      title = NULL,
                                      titleSize = 15,
-                                     legendTitle = NULL) {
+                                     legendTitle = NULL,
+                                     groupBy = NULL) {
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -352,7 +360,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
     dotsize = dotsize,
     title = title,
     titleSize = titleSize,
-    legendTitle = legendTitle
+    legendTitle = legendTitle,
+    groupBy = groupBy
   )
 
   return(g)

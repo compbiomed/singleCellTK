@@ -2896,6 +2896,7 @@ shinyServer(function(input, output, session) {
         if (input$adjusttitle != ""){
           a <- a + ggtitle(input$adjusttitle)
         }
+
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         #ggplot#Integer,level>25
