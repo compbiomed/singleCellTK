@@ -1,0 +1,95 @@
+---
+title: "Interactive Analysis of Single Cell RNA-Seq Data: contamination identification using decontX"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "decontX-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "decontX-inlut",  warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "decontX-umap", eval = FALSE, include=FALSE, warning=FALSE}
+getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
+                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
+  }
+  #test for assay existing
+  if (!all(useAssay %in% names(assays(inSCE)))){
+    stop("assay '", useAssay, "' does not exist.")
+  }
+  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
+  custom.config <- umap::umap.defaults
+  custom.config$n_neighbors <- n_neighbors
+  custom.config$alpha <- alpha
+  custom.config$n_epochs <- n_iterations
+  matColData <- as.matrix(matColData)
+  umap_results <- umap::umap(t(matColData), config = custom.config)
+  if (is.null(rownames(inSCE))) {
+    rownames(umap_results$layout) <- colnames(inSCE)
+  }
+  umap_results <- umap_results$layout
+  colnames(umap_results) <- c("UMAP1", "UMAP2")
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
+  return(inSCE)
+}
+
+```
+
+```{r, "decontX-reddim", eval = FALSE, include=FALSE}
+#Log counts prior to running UMAP
+if (is.null(sce.qc@assays@data$logcounts)){
+  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
+  #get UMAP
+  if (!"UMAP" %in% reducedDimNames(sce.qc)){
+  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
+}
+```
+
+## DecontX
+
+DeconteX is a Bayesian-based method, which identifies contamination from factors such as ambient RNA in the single cell RNA-Seq datasets.
+
+The contamination score on the UMAP projection:
+```{r,"decontX-cont-reddim"}
+if (!is.null(sce.qc$decontX_contamination)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "decontX_contamination" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DecontX Contamination Likelihood", legendTitle = "Contamination Likelihood")
+}else {
+  stop("The inSCE does not contain decontX_contamination")
+}
+```
+
+
+The decontX clusters on the UMAP projection:
+```{r, "decontX-cluster-reddim"}
+if (!is.null(sce.qc$decontX_clusters)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "decontX_clusters", conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DecontX Clusters", legendTitle = "Clusters", labelClusters = TRUE)
+}else {
+  stop("The inSCE does not contain decontX_clusters")
+}
+```
+
+## DecontX input info
+```{r, "decontX-info"}
+if (!is.null(sce.qc@metadata$runDecontX)){
+  sce.qc@metadata$runDecontX
+} else{
+  print("The inSCE does not contain runDecontX info")
+}
+```
+## Session info
+```{r, "decontX-sesion-info"}
+sessionInfo()
+```
