@@ -215,7 +215,7 @@ plotSCEDimReduceColData <- function(inSCE,
   }
 
   if (!is.null(groupBy)){
-    df$groups <- as.factor(colData(sce)@listData[[groupBy]] %>% data.frame())
+    df$groups <- as.factor(colData(inSCE)@listData[[groupBy]] %>% data.frame())
     g <- g + facet_wrap(~groups)
   }
 
