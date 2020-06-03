@@ -5257,6 +5257,7 @@ shinyServer(function(input, output, session) {
     #Run PCA
     observeEvent(input$run_pca_button, {
         req(vals$counts)
+        
         withProgress(message = "Running PCA", max = 1, value = 1, {
         vals$counts <- seuratPCA(inSCE = vals$counts,
                                                  useAssay = "seuratScaledData",
@@ -5291,35 +5292,79 @@ shinyServer(function(input, output, session) {
                                                                              useAssay = "seuratScaledData",
                                                                              useReduction = "pca",
                                                                              dims = input$pca_no_components,
+                                                                             nfeatures = input$pca_compute_heatmap_nfeatures,
                                                                              combine = FALSE,
                                                                              fast = FALSE)
+            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute,
+                                                                   dims = input$pca_no_components,
+                                                                   ncol = 2,
+                                                                   labels = c("PC1", "PC2", "PC3", "PC4"))
             updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
           })
         }
-        addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-        addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-        addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+       # addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        #addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        #addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
         updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+        
+        
+        #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+        shinyjs::toggleState(
+          selector = "a[data-value='Elbow Plot (PCA)']",
+          condition = input$pca_compute_elbow)
+        
+        shinyjs::toggleState(
+          selector = "a[data-value='JackStraw Plot (PCA)']",
+          condition = input$pca_compute_jackstraw) 
+        
+        shinyjs::toggleState(
+          selector = "a[data-value='Heatmap Plot (PCA)']",
+          condition = input$pca_compute_heatmap)
+        
         showNotification("PCA Complete")
     })
 
     #Run ICA
     observeEvent(input$run_ica_button, {
-        req(vals$counts)
-        withProgress(message = "Running ICA", max = 1, value = 1, {
-          vals$counts <- seuratICA(inSCE = vals$counts,
-                                                 useAssay = "seuratScaledData",
-                                                 reducedDimName = "seuratICA",
-                                                 nics = input$ica_no_components)
-          seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
+      req(vals$counts)
+      
+      withProgress(message = "Running ICA", max = 1, value = 1, {
+        vals$counts <- seuratICA(inSCE = vals$counts,
+                                 useAssay = "seuratScaledData",
+                                 reducedDimName = "seuratICA",
+                                 nics = input$ica_no_components)
+        seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
+      })
+      withProgress(message = "Plotting ICA", max = 1, value = 1, {
+        seuratWorkflow$plotObject$ICA <- seuratReductionPlot(inSCE = vals$counts,
+                                                             useReduction = "ica",
+                                                             showLegend = FALSE)
+      })
+      if (input$ica_compute_heatmap) {
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          seuratWorkflow$plotObject$HeatmapCompute_ica <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                           useAssay = "seuratScaledData",
+                                                                           useReduction = "ica",
+                                                                           dims = input$ica_no_components,
+                                                                           nfeatures = input$ica_compute_heatmap_nfeatures,
+                                                                           combine = FALSE,
+                                                                           fast = FALSE)
+          seuratWorkflow$plotObject$Heatmap_ica <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute_ica,
+                                                                 dims = input$ica_no_components,
+                                                                 ncol = 2,
+                                                                 labels = c("IC1", "IC2", "IC3", "IC4"))
+          updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = .getICAComponentNames(seuratWorkflow$numberOfReductionComponents$ica))
         })
-        withProgress(message = "Plotting ICA", max = 1, value = 1, {
-          seuratWorkflow$plotObject$ICA <- seuratReductionPlot(inSCE = vals$counts,
-                                                               useReduction = "ica",
-                                                               showLegend = FALSE)
-          })
-        updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-        showNotification("ICA Complete")
+      }
+      updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+      
+      
+      #Enable/Disable ICA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+      shinyjs::toggleState(
+        selector = "a[data-value='Heatmap Plot (ICA)']",
+        condition = input$ica_compute_heatmap)
+      
+      showNotification("ICA Complete")
     })
 
     #Find clusters
@@ -5331,12 +5376,45 @@ shinyServer(function(input, output, session) {
             vals$counts <- seuratFindClusters(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
                                               useReduction = input$reduction_clustering_method,
-                                              dims = input$reduction_clustering_count,
+                                              dims = input$pca_significant_pc_slider,
                                               algorithm = input$algorithm.use,
-                                              groupSingletons = input$group.singletons)
+                                              groupSingletons = input$group.singletons,
+                                              resolution = input$resolution_clustering)
           })
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
           showNotification("Find Clusters Complete")
+          
+          if(input$compute_pca_clustering){
+            withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
+              seuratWorkflow$plotObject$PCA_Clustering <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "pca",
+                                                                              showLegend = TRUE)
+            })
+          }
+          
+          if(input$compute_ica_clustering){
+            withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
+              seuratWorkflow$plotObject$ICA_Clustering <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "ica",
+                                                                              showLegend = TRUE)
+            })
+          }
+          
+          if(input$compute_tsne_clustering){
+            withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
+              seuratWorkflow$plotObject$tSNE_Clustering <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "tsne",
+                                                                              showLegend = TRUE)
+            })
+          }
+          
+          if(input$compute_umap_clustering){
+            withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
+              seuratWorkflow$plotObject$UMAP_Clustering <- seuratReductionPlot(inSCE = vals$counts,
+                                                                              useReduction = "umap",
+                                                                              showLegend = TRUE)
+            })
+          }
 
         #} else {
         #  showNotification("Please compute PCA or ICA before processing clusters.", type = "error")
@@ -5344,6 +5422,17 @@ shinyServer(function(input, output, session) {
       #} else {
       #  showNotification("Please normalize, scale, and perform dimensionality reduction on the data before computing UMAP", type = "error")
       #}
+    })
+    
+    output$display_message_clustering <- renderText({
+      if(input$reduction_clustering_method == "pca"){
+        if(input$pca_significant_pc_slider){
+          paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+        }
+      }
+      else{ #ICA to do
+        paste(input$pca_significant_pc_slider)
+      }
     })
 
     #Run tSNE
@@ -5355,7 +5444,8 @@ shinyServer(function(input, output, session) {
                         vals$counts <- seuratRunTSNE(inSCE = vals$counts,
                                                      useReduction = input$reduction_tsne_method,
                                                      reducedDimName = "seuratTSNE",
-                                                     dims = input$reduction_tsne_count)
+                                                     dims = input$pca_significant_pc_slider,
+                                                     perplexity = input$perplexity_tsne)
                     })
                     withProgress(message = "Plotting tSNE", max = 1, value = 1, {
                         seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(inSCE = vals$counts,
@@ -5365,9 +5455,20 @@ shinyServer(function(input, output, session) {
                     updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
                     showNotification("tSNE Complete")
 #                } else {
-#                    showNotification("Please compute PCA or ICA before runnibg tSNE.", type = "error")
+#                    showNotification("Please compute PCA or ICA before running tSNE.", type = "error")
 #                }
 #        }
+    })
+    
+    output$display_message_tsne <- renderText({
+      if(input$reduction_tsne_method == "pca"){
+        if(input$pca_significant_pc_slider){
+          paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+        }
+      }
+      else{ #ICA to do
+        paste(input$pca_significant_pc_slider)
+      }
     })
 
     #Run UMAP
@@ -5379,7 +5480,10 @@ shinyServer(function(input, output, session) {
                         vals$counts <- seuratRunUMAP(inSCE = vals$counts,
                                                      useReduction = input$reduction_umap_method,
                                                      reducedDimName = "seuratUMAP",
-                                                     dims = input$reduction_umap_count)
+                                                     dims = input$pca_significant_pc_slider,
+                                                     minDist = input$min_dist_umap,
+                                                     nNeighbors = input$n_neighbors_umap,
+                                                     spread = input$spread_umap)
                     })
                     withProgress(message = "Plotting UMAP", max = 1, value = 1, {
                         seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(inSCE = vals$counts,
@@ -5392,6 +5496,17 @@ shinyServer(function(input, output, session) {
 #                    showNotification("Please compute PCA or ICA before running UMAP.", type = "error")
 #                }
 #            }
+    })
+    
+    output$display_message_umap <- renderText({
+      if(input$reduction_umap_method == "pca"){
+        if(input$pca_significant_pc_slider){
+          paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+        }
+      }
+      else{ #ICA to do
+        paste(input$pca_significant_pc_slider)
+      }
     })
 
     #Display the number of significant PC computed
@@ -5414,6 +5529,20 @@ shinyServer(function(input, output, session) {
             updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = seuratWorkflow$numberOfReductionComponents$significantPC)
         }
     })
+    
+    #Update ica significant slider maximum value with total number of computed principal components
+    observe({
+      if (!is.null(seuratWorkflow$numberOfReductionComponents$ica)) {
+        updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$ica)
+      }
+    })
+    
+    #Update ica significant slider current value with computed significant IC value
+    observe({
+      if (!is.null(seuratWorkflow$numberOfReductionComponents$significantIC)) {
+        updateSliderInput(session = session, inputId = "ica_significant_ic_slider", value = seuratWorkflow$numberOfReductionComponents$significantIC)
+      }
+    })
 
     #Draw HVG plot
     output$plot_hvg <- renderPlot({
@@ -5428,25 +5557,49 @@ shinyServer(function(input, output, session) {
             seuratWorkflow$plotObject$PCA
         }
     })
+    
+    output$plot_pca_clustering <- renderPlot({
+      if (!is.null(seuratWorkflow$plotObject$PCA_Clustering)) {
+        seuratWorkflow$plotObject$PCA_Clustering
+      }
+    })
+    
+    output$plot_ica_clustering <- renderPlot({
+      if (!is.null(seuratWorkflow$plotObject$ICA_Clustering)) {
+        seuratWorkflow$plotObject$ICA_Clustering
+      }
+    })
+    
+    output$plot_tsne_clustering <- renderPlot({
+      if (!is.null(seuratWorkflow$plotObject$tSNE_Clustering)) {
+        seuratWorkflow$plotObject$tSNE_Clustering
+      }
+    })
+    
+    output$plot_umap_clustering <- renderPlot({
+      if (!is.null(seuratWorkflow$plotObject$UMAP_Clustering)) {
+        seuratWorkflow$plotObject$UMAP_Clustering
+      }
+    })
 
     #Draw Elbow (pca) plot
-    output$plot_elbow <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$Elbow)) {
-            seuratWorkflow$plotObject$Elbow
+    output$plot_elbow_pca <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$Elbow_pca)) {
+            seuratWorkflow$plotObject$Elbow_pca
         }
     })
 
     #Draw Jackstraw (pca) plot
-    output$plot_jackstraw <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$JackStraw)) {
-            seuratWorkflow$plotObject$JackStraw
+    output$plot_jackstraw_pca <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$JackStraw_pca)) {
+            seuratWorkflow$plotObject$JackStraw_pca
         }
     })
 
     #Draw heatmap (pca) plot
-    output$plot_heatmap <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$Heatmap)) {
-            seuratWorkflow$plotObject$Heatmap
+    output$plot_heatmap_pca <- renderPlot({
+        if (!is.null(seuratWorkflow$plotObject$Heatmap_pca)) {
+            seuratWorkflow$plotObject$Heatmap_pca
         }
     })
 
@@ -5455,6 +5608,12 @@ shinyServer(function(input, output, session) {
         if (!is.null(seuratWorkflow$plotObject$ICA)) {
             seuratWorkflow$plotObject$ICA
         }
+    })
+    
+    output$plot_heatmap_ica <- renderPlot({
+      if (!is.null(seuratWorkflow$plotObject$Heatmap_ica)) {
+        seuratWorkflow$plotObject$Heatmap_ica
+      }
     })
 
     #Draw tSNE plot
@@ -5496,30 +5655,21 @@ shinyServer(function(input, output, session) {
     #Customize heatmap (pca) with selected options
     observeEvent(input$plot_heatmap_pca_button, {
         if (!is.null(input$picker_dimheatmap_components_pca)) {
-            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute,
+            seuratWorkflow$plotObject$Heatmap_pca <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute,
                                                                    dims = length(input$picker_dimheatmap_components_pca),
                                                                    ncol = input$slider_dimheatmap_pca,
                                                                    labels = input$picker_dimheatmap_components_pca)
         }
     })
     
-    #Enable/Disable PCA plot panels not selected for computation
-    observeEvent(input$pca_compute_elbow,{
-      shinyjs::toggleState(
-        selector = "a[data-value='Elbow Plot']",
-        condition = input$pca_compute_elbow)
-    })
-    
-    observeEvent(input$pca_compute_jackstraw,{
-      shinyjs::toggleState(
-        selector = "a[data-value='JackStraw Plot']",
-        condition = input$pca_compute_jackstraw)      
-    })
-    
-    observeEvent(input$pca_compute_heatmap,{
-      shinyjs::toggleState(
-        selector = "a[data-value='Heatmap Plot']",
-        condition = input$pca_compute_heatmap)      
+    #Customize heatmap (ica) with selected options
+    observeEvent(input$plot_heatmap_ica_button, {
+      if (!is.null(input$picker_dimheatmap_components_ica)) {
+        seuratWorkflow$plotObject$Heatmap_ica <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute_ica,
+                                                               dims = length(input$picker_dimheatmap_components_ica),
+                                                               ncol = input$slider_dimheatmap_ica,
+                                                               labels = input$picker_dimheatmap_components_ica)
+      }
     })
 
 })
