@@ -521,4 +521,40 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
     return(inSCE)
 }
 
+.seuratInvalidate <- function(inSCE, currentTab = "Normalize Data"){
+  if(currentTab == "Normalize Data"){
+    assay(inSCE, "seuratScaledData") <- NULL
+    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- as.logical()
+    inSCE@metadata$seurat$obj@reductions$pca <- NULL
+    inSCE@metadata$seurat$obj@reductions$ica <- NULL
+    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+    inSCE@metadata$seurat$obj@reductions$umap <- NULL
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  else if(currentTab == "Scale Data"){
+    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- as.logical()
+    inSCE@metadata$seurat$obj@reductions$pca <- NULL
+    inSCE@metadata$seurat$obj@reductions$ica <- NULL
+    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+    inSCE@metadata$seurat$obj@reductions$umap <- NULL
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  else if(currentTab == "Highly Variable Genes"){
+    inSCE@metadata$seurat$obj@reductions$pca <- NULL
+    inSCE@metadata$seurat$obj@reductions$ica <- NULL
+    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+    inSCE@metadata$seurat$obj@reductions$umap <- NULL
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  else if(currentTab == "Dimensionality Reduction"){
+    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+    inSCE@metadata$seurat$obj@reductions$umap <- NULL
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  else if(currentTab == "tSNE/UMAP"){
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  return(inSCE)
+}
+
 # ----
