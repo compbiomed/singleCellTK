@@ -5302,7 +5302,7 @@ shinyServer(function(input, output, session) {
             updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
           })
         }
-       # addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
+        #addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
         #addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
         #addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
         updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
@@ -5530,17 +5530,17 @@ shinyServer(function(input, output, session) {
         }
     })
     
-    #Update ica significant slider maximum value with total number of computed principal components
+    #Update ica significant slider maximum value with total number of computed independent components
     observe({
       if (!is.null(seuratWorkflow$numberOfReductionComponents$ica)) {
-        updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$ica)
+        updateSliderInput(session = session, inputId = "ica_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$ica)
       }
     })
     
     #Update ica significant slider current value with computed significant IC value
     observe({
       if (!is.null(seuratWorkflow$numberOfReductionComponents$significantIC)) {
-        updateSliderInput(session = session, inputId = "ica_significant_ic_slider", value = seuratWorkflow$numberOfReductionComponents$significantIC)
+        updateSliderInput(session = session, inputId = "ica_significant_pc_slider", value = seuratWorkflow$numberOfReductionComponents$significantIC)
       }
     })
 
@@ -5670,6 +5670,83 @@ shinyServer(function(input, output, session) {
                                                                ncol = input$slider_dimheatmap_ica,
                                                                labels = input$picker_dimheatmap_components_ica)
       }
+    })
+    
+    observe({
+      if(!is.null(vals$counts)){
+        shinyjs::enable(
+          selector = "div[value='Normalize Data']")
+        if("seuratNormData" %in% assayNames(vals$counts)){
+          shinyjs::enable(
+            selector = "div[value='Scale Data']")
+        }
+        else{
+          shinyjs::disable(
+            selector = "div[value='Scale Data']")
+        }
+        if(!is.null(vals$counts@metadata)){
+          if(!is.null(vals$counts@metadata$seurat)){
+            if("seuratScaledData" %in% assayNames(vals$counts)){
+              shinyjs::enable(
+                selector = "div[value='Highly Variable Genes']")
+            }
+            else{
+              shinyjs::disable(
+                selector = "div[value='Highly Variable Genes']")
+            }
+            if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) > 0){
+              shinyjs::enable(
+                selector = "div[value='Dimensionality Reduction']")
+            }
+            else{
+              shinyjs::disable(
+                selector = "div[value='Dimensionality Reduction']")
+            }
+            print(slotNames(vals$counts@metadata$seurat$obj))
+            if("reductions" %in% slotNames(vals$counts@metadata$seurat$obj)){
+              print("inside tsne")
+              
+              if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
+                 || !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+                shinyjs::enable(
+                  selector = "div[value='tSNE/UMAP']")
+              }
+              else{
+                shinyjs::disable(
+                  selector = "div[value='tSNE/UMAP']")
+              }
+              if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
+                 || !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+                shinyjs::enable(
+                  selector = "div[value='Clustering']")
+              }
+              else{
+                shinyjs::disable(
+                  selector = "div[value='Clustering']")
+              }
+            }
+            
+          }
+          
+        }
+      }
+      else{
+        shinyjs::disable(
+          selector = "div[value='Normalize Data']")
+        shinyjs::disable(
+          selector = "div[value='Scale Data']")
+        shinyjs::disable(
+          selector = "div[value='Highly Variable Genes']")
+        shinyjs::disable(
+          selector = "div[value='Dimensionality Reduction']")
+        shinyjs::disable(
+          selector = "div[value='tSNE/UMAP']")
+        shinyjs::disable(
+          selector = "div[value='Clustering']")
+      }
+   
+
+      
     })
 
 })
