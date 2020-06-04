@@ -2867,7 +2867,7 @@ shinyServer(function(input, output, session) {
             feature = input$GeneSelect_Assays_Colorby)
         }else if(input$TypeSelect_ColorBy == "Cell Annotation"){
           a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-            colorBy = input$AnnotationSelect_Colorby, xlab = xname, ylab = yname,
+            xlab = xname, ylab = yname,
             title = input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
