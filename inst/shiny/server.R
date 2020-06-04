@@ -2862,13 +2862,13 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_ColorBy == "Expression Assays"){
           a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
             conditionClass = "factor", xlab = xname, ylab = yname,
-            title = input$adjusttitle, legendTitle = legendname,
+            title = input$adjusttitle,
             useAssay = input$AdvancedMethodSelect_Colorby,
             feature = input$GeneSelect_Assays_Colorby)
         }else if(input$TypeSelect_ColorBy == "Cell Annotation"){
           a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
             colorBy = input$AnnotationSelect_Colorby, xlab = xname, ylab = yname,
-            title = input$adjusttitle, legendTitle = legendname)
+            title = input$adjusttitle)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
