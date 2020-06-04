@@ -2228,7 +2228,7 @@ shinyServer(function(input, output, session) {
     |color_table$category == "seq"),])
 
   #-+-+-+-+-+-For Input Observe##############
-  observeEvent(input$cellViewerButton,{
+  observeEvent(input$shinyPanelCellViewer,{
     # is there an error or not
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -2867,7 +2867,7 @@ shinyServer(function(input, output, session) {
             feature = input$GeneSelect_Assays_Colorby)
         }else if(input$TypeSelect_ColorBy == "Cell Annotation"){
           a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-            colorBy = input$AnnotationSelect_Colorby, conditionClass = "factor", xlab = xname, ylab = yname,
+            colorBy = input$AnnotationSelect_Colorby, xlab = xname, ylab = yname,
             title = input$adjusttitle, legendTitle = legendname)
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
