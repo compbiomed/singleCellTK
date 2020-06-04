@@ -186,6 +186,10 @@ plotSCEDimReduceColData <- function(inSCE,
   if (!is.null(shape)) {
     Df$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
   }
+  if (!is.null(groupBy)){
+    Df$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
+  }
+
   Df$Sample <- colnames(inSCE)
   g <- ggplot2::ggplot(Df, ggplot2::aes_string(xdim, ydim,
     label = "Sample"
@@ -215,7 +219,6 @@ plotSCEDimReduceColData <- function(inSCE,
   }
 
   if (!is.null(groupBy)){
-    Df$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
     g <- g + facet_wrap(~groups)
   }
 
