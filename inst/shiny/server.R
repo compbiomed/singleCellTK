@@ -2859,9 +2859,11 @@ shinyServer(function(input, output, session) {
           title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
-        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname,
-          title = input$adjusttitle)
+        if("Cell Annotation" == "Cell Annotation"){
+          a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
+            xlab = xname, ylab = yname,
+            title = input$adjusttitle)
+        }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
