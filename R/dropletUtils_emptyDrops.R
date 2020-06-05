@@ -1,22 +1,15 @@
-.runEmptyDrops <- function(barcode.matrix, lower=100,
-                           niters=10000,
-                           test.ambient=FALSE,
-                           ignore=NULL, 
-                           alpha=NULL,
-                           retain=NULL,
+.runEmptyDrops <- function(barcode.matrix=barcode.matrix, lower=lower,
+                           niters=niters,
+                           test.ambient=test.ambient,
+                           ignore=ignore, 
+                           alpha=alpha,
+                           retain=retain,
                            barcode.args=list(),
                            BPPARAM=BiocParallel::SerialParam()) {
   
   barcode.matrix <- .convertToMatrix(barcode.matrix)
   
-  result <- DropletUtils::emptyDrops(m = barcode.matrix, lower=100,
-                                     niters=10000,
-                                     test.ambient=FALSE,
-                                     ignore=NULL, 
-                                     alpha=NULL,
-                                     retain=NULL,
-                                     barcode.args=list(),
-                                     BPPARAM=BiocParallel::SerialParam())
+  result <- DropletUtils::emptyDrops(m = barcode.matrix, lower=lower)
   colnames(result) <- paste0("dropletUtils_emptyDrops_", colnames(result))
   
   return(result)
@@ -119,8 +112,7 @@ runEmptyDrops <- function(inSCE,
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
-  inSCE@metadata = S4Vectors::metadata(output)
-  
+ 
   inSCE@metadata$runEmptyDrops <- argsList[-1]
   inSCE@metadata$runEmptyDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version
   
