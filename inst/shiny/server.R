@@ -2861,7 +2861,7 @@ shinyServer(function(input, output, session) {
       }else{
         if(input$TypeSelect_ColorBy == "Expression Assays"){
           a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
-            conditionClass = "factor", xlab = xname, ylab = yname,
+            xlab = xname, ylab = yname,
             title = input$adjusttitle, legendTitle = legendname,
             useAssay = input$AdvancedMethodSelect_Colorby,
             feature = input$GeneSelect_Assays_Colorby)
