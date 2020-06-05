@@ -2859,7 +2859,7 @@ shinyServer(function(input, output, session) {
           title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
-        if("Cell Annotation" == "Cell Annotation"){
+        if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
             xlab = xname, ylab = yname,
             title = input$adjusttitle)
