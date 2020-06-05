@@ -5313,6 +5313,9 @@ shinyServer(function(input, output, session) {
         
         
         #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+        shinyjs::enable(
+          selector = "a[data-value='PCA Plot']")
+        
         shinyjs::toggleState(
           selector = "a[data-value='Elbow Plot (PCA)']",
           condition = input$pca_compute_elbow)
@@ -5389,7 +5392,7 @@ shinyServer(function(input, output, session) {
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
           showNotification("Find Clusters Complete")
           
-          if(input$compute_pca_clustering){
+          if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
             withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
               seuratWorkflow$plotObject$PCA_Clustering <- seuratReductionPlot(inSCE = vals$counts,
                                                                               useReduction = "pca",
@@ -5397,7 +5400,7 @@ shinyServer(function(input, output, session) {
             })
           }
           
-          if(input$compute_ica_clustering){
+          if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
             withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
               seuratWorkflow$plotObject$ICA_Clustering <- seuratReductionPlot(inSCE = vals$counts,
                                                                               useReduction = "ica",
@@ -5405,7 +5408,7 @@ shinyServer(function(input, output, session) {
             })
           }
           
-          if(input$compute_tsne_clustering){
+          if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
             withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
               seuratWorkflow$plotObject$tSNE_Clustering <- seuratReductionPlot(inSCE = vals$counts,
                                                                               useReduction = "tsne",
@@ -5413,7 +5416,7 @@ shinyServer(function(input, output, session) {
             })
           }
           
-          if(input$compute_umap_clustering){
+          if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
             withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
               seuratWorkflow$plotObject$UMAP_Clustering <- seuratReductionPlot(inSCE = vals$counts,
                                                                               useReduction = "umap",
@@ -5690,6 +5693,14 @@ shinyServer(function(input, output, session) {
         else{
           shinyjs::disable(
             selector = "div[value='Scale Data']")
+          shinyjs::disable(
+            selector = "a[data-value='PCA Plot']")
+          shinyjs::disable(
+            selector = "a[data-value='Elbow Plot (PCA)']")
+          shinyjs::disable(
+            selector = "a[data-value='JackStraw Plot (PCA)']") 
+          shinyjs::disable(
+            selector = "a[data-value='Heatmap Plot (PCA)']")
         }
         if(!is.null(vals$counts@metadata)){
           if(!is.null(vals$counts@metadata$seurat)){

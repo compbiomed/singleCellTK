@@ -275,10 +275,10 @@ shinyPanelSeurat <- fluidPage(
                                                                                                                                "SLM algorithm" = "SLM")),
                                     numericInput(inputId = "resolution_clustering", label = "Set resolution:", value = 0.8),
                                     materialSwitch(inputId = "group.singletons", label = "Group singletons?", value = TRUE),
-                                    materialSwitch(inputId = "compute_pca_clustering", label = "Compute PCA?", value = TRUE),
-                                    materialSwitch(inputId = "compute_ica_clustering", label = "Compute ICA?", value = TRUE),
-                                    materialSwitch(inputId = "compute_tsne_clustering", label = "Compute tSNE?", value = TRUE),
-                                    materialSwitch(inputId = "compute_umap_clustering", label = "Compute UMAP?", value = TRUE),
+                                    #materialSwitch(inputId = "compute_pca_clustering", label = "Compute PCA?", value = TRUE),
+                                    #materialSwitch(inputId = "compute_ica_clustering", label = "Compute ICA?", value = TRUE),
+                                    #materialSwitch(inputId = "compute_tsne_clustering", label = "Compute tSNE?", value = TRUE),
+                                    #materialSwitch(inputId = "compute_umap_clustering", label = "Compute UMAP?", value = TRUE),
                                     htmlOutput(outputId = "display_message_clustering", inline = FALSE),
                                     actionButton(inputId = "find_clusters_button", "Find Clusters")
                                     )
