@@ -1,0 +1,449 @@
+---
+title: "Interactive Analysis of Single Cell RNA-Seq Data: CellQC report"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+
+```{r "CellQC-lib", warning=FALSE, include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(umap)
+```
+
+## Run QC functions
+
+```{r, "CellQC-import", eval = FALSE, include=FALSE}
+sce.qc <- params$object
+```
+
+```{r, "CellQC-umap", eval = FALSE, include=FALSE, warning=FALSE}
+getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
+                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
+  }
+  #test for assay existing
+  if (!all(useAssay %in% names(assays(inSCE)))){
+    stop("assay '", useAssay, "' does not exist.")
+  }
+  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
+  custom.config <- umap::umap.defaults
+  custom.config$n_neighbors <- n_neighbors
+  custom.config$alpha <- alpha
+  custom.config$n_epochs <- n_iterations
+  matColData <- as.matrix(matColData)
+  umap_results <- umap::umap(t(matColData), config = custom.config)
+  if (is.null(rownames(inSCE))) {
+    rownames(umap_results$layout) <- colnames(inSCE)
+  }
+  umap_results <- umap_results$layout
+  colnames(umap_results) <- c("UMAP1", "UMAP2")
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
+  return(inSCE)
+}
+
+```
+
+```{r, "CellQC-reddim", eval = FALSE, include=FALSE, warning=FALSE}
+#Log counts prior to running UMAP
+if (is.null(sce.qc@assays@data$logcounts)){
+  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
+  #get UMAP
+  if (!"UMAP" %in% reducedDimNames(sce.qc)){
+  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
+}
+ if (!"UMAP" %in% reducedDimNames(sce.qc)){
+  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
+```
+
+## QCMetrics
+
+Quality control metrics for each cell in singleCellExperiment object.
+
+```{r, "CellQC-qc-sum"}
+if (!is.null(sce.qc$sum)){
+  plotSCEViolinColData(inSCE = sce.qc, coldata = "sum", xlab = "", ylab = "Counts", title = "Total counts per cell", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain sum")
+}
+```
+
+```{r, "CellQC-qc-total"}
+if (!is.null(sce.qc$total)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "total", xlab = "", ylab = "Total counts", title = "Sum of counts for each cell across the main and alternative experiments", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain total")
+}
+```
+
+```{r, "CellQC-qc-mit"}
+if (!is.null(sce.qc$subsets_mito_sum)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "subsets_mito_sum", xlab = "", ylab = "Mitochondrial counts", title = "Total mitochondrial counts per cell", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain subsets_mito_sum")
+}
+```
+```{r, "CellQC-qc-detected"}
+if (!is.null(sce.qc$detected)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "detected", xlab = "", ylab = "Counts", title = "The number of observations above detection_limit", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain detected - number of observations above detection_limit")
+}
+```
+
+```{r, "CellQC-per50"}
+if (!is.null(sce.qc$percent_top_50)|| !is.na(sce.qc$percent_top_50)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_50", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=50 of most highly expressed genes", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain percent_top_50")
+}
+```
+
+```{r, "CellQC-per100"}
+if (!is.null(sce.qc$percent_top_100)|| !is.na(sce.qc$percent_top_100)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_100", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=100 of most highly expressed genes", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain percent_top_100")
+}
+```
+```{r, "CellQC-per200"}
+if (!is.null(sce.qc$percent_top_200)|| !is.na(sce.qc$percent_top_200)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_200", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=200 of most highly expressed genes", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain percent_top_200")
+}
+```
+
+
+```{r, "CellQC-per500"}
+if (!is.null(sce.qc$percent_top_500)|| !is.na(sce.qc$percent_top_500)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_500", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=500 of most highly expressed genes", dotSize = 0.5)
+} else{
+  print("The inSCE does not contain percent_top_500")
+}
+```
+
+## Sample annonation
+```{r, "CellQC-ann"}
+if (!is.null(sce.qc$sample) || !is.na(sce.qc$sample)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "sample" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Sample annotation", legendTitle = "Sample", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain sample information")
+}
+```
+
+## QCMetrics input info
+```{r, "CellQC-qc-info"}
+if (!is.null(sce.qc@metadata$scater)){
+  sce.qc@metadata$scater
+} else{
+  print("The inSCE does not contain scater info")
+}
+```
+
+
+## Scrublet
+
+```{r, "CellQC-scrublet-score-umap"}
+if (!is.null(sce.qc$scrublet_score)|| !is.na(sce.qc$scrublet_score)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "Scrublet Doublet Score", legendTitle = "Doublet Score")
+} else{
+  print("The inSCE does not contain scrublet_score")
+}
+```
+```{r, "CellQC-scrublet-call-umap"}
+if (!is.null(sce.qc$scrublet_call)|| !is.na(sce.qc$scrublet_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Scrublet Doublet Call", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain scrublet_call")
+}
+```
+
+```{r "CellQC-scrublet-score-tsne"}
+if (!is.null(sce.qc$scrublet_score)|| !is.na(sce.qc$scrublet_score)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_score" , conditionClass = "numeric", reducedDimName = "scrublet_TSNE", dotsize = 1, title = "Scrublet Doublet Score", legendTitle = "Doublet Score")
+} else{
+  print("The inSCE does not contain scrublet_score")
+}
+```
+
+```{r, "CellQC-scrublet-call-tsne "}
+if (!is.null(sce.qc$scrublet_call)|| !is.na(sce.qc$scrublet_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_call" , conditionClass = "factor", reducedDimName = "scrublet_TSNE", dotsize = 1, title = "Scrublet Doublet Call", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain scrublet_call")
+}
+```
+
+## Scrublet input info
+```{r, "CellQC-scrublet-info"}
+if (!is.null(sce.qc@metadata$runScrublet)){
+  sce.qc@metadata$runScrublet
+} else{
+  print("The inSCE does not contain runScrublet info")
+}
+```
+
+## Scran-Doublet score
+
+Identification of the potential doublet cells based on simulations of putative doublet expression profiles.
+
+```{r, "CellQC-scran-score"}
+if (!is.null(sce.qc$scran_doubletCells_Score)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "scran_doubletCells_Score", xlab = "", ylab = "score", title = "Doublet scores for each cell", dotSize = 0.5)
+}else{
+  print("The inSCE does not contain scran_doubletCells_Score")
+}
+```
+
+
+## DoubletFinder score
+
+DoubletFinder identifies doublets derived from transcriptionally distinct cells in single cell RNA-seq data. DoubletFinder relies on a parameter called "resolution" to determine cells that may be doublets, which is why there are multiple label/scores.
+
+### Resolution 0.5
+```{r, "CellQC-doubletFinder-res0.5-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_0.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_0.5" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 0.5", legendTitle = "Doublet Score")
+}else{
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_0.5")
+}
+```
+
+```{r, "CellQC-doubletFinder-res0.5-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_0.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_0.5" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 0.5", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain doubletFinder_doublet_label_Resolution_0.5")
+}
+```
+
+### Resolution 1
+```{r, "CellQC-doubletFinder-res1-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_1" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 1", legendTitle = "Doublet Score")
+} else{
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_1")
+}
+```
+
+```{r, "CellQC-doubletFinder-res1-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_1)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_1" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 1", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain doubletFinder_doublet_label_Resolution_1")
+}
+```
+
+### Resolution 1.5
+```{r, "CellQC-doubletFinder-res1.5-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_1.5" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 1.5", legendTitle = "Doublet Score")
+}else{
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_1.5")
+}
+```
+
+```{r, "CellQC-doubletFinder-res1.5-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_1.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_1.5" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 1.5", legendTitle = "Doublet Call", labelClusters = FALSE)
+}else{
+  print("The inSCE does not contain doubletFinder_doublet_label_Resolution_1.5")
+}
+```
+
+
+### Resolution 2
+```{r, "CellQC-doubletFinder-res2-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_2)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_2" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 2", legendTitle = "Doublet Score")
+}else{
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_2")
+}
+```
+
+```{r, "CellQC-doubletFinder-res2-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_2)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_2" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 2", legendTitle = "Doublet Call", labelClusters = FALSE)
+}else{
+  print("The inSCE does not contain doubletFinder_doublet_label_Resolution_2")
+}
+```
+
+### DoubletFinder input info
+```{r, "CellQC-doubletFinder-info"}
+if (!is.null(sce.qc@metadata$runDoubletFinder)){
+  sce.qc@metadata$runDoubletFinder
+}else{
+  print("The inSCE does not contain DoubletFinder info")
+}
+```
+
+## Doublet annotation with Scds: cxds, bcds, CxdsBcdsHybrid
+
+Scds provides in-silico doublet annotation for scRNA-Seq samples. Cxds finds doublets in UMI scRNA-Seq data and annotates them using co-expression based approach. Bcds encounters the full count information and a binary classification approach using artificially generated doublets. CxdsBcdsHybrid combines both approaches. Each method returns a doublet score, where a higher score is an indicator for a doublet cell.
+```{r, "CellQC-scds_cxds_score"}
+par(mfcol=c(1,3))
+if (!is.null(sce.qc$scds_cxds_score) || !is.null(sce.qc$scds_cxds_call)){
+boxplot(sce.qc$scds_cxds_score ~ sce.qc$scds_cxds_call, main="cxds", xlab="Doublet call by cxds", ylab="cxds score")
+boxplot(sce.qc$scds_bcds_score  ~ sce.qc$scds_bcds_call, main="bcds", xlab="Doublet call by bcds", ylab="bcds score")
+boxplot(sce.qc$scds_hybrid_score ~ sce.qc$scds_hybrid_call, main="CxdsBcdsHybrid", xlab="Doublet call by CxdsBcdsHybrid", ylab="CxdsBcdsHybrid score")
+}else{
+  print("The inSCE does not contain scds_cxds_score or scds_cxds_call")
+}
+
+```
+
+### Cxds
+
+Cells/doublets after projecting into reduced dimensions:
+```{r, "CellQC-scds_cxds_score-reddim"}
+if (!is.null(sce.qc$scds_cxds_score) || !is.null(sce.qc$scds_cxds_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_cxds_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "cxds", legendTitle = "Doublet Score")
+} else{
+  print("The inSCE does not contain scds_cxds_score or scds_cxds_call")
+}
+```
+
+```{r, "CellQC-scds_cxds_call-reddim"}
+if (!is.null(sce.qc$scds_cxds_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_cxds_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "cxds call", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain scds_cxds_call")
+}
+```
+
+### Cxds input info
+```{r, "CellQC-runCxds-info"}
+if (!is.null(sce.qc@metadata$runCxds)){
+sce.qc@metadata$runCxds
+} else{
+  print("The inSCE does not contain runCxds info")
+}
+```
+
+
+### Bcds
+
+Bcds considers the full count information to identify doublets in UMI scRNA-Seq data with a binary classification approach using artificially generated doublets.
+
+Distribution of the bcds doublet scores. A high score indicates "doublet-like" cell: 
+```{r, "CellQC-bcds-score"}
+if (!is.null(sce.qc$scds_bcds_score) || !is.null(sce.qc$scds_bcds_call)){
+boxplot(sce.qc$scds_bcds_score  ~ sce.qc$scds_bcds_call, main="bcds", xlab="Doublet call by bcds", ylab="bcds score")
+} else{
+  print("The inSCE does not contain scds_bcds_score or scds_bcds_call")
+}
+```
+
+Cells/doublets after projecting into reduced dimensions:
+```{r, "CellQC-bcds-score-reddim"}
+if (!is.null(sce.qc$scds_bcds_score)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_bcds_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "bcds", legendTitle = "Doublet Score")
+} else{
+  print("The inSCE does not contain scds_bcds_score")
+}
+```
+
+```{r, "CellQC-bcds-call-reddim"}
+if (!is.null(sce.qc$scds_bcds_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_bcds_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "bcds call", legendTitle = "Doublet Call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain scds_bcds_call")
+}
+```
+
+### Bcds input info
+```{r, "CellQC-bcds-info"}
+if (!is.null(sce.qc@metadata$runBcds)){
+sce.qc@metadata$runBcds
+} else{
+  print("The inSCE does not contain runBcds info")
+}
+```
+
+
+### CxdsBcdsHybrid
+
+Cxds_bcds_hybrid combines two approaches to identify doublets in UMI scRNA-Seq data: binary classification  using artificially generated doublets using full count information and considering co-expression of gene pairs.
+
+Distribution of the Cxds_bcds_hybrid doublet score among samples. A high score indicates "doublet-like" cell: 
+```{r, "CellQC-CxdsBcdsHybrid-score-boxplot"}
+if (!is.null(sce.qc$scds_hybrid_call) || !is.null(sce.qc$scds_hybrid_score)){
+boxplot(sce.qc$scds_hybrid_score ~ sce.qc$scds_hybrid_call, main="CxdsBcdsHybrid", xlab="Doublet call by CxdsBcdsHybrid", ylab="CxdsBcdsHybrid score")
+} else{
+  print("The inSCE does not contain scds_hybrid_call or scds_hybrid_score")
+}
+```
+
+Cells/doublets after projecting into reduced dimensions:
+```{r, "CellQC-CxdsBcdsHybrid-score-reddim"}
+if (!is.null(sce.qc$scds_hybrid_score)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_hybrid_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "Cxds_bcds_hybrid score", legendTitle = "Doublet score")
+} else{
+  print("The inSCE does not contain scds_hybrid_score")
+}
+```
+
+```{r, "CellQC-CxdsBcdsHybrid-call-reddim"}
+if (!is.null(sce.qc$scds_hybrid_call)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_hybrid_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Cxds_bcds_hybrid call", legendTitle = "Doublet call", labelClusters = FALSE)
+} else{
+  print("The inSCE does not contain scds_hybrid_call")
+}
+```
+
+### CxdsBcdsHybrid input info
+```{r, "CellQC-CxdsBcdsHybrid-info"}
+if (!is.null(sce.qc@metadata$runCxdsBcdsHybrid)){
+sce.qc@metadata$runCxdsBcdsHybrid
+} else{
+  print("The inSCE does not contain runCxdsBcdsHybrid")
+}
+```
+
+## DecontX
+
+DeconteX is a Bayesian-based method, which identifies contamination from factors such as ambient RNA in the single cell RNA-Seq datasets.
+
+The contamination score on the UMAP projection:
+```{r,"CellQC-decontX-cont-reddim"}
+if (!is.null(sce.qc$decontX_contamination)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "decontX_contamination" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DecontX Contamination Likelihood", legendTitle = "Contamination Likelihood")
+} else{
+  print("The inSCE does not contain decontX_contamination")
+}
+```
+
+The decontX clusters on the UMAP projection:
+```{r, "CellQC-decontX-cluster-reddim"}
+if (!is.null(sce.qc$decontX_clusters)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "decontX_clusters", conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DecontX Clusters", legendTitle = "Clusters", labelClusters = TRUE)
+} else{
+  print("The inSCE does not contain decontX_clusters")
+}
+```
+
+## DecontX input info
+```{r, "CellQC-decontX-info"}
+if (!is.null(sce.qc@metadata$runDecontX)){
+  sce.qc@metadata$runDecontX
+} else{
+  print("The inSCE does not contain runDecontX info")
+}
+```
+
+## Session info
+```{r "CellQC-session-info"}
+sessionInfo()
+```
+
+
+

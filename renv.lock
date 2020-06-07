@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "3.6.3",
+    "Version": "3.6.2",
     "Repositories": [
       {
         "Name": "BioCsoft",
@@ -1856,7 +1856,7 @@
       "Version": "1.1-7",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f7d703097e88fb3550b27ed508cd90df"
+      "Hash": "fa52398ad7aca9b4fc53e423de10cc6c"
     },
     "shape": {
       "Package": "shape",

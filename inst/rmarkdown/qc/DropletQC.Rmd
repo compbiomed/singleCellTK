@@ -1,0 +1,176 @@
+---
+title: "Interactive Analysis of Single Cell RNA-Seq Data: DropletQC report"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r "DropletQC-lib", include=FALSE, warning=FALSE}
+require(umap)
+require(SummarizedExperiment)
+require(SingleCellExperiment)
+require(singleCellTK)
+```
+
+```{r, "DropletQC-import", include=FALSE, include=FALSE, warning=FALSE}
+sce<-params$object
+```
+
+```{r "DropletQC-umap", include=FALSE, warning=FALSE}
+getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
+                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
+  }
+  #test for assay existing
+  if (!all(useAssay %in% names(assays(inSCE)))){
+    stop("assay '", useAssay, "' does not exist.")
+  }
+  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
+  custom.config <- umap::umap.defaults
+  custom.config$n_neighbors <- n_neighbors
+  custom.config$alpha <- alpha
+  custom.config$n_epochs <- n_iterations
+  matColData <- as.matrix(matColData)
+  umap_results <- umap::umap(t(matColData), config = custom.config)
+  if (is.null(rownames(inSCE))) {
+    rownames(umap_results$layout) <- colnames(inSCE)
+  }
+  umap_results <- umap_results$layout
+  colnames(umap_results) <- c("UMAP1", "UMAP2")
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
+  return(inSCE)
+}
+```
+
+```{r "DropletQC-reddim", include = FALSE, include=FALSE, warning=FALSE}
+#Log counts prior to running UMAP
+if (is.null(sce@assays@data$logcounts)){
+  sce@assays@data$logcounts = log10(sce@assays@data$counts + 1)}
+  #get UMAP
+if (!"UMAP" %in% reducedDimNames(sce)){
+  sce = getUMAP(inSCE = sce, useAssay = "logcounts")}
+
+```
+
+## QC Metrics
+
+### Sample annonation
+```{r "DropletQC-sample-ann"}
+plotSCEDimReduceColData(inSCE = sce, colorBy = "sample" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Sample annotation", legendTitle = "Sample", labelClusters = FALSE)
+```
+
+## EmptyDrops
+
+The emptyDrops function distinguishes between empty droplets and cells. It tests each barcode's expression profile for significant deviation from the ambient profile.
+
+```{r "DropletQC-emptyDrops"}
+if (!is.null(sce@colData$dropletUtils_emptyDrops_total)){
+  
+  if (all(is.na((sce@colData$dropletUtils_emptyDrops_logprob)))){
+    print("All logProb contain NA or NaN values.")
+    }else{
+    plot(sce$dropletUtils_emptyDrops_total, -sce$dropletUtils_emptyDrops_logprob, col=ifelse(is.cell, "red", "black"),
+ xlab="Total UMI count", ylab="-Log Probability")
+  }
+  
+} else {
+  print("The emtyDrops output is missing")
+}
+```
+
+
+Projection into a reduced dimentional space:
+```{r "DropletQC-emptyDrops-fdr"}
+if (!is.null(sce$dropletUtils_emptyDrops_fdr)){
+  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_fdr" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops FDR per sample", legendTitle = "FDR")
+}
+```
+
+```{r "DropletQC-emptyDrops-logprob"}
+if (!is.null(sce$dropletUtils_emptyDrops_logprob)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_logprob" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops logprob per sample", legendTitle = "logprob")
+}else{
+  print("EmptyDrops logprob is missing")
+}
+```
+
+```{r "DropletQC-emptyDrops-pval"}
+if (!is.null(sce$dropletUtils_emptyDrops_pvalue)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_pvalue" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops p-value per sample", legendTitle = "p-value")
+}else{
+  print("EmptyDrops p-value is missing")
+}
+```
+
+```{r DropletQC-emptyDrops-total}
+if (!is.null(sce$dropletUtils_emptyDrops_total)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_total" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops total UMI counts per sample", legendTitle = "Total UMI counts")
+}else{
+  print("EmptyDrops total is missing")
+}
+```
+
+## EmptyDrops input info
+```{r "DropletQC-emtyDrops-info"}
+if (!is.null(sce@metadata$runEmptyDrops)){
+  sce@metadata$runEmptyDrops
+}
+```
+
+
+## BarcodeRank
+
+BarcodeRank computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA.
+
+```{r, "DropletQC-BarcodeRank-knee-plot"}
+if (length(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank)!=0){
+  plot(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank, metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_total, log="xy", xlab="Rank", ylab="Total")
+o <- order(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank)
+lines(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank[o], metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_fitted[o], col="red")
+if (length(sce$dropletUtils_BarcodeRank_Knee)!=0 || length(sce$dropletUtils_BarcodeRank_Inflection)!=0){
+  abline(h=sce$dropletUtils_BarcodeRank_Knee, col="dodgerblue", lty=2)
+abline(h=sce$dropletUtils_BarcodeRank_Inflection, col="forestgreen", lty=2)
+}else{
+  stop("The barcodeRank knee or inflection are missing")
+}
+legend("bottomleft", lty=2, col=c("dodgerblue", "forestgreen"), 
+    legend=c("knee", "inflection"))
+}else{
+  stop("The barcodeRank is missing")
+}
+```
+
+Projection into a reduced dimentional space:
+```{r "DropletQC-BarcodeRank-knee"}
+if (!is.null(sce$dropletUtils_BarcodeRank_Knee)){
+  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_BarcodeRank_Knee" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "BarcodeRank Knee score per sample", legendTitle = "Knee score")
+}else{
+  print("The barcodeRank Knee is missing")
+}
+```
+```{r "DropletQC-BarcodeRank-inflection"}
+if (!is.null(sce$dropletUtils_BarcodeRank_Inflection)){
+  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_BarcodeRank_Inflection" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "BarcodeRank inflection score per sample", legendTitle = "Inflection score")
+}else{
+  print("BarcodeRank inflection is missing")}
+```
+
+## BarcodeRankDrops input info
+```{r "DropletQC-BarcodeRank-info"}
+if (!is.null(sce@metadata$runBarcodeRankDrops)){
+  sce@metadata$runBarcodeRankDrops
+} else{
+  print("The inSCE does not contain runBarcodeRankDrops info")
+}
+```
+
+## SessionInfo
+```{r "DropletQC-BarcodeRank-session-info", include=TRUE}
+sessionInfo()
+```
