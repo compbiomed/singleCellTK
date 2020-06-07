@@ -527,7 +527,9 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
     assay(inSCE, "seuratScaledData") <- NULL
   }
   if(varFeatures){
-    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- as.logical()
+    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- logical()
+    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features <- data.frame(row.names = make.unique(gsub("_", "-", rownames(inSCE))))
+    inSCE@metadata$seurat$heatmap_pca <- NULL
   }
   if(PCA){
     inSCE@metadata$seurat$obj@reductions$pca <- NULL
