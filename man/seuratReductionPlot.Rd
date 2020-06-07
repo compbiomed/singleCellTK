@@ -8,7 +8,7 @@ Plots the selected dimensionality reduction method}
 seuratReductionPlot(
   inSCE,
   useReduction = c("pca", "ica", "tsne", "umap"),
-  showLegend = TRUE
+  showLegend = FALSE
 )
 }
 \arguments{
@@ -16,7 +16,7 @@ seuratReductionPlot(
 
 \item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
 
-\item{showLengend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{TRUE}.}
+\item{showLegend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
 }
 \value{
 plot object
