@@ -35,7 +35,7 @@
 }
 
 #' .computeSignificantPC
-#' Computes the significant principal components from an input sce object (must containt pca slot) using stdev
+#' Computes the significant principal components from an input sce object (must contain pca slot) using stdev
 #' @param inSCE (sce) object with pca computed
 #' @return max_components a numerical value indicating how many number of components are considered significant
 .computeSignificantPC <- function(inSCE) {
@@ -521,37 +521,27 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
     return(inSCE)
 }
 
-.seuratInvalidate <- function(inSCE, currentTab = "Normalize Data"){
-  if(currentTab == "Normalize Data"){
+#.seuratInvalidate <- function(inSCE, currentTab = "Normalize Data"){
+.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
+  if(scaleData){
     assay(inSCE, "seuratScaledData") <- NULL
+  }
+  if(varFeatures){
     slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- as.logical()
+  }
+  if(PCA){
     inSCE@metadata$seurat$obj@reductions$pca <- NULL
+  }
+  if(ICA){
     inSCE@metadata$seurat$obj@reductions$ica <- NULL
-    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
-    inSCE@metadata$seurat$obj@reductions$umap <- NULL
-    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
   }
-  else if(currentTab == "Scale Data"){
-    slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- as.logical()
-    inSCE@metadata$seurat$obj@reductions$pca <- NULL
-    inSCE@metadata$seurat$obj@reductions$ica <- NULL
+  if(tSNE){
     inSCE@metadata$seurat$obj@reductions$tsne <- NULL
-    inSCE@metadata$seurat$obj@reductions$umap <- NULL
-    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
   }
-  else if(currentTab == "Highly Variable Genes"){
-    inSCE@metadata$seurat$obj@reductions$pca <- NULL
-    inSCE@metadata$seurat$obj@reductions$ica <- NULL
-    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+  if(UMAP){
     inSCE@metadata$seurat$obj@reductions$umap <- NULL
-    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
   }
-  else if(currentTab == "Dimensionality Reduction"){
-    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
-    inSCE@metadata$seurat$obj@reductions$umap <- NULL
-    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
-  }
-  else if(currentTab == "tSNE/UMAP"){
+  if(clusters){
     inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
   }
   return(inSCE)
