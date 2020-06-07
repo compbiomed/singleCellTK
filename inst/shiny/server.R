@@ -2860,13 +2860,41 @@ shinyServer(function(input, output, session) {
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         if(input$TypeSelect_Colorby == 'Expression Assays'){
-          a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
-            xlab = xname, ylab = yname, useAssay = input$AdvancedMethodSelect_Colorby,
-            feature = input$GeneSelect_Assays_Colorby, title = input$adjusttitle)
+          if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+            a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
+              xlab = xname, ylab = yname, useAssay = input$AdvancedMethodSelect_Colorby,
+              feature = input$GeneSelect_Assays_Colorby, title = input$adjusttitle)
+          }else if (input$viewertabs == "Bar Plot"){
+
+          }else if (input$viewertabs == "Violin/Box Plot"){
+            if (input$vlnboxcheck == FALSE){
+              a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
+                useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
+                feature = input$GeneSelect_Assays_Colorby, violin = TRUE, box = FALSE)
+            }else{
+              a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
+                useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
+                feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE)
+            }
+          }
         }else if(input$TypeSelect_Colorby == 'Cell Annotation'){
-          a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-            xlab = xname, ylab = yname, colorBy = input$AnnotationSelect_Colorby,
-            title = input$adjusttitle)
+          if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+            a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
+              xlab = xname, ylab = yname, colorBy = input$AnnotationSelect_Colorby,
+              title = input$adjusttitle)
+          }else if (input$viewertabs == "Bar Plot"){
+
+          }else if (input$viewertabs == "Violin/Box Plot"){
+            if (input$vlnboxcheck == FALSE){
+              a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
+                title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
+                groupby = input$AnnotationSelect_XAxis, violin = FALSE, box = TRUE)
+            }else{
+              a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
+                title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
+                groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE)
+            }
+          }
         }
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
