@@ -96,23 +96,23 @@ shinyPanelSeurat <- fluidPage(
                             column(8,
                                 fluidRow(
                                     column(12,
-                                        tabsetPanel(type = "tabs",
+                                        tags$div(class = "seurat_pca_plots", tabsetPanel(type = "tabs",
                                             tabPanel(title = "PCA Plot",
                                                 panel(heading = "PCA Plot",
                                                     plotOutput(outputId = "plot_pca")
                                                      )
                                                     ),
-                                            tabPanel(title = "Elbow Plot (PCA)",
+                                            tabPanel(title = "Elbow Plot",
                                                 panel(heading = "Elbow Plot",
                                                     plotOutput(outputId = "plot_elbow_pca")
                                                      )
                                                     ),
-                                            tabPanel(title = "JackStraw Plot (PCA)",
+                                            tabPanel(title = "JackStraw Plot",
                                                 panel(heading = "JackStraw Plot",
                                                     plotOutput(outputId = "plot_jackstraw_pca")
                                                      )
                                                     ),
-                                            tabPanel(title = "Heatmap Plot (PCA)",
+                                            tabPanel(title = "Heatmap Plot",
                                                 panel(heading = "Heatmap Plot",
                                                     panel(heading = "Plot Options",
                                                         fluidRow(
@@ -130,7 +130,7 @@ shinyPanelSeurat <- fluidPage(
                                                         )
                                                      )
                                                     )
-                                                   )
+                                                   ))
                                           )
 
                                         )
@@ -157,7 +157,7 @@ shinyPanelSeurat <- fluidPage(
                                                panel(heading = "Select No. of Components",
                                                      #h5("Number of components suggested by ElbowPlot: "),
                                                      #verbatimTextOutput(outputId = "ica_significant_pc_output", placeholder = TRUE),
-                                                     sliderInput(inputId = "ica_significant_pc_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
+                                                     sliderInput(inputId = "ica_significant_ic_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
                                                )
                                         )
                                       )
@@ -165,13 +165,13 @@ shinyPanelSeurat <- fluidPage(
                                column(8,
                                       fluidRow(
                                         column(12,
-                                               tabsetPanel(type = "tabs",
+                                                tags$div(class = "seurat_ica_plots", tabsetPanel(type = "tabs",
                                                            tabPanel(title = "ICA Plot",
                                                                     panel(heading = "ICA Plot",
                                                                           plotOutput(outputId = "plot_ica")
                                                                     )
                                                            ),
-                                                           tabPanel(title = "Heatmap Plot (ICA)",
+                                                           tabPanel(title = "Heatmap Plot",
                                                                     panel(heading = "Heatmap Plot",
                                                                           panel(heading = "Plot Options",
                                                                                 fluidRow(
@@ -189,7 +189,7 @@ shinyPanelSeurat <- fluidPage(
                                                                           )
                                                                     )
                                                            )
-                                               )
+                                               ))
                                                )
                                       )
                                       )
@@ -275,10 +275,6 @@ shinyPanelSeurat <- fluidPage(
                                                                                                                                "SLM algorithm" = "SLM")),
                                     numericInput(inputId = "resolution_clustering", label = "Set resolution:", value = 0.8),
                                     materialSwitch(inputId = "group.singletons", label = "Group singletons?", value = TRUE),
-                                    #materialSwitch(inputId = "compute_pca_clustering", label = "Compute PCA?", value = TRUE),
-                                    #materialSwitch(inputId = "compute_ica_clustering", label = "Compute ICA?", value = TRUE),
-                                    #materialSwitch(inputId = "compute_tsne_clustering", label = "Compute tSNE?", value = TRUE),
-                                    #materialSwitch(inputId = "compute_umap_clustering", label = "Compute UMAP?", value = TRUE),
                                     htmlOutput(outputId = "display_message_clustering", inline = FALSE),
                                     actionButton(inputId = "find_clusters_button", "Find Clusters")
                                     )
@@ -288,7 +284,7 @@ shinyPanelSeurat <- fluidPage(
                     column(8,
                            fluidRow(
                              column(12,
-                                    tabsetPanel(type = "tabs",
+                                    tags$div(class = "seurat_clustering_plots", tabsetPanel(type = "tabs",
                                                 tabPanel(title = "PCA Plot",
                                                          panel(heading = "PCA Plot",
                                                                plotOutput(outputId = "plot_pca_clustering")
@@ -309,7 +305,7 @@ shinyPanelSeurat <- fluidPage(
                                                                plotOutput(outputId = "plot_umap_clustering")
                                                          )
                                                 )
-                                    )
+                                    ))
                              )
                              
                            )

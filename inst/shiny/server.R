@@ -5335,18 +5335,18 @@ shinyServer(function(input, output, session) {
         
         #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
         shinyjs::enable(
-          selector = "a[data-value='PCA Plot']")
+          selector = ".seurat_pca_plots a[data-value='PCA Plot']")
         
         shinyjs::toggleState(
-          selector = "a[data-value='Elbow Plot (PCA)']",
+          selector = ".seurat_pca_plots a[data-value='Elbow Plot']",
           condition = input$pca_compute_elbow)
         
         shinyjs::toggleState(
-          selector = "a[data-value='JackStraw Plot (PCA)']",
+          selector = ".seurat_pca_plots a[data-value='JackStraw Plot']",
           condition = input$pca_compute_jackstraw) 
         
         shinyjs::toggleState(
-          selector = "a[data-value='Heatmap Plot (PCA)']",
+          selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
           condition = input$pca_compute_heatmap)
         
         shinyjs::enable(
@@ -5400,9 +5400,12 @@ shinyServer(function(input, output, session) {
       updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
       
       
-      #Enable/Disable ICA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+      #Enable/Disable ICA plot panels not selected for computation (Heatmap)
+      shinyjs::enable(
+        selector = ".seurat_ica_plots a[data-value='ICA Plot']")
+      
       shinyjs::toggleState(
-        selector = "a[data-value='Heatmap Plot (ICA)']",
+        selector = ".seurat_ica_plots a[data-value='Heatmap Plot']",
         condition = input$ica_compute_heatmap)
       
       shinyjs::enable(
@@ -5435,6 +5438,9 @@ shinyServer(function(input, output, session) {
                                     showLegend = TRUE)
               })
             })
+            shinyjs::toggleState(
+              selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
+              condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
           }
           
           if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
@@ -5446,6 +5452,9 @@ shinyServer(function(input, output, session) {
                                     showLegend = TRUE)
               })
             })
+            shinyjs::toggleState(
+              selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
+              condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
           }
           
           if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
@@ -5457,6 +5466,9 @@ shinyServer(function(input, output, session) {
                                     showLegend = TRUE)
               })
             })
+            shinyjs::toggleState(
+              selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
+              condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
           }
           
           if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
@@ -5468,6 +5480,9 @@ shinyServer(function(input, output, session) {
                                     showLegend = TRUE)
               })
             })
+            shinyjs::toggleState(
+              selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
+              condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
           }
     })
     
@@ -5485,27 +5500,32 @@ shinyServer(function(input, output, session) {
     #Run tSNE
     observeEvent(input$run_tsne_button, {
         req(vals$counts)
-      
-                    withProgress(message = "Running tSNE", max = 1, value = 1, {
-                        vals$counts <- seuratRunTSNE(inSCE = vals$counts,
-                                                     useReduction = input$reduction_tsne_method,
-                                                     reducedDimName = "seuratTSNE",
-                                                     dims = input$pca_significant_pc_slider,
-                                                     perplexity = input$perplexity_tsne)
-                        vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
-                    })
-                    withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-
-                        output$plot_tsne <- renderPlot({
-                          seuratReductionPlot(inSCE = vals$counts,
-                                              useReduction = "tsne",
-                                              showLegend = FALSE)
-                        })
-                    })
-                    updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
-                    shinyjs::enable(selector = "div[value='Clustering']")
-
-                    showNotification("tSNE Complete")
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
+        withProgress(message = "Running tSNE", max = 1, value = 1, {
+          vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+                                       useReduction = input$reduction_tsne_method,
+                                       reducedDimName = "seuratTSNE",
+                                       dims = input$pca_significant_pc_slider,
+                                       perplexity = input$perplexity_tsne)
+          vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
+        })
+        withProgress(message = "Plotting tSNE", max = 1, value = 1, {
+          
+          output$plot_tsne <- renderPlot({
+            seuratReductionPlot(inSCE = vals$counts,
+                                useReduction = "tsne",
+                                showLegend = FALSE)
+          })
+        })
+        updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+        shinyjs::enable(selector = "div[value='Clustering']")
+        
+        showNotification("tSNE Complete")
+      }
+      else{
+        showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
+      }
+                    
     })
     
     output$display_message_tsne <- renderText({
@@ -5515,14 +5535,16 @@ shinyServer(function(input, output, session) {
         }
       }
       else{ #ICA to do
-        paste(input$pca_significant_pc_slider)
+        if(input$ica_significant_ic_slider){
+          paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+        }
       }
     })
 
     #Run UMAP
     observeEvent(input$run_umap_button, {
         req(vals$counts)
-
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
                     withProgress(message = "Running UMAP", max = 1, value = 1, {
                         vals$counts <- seuratRunUMAP(inSCE = vals$counts,
                                                      useReduction = input$reduction_umap_method,
@@ -5545,6 +5567,10 @@ shinyServer(function(input, output, session) {
                     shinyjs::enable(selector = "div[value='Clustering']")
                     
                     showNotification("UMAP Complete")
+    }
+                    else{
+                      showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
+                    }
     })
     
     output$display_message_umap <- renderText({
@@ -5554,7 +5580,9 @@ shinyServer(function(input, output, session) {
         }
       }
       else{ #ICA to do
-        paste(input$pca_significant_pc_slider)
+        if(input$ica_significant_ic_slider){
+          paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+        }
       }
     })
 
@@ -5570,7 +5598,7 @@ shinyServer(function(input, output, session) {
     observe({
       req(vals$counts)
       if (!is.null(vals$counts@metadata$seurat$count_ic)) {
-        updateSliderInput(session = session, inputId = "ica_significant_pc_slider", max = vals$counts@metadata$seurat$count_ic)
+        updateSliderInput(session = session, inputId = "ica_significant_ic_slider", max = vals$counts@metadata$seurat$count_ic)
       }
     })
 
@@ -5675,14 +5703,30 @@ shinyServer(function(input, output, session) {
           selector = "div[value='Clustering']")
         shinyjs::disable(
           selector = "div[value='Scale Data']")
+       
         shinyjs::disable(
-          selector = "a[data-value='PCA Plot']")
+          selector = ".seurat_pca_plots a[data-value='PCA Plot']")
         shinyjs::disable(
-          selector = "a[data-value='Elbow Plot (PCA)']")
+          selector = ".seurat_pca_plots a[data-value='Elbow Plot']")
         shinyjs::disable(
-          selector = "a[data-value='JackStraw Plot (PCA)']") 
+          selector = ".seurat_pca_plots a[data-value='JackStraw Plot']") 
         shinyjs::disable(
-          selector = "a[data-value='Heatmap Plot (PCA)']")
+          selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
+        
+        shinyjs::disable(
+          selector = ".seurat_ica_plots a[data-value='ICA Plot']")
+        shinyjs::disable(
+          selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
+        
+        shinyjs::disable(
+          selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
+        shinyjs::disable(
+          selector = ".seurat_clustering_plots a[data-value='ICA Plot']")
+        shinyjs::disable(
+          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']")
+        shinyjs::disable(
+          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
+        
       }
    
 

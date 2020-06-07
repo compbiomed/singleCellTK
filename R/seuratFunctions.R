@@ -277,7 +277,6 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
   seuratObject <- convertSCEToSeurat(inSCE)
   seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction, dims = 1:dims, perplexity = perplexity)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
