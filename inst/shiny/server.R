@@ -3138,7 +3138,7 @@ shinyServer(function(input, output, session) {
             a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname)
           }
         }else if(input$TypeSelect_Colorby == 'Cell Annotation'){
-          if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+          if (input$viewertabs == "reducedDims Plot"){
             a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
               xlab = xname, ylab = yname, colorBy = input$AnnotationSelect_Colorby,
               title = input$adjusttitle)
@@ -3155,7 +3155,7 @@ shinyServer(function(input, output, session) {
                 groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE)
             }
           }
-        }else if(input$TypeSelect_Colorby == "Reduced Expression"){
+        }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
           if (input$viewertabs == "reducedDims Plot"){
             a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
               reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
