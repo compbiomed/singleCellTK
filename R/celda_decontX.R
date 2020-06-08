@@ -14,8 +14,8 @@
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
 #' \dontrun{
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDecontX(emptyDropsSceExample)
+#' data(sceQCExample, package = "singleCellTK")
+#' sce <- runDecontX(sce)
 #' }
 #' @export
 runDecontX <- function(inSCE,

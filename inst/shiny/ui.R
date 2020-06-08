@@ -117,8 +117,8 @@ if (is.null(getShinyOption("theme"))){
   shinyTheme <- getShinyOption("theme")
 }
 
-source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
-source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
+source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
+source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
@@ -170,17 +170,15 @@ shinyUI(
       tooltitle,
       theme = shinytheme(shinyTheme),
       #Upload Tab
-      tabPanel("Upload", shinyPanelUpload),
-      navbarMenu("QC & Filtering",
-                 tabPanel("Filtering", shinyPanelFilter)),
-      # tabPanel(title="QC & Filtering", shinyPanelFilter),
+      tabPanel("Data", shinyPanelData),
+      tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
       tabPanel("Clustering", shinyPanelCluster),
       navbarMenu(
         "Differential Expression & Marker Selection",
         tabPanel("Differential Expression", shinyPanelDiffex),
-        tabPanel("MAST", shinyPanelMAST)
+        tabPanel("MAST - Differential Expression", shinyPanelMASTDE)
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",

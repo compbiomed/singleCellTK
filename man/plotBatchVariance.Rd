@@ -5,7 +5,13 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCE, useAssay = "logcounts", batch, condition = NULL)
+plotBatchVariance(
+  inSCE,
+  useAssay = "logcounts",
+  batch = "batch",
+  condition = NULL,
+  pcInput = FALSE
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -17,6 +23,9 @@ Required}
 
 \item{condition}{The column in the annotation data that corresponds to
 condition. Optional}
+
+\item{pcInput}{A logical scalar indicating whether \code{useAssay} is in
+\code{names(reducedDims(inSCE))}. Default \code{FALSE}.}
 }
 \value{
 A boxplot of variation explained by batch, condition, and

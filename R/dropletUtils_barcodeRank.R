@@ -1,21 +1,27 @@
 
-.runBarcodeRankDrops <- function(barcode.matrix, lower=100, 
-                                 fit.bounds=NULL, 
-                                 df=20) {
+.runBarcodeRankDrops <- function(barcode.matrix, lower=lower, 
+                                 fit.bounds=fit.bounds, 
+                                 df=df) {
   
   ## Convert to sparse matrix if not already in that format
   barcode.matrix <- .convertToMatrix(barcode.matrix)
   
-  output <- DropletUtils::barcodeRanks(m = barcode.matrix, lower=100, 
-                                       fit.bounds=NULL, 
-                                       df=20)
+  output <- DropletUtils::barcodeRanks(m = barcode.matrix, lower=lower, 
+                                       fit.bounds=fit.bounds, 
+                                       df=df)
   
   knee.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$knee)
   inflection.ix <- as.integer(output@listData$total >= S4Vectors::metadata(output)$inflection)
+  rank.ix<- as.integer(output$rank)
+  total.ix<- as.integer(output$total)
+  fitted.ix<- as.integer(output$fitted)
   
-  result <- cbind(knee.ix, inflection.ix)
+  result <- cbind(knee.ix, inflection.ix, rank.ix, total.ix, fitted.ix)
   colnames(result) <- c("dropletUtils_barcodeRank_knee",
-                        "dropletUtils_barcodeRank_inflection")
+                        "dropletUtils_barcodeRank_inflection", 
+                        "dropletUtils_barcodeRank_rank", 
+                        "dropletUtils_barcodeRank_total",
+                        "dropletUtils_barcodeRank_fitted")
   
   return(result)
 }
@@ -78,6 +84,10 @@ runBarcodeRankDrops <- function(inSCE,
                                  dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
                                  dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)))
   
+  metaOutput <- S4Vectors::DataFrame(row.names = colnames(inSCE),
+                                     dropletUtils_barcodeRank_rank = integer(ncol(inSCE)),
+                                     dropletUtils_barcodeRank_total = integer(ncol(inSCE)),
+                                     dropletUtils_barcodeRank_fitted = integer(ncol(inSCE)))
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
   for (i in seq_len(length(samples))) {
@@ -89,10 +99,12 @@ runBarcodeRankDrops <- function(inSCE,
                                    fit.bounds=fitBounds, 
                                    df=df)
     
-    output[sceSampleInd, ] <- result
+    output[sceSampleInd, ] <- result[, c("dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection")]
+    metaOutput[sceSampleInd, ] <- result[, c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_fitted")]
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
+  metadata(inSCE)$runBarcodeRanksMetaOutput = metaOutput
   
   inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
   inSCE@metadata$runBarcodeRankDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version

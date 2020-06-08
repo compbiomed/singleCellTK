@@ -6,14 +6,16 @@
 \usage{
 plotSCEDimReduceColData(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
-  reducedDimName = NULL,
+  colorBy,
   conditionClass = NULL,
+  shape = NULL,
+  reducedDimName = NULL,
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
   dim2 = NULL,
+  bin = NULL,
+  binLabel = NULL,
   dotsize = 2,
   transparency = 1,
   defaultTheme = TRUE,
@@ -27,34 +29,45 @@ plotSCEDimReduceColData(
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required}
 
-\item{colorBy}{color by a condition(any column of the annotation data).}
+\item{colorBy}{Color by a condition(any column of the annotation data).
+Required.}
 
-\item{shape}{add shapes to each condition.}
-
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
-object. Required.}
-
-\item{conditionClass}{class of the annotation data used in colorBy.
+\item{conditionClass}{Class of the annotation data used in colorBy.
 Options are NULL, "factor" or "numeric". If NULL, class will default to the
 original class. Default NULL.}
 
-\item{xlab}{label for x-axis}
+\item{shape}{Add shapes to each condition.}
 
-\item{ylab}{label for y-axis}
+\item{reducedDimName}{Saved dimension reduction matrix name in the SCtkExperiment
+object. Required.}
 
-\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
+\item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
-\item{dim2}{2nd dimension to be used for plotting. Default is NULL.}
+\item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{dotsize}{size of dots. Default 2.}
+\item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
-\item{transparency}{transparency of the dots, values will be 0-1. Default 1.}
+\item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
+
+\item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+If more than one value, will bin numeric values using values as a cut point.}
+
+\item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
+Default NULL.}
+
+\item{dotsize}{Size of dots. Default 2.}
+
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 
-\item{title}{title of plot. Default NULL.}
+\item{title}{Title of plot. Default NULL.}
 
-\item{titleSize}{size of title of plot. Default 15.}
+\item{titleSize}{Size of title of plot. Default 15.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
@@ -71,8 +84,15 @@ Plot results of reduced dimensions data and
 \examples{
 plotSCEDimReduceColData(
   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
-  shape = "No Shape", conditionClass = "factor",
+  shape = NULL, conditionClass = "factor",
   reducedDimName = "TSNE_counts",
   xlab = "tSNE1", ylab = "tSNE2", labelClusters = TRUE
+)
+
+plotSCEDimReduceColData(
+  inSCE = mouseBrainSubsetSCE, colorBy = "age",
+  shape = NULL, conditionClass = "numeric",
+  reducedDimName = "TSNE_counts", bin =  c(-Inf,20,25,+Inf),
+  xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
 )
 }

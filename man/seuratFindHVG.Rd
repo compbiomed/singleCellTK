@@ -5,18 +5,16 @@
 \title{seuratFindHVG
 Find highly variable genes and store in the input sce object}
 \usage{
-seuratFindHVG(inSCE, useAssay, geneNamesSeurat, hvgMethod, hvgNumber)
+seuratFindHVG(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000)
 }
 \arguments{
 \item{inSCE}{(sce) object to compute highly variable genes from and to store back to it}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing scaled counts to use for detecting highly variable genes.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{hvgMethod}{selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.}
 
-\item{hvgMethod}{selected method to use for computation of highly variable genes (default is "vst")}
-
-\item{hvgNumber}{numeric value of how many genes to select as highly variable (default is 2000)}
+\item{hvgNumber}{numeric value of how many genes to select as highly variable. Default \code{2000}.}
 }
 \value{
 sceObject updated sce object with highly variable genes computation stored

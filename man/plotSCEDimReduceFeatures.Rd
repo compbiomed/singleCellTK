@@ -7,13 +7,15 @@
 plotSCEDimReduceFeatures(
   inSCE,
   feature,
-  shape = "No Shape",
+  shape = NULL,
   reducedDimName,
   useAssay = "logcounts",
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
   dim2 = NULL,
+  bin = NULL,
+  binLabel = NULL,
   dotsize = 2,
   transparency = 1,
   defaultTheme = TRUE,
@@ -29,31 +31,41 @@ components or a variable with saved results. Required}
 \item{feature}{name of feature stored in assay of singleCellExperiment
 object. Plot will be colored based on feature value.}
 
-\item{shape}{add shapes to each condition.}
+\item{shape}{add shapes to each condition. Default NULL.}
 
 \item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
 object. Required.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
-\item{xlab}{label for x-axis}
+\item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
-\item{ylab}{label for y-axis}
+\item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
+\item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
-\item{dim2}{2nd dimension to be used for plotting. Default is NULL.
+\item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.
 Default is second PCA component for PCA data and NULL otherwise.}
 
-\item{dotsize}{size of dots. Default 2.}
+\item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+If more than one value, will bin numeric values using values as a cut point.}
 
-\item{transparency}{transparency of the dots, values will be 0-1. Default 1.}
+\item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
+Default NULL.}
+
+\item{dotsize}{Size of dots. Default 2.}
+
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 
-\item{title}{title of plot. Default NULL.}
+\item{title}{Title of plot. Default NULL.}
 
-\item{titleSize}{size of title of plot. Default 15.}
+\item{titleSize}{Size of title of plot. Default 15.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 }
@@ -67,7 +79,7 @@ Plot results of reduced dimensions data and
 \examples{
 plotSCEDimReduceFeatures(
   inSCE = mouseBrainSubsetSCE, feature = "Sox2",
-  shape = "No Shape", reducedDimName = "TSNE_counts",
+  shape = NULL, reducedDimName = "TSNE_counts",
   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 )
 }

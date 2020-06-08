@@ -1,0 +1,167 @@
+---
+title: "Interactive Analysis of Single Cell RNA-Seq Data: predicting doublets with doubletFinder"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "doubletFinder-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "doubletFinder-import", warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r "doubletFinder-umap", include=FALSE, warning=FALSE}
+getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
+                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
+    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
+  }
+  #test for assay existing
+  if (!all(useAssay %in% names(assays(inSCE)))){
+    stop("assay '", useAssay, "' does not exist.")
+  }
+  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
+  custom.config <- umap::umap.defaults
+  custom.config$n_neighbors <- n_neighbors
+  custom.config$alpha <- alpha
+  custom.config$n_epochs <- n_iterations
+  matColData <- as.matrix(matColData)
+  umap_results <- umap::umap(t(matColData), config = custom.config)
+  if (is.null(rownames(inSCE))) {
+    rownames(umap_results$layout) <- colnames(inSCE)
+  }
+  umap_results <- umap_results$layout
+  colnames(umap_results) <- c("UMAP1", "UMAP2")
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
+  return(inSCE)
+}
+```
+
+```{r, "doubletFinder-reddim", eval = FALSE, include=FALSE}
+#Log counts prior to running UMAP
+if (is.null(sce.qc@assays@data$logcounts)){
+  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
+  #get UMAP
+  if (!"UMAP" %in% reducedDimNames(sce.qc)){
+  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
+}
+```
+
+##DoubletFinder score
+
+DoubletFinder identifies doublets derived from transcriptionally distinct cells in single cell RNA-seq data. DoubletFinder relies on a parameter called "resolution" to determine cells that may be doublets, which is why there are multiple label/scores.
+
+### Resolution 0.5
+
+```{r}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_0.5)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "doubletFinder_doublet_score_Resolution_0.5", xlab = "", ylab = "Score", title = "DoubletFinder doublet score, Resolution 0.5", dotSize = 0.5)
+} else {
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_0.5")
+}
+```
+
+
+```{r, "doubletFinder-res0.5-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_0.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_0.5" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 0.5", legendTitle = "Doublet Score")
+}
+```
+
+```{r, "doubletFinder-res0.5-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_0.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_0.5" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 0.5", legendTitle = "Doublet Call", labelClusters = FALSE)
+}
+```
+
+### Resolution 1
+
+```{r}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "doubletFinder_doublet_score_Resolution_1", xlab = "", ylab = "Score", title = "DoubletFinder doublet score, Resolution 1", dotSize = 0.5)
+} else {
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_1")
+}
+```
+
+
+```{r, "doubletFinder-res1-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_1" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 1", legendTitle = "Doublet Score")
+}
+```
+
+```{r, "doubletFinder-res1-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_1)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_1" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 1", legendTitle = "Doublet Call", labelClusters = FALSE)
+}
+```
+
+### Resolution 1.5
+
+```{r}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1.5)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "doubletFinder_doublet_score_Resolution_1.5", xlab = "", ylab = "Score", title = "DoubletFinder doublet score, Resolution 1.5", dotSize = 0.5)
+} else {
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_1.5")
+}
+```
+
+```{r, "doubletFinder-res1.5-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_1.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_1.5" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 1.5", legendTitle = "Doublet Score")
+}
+```
+
+```{r, "doubletFinder-res1.5-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_1.5)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_1.5" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 1.5", legendTitle = "Doublet Call", labelClusters = FALSE)
+}
+```
+
+
+### Resolution 2
+
+```{r}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_2)){
+plotSCEViolinColData(inSCE = sce.qc, coldata = "doubletFinder_doublet_score_Resolution_2", xlab = "", ylab = "Score", title = "DoubletFinder doublet score, Resolution 2", dotSize = 0.5)
+} else {
+  print("The inSCE does not contain doubletFinder_doublet_score_Resolution_2")
+}
+```
+
+```{r, "doubletFinder-res2-score"}
+if (!is.null(sce.qc$doubletFinder_doublet_score_Resolution_2)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_score_Resolution_2" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Score, Resolution 2", legendTitle = "Doublet Score")
+}
+```
+
+```{r, "doubletFinder-res2-call"}
+if (!is.null(sce.qc$doubletFinder_doublet_label_Resolution_2)){
+plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "doubletFinder_doublet_label_Resolution_2" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "DoubletFinder Doublet Call, Resolution 2", legendTitle = "Doublet Call", labelClusters = FALSE)
+}
+```
+
+
+## DoubletFinder input info
+```{r}
+if (!is.null(sce.qc@metadata$runDoubletFinder)){
+  sce.qc@metadata$runDoubletFinder
+} else{
+  print("The inSCE does not contain runDoubletFinder info")
+}
+```
+## Session info
+```{r}
+sessionInfo()
+```
