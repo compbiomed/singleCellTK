@@ -3,7 +3,7 @@
 \name{.computeSignificantPC}
 \alias{.computeSignificantPC}
 \title{.computeSignificantPC
-Computes the significant principal components from an input sce object (must containt pca slot) using stdev}
+Computes the significant principal components from an input sce object (must contain pca slot) using stdev}
 \usage{
 .computeSignificantPC(inSCE)
 }
@@ -15,5 +15,5 @@ max_components a numerical value indicating how many number of components are co
 }
 \description{
 .computeSignificantPC
-Computes the significant principal components from an input sce object (must containt pca slot) using stdev
+Computes the significant principal components from an input sce object (must contain pca slot) using stdev
 }

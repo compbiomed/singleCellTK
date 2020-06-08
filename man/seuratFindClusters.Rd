@@ -11,7 +11,8 @@ seuratFindClusters(
   useReduction = c("pca", "ica"),
   dims = 10,
   algorithm = c("louvain", "multilevel", "SLM"),
-  groupSingletons = TRUE
+  groupSingletons = TRUE,
+  resolution = 0.8
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ seuratFindClusters(
 \item{algorithm}{selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use \code{louvain} for "original Louvain algorithm" and \code{multilevel} for "Louvain algorithm with multilevel refinement". Default \code{louvain}.}
 
 \item{groupSingletons}{boolean if singletons should be grouped together or not. Default \code{TRUE}.}
+
+\item{resolution}{Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.}
 }
 \value{
 sceObject; updated sce object which now contains the computed clusters
