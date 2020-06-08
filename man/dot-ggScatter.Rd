@@ -6,15 +6,17 @@
 \usage{
 .ggScatter(
   inSCE,
-  colorBy,
-  shape,
+  colorBy = NULL,
+  shape = NULL,
   reducedDimName,
   conditionClass = NULL,
   labelClusters = FALSE,
-  xlab,
-  ylab,
+  xlab = NULL,
+  ylab = NULL,
   dim1 = NULL,
   dim2 = NULL,
+  bin = NULL,
+  binLabel = NULL,
   dotsize = 2,
   transparency = 1,
   defaultTheme = TRUE,
@@ -27,11 +29,11 @@
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required}
 
-\item{colorBy}{color by a condition(any column of the annotation data).}
+\item{colorBy}{If provided, colors dots in the scatterplot based on value.}
 
-\item{shape}{add shapes to each condition.}
+\item{shape}{If provided, add shapes based on the value.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
+\item{reducedDimName}{Saved dimension reduction name in the SCtkExperiment
 object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
@@ -41,24 +43,34 @@ class. Default NULL.}
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.
 Default FALSE.}
 
-\item{xlab}{label for x-axis}
+\item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
-\item{ylab}{label for y-axis}
+\item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{dim1}{1st dimension to be used for plotting. Default is NULL.}
+\item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
-\item{dim2}{2nd dimension to be used for plotting. Default is NULL.}
+\item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
-\item{dotsize}{size of dots. Default 2.}
+\item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+If more than one value, will bin numeric values using values as a cut point.}
 
-\item{transparency}{transparency of the dots, values will be 0-1. Default 1.}
+\item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
+Default NULL.}
 
-\item{defaultTheme}{removes grid in plot and sets axis title size to 10
+\item{dotsize}{Size of dots. Default 2.}
+
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{title}{title of plot. Default NULL.}
+\item{title}{Title of plot. Default NULL.}
 
-\item{titleSize}{size of title of plot. Default 15.}
+\item{titleSize}{Size of title of plot. Default 15.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 }

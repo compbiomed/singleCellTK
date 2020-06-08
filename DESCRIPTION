@@ -93,7 +93,8 @@ Imports:
     V8,
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
-    yaml
+    yaml,
+	rmarkdown
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
@@ -102,7 +103,6 @@ Suggests:
     knitr,
     lintr,
     bladderbatch,
-    rmarkdown,
     xtable,
     spelling,
     org.Mm.eg.db

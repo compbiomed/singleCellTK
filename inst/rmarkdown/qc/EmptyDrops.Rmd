@@ -1,0 +1,93 @@
+---
+title: "Interactive Analysis of Single Cell RNA-Seq Data: identifying empty droplets using emptyDrops"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+```{r, "EmtyDrops-lib", include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(umap)
+```
+
+```{r "EmtyDrops-import", include=FALSE}
+sce<- params$object
+```
+
+```{r "EmtyDrops-umap", include=FALSE}
+#Log counts prior to running UMAP
+if (is.null(sce@assays@data$logcounts)){
+  sce@assays@data$logcounts = log10(sce@assays@data$counts + 1)}
+  #get UMAP
+if (!"UMAP" %in% reducedDimNames(sce)){
+  sce = getUMAP(inSCE = sce, useAssay = "logcounts")}
+
+```
+
+##EmptyDrops 
+
+EmptyDrops distinguishes between samples containing cells and ambient RNA in a droplet-based single-cell RNA sequencing experiment.
+
+```{r, "EmptyDrops-knee-plot"}
+if (!is.null(sce@colData$dropletUtils_emptyDrops_total)){
+  
+  if (all(is.na((sce@colData["dropletUtils_emptyDrops_logprob"]$dropletUtils_emptyDrops_logprob)))){
+    print("All logProb contain NA or NaN values.")
+    }else{
+    is.cell <- sce$dropletUtils_emptyDrops_fdr <= 0.01
+    plot(sce$dropletUtils_emptyDrops_total, -sce$dropletUtils_emptyDrops_logprob, col=ifelse(is.cell, "red", "black"),
+ xlab="Total UMI count", ylab="-Log Probability")
+  }
+  
+} else {
+  stop("The emtyDrops output is missing")
+}
+```
+
+Projection the output into a reduced dimentional space
+```{r "EmptyDrops-fdr"}
+if (!is.null(sce$dropletUtils_emptyDrops_fdr)){
+  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_fdr" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops FDR per sample", legendTitle = "FDR")
+}
+```
+
+```{r "EmptyDrops-logprob"}
+if (!is.null(sce$dropletUtils_emptyDrops_logprob)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_logprob" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops logprob per sample", legendTitle = "logprob")
+}else{
+  print("EmptyDrops logprob is missing")
+}
+```
+
+```{r "EmptyDrops-pval"}
+if (!is.null(sce$dropletUtils_emptyDrops_pvalue)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_pvalue" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops p-value per sample", legendTitle = "p-value")
+}else{
+  print("EmptyDrops p-value is missing")
+}
+```
+
+```{r "EmptyDrops-total"}
+if (!is.null(sce$dropletUtils_emptyDrops_total)){
+plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_emptyDrops_total" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "EmptyDrops total UMI counts per sample", legendTitle = "Total UMI counts")
+}else{
+  print("EmptyDrops total is missing")
+}
+```
+
+## EmptyDrops input info
+```{r "EmtyDrops-info"}
+if (!is.null(sce@metadata$runEmptyDrops)){
+  sce@metadata$runEmptyDrops
+}
+```
+
+## Session info
+```{r}
+sessionInfo()
+````

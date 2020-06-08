@@ -3,147 +3,170 @@
 #'  the input vector.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
-#' @param colorBy color by a condition(any column of the annotation data).
+#' @param colorBy If provided, colors dots in the scatterplot based on value.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
-#' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment
+#' @param shape If provided, add shapes based on the value.
+#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
 #'  object. Required.
-#' @param xlab label for x-axis
-#' @param ylab label for y-axis
-#' @param dim1 1st dimension to be used for plotting. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
-#' @param dotsize size of dots. Default 2.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme removes grid in plot and sets axis title size to 10
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+#'  If more than one value, will bin numeric values using values as a cut point.
+#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
+#'  Default NULL.
+#' @param dotsize Size of dots. Default 2.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #'  Default FALSE.
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
-                       colorBy,
-                       shape,
+                       colorBy = NULL,
+                       shape = NULL,
                        reducedDimName,
                        conditionClass = NULL,
                        labelClusters = FALSE,
-                       xlab,
-                       ylab,
+                       xlab = NULL,
+                       ylab = NULL,
                        dim1 = NULL,
                        dim2 = NULL,
+                       bin = NULL,
+                       binLabel = NULL,
                        dotsize = 2,
                        transparency = 1,
                        defaultTheme = TRUE,
                        title = NULL,
                        titleSize = 15,
                        legendTitle = NULL) {
-  Df <- data.frame(SingleCellExperiment::reducedDim(
-    inSCE,
-    reducedDimName
-  ))
-  if (ncol(Df) > 2) {
-    warning("More than two dimensions. Using the first two.")
-  }
-  if (!is.null(dim1) & !is.null(dim2)) {
-    if (!(dim1 %in% colnames(Df))) {
-      stop("X dimension ", dim1, " is not in the reducedDim data")
+    dataframe <- data.frame(SingleCellExperiment::reducedDim(
+        inSCE,
+        reducedDimName
+    ))
+    #If dim1 and dim2 are specified
+    if (!is.null(dim1) & !is.null(dim2)) {
+        if (is.character(dim1) & is.character(dim2)){
+            if (!(dim1 %in% colnames(dataframe))) {
+                stop("X dimension ", dim1, " is not in the reducedDim data")
+            }
+            if (!(dim2 %in% colnames(dataframe))) {
+                stop("Y dimension ", dim2, " is not in the reducedDim data")
+            }
+            dataframe <- dataframe[, c(dim1, dim2)]
+        }else if(is.numeric(dim1) && is.numeric(dim2)){
+            dataframe <- dataframe[, c(dim1, dim2)]
+        }
+    } else if(ncol(dataframe) > 2) {
+        warning("More than two dimensions supplied in reducedDims. Using the first two.")
     }
-    if (!(dim2 %in% colnames(Df))) {
-      stop("Y dimension ", dim2, " is not in the reducedDim data")
-    }
-    xdim <- dim1
-    ydim <- dim2
-  } else if (!is.null(xlab) & !is.null(ylab)) {
-    colnames(Df)[1] <- xlab
-    colnames(Df)[2] <- ylab
-    xdim <- colnames(Df)[1]
-    ydim <- colnames(Df)[2]
-  } else {
-    colnames(Df)[1] <- paste0(reducedDimName, "_1")
-    colnames(Df)[2] <- paste0(reducedDimName, "_2")
-    xdim <- colnames(Df)[1]
-    ydim <- colnames(Df)[2]
-  }
-  if (length(colorBy) == 1) {
-    if (colorBy == "No Color") {
-      colorBy <- NULL
-    }
-  }
-  if (shape == "No Shape") {
-    shape <- NULL
-  }
-  if (!is.null(colorBy)) {
-    Df$color <- colorBy
-  }
-  if (!is.null(shape)) {
-    Df$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
-  }
-  Df$Sample <- colnames(inSCE)
-  g <- ggplot2::ggplot(Df, ggplot2::aes_string(xdim, ydim,
-    label = "Sample"
-  )) +
-    ggplot2::geom_point(size = dotsize, alpha = transparency)
-  if (!is.null(colorBy)) {
-    g <- g + ggplot2::aes_string(color = "color")
-  }
-  if (!is.null(shape)) {
-    g <- g + ggplot2::aes_string(shape = "shape") +
-      ggplot2::labs(shape = shape)
-  }
-  if (defaultTheme == TRUE) {
-    g <- .ggSCTKTheme(g)
-  }
-  if (!is.null(title)) {
-    g <- g + ggplot2::ggtitle(label = title) +
-      ggplot2::theme(plot.title = ggplot2::element_text(
-        hjust = 0.5,
-        size = titleSize
-      ))
-  }
-  if (!is.null(legendTitle)) {
-    g <- g + ggplot2::labs(color = legendTitle)
-  } else {
-    g <- g + ggplot2::labs(color = "")
-  }
 
-  if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
-    centroidList <- lapply(unique(colorBy), function(x) {
-      df.sub <- Df[Df$color == x, ]
-      median.1 <- stats::median(df.sub[, 1])
-      median.2 <- stats::median(df.sub[, 2])
-      cbind(median.1, median.2, as.character(x))
-    })
-    centroid <- do.call(rbind, centroidList)
-    centroid <- data.frame(
-      Dimension_1 = as.numeric(centroid[, 1]),
-      Dimension_2 = as.numeric(centroid[, 2]),
-      color = centroid[, 3],
-      Sample = seq(1, length(unique(colorBy)))
-    )
+    #If xlab and ylab are specified
+    if (!is.null(xlab) & !is.null(ylab)) {
+        colnames(dataframe) <- c(xlab, ylab)
+        #If reduced dimension matrix didnt have colnames
+    } else {
+        colnames(dataframe) <- c(paste0(reducedDimName, "_1"), paste0(reducedDimName, "_2"))
+    }
 
+    xdim <- colnames(dataframe)[1]
+    ydim <- colnames(dataframe)[2]
+
+    if (!is.null(conditionClass) & !is.null(colorBy)) {
+        if (conditionClass %in% c("character", "factor", "numeric")) {
+            if (conditionClass == "character") {
+                colorBy <- as.character(colorBy)
+            } else if (conditionClass == "factor") {
+                colorBy <- as.factor(colorBy)
+            } else if (conditionClass == "numeric") {
+                colorBy <- as.numeric(colorBy)
+            }
+        }
+    }
+
+    if (!is.null(bin) & !is.null(colorBy)){
+        colorBy <- .binSCTK(value = colorBy,
+                            bin = bin,
+                            binLabel = binLabel)
+    }
+    if (!is.null(colorBy)) {
+        dataframe$color <- colorBy
+    }
     if (!is.null(shape)) {
-      centroid$shape <- Df$shape[1]
+        dataframe$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
+    }
+    dataframe$Sample <- colnames(inSCE)
+    g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
+                                                        label = "Sample"
+    )) +
+        ggplot2::geom_point(size = dotsize, alpha = transparency)
+    if (!is.null(colorBy)) {
+        g <- g + ggplot2::aes_string(color = "color")
+    }
+    if (!is.null(shape)) {
+        g <- g + ggplot2::aes_string(shape = "shape") +
+            ggplot2::labs(shape = shape)
+    }
+    if (defaultTheme == TRUE) {
+        g <- .ggSCTKTheme(g)
+    }
+    if (!is.null(title)) {
+        g <- g + ggplot2::ggtitle(label = title) +
+            ggplot2::theme(plot.title = ggplot2::element_text(
+                hjust = 0.5,
+                size = titleSize
+            ))
+    }
+    if (!is.null(legendTitle)) {
+        g <- g + ggplot2::labs(color = legendTitle)
+    } else {
+        g <- g + ggplot2::labs(color = "")
     }
 
-    colnames(centroid)[seq(2)] <- c(xdim, ydim)
-    g <- g + ggplot2::geom_point(
-      data = centroid,
-      mapping = ggplot2::aes_string(x = xdim, y = ydim),
-      size = 0,
-      alpha = 0
-    ) +
-      ggrepel::geom_text_repel(
-        data = centroid,
-        mapping = ggplot2::aes_string(label = "color"),
-        show.legend = F,
-        color = "black"
-      )
-  }
+    if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
+        centroidList <- lapply(unique(colorBy), function(x) {
+            dataframe.sub <- dataframe[dataframe$color == x, ]
+            median.1 <- stats::median(dataframe.sub[, 1])
+            median.2 <- stats::median(dataframe.sub[, 2])
+            cbind(median.1, median.2, as.character(x))
+        })
+        centroid <- do.call(rbind, centroidList)
+        centroid <- data.frame(
+            Dimension_1 = as.numeric(centroid[, 1]),
+            Dimension_2 = as.numeric(centroid[, 2]),
+            color = centroid[, 3],
+            Sample = rep(1, length(unique(colorBy)))
+        )
 
-  return(g)
+        if (!is.null(shape)) {
+            centroid$shape <- dataframe$shape[1]
+        }
+
+        colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
+        g <- g + ggplot2::geom_point(
+            data = centroid,
+            mapping = ggplot2::aes_string(x = xdim, y = ydim),
+            size = 0,
+            alpha = 0
+        ) +
+            ggrepel::geom_text_repel(
+                data = centroid,
+                mapping = ggplot2::aes_string(label = "color"),
+                show.legend = FALSE,
+                color = "black"
+            )
+    }
+    return(g)
 }
 
 #' @title Dimension reduction plot tool for colData
@@ -151,44 +174,61 @@
 #'  colors by annotation data stored in the colData slot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
-#' @param colorBy color by a condition(any column of the annotation data).
-#' @param conditionClass class of the annotation data used in colorBy.
+#' @param colorBy Color by a condition(any column of the annotation data).
+#'  Required.
+#' @param conditionClass Class of the annotation data used in colorBy.
 #'  Options are NULL, "factor" or "numeric". If NULL, class will default to the
 #'  original class. Default NULL.
-#' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment
+#' @param shape Add shapes to each condition.
+#' @param reducedDimName Saved dimension reduction matrix name in the SCtkExperiment
 #'  object. Required.
-#' @param xlab label for x-axis
-#' @param ylab label for y-axis
-#' @param dim1 1st dimension to be used for plotting. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
-#' @param dotsize size of dots. Default 2.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+#'  If more than one value, will bin numeric values using values as a cut point.
+#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
+#'  Default NULL.
+#' @param dotsize Size of dots. Default 2.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #' @param legendTitle title of legend. Default NULL.
 #'  Default FALSE.
 #' @return a ggplot of the reduced dimensions.
 #' @export
-#'
 #' @examples
 #' plotSCEDimReduceColData(
 #'   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
-#'   shape = "No Shape", conditionClass = "factor",
+#'   shape = NULL, conditionClass = "factor",
 #'   reducedDimName = "TSNE_counts",
 #'   xlab = "tSNE1", ylab = "tSNE2", labelClusters = TRUE
 #' )
+#'
+#' plotSCEDimReduceColData(
+#'   inSCE = mouseBrainSubsetSCE, colorBy = "age",
+#'   shape = NULL, conditionClass = "numeric",
+#'   reducedDimName = "TSNE_counts", bin =  c(-Inf,20,25,+Inf),
+#'   xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
+#' )
 plotSCEDimReduceColData <- function(inSCE,
-                                    colorBy = "No Color",
-                                    shape = "No Shape",
-                                    reducedDimName = NULL,
+                                    colorBy,
                                     conditionClass = NULL,
+                                    shape = NULL,
+                                    reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
                                     dim1 = NULL,
                                     dim2 = NULL,
+                                    bin = NULL,
+                                    binLabel = NULL,
                                     dotsize = 2,
                                     transparency = 1,
                                     defaultTheme = TRUE,
@@ -196,37 +236,29 @@ plotSCEDimReduceColData <- function(inSCE,
                                     titleSize = 15,
                                     labelClusters = TRUE,
                                     legendTitle = NULL) {
-  colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
-  if (conditionClass %in% c("character", "factor", "numeric")) {
-    if (conditionClass == "character") {
-      colorPlot <- as.character(colorPlot)
-    } else if (conditionClass == "factor") {
-      colorPlot <- as.factor(colorPlot)
-    } else if (conditionClass == "numeric") {
-      colorPlot <- as.numeric(colorPlot)
-    }
-  }
+    colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
 
-  g <- .ggScatter(
-    inSCE = inSCE,
-    colorBy = colorPlot,
-    conditionClass = conditionClass,
-    shape = shape,
-    reducedDimName = reducedDimName,
-    xlab = xlab,
-    ylab = ylab,
-    dim1 = dim1,
-    dim2 = dim2,
-    dotsize = dotsize,
-    transparency = transparency,
-    defaultTheme = defaultTheme,
-    title = title,
-    titleSize = titleSize,
-    labelClusters = labelClusters,
-    legendTitle = legendTitle
-  )
-
-  return(g)
+    g <- .ggScatter(
+        inSCE = inSCE,
+        colorBy = colorPlot,
+        conditionClass = conditionClass,
+        shape = shape,
+        reducedDimName = reducedDimName,
+        xlab = xlab,
+        ylab = ylab,
+        dim1 = dim1,
+        dim2 = dim2,
+        bin = bin,
+        binLabel = binLabel,
+        dotsize = dotsize,
+        transparency = transparency,
+        defaultTheme = defaultTheme,
+        title = title,
+        titleSize = titleSize,
+        labelClusters = labelClusters,
+        legendTitle = legendTitle
+    )
+    return(g)
 }
 
 #' @title Dimension reduction plot tool for assay data
@@ -236,39 +268,48 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  components or a variable with saved results. Required
 #' @param feature name of feature stored in assay of singleCellExperiment
 #'  object. Plot will be colored based on feature value.
-#' @param shape add shapes to each condition.
+#' @param shape add shapes to each condition. Default NULL.
 #' @param reducedDimName saved dimension reduction name in the SCtkExperiment
 #'  object. Required.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
-#' @param xlab label for x-axis
-#' @param ylab label for y-axis
-#' @param dim1 1st dimension to be used for plotting. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
 #'  Default is second PCA component for PCA data and NULL otherwise.
-#' @param dotsize size of dots. Default 2.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
+#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+#'  If more than one value, will bin numeric values using values as a cut point.
+#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
+#'  Default NULL.
+#' @param dotsize Size of dots. Default 2.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
-#' @export
-#'
 #' @examples
 #' plotSCEDimReduceFeatures(
 #'   inSCE = mouseBrainSubsetSCE, feature = "Sox2",
-#'   shape = "No Shape", reducedDimName = "TSNE_counts",
+#'   shape = NULL, reducedDimName = "TSNE_counts",
 #'   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 #' )
+#' @export
 plotSCEDimReduceFeatures <- function(inSCE,
                                      feature,
-                                     shape = "No Shape",
+                                     shape = NULL,
                                      reducedDimName,
                                      useAssay = "logcounts",
                                      xlab = NULL,
                                      ylab = NULL,
                                      dim1 = NULL,
                                      dim2 = NULL,
+                                     bin = NULL,
+                                     binLabel = NULL,
                                      dotsize = 2,
                                      transparency = 1,
                                      defaultTheme = TRUE,
@@ -294,6 +335,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
     ylab = ylab,
     dim1 = dim1,
     dim2 = dim2,
+    bin = bin,
+    binLabel = binLabel,
     defaultTheme = defaultTheme,
     dotsize = dotsize,
     title = title,
@@ -314,45 +357,54 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  options: "assays", "colData", "metadata"
 #' @param annotation Desired vector within the slot used for plotting.
 #' @param feature name of feature stored in assay of SingleCellExperiment
-#'  object. Will be used only if "assays" slot is chosen. Deafult NULL.
+#'  object. Will be used only if "assays" slot is chosen. Default NULL.
 #' @param shape add shapes to each condition.
 #' @param reducedDimName saved dimension reduction name in the SCtkExperiment
 #'  object. Required.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
-#' @param xlab label for x-axis
-#' @param ylab label for y-axis
-#' @param dim1 1st dimension to be used for plotting. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
 #' Default is second PCA component for PCA data and NULL otherwise.
-#' @param dotsize size of dots. Default 2.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
+#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+#'  If more than one value, will bin numeric values using values as a cut point.
+#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
+#'  Default NULL.
+#' @param dotsize Size of dots. Default 2.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
-#' @export
-#'
 #' @examples
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
 #'   slot = "assays", annotation = "counts", feature = "Tspan12",
 #'   reducedDimName = "TSNE_counts", labelClusters = FALSE
 #' )
+#' @export
 plotSCEScatter <- function(inSCE,
                            slot,
                            annotation,
                            feature = NULL,
-                           shape = "No Shape",
+                           shape = NULL,
                            reducedDimName = NULL,
                            conditionClass = NULL,
                            xlab = NULL,
                            ylab = NULL,
                            dim1 = NULL,
                            dim2 = NULL,
+                           bin = NULL,
+                           binLabel = NULL,
                            dotsize = 2,
                            transparency = 1,
                            defaultTheme = TRUE,
@@ -386,17 +438,6 @@ plotSCEScatter <- function(inSCE,
     colorPlot <- sceSubset[[annotation.ix]]
   }
 
-  if (!is.null(conditionClass)) {
-    if (conditionClass %in% c("character", "factor", "numeric")) {
-      if (conditionClass == "character") {
-        colorPlot <- as.character(colorPlot)
-      } else if (conditionClass == "factor") {
-        colorPlot <- as.factor(colorPlot)
-      } else if (conditionClass == "numeric") {
-        colorPlot <- as.numeric(colorPlot)
-      }
-    }
-  }
   g <- .ggScatter(
     inSCE = inSCE,
     colorBy = colorPlot,
@@ -407,6 +448,8 @@ plotSCEScatter <- function(inSCE,
     ylab = ylab,
     dim1 = dim1,
     dim2 = dim2,
+    bin = bin,
+    binLabel = binLabel,
     dotsize = dotsize,
     transparency = transparency,
     defaultTheme = defaultTheme,
@@ -415,23 +458,8 @@ plotSCEScatter <- function(inSCE,
     labelClusters = labelClusters,
     legendTitle = legendTitle
   )
-
   return(g)
 }
-
-
-.ggSCTKTheme <- function(gg) {
-  gg <- gg + ggplot2::theme_bw() +
-    ggplot2::theme(
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = 10),
-      axis.title = ggplot2::element_text(size = 10)
-    )
-  return(gg)
-}
-
-
 
 #' @title Violin plot plotting tool.
 #' @description Visualizes specified values via a violin plot.
@@ -444,15 +472,15 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param xlab label for x-axis. Default NULL.
-#' @param ylab label for y-axis. Default NULL.
-#' @param axisSize size of x/y-axis labels. Default 10.
-#' @param dotSize size of dots. Default 1.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme removes grid in plot and sets axis title size to 10
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
 .ggViolin <- function(y,
                       groupby = NULL,
@@ -516,7 +544,7 @@ plotSCEScatter <- function(inSCE,
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a violin plot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#'  components or a variable with saved results. Required.
 #' @param coldata colData value that will be plotted.
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
@@ -526,15 +554,15 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param xlab label for x-axis. Default NULL.
-#' @param ylab label for y-axis. Default NULL.
-#' @param axisSize size of x/y-axis labels. Default 10.
-#' @param dotSize size of dots. Default 1.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme removes grid in plot and sets axis title size to 10
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 
 #' @examples
 #' plotSCEViolinColData(
@@ -604,7 +632,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a violin plot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#'  components or a variable with saved results. Required.
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
@@ -616,16 +644,15 @@ plotSCEViolinColData <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param xlab label for x-axis. Default NULL.
-#' @param ylab label for y-axis. Default NULL.
-#' @param axisSize size of x/y-axis labels. Default 10.
-#' @param dotSize size of dots. Default 1.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme removes grid in plot and sets axis title size to 10
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
-
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 #' @examples
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -700,7 +727,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param annotation Desired vector within the slot used for plotting.
 #' @param feature name of feature stored in assay of SingleCellExperiment
 #'  object.
-#'  Will be used only if "assays" slot is chosen. Deafult NULL.
+#'  Will be used only if "assays" slot is chosen. Default NULL.
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
 #' object, or can be retrieved from the colData slot. Default NULL.
@@ -709,15 +736,15 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param xlab label for x-axis. Default NULL.
-#' @param ylab label for y-axis. Default NULL.
-#' @param axisSize size of x/y-axis labels. Default 10.
-#' @param dotSize size of dots. Default 1.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme removes grid in plot and sets axis title size to 10
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
 
 #' @examples
 #' plotSCEViolin(
@@ -801,4 +828,31 @@ plotSCEViolin <- function(inSCE,
 
   return(p)
 }
+
+.ggSCTKTheme <- function(gg) {
+    return(gg + ggplot2::theme_bw() +
+               ggplot2::theme(
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.text = ggplot2::element_text(size = 10),
+                   axis.title = ggplot2::element_text(size = 10)
+               ))
+}
+
+.binSCTK <- function(value, bin, binLabel = NULL) {
+    if(!is.null(binLabel)){
+        if(length(bin) == 1){
+            if(bin != length(binLabel)){
+                stop("'binLabel' must be equal to the bin length")
+            }
+        }else if(length(bin) > 1){
+            if(bin != length(binLabel)+1){
+                stop("'binLabel' must be equal to the bin length")
+            }
+        }
+    }
+    value.bin <- cut(x = value, breaks = bin, labels = binLabel)
+    return(value.bin)
+}
+
 

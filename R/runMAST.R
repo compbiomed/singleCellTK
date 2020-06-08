@@ -151,6 +151,9 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
     ##
     SummarizedExperiment::colData(sca)$cngeneson <-
         scale(colSums(SummarizedExperiment::assay(sca) > 0))
+    if(all(is.na(SummarizedExperiment::colData(sca)$cngeneson))){
+        SummarizedExperiment::colData(sca)$cngeneson <- 0
+    }
     zlmCond <- MAST::zlm(~condition + cngeneson, sca)
     summaryCond <- MAST::summary(zlmCond, doLRT = "conditionc1")
     summaryDt <- summaryCond$datatable
@@ -183,7 +186,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
         list(groupNames = groupNames,
              useAssay = useAssay,
              select = select,
-             result = fcHurdleSig)
+             result = data.frame(fcHurdleSig))
     return(inSCE)
 }
 
