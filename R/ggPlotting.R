@@ -19,24 +19,6 @@
 #'  colors by annotation data stored in the colData slot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
-<<<<<<< HEAD
-#' @param colorBy color by a condition(any column of the annotation data).
-#' @param conditionClass class of the annotation data used in colorBy.
-#'  Options are NULL, "factor" or "numeric". If NULL, class will default to the
-#'  original class. Default NULL.
-#' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
-#' @param xlab label for x-axis
-#' @param ylab label for y-axis
-#' @param dim1 1st dimension to be used for plotting. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Default is NULL.
-#' @param dotsize size of dots. Default 2.
-#' @param transparency transparency of the dots, values will be 0-1. Default 1.
-#' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
-#' @param title title of plot. Default NULL.
-#' @param titleSize size of title of plot. Default 15.
-=======
 #' @param colorBy If provided, colors dots in the scatterplot based on value.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
@@ -62,7 +44,6 @@
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
->>>>>>> b8f0cbc70f152b82a419329194ca682c020ff74b
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #' @param legendTitle title of legend. Default NULL.
 #'  Default FALSE.
@@ -136,137 +117,8 @@ plotSCEDimReduceColData <- function(inSCE,
 
 
 .ggScatter <- function(inSCE,
-<<<<<<< HEAD
-  colorBy = "No Color",
-  shape,
-  reducedDimName,
-  conditionClass = NULL,
-  labelClusters = FALSE,
-  xlab,
-  ylab,
-  dim1 = NULL,
-  dim2 = NULL,
-  bin = NULL,
-  binLabel = NULL,
-  dotsize = 2,
-  transparency = 1,
-  defaultTheme = TRUE,
-  title = NULL,
-  titleSize = 15,
-  legendTitle = NULL,
-  groupBy = NULL) {
-  Df <- data.frame(SingleCellExperiment::reducedDim(
-    inSCE,
-    reducedDimName
-  ))
-  if (ncol(Df) > 2) {
-    warning("More than two dimensions. Using the first two.")
-  }
-  if (!is.null(dim1) & !is.null(dim2)) {
-    if (!(dim1 %in% colnames(Df))) {
-      stop("X dimension ", dim1, " is not in the reducedDim data")
-    }
-    if (!(dim2 %in% colnames(Df))) {
-      stop("Y dimension ", dim2, " is not in the reducedDim data")
-    }
-    xdim <- dim1
-    ydim <- dim2
-  } else if (!is.null(xlab) & !is.null(ylab)) {
-    colnames(Df)[1] <- xlab
-    colnames(Df)[2] <- ylab
-    xdim <- colnames(Df)[1]
-    ydim <- colnames(Df)[2]
-  } else {
-    colnames(Df)[1] <- paste0(reducedDimName, "_1")
-    colnames(Df)[2] <- paste0(reducedDimName, "_2")
-    xdim <- colnames(Df)[1]
-    ydim <- colnames(Df)[2]
-  }
-
-  if (!is.null(conditionClass)){
-    if (conditionClass %in% c("character", "factor", "numeric")) {
-      if (conditionClass == "character") {
-        colorBy <- as.character(colorBy)
-      } else if (conditionClass == "factor") {
-        colorBy <- as.factor(colorBy)
-      } else if (conditionClass == "numeric") {
-        colorBy <- as.numeric(colorBy)
-      }
-    }
-  }
-
-  if (!is.null(bin)){
-    colorBy <- .binSCTK(value = colorBy,
-      bin = bin,
-      binLabel = binLabel)
-  }
-
-  if (length(colorBy) == 1) {
-    if (colorBy == "No Color") {
-      colorBy <- NULL
-    }
-  }
-  if (shape == "No Shape") {
-    shape <- NULL
-  }
-  if (!is.null(colorBy)) {
-    Df$color <- colorBy
-  }
-  if (!is.null(shape)) {
-    Df$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
-  }
-  if (!is.null(groupBy)){
-    Df$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
-  }
-
-  Df$Sample <- colnames(inSCE)
-  g <- ggplot2::ggplot(Df, ggplot2::aes_string(xdim, ydim,
-    label = "Sample"
-  )) +
-    ggplot2::geom_point(size = dotsize, alpha = transparency)
-  if (!is.null(colorBy)) {
-    g <- g + ggplot2::aes_string(color = "color")
-  }
-  if (!is.null(shape)) {
-    g <- g + ggplot2::aes_string(shape = "shape") +
-      ggplot2::labs(shape = shape)
-  }
-  if (defaultTheme == TRUE) {
-    g <- .ggSCTKTheme(g)
-  }
-  if (!is.null(title)) {
-    g <- g + ggplot2::ggtitle(label = title) +
-      ggplot2::theme(plot.title = ggplot2::element_text(
-        hjust = 0.5,
-        size = titleSize
-      ))
-  }
-  if (!is.null(legendTitle)) {
-    g <- g + ggplot2::labs(color = legendTitle)
-  } else {
-    g <- g + ggplot2::labs(color = "")
-  }
-
-  if (!is.null(groupBy)){
-    g <- g + facet_wrap(~groups)
-  }
-
-  if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
-    centroidList <- lapply(unique(colorBy), function(x) {
-      df.sub <- Df[Df$color == x, ]
-      median.1 <- stats::median(df.sub[, 1])
-      median.2 <- stats::median(df.sub[, 2])
-      cbind(median.1, median.2, as.character(x))
-    })
-    centroid <- do.call(rbind, centroidList)
-    centroid <- data.frame(
-      Dimension_1 = as.numeric(centroid[, 1]),
-      Dimension_2 = as.numeric(centroid[, 2]),
-      color = centroid[, 3],
-      Sample = seq(1, length(unique(colorBy)))
-    )
-=======
                        colorBy = NULL,
+                       groupBy = NULL,
                        shape = NULL,
                        reducedDimName,
                        conditionClass = NULL,
@@ -326,15 +178,18 @@ plotSCEDimReduceColData <- function(inSCE,
             }
         }
     }
->>>>>>> b8f0cbc70f152b82a419329194ca682c020ff74b
 
     if (!is.null(bin) & !is.null(colorBy)){
         colorBy <- .binSCTK(value = colorBy,
                             bin = bin,
                             binLabel = binLabel)
     }
+
     if (!is.null(colorBy)) {
         dataframe$color <- colorBy
+    }
+    if (!is.null(groupBy)){
+      dataframe$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
     }
     if (!is.null(shape)) {
         dataframe$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
@@ -365,6 +220,10 @@ plotSCEDimReduceColData <- function(inSCE,
         g <- g + ggplot2::labs(color = legendTitle)
     } else {
         g <- g + ggplot2::labs(color = "")
+    }
+
+    if (!is.null(groupBy)){
+      g <- g + facet_wrap(~groups)
     }
 
     if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
@@ -403,40 +262,7 @@ plotSCEDimReduceColData <- function(inSCE,
     return(g)
 }
 
-<<<<<<< HEAD
-.ggSCTKTheme <- function(gg) {
-  gg <- gg + ggplot2::theme_bw() +
-    ggplot2::theme(
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = 10),
-      axis.title = ggplot2::element_text(size = 10)
-    )
-  return(gg)
-}
 
-.binSCTK <- function(value, bin, binLabel = NULL) {
-  if(!is.null(binLabel)){
-    if(length(bin) == 1){
-      if(bin != length(binLabel)){
-        stop("'binLabel' must be equal to the bin length")
-      }
-    }else if(length(bin) > 1){
-      if(bin != length(binLabel)+1){
-        stop("'binLabel' must be equal to the bin length")
-      }
-    }
-  }
-
-  # Since binning will only be done on numeric values, coerces
-  #all values into numeric values.
-  # Alternatively, could force users to only be able to use fxn
-  #on numeric values
-  value <- as.numeric(as.character(value))
-
-  value.bin <- cut(x = value, breaks = bin, labels = binLabel)
-  return(value.bin)
-=======
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
@@ -527,7 +353,6 @@ plotSCEDimReduceColData <- function(inSCE,
         legendTitle = legendTitle
     )
     return(g)
->>>>>>> b8f0cbc70f152b82a419329194ca682c020ff74b
 }
 
 
@@ -733,11 +558,7 @@ plotSCEScatter <- function(inSCE,
   return(g)
 }
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> b8f0cbc70f152b82a419329194ca682c020ff74b
 #' @title Violin plot plotting tool.
 #' @description Visualizes specified values via a violin plot.
 #' @param y Numeric values to be plotted on y-axis.
@@ -1104,9 +925,6 @@ plotSCEViolin <- function(inSCE,
   )
 
   return(p)
-<<<<<<< HEAD
-}
-=======
 }
 
 .ggSCTKTheme <- function(gg) {
@@ -1135,5 +953,3 @@ plotSCEViolin <- function(inSCE,
     return(value.bin)
 }
 
-
->>>>>>> b8f0cbc70f152b82a419329194ca682c020ff74b
