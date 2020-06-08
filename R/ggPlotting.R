@@ -66,6 +66,7 @@
 #' )
 
 plotSCEDimReduceColData <- function(inSCE,
+  groupBy = NULL,
   colorBy = "No Color",
   shape = "No Shape",
   reducedDimName = NULL,
@@ -82,8 +83,7 @@ plotSCEDimReduceColData <- function(inSCE,
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
-  legendTitle = NULL,
-  groupBy = NULL) {
+  legendTitle = NULL) {
   if (colorBy != "No Color"){
     colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }else{
@@ -312,48 +312,48 @@ plotSCEDimReduceColData <- function(inSCE,
 #'   reducedDimName = "TSNE_counts", bin =  c(-Inf,20,25,+Inf),
 #'   xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
 #' )
-plotSCEDimReduceColData <- function(inSCE,
-                                    colorBy,
-                                    conditionClass = NULL,
-                                    shape = NULL,
-                                    reducedDimName = NULL,
-                                    xlab = NULL,
-                                    ylab = NULL,
-                                    dim1 = NULL,
-                                    dim2 = NULL,
-                                    bin = NULL,
-                                    binLabel = NULL,
-                                    dotsize = 2,
-                                    transparency = 1,
-                                    defaultTheme = TRUE,
-                                    title = NULL,
-                                    titleSize = 15,
-                                    labelClusters = TRUE,
-                                    legendTitle = NULL) {
-    colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
+#plotSCEDimReduceColData <- function(inSCE,
+#                                    colorBy,
+#                                    conditionClass = NULL,
+#                                    shape = NULL,
+#                                    reducedDimName = NULL,
+#                                    xlab = NULL,
+#                                    ylab = NULL,
+#                                    dim1 = NULL,
+#                                    dim2 = NULL,
+#                                    bin = NULL,
+#                                    binLabel = NULL,
+#                                    dotsize = 2,
+#                                    transparency = 1,
+#                                    defaultTheme = TRUE,
+#                                    title = NULL,
+#                                    titleSize = 15,
+#                                    labelClusters = TRUE,
+#                                    legendTitle = NULL) {
+#    colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
 
-    g <- .ggScatter(
-        inSCE = inSCE,
-        colorBy = colorPlot,
-        conditionClass = conditionClass,
-        shape = shape,
-        reducedDimName = reducedDimName,
-        xlab = xlab,
-        ylab = ylab,
-        dim1 = dim1,
-        dim2 = dim2,
-        bin = bin,
-        binLabel = binLabel,
-        dotsize = dotsize,
-        transparency = transparency,
-        defaultTheme = defaultTheme,
-        title = title,
-        titleSize = titleSize,
-        labelClusters = labelClusters,
-        legendTitle = legendTitle
-    )
-    return(g)
-}
+#    g <- .ggScatter(
+#        inSCE = inSCE,
+#        colorBy = colorPlot,
+#        conditionClass = conditionClass,
+#        shape = shape,
+#        reducedDimName = reducedDimName,
+#        xlab = xlab,
+#        ylab = ylab,
+#        dim1 = dim1,
+#        dim2 = dim2,
+#        bin = bin,
+#        binLabel = binLabel,
+#        dotsize = dotsize,
+#        transparency = transparency,
+#        defaultTheme = defaultTheme,
+#        title = title,
+#        titleSize = titleSize,
+#        labelClusters = labelClusters,
+#        legendTitle = legendTitle
+#    )
+#    return(g)
+#}
 
 
 #' @title Dimension reduction plot tool for assay data
