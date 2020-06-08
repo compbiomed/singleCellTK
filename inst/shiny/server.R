@@ -3527,7 +3527,7 @@ shinyServer(function(input, output, session) {
         input$batchCheckVar != "None" &
         input$batchCheckVar != input$batchCheckCond){
       if(input$batchCheckCond == "None"){
-        shapeBy <- "No Shape"
+        shapeBy <- NULL
       } else {
         shapeBy <- input$batchCheckCond
       }
@@ -3538,7 +3538,7 @@ shinyServer(function(input, output, session) {
         updateReddimInputs()
       }
       plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-        shape = shapeBy, conditionClass = 'character', reducedDimName = pcaName,
+        shape = shapeBy, reducedDimName = pcaName,
         title = paste0("Original ", input$batchCheckOrigAssay, " PCA"))
     }
   })
@@ -3561,11 +3561,6 @@ shinyServer(function(input, output, session) {
           plotSCEBatchFeatureMean(inSCE = vals$counts,
             useReddim = input$batchCheckCorrReddim,
             batch = input$batchCheckVar)
-          #plotBatchVariance(inSCE = vals$counts,
-          #  useAssay = input$batchCheckCorrReddim,
-          #  batch = input$batchCheckVar,
-          #  condition = input$batchCheckCond,
-          #  pcInput = TRUE)
         }
       }
     }
@@ -3576,7 +3571,7 @@ shinyServer(function(input, output, session) {
         input$batchCheckVar != "None" &
         input$batchCheckVar != input$batchCheckCond){
       if(input$batchCheckCond == "None"){
-        shapeBy = "No Shape"
+        shapeBy = NULL
       } else {
         shapeBy = input$batchCheckCond
       }
@@ -3599,7 +3594,6 @@ shinyServer(function(input, output, session) {
           updateReddimInputs()
           plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
             shape = shapeBy, reducedDimName = pcaName,
-            conditionClass = "character",
             title = paste0(input$batchCheckCorrAssay, " corrected"))
         }
       }
@@ -4692,70 +4686,73 @@ shinyServer(function(input, output, session) {
       FALSE
     }
   })
-  observe({
-    if(mastNameIsDup()){
-      output$mastNameWarn <- renderUI({
-        span("Entered name is already there, will be overwritten!",
-          style = 'color:red;')
-      })
-    } else {
-      output$mastNameWarn <- renderUI({
-        span("")
-      })
-    }
-  })
+
+  runMASTfromShiny <- function(){
+    withBusyIndicatorServer("runMAST", {
+      if(input$mastCondMethod == 1){
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay, class = input$mastC1Class,
+                               classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
+                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+                               comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      } else if(input$mastCondMethod == 2){
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay,
+                               index1 = input$mastC2G1Table_rows_selected,
+                               index2 = input$mastC2G2Table_rows_selected,
+                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+                               comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      } else {
+        g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
+                                    sep='\n', what = 'character'))
+        g1CellList <- sort(unique(g1CellList))
+        g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
+                                    sep='\n', what = 'character'))
+        g2CellList <- sort(unique(g2CellList))
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay, index1 = g1CellList,
+                               index2 = g2CellList, groupName1 = input$mastG1Name,
+                               groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      }
+      shinyalert::shinyalert("Success",
+                             text = "MAST Differential Expression completed.", type = "success")
+      allResName <- names(metadata(vals$counts)$MAST)
+      updateSelectInput(session, "mastResSel", choices = allResName)
+    })
+  }
   ## MAST - apply calculation ####
   observeEvent(input$runMAST, {
     if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert("Error!", "Upload data first.", type = "error")
+    } else if(input$mastCompName == ""){
+      shinyalert("Error!", "Please enter differential expression analysis name.", type = "error")
     } else {
-      withBusyIndicatorServer("runMAST", {
-        if(input$mastCondMethod == 1){
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay, class = input$mastC1Class,
-            classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
-            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-            comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        } else if(input$mastCondMethod == 2){
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay,
-            index1 = input$mastC2G1Table_rows_selected,
-            index2 = input$mastC2G2Table_rows_selected,
-            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-            comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        } else {
-          g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
-                                 sep='\n', what = 'character'))
-          g1CellList <- sort(unique(g1CellList))
-          g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
-                                 sep='\n', what = 'character'))
-          g2CellList <- sort(unique(g2CellList))
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay, index1 = g1CellList,
-            index2 = g2CellList, groupName1 = input$mastG1Name,
-            groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        }
-        shinyalert::shinyalert("Success",
-          text = "MAST Differential Expression completed.", type = "success")
-        allResName <- names(metadata(vals$counts)$MAST)
-        updateSelectInput(session, "mastResSel", choices = allResName)
-      })
+      allRes <- names(metadata(vals$counts)$MAST)
+      if(input$mastCompName %in% allRes){
+        shinyalert("Warning",
+                   "Entered differential experiment analysis name is already there.",
+                   "warning", showCancelButton = TRUE,
+                   confirmButtonText = "Overwrite",
+                   callbackR = function(x){if(isTRUE(x)){runMASTfromShiny()}})
+      } else {
+          runMASTfromShiny()
+      }
     }
   })
 
   output$mastResSelUI <- renderUI({
     if(!is.null(vals$counts)){
       res <- names(metadata(vals$counts)$MAST)
-      selectInput("mastResSel", "Select Result to Visualize", res)
+      selectInput("mastResSel", "Select Differential Expression Analysis", res)
     }
   })
 
@@ -4790,8 +4787,9 @@ shinyServer(function(input, output, session) {
       paste0("mastResult_", input$mastResSel, ".csv")
     },
     content = function(file) {
-      utils::write.csv(metadata(vals$counts)$MAST[[input$mastResSel]]$result,
-                       file)
+      fullTable <- metadata(vals$counts)$MAST[[input$mastResSel]]$result
+      filteredTable <- fullTable[input$mastresults_rows_all,]
+      utils::write.csv(filteredTable, file, row.names = FALSE)
     }
   )
 
@@ -4910,7 +4908,9 @@ shinyServer(function(input, output, session) {
       paste0("mastMarkerResult_", input$mastFMCluster, ".csv")
     },
     content = function(file) {
-      utils::write.csv(metadata(vals$counts)$findMarker, file)
+      fullTable <- metadata(vals$counts)$findMarker
+      filteredTable <- fullTable[input$mastFMResTable_rows_all,]
+      utils::write.csv(filteredTable, file, row.names = FALSE)
     }
   )
 
@@ -5309,7 +5309,7 @@ shinyServer(function(input, output, session) {
     #-----------------------------------------------------------------------------
     # Page 8: Seurat Workflow
     #-----------------------------------------------------------------------------
-  
+
   #Perform normalization
   observeEvent(input$normalize_button, {
     req(vals$counts)
@@ -5326,7 +5326,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(selector = "div[value='Scale Data']")
     showNotification("Normalization Complete")
   })
-  
+
   #Perform scaling
   observeEvent(input$scale_button, {
     req(vals$counts)
@@ -5345,7 +5345,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(selector = "div[value='Highly Variable Genes']")
     showNotification("Scale Complete")
   })
-  
+
   #Find HVG
   observeEvent(input$find_hvg_button, {
     req(vals$counts)
@@ -5354,7 +5354,7 @@ shinyServer(function(input, output, session) {
                                    useAssay = "seuratScaledData",
                                    hvgMethod = input$hvg_method,
                                    hvgNumber = as.numeric(input$hvg_no_features))
-      
+
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
@@ -5366,7 +5366,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
     showNotification("Find HVG Complete")
   })
-  
+
   #Display highly variable genes
   output$hvg_output <- renderText({
     if (!is.null(vals$counts)) {
@@ -5377,7 +5377,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #Run PCA
   observeEvent(input$run_pca_button, {
     req(vals$counts)
@@ -5386,8 +5386,8 @@ shinyServer(function(input, output, session) {
                                useAssay = "seuratScaledData",
                                reducedDimName = "seuratPCA",
                                nPCs = input$pca_no_components)
-      
-      vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]          
+
+      vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
@@ -5439,29 +5439,29 @@ shinyServer(function(input, output, session) {
       })
     }
     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-    
+
     #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
     shinyjs::enable(
       selector = ".seurat_pca_plots a[data-value='PCA Plot']")
-    
+
     shinyjs::toggleState(
       selector = ".seurat_pca_plots a[data-value='Elbow Plot']",
       condition = input$pca_compute_elbow)
-    
+
     shinyjs::toggleState(
       selector = ".seurat_pca_plots a[data-value='JackStraw Plot']",
-      condition = input$pca_compute_jackstraw) 
-    
+      condition = input$pca_compute_jackstraw)
+
     shinyjs::toggleState(
       selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
       condition = input$pca_compute_heatmap)
-    
+
     shinyjs::enable(
       selector = "div[value='tSNE/UMAP']")
-    
+
     showNotification("PCA Complete")
   })
-  
+
   #Run ICA
   observeEvent(input$run_ica_button, {
     req(vals$counts)
@@ -5469,12 +5469,12 @@ shinyServer(function(input, output, session) {
       vals$counts <- seuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                nics = input$ica_no_components)
-      
+
       vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
-      
+
       output$plot_ica <- renderPlot({
         seuratReductionPlot(inSCE = vals$counts,
                             useReduction = "ica",
@@ -5500,21 +5500,21 @@ shinyServer(function(input, output, session) {
       })
     }
     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-    
+
     #Enable/Disable ICA plot panels not selected for computation (Heatmap)
     shinyjs::enable(
       selector = ".seurat_ica_plots a[data-value='ICA Plot']")
-    
+
     shinyjs::toggleState(
       selector = ".seurat_ica_plots a[data-value='Heatmap Plot']",
       condition = input$ica_compute_heatmap)
-    
+
     shinyjs::enable(
       selector = "div[value='tSNE/UMAP']")
-    
+
     showNotification("ICA Complete")
   })
-  
+
   #Find clusters
   observeEvent(input$find_clusters_button, {
     req(vals$counts)
@@ -5530,7 +5530,7 @@ shinyServer(function(input, output, session) {
       })
       updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
       showNotification("Find Clusters Complete")
-      
+
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
           output$plot_pca_clustering <- renderPlot({
@@ -5555,7 +5555,7 @@ shinyServer(function(input, output, session) {
           selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
       }
-      
+
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
         withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
           output$plot_tsne_clustering <- renderPlot({
@@ -5568,10 +5568,10 @@ shinyServer(function(input, output, session) {
           selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
       }
-      
+
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
         withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
-          
+
           output$plot_umap_clustering <- renderPlot({
             seuratReductionPlot(inSCE = vals$counts,
                                 useReduction = "umap",
@@ -5587,7 +5587,7 @@ shinyServer(function(input, output, session) {
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
     }
   })
-  
+
   #Update PCA/ICA message in clustering tab
   output$display_message_clustering <- renderText({
     if(input$reduction_clustering_method == "pca"){
@@ -5601,7 +5601,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #Run tSNE
   observeEvent(input$run_tsne_button, {
     req(vals$counts)
@@ -5623,15 +5623,15 @@ shinyServer(function(input, output, session) {
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
       shinyjs::enable(selector = "div[value='Clustering']")
-      
+
       showNotification("tSNE Complete")
     }
     else{
       showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
     }
   })
-  
-  
+
+
   #Update PCA/ICA message in tSNE tab
   output$display_message_tsne <- renderText({
     if(input$reduction_tsne_method == "pca"){
@@ -5645,7 +5645,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #Run UMAP
   observeEvent(input$run_umap_button, {
     req(vals$counts)
@@ -5675,7 +5675,7 @@ shinyServer(function(input, output, session) {
       showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
     }
   })
-  
+
   #Update PCA/ICA message in UMAP tab
   output$display_message_umap <- renderText({
     if(input$reduction_umap_method == "pca"){
@@ -5689,7 +5689,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   #Update pca significant slider maximum value with total number of computed principal components
   observe({
     req(vals$counts)
@@ -5697,7 +5697,7 @@ shinyServer(function(input, output, session) {
       updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = vals$counts@metadata$seurat$count_pc)
     }
   })
-  
+
   #Update ica significant slider maximum value with total number of computed independent components
   observe({
     req(vals$counts)
@@ -5705,7 +5705,7 @@ shinyServer(function(input, output, session) {
       updateSliderInput(session = session, inputId = "ica_significant_ic_slider", max = vals$counts@metadata$seurat$count_ic)
     }
   })
-  
+
   #Update tsne, umap and clustering selected number of principal components input
   observe({
     if (input$reduction_umap_method == "pca") {
@@ -5727,7 +5727,7 @@ shinyServer(function(input, output, session) {
       updateTextInput(session = session, inputId = "reduction_tsne_count", value = vals$counts@metadata$seurat$count_ic)
     }
   })
-  
+
   #Customize heatmap (pca) with selected options
   observeEvent(input$plot_heatmap_pca_button, {
     if (!is.null(input$picker_dimheatmap_components_pca)) {
@@ -5739,7 +5739,7 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
+
   #Customize heatmap (ica) with selected options
   observeEvent(input$plot_heatmap_ica_button, {
     if (!is.null(input$picker_dimheatmap_components_ica)) {
@@ -5751,8 +5751,8 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-  
-  
+
+
   #Disable tabs (THIS PART NEEDS REFACTORING)
   observe({
     if(!is.null(vals$counts)){
@@ -5787,9 +5787,9 @@ shinyServer(function(input, output, session) {
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
             }
           }
-          
+
         }
-        
+
       }
     }
     else{
@@ -5807,21 +5807,21 @@ shinyServer(function(input, output, session) {
         selector = "div[value='Clustering']")
       shinyjs::disable(
         selector = "div[value='Scale Data']")
-      
+
       shinyjs::disable(
         selector = ".seurat_pca_plots a[data-value='PCA Plot']")
       shinyjs::disable(
         selector = ".seurat_pca_plots a[data-value='Elbow Plot']")
       shinyjs::disable(
-        selector = ".seurat_pca_plots a[data-value='JackStraw Plot']") 
+        selector = ".seurat_pca_plots a[data-value='JackStraw Plot']")
       shinyjs::disable(
         selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
-      
+
       shinyjs::disable(
         selector = ".seurat_ica_plots a[data-value='ICA Plot']")
       shinyjs::disable(
         selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
-      
+
       shinyjs::disable(
         selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
       shinyjs::disable(
