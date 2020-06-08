@@ -168,6 +168,32 @@ Rscript SCTK_runQC.R \
 -f path/to/matrix/file/cell.txt
 ```
 
+## Specify parameters for QC algorithms
+User can specify parameters using yaml file for QC algorithms in this pipeline. The current supported QC algorithms including doublet dection (bcds, cxds, cxds_bcds_hybrid, doubletFinder, doubletCells and scrublet), decontamination (decontX), emptyDrop detection (emptyDrops) and barcodeRankDrops (barcodeRanks). An example of QC parameters yaml file is shown below:
+```
+Params:   ### should not be omitted
+  bcds:
+    ntop: 600
+
+  cxds:
+    ntop: 600
+
+  cxds_bcds_hybrid:
+    nTop: 600
+
+  decontX:
+    maxIter: 600
+
+  emptyDrops:
+    lower: 50
+    niters: 5000
+    testAmbient: True
+
+  barcodeRanks:
+    lower: 50
+```
+The format of yaml file can be found [here](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html). The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. 
+
 ## Analyzing genes sets
 
 Quantifying the level of gene sets can be useful quality control. For example, the percentage of counts from mitochondrial genes can be an indicator or cell stress or death. 
@@ -176,6 +202,41 @@ Users can pass a [GMT](http://software.broadinstitute.org/cancer/software/gsea/w
 The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table.
 
 ## Understanding outputs
+The output directory is created under the path specified by -o/--directory argument. Each sample is stoed in the subdirectory (named by -s/--sample argument) within this output direcotry. Within each sample directory, the each output format will be separated into subdirectories. The output file hierarchy is shown below:
+```
+(root; output directory)
+├── level3Meta.csv
+├── level4Meta.csv
+└── sample1 
+    ├── R
+    |   ├── sample1_Droplets.rds
+    |   └── sample1_Cells.rds
+    ├── Python
+    |   ├── Droplets
+    |   |   └── sample1.h5ad
+    |   └── Cells
+    |       └── sample1.h5ad
+    ├── FlatFile
+    |   ├── Droplets
+    |   |   ├── assays
+    |   |   |   └── sample1_counts.mtx.gz
+    |   |   ├── metadata
+    |   |   |   └── sample1_metadata.rds
+    |   |   ├── sample1_colData.txt.gz
+    |   |   └── sample1_rowData.txt.gz 
+    |   └── Cells
+    |       ├── assays
+    |       |   └── sample1_counts.mtx.gz
+    |       ├── metadata
+    |       |   └── sample1_metadata.rds
+    |       ├── reducedDims
+    |       |   ├──sample1_decontX_UMAP.txt.gz
+    |       |   ├──sample1_scrublet_TSNE.txt.gz
+    |       |   └──sample1_scrublet_UMAP.txt.gz
+    |       ├── sample1_colData.txt.gz
+    |       └── sample1_rowData.txt.gz 
+    └── sample1_QCparameters.yaml
+```
 
 ## Docker and Singularity Images
 

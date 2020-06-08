@@ -71,7 +71,7 @@
 #' @export
 runDoubletFinder <- function(inSCE,
                              useAssay = "counts",
-			     sample = NULL,
+			                       sample = NULL,
                              seed = 12345,
                              seuratNfeatures = 2000,
                              seuratPcs = 1:15,

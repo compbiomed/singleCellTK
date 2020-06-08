@@ -279,8 +279,7 @@ for(i in seq_along(process)) {
     
     if (!is.null(cellSCE)) {
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
-            paramsList=Params, algorithms=c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", "scrublet", "decontX"))
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
     }
     
     ## merge colData of dropletSCE and FilteredSCE
@@ -301,26 +300,28 @@ for(i in seq_along(process)) {
         getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         ## generate meta data
-        if ("HTAN" %in% formats) {
-            if (!"FlatFile" %in% formats) {
-                warning("When FlatFile is not selected as the output format, ",
-                        "FlatFile output specified in the HTAN manifest file will not exists.")  
+        if ("FlatFile" %in% formats) {
+            if ("HTAN" %in% formats) {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=TRUE)
+            } else {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=FALSE)  
             }
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                               dir = directory, HTAN=TRUE)
-        } else if ("FlatFile" %in% formats) {
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                               dir = directory, HTAN=FALSE)
-            level3Meta[[i]] <- meta[[1]]
-            level4Meta[[i]] <- meta[[2]]   
-        } 
+
+        level3Meta[[i]] <- meta[[1]]
+        level4Meta[[i]] <- meta[[2]]
+
+        } else {
+            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+        }
     }
 
     dropletSCE_list[[samplename]] <- mergedDropletSCE
     cellSCE_list[[samplename]] <- mergedFilteredSCE
 }
 
-if (!isTRUE(split)){
+if (!isTRUE(split)) {
     dropletSCE <- combineSCE(dropletSCE_list)
     cellSCE <- combineSCE(cellSCE_list)
 
@@ -335,18 +336,20 @@ if (!isTRUE(split)){
     getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
     ## generate meta data
-    if ("HTAN" %in% formats) {
-        if (!"FlatFile" %in% formats) {
-            warning("When FlatFile is not selected as the output format, ",
-                    "FlatFile output specified in the HTAN manifest file will not exists.")  
+    if ("FlatFile" %in% formats) {
+        if ("HTAN" %in% formats) {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                dir = directory, HTAN=TRUE)
+        } else {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                dir = directory, HTAN=FALSE)            
         }
-      meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                           dir = directory, HTAN=TRUE)
-    } else if ("FlatFile" %in% formats) {
-        meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                           dir = directory, HTAN=FALSE)   
+
         level3Meta <- list(meta[[1]])
         level4Meta <- list(meta[[2]])
+
+    } else {
+        warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
     }
 }
 

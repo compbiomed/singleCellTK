@@ -62,7 +62,7 @@ Imports:
     Rtsne,
     S4Vectors,
     scater,
-    scMerge (>= 1.4.0),
+    scMerge (>= 1.2.0),
     scran,
     Seurat,
     shiny,
