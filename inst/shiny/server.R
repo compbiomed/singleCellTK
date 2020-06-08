@@ -228,7 +228,7 @@ shinyServer(function(input, output, session) {
 
       h3("Base Directory"),
       shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
-	  
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
 
@@ -268,7 +268,7 @@ shinyServer(function(input, output, session) {
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sSampleID", ""),
-	 
+
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
 
@@ -430,7 +430,7 @@ shinyServer(function(input, output, session) {
   # function to clear all uploaded files from vectors and UI
   clearAllFiles <- function(fileReactive) {
     for (entry in fileReactive$files) {
-	
+
       removeUI(selector = paste0("#", entry$id))
     }
     fileReactive$files <- list()
@@ -3118,7 +3118,7 @@ shinyServer(function(input, output, session) {
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else{
         if(input$TypeSelect_Colorby == 'Expression Assays'){
-          if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+          if (input$viewertabs == "reducedDims Plot"){
             a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
               xlab = xname, ylab = yname, useAssay = input$AdvancedMethodSelect_Colorby,
               feature = input$GeneSelect_Assays_Colorby, title = input$adjusttitle)
@@ -3134,12 +3134,33 @@ shinyServer(function(input, output, session) {
                 useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
                 feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE)
             }
+          }else if (input$viewertabs == "Scatter Plot"){
+            a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname)
           }
         }else if(input$TypeSelect_Colorby == 'Cell Annotation'){
           if (input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
             a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
               xlab = xname, ylab = yname, colorBy = input$AnnotationSelect_Colorby,
               title = input$adjusttitle)
+          }else if (input$viewertabs == "Bar Plot"){
+
+          }else if (input$viewertabs == "Violin/Box Plot"){
+            if (input$vlnboxcheck == FALSE){
+              a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
+                title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
+                groupby = input$AnnotationSelect_XAxis, violin = FALSE, box = TRUE)
+            }else{
+              a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
+                title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
+                groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE)
+            }
+          }
+        }else if(input$TypeSelect_Colorby == "Reduced Expression"){
+          if (input$viewertabs == "reducedDims Plot"){
+            a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
+              reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
+              dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle,
+              legendTitle = legendname)
           }else if (input$viewertabs == "Bar Plot"){
 
           }else if (input$viewertabs == "Violin/Box Plot"){
