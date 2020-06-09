@@ -83,7 +83,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastHMcolData",
                       choices = pdataOptions)
     updateSelectInput(session, "mastHMSplitCol",
-                      choices = c('None', 'condition', pdataOptions))
+                      choices = c('condition', pdataOptions),
+                      selected = 'condition')
     updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
     updateSelectInput(session, "mastFMHMcolData",
                       choices = pdataOptions)
@@ -99,6 +100,10 @@ shinyServer(function(input, output, session) {
                       choices = c("none", pdataOptions))
     updateSelectInput(session, "visCondn",
                       choices = c("none", pdataOptions))
+    updateSelectInput(session, "hmCellCol",
+                      choices = pdataOptions)
+    updateSelectInput(session, "hmCellTextBy",
+                      choices = c("Row Names", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -118,9 +123,14 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "mastHMSplitRow",
-                      choices = c('None', 'regulation', selectRowData))
+                      choices = c('regulation', selectRowData),
+                      selected = 'regulation')
     updateSelectInput(session, "mastFMHMrowData",
                       choices = selectRowData)
+    updateSelectInput(session, "hmGeneCol",
+                      choices = selectRowData)
+    updateSelectInput(session, "hmGeneTextBy",
+                      choices = c("Row Names", selectRowData))
   }
 
   updateNumSamples <- function(){
@@ -170,6 +180,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
+    updateSelectInput(session, "hmAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -905,6 +916,7 @@ shinyServer(function(input, output, session) {
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
+        updateFeatureAnnots()
         updateNumSamples()
         updateAssayInputs()
         updateGeneNames()
@@ -3488,6 +3500,160 @@ shinyServer(function(input, output, session) {
   #-+-+-+-+-+-cellviewer prepare done: plot#####################
   ###plotly_after_reactive
 
+  #-----------------------------------------------------------------------------
+  # Page 3.4: Heatmap ####
+  #-----------------------------------------------------------------------------
+
+  observeEvent(input$hmHideDiv1, {
+    toggle("hmDiv1", anim = TRUE, animType = "slide")
+  })
+  observeEvent(input$hmHideDiv2, {
+    toggle("hmDiv2", anim = TRUE, animType = "slide")
+  })
+  observeEvent(input$hmHideDiv3, {
+    toggle("hmDiv3", anim = TRUE, animType = "slide")
+  })
+  # Cell Selection
+  output$hmCellColTable <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      df <- as.data.frame(colData(vals$counts))
+      rownames(df) <- NULL
+      df$Row_Names <- colnames(vals$counts)
+      df[,c("Row_Names", input$hmCellCol), drop=FALSE]
+    }
+  }, filter = "top", server = TRUE
+  )
+  hmCellColTable_proxy <- DT::dataTableProxy("hmCellColTable")
+
+  observeEvent(input$hmCellColTable_addAll, {
+    DT::selectRows(hmCellColTable_proxy,
+                   sort(unique(c(input$hmCellColTable_rows_selected,
+                                 input$hmCellColTable_rows_all))))
+  })
+
+  observeEvent(input$hmCellColTable_clear, {
+    DT::selectRows(hmCellColTable_proxy, NULL)
+  })
+
+  output$hmCellNEnteredUI <- renderUI({
+    inputList <- str_trim(scan(text = input$hmCellText,
+                               sep='\n', what = 'character', quiet = TRUE))
+    uniqInput <- unique(inputList)
+    nInput <- length(uniqInput)
+    if(!is.null(vals$counts) && nInput > 0){
+      if(!is.null(input$hmCellTextBy) && input$hmCellTextBy == 'Row Names'){
+        BY <- NULL
+      } else {
+        BY <- input$hmCellTextBy
+      }
+      matched <- retrieveSCEIndex(vals$counts, uniqInput, 'cell',
+                                  by = BY, exactMatch = input$hmCellTextEM,
+                                  firstMatch = input$hmCellTextFM)
+      nMatched <- length(matched)
+      print(matched)
+    } else {
+      nMatched <- 0
+    }
+
+    p(paste0(nInput, " unique input, ", nMatched, "matched."))
+  })
+
+  observeEvent(input$hmCellAddFromText, {
+    if(!is.null(vals$counts)){
+      inputList <- str_trim(scan(text = input$hmCellText,
+                                 sep='\n', what = 'character', quiet = TRUE))
+      uniqInput <- unique(inputList)
+      if(length(uniqInput) > 0){
+        if(!is.null(input$hmCellTextBy) && input$hmCellTextBy == 'Row Names'){
+          BY <- NULL
+        } else {
+          BY <- input$hmCellTextBy
+        }
+        newIdx <- retrieveSCEIndex(vals$counts, uniqInput, 'cell',
+                                   by = BY, exactMatch = input$hmCellTextEM,
+                                   firstMatch = input$hmCellTextFM)
+        DT::selectRows(hmCellColTable_proxy,
+                       sort(unique(c(input$hmCellColTable_rows_selected,
+                                     newIdx))))
+      }
+    }
+  })
+
+  output$hmCellSumUI <- renderUI({
+    nCell <- length(input$hmCellColTable_rows_selected)
+    p(paste0("Totally ", nCell, " cells selected."), style = 'margin-top: 5px;')
+  })
+
+  # Gene Selection
+  output$hmGeneColTable <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      df <- as.data.frame(rowData(vals$counts))
+      rownames(df) <- NULL
+      df$Row_Names <- rownames(vals$counts)
+      df[,c("Row_Names", input$hmGeneCol), drop=FALSE]
+    }
+  }, filter = "top", server = TRUE
+  )
+  hmGeneColTable_proxy <- DT::dataTableProxy("hmGeneColTable")
+
+  observeEvent(input$hmGeneColTable_addAll, {
+    DT::selectRows(hmGeneColTable_proxy,
+                   sort(unique(c(input$hmGeneColTable_rows_selected,
+                                 input$hmGeneColTable_rows_all))))
+  })
+
+  observeEvent(input$hmGeneColTable_clear, {
+    DT::selectRows(hmGeneColTable_proxy, NULL)
+  })
+
+  output$hmGeneNEnteredUI <- renderUI({
+    inputList <- str_trim(scan(text = input$hmGeneText,
+                               sep='\n', what = 'character', quiet = TRUE))
+    uniqInput <- unique(inputList)
+    nInput <- length(uniqInput)
+    if(!is.null(vals$counts) && nInput > 0){
+      if(!is.null(input$hmGeneTextBy) && input$hmGeneTextBy == 'Row Names'){
+        BY <- NULL
+      } else {
+        BY <- input$hmGeneTextBy
+      }
+      matched <- retrieveSCEIndex(vals$counts, uniqInput, 'gene',
+                                  by = BY, exactMatch = input$hmGeneTextEM,
+                                  firstMatch = input$hmGeneTextFM)
+      nMatched <- length(matched)
+      print(matched)
+    } else {
+      nMatched <- 0
+    }
+
+    p(paste0(nInput, " unique input, ", nMatched, "matched."))
+  })
+
+  observeEvent(input$hmGeneAddFromText, {
+    if(!is.null(vals$counts)){
+      inputList <- str_trim(scan(text = input$hmGeneText,
+                                 sep='\n', what = 'character', quiet = TRUE))
+      uniqInput <- unique(inputList)
+      if(length(uniqInput) > 0){
+        if(!is.null(input$hmGeneTextBy) && input$hmGeneTextBy == 'Row Names'){
+          BY <- NULL
+        } else {
+          BY <- input$hmGeneTextBy
+        }
+        newIdx <- retrieveSCEIndex(vals$counts, uniqInput, 'gene',
+                                   by = BY, exactMatch = input$hmGeneTextEM,
+                                   firstMatch = input$hmGeneTextFM)
+        DT::selectRows(hmGeneColTable_proxy,
+                       sort(unique(c(input$hmGeneColTable_rows_selected,
+                                     newIdx))))
+      }
+    }
+  })
+
+  output$hmGeneSumUI <- renderUI({
+    nGene <- length(input$hmGeneColTable_rows_selected)
+    p(paste0("Totally ", nGene, " features selected."), style = 'margin-top: 5px;')
+  })
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction ####
@@ -4581,7 +4747,7 @@ shinyServer(function(input, output, session) {
   ## condition 1 table operation vvvv
   output$mastC2G1Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      data.frame(colData(vals$counts)[,input$mastC2G1Col])
+      as.data.frame(colData(vals$counts))[,input$mastC2G1Col, drop=FALSE]
     }
   }, filter = "top", server = TRUE
   )
@@ -4605,7 +4771,7 @@ shinyServer(function(input, output, session) {
   ## condition 2 table operation vvvv
   output$mastC2G2Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      data.frame(colData(vals$counts)[,input$mastC2G2Col])
+      as.data.frame(colData(vals$counts))[,input$mastC2G2Col, drop=FALSE]
     }
   }, filter = "top", server = TRUE
   )
@@ -4631,7 +4797,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mastC3G1Cell)){
       if(!input$mastC3G1Cell == ""){
         cellList <- str_trim(scan(text = input$mastC3G1Cell,
-          sep='\n', what = 'character'))
+          sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -4648,7 +4814,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mastC3G2Cell)){
       if(!input$mastC3G2Cell == ""){
         cellList <- str_trim(scan(text = input$mastC3G2Cell,
-          sep='\n', what = 'character'))
+          sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -4824,29 +4990,11 @@ shinyServer(function(input, output, session) {
   output$hurdleHeatmap <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
-      if(length(input$mastHMSplitCol) == 1 && input$mastHMSplitCol == 'None'){
-        colSplitBy <- NULL
-      } else if(!'None' %in% input$mastHMSplitCol){
-        colSplitBy <- input$mastHMSplitCol
-      } else {
-        whereNone <- input$mastHMSplitCol %in% 'None'
-        colSplitBy <- input$mastHMSplitCol
-        colSplitBy <- colSplitBy[!whereNone]
-      }
-      if(length(input$mastHMSplitRow) == 1 && input$mastHMSplitRow == 'None'){
-        rowSplitBy <- NULL
-      } else if(!'None' %in% input$mastHMSplitRow){
-        rowSplitBy <- input$mastHMSplitRow
-      } else {
-        whereNone <- input$mastHMSplitRow %in% 'None'
-        rowSplitBy <- input$mastHMSplitRow
-        rowSplitBy <- rowSplitBy[!whereNone]
-      }
       plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel,
         onlyPos = input$mastHMPosOnly, log2fcThreshold = input$mastHMFC,
         fdrThreshold = input$mastHMFDR, rowDataName = input$mastHMrowData,
-        colDataName = input$mastHMcolData, colSplitBy = colSplitBy,
-        rowSplitBy = rowSplitBy)
+        colDataName = input$mastHMcolData, colSplitBy = input$mastHMSplitCol,
+        rowSplitBy = input$mastHMSplitRow)
     }
   })
 
