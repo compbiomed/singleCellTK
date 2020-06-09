@@ -17,6 +17,7 @@
 #'
 #' @return ComBat matrix based on inputs. You can save this matrix into the
 #' SCtkExperiment with assay()
+#' @export
 #' @examples
 #' if(requireNamespace("bladderbatch", quietly = TRUE)) {
 #'   library(bladderbatch)
@@ -45,7 +46,7 @@
 #'   assay(dat, "refbatch_combat_wcov") <- combat_edata3
 #'   assays(dat)
 #' }
-#' @export
+#'
 ComBatSCE <- function(inSCE, batch, useAssay="logcounts",
                       par.prior="Parametric", covariates=NULL, mean.only=FALSE,
                       ref.batch=NULL){

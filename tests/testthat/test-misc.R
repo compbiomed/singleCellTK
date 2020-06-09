@@ -1,5 +1,10 @@
 context("misc functions")
 
+test_that("Summarize Table", {
+  expect_is(summarizeTable(mouseBrainSubsetSCE[1:100, ], "counts"),
+            "data.frame")
+})
+
 test_that("Create SCTKE", {
   expect_is(createSCE(assayFile = assay(mouseBrainSubsetSCE[1:100, ]),
                       inputDataFrames = TRUE),
@@ -8,9 +13,4 @@ test_that("Create SCTKE", {
                          annotFile = colData(mouseBrainSubsetSCE)[1:10, ],
                          inputDataFrames = TRUE),
                "Different number of samples in input matrix and annotations: annot: 10, counts: 30")
-})
-
-test_that("summarizeSCE", {
-  ta <- summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-  expect_is(ta, "data.frame")
 })
