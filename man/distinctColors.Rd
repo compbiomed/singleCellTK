@@ -4,9 +4,12 @@
 \alias{distinctColors}
 \title{Generate a distinct palette for coloring different clusters}
 \usage{
-distinctColors(n, hues = c("red", "cyan", "orange", "blue", "yellow",
-  "purple", "green", "magenta"), saturation.range = c(0.7, 1),
-  value.range = c(0.7, 1))
+distinctColors(
+  n,
+  hues = c("red", "cyan", "orange", "blue", "yellow", "purple", "green", "magenta"),
+  saturation.range = c(0.7, 1),
+  value.range = c(0.7, 1)
+)
 }
 \arguments{
 \item{n}{Integer; Number of colors to generate}

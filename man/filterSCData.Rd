@@ -4,9 +4,15 @@
 \alias{filterSCData}
 \title{Filter Genes and Samples from a Single Cell Object}
 \usage{
-filterSCData(inSCE, useAssay = "counts", deletesamples = NULL,
-  removeNoExpress = TRUE, removeBottom = 0.5,
-  minimumDetectGenes = 1700, filterSpike = TRUE)
+filterSCData(
+  inSCE,
+  useAssay = "counts",
+  deletesamples = NULL,
+  removeNoExpress = TRUE,
+  removeBottom = 0.5,
+  minimumDetectGenes = 1700,
+  filterSpike = TRUE
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -36,7 +42,9 @@ The filtered single cell object.
 Filter Genes and Samples from a Single Cell Object
 }
 \examples{
+\dontrun{
 data("mouseBrainSubsetSCE")
 mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
                                     deletesamples="X1772063061_G11")
+}
 }
