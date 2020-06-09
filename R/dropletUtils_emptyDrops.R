@@ -68,8 +68,9 @@ runEmptyDrops <- function(inSCE,
                           BPPARAM = BiocParallel::SerialParam()
 ) {
   # getting the current argument values
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-  
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
   
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {

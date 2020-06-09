@@ -138,7 +138,8 @@ runScrublet <- function(inSCE,
   message(paste0(date(), " ... Running 'scrublet'"))
   
   ##  Getting current arguments values
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
