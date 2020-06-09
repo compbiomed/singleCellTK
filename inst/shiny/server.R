@@ -2916,7 +2916,7 @@ shinyServer(function(input, output, session) {
           reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
           dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle,
           legendTitle = legendname)
-      }else if(input$TyleSelect_Colorby == "None"){
+      }else if(input$TypeSelect_Colorby == "None"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle,
           groupBy = pltVars$groupby, legendTitle = legendname)
@@ -2933,7 +2933,7 @@ shinyServer(function(input, output, session) {
       }
 
     }else if(input$viewertabs == "Violin/Box Plot"){
-      if(input$vlncheckbox == FALSE){
+      if(input$vlnboxcheck == FALSE){
         if(input$TypeSelect_Colorby == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
@@ -2945,7 +2945,7 @@ shinyServer(function(input, output, session) {
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
         }
-      }else if(input$vlncheckbox == TRUE){
+      }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Colorby == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
@@ -2960,7 +2960,7 @@ shinyServer(function(input, output, session) {
       }
 
 
-    }else if(input$viewertbas == "Scatter Plot"){
+    }else if(input$viewertabs == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
           feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
