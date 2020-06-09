@@ -2918,7 +2918,7 @@ shinyServer(function(input, output, session) {
           reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
           dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
-      }else{
+      }elseif (input$TypeSelect_Colorby == "Pick a Color"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle,
           groupBy = pltVars$groupby)
