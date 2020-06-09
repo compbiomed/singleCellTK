@@ -2920,6 +2920,7 @@ shinyServer(function(input, output, session) {
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle,
           groupBy = pltVars$groupby, legendTitle = legendname)
+        ggplotly(a, height = "600")
       }
 
 
@@ -2973,8 +2974,6 @@ shinyServer(function(input, output, session) {
 
       }
     }
-
-    ggplotly(a, height = "600")
   })#Cellviewer_end
   output$scatter <- renderPlotly({cellviewer()})
   #
