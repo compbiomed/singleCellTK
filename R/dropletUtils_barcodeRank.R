@@ -107,7 +107,7 @@ runBarcodeRankDrops <- function(inSCE,
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
-  metadata(inSCE)$runBarcodeRanksMetaOutput = metaOutput
+  S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput = metaOutput
   
   inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
   inSCE@metadata$runBarcodeRankDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version

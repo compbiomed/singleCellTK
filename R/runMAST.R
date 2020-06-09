@@ -211,6 +211,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL, index2 = NULL,
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
+#' @export
 #' @author Yichen Wang
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
                               cluster = 'cluster', log2fcThreshold = NULL,
@@ -270,6 +271,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     if(length(names(S4Vectors::metadata(inSCE)$MAST)) == 0){
         S4Vectors::metadata(inSCE)$MAST <- NULL
     }
+    degFull <- degFull[stats::complete.cases(degFull),]
     S4Vectors::metadata(inSCE)$findMarker <- degFull
     return(inSCE)
 }

@@ -40,6 +40,7 @@
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}.
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
+#' @export
 plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     log2fcThreshold = 1, fdrThreshold = 0.05, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,

@@ -5,7 +5,14 @@
 \title{plot the violin plot to show visualize the expression distribution of DEGs
 identified by MAST}
 \usage{
-plotMASTViolin(inSCE, useResult, threshP = FALSE, nrow = 6, ncol = 6)
+plotMASTViolin(
+  inSCE,
+  useResult,
+  threshP = FALSE,
+  nrow = 6,
+  ncol = 6,
+  defaultTheme = TRUE
+)
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
@@ -21,6 +28,9 @@ thresholding, instead of using the assay used by \code{runMAST()}. Default
 \item{nrow}{Integer. Number of rows in the plot grid. Default \code{6}.}
 
 \item{ncol}{Integer. Number of columns in the plot grid. Default \code{6}.}
+
+\item{defaultTheme}{Logical scalar. Whether to use default SCTK theme in
+ggplot. Default \code{TRUE}.}
 }
 \value{
 A ggplot object of MAST violin plot
