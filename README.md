@@ -43,7 +43,32 @@ or from this repository:
 devtools::install_github("compbiomed/singleCellTK",ref="devel")
 ```
 
-#### Troubleshooting Installation
+### Install From Containerized Images
+
+singleCellTK is available for use with both Docker and Singularity.
+
+#### Docker
+
+Docker set up instructions are available at - [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux).
+
+SingleCellTK docker image is available at [Docker Hub](https://hub.docker.com/r/campbio/sctk_qc).
+
+The Docker image can be obtained by running:
+
+```
+docker pull campbio/sctk_qc
+```
+
+
+#### Singularity
+
+The Singulatiry image sources the docker image and can be obtained as follows- 
+
+```
+singularity pull docker://campbio/sctk_qc:1.7.5
+```
+
+#### Troubleshooting R Installation
 
 For the majority of users, the commands above will install the latest version
 of the singleCellTK without any errors. Rarely, you may encounter an error due

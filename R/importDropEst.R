@@ -83,9 +83,10 @@
 #' @title Create a SCE Object from DropEst output
 #' @description imports the RDS file created by DropEst and
 #' creates a \link[SingleCellExperiment]{SingleCellExperiment} object from either the raw or filtered counts matrix.
-#' @param sampleDirs  A path to the directory containing the data files. Default "./".
-#' @param sampleNames A User-defined sample name. This will be prepended to all cell barcode IDs.
-#'  Default "sample".
+#' @param sampleDirs  a vector of paths to the sample directories containing the cell.counts.rds file. 
+#' Default is current working directory. 
+#' @param sampleNames a vector of  sample names corresponding to the sample directories.
+#' Default "sample". The sample name will be prepended to cell barcode IDs. 
 #' @param dataType can be "filtered" or "raw". Default \code{"filtered"}.
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as

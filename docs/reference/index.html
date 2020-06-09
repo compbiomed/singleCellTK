@@ -91,13 +91,25 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Perform Quality Control</a>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="../articles/normalization.html">Normalization</a>
+    </li>
+    <li>
+      <a href="../articles/batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/variability.html">Variability</a>
+    </li>
+    <li>
+      <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
-    </li>
-    <li>
-      <a href="../articles/export.html">Export Data</a>
     </li>
   </ul>
 </li>
@@ -212,10 +224,29 @@
       <tr>
         
         <td>
-          <p><code><a href="runBBKNN.html">runBBKNN()</a></code> </p>
+          <p><code><a href="runCellQC.html">runCellQC()</a></code> </p>
         </td>
-        <td><p>Apply BBKNN batch effect correction method to SingleCellExperiment object</p></td>
+        <td><p>Perform comprehensive single cell QC</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="runDropletQC.html">runDropletQC()</a></code> </p>
+        </td>
+        <td><p>Perform comprehensive droplet QC</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-doublet-empty-droplet-detection" class="hasAnchor"><a href="#section-doublet-empty-droplet-detection" class="anchor"></a>Doublet/Empty Droplet Detection</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="runBarcodeRankDrops.html">runBarcodeRankDrops()</a></code> </p>
@@ -224,15 +255,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="runBcds.html">runBcds()</a></code> </p>
+          <p><code><a href="runEmptyDrops.html">runEmptyDrops()</a></code> </p>
         </td>
-        <td><p>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>.</p></td>
+        <td><p>Identify empty droplets using <a href='https://rdrr.io/pkg/DropletUtils/man/emptyDrops.html'>emptyDrops</a>.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runCellQC.html">runCellQC()</a></code> </p>
+          <p><code><a href="runBcds.html">runBcds()</a></code> </p>
         </td>
-        <td><p>Perform comprehensive single cell QC</p></td>
+        <td><p>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>.</p></td>
       </tr><tr>
         
         <td>
@@ -248,12 +279,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="runDecontX.html">runDecontX()</a></code> </p>
-        </td>
-        <td><p>Detecting contamination with DecontX.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runDoubletCells.html">runDoubletCells()</a></code> </p>
         </td>
         <td><p>Detect doublet cells using <a href='https://rdrr.io/pkg/scran/man/doubletCells.html'>doubletCells</a>.</p></td>
@@ -266,15 +291,28 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="runDropletQC.html">runDropletQC()</a></code> </p>
+          <p><code><a href="runScrublet.html">runScrublet()</a></code> </p>
         </td>
-        <td><p>Perform comprehensive droplet QC</p></td>
-      </tr><tr>
+        <td><p>Find doublets using <code>scrublet</code>.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-batch-effect-correction" class="hasAnchor"><a href="#section-batch-effect-correction" class="anchor"></a>Batch Effect Correction</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
-          <p><code><a href="runEmptyDrops.html">runEmptyDrops()</a></code> </p>
+          <p><code><a href="runBBKNN.html">runBBKNN()</a></code> </p>
         </td>
-        <td><p>Identify empty droplets using <a href='https://rdrr.io/pkg/DropletUtils/man/emptyDrops.html'>emptyDrops</a>.</p></td>
+        <td><p>Apply BBKNN batch effect correction method to SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
@@ -303,22 +341,10 @@ correction method to SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runMAST.html">runMAST()</a></code> </p>
-        </td>
-        <td><p>runMAST</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runMNNCorrect.html">runMNNCorrect()</a></code> </p>
         </td>
         <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to 
 SingleCellExperiment object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="runPerCellQC.html">runPerCellQC()</a></code> </p>
-        </td>
-        <td><p>Wrapper for calculating QC metrics with scater.</p></td>
       </tr><tr>
         
         <td>
@@ -341,12 +367,6 @@ SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runScrublet.html">runScrublet()</a></code> </p>
-        </td>
-        <td><p>Find doublets using <code>scrublet</code>.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runSeurat3Integration.html">runSeurat3Integration()</a></code> </p>
         </td>
         <td><p>Apply Integration batch effect correction method from Seurat v3 to 
@@ -357,6 +377,44 @@ SingleCellExperiment object</p></td>
           <p><code><a href="runZINBWaVE.html">runZINBWaVE()</a></code> </p>
         </td>
         <td><p>Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-decontamination" class="hasAnchor"><a href="#section-decontamination" class="anchor"></a>Decontamination</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="runDecontX.html">runDecontX()</a></code> </p>
+        </td>
+        <td><p>Detecting contamination with DecontX.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-differential-expression" class="hasAnchor"><a href="#section-differential-expression" class="anchor"></a>Differential Expression</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="runMAST.html">runMAST()</a></code> </p>
+        </td>
+        <td><p>runMAST</p></td>
       </tr>
     </tbody><tbody>
       <tr>

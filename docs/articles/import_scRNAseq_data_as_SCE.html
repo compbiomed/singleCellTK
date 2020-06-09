@@ -51,13 +51,25 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Perform Quality Control</a>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="../articles/normalization.html">Normalization</a>
+    </li>
+    <li>
+      <a href="../articles/batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/variability.html">Variability</a>
+    </li>
+    <li>
+      <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
-    </li>
-    <li>
-      <a href="../articles/export.html">Export Data</a>
     </li>
   </ul>
 </li>
@@ -95,7 +107,18 @@
 
     
     
-
+<p>Single Cell ToolKit enables importing data from the following pre-processing tools-</p>
+<ul>
+<li><a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a></li>
+<li><a href="https://data.humancellatlas.org/pipelines/optimus-workflow">Optimus</a></li>
+<li><a href="https://github.com/hms-dbmi/dropEst">DropEst</a></li>
+<li><a href="https://github.com/BUStools/bustools">BUStools</a></li>
+<li><a href="https://github.com/ambrosejcarr/seqc">Seqc</a></li>
+<li><a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a></li>
+</ul>
+<p>The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as a SingleCellExperiment object assay, with associated information in respective colData, rowData, reducedDims, and metadata fields.</p>
+<p><img src="./sctk_import_functions.png"></p>
+<p>Detailed information on function parameters and defaults are available in the reference section</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

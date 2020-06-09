@@ -6,8 +6,38 @@ reference:
 - contents:
   - starts_with("import")
 - title: "Quality Control & Preprocessing"
+- contents: 
+  - runCellQC
+  - runDropletQC
+- title: "Doublet/Empty Droplet Detection"
 - contents:
-  - starts_with("run")
+  - runBarcodeRankDrops
+  - runEmptyDrops
+  - runBcds
+  - runCxds
+  - runCxdsBcdsHybrid
+  - runDoubletCells
+  - runDoubletFinder
+  - runScrublet
+- title: "Batch Effect Correction"
+- contents:
+  - runBBKNN
+  - runFastMNN
+  - runHarmony
+  - runLIGER
+  - runLimmaBC
+  - runMNNCorrect
+  - runSCANORAMA
+  - runSCGEN
+  - runSCMerge
+  - runSeurat3Integration
+  - runZINBWaVE
+- title: "Decontamination"
+- contents:
+  - runDecontX
+- title: "Differential Expression"
+- contents:
+  - runMAST
 - title: "Visualization"
 - contents: 
   - starts_with("plot")
@@ -37,8 +67,6 @@ navbar:
           href: articles/differential_expression.html
         - text: "Visualize Results"
           href: articles/visualize_results.html
-        - text: "Export Data"
-          href: articles/export.html
     - text: "Reference"
       href: reference/index.html
   right:

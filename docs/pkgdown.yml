@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   import_scRNAseq_data_as_SCE: import_scRNAseq_data_as_SCE.html
   introduction_to_SCTK: introduction_to_SCTK.html
-last_built: 2020-05-27T18:43Z
+  run_qc: run_qc.html
+last_built: 2020-06-09T15:15Z
 

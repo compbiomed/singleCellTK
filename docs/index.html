@@ -52,13 +52,25 @@
       <a href="articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="articles/run_qc.html">Perform Quality Control</a>
+      <a href="articles/run_qc.html">Quality Control</a>
+    </li>
+    <li>
+      <a href="articles/normalization.html">Normalization</a>
+    </li>
+    <li>
+      <a href="articles/batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="articles/variability.html">Variability</a>
+    </li>
+    <li>
+      <a href="articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
       <a href="articles/visualize_results.html">Visualize Results</a>
-    </li>
-    <li>
-      <a href="articles/export.html">Export Data</a>
     </li>
   </ul>
 </li>
@@ -111,27 +123,39 @@
 <div class="sourceCode" id="cb3"><pre class="r"><span class="co"># install.packages("devtools")</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>,<span class="kw">ref</span><span class="kw">=</span><span class="st">"devel"</span>)</pre></div>
 </div>
-<div id="r-34-version" class="section level3">
+<div id="install-from-containerized-images" class="section level3">
 <h3 class="hasAnchor">
-<a href="#r-34-version" class="anchor"></a>R 3.4 Version</h3>
-<p>If you are still running an earlier version of R than 3.5, you can install the following version from this repository:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="co"># install.packages("devtools")</span>
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>, <span class="kw">ref</span><span class="kw">=</span><span class="st">"r_3_4"</span>)</pre></div>
-<div id="troubleshooting-installation" class="section level4">
+<a href="#install-from-containerized-images" class="anchor"></a>Install From Containerized Images</h3>
+<p>singleCellTK is available to use with both Docker and Singularity.</p>
+<div id="docker" class="section level4">
 <h4 class="hasAnchor">
-<a href="#troubleshooting-installation" class="anchor"></a>Troubleshooting Installation</h4>
+<a href="#docker" class="anchor"></a>Docker</h4>
+<p>Docker set up instructions are available at - <a href="https://docs.docker.com/docker-for-windows/">Windows</a>, <a href="https://docs.docker.com/docker-for-mac/">Mac</a> or <a href="https://runnable.com/docker/install-docker-on-linux">Linux</a>.</p>
+<p>SingleCellTK docker image is available at <a href="https://hub.docker.com/r/campbio/sctk_qc">Docker Hub</a>.</p>
+<p>The Docker image can be obtained by running:</p>
+<pre><code>docker pull campbio/sctk_qc</code></pre>
+</div>
+<div id="singularity" class="section level4">
+<h4 class="hasAnchor">
+<a href="#singularity" class="anchor"></a>Singularity</h4>
+<p>The Singulatiry image sources the docker image and can be obtained as follows-</p>
+<pre><code>singularity pull docker://campbio/sctk_qc:1.7.5</code></pre>
+</div>
+<div id="troubleshooting-r-installation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#troubleshooting-r-installation" class="anchor"></a>Troubleshooting R Installation</h4>
 <p>For the majority of users, the commands above will install the latest version of the singleCellTK without any errors. Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
+<div class="sourceCode" id="cb6"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
 <span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/version.html">version</a></span>()</pre></div>
 <p>If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
+<div class="sourceCode" id="cb7"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
 <p>After you install Bioconductor 3.6 or higher, you should be able to install the toolkit using <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("compbiomed/singleCellTK")</a></code>. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.</p>
-<div class="sourceCode" id="cb7"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/valid.html">valid</a></span>()</pre></div>
+<div class="sourceCode" id="cb8"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/valid.html">valid</a></span>()</pre></div>
 <p>If the command above does not return <code>TRUE</code>, run the following command to update your R packages:</p>
-<div class="sourceCode" id="cb8"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
+<div class="sourceCode" id="cb9"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
 <p>Then, try to install the toolkit again:</p>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</pre></div>
+<div class="sourceCode" id="cb10"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</pre></div>
 <p>If you still encounter an error, please <a href="mailto:camp@bu.edu">contact us</a> and we’d be happy to help.</p>
 </div>
 </div>
