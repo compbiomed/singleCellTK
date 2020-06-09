@@ -2933,10 +2933,12 @@ shinyServer(function(input, output, session) {
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Colorby, violin = TRUE, box = FALSE)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
             title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
             groupby = input$AnnotationSelect_XAxis, violin = FALSE, box = TRUE)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
         }
@@ -2945,11 +2947,13 @@ shinyServer(function(input, output, session) {
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
             title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
             groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE,
             annotation = input$AnnotationSelect_Colorby)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
         }
