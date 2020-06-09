@@ -46,7 +46,8 @@ runCxds <- function(inSCE,
     message(paste0(date(), " ... Running 'cxds'"))
     
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
     ## Define result matrix for all samples
     if (estNdbl) {
@@ -155,7 +156,8 @@ runBcds <- function(inSCE,
     message(paste0(date(), " ... Running 'bcds'"))
     
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
     ## Define result matrix for all samples
     if (estNdbl) {
@@ -268,8 +270,9 @@ runCxdsBcdsHybrid <- function(inSCE,
     message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
 
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-    
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
     ## Define result matrix for all samples
     if (estNdbl) {
         output <- S4Vectors::DataFrame(row.names = colnames(inSCE),

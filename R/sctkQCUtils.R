@@ -17,8 +17,19 @@ exportSCE <- function(inSCE,
                       format = c("R", "Python", "FlatFile", "HTAN")) {
   
     if (any(!format %in% c("R", "Python", "FlatFile", "HTAN"))) {
-        stop("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. ", 
-             "Other format is not supported now. ")
+        warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
+             paste(format[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
+             " is not supported now. ") #             "Only output the supported formats in the provided options. "
+    }
+
+    format <- format[format %in% c("R", "Python", "FlatFile", "HTAN")]
+    message("The output format is [", 
+            paste(format, collapse = ","), "]. ")
+
+    if (length(format) == 0) {
+        warning("None of the provided format is supported now. Therefore, the output ", 
+            "will be R, Python, FlatFile and HTAN. ")
+        format <- c("R", "Python", "FlatFile", "HTAN")
     }
 
     ## Create directories and save objects
@@ -186,7 +197,8 @@ generateMeta <- function(dropletSCE,
 #' @export
 getSceParams <- function(inSCE, 
                          skip = c("scrublet", "runDecontX"), 
-                         ignore = c("algorithms", "estimates","contamination","z"), 
+                         ignore = c("algorithms", "estimates","contamination",
+                                    "z","sample","rank","BPPARAM","batch","geneSetCollection"), 
                          directory = './', 
                          samplename = '',
                          writeYAML = TRUE) {

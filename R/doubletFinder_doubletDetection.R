@@ -93,10 +93,13 @@ runDoubletFinder <- function(inSCE,
                              seuratPcs = 1:15,
                              seuratRes = c(0.5, 1, 1.5, 2),
                              formationRate = 0.075,
-                             verbose = FALSE) {
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
+                             verbose = FALSE){
+
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
+  if(!is.null(sample)) {
+    if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
     }
   } else {
