@@ -2919,7 +2919,7 @@ shinyServer(function(input, output, session) {
           dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle,
           legendTitle = legendname)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
-      }else if(input$TypeSelect_Colorby == "None"){
+      }else{
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle,
           groupBy = pltVars$groupby, legendTitle = legendname)
@@ -2957,7 +2957,8 @@ shinyServer(function(input, output, session) {
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
             title = input$adjusttitle, coldata = input$AnnotationSelect_YAxis,
-            groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE)
+            groupby = input$AnnotationSelect_XAxis, violin = TRUE, box = FALSE,
+            annotation = input$AnnotationSelect_Colorby)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
         }
