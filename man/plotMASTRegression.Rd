@@ -5,7 +5,14 @@
 \title{plot the linear regression to show visualize the expression the of DEGs
 identified by MAST}
 \usage{
-plotMASTRegression(inSCE, useResult, threshP = FALSE, nrow = 6, ncol = 6)
+plotMASTRegression(
+  inSCE,
+  useResult,
+  threshP = FALSE,
+  nrow = 6,
+  ncol = 6,
+  defaultTheme = TRUE
+)
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
@@ -21,6 +28,9 @@ thresholding, instead of using the assay used by \code{runMAST()}. Default
 \item{nrow}{Integer. Number of rows in the plot grid. Default \code{6}.}
 
 \item{ncol}{Integer. Number of columns in the plot grid. Default \code{6}.}
+
+\item{defaultTheme}{Logical scalar. Whether to use default SCTK theme in
+ggplot. Default \code{TRUE}.}
 }
 \value{
 A ggplot object of MAST linear regression
