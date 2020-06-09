@@ -2904,17 +2904,18 @@ shinyServer(function(input, output, session) {
     if(input$viewertabs == "reducedDims Plot"){
       if(input$TypeSelect_Colorby == "Pick a Color"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, title = input$adjusttitle)
+          xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
-          xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle)
+          xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
+          groupBy = pltVars$groupby)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
-      }else if(input$viewertabs == "Cell Annotation"){
+      }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
-          colorBy = input$AnnotationSelect_Colorby)
+          colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(input$viewertabs == "Bar Plot"){
