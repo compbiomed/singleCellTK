@@ -3,23 +3,19 @@ Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
 Version: 1.9.0
 Author: David Jenkins
-Authors@R:c(person(given=c("Joshua","D."), family="Campbell", email="camp@bu.edu", role=c("aut","cre")),
-    person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut"),comment = c(ORCID = "0000-0002-7451-4288")),
-    person(given="Tyler", family="Faits", email="tfaits@bu.edu", role=c("aut")),
-    person(given=c("Mohammed", "Muzamil"), family="Khan", email="mmkhan@bu.edu", role=c("aut")),
-    person(given="Zhe", family="Wang", email="zhe@bu.edu", role=c("aut")),
-    person(given="Emma", family="Briars", email="ebriars@bu.edu", role=c("aut"),
-    comment = c(ORCID = "0000-0001-9350-5523")),
-    person(given="Sebastian", family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
-    person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut"),
-    comment = c(ORCID = "0000-0002-6247-6595")),
-    person(given="Yusuke", family="Koga", email="ykoga07@bu.edu", role=c("aut")),
-    person(given=c("Shruthi"), family="Bandyadka", email="sbandya@bu.edu", role=c("aut")), 
-    person(given=c("Anastasia"), family="Leshchyk", email="aleshchk@bu.edu", role=c("aut")),
-    person(given=c("Rui"), family="Hong", role=c("aut")))
-Maintainer: Joshua D. Campbell, Ph.D. <camp@bu.edu>
+Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
+                    comment = c(ORCID = "0000-0002-7451-4288")),
+             person(given="Tyler", family="Faits", email="tfaits@bu.edu", role=c("aut")),
+             person(given=c("Mohammed", "Muzamil"), family="Khan", email="mmkhan@bu.edu", role=c("aut")),
+             person(given="Zhe", family="Wang", email="zhe@bu.edu", role=c("aut")),
+             person(given="Emma", family="Briars", email="ebriars@bu.edu", role=c("aut"),
+                    comment = c(ORCID = "0000-0001-9350-5523")),
+             person(given="Sebastian", family="Carrasco Pro", email="abild@coh.org", role=c("aut")),
+             person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut"),
+                    comment = c(ORCID = "0000-0002-6247-6595")))
+Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
-    R (>= 3.6.0),
+    R (>= 3.5),
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
@@ -28,36 +24,24 @@ Description: Run common single cell analysis directly through your browser
     including differential expression, downsampling analysis, and clustering.
 License: MIT + file LICENSE
 Encoding: UTF-8
-cache:
-  - packages: true
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
     Clustering, ImmunoOncology
 LazyData: TRUE
 Imports:
     ape,
-    batchelor,
-    BiocGenerics,
-    BiocParallel,
     colourpicker,
-    cowplot,
     cluster,
     ComplexHeatmap,
     data.table,
-    DelayedMatrixStats,
     DESeq2,
     DT,
     ggplot2,
-    ggplotify,
     ggtree,
-    ggrepel,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
-    harmony,
-    liger,
     limma,
     MAST,
-    Matrix,
     matrixStats,
     methods,
     multtest,
@@ -65,16 +49,9 @@ Imports:
     RColorBrewer,
     Rtsne,
     S4Vectors,
-    scater,
-    scMerge,
-    scran,
-    Seurat,
     shiny,
-    shinyDirectoryInput,
-    shinyFiles,
     shinyjs,
     shinyBS,
-    shinyjqui,
     sva,
     reshape2,
     AnnotationDbi,
@@ -84,18 +61,8 @@ Imports:
     celda,
     shinycssloaders,
     shinythemes,
-    umap,
-    DropletUtils,
-    scds,
-    reticulate (>= 1.14),
-    tools,
-    withr,
-    GSEABase,
-    DoubletFinder,
-    R.utils,
-    zinbwave,
-    V8
-RoxygenNote: 7.1.0
+    umap
+RoxygenNote: 6.1.1
 Suggests:
     testthat,
     Rsubread,
@@ -104,16 +71,12 @@ Suggests:
     lintr,
     bladderbatch,
     rmarkdown,
+    org.Mm.eg.db,
+    org.Hs.eg.db,
     scRNAseq,
     xtable,
     spelling,
-    org.Mm.eg.db
-Remotes: 
-    joshua-d-campbell/DoubletFinder,
-    joshua-d-campbell/harmony,
-    joshua-d-campbell/liger,
-    joshua-d-campbell/shiny-directory-input,
-    campbio/celda@RELEASE_3_11
+    GSEABase
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
