@@ -68,7 +68,7 @@
 plotSCEDimReduceColData <- function(inSCE,
   groupBy = NULL,
   colorBy = "No Color",
-  shape = "No Shape",
+  shape = NULL,
   reducedDimName = NULL,
   conditionClass = NULL,
   xlab = NULL,
