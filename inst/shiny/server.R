@@ -2916,13 +2916,12 @@ shinyServer(function(input, output, session) {
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
           reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
-          dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle,
-          legendTitle = legendname)
+          dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
       }else{
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle,
-          groupBy = pltVars$groupby, legendTitle = legendname)
+          groupBy = pltVars$groupby)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
       }
 
