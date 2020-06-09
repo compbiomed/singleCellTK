@@ -2962,9 +2962,13 @@ shinyServer(function(input, output, session) {
 
     }else if(input$viewertbas == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Expression Assays"){
-        a <- plotSCEDim
+        a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
+          feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
+          legendTitle = legendname, title = input$adjusttitle)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-
+        a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
+          feature = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
+          legendTitle = legendname, title = input$adjusttitle)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
       }
