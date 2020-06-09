@@ -2901,31 +2901,11 @@ shinyServer(function(input, output, session) {
       pltVars$groupby <- NULL
     }
 
-    if (input$viewertabs == "reducedDims Plot"){
-      if(input$TypeSelect_Colorby == "Expression Assays"){
-        a <- plotSCEDimReduceFeatures(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, useAssay = input$AdvancedMethodSelect_Colorby,
-          feature = input$GeneSelect_Assays_Colorby, title = input$adjusttitle,
-          groupBy = pltVars$groupby, legendTitle = legendname)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
-      }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, colorBy = input$AnnotationSelect_Colorby,
-          title = input$adjusttitle, groupBy = pltVars$groupby, legendTitle = legendname)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
-      }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-        a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
-          reducedDimName = input$QuickAccess, dim1 = input$ColumnSelect_XAxis,
-          dim2 = input$ColumnSelect_YAxis, title = input$adjusttitle)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
-      }else if(input$TypeSelect_Colorby == "Pick a Color"){
-        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, title = input$adjusttitle,
-          groupBy = pltVars$groupby)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = "600")
+    if(input$viewertabs == "reducedDims Plot"){
+      if(input$TypeSelect_Colorby == "Pick a Color"){
+        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess)
+        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
-
-
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Colorby == "Expression Assays"){
 
