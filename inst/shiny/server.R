@@ -2912,11 +2912,11 @@ shinyServer(function(input, output, session) {
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
     if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
-      if(input$TypeSelect_XAxis == ""){
+      if(input$TypeSelect_Xaxis == ""){
         pltVars$groupby <- NULL
-      }else if(input$TypeSelect_XAxis == "Expression Assays"){
+      }else if(input$TypeSelect_Xaxis == "Expression Assays"){
         pltVars$groupby <- input$GeneSelect_Assays_Xaxis
-      }else if(input$TypeSelect_XAxis == "Cell Annotation"){
+      }else if(input$TypeSelect_Xaxis == "Cell Annotation"){
         pltVars$groupby <- input$AnnotationSelect_Xaxis
       }
     }else if(input$adjustgroupby != "None"){
@@ -2998,6 +2998,9 @@ shinyServer(function(input, output, session) {
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
+      }else if(input$TypeSelect_Colorby == "Pick a Color"){
+        a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
+          xlab = xname, ylab = yname, title = input$adjustitle)
       }
     }
   })#Cellviewer_end
