@@ -33,6 +33,7 @@
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
+                       sample = NULL,
                        colorBy = NULL,
                        shape = NULL,
                        reducedDimName,
@@ -50,130 +51,154 @@
                        title = NULL,
                        titleSize = 15,
                        legendTitle = NULL) {
-    dataframe <- data.frame(SingleCellExperiment::reducedDim(
-        inSCE,
-        reducedDimName
-    ))
-    #If dim1 and dim2 are specified
-    if (!is.null(dim1) & !is.null(dim2)) {
-        if (is.character(dim1) & is.character(dim2)){
-            if (!(dim1 %in% colnames(dataframe))) {
-                stop("X dimension ", dim1, " is not in the reducedDim data")
-            }
-            if (!(dim2 %in% colnames(dataframe))) {
-                stop("Y dimension ", dim2, " is not in the reducedDim data")
-            }
-            dataframe <- dataframe[, c(dim1, dim2)]
-        }else if(is.numeric(dim1) && is.numeric(dim2)){
-            dataframe <- dataframe[, c(dim1, dim2)]
+
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop("'sample' must be the same length as the number",
+                 " of columns in 'inSCE'")
         }
-    } else if(ncol(dataframe) > 2) {
-        warning("More than two dimensions supplied in reducedDims. Using the first two.")
-    }
-
-    #If xlab and ylab are specified
-    if (!is.null(xlab) & !is.null(ylab)) {
-        colnames(dataframe) <- c(xlab, ylab)
-        #If reduced dimension matrix didnt have colnames
     } else {
-        colnames(dataframe) <- c(paste0(reducedDimName, "_1"), paste0(reducedDimName, "_2"))
+        sample <- rep(1, ncol(inSCE))
     }
 
-    xdim <- colnames(dataframe)[1]
-    ydim <- colnames(dataframe)[2]
+    samples <- unique(sample)
 
-    if (!is.null(conditionClass) & !is.null(colorBy)) {
-        if (conditionClass %in% c("character", "factor", "numeric")) {
-            if (conditionClass == "character") {
-                colorBy <- as.character(colorBy)
-            } else if (conditionClass == "factor") {
-                colorBy <- as.factor(colorBy)
-            } else if (conditionClass == "numeric") {
-                colorBy <- as.numeric(colorBy)
+    plotlist <- lapply(samples, function(x) {
+        sceSampleInd <- which(sample == x)
+        inSCESub <- inSCE[, sceSampleInd]
+        colorBySub <- colorBy[sceSampleInd]
+
+        dataframe <- data.frame(SingleCellExperiment::reducedDim(
+            inSCESub,
+            reducedDimName
+        ))
+        #If dim1 and dim2 are specified
+        if (!is.null(dim1) & !is.null(dim2)) {
+            if (is.character(dim1) & is.character(dim2)){
+                if (!(dim1 %in% colnames(dataframe))) {
+                    stop("X dimension ", dim1, " is not in the reducedDim data")
+                }
+                if (!(dim2 %in% colnames(dataframe))) {
+                    stop("Y dimension ", dim2, " is not in the reducedDim data")
+                }
+                dataframe <- dataframe[, c(dim1, dim2)]
+            }else if(is.numeric(dim1) && is.numeric(dim2)){
+                dataframe <- dataframe[, c(dim1, dim2)]
+            }
+        } else if(ncol(dataframe) > 2) {
+            warning("More than two dimensions supplied in reducedDims. Using the first two.")
+        }
+
+        #If xlab and ylab are specified
+        if (!is.null(xlab) & !is.null(ylab)) {
+            colnames(dataframe) <- c(xlab, ylab)
+            #If reduced dimension matrix didnt have colnames
+        } else {
+            colnames(dataframe) <- c(paste0(reducedDimName, "_1"), paste0(reducedDimName, "_2"))
+        }
+
+        xdim <- colnames(dataframe)[1]
+        ydim <- colnames(dataframe)[2]
+
+        if (!is.null(conditionClass) & !is.null(colorBySub)) {
+            if (conditionClass %in% c("character", "factor", "numeric")) {
+                if (conditionClass == "character") {
+                    colorBySub <- as.character(colorBySub)
+                } else if (conditionClass == "factor") {
+                    colorBySub <- as.factor(colorBySub)
+                } else if (conditionClass == "numeric") {
+                    colorBySub <- as.numeric(colorBySub)
+                }
             }
         }
-    }
 
-    if (!is.null(bin) & !is.null(colorBy)){
-        colorBy <- .binSCTK(value = colorBy,
-                            bin = bin,
-                            binLabel = binLabel)
-    }
-    if (!is.null(colorBy)) {
-        dataframe$color <- colorBy
-    }
-    if (!is.null(shape)) {
-        dataframe$shape <- factor(SingleCellExperiment::colData(inSCE)[, shape])
-    }
-    dataframe$Sample <- colnames(inSCE)
-    g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
-                                                        label = "Sample"
-    )) +
-        ggplot2::geom_point(size = dotsize, alpha = transparency)
-    if (!is.null(colorBy)) {
-        g <- g + ggplot2::aes_string(color = "color")
-    }
-    if (!is.null(shape)) {
-        g <- g + ggplot2::aes_string(shape = "shape") +
-            ggplot2::labs(shape = shape)
-    }
-    if (defaultTheme == TRUE) {
-        g <- .ggSCTKTheme(g)
-    }
-    if (!is.null(title)) {
-        g <- g + ggplot2::ggtitle(label = title) +
-            ggplot2::theme(plot.title = ggplot2::element_text(
-                hjust = 0.5,
-                size = titleSize
-            ))
-    }
-    if (!is.null(legendTitle)) {
-        g <- g + ggplot2::labs(color = legendTitle)
-    } else {
-        g <- g + ggplot2::labs(color = "")
-    }
-
-    if (isTRUE(labelClusters) && class(colorBy) %in% c("character", "factor")) {
-        centroidList <- lapply(unique(colorBy), function(x) {
-            dataframe.sub <- dataframe[dataframe$color == x, ]
-            median.1 <- stats::median(dataframe.sub[, 1])
-            median.2 <- stats::median(dataframe.sub[, 2])
-            cbind(median.1, median.2, as.character(x))
-        })
-        centroid <- do.call(rbind, centroidList)
-        centroid <- data.frame(
-            Dimension_1 = as.numeric(centroid[, 1]),
-            Dimension_2 = as.numeric(centroid[, 2]),
-            color = centroid[, 3],
-            Sample = rep(1, length(unique(colorBy)))
-        )
-
+        if (!is.null(bin) & !is.null(colorBySub)){
+            colorBySub <- .binSCTK(value = colorBySub,
+                                   bin = bin,
+                                   binLabel = binLabel)
+        }
+        if (!is.null(colorBySub)) {
+            dataframe$color <- colorBySub
+        }
         if (!is.null(shape)) {
-            centroid$shape <- dataframe$shape[1]
+            dataframe$shape <- factor(SingleCellExperiment::colData(inSCESub)[, shape])
+        }
+        dataframe$Sample <- colnames(inSCESub)
+        g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
+                                                            label = "Sample"
+        )) +
+            ggplot2::geom_point(size = dotsize, alpha = transparency)
+        if (!is.null(colorBySub)) {
+            g <- g + ggplot2::aes_string(color = "color")
+        }
+        if (!is.null(shape)) {
+            g <- g + ggplot2::aes_string(shape = "shape") +
+                ggplot2::labs(shape = shape)
+        }
+        if (defaultTheme == TRUE) {
+            g <- .ggSCTKTheme(g)
+        }
+        if (!is.null(title)) {
+            if(length(samples) > 1){
+                title = paste(title, x, sep = "_")
+            }
+            g <- g + ggplot2::ggtitle(label = title) +
+                ggplot2::theme(plot.title = ggplot2::element_text(
+                    hjust = 0.5,
+                    size = titleSize
+                ))
+        }
+        if (!is.null(legendTitle)) {
+            g <- g + ggplot2::labs(color = legendTitle)
+        } else {
+            g <- g + ggplot2::labs(color = "")
         }
 
-        colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
-        g <- g + ggplot2::geom_point(
-            data = centroid,
-            mapping = ggplot2::aes_string(x = xdim, y = ydim),
-            size = 0,
-            alpha = 0
-        ) +
-            ggrepel::geom_text_repel(
-                data = centroid,
-                mapping = ggplot2::aes_string(label = "color"),
-                show.legend = FALSE,
-                color = "black"
+        if (isTRUE(labelClusters) && class(colorBySub) %in% c("character", "factor")) {
+            centroidList <- lapply(unique(colorBySub), function(x) {
+                dataframe.sub <- dataframe[dataframe$color == x, ]
+                median.1 <- stats::median(dataframe.sub[, 1])
+                median.2 <- stats::median(dataframe.sub[, 2])
+                cbind(median.1, median.2, as.character(x))
+            })
+            centroid <- do.call(rbind, centroidList)
+            centroid <- data.frame(
+                Dimension_1 = as.numeric(centroid[, 1]),
+                Dimension_2 = as.numeric(centroid[, 2]),
+                color = centroid[, 3],
+                Sample = rep(1, length(unique(colorBySub)))
             )
-    }
-    return(g)
+
+            if (!is.null(shape)) {
+                centroid$shape <- dataframe$shape[1]
+            }
+
+            colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
+            g <- g + ggplot2::geom_point(
+                data = centroid,
+                mapping = ggplot2::aes_string(x = xdim, y = ydim),
+                size = 0,
+                alpha = 0
+            ) +
+                ggrepel::geom_text_repel(
+                    data = centroid,
+                    mapping = ggplot2::aes_string(label = "color"),
+                    show.legend = FALSE,
+                    color = "black"
+                )
+        }
+        return(g)
+    })
+    return(cowplot::plot_grid(plotlist = plotlist))
 }
+
 
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy Color by a condition(any column of the annotation data).
 #'  Required.
 #' @param conditionClass Class of the annotation data used in colorBy.
@@ -219,6 +244,7 @@
 #'   xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
 #' )
 plotSCEDimReduceColData <- function(inSCE,
+                                    sample = NULL,
                                     colorBy,
                                     conditionClass = NULL,
                                     shape = NULL,
@@ -240,6 +266,7 @@ plotSCEDimReduceColData <- function(inSCE,
 
     g <- .ggScatter(
         inSCE = inSCE,
+        sample = sample,
         colorBy = colorPlot,
         conditionClass = conditionClass,
         shape = shape,
@@ -266,6 +293,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  colors by feature data stored in the assays slot.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param feature name of feature stored in assay of singleCellExperiment
 #'  object. Plot will be colored based on feature value.
 #' @param shape add shapes to each condition. Default NULL.
@@ -300,6 +328,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDimReduceFeatures <- function(inSCE,
+				                    sample = NULL,
                                      feature,
                                      shape = NULL,
                                      reducedDimName,
@@ -326,6 +355,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 
   g <- .ggScatter(
     inSCE = inSCE,
+    sample = sample,
     conditionClass = "numeric",
     colorBy = counts,
     shape = shape,
