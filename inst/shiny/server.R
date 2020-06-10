@@ -2549,17 +2549,19 @@ shinyServer(function(input, output, session) {
       shinyjs::delay(5,shinyjs::disable("QuickAccess"))
     }
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
-      updateSelectInput(session, "TypeSelect_XAxis",
+      updateSelectInput(session, "TypeSelect_Xaxis",
         choices = c("Expression Assays", "Cell Annotation"))
-      updateSelectInput(session, "TypeSelect_YAxis",
+      updateSelectInput(session, "TypeSelect_Yaxis",
         choices = c("Expression Assays", "Cell Annoation"))
-      shinyjs::delay(5,shinyjs::disable("Colorby"))
+      shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
+      shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
     }else{
-      updateSelectInput(session, "TypeSelect_XAxis",
+      updateSelectInput(session, "TypeSelect_Xaxis",
         choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
-      updateSelectInput(session, "TypeSelect_YAxis",
+      updateSelectInput(session, "TypeSelect_Yaxis",
         choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
-      shinyjs::delay(5,shinyjs::enable("Colorby"))
+      shinyjs::delay(5,shinyjs::enable("TypeSelect_Colorby"))
+      shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
     }
   })
 
@@ -2910,11 +2912,11 @@ shinyServer(function(input, output, session) {
     pltVars <- list()
     if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_XAxis == "Reduced Dimensions"){
-        pltVars$groupby <- input$ColumnSelect_XAxis
+        pltVars$groupby <- input$ColumnSelect_Xaxis
       }else if(input$TypeSelect_XAxis == "Expression Assays"){
-        pltVars$groupby <- input$GeneSelect_Assays_XAxis
+        pltVars$groupby <- input$GeneSelect_Assays_Xaxis
       }else if(input$TypeSelect_XAxis == "Cell Annotation"){
-        pltVars$groupby <- input$AnnotationSelect_XAxis
+        pltVars$groupby <- input$AnnotationSelect_Xaxis
       }
     }else if(input$adjustgroupby != "None"){
       pltVars$groupby <- input$adjustgroupby
@@ -2950,14 +2952,14 @@ shinyServer(function(input, output, session) {
 
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
-        if(input$TypeSelect_YAxis == "Expression Assays"){
+        if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
-            useAssay = input$AdvancedMethodSelect_YAxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_YAxis, groupby = pltVars$groupby)
+            useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
+            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_YAxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
-            coldata = input$AnnotationSelect_YAxis, violin = FALSE,
+            coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
