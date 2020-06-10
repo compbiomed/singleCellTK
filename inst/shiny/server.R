@@ -2932,7 +2932,7 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_Colorby == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Colorby, violin = TRUE, box = FALSE)
+            feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
@@ -2946,7 +2946,7 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_Colorby == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE)
+            feature = input$GeneSelect_Assays_Colorby, violin = TRUE, box = FALSE)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
