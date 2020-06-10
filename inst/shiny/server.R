@@ -2550,7 +2550,7 @@ shinyServer(function(input, output, session) {
     }
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
       updateSelectInput(session, "TypeSelect_Xaxis",
-        choices = c(NULL, "Expression Assays", "Cell Annotation"))
+        choices = c("", "Expression Assays", "Cell Annotation"))
       updateSelectInput(session, "TypeSelect_Yaxis",
         choices = c("Expression Assays", "Cell Annotation"))
       shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
@@ -2564,6 +2564,7 @@ shinyServer(function(input, output, session) {
       shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
     }
   })
+
 
   #-+-+-+-+-+-For Advanced Input Observe##############
   ###ApproachSelect to DimensionSelect X-Axis
@@ -2911,8 +2912,8 @@ shinyServer(function(input, output, session) {
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
     if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
-      if(input$TypeSelect_XAxis == "Reduced Dimensions"){
-        pltVars$groupby <- input$ColumnSelect_Xaxis
+      if(input$TypeSelect_XAxis == ""){
+        pltVars$groupby <- NULL
       }else if(input$TypeSelect_XAxis == "Expression Assays"){
         pltVars$groupby <- input$GeneSelect_Assays_Xaxis
       }else if(input$TypeSelect_XAxis == "Cell Annotation"){
