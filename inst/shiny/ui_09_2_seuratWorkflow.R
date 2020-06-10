@@ -57,7 +57,7 @@ shinyPanelSeurat <- fluidPage(
                         fluidRow(
                             column(12,
                                 panel(heading = "Plot",
-                                    plotOutput(outputId = "plot_hvg")
+                                    plotlyOutput(outputId = "plot_hvg")
                                      )
                                   )
                                 )
@@ -99,17 +99,17 @@ shinyPanelSeurat <- fluidPage(
                                         tags$div(class = "seurat_pca_plots", tabsetPanel(type = "tabs",
                                             tabPanel(title = "PCA Plot",
                                                 panel(heading = "PCA Plot",
-                                                    plotOutput(outputId = "plot_pca")
+                                                    plotlyOutput(outputId = "plot_pca")
                                                      )
                                                     ),
                                             tabPanel(title = "Elbow Plot",
                                                 panel(heading = "Elbow Plot",
-                                                    plotOutput(outputId = "plot_elbow_pca")
+                                                    plotlyOutput(outputId = "plot_elbow_pca")
                                                      )
                                                     ),
                                             tabPanel(title = "JackStraw Plot",
                                                 panel(heading = "JackStraw Plot",
-                                                    plotOutput(outputId = "plot_jackstraw_pca")
+                                                    plotlyOutput(outputId = "plot_jackstraw_pca")
                                                      )
                                                     ),
                                             tabPanel(title = "Heatmap Plot",
@@ -168,7 +168,7 @@ shinyPanelSeurat <- fluidPage(
                                                 tags$div(class = "seurat_ica_plots", tabsetPanel(type = "tabs",
                                                            tabPanel(title = "ICA Plot",
                                                                     panel(heading = "ICA Plot",
-                                                                          plotOutput(outputId = "plot_ica")
+                                                                          plotlyOutput(outputId = "plot_ica")
                                                                     )
                                                            ),
                                                            tabPanel(title = "Heatmap Plot",
@@ -223,7 +223,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     panel(heading = "Plot",
                                         column(12,
-                                            plotOutput(outputId = "plot_tsne")
+                                            plotlyOutput(outputId = "plot_tsne")
                                               )
                                          )
                                         )
@@ -252,7 +252,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     panel(heading = "Plot",
                                         column(12,
-                                            plotOutput(outputId = "plot_umap")
+                                            plotlyOutput(outputId = "plot_umap")
                                               )
                                          )
                                         )
@@ -287,22 +287,22 @@ shinyPanelSeurat <- fluidPage(
                                     tags$div(class = "seurat_clustering_plots", tabsetPanel(type = "tabs",
                                                 tabPanel(title = "PCA Plot",
                                                          panel(heading = "PCA Plot",
-                                                               plotOutput(outputId = "plot_pca_clustering")
+                                                               plotlyOutput(outputId = "plot_pca_clustering")
                                                          )
                                                 ),
                                                 tabPanel(title = "ICA Plot",
                                                          panel(heading = "ICA Plot",
-                                                               plotOutput(outputId = "plot_ica_clustering")
+                                                               plotlyOutput(outputId = "plot_ica_clustering")
                                                          )
                                                 ),
                                                 tabPanel(title = "tSNE Plot",
                                                          panel(heading = "tSNE Plot",
-                                                               plotOutput(outputId = "plot_tsne_clustering")
+                                                               plotlyOutput(outputId = "plot_tsne_clustering")
                                                          )
                                                 ),
                                                 tabPanel(title = "UMAP Plot",
                                                          panel(heading = "UMAP Plot",
-                                                               plotOutput(outputId = "plot_umap_clustering")
+                                                               plotlyOutput(outputId = "plot_umap_clustering")
                                                          )
                                                 )
                                     ))
