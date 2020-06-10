@@ -2943,14 +2943,16 @@ shinyServer(function(input, output, session) {
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(input$viewertabs == "Bar Plot"){
-      if(input$TypeSelect_Colorby == "Expression Assays"){
-
-      }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-
-      }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-
+      if(input$TypeSelect_Yaxis == "Expression Assays"){
+        a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
+          useAssay = input$AdvancedMethodSelect_Yaxis, groupby = pltVars$groupby,
+          feature = input$GeneSelect_Assays_Yaxis)
+        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
+      }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
+        a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
+          coldata = input$AnnotationSelect_Yaxis, groupby = pltVars$groupby)
+        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
-
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
         if(input$TypeSelect_Yaxis == "Expression Assays"){
