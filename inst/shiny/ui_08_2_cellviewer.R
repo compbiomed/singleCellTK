@@ -2,7 +2,7 @@ shinyPanelCellViewer <- fluidPage(
   tags$div(
     class = "container",
            h1("Cell Viewer"),
-           radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot", "Scatter Plot", "Bubble Plot"), selected = NULL),
+           radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot", "Scatter Plot"), selected = NULL),
            fluidRow(
              column(3,
                     wellPanel(style = "background: floralwhite",
