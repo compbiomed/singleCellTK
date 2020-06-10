@@ -2550,9 +2550,9 @@ shinyServer(function(input, output, session) {
     }
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
       updateSelectInput(session, "TypeSelect_Xaxis",
-        choices = c("Expression Assays", "Cell Annotation"))
+        choices = c(NULL, "Expression Assays", "Cell Annotation"))
       updateSelectInput(session, "TypeSelect_Yaxis",
-        choices = c("Expression Assays", "Cell Annoation"))
+        choices = c("Expression Assays", "Cell Annotation"))
       shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
       shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
     }else{
