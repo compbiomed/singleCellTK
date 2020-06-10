@@ -2916,7 +2916,7 @@ shinyServer(function(input, output, session) {
       }else if(input$TypeSelect_XAxis == "Cell Annotation"){
         pltVars$groupby <- input$AnnotationSelect_XAxis
       }
-    }if(input$adjustgroupby != "None"){
+    }else if(input$adjustgroupby != "None"){
       pltVars$groupby <- input$adjustgroupby
     }else{
       pltVars$groupby <- NULL
