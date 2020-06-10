@@ -2928,6 +2928,11 @@ shinyServer(function(input, output, session) {
     }else{
       pltVars$groupby <- NULL
     }
+    if (input$checkbinning == TRUE){
+      pltVars$bin <- input$adjustColorbinning
+    }else{
+      pltVars$bin <- NULL
+    }
 
     if(input$viewertabs == "reducedDims Plot"){
       if(input$TypeSelect_Colorby == "Pick a Color"){
@@ -2938,12 +2943,12 @@ shinyServer(function(input, output, session) {
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
-          groupBy = pltVars$groupby)
+          groupBy = pltVars$groupby, bin = pltVars$bin)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
-          colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby)
+          colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(input$viewertabs == "Bar Plot"){
@@ -2989,12 +2994,12 @@ shinyServer(function(input, output, session) {
         a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
           feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
           annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
-          title = input$adjusttitle)
+          title = input$adjusttitle, bin = pltVars$bin)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
           annotation = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
-          legendTitle = legendname, title = input$adjusttitle)
+          legendTitle = legendname, title = input$adjusttitle, bin = pltVars$bin)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
