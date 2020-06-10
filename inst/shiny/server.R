@@ -2908,9 +2908,7 @@ shinyServer(function(input, output, session) {
 
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
-    if(input$adjustgroupby != "None"){
-      pltVars$groupby <- input$adjustgroupby
-    }else if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
+    if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_XAxis == "Reduced Dimensions"){
         pltVars$groupby <- input$ColumnSelect_XAxis
       }else if(input$TypeSelect_XAxis == "Expression Assays"){
@@ -2918,6 +2916,8 @@ shinyServer(function(input, output, session) {
       }else if(input$TypeSelect_XAxis == "Cell Annotation"){
         pltVars$groupby <- input$AnnotationSelect_XAxis
       }
+    }if(input$adjustgroupby != "None"){
+      pltVars$groupby <- input$adjustgroupby
     }else{
       pltVars$groupby <- NULL
     }
@@ -2953,7 +2953,7 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_YAxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
             useAssay = input$AdvancedMethodSelect_YAxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_YAxis, groupby = input$GeneSelect_Assa)
+            feature = input$GeneSelect_Assays_YAxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_YAxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
