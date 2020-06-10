@@ -2495,16 +2495,16 @@ shinyServer(function(input, output, session) {
       method_list <- names(assays(vals$counts))
       approach_list <- names(reducedDims(vals$counts))
       annotation_list <- names(colData(vals$counts))
-        annotation_list2 <- list()
-        for (i in 1:length(annotation_list)){
-          if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
-            annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
-          }else{
-            annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
-          }
+      annotation_list2 <- list()
+      for (i in 1:length(annotation_list)){
+        if(!all.is.numeric(vals$counts[[annotation_list[i]]])){
+          annotation_list2$Categorical <- c(annotation_list2$Categorical, annotation_list[i])
+        }else{
+          annotation_list2$Numeric <- c(annotation_list2$Numeric, annotation_list[i])
         }
-        annotation_list <- annotation_list2
-        rm(annotation_list2)
+      }
+      annotation_list <- annotation_list2
+      rm(annotation_list2)
       updateSelectInput(session, "QuickAccess",
         choices = c("",approach_list, "Custom"))
       updateSelectInput(session, "ApproachSelect_Xaxis",
@@ -2545,8 +2545,21 @@ shinyServer(function(input, output, session) {
       shinyjs::delay(5,shinyjs::enable("QuickAccess"))
     }else{
       updateSelectInput(session, "QuickAccess",
-        choices = c(""))
+        choices = c("Custom"))
       shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+    }
+    if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
+      updateSelectInput(session, "TypeSelect_XAxis",
+        choices = c("Expression Assays", "Cell Annotation"))
+      updateSelectInput(session, "TypeSelect_YAxis",
+        choices = c("Expression Assays", "Cell Annoation"))
+      shinyjs::delay(5,shinyjs::disable("Colorby"))
+    }else{
+      updateSelectInput(session, "TypeSelect_XAxis",
+        choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
+      updateSelectInput(session, "TypeSelect_YAxis",
+        choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
+      shinyjs::delay(5,shinyjs::enable("Colorby"))
     }
   })
 
@@ -2897,6 +2910,14 @@ shinyServer(function(input, output, session) {
     pltVars <- list()
     if(input$adjustgroupby != "None"){
       pltVars$groupby <- input$adjustgroupby
+    }else if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
+      if(input$TypeSelect_XAxis == "Reduced Dimensions"){
+        pltVars$groupby <- input$ColumnSelect_XAxis
+      }else if(input$TypeSelect_XAxis == "Expression Assays"){
+        pltVars$groupby <- input$GeneSelect_Assays_XAxis
+      }else if(input$TypeSelect_XAxis == "Cell Annotation"){
+        pltVars$groupby <- input$AnnotationSelect_XAxis
+      }
     }else{
       pltVars$groupby <- NULL
     }
@@ -2929,14 +2950,14 @@ shinyServer(function(input, output, session) {
 
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
-        if(input$TypeSelect_Colorby == "Expression Assays"){
+        if(input$TypeSelect_YAxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
-            useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Colorby, groupby = pltVars$groupby)
+            useAssay = input$AdvancedMethodSelect_YAxis, title = input$adjusttitle,
+            feature = input$GeneSelect_Assays_YAxis, groupby = input$GeneSelect_Assa)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Colorby == "Cell Annotation"){
+        }else if(input$TypeSelect_YAxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
-            coldata = input$AnnotationSelect_Colorby, violin = FALSE,
+            coldata = input$AnnotationSelect_YAxis, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
