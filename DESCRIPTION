@@ -62,7 +62,7 @@ Imports:
     Rtsne,
     S4Vectors,
     scater,
-    scMerge,
+    scMerge (>= 1.2.0),
     scran,
     Seurat,
     shiny,
@@ -91,7 +91,7 @@ Imports:
     R.utils,
     zinbwave,
     V8,
-    scRNAseq,
+    scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
 	rmarkdown

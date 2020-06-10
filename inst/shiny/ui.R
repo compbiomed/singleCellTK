@@ -5,7 +5,6 @@ library(limma)
 library(ggplot2)
 library(plotly)
 library(data.table)
-library(MAST)
 library(colourpicker)
 library(gridExtra)
 library(cluster)
@@ -23,7 +22,6 @@ library(singleCellTK)
 library(celda)
 library(shinycssloaders)
 library(shinythemes)
-library(umap)
 library(shinyWidgets);
 library(shinyBS);
 library(shinyjqui);
@@ -121,7 +119,8 @@ source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
-source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
+source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMASTDE variable
+source("ui_05_3_mastMarker.R", local = TRUE) #creates shinyPanelMASTMarker variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
@@ -175,7 +174,8 @@ shinyUI(
       navbarMenu(
         "Differential Expression & Marker Selection",
         tabPanel("Differential Expression", shinyPanelDiffex),
-        tabPanel("MAST - Differential Expression", shinyPanelMASTDE)
+        tabPanel("MAST - Differential Expression", shinyPanelMASTDE),
+        tabPanel("MAST - Find Marker", shinyPanelMASTMarker)
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",

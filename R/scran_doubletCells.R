@@ -43,7 +43,8 @@ runDoubletCells <- function(inSCE,
     seed = 12345,
     ...
 ) {
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {

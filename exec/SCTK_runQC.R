@@ -67,14 +67,14 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-C","--cell_data_path"),
         type="character",
         default=NULL,
-        help="The directory contains cell count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
+        help="The directory contains cell matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
     optparse::make_option(c("-R","--raw_data_path"),
         type="character",
         default=NULL,
-        help="The directory contains raw droplet count matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
+        help="The directory contains droplet matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
     optparse::make_option(c("-S","--split_sample"),
         type="logical",
-        default=FALSE,
+        default=TRUE,
         help="Save SingleCellExperiment object for each sample. Default is FALSE. If TRUE, all samples will be combined and only one combimed SingleCellExperiment object will be saved."),
     optparse::make_option(c("-r","--raw_data"),
         type="character",
@@ -134,6 +134,22 @@ if (!is.null(yamlFile)) {
     Params <- list()
 }
 
+### checking output formats
+if (!all(formats %in% c("R", "Python", "FlatFile", "HTAN"))) {
+    warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
+         paste(formats[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
+         " is not supported now. ") #             "Only output the supported formats in the provided options. "
+}
+
+formats <- formats[formats %in% c("R", "Python", "FlatFile", "HTAN")]
+message("The output format is [", 
+        paste(formats, collapse = ","), "]. ")
+
+if (length(formats) == 0) {
+    warning("None of the provided format is supported now. Therefore, the output ", 
+        "will be R, Python, FlatFile and HTAN. ")
+    formats <- c("R", "Python", "FlatFile", "HTAN")
+}
 
 ## Checking argument
 if (is.null(RawFile) & is.null(RawFile)) {
@@ -284,26 +300,28 @@ for(i in seq_along(process)) {
         getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         ## generate meta data
-        if ("HTAN" %in% formats) {
-            if (!"FlatFile" %in% formats) {
-                warning("When FlatFile is not selected as the output format, ",
-                        "FlatFile output specified in the HTAN manifest file will not exists.")  
+        if ("FlatFile" %in% formats) {
+            if ("HTAN" %in% formats) {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=TRUE)
+            } else {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=FALSE)  
             }
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                               dir = directory, HTAN=TRUE)
-        } else if ("FlatFile" %in% formats) {
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                               dir = directory, HTAN=FALSE)   
-        } 
-	  	level3Meta[[i]] <- meta[[1]]
-	  	level4Meta[[i]] <- meta[[2]]
+
+        level3Meta[[i]] <- meta[[1]]
+        level4Meta[[i]] <- meta[[2]]
+
+        } else {
+            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+        }
     }
 
     dropletSCE_list[[samplename]] <- mergedDropletSCE
     cellSCE_list[[samplename]] <- mergedFilteredSCE
 }
 
-if (!isTRUE(split)){
+if (!isTRUE(split)) {
     dropletSCE <- combineSCE(dropletSCE_list)
     cellSCE <- combineSCE(cellSCE_list)
 
@@ -318,22 +336,26 @@ if (!isTRUE(split)){
     getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
     ## generate meta data
-    if ("HTAN" %in% formats) {
-        if (!"FlatFile" %in% formats) {
-            warning("When FlatFile is not selected as the output format, ",
-                    "FlatFile output specified in the HTAN manifest file will not exists.")  
+    if ("FlatFile" %in% formats) {
+        if ("HTAN" %in% formats) {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                dir = directory, HTAN=TRUE)
+        } else {
+            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                dir = directory, HTAN=FALSE)            
         }
-      meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                           dir = directory, HTAN=TRUE)
-    } else if ("FlatFile" %in% formats) {
-        meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                           dir = directory, HTAN=FALSE)   
+
+        level3Meta <- list(meta[[1]])
+        level4Meta <- list(meta[[2]])
+
+    } else {
+        warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
     }
-  	level3Meta <- list(meta[[1]])
-  	level4Meta <- list(meta[[2]])
 }
 
-HTANLevel3 <- do.call(base::rbind, level3Meta)
-HTANLevel4 <- do.call(base::rbind, level4Meta)
-write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
-write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+if ("FlatFile" %in% formats) {
+    HTANLevel3 <- do.call(base::rbind, level3Meta)
+    HTANLevel4 <- do.call(base::rbind, level4Meta)
+    write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+    write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+}
