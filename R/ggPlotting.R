@@ -859,6 +859,267 @@ plotSCEViolin <- function(inSCE,
   return(p)
 }
 
+.ggDensity <- function(value,
+                       groupby = NULL,
+                       xlab = NULL,
+                       ylab = NULL,
+                       axisSize = 10,
+                       defaultTheme = TRUE,
+                       title = NULL,
+                       titleSize = 15){
+    if (is.null(groupby)) {
+        groupby <- rep("Sample", length(value))
+    }
+    df <- data.frame(x = groupby, y = value)
+
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = value)) +
+        ggplot2::geom_density() +
+        ggplot2::facet_grid(. ~ x)
+
+    if (defaultTheme == TRUE) {
+        p <- .ggSCTKTheme(p) +
+            ggplot2::theme(strip.background = ggplot2::element_blank())
+    }
+
+    if(all(unique(groupby) == "Sample")){
+        p <- p + ggplot2::theme(strip.text.x = ggplot2::element_blank())
+    }
+
+    if (!is.null(title)) {
+        p <- p + ggplot2::ggtitle(label = title) +
+            ggplot2::theme(plot.title = ggplot2::element_text(
+                hjust = 0.5,
+                size = titleSize
+            ))
+    }
+    if (!is.null(xlab)) {
+        p <- p + ggplot2::xlab(xlab) +
+            ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+    }
+    if (!is.null(ylab)) {
+        p <- p + ggplot2::ylab(ylab) +
+            ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+    }
+
+    return(p)
+}
+
+#' @title Density plot of colData.
+#' @description Visualizes values stored in the colData slot of a
+#'  SingleCellExperiment object via a density plot.
+#' @param inSCE Input SCtkExperiment object with saved dimension reduction
+#'  components or a variable with saved results. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param coldata colData value that will be plotted.
+#' @param groupby Groupings for each numeric value. A user may input a vector
+#'  equal length to the number of the samples in the SingleCellExperiment
+#'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+
+#' @examples
+#' plotSCEViolinColData(
+#'   inSCE = mouseBrainSubsetSCE,
+#'   coldata = "age", groupby = "sex"
+#' )
+#' @export
+plotSCEDensityColData <- function(inSCE,
+                                  sample = NULL,
+                                  coldata,
+                                  groupby = NULL,
+                                  xlab = NULL,
+                                  ylab = NULL,
+                                  axisSize = 10,
+                                  defaultTheme = TRUE,
+                                  title = NULL,
+                                  titleSize = NULL) {
+    if (!is.null(coldata)) {
+        if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
+            stop("'", paste(coldata), "' is not found in ColData.")
+        }
+        coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
+    } else {
+        stop("You must define the desired colData to plot.")
+    }
+
+    if (!is.null(groupby)) {
+        if (length(groupby) > 1) {
+            if (length(groupby) != length(coldata)) {
+                stop("The input vector for 'groupby' needs to be the same
+                     length as the number of samples in your
+                     SingleCellExperiment object.")
+            }
+            } else {
+                if (!groupby %in% names(SummarizedExperiment::colData(inSCE))) {
+                    stop("'", paste(groupby), "' is not found in ColData.")
+                }
+                groupby <- as.character(SummarizedExperiment::colData(inSCE)[, groupby])
+            }
+}
+
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop("'sample' must be the same length as the number",
+                 " of columns in 'inSCE'")
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
+    }
+
+    samples <- unique(sample)
+
+    plotlist <- lapply(samples, function(x) {
+        sampleInd <- which(sample == x)
+        coldataSub <- coldata[sampleInd]
+        if(!is.null(groupby)){
+            groupbySub <- groupby[sampleInd]
+        }else{
+            groupbySub <- NULL
+        }
+
+        if(!is.null(title) && length(samples) > 1){
+            title = paste(title, x, sep = "_")
+        }
+
+        p <- .ggDensity(
+            value = coldataSub,
+            groupby = groupbySub,
+            xlab = xlab,
+            ylab = ylab,
+            axisSize = axisSize,
+            defaultTheme = defaultTheme,
+            title = title,
+            titleSize = titleSize
+        )
+        return(p)
+    })
+
+    if(!is.null(groupby)){
+        if(length(unique(groupby)) > 1){
+            figNcol = 1
+        }
+    }else{
+        figNcol = NULL
+    }
+
+    return(cowplot::plot_grid(plotlist = plotlist,
+                              ncol = figNcol))
+    }
+
+#' @title Density plot of assay data.
+#' @description Visualizes values stored in the assay slot of a
+#'  SingleCellExperiment object via a density plot.
+#' @param inSCE Input SCtkExperiment object with saved dimension reduction
+#'  components or a variable with saved results. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param useAssay Indicate which assay to use. Default "counts".
+#' @param feature Name of feature stored in assay of SingleCellExperiment
+#'  object.
+#' @param groupby Groupings for each numeric value. A user may input a vector
+#'  equal length to the number of the samples in the SingleCellExperiment
+#'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+#' @examples
+#' plotSCEDensityAssayData(
+#'   inSCE = mouseBrainSubsetSCE,
+#'   feature = "Sox2"
+#' )
+#' @export
+plotSCEDensityAssayData <- function(inSCE,
+                                    sample = NULL,
+                                    useAssay = "counts",
+                                    feature,
+                                    groupby = NULL,
+                                    xlab = NULL,
+                                    ylab = NULL,
+                                    axisSize = 10,
+                                    defaultTheme = TRUE,
+                                    title = NULL,
+                                    titleSize = NULL) {
+    mat <- getBiomarker(
+        inSCE = inSCE,
+        useAssay = useAssay,
+        gene = feature,
+        binary = "Continuous"
+    )
+    counts <- mat[, 2]
+
+    if (!is.null(groupby)) {
+        if (length(groupby) > 1) {
+            if (length(groupby) != length(counts)) {
+                stop("The input vector for 'groupby' needs to be the same
+                     length as the number of samples in your
+                     SingleCellExperiment object.")
+            }
+            } else {
+                if (!groupby %in% names(SummarizedExperiment::colData(inSCE))) {
+                    stop("'", paste(groupby), "' is not found in ColData.")
+                }
+                groupby <- as.character(SummarizedExperiment::colData(inSCE)[, groupby])
+            }
+}
+
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop("'sample' must be the same length as the number",
+                 " of columns in 'inSCE'")
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
+    }
+
+    samples <- unique(sample)
+
+    plotlist <- lapply(samples, function(x) {
+        sampleInd <- which(sample == x)
+        countsSub <- counts[sampleInd]
+        if(!is.null(groupby)){
+            groupbySub <- groupbySub[sampleInd]
+        }else{
+            groupbySub <- NULL
+        }
+
+        if(!is.null(title) && length(samples) > 1){
+            title = paste(title, x, sep = "_")
+        }
+
+        p <- .ggDensity(
+            value = countsSub,
+            groupby = groupbySub,
+            xlab = xlab,
+            ylab = ylab,
+            axisSize = axisSize,
+            defaultTheme = defaultTheme,
+            title = title,
+            titleSize = titleSize
+        )
+        return(p)
+    })
+
+    if(!is.null(groupby)){
+        if(length(unique(groupby)) > 1){
+            figNcol = 1
+        }
+    }else{
+        figNcol = NULL
+    }
+
+    return(cowplot::plot_grid(plotlist = plotlist,
+                              ncol = figNcol))
+}
+
+
 .ggSCTKTheme <- function(gg) {
     return(gg + ggplot2::theme_bw() +
                ggplot2::theme(
