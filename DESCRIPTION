@@ -54,6 +54,7 @@ Imports:
     limma,
     MAST,
     Matrix,
+    mnormt,
     matrixStats,
     methods,
     multtest,
