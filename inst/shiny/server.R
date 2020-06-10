@@ -2911,7 +2911,7 @@ shinyServer(function(input, output, session) {
 
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
-    if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
+    if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Xaxis == "None"){
         pltVars$groupby <- NULL
       }else if(input$TypeSelect_Xaxis == "Expression Assays"){
