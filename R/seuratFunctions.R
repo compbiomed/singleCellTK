@@ -318,7 +318,7 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
     plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
     if(!is.null(significantPC)){
       plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
-      plot <- ggplot(data = plot$data, aes(x = dims, y = stdev, color = Significant)) + geom_point() 
+      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point() 
     }
     return(plot)
 }
