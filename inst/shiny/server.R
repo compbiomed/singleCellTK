@@ -2964,7 +2964,7 @@ shinyServer(function(input, output, session) {
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "None"){
-          a <- plotSCEVioin(vals$counts, title = input$adjusttitle, violin = FALSE,
+          a <- plotSCEViolin(vals$counts, title = input$adjusttitle, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
@@ -2980,7 +2980,7 @@ shinyServer(function(input, output, session) {
             box = FALSE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Xaxis == "None"){
-          a <- plotSCEVioin(vals$counts, title = input$adjusttitle, violin = TRUE,
+          a <- plotSCEViolin(vals$counts, title = input$adjusttitle, violin = TRUE,
             box = FALSE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
