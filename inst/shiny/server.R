@@ -2550,7 +2550,7 @@ shinyServer(function(input, output, session) {
     }
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
       updateSelectInput(session, "TypeSelect_Xaxis",
-        choices = c("", "Expression Assays", "Cell Annotation"))
+        choices = c("None", "Expression Assays", "Cell Annotation"))
       updateSelectInput(session, "TypeSelect_Yaxis",
         choices = c("Expression Assays", "Cell Annotation"))
       shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
@@ -2912,7 +2912,7 @@ shinyServer(function(input, output, session) {
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
     if(input$viewertabs == "Vln/Box Plot" || input$viewertabs == "Bar Plot"){
-      if(input$TypeSelect_Xaxis == ""){
+      if(input$TypeSelect_Xaxis == "None"){
         pltVars$groupby <- NULL
       }else if(input$TypeSelect_Xaxis == "Expression Assays"){
         pltVars$groupby <- input$GeneSelect_Assays_Xaxis
@@ -2968,15 +2968,14 @@ shinyServer(function(input, output, session) {
         }
       }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Colorby == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
-            useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Colorby, violin = TRUE, box = FALSE,
-            groupby = pltVars$groupby)
+          a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
+            useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
+            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
-            title = input$adjusttitle, coldata = input$AnnotationSelect_Colorby,
-            groupby = pltVars$groupby, violin = TRUE, box = FALSE)
+          a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
+            coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
+            box = FALSE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
