@@ -953,3 +953,236 @@ plotSCEViolin <- function(inSCE,
     return(value.bin)
 }
 
+#' @title Bar plot plotting tool.
+#' @description Visualizes specified values via a violin plot.
+#' @param y Numeric values to be plotted on y-axis.
+#' @param groupby Groupings for each numeric value. A user may input a vector
+#' equal length to the number of the samples in the SingleCellExperiment
+#' object, or can be retrieved from the colData slot. Default NULL.
+#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
+#'  Default TRUE.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+#' @return a ggplot of the reduced dimensions.
+.ggBar <- function(y,
+  groupby = NULL,
+  dots = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  axisSize = 10,
+  dotSize = 1,
+  transparency = 1,
+  defaultTheme = TRUE,
+  title = NULL,
+  titleSize = 15) {
+  if (is.null(groupby)) {
+    groupby <- rep("Sample", length(y))
+  }
+  df <- data.frame(x = groupby, y = y)
+
+  p <- ggplot2::ggplot(df) +
+    ggplot2::aes_string(
+      x = "x",
+      y = "y"
+    )
+  p <- p + ggplot2::geom_bar(trim = TRUE, scale = "width")
+  if (dots == TRUE) {
+    p <- p + ggplot2::geom_jitter(
+      height = 0,
+      size = dotSize,
+      alpha = transparency
+    )
+  }
+  if (defaultTheme == TRUE) {
+    p <- .ggSCTKTheme(p)
+  }
+  if (!is.null(title)) {
+    p <- p + ggplot2::ggtitle(label = title) +
+      ggplot2::theme(plot.title = ggplot2::element_text(
+        hjust = 0.5,
+        size = titleSize
+      ))
+  }
+  if (!is.null(xlab)) {
+    p <- p + ggplot2::xlab(xlab) +
+      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+  }
+  if (!is.null(ylab)) {
+    p <- p + ggplot2::ylab(ylab) +
+      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+  }
+
+  return(p)
+}
+
+#' @title Bar plot of colData.
+#' @description Visualizes values stored in the colData slot of a
+#'  SingleCellExperiment object via a violin plot.
+#' @param inSCE Input SCtkExperiment object with saved dimension reduction
+#'  components or a variable with saved results. Required.
+#' @param coldata colData value that will be plotted.
+#' @param groupby Groupings for each numeric value. A user may input a vector
+#'  equal length to the number of the samples in the SingleCellExperiment
+#'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
+#'  Default TRUE.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+
+#' @examples
+#' plotSCEBarColData(
+#'   inSCE = mouseBrainSubsetSCE,
+#'   coldata = "age", groupby = "sex"
+#' )
+#' @export
+plotSCEBarColData <- function(inSCE,
+  coldata,
+  groupby = NULL,
+  violin = TRUE,
+  boxplot = TRUE,
+  dots = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  axisSize = 10,
+  dotSize = 1,
+  transparency = 1,
+  defaultTheme = TRUE,
+  title = NULL,
+  titleSize = NULL) {
+  if (!is.null(coldata)) {
+    if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
+      stop("'", paste(coldata), "' is not found in ColData.")
+    }
+    coldata <- SummarizedExperiment::colData(inSCE)[, coldata]
+  } else {
+    stop("You must define the desired colData to plot.")
+  }
+
+  if (!is.null(groupby)) {
+    if (length(groupby) > 1) {
+      if (length(groupby) != length(coldata)) {
+        stop("The input vector for 'groupby' needs to be the same
+                     length as the number of samples in your
+                     SingleCellExperiment object.")
+      }
+    } else {
+      if (!groupby %in% names(SummarizedExperiment::colData(inSCE))) {
+        stop("'", paste(groupby), "' is not found in ColData.")
+      }
+      groupby <- as.character(SummarizedExperiment::colData(inSCE)[, groupby])
+    }
+  }
+
+
+  p <- .ggBar(
+    y = coldata,
+    groupby = groupby,
+    dots = dots,
+    xlab = xlab,
+    ylab = ylab,
+    axisSize = axisSize,
+    dotSize = dotSize,
+    transparency = transparency,
+    defaultTheme = defaultTheme,
+    title = title,
+    titleSize = titleSize
+  )
+
+  return(p)
+}
+
+#' @title Bar plot of assay data.
+#' @description Visualizes values stored in the assay slot of a
+#'  SingleCellExperiment object via a violin plot.
+#' @param inSCE Input SCtkExperiment object with saved dimension reduction
+#'  components or a variable with saved results. Required.
+#' @param useAssay Indicate which assay to use. Default "counts".
+#' @param feature Name of feature stored in assay of SingleCellExperiment
+#'  object.
+#' @param groupby Groupings for each numeric value. A user may input a vector
+#'  equal length to the number of the samples in the SingleCellExperiment
+#'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
+#'  Default TRUE.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+#' @examples
+#' plotSCEBarAssayData(
+#'   inSCE = mouseBrainSubsetSCE,
+#'   feature = "Sox2", groupby = "sex"
+#' )
+#' @export
+plotSCEBarAssayData <- function(inSCE,
+  useAssay = "counts",
+  feature,
+  groupby = NULL,
+  dots = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  axisSize = 10,
+  dotSize = 1,
+  transparency = 1,
+  defaultTheme = TRUE,
+  title = NULL,
+  titleSize = NULL) {
+  mat <- getBiomarker(
+    inSCE = inSCE,
+    useAssay = useAssay,
+    gene = feature,
+    binary = "Continuous"
+  )
+  counts <- mat[, 2]
+
+  if (!is.null(groupby)) {
+    if (length(groupby) > 1) {
+      if (length(groupby) != length(counts)) {
+        stop("The input vector for 'groupby' needs to be the same
+                     length as the number of samples in your
+                     SingleCellExperiment object.")
+      }
+    } else {
+      if (!groupby %in% names(SummarizedExperiment::colData(inSCE))) {
+        stop("'", paste(groupby), "' is not found in ColData.")
+      }
+      groupby <- as.character(SummarizedExperiment::colData(inSCE)[, groupby])
+    }
+  }
+
+
+  p <- .ggBar(
+    y = counts,
+    groupby = groupby,
+    dots = dots,
+    xlab = xlab,
+    ylab = ylab,
+    axisSize = axisSize,
+    dotSize = dotSize,
+    transparency = transparency,
+    defaultTheme = defaultTheme,
+    title = title,
+    titleSize = titleSize
+  )
+
+  return(p)
+}
