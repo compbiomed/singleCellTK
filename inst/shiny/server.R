@@ -2958,30 +2958,33 @@ shinyServer(function(input, output, session) {
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_YAxis == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
+        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
+          a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-
+        }else if(input$TypeSelect_Colorby == "None"){
+          a <- plotSCEVioin(vals$counts, title = input$adjusttitle, violin = FALSE,
+            box = TRUE, groupby = pltVars$groupby)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
       }else if(input$vlnboxcheck == TRUE){
-        if(input$TypeSelect_Colorby == "Expression Assays"){
+        if(input$TypeSelect_Xaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Colorby == "Cell Annotation"){
+        }else if(input$TypeSelect_Xaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
             box = FALSE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-
+        }else if(input$TypeSelect_Colorby == "None"){
+          a <- plotSCEVioin(vals$counts, title = input$adjusttitle, violin = TRUE,
+            box = FALSE, groupby = pltVars$groupby)
+          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
       }
-
 
     }else if(input$viewertabs == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Expression Assays"){
