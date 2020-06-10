@@ -2930,15 +2930,14 @@ shinyServer(function(input, output, session) {
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
         if(input$TypeSelect_Colorby == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, xlab = xname, ylab = yname,
+          a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
             useAssay = input$AdvancedMethodSelect_Colorby, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Colorby, violin = FALSE, box = TRUE,
-            groupby = pltVars$groupby)
+            feature = input$GeneSelect_Assays_Colorby, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts, xlab = xname, ylab = yname,
-            title = input$adjusttitle, coldata = input$AnnotationSelect_Colorby,
-            violin = FALSE, box = TRUE, groupby = pltVars$groupby)
+          a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
+            coldata = input$AnnotationSelect_Colorby, violin = FALSE,
+            box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
@@ -2965,11 +2964,14 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
           feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
-          legendTitle = legendname, title = input$adjusttitle)
+          annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
+          title = input$adjusttitle)
+        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
-          feature = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
+          annotation = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
           legendTitle = legendname, title = input$adjusttitle)
+        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
       }
