@@ -992,7 +992,7 @@ plotSCEViolin <- function(inSCE,
       x = "x",
       y = "y"
     )
-  p <- p + ggplot2::geom_bar()
+  p <- p + ggplot2::geom_bar(stat = 'identity')
   if (dots == TRUE) {
     p <- p + ggplot2::geom_jitter(
       height = 0,
