@@ -992,7 +992,7 @@ plotSCEViolin <- function(inSCE,
       x = "x",
       y = "y"
     )
-  p <- p + ggplot2::geom_bar(trim = TRUE, scale = "width")
+  p <- p + ggplot2::geom_bar()
   if (dots == TRUE) {
     p <- p + ggplot2::geom_jitter(
       height = 0,
