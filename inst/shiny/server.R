@@ -2539,9 +2539,13 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$viewertabs, {
     approach_list <- names(reducedDims(vals$counts))
-    if(input$viewertabs == "reducedDims Plot" || input$viewertabs == "Scatter Plot"){
+    if(input$viewertabs == "reducedDims Plot"){
       updateSelectInput(session, "QuickAccess",
         choices = c("", approach_list))
+      shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+    }else if(input$viewertabs == "Scatter Plot"){
+      updateSelectInput(session, "QuickAccess",
+        choices = c("Custom"))
       shinyjs::delay(5,shinyjs::enable("QuickAccess"))
     }else{
       updateSelectInput(session, "QuickAccess",
