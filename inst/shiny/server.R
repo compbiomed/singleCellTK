@@ -2963,24 +2963,16 @@ shinyServer(function(input, output, session) {
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Colorby == "None"){
-          a <- plotSCEViolin(vals$counts, title = input$adjusttitle, violin = FALSE,
-            box = TRUE, groupby = pltVars$groupby)
-          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
       }else if(input$vlnboxcheck == TRUE){
-        if(input$TypeSelect_Xaxis == "Expression Assays"){
+        if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Xaxis == "Cell Annotation"){
+        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
-            box = FALSE, groupby = pltVars$groupby)
-          ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-        }else if(input$TypeSelect_Xaxis == "None"){
-          a <- plotSCEViolin(vals$counts, title = input$adjusttitle, violin = TRUE,
             box = FALSE, groupby = pltVars$groupby)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
@@ -3001,8 +2993,7 @@ shinyServer(function(input, output, session) {
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
 
       }else if(input$TypeSelect_Colorby == "Pick a Color"){
-        a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, title = input$adjustitle)
+
       }
     }
   })#Cellviewer_end
