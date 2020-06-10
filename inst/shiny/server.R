@@ -2962,7 +2962,7 @@ shinyServer(function(input, output, session) {
 
     }else if(input$viewertabs == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Expression Assays"){
-        a <- plotSCEScatter(vals$counts, slot = "assay", xlab = xname, ylab = yname,
+        a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
           feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
           annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
           title = input$adjusttitle)
