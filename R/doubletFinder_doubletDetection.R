@@ -81,7 +81,7 @@
 #'  'doublet_finder_doublet_score'.
 #' @examples
 #' \dontrun{
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- runDoubletFinder(sce)
 #' }
 #' @export

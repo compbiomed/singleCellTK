@@ -79,7 +79,7 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' \dontrun{
-#' data(qcSceExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runScrublet(sce)
 #' }
