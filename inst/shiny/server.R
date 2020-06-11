@@ -88,6 +88,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
     updateSelectInput(session, "mastFMHMcolData",
                       choices = pdataOptions)
+    updateSelectInput(session, "hmCellAnn", choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
                       choices = pdataOptions)
     updateSelectInput(session, "selectReadDepthCondition",
@@ -131,6 +132,7 @@ shinyServer(function(input, output, session) {
                       choices = selectRowData)
     updateSelectInput(session, "hmGeneTextBy",
                       choices = c("Row Names", selectRowData))
+    updateSelectInput(session, 'hmGeneAnn', choices = selectRowData)
   }
 
   updateNumSamples <- function(){
@@ -3581,7 +3583,12 @@ shinyServer(function(input, output, session) {
 
   output$hmCellSumUI <- renderUI({
     nCell <- length(input$hmCellColTable_rows_selected)
-    p(paste0("Totally ", nCell, " cells selected."), style = 'margin-top: 5px;')
+    if(nCell == 0){
+      p("No cells selected, going to use them all", style = 'margin-top: 5px;')
+    } else {
+      p(paste0("Totally ", nCell, " cells selected."),
+        style = 'margin-top: 5px;')
+    }
   })
 
   # Gene Selection
@@ -3652,7 +3659,79 @@ shinyServer(function(input, output, session) {
 
   output$hmGeneSumUI <- renderUI({
     nGene <- length(input$hmGeneColTable_rows_selected)
-    p(paste0("Totally ", nGene, " features selected."), style = 'margin-top: 5px;')
+    if(nGene == 0){
+      p("No features selected, going to use them all",
+        style = 'margin-top: 5px;')
+    } else {
+      p(paste0("Totally ", nGene, " features selected."),
+        style = 'margin-top: 5px;')
+    }
+  })
+
+  output$hmColSplitUI <- renderUI({
+    selectInput(
+      'hmColSplit',
+      "Split columns (cell) by (Leave this for not splitting)",
+      input$hmCellAnn, multiple = TRUE
+    )
+  })
+
+  output$hmRowSplitUI <- renderUI({
+    selectInput(
+      'hmRowSplit',
+      "Split rows (feature) by (Leave this for not splitting)",
+      input$hmGeneAnn, multiple = TRUE
+    )
+  })
+
+  output$hmTrimUI <- renderUI({
+    if(!is.null(vals$counts)){
+      # This might be slow when running with real data
+      mat <- as.matrix(assay(vals$counts, input$hmAssay))
+      if(isTRUE(input$hmScale)){
+        mat <- as.matrix(computeZScore(mat))
+      }
+      sliderInput("hmTrim",  "Trim", min = floor(min(mat)),
+                  max = ceiling(max(mat)), value = c(-2, 2), step = 0.5)
+    }
+  })
+
+  observeEvent(input$plotHeatmap, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("plotHeatmap", {
+        hmAddLabel <- c(FALSE, FALSE)
+        hmAddLabel[as.numeric(input$hmAddLabel)] <- TRUE
+        hmShowDendro <- c(FALSE, FALSE)
+        hmShowDendro[as.numeric(input$hmShowDendro)] <- TRUE
+        if(is.null(input$hmRowSplit)){
+          hmRowSplit <- NULL
+        } else {
+          hmRowSplit <- input$hmRowSplit
+        }
+        if(is.null(input$hmColSplit)){
+          hmColSplit <- NULL
+        } else {
+          hmColSplit <- input$hmColSplit
+        }
+        trim <- input$hmTrim
+        cs <- circlize::colorRamp2(c(trim[1], mean(trim), trim[2]),
+                                   c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh))
+        output$Heatmap <- renderPlot({
+          plotSCEHeatmap(
+            inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
+            featureIndex = input$hmGeneColTable_rows_selected,
+            cellIndex = input$hmCellColTable_rows_selected,
+            rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
+            rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
+            rowLabel = hmAddLabel[2], colLabel = hmAddLabel[1],
+            rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
+            scale = input$hmScale, trim = trim
+          )
+        })
+      })
+    }
   })
 
   #-----------------------------------------------------------------------------

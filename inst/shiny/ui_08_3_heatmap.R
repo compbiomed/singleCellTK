@@ -90,7 +90,7 @@ shinyPanelHeatmap <- fluidPage(
     uiOutput("hmCellSumUI"),
     uiOutput("hmGeneSumUI"),
     hr(),
-    # Annotaion ####
+    # Annotation ####
     h3("Annotation Setting"),
     p("Stick additional information at sides of the plot",
       style = "color:grey;"),
@@ -99,7 +99,18 @@ shinyPanelHeatmap <- fluidPage(
       div(
         id = 'hmDiv2',
         panel(
-          "Add annotations"
+          fluidRow(
+            column(
+              width = 6,
+              selectInput('hmCellAnn', 'Add cell annotation',
+                          clusterChoice, multiple = TRUE)
+            ),
+            column(
+              width = 6,
+              selectInput('hmGeneAnn', 'Add feature annotation',
+                          featureChoice, multiple = TRUE)
+            )
+          )
         ),
       )
     ),
@@ -109,12 +120,44 @@ shinyPanelHeatmap <- fluidPage(
     p("Settings for split, label, dendrogram, colormap, legend and etc.",
       style = "color:grey;"),
     actionLink("hmHideDiv3", "Show/Hide"),
-    hidden(
-      div(
-        id = 'hmDiv3',
-        panel(
-          p("Set split, label, dendrogram, colormap, legend and etc.")
+    div(
+      id = 'hmDiv3',
+      panel(
+        fluidRow(
+          column(
+            width = 6,
+            uiOutput('hmColSplitUI'),
+            checkboxGroupInput('hmAddLabel', "Add cell/feature labels",
+                               choiceNames = c('cells', 'features'),
+                               inline = TRUE, choiceValues = c(1, 2)),
+            uiOutput('hmTrimUI')
+          ),
+          column(
+            width = 6,
+            uiOutput('hmRowSplitUI'),
+            checkboxGroupInput('hmShowDendro', "Show dendrograms for",
+                               choiceNames = c('cells', 'features'),
+                               inline = TRUE, choiceValues = c(1, 2),
+                               selected = c(1, 2)),
+            checkboxInput("hmScale", "Z-Score Scale", value = TRUE)
+          )
         ),
+        h4("Color Scheme"),
+        # TODO: selectInput for provided combinations
+        fluidRow(
+          column(
+            width = 4,
+            colourpicker::colourInput('hmCSHigh', 'High color',value = 'red')
+          ),
+          column(
+            width = 4,
+            colourpicker::colourInput('hmCSMedium', 'Medium color',value = 'white')
+          ),
+          column(
+            width = 4,
+            colourpicker::colourInput('hmCSLow', 'Low color',value = 'blue')
+          )
+        )
       )
     ),
     hr(),
