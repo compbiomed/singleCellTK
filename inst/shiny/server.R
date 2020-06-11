@@ -4,7 +4,6 @@ options(useFancyQuotes = FALSE)
 options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   # library(fs)
@@ -40,7 +39,13 @@ shinyServer(function(input, output, session) {
     dendrogram = NULL,
     pcX = NULL,
     pcY = NULL,
-    showAssayDetails = FALSE
+    showAssayDetails = FALSE,
+    hmCSPresets = list("RWB" = c("red", "white", "blue"),
+                       "RdBu_r" = c("#b92732", "#f7f6f6", "#2971b1"),
+                       "BrBG" = c("#0c7068", "#f4f4f4", "#995d12"),
+                       "Blues" = c("#0b559f", "#6daed4", "#dae8f5"),
+                       "Greens" = c("#04702F", "#69C2A1", "#E1F3F6")),
+    hmCSURL = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -3693,6 +3698,71 @@ shinyServer(function(input, output, session) {
       }
       sliderInput("hmTrim",  "Trim", min = floor(min(mat)),
                   max = ceiling(max(mat)), value = c(-2, 2), step = 0.5)
+    }
+  })
+
+  observe({
+    # Palette preset coding refers:
+    # https://stackoverflow.com/a/52552008/13676674
+    vals$hmCSURL <- session$registerDataObj(
+      name = 'uniquename1',
+      data = vals$hmCSPresets,
+      filter = function(data, req) {
+        query <- parseQueryString(req$QUERY_STRING)
+        palette <- query$palette
+        cols <- data[[palette]]
+        image <- tempfile()
+        tryCatch({
+          png(image, width = 75, height = 25, bg = 'transparent')
+          par(mar = c(0, 0, 0, 0))
+          barplot(rep(1, length(cols)), col = cols, axes = F)
+        },finally = dev.off())
+
+        shiny:::httpResponse(
+          200, 'image/png',readBin(image, 'raw', file.info(image)[,'size'])
+        )
+      }
+    )
+
+    updateSelectizeInput(
+      session, 'hmCSPalette', server = TRUE,
+      choices = names(vals$hmCSPresets),
+      selected = "RWB",
+      options = list(
+        render = I(
+          sprintf(
+            "{
+            option: function(item, escape) {
+            return '<div><img width=\"75\" height=\"25\" ' +
+            'src=\"%s&palette=' + escape(item.value) + '\" />' +
+            escape(item.value) + '</div>';
+            }
+          }",
+            vals$hmCSURL
+          )
+        )
+      )
+    )
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      highColor <- vals$hmCSPresets[[input$hmCSPalette]][1]
+      colourpicker::updateColourInput(session, 'hmCSHigh', value = highColor)
+    }
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      mediumColor <- vals$hmCSPresets[[input$hmCSPalette]][2]
+      colourpicker::updateColourInput(session, 'hmCSMedium', value = mediumColor)
+    }
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      lowColor <- vals$hmCSPresets[[input$hmCSPalette]][3]
+      colourpicker::updateColourInput(session, 'hmCSLow', value = lowColor)
     }
   })
 
