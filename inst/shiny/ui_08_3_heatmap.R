@@ -11,14 +11,16 @@ shinyPanelHeatmap <- fluidPage(
           selectInput("hmAssay", NULL, currassays))
     ),
     fluidRow(
-      div(style="display:inline-block;vertical-align:top;width:230px;margin-left:20px;",
-          h4("Import from precalculation")),
+      div(style="display:inline-block;vertical-align:top;width:180px;margin-left:20px;",
+          h4("Import from analysis")),
       div(style="display:inline-block;vertical-align:bottom;width:150px;margin-top:5px;",
           selectInput("hmImport", NULL,
                       c("None", "MAST DEG", "MAST Marker"), selected = "None")),
       div(style="display:inline-block;vertical-align:bottom;width:50px;margin-left:8px;margin-bottom:15px;",
           actionButton("hmImportRun", "Import"))
     ),
+    p('"Import from analysis" not implemented yet', style = 'color:grey;'),
+    hr(),
     # Subset ####
     h3("Cell/Feature Subsetting"),
     p("Only to plot cells/features of interests", style = "color:grey;"),
@@ -104,20 +106,23 @@ shinyPanelHeatmap <- fluidPage(
               width = 6,
               selectInput('hmCellAnn', 'Add cell annotation',
                           clusterChoice, multiple = TRUE)
+              # TODO: Color selection for each class
             ),
             column(
               width = 6,
               selectInput('hmGeneAnn', 'Add feature annotation',
                           featureChoice, multiple = TRUE)
+              # TODO: Color selection for each class
             )
-          )
+          ),
+          p("Color assignment for each class not implemented yet", style="color:grey;")
         ),
       )
     ),
     hr(),
     # Others ####
     h3("Heatmap Setting"),
-    p("Settings for split, label, dendrogram, colormap, legend and etc.",
+    p("Settings for split, label, dendrogram, color scheme and etc.",
       style = "color:grey;"),
     actionLink("hmHideDiv3", "Show/Hide"),
     div(
@@ -130,6 +135,18 @@ shinyPanelHeatmap <- fluidPage(
             checkboxGroupInput('hmAddLabel', "Add cell/feature labels",
                                choiceNames = c('cells', 'features'),
                                inline = TRUE, choiceValues = c(1, 2)),
+            conditionalPanel(
+              condition = "input.hmAddLabel.includes('1')",
+              selectInput('hmAddCellLabel', "Add cell labels from",
+                          c("Default cell IDs", clusterChoice),
+                          selected = "Default cell IDs")
+            ),
+            conditionalPanel(
+              condition = "input.hmAddLabel.includes('2')",
+              selectInput('hmAddGeneLabel', "Add feature labels from",
+                          c("Default feature IDs", featureChoice),
+                          selected = "Default feature IDs")
+            ),
             uiOutput('hmTrimUI')
           ),
           column(
@@ -171,7 +188,7 @@ shinyPanelHeatmap <- fluidPage(
     hr(),
     withBusyIndicatorUI(actionButton("plotHeatmap", "Plot Heatmap")),
     panel(
-      plotOutput("Heatmap", width="600px", height="600px")
+      plotOutput("Heatmap")
     )
   )
 )

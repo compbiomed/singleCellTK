@@ -110,6 +110,8 @@ shinyServer(function(input, output, session) {
                       choices = pdataOptions)
     updateSelectInput(session, "hmCellTextBy",
                       choices = c("Row Names", pdataOptions))
+    updateSelectInput(session, 'hmAddCellLabel',
+                      choices = c("Default cell IDs", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -138,6 +140,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "hmGeneTextBy",
                       choices = c("Row Names", selectRowData))
     updateSelectInput(session, 'hmGeneAnn', choices = selectRowData)
+    updateSelectInput(session, 'hmAddGeneLabel',
+                      choices = c("Default feature IDs", selectRowData))
   }
 
   updateNumSamples <- function(){
@@ -3771,8 +3775,23 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("plotHeatmap", {
-        hmAddLabel <- c(FALSE, FALSE)
-        hmAddLabel[as.numeric(input$hmAddLabel)] <- TRUE
+        hmAddLabel <- list(cell = FALSE, gene = FALSE)
+        if(!is.null(input$hmAddLabel)){
+          if("1" %in% input$hmAddLabel){
+            if(input$hmAddCellLabel == "Default cell IDs"){
+              hmAddLabel$cell <- TRUE
+            } else {
+              hmAddLabel$cell <- input$hmAddCellLabel
+            }
+          }
+          if("2" %in% input$hmAddLabel){
+            if(input$hmAddGeneLabel == "Default feature IDs"){
+              hmAddLabel$gene <- TRUE
+            } else {
+              hmAddLabel$gene <- input$hmAddGeneLabel
+            }
+          }
+        }
         hmShowDendro <- c(FALSE, FALSE)
         hmShowDendro[as.numeric(input$hmShowDendro)] <- TRUE
         if(is.null(input$hmRowSplit)){
@@ -3786,8 +3805,10 @@ shinyServer(function(input, output, session) {
           hmColSplit <- input$hmColSplit
         }
         trim <- input$hmTrim
-        cs <- circlize::colorRamp2(c(trim[1], mean(trim), trim[2]),
-                                   c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh))
+        cs <- circlize::colorRamp2(
+          c(trim[1], mean(trim), trim[2]),
+          c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh)
+        )
         output$Heatmap <- renderPlot({
           plotSCEHeatmap(
             inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
@@ -3795,7 +3816,7 @@ shinyServer(function(input, output, session) {
             cellIndex = input$hmCellColTable_rows_selected,
             rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
             rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
-            rowLabel = hmAddLabel[2], colLabel = hmAddLabel[1],
+            rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
             rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
             scale = input$hmScale, trim = trim
           )
