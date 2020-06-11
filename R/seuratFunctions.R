@@ -316,16 +316,10 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
     seuratObject <- convertSCEToSeurat(inSCE)
     plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
-    plot <- ggplot2::ggplot_build(plot)
-    if(!is.null(significantPC)) {
-      for (i in seq(significantPC)) {
-          plot$data[[1]]$shape[i] <- 16
-          plot$data[[1]]$colour[i] <- "red"
-          plot$data[[1]]$size[i] <- 3.5
-      }
-    }  
-    plot <- ggplot2::ggplot_gtable(plot)
-    plot <- ggplotify::as.ggplot(plot)
+    if(!is.null(significantPC)){
+      plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
+      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point() 
+    }
     return(plot)
 }
 
