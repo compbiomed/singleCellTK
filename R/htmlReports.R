@@ -34,9 +34,9 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @return .html file
 #' @examples
 #' \donttest{
-#' data(sceQCExample, package = "singleCellTK")
-#' sceQCExample <- runCellQC(sceQCExample)
-#' reportCellQC(inSCE = sceQCExample)
+#' data(scExample, package = "singleCellTK")
+#' sce <- runCellQC(sce)
+#' reportCellQC(inSCE = sce)
 #' }
 #' @export
 reportCellQC <- function(inSCE, output_file = NULL,
@@ -60,9 +60,10 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' @return .html file
 #' @examples
 #' \donttest{
-#' data(sceQCExample, package = "singleCellTK")
-#' sceQCExample <- runDecontX(sceQCExample)
-#' reportQCTool(inSCE = sceQCExample, algorithm = "DecontX")
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runDecontX(sce)
+#' reportQCTool(inSCE = sce, algorithm = "DecontX")
 #' }
 #' @export
 reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
