@@ -5358,8 +5358,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
-      output$plot_hvg <- renderPlot({
-        seuratPlotHVG(vals$counts)
+      output$plot_hvg <- renderPlotly({
+        plotly::ggplotly(seuratPlotHVG(vals$counts))
       })
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
@@ -5391,16 +5391,16 @@ shinyServer(function(input, output, session) {
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
-      output$plot_pca <- renderPlot({
-        seuratReductionPlot(inSCE = vals$counts,
+      output$plot_pca <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                             useReduction = "pca",
-                            showLegend = FALSE)
+                            showLegend = FALSE))
       })
     })
     if (input$pca_compute_elbow) {
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
         updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = .computeSignificantPC(vals$counts))
-        output$plot_elbow_pca <- renderPlot({
+        output$plot_elbow_pca <- renderPlotly({
           seuratElbowPlot(inSCE = vals$counts,
                           significantPC = .computeSignificantPC(vals$counts))
         })
@@ -5414,9 +5414,9 @@ shinyServer(function(input, output, session) {
         vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
                                               dims = input$pca_no_components)
-        output$plot_jackstraw_pca <- renderPlot({
-          seuratJackStrawPlot(inSCE = vals$counts,
-                              dims = input$pca_no_components)
+        output$plot_jackstraw_pca <- renderPlotly({
+          plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                              dims = input$pca_no_components))
         })
       })
     }
@@ -5474,11 +5474,10 @@ shinyServer(function(input, output, session) {
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
-
-      output$plot_ica <- renderPlot({
-        seuratReductionPlot(inSCE = vals$counts,
+      output$plot_ica <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                             useReduction = "ica",
-                            showLegend = FALSE)
+                            showLegend = FALSE))
       })
     })
     if (input$ica_compute_heatmap) {
@@ -5533,10 +5532,10 @@ shinyServer(function(input, output, session) {
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
-          output$plot_pca_clustering <- renderPlot({
-            seuratReductionPlot(inSCE = vals$counts,
+          output$plot_pca_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                                 useReduction = "pca",
-                                showLegend = TRUE)
+                                showLegend = TRUE))
           })
         })
         shinyjs::toggleState(
@@ -5545,10 +5544,10 @@ shinyServer(function(input, output, session) {
       }
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
         withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
-          output$plot_ica_clustering <- renderPlot({
-            seuratReductionPlot(inSCE = vals$counts,
+          output$plot_ica_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                                 useReduction = "ica",
-                                showLegend = TRUE)
+                                showLegend = TRUE))
           })
         })
         shinyjs::toggleState(
@@ -5558,10 +5557,10 @@ shinyServer(function(input, output, session) {
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
         withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
-          output$plot_tsne_clustering <- renderPlot({
-            seuratReductionPlot(inSCE = vals$counts,
-                                useReduction = "tsne",
-                                showLegend = TRUE)
+          output$plot_tsne_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                 useReduction = "tsne",
+                                                 showLegend = TRUE))
           })
         })
         shinyjs::toggleState(
@@ -5571,11 +5570,10 @@ shinyServer(function(input, output, session) {
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
         withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
-
-          output$plot_umap_clustering <- renderPlot({
-            seuratReductionPlot(inSCE = vals$counts,
+          output$plot_umap_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                                 useReduction = "umap",
-                                showLegend = TRUE)
+                                showLegend = TRUE))
           })
         })
         shinyjs::toggleState(
@@ -5615,10 +5613,10 @@ shinyServer(function(input, output, session) {
         vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-        output$plot_tsne <- renderPlot({
-          seuratReductionPlot(inSCE = vals$counts,
+        output$plot_tsne <- renderPlotly({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                               useReduction = "tsne",
-                              showLegend = FALSE)
+                              showLegend = FALSE))
         })
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
@@ -5661,10 +5659,10 @@ shinyServer(function(input, output, session) {
         vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting UMAP", max = 1, value = 1, {
-        output$plot_umap <- renderPlot({
-          seuratReductionPlot(inSCE = vals$counts,
+        output$plot_umap <- renderPlotly({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
                               useReduction = "umap",
-                              showLegend = FALSE)
+                              showLegend = FALSE))
         })
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
