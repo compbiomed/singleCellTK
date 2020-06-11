@@ -1,0 +1,68 @@
+---
+title: "Introduction to singleCellTK - Basic Analysis Workflow"
+---
+This document provides a walk-through of a basic scRNA-seq analysis worklow in SCTK using
+10x Cell Ranger V3 data from [1k 1:1 Human(HEK293T) & Mouse(NIH3T3)](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/hgmm_1k_v3).
+The counts matrix has been subsetted to 20 genes x 20 cells for a quick example and is availble through the SCTK package.
+
+## Load SCTK
+```{r eval=FALSE}
+library(singleCellTK)
+```
+
+## Example Data
+
+To list available example data from the SCTK package, run
+
+```{r eval=FALSE}
+data(package = 'singleCellTK')
+```
+Example datasets from other upstream tools are included in the extdata directory
+```{r eval=FALSE}
+list.files(system.file("extdata/", package = "singleCellTK"))
+```
+
+## Import Data
+
+```{r eval=FALSE}
+sce <- importCellRanger(cellRangerDirs = system.file("extdata/", package = "singleCellTK"),
+sampleDirs = "hgmm_1k_v3_20x20",sampleNames = "hgmm1kv3", dataType = "filtered")
+
+sce
+```
+
+## Perform Quality Control 
+
+### Cell QC
+
+```{r eval=FALSE}
+sce <- runCellQC(sce,
+                algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
+                "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX")
+```
+
+### Droplet QC
+
+```{r eval=FALSE}
+sce <- runDropletQC(inSCE,
+                    algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"))
+```
+## Visualize Results 
+```{r eval=FALSE}
+plotUMAP(sce, reducedDimName = "scrublet_UMAP", runUMAP = FALSE,useAssay = "logcounts")
+```
+
+## Export SCE as text file
+```{r eval=FALSE}
+exportSCEtoFlatFile(sce, "example_sce")
+```
+
+## Vignettes
+Detailed vignettes are available under the "Command Line Analysis" tab.
+
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
