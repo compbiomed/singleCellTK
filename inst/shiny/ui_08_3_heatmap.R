@@ -100,23 +100,20 @@ shinyPanelHeatmap <- fluidPage(
     hidden(
       div(
         id = 'hmDiv2',
-        panel(
-          fluidRow(
-            column(
-              width = 6,
-              selectInput('hmCellAnn', 'Add cell annotation',
-                          clusterChoice, multiple = TRUE)
-              # TODO: Color selection for each class
-            ),
-            column(
-              width = 6,
-              selectInput('hmGeneAnn', 'Add feature annotation',
-                          featureChoice, multiple = TRUE)
-              # TODO: Color selection for each class
-            )
+        tabsetPanel(
+          tabPanel(
+            "Cell",
+            selectInput('hmCellAnn', 'Add cell annotation',
+                        clusterChoice, multiple = TRUE),
+            uiOutput('hmCellAnnAssUI')
           ),
-          p("Color assignment for each class not implemented yet", style="color:grey;")
-        ),
+          tabPanel(
+            "Feature",
+            selectInput('hmGeneAnn', 'Add feature annotation',
+                        featureChoice, multiple = TRUE),
+            uiOutput('hmGeneAnnAssUI')
+          )
+        )
       )
     ),
     hr(),

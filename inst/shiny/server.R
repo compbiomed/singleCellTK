@@ -3524,6 +3524,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$hmHideDiv3, {
     toggle("hmDiv3", anim = TRUE, animType = "slide")
   })
+  # Heatmap: Subsetting ####
   # Cell Selection
   output$hmCellColTable <- DT::renderDataTable({
     if(!is.null(vals$counts)){
@@ -3677,6 +3678,105 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # Heatmap: Annotation color assignment ####
+
+  hmAnnAllColors <- reactiveValues(
+    col = NULL,
+    row = NULL
+  )
+  observe({
+    if(!is.null(vals$counts)){
+      hmAnnAllColors$col <- singleCellTK:::dataAnnotationColor(vals$counts, 'col')
+      hmAnnAllColors$row <- singleCellTK:::dataAnnotationColor(vals$counts, 'row')
+    }
+  })
+
+  generateAnnColAssUI <- function(colname, axis){
+    if(axis == "row"){
+      data <- as.vector(rowData(vals$counts)[[colname]])
+    } else if(axis == 'col'){
+      data <- as.vector(colData(vals$counts)[[colname]])
+    }
+    nUniq <- length(as.vector(unique(data)))
+    if(nUniq > 12){
+      if(is.numeric(data)){
+        fluidRow(style = "padding-left:20px;",
+          h4(colname),
+          p(paste0("Numeric annotation with ", nUniq, " unique values detected. Please choose the type of legend.")),
+          radioButtons(
+            inputId = paste0('hm', axis, colname, 'type'),
+            label = NULL,
+            choices = c('Categorical', 'Continuous'),
+            inline = TRUE
+          ),
+          conditionalPanel(
+            condition = paste0("input.hm", axis, colname, "type == 'Categorical'"),
+            p("Since more than 12 unique values detected, discrete colors will be assigned for this class")
+          ),
+          conditionalPanel(
+            condition = paste0("input.hm", axis, colname, "type == 'Continuous'"),
+            p("We generate a gradient color legend for continuous annotation value"),
+            column(
+              width = 6,
+              colourpicker::colourInput(
+                inputId = paste0('hm', axis, colname, 'High'),
+                label = 'High Value'
+              )
+            ),
+            column(
+              width = 6,
+              colourpicker::colourInput(
+                inputId = paste0('hm', axis, colname, 'Low'),
+                label = 'Low Value'
+              )
+            )
+          ),
+        )
+      } else {
+        fluidRow(style = "padding-left:20px;",
+                 h4(colname),
+                 p(paste0("Totally ", nUniq, " unique values in this class of annotation, which is too many to provide manual selection. Coloring will be provided by default."))
+        )
+      }
+    } else if(nUniq >= 1 && nUniq <= 12){
+      cats <- as.vector(unique(data))
+      fluidRow(style = "padding-left:20px;",
+        h4(colname),
+        lapply(seq_along(cats), function(i) {
+          column(
+            width = 3,
+            colourpicker::colourInput(
+              inputId = paste0('hm', axis, colname, cats[i]),
+              label = cats[i],
+              value = hmAnnAllColors[[axis]][[colname]][[cats[i]]]
+            )
+          )
+        })
+      )
+    }
+  }
+
+  observe({
+    if(!is.null(input$hmCellAnn)){
+      output$hmCellAnnAssUI <- renderUI({
+        panel(
+          lapply(input$hmCellAnn, generateAnnColAssUI, axis = 'col')
+        )
+      })
+    }
+  })
+
+  observe({
+    if(!is.null(input$hmGeneAnn)){
+      output$hmGeneAnnAssUI <- renderUI({
+        panel(
+          lapply(input$hmGeneAnn, generateAnnColAssUI, axis = 'row')
+        )
+      })
+    }
+  })
+
+  # Heatmap: Others
   output$hmColSplitUI <- renderUI({
     selectInput(
       'hmColSplit',
@@ -3705,6 +3805,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # Heatmap: Color Scheme ####
   observe({
     # Palette preset coding refers:
     # https://stackoverflow.com/a/52552008/13676674
@@ -3770,58 +3871,138 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # Heatmap: Final run ####
   observeEvent(input$plotHeatmap, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      withBusyIndicatorServer("plotHeatmap", {
-        hmAddLabel <- list(cell = FALSE, gene = FALSE)
-        if(!is.null(input$hmAddLabel)){
-          if("1" %in% input$hmAddLabel){
-            if(input$hmAddCellLabel == "Default cell IDs"){
-              hmAddLabel$cell <- TRUE
-            } else {
-              hmAddLabel$cell <- input$hmAddCellLabel
-            }
+      # Move all plotting process into alert callback, thus auto-re-render can
+      # be avoided while tuning parameters.
+      shinyalert(
+        title = "Confirm",
+        text = "Large dataset might take time to rerun. Are you sure with the parameters?",
+        type = "warning",
+        showCancelButton = TRUE,
+        confirmButtonText = "Plot",
+        cancelButtonText = "Check Once More",
+        callbackR = function(x){
+          if(isTRUE(x)){
+            withBusyIndicatorServer("plotHeatmap", {
+              if(!is.null(input$hmCellAnn)){
+                cellAnnColor <- list()
+                for(i in input$hmCellAnn){
+                  uniqs <- as.vector(unique(colData(vals$counts)[[i]]))
+                  if(length(uniqs) <= 12){
+                    cellAnnColor[[i]] <- vector()
+                    for(j in uniqs){
+                      inputId <- paste0('hmcol', i, j)
+                      cellAnnColor[[i]] <- c(cellAnnColor[[i]], input[[inputId]])
+                    }
+                    names(cellAnnColor[[i]]) <- uniqs
+                  } else {
+                    if(is.numeric(colData(vals$counts)[[i]])){
+                      if(input[[paste0('hmcol', i, 'type')]] == 'Continuous'){
+                        cFun <- circlize::colorRamp2(
+                          c(min(colData(vals$counts)[[i]]),
+                            max(colData(vals$counts)[[i]])),
+                          c(input[[paste0('hmcol', i, 'Low')]],
+                            input[[paste0('hmcol', i, 'High')]])
+                        )
+                        cellAnnColor[[i]] <- cFun
+                      } else {
+                        c <- distinctColors(length(uniqs))
+                        names(c) <- uniqs
+                        cellAnnColor[[i]] <- c
+                      }
+                    }
+                  }
+                }
+              } else {
+                cellAnnColor <- NULL
+              }
+              if(!is.null(input$hmGeneAnn)){
+                geneAnnColor <- list()
+                for(i in input$hmGeneAnn){
+                  uniqs <- as.vector(unique(rowData(vals$counts)[[i]]))
+                  if(length(uniqs) <= 12){
+                    geneAnnColor[[i]] <- vector()
+                    for(j in uniqs){
+                      inputId <- paste0('hmrow', i, j)
+                      geneAnnColor[[i]] <- c(geneAnnColor[[i]], input[[inputId]])
+                    }
+                    names(geneAnnColor[[i]]) <- uniqs
+                  } else {
+                    if(is.numeric(rowData(vals$counts)[[i]])){
+                      if(input[[paste0('hmrow', i, 'type')]] == 'Continuous'){
+                        cFun <- circlize::colorRamp2(
+                          c(min(rowData(vals$counts)[[i]]),
+                            max(rowData(vals$counts)[[i]])),
+                          c(input[[paste0('hmrow', i, 'Low')]],
+                            input[[paste0('hmrow', i, 'High')]])
+                        )
+                        geneAnnColor[[i]] <- cFun
+                      } else {
+                        c <- distinctColors(length(uniqs))
+                        names(c) <- uniqs
+                        geneAnnColor[[i]] <- c
+                      }
+                    }
+                  }
+                }
+              } else {
+                geneAnnColor <- NULL
+              }
+              hmAddLabel <- list(cell = FALSE, gene = FALSE)
+              if(!is.null(input$hmAddLabel)){
+                if("1" %in% input$hmAddLabel){
+                  if(input$hmAddCellLabel == "Default cell IDs"){
+                    hmAddLabel$cell <- TRUE
+                  } else {
+                    hmAddLabel$cell <- input$hmAddCellLabel
+                  }
+                }
+                if("2" %in% input$hmAddLabel){
+                  if(input$hmAddGeneLabel == "Default feature IDs"){
+                    hmAddLabel$gene <- TRUE
+                  } else {
+                    hmAddLabel$gene <- input$hmAddGeneLabel
+                  }
+                }
+              }
+              hmShowDendro <- c(FALSE, FALSE)
+              hmShowDendro[as.numeric(input$hmShowDendro)] <- TRUE
+              if(is.null(input$hmRowSplit)){
+                hmRowSplit <- NULL
+              } else {
+                hmRowSplit <- input$hmRowSplit
+              }
+              if(is.null(input$hmColSplit)){
+                hmColSplit <- NULL
+              } else {
+                hmColSplit <- input$hmColSplit
+              }
+              trim <- input$hmTrim
+              cs <- circlize::colorRamp2(
+                c(trim[1], mean(trim), trim[2]),
+                c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh)
+              )
+              output$Heatmap <- renderPlot({
+                plotSCEHeatmap(
+                  inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
+                  featureIndex = input$hmGeneColTable_rows_selected,
+                  cellIndex = input$hmCellColTable_rows_selected,
+                  rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
+                  rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
+                  rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
+                  rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
+                  scale = input$hmScale, trim = trim,
+                  featureAnnotationColor = geneAnnColor, cellAnnotationColor = cellAnnColor
+                )
+              })
+            })
           }
-          if("2" %in% input$hmAddLabel){
-            if(input$hmAddGeneLabel == "Default feature IDs"){
-              hmAddLabel$gene <- TRUE
-            } else {
-              hmAddLabel$gene <- input$hmAddGeneLabel
-            }
-          }
         }
-        hmShowDendro <- c(FALSE, FALSE)
-        hmShowDendro[as.numeric(input$hmShowDendro)] <- TRUE
-        if(is.null(input$hmRowSplit)){
-          hmRowSplit <- NULL
-        } else {
-          hmRowSplit <- input$hmRowSplit
-        }
-        if(is.null(input$hmColSplit)){
-          hmColSplit <- NULL
-        } else {
-          hmColSplit <- input$hmColSplit
-        }
-        trim <- input$hmTrim
-        cs <- circlize::colorRamp2(
-          c(trim[1], mean(trim), trim[2]),
-          c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh)
-        )
-        output$Heatmap <- renderPlot({
-          plotSCEHeatmap(
-            inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
-            featureIndex = input$hmGeneColTable_rows_selected,
-            cellIndex = input$hmCellColTable_rows_selected,
-            rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
-            rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
-            rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
-            rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
-            scale = input$hmScale, trim = trim
-          )
-        })
-      })
+      )
     }
   })
 
@@ -5023,6 +5204,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  ## MAST - apply calculation ####
   runMASTfromShiny <- function(){
     withBusyIndicatorServer("runMAST", {
       if(input$mastCondMethod == 1){
@@ -5065,7 +5247,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "mastResSel", choices = allResName)
     })
   }
-  ## MAST - apply calculation ####
+
   observeEvent(input$runMAST, {
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
