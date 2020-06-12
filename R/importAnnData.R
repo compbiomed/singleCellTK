@@ -8,22 +8,22 @@
   }
   anndata <- ad$read_h5ad(anndata_file)
   
-  counts_matrix <- t((py_to_r(anndata$X)))
+  counts_matrix <- t((reticulate::py_to_r(anndata$X)))
   if (isTRUE(delayedArray)) {
     counts_matrix <- DelayedArray::DelayedArray(counts_matrix)
   }
   
-  sce_rowdata <- S4Vectors::DataFrame(py_to_r(anndata$var))
-  sce_coldata <- S4Vectors::DataFrame(py_to_r(anndata$obs))
+  sce_rowdata <- S4Vectors::DataFrame(reticulate::py_to_r(anndata$var))
+  sce_coldata <- S4Vectors::DataFrame(reticulate::py_to_r(anndata$obs))
   sce <- SingleCellExperiment(list(counts = counts_matrix),
                               rowData = sce_rowdata,
                               colData = sce_coldata)
   colnames(sce) <- paste0(sampleName,"_",colnames(sce))
   
-  multidim_observations <- py_to_r(anndata$obsm_keys())
+  multidim_observations <- reticulate::py_to_r(anndata$obsm_keys())
   for(obsm_name in multidim_observations){
     tryCatch({
-      reducedDims(sce)[[obsm_name]] <- py_to_r(anndata$obsm[obsm_name])
+      reducedDims(sce)[[obsm_name]] <- reticulate::py_to_r(anndata$obsm[obsm_name])
     }, error = function(x){
       error_message <- paste0("Warning: unable to add '",uns_name,"' from .obsm AnnData slot to SCE metadata. Skipping. ")
       message(error_message)
@@ -31,10 +31,10 @@
     
   }
   
-  unstructured_data <- py_to_r(anndata$uns_keys())
+  unstructured_data <- reticulate::py_to_r(anndata$uns_keys())
   for(uns_name in unstructured_data){
     tryCatch({
-      metadata(sce)[[uns_name]] <- py_to_r(anndata$uns[uns_name])
+      metadata(sce)[[uns_name]] <- reticulate::py_to_r(anndata$uns[uns_name])
     }, error = function(x){
       error_message <- paste0("Warning: unable to add unstructured data (.uns slot): '",uns_name,"' to SCE metadata. Skipping. ")
       message(error_message)
