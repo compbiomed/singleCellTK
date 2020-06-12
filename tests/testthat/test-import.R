@@ -52,3 +52,9 @@ test_that(desc = "Testing importOptimus", {
                        samples = "Optimus_20x1000")
   expect_true(validObject(sce))
 }) 
+
+test_that(desc = "Testing importAnnData", {
+  sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
+                       sampleNames = 'pbmc3k')
+  expect_true(validObject(sce))
+})
