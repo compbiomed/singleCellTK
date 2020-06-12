@@ -55,6 +55,9 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     cells2 <- colnames(inSCE)[ix2]
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -121,6 +124,9 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     cells2 <- colnames(inSCE)[ix2]
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -346,6 +352,9 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 thresholdGenes <- function(inSCE, useAssay="logcounts"){
     # data preparation
     expres <- SummarizedExperiment::assay(inSCE, useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     fdata <- data.frame(Gene = rownames(expres))
     rownames(fdata) <- fdata$Gene
     SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
