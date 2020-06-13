@@ -2928,7 +2928,7 @@ shinyServer(function(input, output, session) {
     }else{
       pltVars$groupby <- NULL
     }
-    if (input$checkbinning == TRUE){
+    if (input$checkColorbinning == TRUE){
       pltVars$bin <- input$adjustColorbinning
     }else{
       pltVars$bin <- NULL
