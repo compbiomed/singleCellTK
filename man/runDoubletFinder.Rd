@@ -51,7 +51,7 @@ Uses doubletFinder to determine cells within the dataset
 }
 \examples{
 \dontrun{
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 sce <- runDoubletFinder(sce)
 }
 }
