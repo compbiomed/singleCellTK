@@ -2937,29 +2937,34 @@ shinyServer(function(input, output, session) {
     if(input$viewertabs == "reducedDims Plot"){
       if(input$TypeSelect_Colorby == "Pick a Color"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-          xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby)
+          xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
+          transparency = input$adjustalpha, dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
-          groupBy = pltVars$groupby, bin = pltVars$bin)
+          groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
+          dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
-          colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin)
+          colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin,
+          transparency = input$adjustalpha, dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
         a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
           useAssay = input$AdvancedMethodSelect_Yaxis, groupby = pltVars$groupby,
-          feature = input$GeneSelect_Assays_Yaxis)
+          feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
+          dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
-          coldata = input$AnnotationSelect_Yaxis, groupby = pltVars$groupby)
+          coldata = input$AnnotationSelect_Yaxis, groupby = pltVars$groupby,
+          transparency = input$adjustalpha, dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
@@ -2967,28 +2972,31 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
+            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
+            transparency = input$adjustalpha, dotSize = input$adjustsize)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
-            box = TRUE, groupby = pltVars$groupby)
+            box = TRUE, groupby = pltVars$groupby, transparency = input$adjustalpha,
+            dotSize = input$adjustsize)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
       }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby)
+            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
+            transparency = input$adjustalpha, dotSize = input$adjustsize)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
-            box = FALSE, groupby = pltVars$groupby)
+            box = FALSE, groupby = pltVars$groupby, transparency = input$adjustalpha,
+            dotSize = input$adjustsize)
           ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
         }
       }
-
     }
 
     #}else if(input$viewertabs == "Scatter Plot"){
