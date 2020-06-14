@@ -2989,24 +2989,24 @@ shinyServer(function(input, output, session) {
         }
       }
 
-    }else if(input$viewertabs == "Scatter Plot"){
-      if(input$TypeSelect_Colorby == "Expression Assays"){
-        a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
-          feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
-          annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
-          title = input$adjusttitle, bin = pltVars$bin)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-        a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
-          annotation = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
-          legendTitle = legendname, title = input$adjusttitle, bin = pltVars$bin)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-      }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-
-      }else if(input$TypeSelect_Colorby == "Pick a Color"){
-
-      }
     }
+
+    #}else if(input$viewertabs == "Scatter Plot"){
+    #  if(input$TypeSelect_Colorby == "Expression Assays"){
+    #    a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
+    #      feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
+    #      annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
+    #      title = input$adjusttitle, bin = pltVars$bin)
+    #    ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
+    #  }else if(input$TypeSelect_Colorby == "Cell Annotation"){
+    #    a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
+    #      annotation = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
+    #      legendTitle = legendname, title = input$adjusttitle, bin = pltVars$bin)
+    #    ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
+    #  }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
+    #  }else if(input$TypeSelect_Colorby == "Pick a Color"){
+    #  }
+    #}
   })#Cellviewer_end
   output$scatter <- renderPlotly({cellviewer()})
   #
