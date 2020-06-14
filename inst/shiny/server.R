@@ -3861,31 +3861,36 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("Srt3IntRun", {
-        saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
-        vals$counts <- runSeurat3Integration(vals$counts,
-          useAssay = input$batchCorrAssay,
-          batch = input$batchCorrVar,
-          assayName = saveassayname,
-          nAnchors = input$Srt3IntNAnch
-        )
-        # According to input nAnchor, corrected matrix can be an "assay" or a
-        # "reducedDim". Here I temprorily make a condition basing on how Seurat
-        # performs empirically.
-        if(input$Srt3IntNAnch == nrow(vals$counts)){
-          # Usually in this condition, seurat returns a full-sized assay
-          vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-          updateAssayInputs()
-        } else if(input$Srt3IntNAnch == nrow(vals$counts)){
-          # Under this condition, seurat usually returns a reduced matrix of
-          # <= nAnchor dimensions.
-          vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
-          updateReddimInputs()
-        }
-        shinyalert::shinyalert('Success!', 'Seurat3 Integration completed.',
-          type = 'success')
+        
+        vals$counts <- seuratIntegration(vals$counts, batch = input$batchCorrVar)
+        vals$batchResAssay <- "seuratIntegratedData"
         vals$batchCorrStatus <- "Seurat3 Integration Complete"
-      }
-      )
+        
+      #   saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
+      #   vals$counts <- runSeurat3Integration(vals$counts,
+      #     useAssay = input$batchCorrAssay,
+      #     batch = input$batchCorrVar,
+      #     assayName = saveassayname,
+      #     nAnchors = input$Srt3IntNAnch
+      #   )
+      #   # According to input nAnchor, corrected matrix can be an "assay" or a
+      #   # "reducedDim". Here I temprorily make a condition basing on how Seurat
+      #   # performs empirically.
+      #   if(input$Srt3IntNAnch == nrow(vals$counts)){
+      #     # Usually in this condition, seurat returns a full-sized assay
+      #     vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+      #     updateAssayInputs()
+      #   } else if(input$Srt3IntNAnch == nrow(vals$counts)){
+      #     # Under this condition, seurat usually returns a reduced matrix of
+      #     # <= nAnchor dimensions.
+      #     vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+      #     updateReddimInputs()
+      #   }
+      #   shinyalert::shinyalert('Success!', 'Seurat3 Integration completed.',
+      #     type = 'success')
+      #   vals$batchCorrStatus <- "Seurat3 Integration Complete"
+       }
+       )
     }
   })
 
@@ -5751,46 +5756,64 @@ shinyServer(function(input, output, session) {
   })
 
 
-  #Disable tabs (THIS PART NEEDS REFACTORING)
+  #Disable tabs & reset collapse panel tabs
   observe({
     if(!is.null(vals$counts)){
+      #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
       shinyjs::enable(
         selector = "div[value='Normalize Data']")
+      
+      #Proceed only if sce object has metadata slot
       if(!is.null(vals$counts@metadata)){
+        
+        #Proceed only if sce object has seurat object stored in metadata slot
         if(!is.null(vals$counts@metadata$seurat)){
+          
+          #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
           if(!"seuratScaledData" %in% assayNames(vals$counts)){
             updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
             shinyjs::disable(selector = "div[value='Highly Variable Genes']")
           }
+          
+          #If variableFeatures have been removed from sce object, reset HVG tab and reset/lock next tab
           if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
             updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
             shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
           }
+          
+          #Proceed if reduction slot is present in seurat object in metadata slot
           if("reductions" %in% slotNames(vals$counts@metadata$seurat$obj)){
+            
+            #If PCA and ICA both removed from sce object, reset DR tab and reset/lock next tab
             if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
               updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
               shinyjs::disable(selector = "div[value='tSNE/UMAP']")
             }
+            
+            #If TSNE and UMAP both removed from sce object, reset tSNE/UMAP tab and reset/lock next tab
             if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
               updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
               shinyjs::disable(selector = "div[value='Clustering']")
             }
+            
+            #If seurat cluster information removed from sce object, reset Clustering tab
             if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
             }
           }
-
         }
-
       }
     }
     else{
+      #If no data uploaded in data tab, disabled all tabs and plots.
+      
+      #Disable tabs
       shinyjs::disable(
         selector = "div[value='Normalize Data']")
       shinyjs::disable(
@@ -5805,7 +5828,8 @@ shinyServer(function(input, output, session) {
         selector = "div[value='Clustering']")
       shinyjs::disable(
         selector = "div[value='Scale Data']")
-
+      
+      #Disable plots inside PCA subtab 
       shinyjs::disable(
         selector = ".seurat_pca_plots a[data-value='PCA Plot']")
       shinyjs::disable(
@@ -5815,11 +5839,13 @@ shinyServer(function(input, output, session) {
       shinyjs::disable(
         selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
 
+      #Disable plots inside ICA subtab
       shinyjs::disable(
         selector = ".seurat_ica_plots a[data-value='ICA Plot']")
       shinyjs::disable(
         selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
 
+      #Disabled plots inside Clustering tab
       shinyjs::disable(
         selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
       shinyjs::disable(
