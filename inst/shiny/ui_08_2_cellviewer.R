@@ -8,6 +8,7 @@ shinyPanelCellViewer <- fluidPage(
                       conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
                         checkboxInput("vlnboxcheck", "Violin plot", value = FALSE)),
                             # Section 1 - Assay Settings
+                      column(3,
                             actionButton("cv_button1", h4(strong("Select Coordinates")),style = "background: floralwhite"),
                             # open by default
                             tags$div(id = "cv_collapse1",
@@ -48,9 +49,11 @@ shinyPanelCellViewer <- fluidPage(
                             conditionalPanel(condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Yaxis"),
                                              selectizeInput("AnnotationSelect_Yaxis", label = h5("Select Annotation:"), choices = c(annotation_list)))
 
+                            )
   )
   ),
 
+                      column(3,
                             #-+-+-+-+-+-colorby part1###################################
                             tags$hr(),
                             #Select Color by Data
@@ -91,11 +94,11 @@ shinyPanelCellViewer <- fluidPage(
                                             conditionalPanel(condition =  "input.checkColorbinning == 1",
                                                              numericInput("adjustColorbinning", h5("Number of Bins:"), value = 2, min =2))
                                             #,
-
-
+                            )
                                             #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL)
                               )
 ),
+                      column(3,
                               #-+-+-+-+-+-group by###################################
                               tags$hr(),
                               shinyjs::useShinyjs(),
@@ -115,6 +118,7 @@ shinyPanelCellViewer <- fluidPage(
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
+                      )
              ),#sidebarPanel_end
              #-+-+-+-+-+-mainPanel#################################
              wellPanel(style = "background: floralwhite",
