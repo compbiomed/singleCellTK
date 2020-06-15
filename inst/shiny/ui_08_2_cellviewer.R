@@ -103,7 +103,8 @@ shinyPanelCellViewer <- fluidPage(
                               actionButton("cv_button3", h4(strong("Group by")),style = "background: floralwhite"),
                               # open by default
                               tags$div(id = "cv_collapse3",
-                                       selectizeInput(inputId = "adjustgroupby", label = NULL, choices = c("None", annotation_list)),
+                                       selectizeInput(inputId = "adjustgroupby", label = NULL, choices = c("None", annotation_list))
+                                #,
                                        #conditionalPanel(condition = sprintf("input['%s'] != 'None'", "adjustgroupby"),
                                        #                radioButtons("SelectValueType",label = NULL,choices = c("Categorical", "Continuous")),
                                        #                conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectValueType"),
