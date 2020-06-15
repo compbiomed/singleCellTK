@@ -6,6 +6,7 @@
 \usage{
 .ggScatter(
   inSCE,
+  sample = NULL,
   colorBy = NULL,
   shape = NULL,
   reducedDimName,

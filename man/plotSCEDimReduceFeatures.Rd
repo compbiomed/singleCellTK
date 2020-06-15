@@ -6,6 +6,7 @@
 \usage{
 plotSCEDimReduceFeatures(
   inSCE,
+  sample = NULL,
   feature,
   shape = NULL,
   reducedDimName,
@@ -27,6 +28,8 @@ plotSCEDimReduceFeatures(
 \arguments{
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{feature}{name of feature stored in assay of singleCellExperiment
 object. Plot will be colored based on feature value.}
