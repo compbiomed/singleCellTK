@@ -24,8 +24,8 @@ A  function to generate .html Rmarkdown report containing the visualizations of 
 }
 \examples{
 \donttest{
-data(sceQCExample, package = "singleCellTK")
-sceQCExample <- runCellQC(sceQCExample)
-reportCellQC(inSCE = sceQCExample)
+data(scExample, package = "singleCellTK")
+sce <- runCellQC(sce)
+reportCellQC(inSCE = sce)
 }
 }
