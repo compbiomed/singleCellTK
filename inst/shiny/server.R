@@ -45,7 +45,9 @@ shinyServer(function(input, output, session) {
                        "BrBG" = c("#0c7068", "#f4f4f4", "#995d12"),
                        "Blues" = c("#0b559f", "#6daed4", "#dae8f5"),
                        "Greens" = c("#04702F", "#69C2A1", "#E1F3F6")),
-    hmCSURL = NULL
+    hmCSURL = NULL,
+    hmTmpColData = NULL,
+    hmTmpRowData = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -3515,14 +3517,85 @@ shinyServer(function(input, output, session) {
   # Page 3.4: Heatmap ####
   #-----------------------------------------------------------------------------
 
-  observeEvent(input$hmHideDiv1, {
-    toggle("hmDiv1", anim = TRUE, animType = "slide")
+  # Heatmap: Import Analysis ####
+  output$hmImpMASTDEGUI <- renderUI({
+    if(!is.null(vals$counts)){
+      if("MAST" %in% names(metadata(vals$counts))){
+        analysis <- names(metadata(vals$counts)$MAST)
+        selectInput('hmImpMASTDEG', "Import results from analysis:",
+                    analysis)
+      } else {
+        p("MAST differential expression analysis not performed yet.")
+      }
+    }
   })
-  observeEvent(input$hmHideDiv2, {
-    toggle("hmDiv2", anim = TRUE, animType = "slide")
-  })
-  observeEvent(input$hmHideDiv3, {
-    toggle("hmDiv3", anim = TRUE, animType = "slide")
+
+  observeEvent(input$hmImportRun, {
+    if(!is.null(vals$counts)){
+      if(!is.null(input$hmImport) &&
+         input$hmImport == "MAST DEG"){
+        if(!is.null(input$hmImpMASTDEG)){
+          result <- metadata(vals$counts)$MAST[[input$hmImpMASTDEG]]
+          useAssay <- result$useAssay
+          updateSelectInput(session, "hmAssay", selected = useAssay)
+          # Cell side
+          vals$hmTmpColData <- data.frame(row.names = seq_along(colnames(vals$counts)))
+          idx <- rep(NA, ncol(vals$counts))
+          idx[result$select$ix1] <- result$groupNames[1]
+          idx[result$select$ix2] <- result$groupNames[2]
+          conditionColName <- paste('MAST', input$hmImpMASTDEG, "condition",
+                                    sep = '_')
+          vals$hmTmpColData[[conditionColName]] <- factor(idx, levels = result$groupNames)
+          DT::selectRows(hmCellColTable_proxy, which(!is.na(idx)))
+          #selectInput('hmCellAnn', 'Add cell annotation',
+          #            c(classes, names(vals$hmTmpColData)), multiple = TRUE,
+          #            selected = names(vals$hmTmpColData))
+          updateSelectInput(
+            session, 'hmCellAnn',
+            choices = c(names(colData(vals$counts)), conditionColName),
+            selected = conditionColName
+          )
+          updateSelectInput(
+            session, 'hmColSplit',
+            choices = conditionColName,
+            selected = conditionColName
+          )
+          # Gene side
+          updateTabsetPanel(session, 'hmSubsetTSP', 'hmSubsetGeneTP')
+          updateTabsetPanel(session, 'hmAnnTSP', 'hmAnnGeneTP')
+          vals$hmTmpRowData <- data.frame(row.names = rownames(vals$counts))
+          deg <- result$result
+          logFCColName <- paste("MAST", input$hmTmpMASTDEG, "Log2FC",
+                                sep = '_')
+          FDRColName <- paste("MAST", input$hmTmpMASTDEG, "FDR",
+                              sep = '_')
+          vals$hmTmpRowData[deg$Gene, logFCColName] <- deg$Log2_FC
+          vals$hmTmpRowData[deg$Gene, FDRColName] <- deg$FDR
+          regColName <- paste("MAST", input$hmTmpMASTDEG, "regulation",
+                              sep = '_')
+          degUp <- deg[deg$Log2_FC > 0,]
+          degDown <- deg[deg$Log2_FC < 0,]
+          vals$hmTmpRowData[degUp$Gene, regColName] <- "up"
+          vals$hmTmpRowData[degDown$Gene, regColName] <- "down"
+          vals$hmTmpRowData[[regColName]] <- factor(vals$hmTmpRowData[[regColName]], levels = c('up', 'down'))
+          rownames(vals$hmTmpRowData) <- seq_along(rownames(vals$counts))
+          DT::selectRows(hmGeneColTable_proxy, which(rownames(vals$counts) %in% deg$Gene))
+          #selectInput('hmGeneAnn', 'Add feature annotation',
+          #            c(classes, names(vals$hmTmpRowData)), multiple = TRUE,
+          #            selected = names(vals$hmTmpRowData))
+          updateSelectInput(
+            session, 'hmGeneAnn',
+            choices = c(names(rowData(vals$counts)), names(vals$hmTmpRowData)),
+            selected = names(vals$hmTmpRowData)
+          )
+          updateSelectInput(
+            session, 'hmRowSplit',
+            choices = names(vals$hmTmpRowData),
+            selected = regColName
+          )
+        }
+      }
+    }
   })
   # Heatmap: Subsetting ####
   # Cell Selection
@@ -3531,10 +3604,22 @@ shinyServer(function(input, output, session) {
       df <- as.data.frame(colData(vals$counts))
       rownames(df) <- NULL
       df$Row_Names <- colnames(vals$counts)
-      df[,c("Row_Names", input$hmCellCol), drop=FALSE]
+      selected <- df[,c("Row_Names", input$hmCellCol), drop=FALSE]
+      if(!is.null(vals$hmTmpColData) && ncol(vals$hmTmpColData) > 0){
+        selected <- cbind(selected, vals$hmTmpColData)
+      }
+      if(!is.null(input$hmCellColTable_rows_selected)){
+        DT::datatable(
+          selected,
+          filter = 'top',
+          selection = list(mode = 'multiple',
+                           selected = input$hmCellColTable_rows_selected)
+        )
+      } else {
+        DT::datatable(selected, filter = 'top')
+      }
     }
-  }, filter = "top", server = TRUE
-  )
+  }, server = TRUE)
   hmCellColTable_proxy <- DT::dataTableProxy("hmCellColTable")
 
   observeEvent(input$hmCellColTable_addAll, {
@@ -3607,10 +3692,22 @@ shinyServer(function(input, output, session) {
       df <- as.data.frame(rowData(vals$counts))
       rownames(df) <- NULL
       df$Row_Names <- rownames(vals$counts)
-      df[,c("Row_Names", input$hmGeneCol), drop=FALSE]
+      selected <- df[,c("Row_Names", input$hmGeneCol), drop=FALSE]
+      if(!is.null(vals$hmTmpRowData) && ncol(vals$hmTmpRowData) > 0){
+        selected <- cbind(selected, vals$hmTmpRowData)
+      }
+      if(!is.null(input$hmGeneColTable_rows_selected)){
+        DT::datatable(
+          selected,
+          filter = 'top',
+          selection = list(mode = 'multiple',
+                           selected = input$hmGeneColTable_rows_selected)
+        )
+      } else {
+        DT::datatable(selected, filter = 'top')
+      }
     }
-  }, filter = "top", server = TRUE
-  )
+  }, server = TRUE)
   hmGeneColTable_proxy <- DT::dataTableProxy("hmGeneColTable")
 
   observeEvent(input$hmGeneColTable_addAll, {
@@ -3680,6 +3777,24 @@ shinyServer(function(input, output, session) {
 
   # Heatmap: Annotation color assignment ####
 
+  output$hmCellAnnUI <- renderUI({
+    if(!is.null(vals$counts)){
+      classes <- names(colData(vals$counts))
+      selectInput('hmCellAnn', 'Add cell annotation',
+                  c(classes, names(vals$hmTmpColData)), multiple = TRUE,
+                  selected = names(vals$hmTmpColData))
+    }
+  })
+
+  output$hmGeneAnnUI <- renderUI({
+    if(!is.null(vals$counts)){
+      classes <- names(rowData(vals$counts))
+      selectInput('hmGeneAnn', 'Add feature annotation',
+                  c(classes, names(vals$hmTmpRowData)), multiple = TRUE,
+                  selected = names(vals$hmTmpRowData))
+    }
+  })
+
   hmAnnAllColors <- reactiveValues(
     col = NULL,
     row = NULL
@@ -3693,9 +3808,19 @@ shinyServer(function(input, output, session) {
 
   generateAnnColAssUI <- function(colname, axis){
     if(axis == "row"){
-      data <- as.vector(rowData(vals$counts)[[colname]])
+      if(!is.null(vals$hmTmpRowData)){
+        rowDatas <- cbind(rowData(vals$counts), vals$hmTmpRowData)
+      } else {
+        rowDatas <- rowData(vals$counts)
+      }
+      data <- as.vector(rowDatas[[colname]])
     } else if(axis == 'col'){
-      data <- as.vector(colData(vals$counts)[[colname]])
+      if(!is.null(vals$hmTmpColData)){
+        colDatas <- cbind(colData(vals$counts), vals$hmTmpColData)
+      } else {
+        colDatas <- colData(vals$counts)
+      }
+      data <- as.vector(colDatas[[colname]])
     }
     nUniq <- length(as.vector(unique(data)))
     if(nUniq > 12){
@@ -3740,6 +3865,7 @@ shinyServer(function(input, output, session) {
       }
     } else if(nUniq >= 1 && nUniq <= 12){
       cats <- as.vector(unique(data))
+      cats[is.na(cats)] <- "NA"
       fluidRow(style = "padding-left:20px;",
         h4(colname),
         lapply(seq_along(cats), function(i) {
@@ -3776,7 +3902,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Heatmap: Others
+  # Heatmap: Others ####
   output$hmColSplitUI <- renderUI({
     selectInput(
       'hmColSplit',
@@ -3786,6 +3912,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$hmRowSplitUI <- renderUI({
+
     selectInput(
       'hmRowSplit',
       "Split rows (feature) by (Leave this for not splitting)",
@@ -3888,10 +4015,18 @@ shinyServer(function(input, output, session) {
         callbackR = function(x){
           if(isTRUE(x)){
             withBusyIndicatorServer("plotHeatmap", {
+              tmpSCE <- vals$counts
+              if(!is.null(vals$hmTmpRowData)){
+                rowData(tmpSCE) <- cbind(rowData(tmpSCE), vals$hmTmpRowData)
+              }
+              if(!is.null(vals$hmTmpColData)){
+                colData(tmpSCE) <- cbind(colData(tmpSCE), vals$hmTmpColData)
+              }
               if(!is.null(input$hmCellAnn)){
                 cellAnnColor <- list()
                 for(i in input$hmCellAnn){
-                  uniqs <- as.vector(unique(colData(vals$counts)[[i]]))
+                  uniqs <- as.vector(unique(colData(tmpSCE)[[i]]))
+                  uniqs[is.na(uniqs)] <- 'NA'
                   if(length(uniqs) <= 12){
                     cellAnnColor[[i]] <- vector()
                     for(j in uniqs){
@@ -3900,11 +4035,11 @@ shinyServer(function(input, output, session) {
                     }
                     names(cellAnnColor[[i]]) <- uniqs
                   } else {
-                    if(is.numeric(colData(vals$counts)[[i]])){
+                    if(is.numeric(colData(tmpSCE)[[i]])){
                       if(input[[paste0('hmcol', i, 'type')]] == 'Continuous'){
                         cFun <- circlize::colorRamp2(
-                          c(min(colData(vals$counts)[[i]]),
-                            max(colData(vals$counts)[[i]])),
+                          c(min(colData(tmpSCE)[[i]]),
+                            max(colData(tmpSCE)[[i]])),
                           c(input[[paste0('hmcol', i, 'Low')]],
                             input[[paste0('hmcol', i, 'High')]])
                         )
@@ -3923,7 +4058,7 @@ shinyServer(function(input, output, session) {
               if(!is.null(input$hmGeneAnn)){
                 geneAnnColor <- list()
                 for(i in input$hmGeneAnn){
-                  uniqs <- as.vector(unique(rowData(vals$counts)[[i]]))
+                  uniqs <- as.vector(unique(rowData(tmpSCE)[[i]]))
                   if(length(uniqs) <= 12){
                     geneAnnColor[[i]] <- vector()
                     for(j in uniqs){
@@ -3932,11 +4067,11 @@ shinyServer(function(input, output, session) {
                     }
                     names(geneAnnColor[[i]]) <- uniqs
                   } else {
-                    if(is.numeric(rowData(vals$counts)[[i]])){
+                    if(is.numeric(rowData(tmpSCE)[[i]])){
                       if(input[[paste0('hmrow', i, 'type')]] == 'Continuous'){
                         cFun <- circlize::colorRamp2(
-                          c(min(rowData(vals$counts)[[i]]),
-                            max(rowData(vals$counts)[[i]])),
+                          c(min(rowData(tmpSCE)[[i]]),
+                            max(rowData(tmpSCE)[[i]])),
                           c(input[[paste0('hmrow', i, 'Low')]],
                             input[[paste0('hmrow', i, 'High')]])
                         )
@@ -3986,16 +4121,21 @@ shinyServer(function(input, output, session) {
                 c(trim[1], mean(trim), trim[2]),
                 c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh)
               )
+              useAssay <- input$hmAssay
+              cellIndex <- input$hmCellColTable_rows_selected
+              featureIndex <- input$hmGeneColTable_rows_selected
+              rowDataName <- input$hmGeneAnn
+              colDataName <- input$hmCellAnn
+              scale <- input$hmScale
               output$Heatmap <- renderPlot({
                 plotSCEHeatmap(
-                  inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
-                  featureIndex = input$hmGeneColTable_rows_selected,
-                  cellIndex = input$hmCellColTable_rows_selected,
-                  rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
+                  inSCE = tmpSCE, useAssay = useAssay, colorScheme = cs,
+                  featureIndex = featureIndex, cellIndex = cellIndex,
+                  rowDataName = rowDataName, colDataName = colDataName,
                   rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
                   rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
                   rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
-                  scale = input$hmScale, trim = trim,
+                  scale = scale, trim = trim,
                   featureAnnotationColor = geneAnnColor, cellAnnotationColor = cellAnnColor
                 )
               })
