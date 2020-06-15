@@ -126,6 +126,7 @@ source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
+source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 
@@ -192,7 +193,8 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
-                 tabPanel("Cell Viewer", shinyPanelCellViewer)),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer),
+                 tabPanel("Heatmap", shinyPanelHeatmap)),
       footer = includeHTML("www/footer.html"),
       fluidRow(
         column(12, id = "consoleDiv",

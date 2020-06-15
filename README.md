@@ -39,6 +39,10 @@ the following version from this repository:
 devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
 ```
 
+If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
+
+![](/exec/32bit-R.png)
+
 #### Troubleshooting Installation
 
 For the majority of users, the commands above will install the latest version

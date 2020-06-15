@@ -36,7 +36,7 @@ This function is a wrapper function for \link[scran]{doubletCells}.
  \link[SummarizedExperiment]{colData} of \code{inSCE}.
 }
 \examples{
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runDoubletCells(sce)
 }

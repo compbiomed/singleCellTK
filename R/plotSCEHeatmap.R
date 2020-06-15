@@ -347,7 +347,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
     }
 
     # Extract
-    mat <- SummarizedExperiment::assay(inSCE, useAssay)
+    mat <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
     ## rowData info
     rowDataExtract <- .extractSCEAnnotation(inSCE, 'row', rowDataName)
     rowDataColor <- dataAnnotationColor(inSCE, 'row')

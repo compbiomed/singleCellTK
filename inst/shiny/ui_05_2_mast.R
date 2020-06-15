@@ -190,10 +190,10 @@ shinyPanelMASTDE <- fluidPage(
               selectInput("mastHMrowData", "Additional feature annotation",
                           choices = featureChoice, multiple = TRUE),
               selectInput("mastHMSplitCol", "Split columns by", multiple = TRUE,
-                          choices = c('None', 'condition', clusterChoice),
+                          choices = c('condition', clusterChoice),
                           selected = 'condition'),
               selectInput("mastHMSplitRow", "Split rows by", multiple = TRUE,
-                          choices = c('None', 'regulation', featureChoice),
+                          choices = c('regulation', featureChoice),
                           selected = 'regulation')
             ),
             mainPanel(
