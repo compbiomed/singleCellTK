@@ -141,6 +141,6 @@ shinyPanelCellViewer <- fluidPage(
                                 )
              ))
         )#fluidrow_end
-           # )#well_end
+      )#well_end
   )#tag_end
 )#page_end
