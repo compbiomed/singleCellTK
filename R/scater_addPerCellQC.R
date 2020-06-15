@@ -28,7 +28,8 @@ runPerCellQC <- function(inSCE,
 ) {
 
   message(paste0(date(), " ... Running 'perCellQCMetrics'"))
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   ## Add gene sets in 'geneSetCollection' to 'geneSetList', if available
   original.length <- length(geneSetList)

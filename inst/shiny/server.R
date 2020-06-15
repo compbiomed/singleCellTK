@@ -4,7 +4,6 @@ options(useFancyQuotes = FALSE)
 options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   # library(fs)
@@ -26,6 +25,7 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
+    mastFMRCbin = 0,
     diffexheatmapplot = NULL,
     diffexBmName = NULL,
     celdaMod = NULL,
@@ -39,7 +39,13 @@ shinyServer(function(input, output, session) {
     dendrogram = NULL,
     pcX = NULL,
     pcY = NULL,
-    showAssayDetails = FALSE
+    showAssayDetails = FALSE,
+    hmCSPresets = list("RWB" = c("red", "white", "blue"),
+                       "RdBu_r" = c("#b92732", "#f7f6f6", "#2971b1"),
+                       "BrBG" = c("#0c7068", "#f4f4f4", "#995d12"),
+                       "Blues" = c("#0b559f", "#6daed4", "#dae8f5"),
+                       "Greens" = c("#04702F", "#69C2A1", "#E1F3F6")),
+    hmCSURL = NULL
   )
 
   #reactive list to store names of results given by the user.
@@ -79,6 +85,15 @@ shinyServer(function(input, output, session) {
                       choices = c(pdataOptions))
     updateSelectInput(session, "hurdlecondition",
                       choices = pdataOptions)
+    updateSelectInput(session, "mastHMcolData",
+                      choices = pdataOptions)
+    updateSelectInput(session, "mastHMSplitCol",
+                      choices = c('condition', pdataOptions),
+                      selected = 'condition')
+    updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
+    updateSelectInput(session, "mastFMHMcolData",
+                      choices = pdataOptions)
+    updateSelectInput(session, "hmCellAnn", choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
                       choices = pdataOptions)
     updateSelectInput(session, "selectReadDepthCondition",
@@ -91,6 +106,12 @@ shinyServer(function(input, output, session) {
                       choices = c("none", pdataOptions))
     updateSelectInput(session, "visCondn",
                       choices = c("none", pdataOptions))
+    updateSelectInput(session, "hmCellCol",
+                      choices = pdataOptions)
+    updateSelectInput(session, "hmCellTextBy",
+                      choices = c("Row Names", pdataOptions))
+    updateSelectInput(session, 'hmAddCellLabel',
+                      choices = c("Default cell IDs", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -104,8 +125,23 @@ shinyServer(function(input, output, session) {
   }
 
   updateFeatureAnnots <- function(){
+    selectRowData <- colnames(rowData(vals$counts))
     updateSelectInput(session, "filteredFeature",
-                      choices = c("none", colnames(rowData(vals$counts))))
+                      choices = c("none", selectRowData))
+    updateSelectInput(session, "mastHMrowData",
+                      choices = selectRowData)
+    updateSelectInput(session, "mastHMSplitRow",
+                      choices = c('regulation', selectRowData),
+                      selected = 'regulation')
+    updateSelectInput(session, "mastFMHMrowData",
+                      choices = selectRowData)
+    updateSelectInput(session, "hmGeneCol",
+                      choices = selectRowData)
+    updateSelectInput(session, "hmGeneTextBy",
+                      choices = c("Row Names", selectRowData))
+    updateSelectInput(session, 'hmGeneAnn', choices = selectRowData)
+    updateSelectInput(session, 'hmAddGeneLabel',
+                      choices = c("Default feature IDs", selectRowData))
   }
 
   updateNumSamples <- function(){
@@ -134,6 +170,8 @@ shinyServer(function(input, output, session) {
                       choices = c("", vals$batchResAssay))
     updateSelectInput(session, "diffexAssay", choices = currassays)
     updateSelectInput(session, "mastAssay", choices = currassays)
+    updateSelectInput(session, "mastFMAssay", choices = currassays)
+    updateSelectInput(session, "mastFMHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
@@ -153,6 +191,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
+    updateSelectInput(session, "hmAssay", choices = currassays)
   }
 
   updateReddimInputs <- function(){
@@ -897,6 +936,7 @@ shinyServer(function(input, output, session) {
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
+        updateFeatureAnnots()
         updateNumSamples()
         updateAssayInputs()
         updateGeneNames()
@@ -2949,6 +2989,319 @@ shinyServer(function(input, output, session) {
   #-+-+-+-+-+-cellviewer prepare done: plot#####################
   ###plotly_after_reactive
 
+  #-----------------------------------------------------------------------------
+  # Page 3.4: Heatmap ####
+  #-----------------------------------------------------------------------------
+
+  observeEvent(input$hmHideDiv1, {
+    toggle("hmDiv1", anim = TRUE, animType = "slide")
+  })
+  observeEvent(input$hmHideDiv2, {
+    toggle("hmDiv2", anim = TRUE, animType = "slide")
+  })
+  observeEvent(input$hmHideDiv3, {
+    toggle("hmDiv3", anim = TRUE, animType = "slide")
+  })
+  # Cell Selection
+  output$hmCellColTable <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      df <- as.data.frame(colData(vals$counts))
+      rownames(df) <- NULL
+      df$Row_Names <- colnames(vals$counts)
+      df[,c("Row_Names", input$hmCellCol), drop=FALSE]
+    }
+  }, filter = "top", server = TRUE
+  )
+  hmCellColTable_proxy <- DT::dataTableProxy("hmCellColTable")
+
+  observeEvent(input$hmCellColTable_addAll, {
+    DT::selectRows(hmCellColTable_proxy,
+                   sort(unique(c(input$hmCellColTable_rows_selected,
+                                 input$hmCellColTable_rows_all))))
+  })
+
+  observeEvent(input$hmCellColTable_clear, {
+    DT::selectRows(hmCellColTable_proxy, NULL)
+  })
+
+  output$hmCellNEnteredUI <- renderUI({
+    inputList <- str_trim(scan(text = input$hmCellText,
+                               sep='\n', what = 'character', quiet = TRUE))
+    uniqInput <- unique(inputList)
+    nInput <- length(uniqInput)
+    if(!is.null(vals$counts) && nInput > 0){
+      if(!is.null(input$hmCellTextBy) && input$hmCellTextBy == 'Row Names'){
+        BY <- NULL
+      } else {
+        BY <- input$hmCellTextBy
+      }
+      matched <- retrieveSCEIndex(vals$counts, uniqInput, 'cell',
+                                  by = BY, exactMatch = input$hmCellTextEM,
+                                  firstMatch = input$hmCellTextFM)
+      nMatched <- length(matched)
+      print(matched)
+    } else {
+      nMatched <- 0
+    }
+
+    p(paste0(nInput, " unique input, ", nMatched, "matched."))
+  })
+
+  observeEvent(input$hmCellAddFromText, {
+    if(!is.null(vals$counts)){
+      inputList <- str_trim(scan(text = input$hmCellText,
+                                 sep='\n', what = 'character', quiet = TRUE))
+      uniqInput <- unique(inputList)
+      if(length(uniqInput) > 0){
+        if(!is.null(input$hmCellTextBy) && input$hmCellTextBy == 'Row Names'){
+          BY <- NULL
+        } else {
+          BY <- input$hmCellTextBy
+        }
+        newIdx <- retrieveSCEIndex(vals$counts, uniqInput, 'cell',
+                                   by = BY, exactMatch = input$hmCellTextEM,
+                                   firstMatch = input$hmCellTextFM)
+        DT::selectRows(hmCellColTable_proxy,
+                       sort(unique(c(input$hmCellColTable_rows_selected,
+                                     newIdx))))
+      }
+    }
+  })
+
+  output$hmCellSumUI <- renderUI({
+    nCell <- length(input$hmCellColTable_rows_selected)
+    if(nCell == 0){
+      p("No cells selected, going to use them all", style = 'margin-top: 5px;')
+    } else {
+      p(paste0("Totally ", nCell, " cells selected."),
+        style = 'margin-top: 5px;')
+    }
+  })
+
+  # Gene Selection
+  output$hmGeneColTable <- DT::renderDataTable({
+    if(!is.null(vals$counts)){
+      df <- as.data.frame(rowData(vals$counts))
+      rownames(df) <- NULL
+      df$Row_Names <- rownames(vals$counts)
+      df[,c("Row_Names", input$hmGeneCol), drop=FALSE]
+    }
+  }, filter = "top", server = TRUE
+  )
+  hmGeneColTable_proxy <- DT::dataTableProxy("hmGeneColTable")
+
+  observeEvent(input$hmGeneColTable_addAll, {
+    DT::selectRows(hmGeneColTable_proxy,
+                   sort(unique(c(input$hmGeneColTable_rows_selected,
+                                 input$hmGeneColTable_rows_all))))
+  })
+
+  observeEvent(input$hmGeneColTable_clear, {
+    DT::selectRows(hmGeneColTable_proxy, NULL)
+  })
+
+  output$hmGeneNEnteredUI <- renderUI({
+    inputList <- str_trim(scan(text = input$hmGeneText,
+                               sep='\n', what = 'character', quiet = TRUE))
+    uniqInput <- unique(inputList)
+    nInput <- length(uniqInput)
+    if(!is.null(vals$counts) && nInput > 0){
+      if(!is.null(input$hmGeneTextBy) && input$hmGeneTextBy == 'Row Names'){
+        BY <- NULL
+      } else {
+        BY <- input$hmGeneTextBy
+      }
+      matched <- retrieveSCEIndex(vals$counts, uniqInput, 'gene',
+                                  by = BY, exactMatch = input$hmGeneTextEM,
+                                  firstMatch = input$hmGeneTextFM)
+      nMatched <- length(matched)
+      print(matched)
+    } else {
+      nMatched <- 0
+    }
+
+    p(paste0(nInput, " unique input, ", nMatched, "matched."))
+  })
+
+  observeEvent(input$hmGeneAddFromText, {
+    if(!is.null(vals$counts)){
+      inputList <- str_trim(scan(text = input$hmGeneText,
+                                 sep='\n', what = 'character', quiet = TRUE))
+      uniqInput <- unique(inputList)
+      if(length(uniqInput) > 0){
+        if(!is.null(input$hmGeneTextBy) && input$hmGeneTextBy == 'Row Names'){
+          BY <- NULL
+        } else {
+          BY <- input$hmGeneTextBy
+        }
+        newIdx <- retrieveSCEIndex(vals$counts, uniqInput, 'gene',
+                                   by = BY, exactMatch = input$hmGeneTextEM,
+                                   firstMatch = input$hmGeneTextFM)
+        DT::selectRows(hmGeneColTable_proxy,
+                       sort(unique(c(input$hmGeneColTable_rows_selected,
+                                     newIdx))))
+      }
+    }
+  })
+
+  output$hmGeneSumUI <- renderUI({
+    nGene <- length(input$hmGeneColTable_rows_selected)
+    if(nGene == 0){
+      p("No features selected, going to use them all",
+        style = 'margin-top: 5px;')
+    } else {
+      p(paste0("Totally ", nGene, " features selected."),
+        style = 'margin-top: 5px;')
+    }
+  })
+
+  output$hmColSplitUI <- renderUI({
+    selectInput(
+      'hmColSplit',
+      "Split columns (cell) by (Leave this for not splitting)",
+      input$hmCellAnn, multiple = TRUE
+    )
+  })
+
+  output$hmRowSplitUI <- renderUI({
+    selectInput(
+      'hmRowSplit',
+      "Split rows (feature) by (Leave this for not splitting)",
+      input$hmGeneAnn, multiple = TRUE
+    )
+  })
+
+  output$hmTrimUI <- renderUI({
+    if(!is.null(vals$counts)){
+      # This might be slow when running with real data
+      mat <- as.matrix(assay(vals$counts, input$hmAssay))
+      if(isTRUE(input$hmScale)){
+        mat <- as.matrix(computeZScore(mat))
+      }
+      sliderInput("hmTrim",  "Trim", min = floor(min(mat)),
+                  max = ceiling(max(mat)), value = c(-2, 2), step = 0.5)
+    }
+  })
+
+  observe({
+    # Palette preset coding refers:
+    # https://stackoverflow.com/a/52552008/13676674
+    vals$hmCSURL <- session$registerDataObj(
+      name = 'uniquename1',
+      data = vals$hmCSPresets,
+      filter = function(data, req) {
+        query <- parseQueryString(req$QUERY_STRING)
+        palette <- query$palette
+        cols <- data[[palette]]
+        image <- tempfile()
+        tryCatch({
+          png(image, width = 75, height = 25, bg = 'transparent')
+          par(mar = c(0, 0, 0, 0))
+          barplot(rep(1, length(cols)), col = cols, axes = F)
+        },finally = dev.off())
+
+        shiny:::httpResponse(
+          200, 'image/png',readBin(image, 'raw', file.info(image)[,'size'])
+        )
+      }
+    )
+
+    updateSelectizeInput(
+      session, 'hmCSPalette', server = TRUE,
+      choices = names(vals$hmCSPresets),
+      selected = "RWB",
+      options = list(
+        render = I(
+          sprintf(
+            "{
+            option: function(item, escape) {
+            return '<div><img width=\"75\" height=\"25\" ' +
+            'src=\"%s&palette=' + escape(item.value) + '\" />' +
+            escape(item.value) + '</div>';
+            }
+          }",
+            vals$hmCSURL
+          )
+        )
+      )
+    )
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      highColor <- vals$hmCSPresets[[input$hmCSPalette]][1]
+      colourpicker::updateColourInput(session, 'hmCSHigh', value = highColor)
+    }
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      mediumColor <- vals$hmCSPresets[[input$hmCSPalette]][2]
+      colourpicker::updateColourInput(session, 'hmCSMedium', value = mediumColor)
+    }
+  })
+
+  observe({
+    if(!input$hmCSPalette == ""){
+      lowColor <- vals$hmCSPresets[[input$hmCSPalette]][3]
+      colourpicker::updateColourInput(session, 'hmCSLow', value = lowColor)
+    }
+  })
+
+  observeEvent(input$plotHeatmap, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("plotHeatmap", {
+        hmAddLabel <- list(cell = FALSE, gene = FALSE)
+        if(!is.null(input$hmAddLabel)){
+          if("1" %in% input$hmAddLabel){
+            if(input$hmAddCellLabel == "Default cell IDs"){
+              hmAddLabel$cell <- TRUE
+            } else {
+              hmAddLabel$cell <- input$hmAddCellLabel
+            }
+          }
+          if("2" %in% input$hmAddLabel){
+            if(input$hmAddGeneLabel == "Default feature IDs"){
+              hmAddLabel$gene <- TRUE
+            } else {
+              hmAddLabel$gene <- input$hmAddGeneLabel
+            }
+          }
+        }
+        hmShowDendro <- c(FALSE, FALSE)
+        hmShowDendro[as.numeric(input$hmShowDendro)] <- TRUE
+        if(is.null(input$hmRowSplit)){
+          hmRowSplit <- NULL
+        } else {
+          hmRowSplit <- input$hmRowSplit
+        }
+        if(is.null(input$hmColSplit)){
+          hmColSplit <- NULL
+        } else {
+          hmColSplit <- input$hmColSplit
+        }
+        trim <- input$hmTrim
+        cs <- circlize::colorRamp2(
+          c(trim[1], mean(trim), trim[2]),
+          c(input$hmCSLow, input$hmCSMedium, input$hmCSHigh)
+        )
+        output$Heatmap <- renderPlot({
+          plotSCEHeatmap(
+            inSCE = vals$counts, useAssay = input$hmAssay, colorScheme = cs,
+            featureIndex = input$hmGeneColTable_rows_selected,
+            cellIndex = input$hmCellColTable_rows_selected,
+            rowDataName = input$hmGeneAnn, colDataName = input$hmCellAnn,
+            rowSplitBy = hmRowSplit, colSplitBy = hmColSplit,
+            rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
+            rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
+            scale = input$hmScale, trim = trim
+          )
+        })
+      })
+    }
+  })
 
   #-----------------------------------------------------------------------------
   # Page 4: Batch Correction ####
@@ -2989,7 +3342,7 @@ shinyServer(function(input, output, session) {
         input$batchCheckVar != "None" &
         input$batchCheckVar != input$batchCheckCond){
       if(input$batchCheckCond == "None"){
-        shapeBy <- "No Shape"
+        shapeBy <- NULL
       } else {
         shapeBy <- input$batchCheckCond
       }
@@ -3000,7 +3353,7 @@ shinyServer(function(input, output, session) {
         updateReddimInputs()
       }
       plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-        shape = shapeBy, conditionClass = 'character', reducedDimName = pcaName,
+        shape = shapeBy, reducedDimName = pcaName,
         title = paste0("Original ", input$batchCheckOrigAssay, " PCA"))
     }
   })
@@ -3023,11 +3376,6 @@ shinyServer(function(input, output, session) {
           plotSCEBatchFeatureMean(inSCE = vals$counts,
             useReddim = input$batchCheckCorrReddim,
             batch = input$batchCheckVar)
-          #plotBatchVariance(inSCE = vals$counts,
-          #  useAssay = input$batchCheckCorrReddim,
-          #  batch = input$batchCheckVar,
-          #  condition = input$batchCheckCond,
-          #  pcInput = TRUE)
         }
       }
     }
@@ -3038,7 +3386,7 @@ shinyServer(function(input, output, session) {
         input$batchCheckVar != "None" &
         input$batchCheckVar != input$batchCheckCond){
       if(input$batchCheckCond == "None"){
-        shapeBy = "No Shape"
+        shapeBy = NULL
       } else {
         shapeBy = input$batchCheckCond
       }
@@ -3061,7 +3409,6 @@ shinyServer(function(input, output, session) {
           updateReddimInputs()
           plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
             shape = shapeBy, reducedDimName = pcaName,
-            conditionClass = "character",
             title = paste0(input$batchCheckCorrAssay, " corrected"))
         }
       }
@@ -3413,7 +3760,11 @@ shinyServer(function(input, output, session) {
                 || input$hvgMethodFS == "mean.var.plot"
                 || input$hvgMethodFS == "dispersion") {
                 withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-                    vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+                    #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+                    vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                                 useAssay = input$assaySelectFS,
+                                                 hvgMethod = input$hvgMethodFS,
+                                                 hvgNumber = as.numeric(input$hvgNoFeaturesFS))
                     if (input$hvgMethodFS == "vst") {
                         vals$vfplot <- ggplot() + geom_point(aes(x = log(rowData(vals$counts)$seurat_variableFeatures_vst_mean), y = rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized)) + geom_point(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesFS)))), colour = "red") + geom_label(aes(x = log(subset(rowData(vals$counts)$seurat_variableFeatures_vst_mean, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), y = subset(rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized, rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS))), label = subset(rownames(vals$counts), rownames(vals$counts) %in% getTopHVG(inSCE = vals$counts, method = input$hvgMethodFS, n = as.numeric(input$hvgNoFeaturesViewFS)))), colour = "red", size = 2) + labs(x = "Mean", y = "Standardized Variance")
                     }
@@ -4045,7 +4396,7 @@ shinyServer(function(input, output, session) {
   ## condition 1 table operation vvvv
   output$mastC2G1Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      data.frame(colData(vals$counts)[,input$mastC2G1Col])
+      as.data.frame(colData(vals$counts))[,input$mastC2G1Col, drop=FALSE]
     }
   }, filter = "top", server = TRUE
   )
@@ -4069,7 +4420,7 @@ shinyServer(function(input, output, session) {
   ## condition 2 table operation vvvv
   output$mastC2G2Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      data.frame(colData(vals$counts)[,input$mastC2G2Col])
+      as.data.frame(colData(vals$counts))[,input$mastC2G2Col, drop=FALSE]
     }
   }, filter = "top", server = TRUE
   )
@@ -4095,7 +4446,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mastC3G1Cell)){
       if(!input$mastC3G1Cell == ""){
         cellList <- str_trim(scan(text = input$mastC3G1Cell,
-          sep='\n', what = 'character'))
+          sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -4112,7 +4463,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$mastC3G2Cell)){
       if(!input$mastC3G2Cell == ""){
         cellList <- str_trim(scan(text = input$mastC3G2Cell,
-          sep='\n', what = 'character'))
+          sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -4150,70 +4501,73 @@ shinyServer(function(input, output, session) {
       FALSE
     }
   })
-  observe({
-    if(mastNameIsDup()){
-      output$mastNameWarn <- renderUI({
-        span("Entered name is already there, will be overwritten!",
-          style = 'color:red;')
-      })
-    } else {
-      output$mastNameWarn <- renderUI({
-        span("")
-      })
-    }
-  })
+
+  runMASTfromShiny <- function(){
+    withBusyIndicatorServer("runMAST", {
+      if(input$mastCondMethod == 1){
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay, class = input$mastC1Class,
+                               classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
+                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+                               comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      } else if(input$mastCondMethod == 2){
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay,
+                               index1 = input$mastC2G1Table_rows_selected,
+                               index2 = input$mastC2G2Table_rows_selected,
+                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
+                               comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      } else {
+        g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
+                                    sep='\n', what = 'character'))
+        g1CellList <- sort(unique(g1CellList))
+        g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
+                                    sep='\n', what = 'character'))
+        g2CellList <- sort(unique(g2CellList))
+        vals$counts <- runMAST(inSCE = vals$counts,
+                               useAssay = input$mastAssay, index1 = g1CellList,
+                               index2 = g2CellList, groupName1 = input$mastG1Name,
+                               groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
+                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               log2fcThreshold = input$mastFCThresh,
+                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+      }
+      shinyalert::shinyalert("Success",
+                             text = "MAST Differential Expression completed.", type = "success")
+      allResName <- names(metadata(vals$counts)$MAST)
+      updateSelectInput(session, "mastResSel", choices = allResName)
+    })
+  }
   ## MAST - apply calculation ####
   observeEvent(input$runMAST, {
     if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      shinyalert("Error!", "Upload data first.", type = "error")
+    } else if(input$mastCompName == ""){
+      shinyalert("Error!", "Please enter differential expression analysis name.", type = "error")
     } else {
-      withBusyIndicatorServer("runMAST", {
-        if(input$mastCondMethod == 1){
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay, class = input$mastC1Class,
-            classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
-            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-            comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        } else if(input$mastCondMethod == 2){
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay,
-            index1 = input$mastC2G1Table_rows_selected,
-            index2 = input$mastC2G2Table_rows_selected,
-            groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-            comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        } else {
-          g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
-                                 sep='\n', what = 'character'))
-          g1CellList <- sort(unique(g1CellList))
-          g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
-                                 sep='\n', what = 'character'))
-          g2CellList <- sort(unique(g2CellList))
-          vals$counts <- runMAST(inSCE = vals$counts,
-            useAssay = input$mastAssay, index1 = g1CellList,
-            index2 = g2CellList, groupName1 = input$mastG1Name,
-            groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
-            useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
-            log2fcThreshold = input$mastFCThresh,
-            fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
-        }
-        shinyalert::shinyalert("Success",
-          text = "MAST Differential Expression completed.", type = "success")
-        allResName <- names(metadata(vals$counts)$MAST)
-        updateSelectInput(session, "mastResSel", choices = allResName)
-      })
+      allRes <- names(metadata(vals$counts)$MAST)
+      if(input$mastCompName %in% allRes){
+        shinyalert("Warning",
+                   "Entered differential experiment analysis name is already there.",
+                   "warning", showCancelButton = TRUE,
+                   confirmButtonText = "Overwrite",
+                   callbackR = function(x){if(isTRUE(x)){runMASTfromShiny()}})
+      } else {
+          runMASTfromShiny()
+      }
     }
   })
 
   output$mastResSelUI <- renderUI({
     if(!is.null(vals$counts)){
       res <- names(metadata(vals$counts)$MAST)
-      selectInput("mastResSel", "Select Result to Visualize", res)
+      selectInput("mastResSel", "Select Differential Expression Analysis", res)
     }
   })
 
@@ -4248,36 +4602,135 @@ shinyServer(function(input, output, session) {
       paste0("mastResult_", input$mastResSel, ".csv")
     },
     content = function(file) {
-      utils::write.csv(metadata(vals$counts)$MAST[[input$mastResSel]]$result,
-                       file)
+      fullTable <- metadata(vals$counts)$MAST[[input$mastResSel]]$result
+      filteredTable <- fullTable[input$mastresults_rows_all,]
+      utils::write.csv(filteredTable, file, row.names = FALSE)
     }
   )
+
+  output$mastVioTotalUI <- renderUI({
+    topN <- input$mastVioNrow * input$mastVioNcol
+    p(as.character(topN))
+  })
 
   output$hurdleviolin <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
       plotMASTViolin(inSCE = vals$counts, useResult = input$mastResSel,
-                     threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+                     threshP = input$mastVioUseThresh,
+                     nrow = input$mastVioNrow, ncol = input$mastVioNcol)
     }
+  })
+
+  output$mastRegTotalUI <- renderUI({
+    topN <- input$mastRegNrow * input$mastRegNcol
+    p(as.character(topN))
   })
 
   output$hurdlelm <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
       plotMASTRegression(inSCE = vals$counts, useResult = input$mastResSel,
-                         threshP = input$useAdaptThresh, nrow = 5, ncol = 6)
+                         threshP = input$mastRegUseThresh,
+                         nrow = input$mastRegNrow, ncol = input$mastRegNcol)
     }
   })
 
   output$hurdleHeatmap <- renderPlot({
     if(!is.null(input$mastResSel) &&
        !input$mastResSel == ""){
-      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel)
+      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel,
+        onlyPos = input$mastHMPosOnly, log2fcThreshold = input$mastHMFC,
+        fdrThreshold = input$mastHMFDR, rowDataName = input$mastHMrowData,
+        colDataName = input$mastHMcolData, colSplitBy = input$mastHMSplitCol,
+        rowSplitBy = input$mastHMSplitRow)
     }
   })
 
+  #-----------------------------------------------------------------------------
+  # Page 5.3: MAST - Find Marker ####
+  #-----------------------------------------------------------------------------
+  # MAST findMarker RUN ####
+  observeEvent(input$runMASTFM, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("runMASTFM", {
+        vals$counts <- findMarkerDiffExp(vals$counts,
+          useAssay = input$mastFMAssay, cluster = input$mastFMCluster,
+          log2fcThreshold = input$mastFMLogFC, fdrThreshold = input$mastFMFDR,
+          useThresh = input$mastFMUseThresh, freqExpressed = input$mastFMFreq)
+        shinyalert::shinyalert("Success", "MAST Find Marker completed.",
+                               "success")
+      })
+    }
+  })
+  # MAST findMarker ResultTable ####
+  output$mastFMResClusterUI <- renderUI({
+    if(!is.null(vals$counts) &&
+       !is.null(input$mastFMCluster) &&
+       'findMarker' %in% names(metadata(vals$counts))){
+      allCluster <- colData(vals$counts)[[input$mastFMCluster]]
+      allCluster <- sort(as.vector(unique(allCluster)))
+      checkboxGroupInput("mastFMResCluster", "View Results for Cluster",
+                         choices = c('All', allCluster), selected = 'All',
+                         inline = TRUE)
+    }
+  })
 
+  output$mastFMResTable <- DT::renderDataTable({
+    if(!is.null(vals$counts) &&
+       'findMarker' %in% names(metadata(vals$counts))){
+      fullTable <- metadata(vals$counts)$findMarker
+      if('All' %in% input$mastFMResCluster){
+        fullTable
+      } else {
+        fullTable[fullTable[[input$mastFMCluster]] %in% input$mastFMResCluster,]
+      }
+    }
+  }, filter = "top")
 
+  isMastFMResult <- reactive(!is.null(vals$counts) &&
+                             !is.null(metadata(vals$counts)$findMarker))
+  observe({
+    if (isMastFMResult()) {
+      shinyjs::enable("mastFMDownload")
+    } else {
+      shinyjs::disable("mastFMDownload")
+    }
+  })
+
+  output$mastFMDownload <- downloadHandler(
+    filename = function() {
+      paste0("mastMarkerResult_", input$mastFMCluster, ".csv")
+    },
+    content = function(file) {
+      fullTable <- metadata(vals$counts)$findMarker
+      filteredTable <- fullTable[input$mastFMResTable_rows_all,]
+      utils::write.csv(filteredTable, file, row.names = FALSE)
+    }
+  )
+
+  # MAST findMarker Heatmap ####
+  output$mastFMHMAssayUI <- renderUI({
+    if(!is.null(vals$counts)){
+      allAssay <- assayNames(vals$counts)
+      selectInput('mastFMHMAssay', "Assay to plot", allAssay,
+                  selected = input$mastFMAssay)
+    }
+  })
+
+  output$mastFMHeatmap <- renderPlot({
+    if(!is.null(vals$counts) &&
+       'findMarker' %in% names(metadata(vals$counts)) &&
+       !is.null(input$mastFMHMAssay)){
+      plotMarkerDiffExp(inSCE = vals$counts, useAssay = input$mastFMHMAssay,
+        orderBy = input$mastFMHMOrder, log2fcThreshold = input$mastFMHMFC,
+        fdrThreshold = input$mastFMHMFDR, decreasing = input$mastFMHMdec,
+        rowDataName = input$mastFMHMrowData, colDataName = input$mastFMHMcolData
+      )
+    }
+  })
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------
@@ -4654,329 +5107,524 @@ shinyServer(function(input, output, session) {
     # Page 8: Seurat Workflow
     #-----------------------------------------------------------------------------
 
-    #reactive values object to store all objects to be used in seurat workflow
-    seuratWorkflow <- reactiveValues()
+  #Perform normalization
+  observeEvent(input$normalize_button, {
+    req(vals$counts)
+    withProgress(message = "Normalizing", max = 1, value = 1, {
+      vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+                                         useAssay = input$seuratSelectNormalizationAssay,
+                                         normAssayName = "seuratNormData",
+                                         normalizationMethod = input$normalization_method,
+                                         scaleFactor = as.numeric(input$scale_factor))
+      updateAssayInputs()
+      vals$counts <- .seuratInvalidate(inSCE = vals$counts)
+    })
+    updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
+    shinyjs::enable(selector = "div[value='Scale Data']")
+    showNotification("Normalization Complete")
+  })
 
+  #Perform scaling
+  observeEvent(input$scale_button, {
+    req(vals$counts)
+    withProgress(message = "Scaling", max = 1, value = 1, {
+      vals$counts <- seuratScaleData(inSCE = vals$counts,
+                                     useAssay = "seuratNormData",
+                                     scaledAssayName = "seuratScaledData",
+                                     model = input$model.use,
+                                     scale = input$do.scale,
+                                     center = input$do.center,
+                                     scaleMax = input$scale.max)
+      updateAssayInputs()
+      vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
+    })
+    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
+    shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+    showNotification("Scale Complete")
+  })
 
-    #Perform normalization
-    observeEvent(input$normalize_button, {
-      if (!is.null(vals$counts)) {
-        withProgress(message = "Normalizing", max = 1, value = 1, {
-          vals$counts <- seuratNormalizeData(inSCE = vals$counts,
-                                             useAssay = input$seuratSelectNormalizationAssay,
-                                             normAssayName = "seuratNormData",
-                                             normalizationMethod = input$normalization_method,
-                                             scaleFactor = as.numeric(input$scale_factor))
-          updateAssayInputs()
-        })
-        updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
-        showNotification("Normalization Complete")
+  #Find HVG
+  observeEvent(input$find_hvg_button, {
+    req(vals$counts)
+    withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+      vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                   useAssay = "seuratScaledData",
+                                   hvgMethod = input$hvg_method,
+                                   hvgNumber = as.numeric(input$hvg_no_features))
+
+      vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
+    })
+    withProgress(message = "Plotting HVG", max = 1, value = 1, {
+      output$plot_hvg <- renderPlotly({
+        plotly::ggplotly(seuratPlotHVG(vals$counts))
+      })
+    })
+    updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
+    shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+    showNotification("Find HVG Complete")
+  })
+
+  #Display highly variable genes
+  output$hvg_output <- renderText({
+    if (!is.null(vals$counts)) {
+      if (!is.null(vals$counts@metadata$seurat$obj)) {
+        if (length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) > 0) {
+          .seuratGetVariableFeatures(vals$counts, input$hvg_no_features_view)
+        }
+      }
     }
-    })
+  })
 
-    #Perform scaling
-    observeEvent(input$scale_button, {
-        if (!is.null(vals$counts)) {
-            withProgress(message = "Scaling", max = 1, value = 1, {
-                vals$counts <- seuratScaleData(inSCE = vals$counts,
-                                               useAssay = "seuratNormData",
-                                               scaledAssayName = "seuratScaledData",
-                                               model = input$model.use,
-                                               scale = input$do.scale,
-                                               center = input$do.center,
-                                               scaleMax = input$scale.max)
-                updateAssayInputs()
-            })
-            updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
-            showNotification("Scale Complete")
-        }
-        else {
-            showNotification("Please perform normalization before scaling the data.", type = "error")
-        }
-    })
+  #Run PCA
+  observeEvent(input$run_pca_button, {
+    req(vals$counts)
+    withProgress(message = "Running PCA", max = 1, value = 1, {
+      vals$counts <- seuratPCA(inSCE = vals$counts,
+                               useAssay = "seuratScaledData",
+                               reducedDimName = "seuratPCA",
+                               nPCs = input$pca_no_components)
 
-    #Find HVG
-    observeEvent(input$find_hvg_button, {
-      if (!is.null(vals$counts)
-          && "seuratNormData" %in% assayNames(vals$counts)
-          && "seuratScaledData" %in% assayNames(vals$counts)) {
-        withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-          vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                       useAssay = "seuratScaledData",
-                                       hvgMethod = input$hvg_method,
-                                       hvgNumber = as.numeric(input$hvg_no_features))
+      vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
+      vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
+    })
+    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+      output$plot_pca <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                            useReduction = "pca",
+                            showLegend = FALSE))
+      })
+    })
+    if (input$pca_compute_elbow) {
+      withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+        updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = .computeSignificantPC(vals$counts))
+        output$plot_elbow_pca <- renderPlotly({
+          seuratElbowPlot(inSCE = vals$counts,
+                          significantPC = .computeSignificantPC(vals$counts))
         })
-        withProgress(message = "Plotting HVG", max = 1, value = 1, {
-          seuratWorkflow$plotObject$HVG <- seuratPlotHVG(vals$counts)
+        output$pca_significant_pc_output <- renderText({
+          .computeSignificantPC(vals$counts)
         })
-        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
-        showNotification("Find HVG Complete")
-      }
-      else if (!"seuratNormData" %in% assayNames(vals$counts)) {
-        showNotification("Please normalize data before computing highly variable genes.", type = "error")
-      }
-      else if (!"seuratScaledData" %in% assayNames(vals$counts)) {
-        showNotification("Please scale data before computing highly variable genes.", type = "error")
-      }
-      else {
-        showNotification("An error occurred while computing highly variable genes.", type = "error")
-      }
-    })
-
-    #Display highly variable genes
-    output$hvg_output <- renderText({
-      if (!is.null(vals$counts)) {
-        if (!is.null(vals$counts@metadata$seurat$obj)) {
-          if (length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) > 0) {
-            .seuratGetVariableFeatures(vals$counts, input$hvg_no_features_view)
-          }
-        }
-      }
-    })
-
-    #Run PCA
-    observeEvent(input$run_pca_button, {
-        req(vals$counts)
-        withProgress(message = "Running PCA", max = 1, value = 1, {
-        vals$counts <- seuratPCA(inSCE = vals$counts,
-                                                 useAssay = "seuratScaledData",
-                                                 reducedDimName = "seuratPCA",
-                                                 nPCs = input$pca_no_components)
-                        seuratWorkflow$numberOfReductionComponents$pca <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
-        })
-        withProgress(message = "Plotting PCA", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$PCA <- seuratReductionPlot(inSCE = vals$counts,
-                                                                             useReduction = "pca")
-        })
-        if (input$pca_compute_elbow) {
-          withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-                            seuratWorkflow$numberOfReductionComponents$significantPC <- .computeSignificantPC(vals$counts)
-                            seuratWorkflow$plotObject$Elbow <- seuratElbowPlot(inSCE = vals$counts,
-                                                                               significantPC = seuratWorkflow$numberOfReductionComponents$significantPC)
-          })
-        }
-        if (input$pca_compute_jackstraw) {
-          withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-                            vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
-                                                                  useAssay = "seuratScaledData",
-                                                                  dims = input$pca_no_components)
-                            seuratWorkflow$plotObject$JackStraw <- seuratJackStrawPlot(inSCE = vals$counts,
-                                                                                       dims = input$pca_no_components)
-          })
-        }
-        if (input$pca_compute_heatmap) {
-          withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-            seuratWorkflow$plotObject$HeatmapCompute <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                             useAssay = "seuratScaledData",
-                                                                             useReduction = "pca",
-                                                                             dims = input$pca_no_components,
-                                                                             combine = FALSE,
-                                                                             fast = FALSE)
-            updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getPCAComponentNames(seuratWorkflow$numberOfReductionComponents$pca))
-          })
-        }
-        addTooltip(session = session, id = "reduction_tsne_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-        addTooltip(session = session, id = "reduction_umap_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-        addTooltip(session = session, id = "reduction_clustering_count", paste("Maximum components available:", seuratWorkflow$numberOfReductionComponents$pca), placement = "bottom", trigger = "hover")
-        updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-        showNotification("PCA Complete")
-    })
-
-    #Run ICA
-    observeEvent(input$run_ica_button, {
-        req(vals$counts)
-        withProgress(message = "Running ICA", max = 1, value = 1, {
-          vals$counts <- seuratICA(inSCE = vals$counts,
-                                                 useAssay = "seuratScaledData",
-                                                 reducedDimName = "seuratICA",
-                                                 nics = input$ica_no_components)
-          seuratWorkflow$numberOfReductionComponents$ica <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
-        })
-        withProgress(message = "Plotting ICA", max = 1, value = 1, {
-          seuratWorkflow$plotObject$ICA <- seuratReductionPlot(inSCE = vals$counts,
-                                                                             useReduction = "ica")
-          })
-        updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
-        showNotification("ICA Complete")
-    })
-
-    #Find clusters
-    observeEvent(input$find_clusters_button, {
-      req(vals$counts)
-#      if (!is.null(vals$counts@metadata[["seurat"]])) {
-#        if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_clustering_method]])) {
-          withProgress(message = "Finding clusters", max = 1, value = 1, {
-            vals$counts <- seuratFindClusters(inSCE = vals$counts,
+      })
+    }
+    if (input$pca_compute_jackstraw) {
+      withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+        vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
-                                              useReduction = input$reduction_clustering_method,
-                                              dims = input$reduction_clustering_count,
-                                              algorithm = input$algorithm.use,
-                                              groupSingletons = input$group.singletons)
+                                              dims = input$pca_no_components)
+        output$plot_jackstraw_pca <- renderPlotly({
+          plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                              dims = input$pca_no_components))
+        })
+      })
+    }
+    if (input$pca_compute_heatmap) {
+      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        vals$counts@metadata$seurat$heatmap_pca <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                        useAssay = "seuratScaledData",
+                                                                        useReduction = "pca",
+                                                                        dims = input$pca_no_components,
+                                                                        nfeatures = input$pca_compute_heatmap_nfeatures,
+                                                                        combine = FALSE,
+                                                                        fast = FALSE)
+        output$plot_heatmap_pca <- renderPlot({
+          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+                            dims = input$pca_no_components,
+                            ncol = 2,
+                            labels = c("PC1", "PC2", "PC3", "PC4"))
+        })
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = .getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
+      })
+    }
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+
+    #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+    shinyjs::enable(
+      selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+
+    shinyjs::toggleState(
+      selector = ".seurat_pca_plots a[data-value='Elbow Plot']",
+      condition = input$pca_compute_elbow)
+
+    shinyjs::toggleState(
+      selector = ".seurat_pca_plots a[data-value='JackStraw Plot']",
+      condition = input$pca_compute_jackstraw)
+
+    shinyjs::toggleState(
+      selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
+      condition = input$pca_compute_heatmap)
+
+    shinyjs::enable(
+      selector = "div[value='tSNE/UMAP']")
+
+    showNotification("PCA Complete")
+  })
+
+  #Run ICA
+  observeEvent(input$run_ica_button, {
+    req(vals$counts)
+    withProgress(message = "Running ICA", max = 1, value = 1, {
+      vals$counts <- seuratICA(inSCE = vals$counts,
+                               useAssay = "seuratScaledData",
+                               nics = input$ica_no_components)
+
+      vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
+      vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
+    })
+    withProgress(message = "Plotting ICA", max = 1, value = 1, {
+      output$plot_ica <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                            useReduction = "ica",
+                            showLegend = FALSE))
+      })
+    })
+    if (input$ica_compute_heatmap) {
+      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        vals$counts@metadata$seurat$heatmap_ica <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                        useAssay = "seuratScaledData",
+                                                                        useReduction = "ica",
+                                                                        dims = input$ica_no_components,
+                                                                        nfeatures = input$ica_compute_heatmap_nfeatures,
+                                                                        combine = FALSE,
+                                                                        fast = FALSE)
+        output$plot_heatmap_ica <- renderPlot({
+          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+                            dims = input$ica_no_components,
+                            ncol = 2,
+                            labels = c("IC1", "IC2", "IC3", "IC4"))
+        })
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = .getComponentNames(vals$counts@metadata$seurat$count_ic, "IC"))
+      })
+    }
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+
+    #Enable/Disable ICA plot panels not selected for computation (Heatmap)
+    shinyjs::enable(
+      selector = ".seurat_ica_plots a[data-value='ICA Plot']")
+
+    shinyjs::toggleState(
+      selector = ".seurat_ica_plots a[data-value='Heatmap Plot']",
+      condition = input$ica_compute_heatmap)
+
+    shinyjs::enable(
+      selector = "div[value='tSNE/UMAP']")
+
+    showNotification("ICA Complete")
+  })
+
+  #Find clusters
+  observeEvent(input$find_clusters_button, {
+    req(vals$counts)
+    if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
+      withProgress(message = "Finding clusters", max = 1, value = 1, {
+        vals$counts <- seuratFindClusters(inSCE = vals$counts,
+                                          useAssay = "seuratScaledData",
+                                          useReduction = input$reduction_clustering_method,
+                                          dims = input$pca_significant_pc_slider,
+                                          algorithm = input$algorithm.use,
+                                          groupSingletons = input$group.singletons,
+                                          resolution = input$resolution_clustering)
+      })
+      updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
+      showNotification("Find Clusters Complete")
+
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
+        withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
+          output$plot_pca_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                useReduction = "pca",
+                                showLegend = TRUE))
           })
-          updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
-          showNotification("Find Clusters Complete")
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
+      }
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+        withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
+          output$plot_ica_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                useReduction = "ica",
+                                showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
+      }
 
-        #} else {
-        #  showNotification("Please compute PCA or ICA before processing clusters.", type = "error")
-        #}
-      #} else {
-      #  showNotification("Please normalize, scale, and perform dimensionality reduction on the data before computing UMAP", type = "error")
-      #}
-    })
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
+        withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
+          output$plot_tsne_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                 useReduction = "tsne",
+                                                 showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
+      }
 
-    #Run tSNE
-    observeEvent(input$run_tsne_button, {
-        req(vals$counts)
-#        if (!is.null(vals$counts@metadata[["seurat"]])) {
-#                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_tsne_method]])) {
-                    withProgress(message = "Running tSNE", max = 1, value = 1, {
-                        vals$counts <- seuratRunTSNE(inSCE = vals$counts,
-                                                     useReduction = input$reduction_tsne_method,
-                                                     reducedDimName = "seuratTSNE",
-                                                     dims = input$reduction_tsne_count)
-                    })
-                    withProgress(message = "Plotting tSNE", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$TSNE <- seuratReductionPlot(inSCE = vals$counts,
-                                                                              useReduction = "tsne")
-                    })
-                    updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
-                    showNotification("tSNE Complete")
-#                } else {
-#                    showNotification("Please compute PCA or ICA before runnibg tSNE.", type = "error")
-#                }
-#        }
-    })
+      if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+        withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
+          output$plot_umap_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                useReduction = "umap",
+                                showLegend = TRUE))
+          })
+        })
+        shinyjs::toggleState(
+          selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
+          condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
+      }
+    }
+    else{
+      showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
+    }
+  })
 
-    #Run UMAP
-    observeEvent(input$run_umap_button, {
-        req(vals$counts)
-#        if (!is.null(vals$counts@metadata[["seurat"]])) {
-#                if (!is.null(slot(vals$counts@metadata[["seurat"]], "reductions")[[input$reduction_umap_method]])) {
-                    withProgress(message = "Running UMAP", max = 1, value = 1, {
-                        vals$counts <- seuratRunUMAP(inSCE = vals$counts,
-                                                     useReduction = input$reduction_umap_method,
-                                                     reducedDimName = "seuratUMAP",
-                                                     dims = input$reduction_umap_count)
-                    })
-                    withProgress(message = "Plotting UMAP", max = 1, value = 1, {
-                        seuratWorkflow$plotObject$UMAP <- seuratReductionPlot(inSCE = vals$counts,
-                                                                              useReduction = "umap")
-                    })
-                    updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
-                    showNotification("UMAP Complete")
-#                } else {
-#                    showNotification("Please compute PCA or ICA before running UMAP.", type = "error")
-#                }
-#            }
-    })
+  #Update PCA/ICA message in clustering tab
+  output$display_message_clustering <- renderText({
+    if(input$reduction_clustering_method == "pca"){
+      if(input$pca_significant_pc_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+    else{
+      if(input$ica_significant_ic_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+  })
 
-    #Display the number of significant PC computed
-    output$pca_significant_pc_output <- renderText({
-        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
-            seuratWorkflow$numberOfReductionComponents$significantPC
-        }
-    })
+  #Run tSNE
+  observeEvent(input$run_tsne_button, {
+    req(vals$counts)
+    if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
+      withProgress(message = "Running tSNE", max = 1, value = 1, {
+        vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+                                     useReduction = input$reduction_tsne_method,
+                                     reducedDimName = "seuratTSNE",
+                                     dims = input$pca_significant_pc_slider,
+                                     perplexity = input$perplexity_tsne)
+        vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
+      })
+      withProgress(message = "Plotting tSNE", max = 1, value = 1, {
+        output$plot_tsne <- renderPlotly({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                              useReduction = "tsne",
+                              showLegend = FALSE))
+        })
+      })
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      shinyjs::enable(selector = "div[value='Clustering']")
 
-    #Update pca significant slider maximum value with total number of computed principal components
-    observe({
-        if (!is.null(seuratWorkflow$numberOfReductionComponents$pca)) {
-            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = seuratWorkflow$numberOfReductionComponents$pca)
-        }
-    })
+      showNotification("tSNE Complete")
+    }
+    else{
+      showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
+    }
+  })
 
-    #Update pca significant slider current value with computed significant PC value
-    observe({
-        if (!is.null(seuratWorkflow$numberOfReductionComponents$significantPC)) {
-            updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = seuratWorkflow$numberOfReductionComponents$significantPC)
-        }
-    })
 
-    #Draw HVG plot
-    output$plot_hvg <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$HVG)) {
-            seuratWorkflow$plotObject$HVG
-        }
-    })
+  #Update PCA/ICA message in tSNE tab
+  output$display_message_tsne <- renderText({
+    if(input$reduction_tsne_method == "pca"){
+      if(input$pca_significant_pc_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+    else{
+      if(input$ica_significant_ic_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+  })
 
-    #Draw PCA plot
-    output$plot_pca <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$PCA)) {
-            seuratWorkflow$plotObject$PCA
-        }
-    })
+  #Run UMAP
+  observeEvent(input$run_umap_button, {
+    req(vals$counts)
+    if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
+      withProgress(message = "Running UMAP", max = 1, value = 1, {
+        vals$counts <- seuratRunUMAP(inSCE = vals$counts,
+                                     useReduction = input$reduction_umap_method,
+                                     reducedDimName = "seuratUMAP",
+                                     dims = input$pca_significant_pc_slider,
+                                     minDist = input$min_dist_umap,
+                                     nNeighbors = input$n_neighbors_umap,
+                                     spread = input$spread_umap)
+        vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
+      })
+      withProgress(message = "Plotting UMAP", max = 1, value = 1, {
+        output$plot_umap <- renderPlotly({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                              useReduction = "umap",
+                              showLegend = FALSE))
+        })
+      })
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      shinyjs::enable(selector = "div[value='Clustering']")
+      showNotification("UMAP Complete")
+    }
+    else{
+      showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
+    }
+  })
 
-    #Draw Elbow (pca) plot
-    output$plot_elbow <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$Elbow)) {
-            seuratWorkflow$plotObject$Elbow
-        }
-    })
+  #Update PCA/ICA message in UMAP tab
+  output$display_message_umap <- renderText({
+    if(input$reduction_umap_method == "pca"){
+      if(input$pca_significant_pc_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+    else{ #ICA to do
+      if(input$ica_significant_ic_slider){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      }
+    }
+  })
 
-    #Draw Jackstraw (pca) plot
-    output$plot_jackstraw <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$JackStraw)) {
-            seuratWorkflow$plotObject$JackStraw
-        }
-    })
+  #Update pca significant slider maximum value with total number of computed principal components
+  observe({
+    req(vals$counts)
+    if (!is.null(vals$counts@metadata$seurat$count_pc)) {
+      updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = vals$counts@metadata$seurat$count_pc)
+    }
+  })
 
-    #Draw heatmap (pca) plot
-    output$plot_heatmap <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$Heatmap)) {
-            seuratWorkflow$plotObject$Heatmap
-        }
-    })
+  #Update ica significant slider maximum value with total number of computed independent components
+  observe({
+    req(vals$counts)
+    if (!is.null(vals$counts@metadata$seurat$count_ic)) {
+      updateSliderInput(session = session, inputId = "ica_significant_ic_slider", max = vals$counts@metadata$seurat$count_ic)
+    }
+  })
 
-    #Draw ICA plot
-    output$plot_ica <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$ICA)) {
-            seuratWorkflow$plotObject$ICA
-        }
-    })
+  #Update tsne, umap and clustering selected number of principal components input
+  observe({
+    if (input$reduction_umap_method == "pca") {
+      updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_slider)
+    }
+    else if (input$reduction_umap_method == "ica") {
+      updateTextInput(session = session, inputId = "reduction_umap_count", value = vals$counts@metadata$seurat$count_ic)
+    }
+    if (input$reduction_clustering_method == "pca") {
+      updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_slider)
+    }
+    else if (input$reduction_clustering_method == "ica") {
+      updateTextInput(session = session, inputId = "reduction_clustering_count", value = vals$counts@metadata$seurat$count_ic)
+    }
+    if (input$reduction_tsne_method == "pca") {
+      updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_slider)
+    }
+    else if (input$reduction_tsne_method == "ica") {
+      updateTextInput(session = session, inputId = "reduction_tsne_count", value = vals$counts@metadata$seurat$count_ic)
+    }
+  })
 
-    #Draw tSNE plot
-    output$plot_tsne <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$TSNE)) {
-            seuratWorkflow$plotObject$TSNE
-        }
-    })
+  #Customize heatmap (pca) with selected options
+  observeEvent(input$plot_heatmap_pca_button, {
+    if (!is.null(input$picker_dimheatmap_components_pca)) {
+      output$plot_heatmap_pca <- renderPlot({
+        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+                          dims = length(input$picker_dimheatmap_components_pca),
+                          ncol = input$slider_dimheatmap_pca,
+                          labels = input$picker_dimheatmap_components_pca)
+      })
+    }
+  })
 
-    #Draw UMAP plot
-    output$plot_umap <- renderPlot({
-        if (!is.null(seuratWorkflow$plotObject$UMAP)) {
-            seuratWorkflow$plotObject$UMAP
-        }
-    })
+  #Customize heatmap (ica) with selected options
+  observeEvent(input$plot_heatmap_ica_button, {
+    if (!is.null(input$picker_dimheatmap_components_ica)) {
+      output$plot_heatmap_ica <- renderPlot({
+        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+                          dims = length(input$picker_dimheatmap_components_ica),
+                          ncol = input$slider_dimheatmap_ica,
+                          labels = input$picker_dimheatmap_components_ica)
+      })
+    }
+  })
 
-    #Update tsne, umap and clustering selected number of principal components input
-    observe({
-        if (input$reduction_umap_method == "pca") {
-            updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_slider)
-        }
-        else if (input$reduction_umap_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_umap_count", value = seuratWorkflow$numberOfReductionComponents$ica)
-        }
-        if (input$reduction_clustering_method == "pca") {
-            updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_slider)
-        }
-        else if (input$reduction_clustering_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_clustering_count", value = seuratWorkflow$numberOfReductionComponents$ica)
-        }
-        if (input$reduction_tsne_method == "pca") {
-            updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_slider)
-        }
-        else if (input$reduction_tsne_method == "ica") {
-            updateTextInput(session = session, inputId = "reduction_tsne_count", value = seuratWorkflow$numberOfReductionComponents$ica)
-        }
-    })
 
-    #Customize heatmap (pca) with selected options
-    observeEvent(input$plot_heatmap_pca_button, {
-        if (!is.null(input$picker_dimheatmap_components_pca)) {
-            seuratWorkflow$plotObject$Heatmap <- seuratHeatmapPlot(plotObject = seuratWorkflow$plotObject$HeatmapCompute,
-                                                                   dims = length(input$picker_dimheatmap_components_pca),
-                                                                   ncol = input$slider_dimheatmap_pca,
-                                                                   labels = input$picker_dimheatmap_components_pca)
-        }
-    })
+  #Disable tabs (THIS PART NEEDS REFACTORING)
+  observe({
+    if(!is.null(vals$counts)){
+      shinyjs::enable(
+        selector = "div[value='Normalize Data']")
+      if(!is.null(vals$counts@metadata)){
+        if(!is.null(vals$counts@metadata$seurat)){
+          if(!"seuratScaledData" %in% assayNames(vals$counts)){
+            updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
+            updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
+            shinyjs::disable(selector = "div[value='Highly Variable Genes']")
+          }
+          if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
+            updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
+            updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+            shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
+          }
+          if("reductions" %in% slotNames(vals$counts@metadata$seurat$obj)){
+            if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
+               && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+              updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
+              shinyjs::disable(selector = "div[value='tSNE/UMAP']")
+            }
+            if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
+               && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
+              shinyjs::disable(selector = "div[value='Clustering']")
+            }
+            if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
+              updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
+            }
+          }
 
+        }
+
+      }
+    }
+    else{
+      shinyjs::disable(
+        selector = "div[value='Normalize Data']")
+      shinyjs::disable(
+        selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Highly Variable Genes']")
+      shinyjs::disable(
+        selector = "div[value='Dimensionality Reduction']")
+      shinyjs::disable(
+        selector = "div[value='tSNE/UMAP']")
+      shinyjs::disable(
+        selector = "div[value='Clustering']")
+      shinyjs::disable(
+        selector = "div[value='Scale Data']")
+
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='Elbow Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='JackStraw Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
+
+      shinyjs::disable(
+        selector = ".seurat_ica_plots a[data-value='ICA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
+
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='ICA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='tSNE Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
+    }
+  })
 })

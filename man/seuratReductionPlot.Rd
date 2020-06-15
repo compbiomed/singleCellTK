@@ -5,12 +5,18 @@
 \title{seuratReductionPlot
 Plots the selected dimensionality reduction method}
 \usage{
-seuratReductionPlot(inSCE, useReduction = c("pca", "ica", "tsne", "umap"))
+seuratReductionPlot(
+  inSCE,
+  useReduction = c("pca", "ica", "tsne", "umap"),
+  showLegend = FALSE
+)
 }
 \arguments{
 \item{inSCE}{(sce) object which has the selected dimensionality reduction algorithm already computed and stored}
 
 \item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
+
+\item{showLegend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
 }
 \value{
 plot object

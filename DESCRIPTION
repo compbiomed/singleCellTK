@@ -54,6 +54,7 @@ Imports:
     limma,
     MAST,
     Matrix,
+    mnormt,
     matrixStats,
     methods,
     multtest,
@@ -62,7 +63,7 @@ Imports:
     Rtsne,
     S4Vectors,
     scater,
-    scMerge,
+    scMerge (>= 1.2.0),
     scran,
     Seurat,
     shiny,
@@ -91,7 +92,7 @@ Imports:
     R.utils,
     zinbwave,
     V8,
-    scRNAseq,
+    scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
 	rmarkdown
@@ -109,6 +110,7 @@ Suggests:
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
+    rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input,
     campbio/celda@RELEASE_3_11

@@ -1,17 +1,17 @@
 # Helper/Wrapper Functions ---
 
-#' .getPCAComponentNames
-#' Creates a list of PC components to populate the picker for PC heatmap generation
-#' @param maxComponents number of components to return for the picker
+#' .getComponentNames
+#' Creates a list of PC/IC components to populate the picker for PC/IC heatmap generation
+#' @param maxComponents Number of components to return for the picker
+#' @param component Which component to use. Choices are \code{"PC"} or \code{"IC"}.
 #' @return componentNames list of component names (appended with "PC")
-.getPCAComponentNames <- function(maxComponents) {
-    componentNames <- list()
-    for (i in seq(maxComponents)) {
-        componentNames[i] <- paste0("PC", i)
-    }
-    return(componentNames)
+.getComponentNames <- function(maxComponents, component = c("PC", "IC")){
+  componentNames <- list()
+  for (i in seq(maxComponents)) {
+    componentNames[i] <- paste0(component, i)
+  }
+  return(componentNames)
 }
-
 
 #' .addSeuratToMetaDataSCE
 #' Adds the input seurat object to the metadata slot of the input sce object (after removing the data matrices)
@@ -27,7 +27,7 @@
 }
 
 #' .computeSignificantPC
-#' Computes the significant principal components from an input sce object (must containt pca slot) using stdev
+#' Computes the significant principal components from an input sce object (must contain pca slot) using stdev
 #' @param inSCE (sce) object with pca computed
 #' @return max_components a numerical value indicating how many number of components are considered significant
 .computeSignificantPC <- function(inSCE) {
@@ -182,7 +182,6 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL) {
   return(Seurat::JackStrawPlot(seuratObject, dims = 1:dims))
 }
 
-
 #' seuratPlotHVG
 #' Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes computations
@@ -197,11 +196,16 @@ seuratPlotHVG <- function(inSCE) {
 #' Plots the selected dimensionality reduction method
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
+#' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
 #' @return plot object
 #' @export
-seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap")) {
+seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
     seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+    if(showLegend){
+      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+    }else{
+      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
+    }
     if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
         plot$data$ident <- seuratObject@meta.data$seurat_clusters
     }
@@ -217,9 +221,10 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @param dims numeric value of how many components to use for computing clusters. Default \code{10}.
 #' @param algorithm selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use \code{louvain} for "original Louvain algorithm" and \code{multilevel} for "Louvain algorithm with multilevel refinement". Default \code{louvain}.
 #' @param groupSingletons boolean if singletons should be grouped together or not. Default \code{TRUE}.
+#' @param resolution Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.
 #' @return sceObject; updated sce object which now contains the computed clusters
 #' @export
-seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE) {
+seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8) {
     algorithm <- match.arg(algorithm)
     useReduction <- match.arg(useReduction)
     
@@ -233,7 +238,7 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
     } else if (algorithm == "SLM") {
         no_algorithm = 3
     }
-    seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons)
+    seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
     return(inSCE)
 }
@@ -244,14 +249,14 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
 #' @param useReduction selected reduction algorithm to use for computing tSNE. One of "pca" or "ica". Default \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Seurat tSNE Default \code{seuratTSNE}.
 #' @param dims Number of reduction components to use for tSNE computation. Default \code{10}.
+#' @param perplexity Adjust the preplexity tuneable parameter for the underlying tSNE call. Default \code{30}.
 #' @return Updated sce object with tSNE computations stored
 #' @export
-seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratTSNE", dims = 10) {
+seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratTSNE", dims = 10, perplexity = 30) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
-  seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction, dims = 1:dims)
+  seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction, dims = 1:dims, perplexity = perplexity)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
@@ -259,18 +264,27 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
   return(inSCE)
 }
 
+#RunUMAP(seurat, reduction = "pca", dims = 1:10, min.dist = 0.4, n.neighbors = 40, spread = 20)
 #' seuratRunUMAP
 #' Computes UMAP from the given sce object and stores the UMAP computations back into the sce object
 #' @param inSCE (sce) object on which to compute the UMAP
 #' @param useReduction Reduction to use for computing UMAP. One of "pca" or "ica". Default is \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Seurat UMAP Default \code{seuratUMAP}.
-#' @param dims numerical value of how many reduction components to use for UMAP computation. Default \code{10}.
+#' @param dims Numerical value of how many reduction components to use for UMAP computation. Default \code{10}.
+#' @param minDist Sets the \code{"min.dist"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.
+#' @param nNeighbors Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.
+#' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}. 
 #' @return Updated sce object with UMAP computations stored
 #' @export
-seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratUMAP", dims = 10) {
+seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30L, spread = 1) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
-  seuratObject <- Seurat::RunUMAP(seuratObject, reduction = useReduction, dims = 1:dims)
+  seuratObject <- Seurat::RunUMAP(seuratObject,
+                                  reduction = useReduction,
+                                  dims = 1:dims,
+                                  min.dist = minDist,
+                                  n.neighbors = nNeighbors,
+                                  spread = spread)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   
   temp <- seuratObject@reductions$umap@cell.embeddings
@@ -296,24 +310,18 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' Computes the plot object for elbow plot from the pca slot in the input sce object
 #' @param inSCE (sce) object from which to compute the elbow plot (pca should be computed)
 #' @param significantPC Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.
+#' @param reduction Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.
 #' @return plot object
 #' @export
-seuratElbowPlot <- function(inSCE, significantPC = NULL) {
+seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
     seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::ElbowPlot(seuratObject)
-    plot <- ggplot2::ggplot_build(plot)
-    if(!is.null(significantPC)) {
-      for (i in seq(significantPC)) {
-          plot$data[[1]]$shape[i] <- 16
-          plot$data[[1]]$colour[i] <- "red"
-          plot$data[[1]]$size[i] <- 3.5
-      }
-    }  
-    plot <- ggplot2::ggplot_gtable(plot)
-    plot <- ggplotify::as.ggplot(plot)
+    plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
+    if(!is.null(significantPC)){
+      plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
+      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point() 
+    }
     return(plot)
 }
-
 
 #' seuratComputeHeatmap
 #' Computes the heatmap plot object from the pca slot in the input sce object
@@ -348,8 +356,6 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
     componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
     return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
 }
-
-
 
 #' .updateAssaySCE
 #' Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object
@@ -473,7 +479,11 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
 #' @param inSCE Input SingleCellExperiment object
 #' @param normAssayName Name for the output data assay. Default \code{"SCTCounts"}.
 #' @param useAssay Name for the input data assay. Default \code{"counts"}.
+#' @return inSCE Updated SingleCellExperiment object containing the transformed data
 #' @export
+#' @examples
+#' data(sce_chcl, package = "scds")
+#' sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
 seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts") {
     seuratObject <- base::suppressWarnings(Seurat::SCTransform(
                             object = convertSCEToSeurat(inSCE, useAssay),
@@ -483,6 +493,45 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
                             verbose = TRUE))
     inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
     return(inSCE)
+}
+
+
+#' .seuratInvalidate
+#' Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
+#' @param inSCE Input SingleCellExperiment object to remove Seurat data from.
+#' @param scaleData Remove scaled data from seurat. Default \code{TRUE}.
+#' @param varFeatures Remove variable features from seurat. Default \code{TRUE}. 
+#' @param PCA Remove PCA from seurat. Default \code{TRUE}.
+#' @param ICA Remove ICS from seurat. Default \code{TRUE}.
+#' @param tSNE Remove tSNE from seurat. Default \code{TRUE}.
+#' @param UMAP Remove UMAP from seurat. Default \code{TRUE}.
+#' @param clusters Remove clusters from seurat. Default \code{TRUE}.
+#' @return inSCE Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
+.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
+  if(scaleData){
+    assay(inSCE, "seuratScaledData") <- NULL
+  }
+  if(varFeatures){
+    methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- logical()
+    methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features <- data.frame(row.names = make.unique(gsub("_", "-", rownames(inSCE))))
+    inSCE@metadata$seurat$heatmap_pca <- NULL
+  }
+  if(PCA){
+    inSCE@metadata$seurat$obj@reductions$pca <- NULL
+  }
+  if(ICA){
+    inSCE@metadata$seurat$obj@reductions$ica <- NULL
+  }
+  if(tSNE){
+    inSCE@metadata$seurat$obj@reductions$tsne <- NULL
+  }
+  if(UMAP){
+    inSCE@metadata$seurat$obj@reductions$umap <- NULL
+  }
+  if(clusters){
+    inSCE@metadata$seurat$obj@meta.data$seurat_clusters <- NULL
+  }
+  return(inSCE)
 }
 
 # ----

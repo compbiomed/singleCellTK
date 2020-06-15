@@ -6,10 +6,13 @@
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' inSCE <- runDropletQC(inSCE)
-#' getHtmlReportDropletQC(inSCE = inSCE)
+#' \donttest{
+#' data(emptyDropsSceExample, package = "singleCellTK")
+#' sce <- runDropletQC(emptyDropsSceExample)
+#' reportDropletQC(inSCE = sce)
+#' }
 #' @export
-getHtmlReportDropletQC <- function(inSCE, output_file = NULL,
+reportDropletQC <- function(inSCE, output_file = NULL,
                                    output_dir = NULL) {
   
   if (is.null(output_dir)){
@@ -30,10 +33,13 @@ getHtmlReportDropletQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' inSCE <- runCellQC(inSCE)
-#' getHtmlReportCellQC(inSCE = inSCE)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- runCellQC(sce)
+#' reportCellQC(inSCE = sce)
+#' }
 #' @export
-getHtmlReportCellQC <- function(inSCE, output_file = NULL,
+reportCellQC <- function(inSCE, output_file = NULL,
                                 output_dir = NULL) {
   if (is.null(output_dir)){
     output_dir<- getwd()
@@ -53,53 +59,69 @@ getHtmlReportCellQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' inSCE <- runDecontX(inSCE)
-#' getHtmlReportPerQC(inSCE = outSCE, QCtype = "DecontX")
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runDecontX(sce)
+#' reportQCTool(inSCE = sce, algorithm = "DecontX")
+#' }
 #' @export
-getHtmlReportPerQC <- function(inSCE, QCtype="DecontX", output_file = NULL,
+reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
+                                            "EmptyDrops",
+                                            "QCMetrics",
+                                            "Scrublet",
+                                            "DoubletCells",
+                                            "Cxds",
+                                            "Bcds",
+                                            "CxdsBcdsHybrid",
+                                            "DoubletFinder",
+                                            "DecontX"),
+                         output_file = NULL,
                             output_dir = NULL) {
+  
+  algorithm <- match.arg(algorithm)
   
   if (is.null(output_dir)){
     output_dir<- getwd()
   }
   
-  if (QCtype =="BarcodeRankDrops"){
+  if (algorithm =="BarcodeRankDrops"){
     rmarkdown::render(system.file("rmarkdown/qc/BarcodeRankDrops.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="EmptyDrops"){
+  if (algorithm =="EmptyDrops"){
     rmarkdown::render(system.file("rmarkdown/qc/EmptyDrops.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="Cxds"){
+  if (algorithm =="Cxds"){
     rmarkdown::render(system.file("rmarkdown/qc/Cxds.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="Bcds"){
+  if (algorithm =="Bcds"){
     rmarkdown::render(system.file("rmarkdown/qc/Bcds.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="CxdsBcdsHybrid"){
+  if (algorithm =="CxdsBcdsHybrid"){
     rmarkdown::render(system.file("rmarkdown/qc/CxdsBcdsHybrid.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="DecontX"){
+  if (algorithm =="DecontX"){
     rmarkdown::render(system.file("rmarkdown/qc/DecontX.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="DoubletCells"){
+  if (algorithm =="DoubletCells"){
     rmarkdown::render(system.file("rmarkdown/qc/DoubletCells.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="QCMetrics"){
+  if (algorithm =="QCMetrics"){
     rmarkdown::render(system.file("rmarkdown/qc/QCMetrics.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="Scrublet"){
+  if (algorithm =="Scrublet"){
     rmarkdown::render(system.file("rmarkdown/qc/Scrublet.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (QCtype =="DoubletFinder"){
+  if (algorithm =="DoubletFinder"){
     rmarkdown::render(system.file("rmarkdown/qc/DoubletFinder.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }

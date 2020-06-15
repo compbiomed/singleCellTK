@@ -77,8 +77,11 @@ runBarcodeRankDrops <- function(inSCE,
   message(paste0(date(), " ... Running 'barcodeRanks'"))
   
   ##  Getting current arguments values
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-  
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
+  rank <- list()
+
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
                                  dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
@@ -104,7 +107,7 @@ runBarcodeRankDrops <- function(inSCE,
   }
   
   colData(inSCE) = cbind(colData(inSCE), output)
-  metadata(inSCE)$runBarcodeRanksMetaOutput = metaOutput
+  S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput = metaOutput
   
   inSCE@metadata$runBarcodeRankDrops <- argsList[-1]
   inSCE@metadata$runBarcodeRankDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version

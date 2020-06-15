@@ -13,17 +13,17 @@
 #'  \link[SummarizedExperiment]{colData} slot. Additionally, the
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
-#' \dontrun{
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runDecontX(sce)
-#' }
 #' @export
 runDecontX <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
     ...
 ) {
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
   if(!is.null(sample)) {
     if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
