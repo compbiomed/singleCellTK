@@ -2609,79 +2609,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  #-+-+-+-+-+-Observe Group by###################################################
-  ###Observe Radio Button Select Value Type
-  observeEvent(input$adjustgroupby, {
-    if (!is.null(vals$counts)){
-      if (input$adjustgroupby !=  'None'){
-        #Integer,level>25#
-        if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))
-          #Integer,level<25#
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          & length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          shinyjs::enable("SelectValueType")
-          #Numeric,noninteger#
-        }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))
-          #Categorical#
-        }else{
-          updateRadioButtons(session, "SelectValueType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          shinyjs::delay(5,shinyjs::disable("SelectValueType"))}
-      }
-    }
-  })#observe_end
-
-  ###Observe Check Box Check Binning & Text Input Number of Bins:
-  observeEvent(input$checkbinning, {
-    if (!is.null(vals$counts)){
-      if (input$adjustgroupby !=  'None'){
-        #Integer,level>25#
-        if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))>25){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Integer,level<25,continuous
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
-          &input$SelectValueType == "Continuous"){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Integer,level<25,Categorical
-        }else if(is.integer(colData(vals$counts)@listData[[input$adjustgroupby]])
-          &length(levels(as.factor(colData(vals$counts)@listData[[input$adjustgroupby]])))<=25
-          &input$SelectValueType == "Categorical"){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::disable("adjustbinning")
-          #Numeric,noninteger
-        }else if(is.numeric(colData(vals$counts)@listData[[input$adjustgroupby]])){
-          updateCheckboxInput(session,"checkbinning","Perform Binning", value = TRUE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::enable("adjustbinning")
-          #Categorical
-        }else{updateCheckboxInput(session,"checkbinning","Perform Binning", value = FALSE)
-          shinyjs::delay(5,shinyjs::disable("checkbinning"))
-          shinyjs::disable("adjustbinning")
-        }
-      }
-    }
-  })#observe_end
-
   #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
   observeEvent(input$TypeSelect_Colorby, {
@@ -2752,7 +2679,7 @@ shinyServer(function(input, output, session) {
     }
   })###observe_end
   ###Observe Check Box Check Binning & Text Input Number of Bins:
-  observeEvent(input$checkbinning, {
+  observeEvent(input$checkColorbinning, {
     if (!is.null(vals$counts)){
       ###If Cell Annotation###############################################################
       if(input$TypeSelect_Colorby != 'Pick a Color'){
