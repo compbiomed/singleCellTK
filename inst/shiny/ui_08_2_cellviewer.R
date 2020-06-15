@@ -138,7 +138,7 @@ shinyPanelCellViewer <- fluidPage(
                                   column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
                                   column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
                                 )
-             ))
+             )
         )#fluidrow_end
       )#well_end
   )#tag_end
