@@ -38,7 +38,7 @@
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotsize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -77,7 +77,7 @@ plotSCEDimReduceColData <- function(inSCE,
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotsize = 2,
+  dotSize = 2,
   transparency = 1,
   defaultTheme = TRUE,
   title = NULL,
@@ -102,7 +102,7 @@ plotSCEDimReduceColData <- function(inSCE,
     dim2 = dim2,
     bin = bin,
     binLabel = binLabel,
-    dotsize = dotsize,
+    dotSize = dotSize,
     transparency = transparency,
     defaultTheme = defaultTheme,
     title = title,
@@ -129,7 +129,7 @@ plotSCEDimReduceColData <- function(inSCE,
                        dim2 = NULL,
                        bin = NULL,
                        binLabel = NULL,
-                       dotsize = 2,
+                       dotSize = 2,
                        transparency = 1,
                        defaultTheme = TRUE,
                        title = NULL,
@@ -198,7 +198,7 @@ plotSCEDimReduceColData <- function(inSCE,
     g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
                                                         label = "Sample"
     )) +
-        ggplot2::geom_point(size = dotsize, alpha = transparency)
+        ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBy)) {
         g <- g + ggplot2::aes_string(color = "color")
     }
@@ -288,7 +288,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotsize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -323,7 +323,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #                                    dim2 = NULL,
 #                                    bin = NULL,
 #                                    binLabel = NULL,
-#                                    dotsize = 2,
+#                                    dotSize = 2,
 #                                    transparency = 1,
 #                                    defaultTheme = TRUE,
 #                                    title = NULL,
@@ -344,7 +344,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #        dim2 = dim2,
 #        bin = bin,
 #        binLabel = binLabel,
-#        dotsize = dotsize,
+#        dotSize = dotSize,
 #        transparency = transparency,
 #        defaultTheme = defaultTheme,
 #        title = title,
@@ -380,7 +380,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotsize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -405,7 +405,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      dim2 = NULL,
                                      bin = NULL,
                                      binLabel = NULL,
-                                     dotsize = 2,
+                                     dotSize = 2,
                                      transparency = 1,
                                      defaultTheme = TRUE,
                                      title = NULL,
@@ -434,7 +434,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
     bin = bin,
     binLabel = binLabel,
     defaultTheme = defaultTheme,
-    dotsize = dotsize,
+    dotSize = dotSize,
     title = title,
     titleSize = titleSize,
     legendTitle = legendTitle,
@@ -474,7 +474,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotsize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -502,7 +502,7 @@ plotSCEScatter <- function(inSCE,
                            dim2 = NULL,
                            bin = NULL,
                            binLabel = NULL,
-                           dotsize = 2,
+                           dotSize = 2,
                            transparency = 1,
                            defaultTheme = TRUE,
                            title = NULL,
@@ -547,7 +547,7 @@ plotSCEScatter <- function(inSCE,
     dim2 = dim2,
     bin = bin,
     binLabel = binLabel,
-    dotsize = dotsize,
+    dotSize = dotSize,
     transparency = transparency,
     defaultTheme = defaultTheme,
     title = title,
