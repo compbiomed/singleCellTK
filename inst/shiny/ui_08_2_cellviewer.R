@@ -4,7 +4,6 @@ shinyPanelCellViewer <- fluidPage(
            h1("Cell Viewer"),
            radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot"), selected = NULL),
            fluidRow(
-             column(3,
                     wellPanel(style = "background: floralwhite",
                       conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
                         checkboxInput("vlnboxcheck", "Violin plot", value = FALSE)),
@@ -116,9 +115,9 @@ shinyPanelCellViewer <- fluidPage(
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
-             )),#sidebarPanel_end
+             ),#sidebarPanel_end
              #-+-+-+-+-+-mainPanel#################################
-             column(9,wellPanel(style = "background: floralwhite",
+             wellPanel(style = "background: floralwhite",
                                 plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8),
                                 tags$br(),
                                 tags$br(),
@@ -141,7 +140,6 @@ shinyPanelCellViewer <- fluidPage(
                                   column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
                                 )
              )
-        )#fluidrow_end
       )#well_end
   )#tag_end
 )#page_end
