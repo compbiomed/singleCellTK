@@ -94,7 +94,7 @@ shinyPanelCellViewer <- fluidPage(
                                             ,
 
 
-                                            selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL))
+                                            #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL))
 ),
                               #-+-+-+-+-+-group by###################################
                               tags$hr(),
@@ -104,13 +104,13 @@ shinyPanelCellViewer <- fluidPage(
                               # open by default
                               tags$div(id = "cv_collapse3",
                                        selectizeInput(inputId = "adjustgroupby", label = NULL, choices = c("None", annotation_list)),
-                                       conditionalPanel(condition = sprintf("input['%s'] != 'None'", "adjustgroupby"),
-                                                        radioButtons("SelectValueType",label = NULL,choices = c("Categorical", "Continuous")),
-                                                        conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectValueType"),
-                                                                         checkboxInput("checkbinning",h5("Perform Binning:"), value = FALSE)),
-                                                        conditionalPanel(condition = "input.checkbinning == 1",
-                                                                         numericInput("adjustbinning", h5("Number of Bins:"),value = 2, min =2))
-                                       )
+                                       #conditionalPanel(condition = sprintf("input['%s'] != 'None'", "adjustgroupby"),
+                                       #                radioButtons("SelectValueType",label = NULL,choices = c("Categorical", "Continuous")),
+                                       #                conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectValueType"),
+                                       #                                  checkboxInput("checkbinning",h5("Perform Binning:"), value = FALSE)),
+                                       #                conditionalPanel(condition = "input.checkbinning == 1",
+                                       #                                  numericInput("adjustbinning", h5("Number of Bins:"),value = 2, min =2))
+                                       #)
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
