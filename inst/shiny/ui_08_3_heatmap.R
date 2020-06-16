@@ -31,10 +31,7 @@ shinyPanelHeatmap <- fluidPage(
       tabPanel(
         title = "Cell", value = 'hmSubsetCellTP',
         tagList(
-          selectInput(
-            'hmCellCol',
-            "Columns to display (Changes here clear the selection)",
-            clusterChoice, multiple = TRUE, width = '550px'),
+          uiOutput('hmCellColUI'),
           DT::dataTableOutput("hmCellColTable"),
           actionButton('hmCellColTable_addAll', "Add all filtered"),
           actionButton('hmCellColTable_clear', "Clear selection"),
@@ -43,10 +40,7 @@ shinyPanelHeatmap <- fluidPage(
       tabPanel(
         title = "Feature", value = 'hmSubsetGeneTP',
         tagList(
-          selectInput(
-            'hmGeneCol',
-            "Columns to display (Changes here clear the selection)",
-            featureChoice, multiple = TRUE, width = '550px'),
+          uiOutput('hmGeneColUI'),
           DT::dataTableOutput("hmGeneColTable"),
           actionButton('hmGeneColTable_addAll', "Add all filtered"),
           actionButton('hmGeneColTable_clear', "Clear selection"),
@@ -97,15 +91,11 @@ shinyPanelHeatmap <- fluidPage(
       tabPanel(
         title = "Cell", value = 'hmAnnCellTP',
         uiOutput('hmCellAnnUI'),
-        #selectInput('hmCellAnn', 'Add cell annotation',
-        #            clusterChoice, multiple = TRUE),
         uiOutput('hmCellAnnAssUI')
       ),
       tabPanel(
         title = "Feature", value = 'hmAnnGeneTP',
         uiOutput('hmGeneAnnUI'),
-        #selectInput('hmGeneAnn', 'Add feature annotation',
-        #            featureChoice, multiple = TRUE),
         uiOutput('hmGeneAnnAssUI')
       )
     ),
@@ -156,17 +146,14 @@ shinyPanelHeatmap <- fluidPage(
       fluidRow(
         column(
           width = 4,
-          #uiOutput('hmCSHighUI'),
           colourpicker::colourInput('hmCSHigh', 'High color',value = 'red')
         ),
         column(
           width = 4,
-          #uiOutput('hmCSMediumUI'),
           colourpicker::colourInput('hmCSMedium', 'Medium color',value = 'white')
         ),
         column(
           width = 4,
-          #uiOutput('hmCSLowUI'),
           colourpicker::colourInput('hmCSLow', 'Low color',value = 'blue')
         )
       )
