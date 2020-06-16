@@ -13,7 +13,7 @@ getUMAP(
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
-  minDist = 0.2,
+  minDist = 0.01,
   spread = 1,
   pca = TRUE,
   initialDims = 50
@@ -43,7 +43,7 @@ Default is 200.}
 Smaller values will result in a more clustered/clumped
 embedding where nearby points on the manifold are drawn
 closer together, while larger values will result on a more
-even dispersal of points. Default 0.2.
+even dispersal of points. Default 0.01.
 See `?uwot::umap` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
