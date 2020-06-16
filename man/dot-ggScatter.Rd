@@ -30,6 +30,8 @@
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required}
 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
 \item{colorBy}{If provided, colors dots in the scatterplot based on value.}
 
 \item{shape}{If provided, add shapes based on the value.}

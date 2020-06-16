@@ -3,6 +3,7 @@
 #'  the input vector.
 #' @param inSCE Input SCtkExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy If provided, colors dots in the scatterplot based on value.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
