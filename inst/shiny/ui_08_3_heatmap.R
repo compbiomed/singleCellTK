@@ -14,7 +14,11 @@ shinyPanelHeatmap <- fluidPage(
           h4("Import from analysis")),
       div(style="display:inline-block;vertical-align:bottom;width:150px;margin-top:5px;",
           selectInput("hmImport", NULL,
-                      c("None", "MAST DEG", "MAST Marker"), selected = "None")),
+                      c("None",
+                        "Differential Expression",
+                        "MAST DEG",
+                        "MAST Marker"),
+                      selected = "None")),
       div(style="display:inline-block;vertical-align:bottom;width:50px;margin-left:8px;margin-bottom:15px;",
           actionButton("hmImportRun", "Import"))
     ),
@@ -22,7 +26,16 @@ shinyPanelHeatmap <- fluidPage(
       condition = "input.hmImport == 'MAST DEG'",
       uiOutput("hmImpMASTDEGUI")
     ),
-    p('"Import from analysis" not implemented yet', style = 'color:grey;'),
+    conditionalPanel(
+      condition = "input.hmImport == 'Differential Expression'",
+      p("One-click import not implemented yet. ", style = 'color:grey;'),
+      p("However, by using 'Save Result' button at the analysis page, you can add the DEG table to the feature annotation table below. ", style = 'color:grey;'),
+      p("And then you can have the manual selection done.", style = 'color:grey;')
+    ),
+    conditionalPanel(
+      condition = "input.hmImport == 'MAST Marker'",
+      p("Not implemented yet.")
+    ),
     hr(),
     # Subset ####
     h3("Cell/Feature Subsetting"),
@@ -161,8 +174,10 @@ shinyPanelHeatmap <- fluidPage(
     ),
     hr(),
     withBusyIndicatorUI(actionButton("plotHeatmap", "Plot Heatmap")),
-    panel(
+    div(
+      style = 'height:800px;',
       plotOutput("Heatmap")
     )
+    #plotOutput("Heatmap")
   )
 )

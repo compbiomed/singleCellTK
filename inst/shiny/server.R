@@ -28,6 +28,7 @@ shinyServer(function(input, output, session) {
     mastFMRCbin = 0,
     diffexheatmapplot = NULL,
     diffexBmName = NULL,
+    scDiffEx = list(),
     celdaMod = NULL,
     celdaList = NULL,
     celdaListAll = NULL,
@@ -3598,11 +3599,14 @@ shinyServer(function(input, output, session) {
           hmTemp$rowColorPresets[[regColName]] <- c('red', 'cyan', 'white')
           names(hmTemp$rowColorPresets[[regColName]]) <- c('up', 'down', 'NA')
         }
+      } else if (!is.null(input$hmImport) &&
+                 input$hmImport == "Differential Expression"){
+        #deg <- vals$diffexgenelist
+        print(vals$scDiffEx)
       }
     }
   })
-  # Heatmap: Subsetting ####
-  # Cell Selection
+  # Heatmap: Subsetting Cells####
   output$hmCellColUI <- renderUI({
     if(!is.null(vals$counts)){
       selectInput(
@@ -3616,12 +3620,12 @@ shinyServer(function(input, output, session) {
   output$hmCellColTable <- DT::renderDataTable({
     if(!is.null(vals$counts)){
       df <- as.data.frame(colData(hmTemp$sce))
+      rowNameCol <- data.frame(Row_Names = colnames(vals$counts))
+      df <- cbind(rowNameCol, df)
       rownames(df) <- NULL
-      df$Row_Names <- colnames(vals$counts)
-      df <- df[,c("Row_Names", names(colData(hmTemp$sce)))]
       DT::datatable(
         df,
-        filter = 'top', options = list(stateSave = TRUE)
+        filter = 'top', options = list(stateSave = TRUE, scrollX = TRUE)
       )
     }
   }, server = TRUE)
@@ -3713,7 +3717,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Gene Selection
+  # Heatmap: Subsetting Genes ####
   output$hmGeneColUI <- renderUI({
     if(!is.null(vals$counts)){
       selectInput(
@@ -3727,12 +3731,12 @@ shinyServer(function(input, output, session) {
   output$hmGeneColTable <- DT::renderDataTable({
     if(!is.null(vals$counts)){
       df <- as.data.frame(rowData(hmTemp$sce))
+      rowNameCol <- data.frame(Row_Names = rownames(vals$counts))
+      df <- cbind(rowNameCol, df)
       rownames(df) <- NULL
-      df$Row_Names <- rownames(vals$counts)
-      df <- df[,c("Row_Names", names(rowData(hmTemp$sce)))]
       DT::datatable(
         df,
-        filter = 'top', options = list(stateSave = TRUE)
+        filter = 'top', options = list(stateSave = TRUE, scrollX = TRUE)
       )
     }
   }, server = TRUE)
@@ -4238,11 +4242,11 @@ shinyServer(function(input, output, session) {
                   rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
                   rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
                   scale = scale, trim = trim,
-                  width = unit(10, 'cm'), height = unit(10, 'cm'),
+                  width = unit(20, 'cm'), height = unit(20, 'cm'),
                   featureAnnotationColor = geneAnnColor,
                   cellAnnotationColor = cellAnnColor
                 )
-              })
+              }, height = 800)
             })
           }
         }
@@ -4400,24 +4404,21 @@ shinyServer(function(input, output, session) {
         #check for zeros
         if (any(rowSums(assay(vals$counts, input$batchCorrAssay)) == 0)){
           shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
-        }else {
+        } else {
           saveassayname <- gsub(" ", "_", input$combatSaveAssay)
-          if (input$combatRef){
-            assay(vals$counts, saveassayname) <-
-              ComBatSCE(inSCE = vals$counts, batch = input$batchCorrVar,
-                useAssay = input$batchCorrAssay,
-                par.prior = input$combatParametric,
-                covariates = input$combatCond,
-                mean.only = input$combatMeanOnly,
-                ref.batch = input$combatRefBatch)
+          if(input$combatCond == "None"){
+            cov <- NULL
           } else {
-            assay(vals$counts, saveassayname) <-
-              ComBatSCE(inSCE = vals$counts, batch = input$batchCorrVar,
-                useAssay = input$batchCorrAssay,
-                par.prior = input$combatParametric,
-                covariates = input$combatCond,
-                mean.only = input$combatMeanOnly)
+            cov <- input$combatCond
           }
+          par.prior <- ifelse(input$combatParametric == "Parametric", TRUE, FALSE)
+          vals$counts <- runComBat(inSCE = vals$counts,
+                                   batch = input$batchCorrVar,
+                                   useAssay = input$batchCorrAssay,
+                                   par.prior = par.prior, covariates = cov,
+                                   mean.only = input$combatMeanOnly,
+                                   ref.batch = input$combatRefBatch,
+                                   assayName = saveassayname)
           vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
           updateAssayInputs()
           shinyalert::shinyalert('Success!', 'ComBat completed.', type = 'success')
@@ -4762,7 +4763,7 @@ shinyServer(function(input, output, session) {
  })
 
   #-----------------------------------------------------------------------------
-  # Page 5.1: Differential Expression
+  # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
   shinyjs::onclick("Diffex_hideAllSections", allSections(
     "hide", c(paste("de", 1:7, sep = ""))), add = TRUE)
@@ -4864,7 +4865,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  #Run differential expression
+  #Run differential expression ####
   observeEvent(input$runDiffex, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -4890,6 +4891,11 @@ shinyServer(function(input, output, session) {
                                         analysisType = input$selectDiffexConditionMethod,
                                         controlLevel = input$selectDiffexControlCondition,
                                         adjust = input$selectCorrection)
+        vals$scDiffEx[[input$selectDiffex]] <- list(result = vals$diffexgenelist)
+        vals$scDiffEx[[input$selectDiffex]]$useAssay <- input$diffexAssay
+        idx1 <- colData(vals$counts)[[input$selectDiffexCondition]] == input$selectDiffexConditionOfInterest
+        vals$scDiffEx[[input$selectDiffex]]$select <- list(idx1 = idx1)
+
       })
     }
   })

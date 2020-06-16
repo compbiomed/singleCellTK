@@ -69,44 +69,18 @@ shinyPanelDiffex <- fluidPage(
                 id = "de3",
                 wellPanel(
                   h3("General Options"),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("displayHeatmapRowLabels",
-                                    "Row Labels", value = TRUE)
-                    ),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("displayHeatmapColumnLabels",
-                                    "Column Labels", value = TRUE)
-                    )
-                  ),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("displayHeatmapColumnDendrograms",
-                                    "Column Dendrograms", value = TRUE)
-                    ),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("displayHeatmapRowDendrograms",
-                                    "Row Dendrograms", value = TRUE)
-                    )
-                  ),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("clusterRows", "Cluster Rows",
-                                    value = TRUE)),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("clusterColumns", "Cluster Columns",
-                                    value = TRUE)
-                    )
-                  ),
+                  checkboxInput("displayHeatmapRowLabels",
+                                "Row Labels", value = TRUE),
+                  checkboxInput("displayHeatmapColumnLabels",
+                                "Column Labels", value = TRUE),
+                  checkboxInput("displayHeatmapColumnDendrograms",
+                                "Column Dendrograms", value = TRUE),
+                  checkboxInput("displayHeatmapRowDendrograms",
+                                "Row Dendrograms", value = TRUE),
+                  checkboxInput("clusterRows", "Cluster Rows",
+                                value = TRUE),
+                  checkboxInput("clusterColumns", "Cluster Columns",
+                                value = TRUE),
                   textInput("heatmapColumnsTitle", "Columns Title",
                             value = "Differential Expression"),
                   tags$hr(),
@@ -185,3 +159,4 @@ shinyPanelDiffex <- fluidPage(
     )
   )
 )
+
