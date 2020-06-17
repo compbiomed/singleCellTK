@@ -3,6 +3,7 @@
 #'
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param reducedDimName a name to store the results of the dimension reduction
 #' coordinates obtained from this method. This is stored in the SingleCellExperiment
 #' object in the reducedDims slot. Default "UMAP".
@@ -26,14 +27,17 @@
 #'    See `?uwot::umap` for more information.
 #' @param pca Logical. Whether to perform dimensionality reduction with PCA
 #' before UMAP.
-#' @initialDims
+#' @param initialDims  Number of dimensions from PCA to use as
+#' input in UMAP. Default 50.
 #'
 #' @return a SCtkExperiment object with the reduced dimensions updated under
 #' reducedDimName specified.
 #' @export
 #'
 #' @examples
-#' umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
 #'                     reducedDimName = "UMAP", nNeighbors = 30, alpha = 1,
 #'                     nIterations = 200, spread = 1, pca = TRUE,
 #'                     initialDims = 50)

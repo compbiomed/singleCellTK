@@ -24,6 +24,8 @@ getUMAP(
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
 \item{reducedDimName}{a name to store the results of the dimension reduction
 coordinates obtained from this method. This is stored in the SingleCellExperiment
 object in the reducedDims slot. Default "UMAP".}
@@ -53,6 +55,9 @@ See `?uwot::umap` for more information.}
 
 \item{pca}{Logical. Whether to perform dimensionality reduction with PCA
 before UMAP.}
+
+\item{initialDims}{Number of dimensions from PCA to use as
+input in UMAP. Default 50.}
 }
 \value{
 a SCtkExperiment object with the reduced dimensions updated under
@@ -63,7 +68,9 @@ Uniform Manifold Approximation and Projection(UMAP) algorithm for
 dimension reduction.
 }
 \examples{
-umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
                     reducedDimName = "UMAP", nNeighbors = 30, alpha = 1,
                     nIterations = 200, spread = 1, pca = TRUE,
                     initialDims = 50)

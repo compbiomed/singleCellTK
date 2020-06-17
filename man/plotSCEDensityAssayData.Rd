@@ -14,6 +14,7 @@ plotSCEDensityAssayData(
   ylab = NULL,
   axisSize = 10,
   defaultTheme = TRUE,
+  cutoff = NULL,
   title = NULL,
   titleSize = NULL
 )
@@ -41,6 +42,9 @@ object, or can be retrieved from the colData slot. Default NULL.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
+
+\item{cutoff}{Numeric value. The plot will be annotated with a vertical line
+if set. Default NULL.}
 
 \item{title}{Title of plot. Default NULL.}
 

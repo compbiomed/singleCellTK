@@ -14,7 +14,8 @@ plotSCEDensityColData(
   axisSize = 10,
   defaultTheme = TRUE,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  cutoff = NULL
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ when TRUE. Default TRUE.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{cutoff}{Numeric value. The plot will be annotated with a vertical line
+if set. Default NULL.}
 }
 \description{
 Visualizes values stored in the colData slot of a

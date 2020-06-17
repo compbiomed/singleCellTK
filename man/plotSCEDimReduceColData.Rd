@@ -17,7 +17,7 @@ plotSCEDimReduceColData(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotsize = 2,
+  dotSize = 2,
   transparency = 1,
   defaultTheme = TRUE,
   title = NULL,
@@ -62,7 +62,7 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotsize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -95,7 +95,7 @@ plotSCEDimReduceColData(
 plotSCEDimReduceColData(
   inSCE = mouseBrainSubsetSCE, colorBy = "age",
   shape = NULL, conditionClass = "numeric",
-  reducedDimName = "TSNE_counts", bin =  c(-Inf,20,25,+Inf),
+  reducedDimName = "TSNE_counts", bin = c(-Inf, 20, 25, +Inf),
   xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
 )
 }
