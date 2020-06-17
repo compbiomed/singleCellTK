@@ -1,5 +1,5 @@
 .runDoubletFinder <- function(counts, seuratPcs, seuratRes, formationRate,
-                              seuratNfeatures, verbose = FALSE) {
+                              seuratNfeatures, verbose = FALSE, nCores = NULL) {
 
   ## Convert to sparse matrix if not already in that format
   counts <- .convertToMatrix(counts)
@@ -34,7 +34,7 @@
   seurat <- Seurat::FindClusters(seurat, resolution = seuratRes, verbose = verbose)
 
   invisible(sweepResListSeurat <- DoubletFinder::paramSweep_v3(seurat,
-    PCs = seuratPcs, sct = FALSE
+    PCs = seuratPcs, sct = FALSE, num.cores = nCores)
   ))
   invisible(sweepStatsSeurat <- DoubletFinder::summarizeSweep(sweepResListSeurat,
     GT = FALSE
@@ -75,6 +75,7 @@
 #'  Default 1.5.
 #' @param formationRate Doublet formation rate used within algorithm.
 #'  Default 0.075.
+#' @param nCores Number of cores used for running the function.
 #' @param verbose Boolean. Wheter to print messages from Seurat and DoubletFinder.
 #'  Default FALSE.
 #' @return SingleCellExperiment object containing the
@@ -93,6 +94,7 @@ runDoubletFinder <- function(inSCE,
                              seuratPcs = 1:15,
                              seuratRes = 1.5,
                              formationRate = 0.075,
+                             nCores = NULL,
                              verbose = FALSE){
 
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
@@ -135,6 +137,7 @@ runDoubletFinder <- function(inSCE,
           seuratRes = res,
           seuratNfeatures = seuratNfeatures,
           formationRate = formationRate,
+          nCores = nCores,
           verbose = verbose
         )
       ))
