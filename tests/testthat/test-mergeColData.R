@@ -1,7 +1,9 @@
 library(singleCellTK)
 context("Testing mergeSCColData")
 
-sce <- mouseBrainSubsetSCE
+data(scExample, package = "singleCellTK")
+
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 
 colData(sce)$column_name = rownames(colData(sce))
 test_that(desc = "Testing mergeSCEColData", {
