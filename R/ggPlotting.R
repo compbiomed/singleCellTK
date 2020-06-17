@@ -135,7 +135,13 @@
     )) +
       ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBySub)) {
-      g <- g + ggplot2::aes_string(color = "color")
+        if(class(colorBySub) == "numeric"){
+            g <- g + ggplot2::scale_colour_gradient2(
+                low = "grey",
+                high = "blue")
+        }else{
+            g <- g + ggplot2::aes_string(color = "color")
+        }
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
