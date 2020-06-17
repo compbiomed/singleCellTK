@@ -90,7 +90,7 @@
 #' @return A \code{SingleCellExperiment} object.
 #' @examples
 #' sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
-#'                      sampleNames = 'pbmc3k')
+#'                      sampleNames = 'pbmc3k_20by20')
 
 #' @export
 importAnnData <- function(sampleDirs = NULL,
