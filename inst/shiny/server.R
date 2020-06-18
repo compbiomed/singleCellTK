@@ -140,7 +140,15 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
+    updateSelectInput(session, "exportAssay", choices = currassays)
   }
+  
+  observe({
+    vals$counts
+    if (!is.null(vals$counts)) {
+      updateAssayInputs()
+    }
+  })
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
@@ -4629,5 +4637,68 @@ shinyServer(function(input, output, session) {
                                                                    labels = input$picker_dimheatmap_components_pca)
         }
     })
+    
+    #-----------------------------------------------------------------------------
+    # Page Download
+    #-----------------------------------------------------------------------------
+    
+    path = '~'
+    
+    observeEvent(
+      ignoreNULL = TRUE,
+      eventExpr = {
+        input$outputDirectory
+      },
+      handlerExpr = {
+        if (input$outputDirectory > 0) {
+          # condition prevents handler execution on initial app launch
+          path <<- shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'outputDirectory'))
+          shinyDirectoryInput::updateDirectoryInput(session, 'outputDirectory', value = path)
+        }
+      }
+    )
 
+    addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
+    addPopover(session, 'compressionLabel', '', "If output file compression is required, this variable accepts 'gzip' or 'lzf' as inputs", 'right')
+    addPopover(session, 'compressionOptsLabel', '', "Sets the compression level", 'right')
+    addPopover(session, 'forceDenseLabel', '', "Default False. Write sparse data as a dense matrix. Refer anndata.write_h5ad documentation for details.", 'right')
+    
+    addPopover(session, 'gzipLabel', '', 'Set to true if output files are to be gzip compressed', 'right')
+    addPopover(session, 'overwriteLabel', '', 'Overwrites the file if it already exists', 'right')
+    
+    observeEvent(input$exportData, {
+      withBusyIndicatorServer("exportData", {
+        if (is.null(vals$counts) && is.null(vals$original)) {
+          shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+          return
+        }
+      
+        if (input$exportChoice == "rds") {
+          filename = paste("SCE-", Sys.Date(), ".rds", sep = "")
+          saveRDS(vals$counts, paste(path, "/", filename, sep = ""))
+        } else if (input$exportChoice == "annData") {
+          exportassay <- input$exportAssay
+          compression <- input$compression
+          compressionOpts = input$compressionOpts
+          forceDense <- input$forceDense
+          overwrite <- if(input$overwrite == 'True') TRUE else FALSE
+          exportSCEtoAnnData(sce=vals$counts,
+                             useAssay = exportassay,
+                             outputDir=input$outputDirectory__chosen_dir,
+                             prefix = paste("SCE-", Sys.Date(),sep = ""),
+                             overwrite=overwrite,
+                             compression = compression,
+                             compressionOpts = compressionOpts,
+                             forceDense = forceDense)
+        } else if (input$exportChoice == "textfile") {
+          overwrite <- if(input$overwrite == 'True') TRUE else FALSE
+          gzipped <- if(input$gzip == 'True') TRUE else FALSE
+          exportSCEtoFlatFile(sce = vals$counts, 
+                              outputDir=path, 
+                              overwrite=overwrite, 
+                              gzipped=gzipped,
+                              sample = paste("SCE-", Sys.Date(),sep = ""))
+        }
+      })
+    })
 })

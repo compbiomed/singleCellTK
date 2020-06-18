@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinyFiles)
 library(ComplexHeatmap)
 library(limma)
 library(ggplot2)
@@ -129,7 +130,7 @@ source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 
 jsCode <- "
 
@@ -167,7 +168,12 @@ shinyUI(
       tooltitle,
       theme = shinytheme(shinyTheme),
       #Upload Tab
-      tabPanel("Upload", shinyPanelUpload),
+      navbarMenu(
+        "Data",
+        tabPanel("Upload", shinyPanelUpload),
+        tabPanel("Download", shinyPanelExport)
+      ),
+      # tabPanel("Upload", shinyPanelUpload),
       navbarMenu("QC & Filtering",
                  tabPanel("Filtering", shinyPanelFilter)),
       # tabPanel(title="QC & Filtering", shinyPanelFilter),
@@ -195,6 +201,7 @@ shinyUI(
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
                  tabPanel("Cell Viewer", shinyPanelCellViewer)),
+      # tabPanel("Download", shinyPanelExport),
       footer = includeHTML("www/footer.html"),
       fluidRow(
         column(12, id = "consoleDiv",
