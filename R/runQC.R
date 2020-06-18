@@ -50,7 +50,7 @@ runCellQC <- function(inSCE,
   if ("scrublet" %in% algorithms) {
 
     inSCE <- do.call(runScrublet, 
-      c(list(inSCE = inSCE, 
+      c(list(inSCE = quote(inSCE), 
         sample = sample,
         useAssay = useAssay,
         seed = seed), 
@@ -59,7 +59,7 @@ runCellQC <- function(inSCE,
 
   if ("doubletCells" %in% algorithms) {
     inSCE <- do.call(runDoubletCells, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
       seed = seed),
@@ -68,7 +68,7 @@ runCellQC <- function(inSCE,
 
   if ("doubletFinder" %in% algorithms) {
     inSCE <- do.call(runDoubletFinder, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed),
       paramsList[["doubletFinder"]]))
@@ -76,7 +76,7 @@ runCellQC <- function(inSCE,
 
   if ("cxds" %in% algorithms) {
     inSCE <- do.call(runCxds, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -85,7 +85,7 @@ runCellQC <- function(inSCE,
 
   if ("bcds" %in% algorithms) {
     inSCE <- do.call(runBcds, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -94,7 +94,7 @@ runCellQC <- function(inSCE,
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
     inSCE <- do.call(runCxdsBcdsHybrid, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -103,7 +103,7 @@ runCellQC <- function(inSCE,
 
   if ("decontX" %in% algorithms) {
     inSCE <- do.call(runDecontX, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
       seed = seed),
@@ -151,7 +151,7 @@ runDropletQC <- function(inSCE,
 
   if (any("emptyDrops" %in% algorithms)) {
     inSCE <- do.call(runEmptyDrops, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay),
       paramsList[["emptyDrops"]]))
@@ -159,7 +159,7 @@ runDropletQC <- function(inSCE,
 
   if (any("barcodeRanks" %in% algorithms)) {
     inSCE <- do.call(runBarcodeRankDrops,
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay),
       paramsList[["barcodeRanks"]]))

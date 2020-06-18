@@ -9,7 +9,10 @@ seuratRunUMAP(
   inSCE,
   useReduction = c("pca", "ica"),
   reducedDimName = "seuratUMAP",
-  dims = 10
+  dims = 10,
+  minDist = 0.3,
+  nNeighbors = 30L,
+  spread = 1
 )
 }
 \arguments{
@@ -19,7 +22,13 @@ seuratRunUMAP(
 
 \item{reducedDimName}{Name of new reducedDims object containing Seurat UMAP Default \code{seuratUMAP}.}
 
-\item{dims}{numerical value of how many reduction components to use for UMAP computation. Default \code{10}.}
+\item{dims}{Numerical value of how many reduction components to use for UMAP computation. Default \code{10}.}
+
+\item{minDist}{Sets the \code{"min.dist"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.}
+
+\item{nNeighbors}{Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.}
+
+\item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
 }
 \value{
 Updated sce object with UMAP computations stored

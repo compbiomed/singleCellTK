@@ -10,7 +10,8 @@
 #' Required
 #' @param condition The column in the annotation data that corresponds to
 #' condition. Optional
-#'
+#' @param pcInput A logical scalar indicating whether \code{useAssay} is in
+#' \code{names(reducedDims(inSCE))}. Default \code{FALSE}.
 #' @return A boxplot of variation explained by batch, condition, and
 #' batch+condition (if applicable).
 #' @export
@@ -22,35 +23,34 @@
 #'   plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
 #' }
 #'
-plotBatchVariance <- function(inSCE, useAssay="logcounts", batch,
-                              condition=NULL){
-  nlb <- nlevels(as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
+plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
+                              condition=NULL, pcInput = FALSE){
+  if(isTRUE(pcInput)){
+    mat <- t(SingleCellExperiment::reducedDim(inSCE, useAssay))
+  } else {
+    mat <- SummarizedExperiment::assay(inSCE, useAssay)
+  }
+  batchCol <- SummarizedExperiment::colData(inSCE)[, batch]
+  nlb <- nlevels(as.factor(batchCol))
   if (nlb <= 1){
     batchMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
   } else {
-    batchMod <- stats::model.matrix(
-      ~as.factor(SingleCellExperiment::colData(inSCE)[, batch]))
+    batchMod <- stats::model.matrix(~as.factor(batchCol))
   }
+  condCol <- SingleCellExperiment::colData(inSCE)[, condition]
   if (is.null(condition)){
     stop("condition required for now")
   } else {
-    nlc <- nlevels(as.factor(
-      SingleCellExperiment::colData(inSCE)[, condition]))
+    nlc <- nlevels(as.factor(condCol))
     if (nlc <= 1){
       condMod <- matrix(rep(1, ncol(inSCE)), ncol = 1)
     } else {
-      condMod <- stats::model.matrix(
-        ~as.factor(SingleCellExperiment::colData(inSCE)[, condition]))
+      condMod <- stats::model.matrix(~as.factor(condCol))
     }
   }
-
   mod <- cbind(condMod, batchMod[, -1])
-
-  condTest <- batchqc_f.pvalue(SummarizedExperiment::assay(inSCE, useAssay),
-                                mod, batchMod)
-  batchTest <- batchqc_f.pvalue(
-    SummarizedExperiment::assay(inSCE, useAssay), mod, condMod)
-
+  condTest <- batchqc_f.pvalue(mat, mod, batchMod)
+  batchTest <- batchqc_f.pvalue(mat, mod, condMod)
   r2Full <- condTest$r2Full
   condR2 <- batchTest$r2Reduced
   batchR2 <- condTest$r2Reduced
@@ -101,4 +101,58 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
     p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
   }
   return(list(p = p, r2Full = r2Full, r2Reduced = r2Reduced))
+}
+
+#' Plot mean feature value in each batch of a SingleCellExperiment object
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param useAssay The name of the assay that stores the value to plot. Use
+#' \code{useReddim} for dimension reduced matrix instead. Default \code{NULL}.
+#' @param useReddim The name of the dimension reduced matrix that stores the
+#' value to plot. Default \code{NULL}.
+#' @param batch The column name of \code{colData(inSCE)} that indicates the
+#' batch annotation. Default \code{"batch"}.
+#' @param xlab label for x-axis. Default \code{"batch"}.
+#' @param ylab label for y-axis. Default \code{"Feature Mean"}.
+#' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
+#' @return ggplot
+#' @export
+plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
+  batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
+  if(!inherits(inSCE, 'SingleCellExperiment')){
+    stop("'inSCE' must inherit from 'SingleCellExperiment'.")
+  }
+  if(is.null(useAssay) & is.null(useReddim)){
+    stop("Either `useAssay` or `useReddim` has to be specified.")
+  } else if(!is.null(useAssay) & !is.null(useReddim)){
+    stop("Only one of `useAssay` and `useReddim` can be specified.")
+  }
+  if(!is.null(useAssay)){
+    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+      stop("'useAssay' not found in 'inSCE'.")
+    }
+    mat <- SummarizedExperiment::assay(inSCE, useAssay)
+  }
+  if(!is.null(useReddim)){
+    if(!useReddim %in% SingleCellExperiment::reducedDimNames(inSCE)){
+      stop("'useReddim not found in 'inSCE'.")
+    }
+    mat <- t(SingleCellExperiment::reducedDim(inSCE, useReddim))
+  }
+  if(is.null(batch)){
+    stop("Batch annotation has to be given.")
+  } else{
+    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+      stop("'batch' not found in 'inSCE'.")
+    }
+  }
+  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
+  uniqBatch <- as.vector(unique(batchCol)) #as.vector in case batchCol is factor
+  allMeans <- numeric()
+  groupBy <- character()
+  for(i in uniqBatch){
+    allMeans <- c(allMeans, DelayedArray::rowMeans(mat[,batchCol == i]))
+    groupBy <- c(groupBy, rep(i, nrow(inSCE)))
+  }
+  p <- .ggViolin(allMeans, groupby = groupBy, xlab = xlab, ylab = ylab, ...)
+  return(p)
 }

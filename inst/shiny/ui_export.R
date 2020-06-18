@@ -7,15 +7,15 @@ shinyPanelExport <- fluidPage(
   fluidRow(
     column(
       6,
-      shinyDirectoryInput::directoryInput('outputDirectory', label = 'Set export specifications\nHover over label for more information', value = '~'),
+      shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
       tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Choose export type"),
       radioButtons(
         "exportChoice",
         label = NULL,
         c(
+          "Download as RDS file" = "rds",
           "Python annData object" = "annData",
-          "Flat text files" = "textfile",
-          "Download as RDS file" = "rds"
+          "Flat text files" = "textfile"
         )
       ),
       actionButton("exportData", "Download")
@@ -24,7 +24,7 @@ shinyPanelExport <- fluidPage(
       6,
       conditionalPanel(
         condition = "input.exportChoice === 'textfile'",
-        tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications\nHover over label for more information"),
+        tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications"),
         tags$label(id="gzipLabel", "Gzip"),
         selectInput("gzip", label=NULL, c("True", "False"), width = '140px')
       ),

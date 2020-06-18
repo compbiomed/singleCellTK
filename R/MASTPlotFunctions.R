@@ -33,10 +33,12 @@
 #' \code{FALSE}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
+#' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
+#' ggplot. Default \code{TRUE}.
 #' @return A ggplot object of MAST violin plot
 #' @export
 plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
-                           nrow = 6, ncol = 6){
+                           nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkMASTResultExists(inSCE, useResult)
@@ -44,8 +46,7 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    Gene <- NULL
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -54,6 +55,9 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     cells2 <- colnames(inSCE)[ix2]
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -81,6 +85,9 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
                             ncol = ncol) +
         ggplot2::geom_violin() +
         ggplot2::ggtitle(paste0("Violin Plot for ", useResult))
+    if(isTRUE(defaultTheme)){
+        violinplot <- .ggSCTKTheme(violinplot)
+    }
     return(violinplot)
 }
 
@@ -94,11 +101,13 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
 #' thresholding, instead of using the assay used by \code{runMAST()}. Default
 #' \code{FALSE}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
+#' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
+#' ggplot. Default \code{TRUE}.
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @return A ggplot object of MAST linear regression
 #' @export
 plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
-                               nrow = 6, ncol = 6){
+                               nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkMASTResultExists(inSCE, useResult)
@@ -106,8 +115,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
-    Gene <- NULL
-    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), Gene]
+    geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
     cells1 <- colnames(inSCE)[ix1]
@@ -116,6 +124,9 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     cells2 <- colnames(inSCE)[ix2]
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -126,6 +137,9 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     sca <- suppressMessages(MAST::FromMatrix(expres, cData = cdat))
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
+    if(length(unique(SummarizedExperiment::colData(sca)$cngeneson)) < 2){
+        stop("Standardized cellular detection rate not various, unable to plot.")
+    }
     if(threshP){
         #TODO: if nrow*ncol < `min_per_bin`` below, there would be an error.
         invisible(utils::capture.output(thres <-
@@ -162,7 +176,11 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
                       ggplot2::geom_line(ggplot2::aes_string(y = "lmPred"),
                                          lty = 1) +
                       ggplot2::xlab("Standardized Cellular Detection Rate") +
-                      ggplot2::ggtitle("Linear Model Plot")
+                      ggplot2::ggtitle(paste0("Linear Model Plot for ",
+                                              useResult))
+    if(isTRUE(defaultTheme)){
+        regressionplot <- .ggSCTKTheme(regressionplot)
+    }
     return(regressionplot)
 }
 
@@ -282,9 +300,8 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 
     ## Genes
     regulation <- vector()
-    Gene <- NULL # Unused variable, to pass the R CMD check.
-    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, Gene]
-    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, Gene]
+    genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, "Gene"]
+    genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, "Gene"]
     regulation[rownames(inSCE) %in% genes.up] <- 'up'
     regulation[rownames(inSCE) %in% genes.down] <- 'down'
     regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
@@ -314,7 +331,8 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay,
         featureIndex = gene.ix, cellIndex = cell.ix,
         featureAnnotations = featureAnnotations,
-        cellAnnotations = cellAnnotations,
+        cellAnnotations = cellAnnotations, rowDataName = rowDataName,
+        colDataName = colDataName,
         featureAnnotationColor = featureAnnotationColor,
         cellAnnotationColor = cellAnnotationColor, rowSplitBy = rowSplitBy,
         colSplitBy = colSplitBy, title = title)
@@ -334,6 +352,9 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 thresholdGenes <- function(inSCE, useAssay="logcounts"){
     # data preparation
     expres <- SummarizedExperiment::assay(inSCE, useAssay)
+    if(!is.matrix(expres)){
+        expres <- as.matrix(expres)
+    }
     fdata <- data.frame(Gene = rownames(expres))
     rownames(fdata) <- fdata$Gene
     SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
