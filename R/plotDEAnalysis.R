@@ -1,51 +1,61 @@
 #' Check if the specified MAST result in SCtkExperiment object is complete.
 #' But does not garantee the biological correctness.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' \code{runMAST()} has to be run in advance.
-#' @param useResult character. A string specifying the \code{comparisonName}
-#' used when running \code{runMAST()}.
-.checkMASTResultExists <- function(inSCE, useResult){
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. a
+#' differential expression analysis function has to be run in advance.
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
+#' @param labelBy A single character for a column of \code{rowData(inSCE)} as
+#' where to search for the labeling text. Default \code{NULL}.
+.checkDiffExpResultExists <- function(inSCE, useResult, labelBy = NULL){
     if(!inherits(inSCE, 'SingleCellExperiment')){
         stop('Given object is not a valid SingleCellExperiment object.')
     }
-    if(!'MAST' %in% names(S4Vectors::metadata(inSCE))){
-        stop('"MAST" not in metadata, please run runMAST() first.')
+    if(!'diffExp' %in% names(S4Vectors::metadata(inSCE))){
+        stop('"diffExp" not in metadata, please run runMAST() first.')
     }
-    if(!useResult %in% names(S4Vectors::metadata(inSCE)$MAST)){
-        stop(paste0('"', useResult, '"', ' not in metadata(inSCE)$MAST. '),
+    if(!useResult %in% names(S4Vectors::metadata(inSCE)$diffExp)){
+        stop(paste0('"', useResult, '"', ' not in metadata(inSCE)$diffExp. '),
              'Please check.')
     }
-    result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
+    result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     if(!all(c('groupNames', 'select', 'result', 'useAssay') %in% names(result))){
         stop(paste0('"', useResult, '"', ' result is not complete. '),
              'You might need to rerun it.')
     }
+    if(!is.null(labelBy)){
+        if(!labelBy %in% names(SummarizedExperiment::rowData(inSCE))){
+            stop("labelBy: '", labelBy, "' not found.")
+        }
+    }
 }
 
 #' plot the violin plot to show visualize the expression distribution of DEGs
-#' identified by MAST
+#' identified by differential expression analysis
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' \code{runMAST()} has to be run in advance.
-#' @param useResult character. A string specifying the \code{comparisonName}
-#' used when running \code{runMAST()}.
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
 #' thresholding, instead of using the assay used by \code{runMAST()}. Default
 #' \code{FALSE}.
+#' @param labelBy A single character for a column of \code{rowData(inSCE)} as
+#' where to search for the labeling text. Default \code{NULL}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
-#' @return A ggplot object of MAST violin plot
+#' @return A ggplot object of violin plot
 #' @export
-plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
+plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                            nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
-    .checkMASTResultExists(inSCE, useResult)
+    .checkMASTResultExists(inSCE, useResult, labelBy)
     # Extract
-    result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
+    result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
+    deg <- deg[order(deg$FDR),]
     geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
     groupName1 <- result$groupNames[1]
     ix1 <- result$select$ix1
@@ -53,11 +63,17 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
     groupName2 <- result$groupNames[2]
     ix2 <- result$select$ix2
     cells2 <- colnames(inSCE)[ix2]
+    if(!is.null(labelBy)){
+        replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+    } else {
+        replGeneName <- geneToPlot
+    }
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
     if(!is.matrix(expres)){
         expres <- as.matrix(expres)
     }
+    rownames(expres) <- replGeneName
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -74,7 +90,7 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
         SummarizedExperiment::assay(sca) <- thres$counts_threshold
     }
     flatDat <- methods::as(sca, "data.table")
-    flatDat$primerid <- factor(flatDat$primerid, levels = geneToPlot)
+    flatDat$primerid <- factor(flatDat$primerid, levels = replGeneName)
     names(flatDat)[5] <- useAssay
     # Plot
     violinplot <- ggplot2::ggplot(flatDat,
@@ -92,27 +108,29 @@ plotMASTViolin <- function(inSCE, useResult, threshP = FALSE,
 }
 
 #' plot the linear regression to show visualize the expression the of DEGs
-#' identified by MAST
+#' identified by differential expression analysis
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' \code{runMAST()} has to be run in advance.
-#' @param useResult character. A string specifying the \code{comparisonName}
-#' used when running \code{runMAST()}.
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
 #' thresholding, instead of using the assay used by \code{runMAST()}. Default
 #' \code{FALSE}.
+#' @param labelBy A single character for a column of \code{rowData(inSCE)} as
+#' where to search for the labeling text. Default \code{NULL}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
+#' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
-#' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
-#' @return A ggplot object of MAST linear regression
+#' @return A ggplot object of linear regression
 #' @export
-plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
+plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
-    .checkMASTResultExists(inSCE, useResult)
+    .checkMASTResultExists(inSCE, useResult, labelBy)
     # Extract
-    result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
+    result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     deg <- result$result
     useAssay <- result$useAssay
     geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
@@ -122,11 +140,17 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     groupName2 <- result$groupNames[2]
     ix2 <- result$select$ix2
     cells2 <- colnames(inSCE)[ix2]
+    if(!is.null(labelBy)){
+        replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+    } else {
+        replGeneName <- geneToPlot
+    }
     expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
                                           useAssay)
     if(!is.matrix(expres)){
         expres <- as.matrix(expres)
     }
+    rownames(expres) <- replGeneName
     # Format
     cdat <- data.frame(wellKey = colnames(expres),
                        condition = factor(c(rep(groupName1, length(cells1)),
@@ -148,7 +172,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
         SummarizedExperiment::assay(sca) <- thres$counts_threshold
     }
     flatDat <- methods::as(sca, "data.table")
-    flatDat$primerid <- factor(flatDat$primerid, levels = geneToPlot)
+    flatDat$primerid <- factor(flatDat$primerid, levels = replGeneName)
     names(flatDat)[6] <- useAssay
     # Calculate
     resData <- NULL
@@ -184,14 +208,15 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
     return(regressionplot)
 }
 
-#' Heatmap visualization of DEG result called by MAST
+#' Heatmap visualization of DEG result
 #'
-#' runMAST() has to be run in advance so that information is stored in the
-#' metadata of the input SCE object. This function wraps plotSCEHeatmap.
+#' A differential expression analysis function has to be run in advance so that
+#' information is stored in the metadata of the input SCE object. This function
+#' wraps plotSCEHeatmap.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' \code{runMAST()} has to be run in advance.
-#' @param useResult character. A string specifying the \code{comparisonName}
-#' used when running \code{runMAST()}.
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
 #' @param onlyPos logical. Whether to only plot DEG with positive log2_FC
 #' value. Default \code{FALSE}.
 #' @param log2fcThreshold numeric. Only plot DEGs with the absolute values of
@@ -231,7 +256,7 @@ plotMASTRegression <- function(inSCE, useResult, threshP = FALSE,
 #' @return A ComplexHeatmap::Heatmap object
 #' @export
 #' @author Yichen Wang
-plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
+plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     log2fcThreshold = 1, fdrThreshold = 0.05, useAssay = NULL,
     featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
@@ -247,7 +272,7 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
         extraArgs[c('cellIndex', 'featureIndex')] <- NULL
     }
     # Extract
-    result <- S4Vectors::metadata(inSCE)$MAST[[useResult]]
+    result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     deg <- result$result
     if(is.null(useAssay)){
         useAssay <- result$useAssay
@@ -341,10 +366,10 @@ plotMASTHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 
 #' MAST Identify adaptive thresholds
 #' @param inSCE SingleCellExperiment object
-#' @param useAssay character, default `"logcounts"`
-#' @return thresholdGenes(): list of thresholded counts (on natural scale),
-#' thresholds, bins, densities estimated on each bin, and the original data from
-#' `MAST::thresholdSCRNACountMatrix`
+#' @param useAssay character, default \code{"logcounts"}
+#' @return list of thresholded counts (on natural scale), thresholds, bins,
+#' densities estimated on each bin, and the original data from
+#' \code{\link[MAST]{thresholdSCRNACountMatrix}}
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")

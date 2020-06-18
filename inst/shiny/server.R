@@ -5459,23 +5459,31 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("runMAST", {
       if(input$mastCondMethod == 1){
         vals$counts <- runMAST(inSCE = vals$counts,
-                               useAssay = input$mastAssay, class = input$mastC1Class,
-                               classGroup1 = input$mastC1G1, classGroup2 = input$mastC1G2,
-                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-                               comparisonName = input$mastCompName,
-                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               useAssay = input$mastAssay,
+                               class = input$mastC1Class,
+                               classGroup1 = input$mastC1G1,
+                               classGroup2 = input$mastC1G2,
+                               groupName1 = input$mastG1Name,
+                               groupName2 = input$mastG2Name,
+                               analysisName = input$mastCompName,
+                               useThresh = input$useAdaptThresh,
+                               freqExpressed = input$mastFreq,
                                log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+                               fdrThreshold = input$mastFDRThresh,
+                               onlyPos = input$mastPosOnly)
       } else if(input$mastCondMethod == 2){
         vals$counts <- runMAST(inSCE = vals$counts,
                                useAssay = input$mastAssay,
                                index1 = input$mastC2G1Table_rows_selected,
                                index2 = input$mastC2G2Table_rows_selected,
-                               groupName1 = input$mastG1Name, groupName2 = input$mastG2Name,
-                               comparisonName = input$mastCompName,
-                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               groupName1 = input$mastG1Name,
+                               groupName2 = input$mastG2Name,
+                               analysisName = input$mastCompName,
+                               useThresh = input$useAdaptThresh,
+                               freqExpressed = input$mastFreq,
                                log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+                               fdrThreshold = input$mastFDRThresh,
+                               onlyPos = input$mastPosOnly)
       } else {
         g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
                                     sep='\n', what = 'character'))
@@ -5484,12 +5492,17 @@ shinyServer(function(input, output, session) {
                                     sep='\n', what = 'character'))
         g2CellList <- sort(unique(g2CellList))
         vals$counts <- runMAST(inSCE = vals$counts,
-                               useAssay = input$mastAssay, index1 = g1CellList,
-                               index2 = g2CellList, groupName1 = input$mastG1Name,
-                               groupName2 = input$mastG2Name, comparisonName = input$mastCompName,
-                               useThresh = input$useAdaptThresh, freqExpressed = input$mastFreq,
+                               useAssay = input$mastAssay,
+                               index1 = g1CellList,
+                               index2 = g2CellList,
+                               groupName1 = input$mastG1Name,
+                               groupName2 = input$mastG2Name,
+                               analysisName = input$mastCompName,
+                               useThresh = input$useAdaptThresh,
+                               freqExpressed = input$mastFreq,
                                log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh, onlyPos = input$mastPosOnly)
+                               fdrThreshold = input$mastFDRThresh,
+                               onlyPos = input$mastPosOnly)
       }
       shinyalert::shinyalert("Success",
                              text = "MAST Differential Expression completed.", type = "success")
