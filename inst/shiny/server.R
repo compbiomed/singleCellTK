@@ -936,7 +936,7 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
         updateFeatureAnnots()
         updateNumSamples()
-        updateAssayInputs()
+        # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
         shinyjs::show(id="annotationData")
@@ -1252,7 +1252,7 @@ shinyServer(function(input, output, session) {
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
-      updateAssayInputs()
+      # updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
     }
@@ -1466,7 +1466,7 @@ shinyServer(function(input, output, session) {
             else {
                 showNotification("Error during assay transformation!", type = "error")
             }
-          updateAssayInputs()
+          # updateAssayInputs()
         }
     })
   })
@@ -1511,12 +1511,12 @@ shinyServer(function(input, output, session) {
                                              normAssayName = input$normalizeAssayOutname,
                                              normalizationMethod = input$normalizeAssayMethodSelect,
                                              scaleFactor = as.numeric(input$normalizationScaleFactor))
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
           assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
           vals$counts <- scater_logNormCounts(
@@ -1524,7 +1524,7 @@ shinyServer(function(input, output, session) {
             logAssayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "SCT"){
           vals$counts <- seuratSCTransform(
@@ -1532,7 +1532,7 @@ shinyServer(function(input, output, session) {
             normAssayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
-          updateAssayInputs()
+          # updateAssayInputs()
         }
       }
     })
@@ -4002,7 +4002,7 @@ shinyServer(function(input, output, session) {
                 mean.only = input$combatMeanOnly)
           }
           vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-          updateAssayInputs()
+          # updateAssayInputs()
           shinyalert::shinyalert('Success!', 'ComBat completed.', type = 'success')
           vals$batchCorrStatus <- "ComBat Complete"
 
@@ -4085,7 +4085,7 @@ shinyServer(function(input, output, session) {
           type = 'success')
         vals$batchCorrStatus <- "Limma Complete"
         vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-        updateAssayInputs()
+        # updateAssayInputs()
       }
       )
     }
@@ -4141,7 +4141,7 @@ shinyServer(function(input, output, session) {
           type = 'success')
         vals$batchCorrStatus <- "MNN Complete"
         vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-        updateAssayInputs()
+        # updateAssayInputs()
       }
       )
     }
@@ -4187,7 +4187,7 @@ shinyServer(function(input, output, session) {
           type = 'success')
         vals$batchCorrStatus <- "scMerge Complete"
         vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-        updateAssayInputs()
+        # updateAssayInputs()
       })
     }
   })
@@ -4218,7 +4218,7 @@ shinyServer(function(input, output, session) {
         if(input$Srt3IntNAnch == nrow(vals$counts)){
           # Usually in this condition, seurat returns a full-sized assay
           vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-          updateAssayInputs()
+          # updateAssayInputs()
         } else if(input$Srt3IntNAnch == nrow(vals$counts)){
           # Under this condition, seurat usually returns a reduced matrix of
           # <= nAnchor dimensions.
@@ -5645,7 +5645,7 @@ shinyServer(function(input, output, session) {
                                          normAssayName = "seuratNormData",
                                          normalizationMethod = input$normalization_method,
                                          scaleFactor = as.numeric(input$scale_factor))
-      updateAssayInputs()
+      # updateAssayInputs()
       vals$counts <- .seuratInvalidate(inSCE = vals$counts)
     })
     updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
@@ -5664,7 +5664,7 @@ shinyServer(function(input, output, session) {
                                      scale = input$do.scale,
                                      center = input$do.center,
                                      scaleMax = input$scale.max)
-      updateAssayInputs()
+      # updateAssayInputs()
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
     })
     updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
