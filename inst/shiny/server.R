@@ -20,15 +20,11 @@ shinyServer(function(input, output, session) {
     batchCorrStatus = "",
     batchResAssay = NULL,
     batchResReddim = NULL,
-    diffexgenelist = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
     mastFMRCbin = 0,
-    diffexheatmapplot = NULL,
-    diffexBmName = NULL,
-    scDiffEx = list(),
     celdaMod = NULL,
     celdaList = NULL,
     celdaListAll = NULL,
@@ -51,11 +47,6 @@ shinyServer(function(input, output, session) {
     hmTmpRowData = NULL
   )
 
-  #reactive list to store names of results given by the user.
-  diffExValues <- reactiveValues(
-    index = 0
-  )
-
 
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
@@ -68,8 +59,6 @@ shinyServer(function(input, output, session) {
                       choices = c("No Color", "Gene Expression", pdataOptions))
     updateSelectInput(session, "shapeBy",
                       choices = c("No Shape", pdataOptions))
-    updateSelectInput(session, "selectDiffexCondition",
-                      choices = pdataOptions)
     updateSelectInput(session, "scMergeCT",
                       choices = c('None', pdataOptions))
     updateSelectInput(session, "combatCond",
@@ -80,17 +69,16 @@ shinyServer(function(input, output, session) {
                       choices = c('None', pdataOptions))
     updateSelectInput(session, "batchCheckCond",
                       choices = c('None', pdataOptions))
-    updateSelectInput(session, "mastC1Class",
+    updateSelectInput(session, "deC1Class",
                       choices = c('None', pdataOptions))
-    updateSelectInput(session, "mastC2G1Col",
-                      choices = c(pdataOptions))
-    updateSelectInput(session, "mastC2G2Col",
-                      choices = c(pdataOptions))
-    updateSelectInput(session, "hurdlecondition",
+    updateSelectInput(session, "deC2G1Col",
                       choices = pdataOptions)
-    updateSelectInput(session, "mastHMcolData",
+    updateSelectInput(session, "deC2G2Col",
                       choices = pdataOptions)
-    updateSelectInput(session, "mastHMSplitCol",
+    updateSelectInput(session, 'deCovar', choices = pdataOptions)
+    updateSelectInput(session, "deHMcolData",
+                      choices = pdataOptions)
+    updateSelectInput(session, "deHMSplitCol",
                       choices = c('condition', pdataOptions),
                       selected = 'condition')
     updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
@@ -131,11 +119,15 @@ shinyServer(function(input, output, session) {
     selectRowData <- colnames(rowData(vals$counts))
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", selectRowData))
-    updateSelectInput(session, "mastHMrowData",
+    updateSelectInput(session, "deHMrowData",
                       choices = selectRowData)
-    updateSelectInput(session, "mastHMSplitRow",
+    updateSelectInput(session, "deHMSplitRow",
                       choices = c('regulation', selectRowData),
                       selected = 'regulation')
+    updateSelectInput(session, 'deVioLabel',
+                      choices = c('Default ID', selectRowData))
+    updateSelectInput(session, 'deRegLabel',
+                      choices = c('Default ID', selectRowData))
     updateSelectInput(session, "mastFMHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "hmGeneCol",
@@ -171,8 +163,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInput(session, "batchCheckCorrAssay",
                       choices = c("", vals$batchResAssay))
-    updateSelectInput(session, "diffexAssay", choices = currassays)
-    updateSelectInput(session, "mastAssay", choices = currassays)
+    updateSelectInput(session, "deAssay", choices = currassays)
     updateSelectInput(session, "mastFMAssay", choices = currassays)
     updateSelectInput(session, "mastFMHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
@@ -943,14 +934,10 @@ shinyServer(function(input, output, session) {
       }
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
-      vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$diffexheatmapplot <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
@@ -1194,15 +1181,12 @@ shinyServer(function(input, output, session) {
 #    withBusyIndicatorServer("downsampleGo", {
 #      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
 #      updateNumSamples()
-#      vals$diffexheatmapplot <- NULL
 #      vals$combatstatus <- ""
 #      vals$diffexgenelist <- NULL
 #      vals$gsvaRes <- NULL
 #      vals$gsvaLimma <- NULL
 #      vals$visplotobject <- NULL
 #      vals$enrichRes <- NULL
-#      vals$diffexBmName <- NULL
-#      diffExValues$diffExList <- NULL
 #      vals$dimRedPlot <- NULL
 #      vals$dimRedPlot_geneExp <- NULL
 #      vals$dendrogram <- NULL
@@ -1231,15 +1215,10 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       #updateSelectInput(session, "deletesamplelist",
       #                  choices = colnames(vals$counts))
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
-      vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
-      vals$diffexBmName <- NULL
-      diffExValues$diffExList <- NULL
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
@@ -1294,15 +1273,10 @@ shinyServer(function(input, output, session) {
 #    withBusyIndicatorServer("runFilterSample", {
 #      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
 #      vals$counts <- vals$counts[, filter]
-#      vals$diffexgenelist <- NULL
 #      vals$gsvaRes <- NULL
 #      vals$enrichRes <- NULL
 #      vals$visplotobject <- NULL
-#      vals$diffexheatmapplot <- NULL
-#      vals$combatstatus <- ""
 #      vals$gsvaLimma <- NULL
-#      vals$diffexBmName <- NULL
-#      diffExValues$diffExList <- NULL
 #      vals$dimRedPlot <- NULL
 #      vals$dimRedPlot_geneExp <- NULL
 #      vals$dendrogram <- NULL
@@ -1353,13 +1327,9 @@ shinyServer(function(input, output, session) {
 #                                    outSymbol = input$orgToCol,
 #                                    database = input$orgOrganism)
 #      updateGeneNames()
-#      vals$diffexgenelist <- NULL
 #      vals$gsvaRes <- NULL
 #      vals$enrichRes <- NULL
 #      vals$visplotobject <- NULL
-#      vals$diffexheatmapplot <- NULL
-#      vals$diffexBmName <- NULL
-#      diffExValues$diffExList <- NULL
 #      vals$dimRedPlot <- NULL
 #      vals$dimRedPlot_geneExp <- NULL
 #      vals$dendrogram <- NULL
@@ -1373,13 +1343,9 @@ shinyServer(function(input, output, session) {
 #    filter <- rowData(vals$counts)[, input$filteredFeature] %in% input$filterFeatureChoices
 #    vals$counts <- vals$counts[filter, ]
 #    updateGeneNames()
-#    vals$diffexgenelist <- NULL
 #    vals$gsvaRes <- NULL
 #    vals$enrichRes <- NULL
 #    vals$visplotobject <- NULL
-#    vals$diffexheatmapplot <- NULL
-#    vals$diffexBmName <- NULL
-#    diffExValues$diffExList <- NULL
 #    vals$dimRedPlot <- NULL
 #    vals$dimRedPlot_geneExp <- NULL
 #    vals$dendrogram <- NULL
@@ -3602,8 +3568,7 @@ shinyServer(function(input, output, session) {
         }
       } else if (!is.null(input$hmImport) &&
                  input$hmImport == "Differential Expression"){
-        #deg <- vals$diffexgenelist
-        print(vals$scDiffEx)
+          print('hi')
       }
     }
   })
@@ -4766,557 +4731,68 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
-  shinyjs::onclick("Diffex_hideAllSections", allSections(
-    "hide", c(paste("de", 1:7, sep = ""))), add = TRUE)
-  shinyjs::onclick("Diffex_showAllSections", allSections(
-    "show", c(paste("de", 1:7, sep = ""))), add = TRUE)
-  shinyjs::onclick("diffex1",
-                   shinyjs::toggle(id = "de1",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex2",
-                   shinyjs::toggle(id = "de2",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex3",
-                   shinyjs::toggle(id = "de3",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex4",
-                   shinyjs::toggle(id = "de4",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex5",
-                   shinyjs::toggle(id = "de5",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex6",
-                   shinyjs::toggle(id = "de6",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("diffex7",
-                   shinyjs::toggle(id = "de7",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::addClass(id = "diffex1", class = "btn-block")
-  shinyjs::addClass(id = "diffex2", class = "btn-block")
-  shinyjs::addClass(id = "diffex3", class = "btn-block")
-  shinyjs::addClass(id = "diffex4", class = "btn-block")
-  shinyjs::addClass(id = "diffex5", class = "btn-block")
-  shinyjs::addClass(id = "diffex6", class = "btn-block")
-  shinyjs::addClass(id = "diffex7", class = "btn-block")
-
-  output$selectDiffexConditionUI <- renderUI({
-    if (!is.null(vals$counts)){
-      if (input$selectDiffex == "ANOVA") {
-        tagList(
-          selectInput("selectDiffexCondition", "Select Condition(s):",
-                      colnames(colData(vals$counts)), multiple = TRUE)
-        )
-      } else {
-        tagList(
-          selectInput("selectDiffexCondition",
-                      "Select Condition:",
-                      colnames(colData(vals$counts))),
-          selectInput("selectDiffexCovariates",
-                      "Select Additional Covariates:",
-                      colnames(colData(vals$counts)), multiple = TRUE)
-        )
-      }
-    }
-  })
-
-  #For conditions with more than two factors, select the factor of interest
-  output$selectDiffexConditionLevelUI <- renderUI({
-    req(vals$counts)
-    if (length(colnames(colData(vals$counts))) > 0){
-      if (length(unique(colData(vals$counts)[, input$selectDiffexCondition])) > 2 & input$selectDiffex == "DESeq2"){
-        tagList(
-          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
-                       choiceNames = c("Biomarker (1 vs all)", "Factor of Interest vs. Control Factor",
-                                       "Entire Factor (Full/Reduced)"),
-                       choiceValues = c("biomarker", "contrast", "fullreduced")
-          ),
-          conditionalPanel(
-            condition = "input.selectDiffexConditionMethod != 'fullreduced'",
-            selectInput("selectDiffexConditionOfInterest",
-                        "Select Factor of Interest",
-                        unique(sort(colData(vals$counts)[, input$selectDiffexCondition])))
-          ),
-          conditionalPanel(
-            condition = "input.selectDiffexConditionMethod == 'contrast' && input.selectDiffex == 'DESeq2'",
-            selectInput("selectDiffexControlCondition",
-                        "Select Control Factor",
-                        unique(sort(colData(vals$counts)[, input$selectDiffexCondition])))
-          )
-        )
-      } else if (length(unique(colData(vals$counts)[, input$selectDiffexCondition])) > 2 & input$selectDiffex == "limma") {
-        tagList(
-          radioButtons("selectDiffexConditionMethod", "Select Analysis Method:",
-                       choiceNames = c("Biomarker (1 vs all)", "Factor of Interest",
-                                       "Entire Factor"),
-                       choiceValues = c("biomarker", "coef", "allcoef")
-          ),
-          conditionalPanel(
-            condition = "input.selectDiffexConditionMethod != 'allcoef'",
-            selectInput("selectDiffexConditionOfInterest",
-                        "Select Factor of Interest",
-                        unique(sort(colData(vals$counts)[, input$selectDiffexCondition])))
-          )
-        )
-      } else if (input$selectDiffex == "ANOVA") {
-        tagList(
-          selectInput("anovaCovariates", "Select Additional Covariates:",
-                      colnames(colData(vals$counts)), multiple = TRUE)
-        )
-      }
-    }
-  })
-
-  #Run differential expression ####
-  observeEvent(input$runDiffex, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }
-    else{
-      withBusyIndicatorServer("runDiffex", {
-        vals$diffexheatmapplot <- NULL
-        #run diffex to get gene list and pvalues
-        if (input$selectDiffex == "ANOVA"){
-          useCovariates <- input$anovaCovariates
-        } else {
-          useCovariates <- input$selectDiffexCovariates
-        }
-        vals$diffexgenelist <- scDiffEx(inSCE = vals$counts,
-                                        useAssay = input$diffexAssay,
-                                        condition = input$selectDiffexCondition,
-                                        covariates = useCovariates,
-                                        significance = input$selectPval,
-                                        ntop = nrow(vals$counts),
-                                        usesig = FALSE,
-                                        diffexmethod = input$selectDiffex,
-                                        levelofinterest = input$selectDiffexConditionOfInterest,
-                                        analysisType = input$selectDiffexConditionMethod,
-                                        controlLevel = input$selectDiffexControlCondition,
-                                        adjust = input$selectCorrection)
-        vals$scDiffEx[[input$selectDiffex]] <- list(result = vals$diffexgenelist)
-        vals$scDiffEx[[input$selectDiffex]]$useAssay <- input$diffexAssay
-        idx1 <- colData(vals$counts)[[input$selectDiffexCondition]] == input$selectDiffexConditionOfInterest
-        vals$scDiffEx[[input$selectDiffex]]$select <- list(idx1 = idx1)
-
-      })
-    }
-  })
-
-  output$colorBarConditionUI <- renderUI({
-    if (is.null(vals$counts)){
-      selectInput("colorBarCondition", "Select Condition", NULL)
-    } else {
-      selectInput("colorBarCondition", "Select Condition",
-                  colnames(colData(vals$counts)), multiple = TRUE)
-    }
-  })
-
-  annotationColors <- reactiveValues(cols = list())
-
-  output$heatmapSampleAnnotations <- renderUI({
-    if (!is.null(input$colorBarCondition)) {
-      if (!is.null(vals$counts) & length(input$colorBarCondition) > 0){
-        if (all(input$colorBarCondition %in% colnames(colData(vals$counts)))) {
-          h <- input$colorBarCondition
-          L <- lapply(seq_along(h), function(i) colourGroupInput(paste0("colorGroup", i)))
-          annotationColors$cols <- lapply(
-            seq_along(h),
-            function(i) {
-              callModule(colourGroup, paste0("colorGroup", i), heading = h[i],
-                         options = unique(unlist(colData(vals$counts)[, h[i]])))
-            }
-          )
-          return(L)
-        }
-      }
-    }
-  })
-
-  output$diffexNgenes <- renderUI({
-    req(vals$diffexgenelist)
-    HTML(paste(em("Max genes: "), nrow(vals$diffexgenelist), sep = ""))
-  })
-
-  output$logFCDiffexRange <- renderUI({
-    req(vals$diffexgenelist)
-    if (input$selectDiffex != 'ANOVA') {
-      logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
-      if (length(logFCIndex) == 0) {
-        #for DESeq2 with more than 1 covariate, choose the first column
-        logFCIndex <- 1
-      }
-      minlogFC <- paste(em("Min logFC : "), round(min(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
-      maxlogFC <- paste(em("Max logFC : "), round(max(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
-      HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
-    }
-  })
-
-  #Plot the differential expression results
-  observeEvent(input$runPlotDiffex, {
-    req(vals$diffexgenelist)
-    withBusyIndicatorServer("runPlotDiffex", {
-      tryCatch ({
-        #logFC or abs(logFC)
-        if (input$applyAbslogFCDiffex == TRUE) {
-          absLogFCDiffex <- abs(input$selectlogFCDiffex)
-        } else {
-          absLogFCDiffex <- input$selectlogFCDiffex
-        }
-        #for convenience, index logFC and p-val columns for all the methods
-        pvalIndex <- which(grepl("*padj*", colnames(vals$diffexgenelist)))
-        logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
-        if (input$selectNGenes > nrow(vals$diffexgenelist)) {
-          stop("Max value exceeded for Input.")
-        }
-        #p-Val and logFC cutoff
-        if (input$applyCutoff == TRUE & input$applylogFCCutoff == TRUE) {
-          if (input$selectDiffex == 'ANOVA') {
-            stop("logFC is not applicable for ANOVA")
-          } else {
-            if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-              diffexFilterRes <- vals$diffexgenelist
-              stop("the min/least p-value in the results is greater than the selected p-val range")
-            } else if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
-              diffexFilterRes <- vals$diffexgenelist
-              stop("the min/least logFC in the results is greater than the selected logFC range")
-            } else {
-              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval &
-                                                         vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
-            }
-          }
-        }
-        #p-Val cutoff
-        else if (input$applyCutoff == TRUE) {
-          if (min(na.omit(vals$diffexgenelist[, pvalIndex])) > input$selectPval) {
-            diffexFilterRes <- vals$diffexgenelist
-            stop("the min/least p-value in the results is greater than the selected p-val range")
-          } else {
-            diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, pvalIndex] <= input$selectPval), ]
-          }
-        }
-        #logFC cutoff
-        else if (input$applylogFCCutoff == TRUE) {
-          if (input$selectDiffex == 'ANOVA') {
-            stop("logFC is not applicable for ANOVA")
-          } else  {
-            if (min(na.omit(vals$diffexgenelist[, logFCIndex])) > absLogFCDiffex) {
-              diffexFilterRes <- vals$diffexgenelist
-              stop("the min/least logFC in the results is greater than the selected logFC range")
-            } else {
-              diffexFilterRes <-  vals$diffexgenelist[(vals$diffexgenelist[, logFCIndex] <= absLogFCDiffex), ]
-            }
-          }
-        } else {
-          diffexFilterRes <- vals$diffexgenelist
-        }
-        if (is.null(diffexFilterRes)){
-          diffexFilterRes <- vals$diffexgenelist
-        }
-        rowLengthFiltered <- nrow(diffexFilterRes)
-        if (rowLengthFiltered == 0) {
-          stop("You've got 0 genes after filtering.. adjust your filters accordingly")
-        }
-        if (rowLengthFiltered < input$selectNGenes) {
-          diffexFilterRes <- diffexFilterRes[seq_len(rowLengthFiltered), ]
-        } else {
-          diffexFilterRes <- diffexFilterRes[seq_len(input$selectNGenes), ]
-        }
-        #run plotDiffex
-        if (!is.null(vals$diffexgenelist)){
-          if (input$displayHeatmapColorBar){
-            if (is.null(input$colorBarCondition)){
-              colors <- NULL
-            } else {
-              colors <- lapply(annotationColors$cols, function(col) col())
-              names(colors) <- input$colorBarCondition
-              if (is.null(colors[[length(colors)]][[1]])){
-                colors <- NULL
-              }
-            }
-          } else {
-            colors <- NULL
-          }
-          vals$diffexheatmapplot <- plotDiffEx(inSCE = vals$counts,
-                                               useAssay = input$diffexAssay,
-                                               condition = input$colorBarCondition,
-                                               geneList = rownames(diffexFilterRes),
-                                               clusterRow = input$clusterRows,
-                                               clusterCol = input$clusterColumns,
-                                               displayRowLabels = input$displayHeatmapRowLabels,
-                                               displayColumnLabels = input$displayHeatmapColumnLabels,
-                                               displayRowDendrograms = input$displayHeatmapRowDendrograms,
-                                               displayColumnDendrograms = input$displayHeatmapColumnDendrograms,
-                                               annotationColors = colors,
-                                               scaleExpression = input$applyScaleDiffex,
-                                               columnTitle = input$heatmapColumnsTitle)
-        }
-      }, error = function(e){
-        shinyalert::shinyalert("Error!", e$message, type = "error")
-      })
-    })
-  })
-
-  output$diffPlot <- renderPlot({
-    req(vals$diffexheatmapplot)
-    ComplexHeatmap::draw(vals$diffexheatmapplot)
-  }, height = 600)
-
-  #Create the differential expression results table
-  output$diffextable <- DT::renderDataTable({
-    if (!is.null(vals$diffexgenelist)){
-      temptable <- cbind(rownames(vals$diffexgenelist), data.frame(vals$diffexgenelist))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, rownames = FALSE)
-
-  #disable downloadGeneList button if the result is not null
-  isDiffExResult <- reactive(is.null(vals$diffexgenelist))
-  observe({
-    if (isDiffExResult()) {
-      shinyjs::disable("downloadGeneList")
-    } else {
-      shinyjs::enable("downloadGeneList")
-    }
-  })
-
-  #create custom name for the results
-  customName <- reactive(paste(input$selectDiffexCondition, input$selectDiffex, sep = "_"))
-  # Download the differential expression results table
-  output$downloadGeneList <- downloadHandler(
-    filename = function() {
-      paste(customName(), Sys.Date(), ".csv", sep = "")
-    },
-    content = function(file) {
-      results <- vals$diffexgenelist
-      colnames(results) <- paste(customName(), colnames(results), sep = "_")
-      utils::write.csv(results, file)
-    }
-  )
-
-  #save results wrt to custom name
-  observeEvent(input$saveResults, {
-    if (input$ResultsName == ""){
-      shinyalert::shinyalert("Error!", "Specify name of the results.", type = "error")
-    } else {
-      withBusyIndicatorServer("saveResults", {
-        ResultsName <- gsub(" ", "_", input$ResultsName)
-        if (!is.null(diffExValues$diffExList)) {
-          if (ResultsName %in% diffExValues$diffExList) {
-            shinyalert::shinyalert("Error!", "name already exists. Please use a unique result name", type = "error")
-          } else {
-            diffExValues$index <- diffExValues$index + 1
-            diffExValues$diffExList[diffExValues$index] <- ResultsName
-            vals$counts <- saveDiffExResults(inSCE = vals$counts,
-                                             diffex = vals$diffexgenelist,
-                                             name = input$ResultsName,
-                                             method = input$selectDiffex)
-          }
-        } else {
-          diffExValues$index <- diffExValues$index + 1
-          diffExValues$diffExList[diffExValues$index] <- ResultsName
-          vals$counts <- saveDiffExResults(inSCE = vals$counts,
-                                           diffex = vals$diffexgenelist,
-                                           name = input$ResultsName,
-                                           method = input$selectDiffex)
-        }
-      })
-    }
-  })
-
-  #dynamically create a list of names of the results
-  output$savedRes <- renderUI({
-    if (!is.null(vals$counts)) {
-      if (is.null(diffExValues$diffExList)) {
-        savedObjResults <- gsub("_padj$", "", colnames(rowData(vals$counts))[grepl("_padj$", colnames(rowData(vals$counts)))])
-        diffExValues$index <- length(savedObjResults)
-        diffExValues$diffExList[seq_len(diffExValues$index)] <- savedObjResults[seq_len(diffExValues$index)]
-      }
-      selectizeInput("savedDiffExResults", "Select available results",
-                     choices = diffExValues$diffExList)
-    }
-  })
-
-  output$saveDiffResultsNote <- renderUI({
-    req(vals$diffexgenelist)
-    HTML(paste(em("Note: Use a unique name to save results each time.")))
-  })
-
-  #load specific result according to users' input
-  observeEvent(input$loadResults, {
-    if (!is.null(input$savedDiffExResults)) {
-      df <- data.frame(rowData(vals$counts))
-      #extract all columns except biomarker columns by checking for unique values == 2
-      listColNames <- names(which(apply(df, 2, function(a) length(unique(a)) == 2) == FALSE))
-      #arrange your df according to these extracted names
-      df <- df[, listColNames]
-      #find all columns matching with the user's input.
-      #sub() here is used to extract columns with user defined inputs
-      df <- df[, which(sub("_[^_]+$", "", listColNames) == input$savedDiffExResults)]
-      #remove the saved results names from columns
-      colnames(df) <- gsub(paste0(input$savedDiffExResults, "_"), "", colnames(df))
-      filterCol <- colnames(df)[grepl("padj$", colnames(df))]
-      #order the padj column to get the top significant genes
-      orderedRows <- rownames(df)[order(df[, filterCol])[seq_len(nrow(df))]]
-      df <- df[orderedRows, ]
-      vals$diffexgenelist <- df
-      vals$diffexheatmapplot <- NULL
-    }
-  })
-
-  output$BioNgenes <- renderUI({
-    req(vals$diffexgenelist)
-    HTML(paste(em("Max genes: "), nrow(vals$diffexgenelist), sep = ""))
-  })
-
-  output$logFCBioRange <- renderUI({
-    req(vals$diffexgenelist)
-    if (input$selectDiffex != 'ANOVA') {
-      logFCIndex <- which(grepl("*log*", colnames(vals$diffexgenelist)))
-      if (length(logFCIndex)) {
-        #for DESeq2 with more than 1 covariate, choose the first column
-        logFCIndex <- 1
-      }
-      minlogFC <- paste(em("Min logFC : "), round(min(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
-      maxlogFC <- paste(em("Max logFC : "), round(max(na.omit(vals$diffexgenelist[, logFCIndex])), digits = 6))
-      HTML(paste(minlogFC, maxlogFC, sep = '<br/>'))
-    }
-  })
-
-  #save biomarker in rowData() wrt name and conditions.
-  observeEvent(input$saveBiomarker, {
-    if (input$biomarkerName == ""){
-      shinyalert::shinyalert("Error!", "Specify biomarker name.", type = "error")
-    } else {
-      withBusyIndicatorServer("saveBiomarker", {
-        req(vals$diffexgenelist)
-        biomarkerName <- gsub(" ", "_", input$biomarkerName)
-        if (anyDuplicated(biomarkerName)) {
-          shinyalert::shinyalert("Error", "name already exists. Please use a unique result name",
-                                 type = "error")
-        }
-        if (input$applyAbslogFC == TRUE) {
-          absLogFC <- abs(input$selectlogFC)
-        } else {
-          absLogFC <- input$selectlogFC
-        }
-        if (input$selectBioNGenes > nrow(vals$diffexgenelist)) {
-          stop("Max value exceeded for Input.")
-        }
-        if (input$applyBioCutoff1 == TRUE & input$applyBioCutoff2 == TRUE) {
-          vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                          diffex = vals$diffexgenelist,
-                                          biomarkerName = biomarkerName,
-                                          method = input$selectDiffex,
-                                          ntop = input$selectBioNGenes,
-                                          logFC = absLogFC,
-                                          pVal = input$selectAdjPVal)
-        } else if (input$applyBioCutoff1 == TRUE) {
-          vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                          diffex = vals$diffexgenelist,
-                                          biomarkerName = biomarkerName,
-                                          method = input$selectDiffex,
-                                          ntop = input$selectBioNGenes,
-                                          logFC = NULL,
-                                          pVal = input$selectAdjPVal)
-        } else if (input$applyBioCutoff2 == TRUE) {
-          vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                          diffex = vals$diffexgenelist,
-                                          biomarkerName = biomarkerName,
-                                          method = input$selectDiffex,
-                                          ntop = input$selectBioNGenes,
-                                          logFC = absLogFC,
-                                          pVal = NULL)
-        } else {
-          vals$counts <- saveBiomarkerRes(inSCE = vals$counts,
-                                          diffex = vals$diffexgenelist,
-                                          biomarkerName = input$biomarkerName,
-                                          method = input$selectDiffex,
-                                          ntop = input$selectBioNGenes,
-                                          logFC = NULL,
-                                          pVal = NULL)
-        }
-        vals$diffexBmName <- TRUE
-      })
-    }
-  })
-
-  observe({
-    output$bioMarkerNote <- renderUI({
-      req(vals$counts)
-      req(isolate(input$biomarkerName))
-      if (vals$diffexBmName) {
-        isolate({
-          biomarkerName <- gsub(" ", "_", input$biomarkerName)
-          countBioGenes <- count(rowData(vals$counts)[, biomarkerName] == 1)
-          HTML(paste("Saved ", countBioGenes, " genes after applying the selected filter(s)", sep = ""))
-        })
-      }
-    })
-  })
-
-  #-----------------------------------------------------------------------------
-  # Page 5.2: MAST ####
-  #-----------------------------------------------------------------------------
-  ## MAST - condition determination method1 ####
-  output$mastC1G1UI <- renderUI({
+  ## DE - condition determination method1 ####
+  output$deC1G1UI <- renderUI({
     if(!is.null(vals$counts) &
-       !input$mastC1Class == "None"){
-      classCol <- colData(vals$counts)[[input$mastC1Class]]
+       !input$deC1Class == "None"){
+      classCol <- colData(vals$counts)[[input$deC1Class]]
       classChoices <- sort(as.vector(unique(classCol)))
-      selectInput(inputId = "mastC1G1", label = "Select Condition(s)",
+      selectInput(inputId = "deC1G1", label = "Select Condition(s)",
                   choices = classChoices, multiple = TRUE)
     } else {
-      selectInput(inputId = "mastC1G1", label = "Select Condition(s)",
-        choices = NULL, multiple = TRUE)
+      selectInput(inputId = "deC1G1", label = "Select Condition(s)",
+                  choices = NULL, multiple = TRUE)
     }
   })
 
-  output$mastC1G2UI <- renderUI({
+  output$deC1G2UI <- renderUI({
     if(!is.null(vals$counts) &
-        !input$mastC1Class == "None"){
-      classCol <- colData(vals$counts)[[input$mastC1Class]]
+       !input$deC1Class == "None"){
+      classCol <- colData(vals$counts)[[input$deC1Class]]
       classChoices <- sort(as.vector(unique(classCol)))
-      selectInput(inputId = "mastC1G2", label = "Select Condition(s)",
-        choices = classChoices, multiple = TRUE)
+      selectInput(inputId = "deC1G2", label = "Select Condition(s)",
+                  choices = classChoices, multiple = TRUE)
     } else {
-      selectInput(inputId = "mastC1G2", label = "Select Condition(s)",
-        choices = NULL, multiple = TRUE)
+      selectInput(inputId = "deC1G2", label = "Select Condition(s)",
+                  choices = NULL, multiple = TRUE)
     }
   })
 
-  output$mastC1G1CellCheckUI <- renderUI({
-    if(!is.null(input$mastC1G1) &
-       length(input$mastC1G1) > 0){
-      g1Idx <- colData(vals$counts)[[input$mastC1Class]] %in% input$mastC1G1
+  output$deC1G1CellCheckUI <- renderUI({
+    if(!is.null(input$deC1G1) &
+       length(input$deC1G1) > 0){
+      g1Idx <- colData(vals$counts)[[input$deC1Class]] %in% input$deC1G1
       g1Cells <- colnames(vals$counts)[g1Idx]
       g1CellsText <- paste(g1Cells, collapse = "\n")
-      textAreaInput("mastC1G1CellCheck", "Cells selected:", g1CellsText,
-        height = '100px', placeholder = "Nothing selected")
+      textAreaInput("deC1G1CellCheck", "Cells selected:", g1CellsText,
+                    height = '100px', placeholder = "Nothing selected")
     } else {
-      textAreaInput("mastC1G1CellCheck", "Cells selected:", NULL,
-        height = '100px', placeholder = "Nothing selected")
+      textAreaInput("deC1G1CellCheck", "Cells selected:", NULL,
+                    height = '100px', placeholder = "Nothing selected")
     }
   })
 
-  output$mastC1G2CellCheckUI <- renderUI({
-    if(!is.null(input$mastC1G2) &
-        length(input$mastC1G2) > 0){
-      g2Idx <- colData(vals$counts)[[input$mastC1Class]] %in% input$mastC1G2
+  output$deC1G2CellCheckUI <- renderUI({
+    if(!is.null(input$deC1G2) &
+       length(input$deC1G2) > 0){
+      g2Idx <- colData(vals$counts)[[input$deC1Class]] %in% input$deC1G2
       g2Cells <- colnames(vals$counts)[g2Idx]
       g2CellsText <- paste(g2Cells, collapse = "\n")
-      textAreaInput("mastC1G2CellCheck", "Cells selected:", g2CellsText,
-        height = '100px', placeholder = "Nothing selected")
+      textAreaInput("deC1G2CellCheck", "Cells selected:", g2CellsText,
+                    height = '100px',
+                    placeholder = "Leave unselected for all the others.")
     } else {
-      textAreaInput("mastC1G2CellCheck", "Cells selected:", NULL,
-        height = '100px', placeholder = "Nothing selected")
+      textAreaInput("deC1G2CellCheck", "Cells selected:", NULL,
+                    height = '100px',
+                    placeholder = "Leave unselected for all the others.")
     }
   })
 
-  output$mastC1G1NCell <- renderUI({
-    if(!is.null(input$mastC1G1CellCheck)){
-      if(!input$mastC1G1CellCheck == ""){
-        cellList <- str_trim(scan(text = input$mastC1G1CellCheck,
-          sep='\n', what = 'character'))
+  output$deC1G1NCell <- renderUI({
+    if(!is.null(input$deC1G1CellCheck)){
+      if(!input$deC1G1CellCheck == ""){
+        cellList <- str_trim(scan(text = input$deC1G1CellCheck,
+                                  sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -5329,11 +4805,11 @@ shinyServer(function(input, output, session) {
     span(msg, style = 'margin-left:10px')
   })
 
-  output$mastC1G2NCell <- renderUI({
-    if(!is.null(input$mastC1G2CellCheck)){
-      if(!input$mastC1G2CellCheck == ""){
-        cellList <- str_trim(scan(text = input$mastC1G2CellCheck,
-          sep='\n', what = 'character'))
+  output$deC1G2NCell <- renderUI({
+    if(!is.null(input$deC1G2CellCheck)){
+      if(!input$deC1G2CellCheck == ""){
+        cellList <- str_trim(scan(text = input$deC1G2CellCheck,
+                                  sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -5345,61 +4821,93 @@ shinyServer(function(input, output, session) {
     msg <- paste0("Totally ", nCell, " cell(s) selected.")
     span(msg, style = 'margin-left:10px')
   })
-  ## MAST - condition determination method2 ####
+  ## DE - condition determination method2 ####
   ## condition 1 table operation vvvv
-  output$mastC2G1Table <- DT::renderDataTable({
+  output$deC2G1Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      as.data.frame(colData(vals$counts))[,input$mastC2G1Col, drop=FALSE]
+      df <- lapply(colData(vals$counts),
+                   function(i){
+                     if(is.character(i)){
+                       if(length(unique(i)) == length(i)){
+                         return(i)
+                       } else {
+                         return(as.factor(i))
+                       }
+                     }
+                   })
+      df <- data.frame(df)
+      DT::datatable(df, filter = "top", options = list(scrollX = TRUE))
     }
-  }, filter = "top", server = TRUE
-  )
-  mastC2G1Table_proxy <- DT::dataTableProxy("mastC2G1Table")
+  }, server = TRUE)
+  deC2G1Table_proxy <- DT::dataTableProxy("deC2G1Table")
 
-  observeEvent(input$mastC2G1Table_addAll, {
-    DT::selectRows(mastC2G1Table_proxy,
-      sort(unique(c(input$mastC2G1Table_rows_selected,
-                    input$mastC2G1Table_rows_all))))
+  observeEvent(input$deC2G1Col, {
+    colNames <- names(colData(vals$counts))
+    showIdx <- which(colNames %in% input$deC2G1Col)
+    DT::showCols(deC2G1Table_proxy, showIdx, reset = TRUE)
   })
 
-  observeEvent(input$mastC2G1Table_clear, {
-    DT::selectRows(mastC2G1Table_proxy, NULL)
+  observeEvent(input$deC2G1Table_addAll, {
+    DT::selectRows(deC2G1Table_proxy,
+                   sort(unique(c(input$deC2G1Table_rows_selected,
+                                 input$deC2G1Table_rows_all))))
   })
 
-  output$mastC2G1info <- renderUI({
-    nCell <- length(input$mastC2G1Table_rows_selected)
-    p(paste0("Totally ", nCell, " cells selected for ", input$mastG1Name))
+  observeEvent(input$deC2G1Table_clear, {
+    DT::selectRows(deC2G1Table_proxy, NULL)
+  })
+
+  output$deC2G1info <- renderUI({
+    nCell <- length(input$deC2G1Table_rows_selected)
+    p(paste0("Totally ", nCell, " cells selected for ", input$deG1Name))
   })
   ## condition 1 table operation ^^^^
   ## condition 2 table operation vvvv
-  output$mastC2G2Table <- DT::renderDataTable({
+  output$deC2G2Table <- DT::renderDataTable({
     if(!is.null(vals$counts)){
-      as.data.frame(colData(vals$counts))[,input$mastC2G2Col, drop=FALSE]
+      df <- lapply(colData(vals$counts),
+                   function(i){
+                     if(is.character(i)){
+                       if(length(unique(i)) == length(i)){
+                         return(i)
+                       } else {
+                         return(as.factor(i))
+                       }
+                     }
+                   })
+      df <- data.frame(df)
+      DT::datatable(df, filter = "top", options = list(scrollX = TRUE))
     }
-  }, filter = "top", server = TRUE
-  )
-  mastC2G2Table_proxy <- DT::dataTableProxy("mastC2G2Table")
+  }, server = TRUE)
+  deC2G2Table_proxy <- DT::dataTableProxy("deC2G2Table")
 
-  observeEvent(input$mastC2G2Table_addAll, {
-    DT::selectRows(mastC2G2Table_proxy,
-      sort(unique(c(input$mastC2G2Table_rows_selected,
-        input$mastC2G2Table_rows_all))))
+  observeEvent(input$deC2G2Col, {
+    colNames <- names(colData(vals$counts))
+    showIdx <- which(colNames %in% input$deC2G2Col)
+    DT::showCols(deC2G2Table_proxy, showIdx, reset = TRUE)
   })
 
-  observeEvent(input$mastC2G2Table_clear, {
-    DT::selectRows(mastC2G2Table_proxy, NULL)
+  observeEvent(input$deC2G2Table_addAll, {
+    DT::selectRows(deC2G2Table_proxy,
+                   sort(unique(c(input$deC2G2Table_rows_selected,
+                                 input$deC2G2Table_rows_all))))
   })
 
-  output$mastC2G2info <- renderUI({
-    nCell <- length(input$mastC2G2Table_rows_selected)
-    p(paste0("Totally ", nCell, " cells selected for ", input$mastG2Name))
+  observeEvent(input$deC2G2Table_clear, {
+    DT::selectRows(deC2G2Table_proxy, NULL)
+  })
+
+  output$deC2G2info <- renderUI({
+    nCell <- length(input$deC2G2Table_rows_selected)
+    p(paste0("Totally ", nCell, " cells selected for ", input$deG2Name))
   })
   ## condition 2 table operation ^^^^
-  ## MAST - condition determination method3 ####
-  output$mastC3G1NCell <- renderUI({
-    if(!is.null(input$mastC3G1Cell)){
-      if(!input$mastC3G1Cell == ""){
-        cellList <- str_trim(scan(text = input$mastC3G1Cell,
-          sep='\n', what = 'character', quiet = TRUE))
+  ## DE - condition determination method3 ####
+  output$deC3G1NCell <- renderUI({
+    if(!is.null(input$deC3G1Cell)){
+      if(!input$deC3G1Cell == ""){
+        cellList <- str_trim(scan(text = input$deC3G1Cell,
+                                  sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -5412,11 +4920,11 @@ shinyServer(function(input, output, session) {
     span(msg, style = 'margin-left:10px')
   })
 
-  output$mastC3G2NCell <- renderUI({
-    if(!is.null(input$mastC3G2Cell)){
-      if(!input$mastC3G2Cell == ""){
-        cellList <- str_trim(scan(text = input$mastC3G2Cell,
-          sep='\n', what = 'character', quiet = TRUE))
+  output$deC3G2NCell <- renderUI({
+    if(!is.null(input$deC3G2Cell)){
+      if(!input$deC3G2Cell == ""){
+        cellList <- str_trim(scan(text = input$deC3G2Cell,
+                                  sep='\n', what = 'character', quiet = TRUE))
         cellList <- unique(cellList)
         nCell <- length(which(cellList %in% colnames(vals$counts)))
       } else {
@@ -5428,191 +4936,228 @@ shinyServer(function(input, output, session) {
     msg <- paste0("Totally ", nCell, " valid cell name(s) entered.")
     span(msg, style = 'margin-left:10px')
   })
-  ## MAST - other check ####
-  output$mastCompNameUI <- renderUI({
-    if(!is.null(vals$counts)){
-      if("MAST" %in% names(S4Vectors::metadata(vals$counts))){
-        nRes <- length(names(S4Vectors::metadata(vals$counts)$MAST))
-        autoinc <- nRes + 1
-      } else {
-        autoinc <- 1
-      }
-    } else {
-      autoinc <- 1
-    }
-    textInput("mastCompName", "Experiment Name:", paste0("Comparison", autoinc),
-              placeholder = 'Required.')
-  })
+  # DE run analysis ####
 
-  mastNameIsDup <- reactive({
-    if(!is.null(vals$counts) &&
-        "MAST" %in% names(metadata(vals$counts)) &&
-        !is.null(input$mastCompName)){
-      allRes <- names(metadata(vals$counts)$MAST)
-      input$mastCompName %in% allRes
-    } else {
-      FALSE
-    }
-  })
-
-  ## MAST - apply calculation ####
-  runMASTfromShiny <- function(){
-    withBusyIndicatorServer("runMAST", {
-      if(input$mastCondMethod == 1){
-        vals$counts <- runMAST(inSCE = vals$counts,
-                               useAssay = input$mastAssay,
-                               class = input$mastC1Class,
-                               classGroup1 = input$mastC1G1,
-                               classGroup2 = input$mastC1G2,
-                               groupName1 = input$mastG1Name,
-                               groupName2 = input$mastG2Name,
-                               analysisName = input$mastCompName,
-                               useThresh = input$useAdaptThresh,
-                               freqExpressed = input$mastFreq,
-                               log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh,
-                               onlyPos = input$mastPosOnly)
-      } else if(input$mastCondMethod == 2){
-        vals$counts <- runMAST(inSCE = vals$counts,
-                               useAssay = input$mastAssay,
-                               index1 = input$mastC2G1Table_rows_selected,
-                               index2 = input$mastC2G2Table_rows_selected,
-                               groupName1 = input$mastG1Name,
-                               groupName2 = input$mastG2Name,
-                               analysisName = input$mastCompName,
-                               useThresh = input$useAdaptThresh,
-                               freqExpressed = input$mastFreq,
-                               log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh,
-                               onlyPos = input$mastPosOnly)
+  runDEfromShiny <- function(overwrite){
+    withBusyIndicatorServer("runDE", {
+      if(input$deCondMethod == 1){
+        vals$counts <- runDEAnalysis(method = input$deMethod,
+                                     inSCE = vals$counts,
+                                     useAssay = input$deAssay,
+                                     class = input$deC1Class,
+                                     classGroup1 = input$deC1G1,
+                                     classGroup2 = input$deC1G2,
+                                     groupName1 = input$deG1Name,
+                                     groupName2 = input$deG2Name,
+                                     analysisName = input$deAnalysisName,
+                                     useThresh = input$deUseThresh,
+                                     covariates = input$deCovar,
+                                     #freqExpressed = input$mastFreq,
+                                     log2fcThreshold = input$mastFCThresh,
+                                     fdrThreshold = input$mastFDRThresh,
+                                     onlyPos = input$mastPosOnly,
+                                     overwrite = overwrite)
+      } else if(input$deCondMethod == 2){
+        vals$counts <- runDEAnalysis(method = input$deMethod,
+                                     inSCE = vals$counts,
+                                     useAssay = input$deAssay,
+                                     index1 = input$deC2G1Table_rows_selected,
+                                     index2 = input$deC2G2Table_rows_selected,
+                                     groupName1 = input$deG1Name,
+                                     groupName2 = input$deG2Name,
+                                     analysisName = input$deAnalysisName,
+                                     useThresh = input$deUseThresh,
+                                     covariates = input$deCovar,
+                                     #freqExpressed = input$mastFreq,
+                                     log2fcThreshold = input$deFCThresh,
+                                     fdrThreshold = input$deFDRThresh,
+                                     onlyPos = input$dePosOnly,
+                                     overwrite = overwrite)
       } else {
-        g1CellList <- str_trim(scan(text = input$mastC3G1Cell,
-                                    sep='\n', what = 'character'))
+        g1CellList <- str_trim(scan(text = input$deC3G1Cell,
+                                    sep='\n', what = 'character', quiet = TRUE))
         g1CellList <- sort(unique(g1CellList))
-        g2CellList <- str_trim(scan(text = input$mastC3G2Cell,
-                                    sep='\n', what = 'character'))
+        g2CellList <- str_trim(scan(text = input$deC3G2Cell,
+                                    sep='\n', what = 'character', quiet = TRUE))
         g2CellList <- sort(unique(g2CellList))
-        vals$counts <- runMAST(inSCE = vals$counts,
-                               useAssay = input$mastAssay,
-                               index1 = g1CellList,
-                               index2 = g2CellList,
-                               groupName1 = input$mastG1Name,
-                               groupName2 = input$mastG2Name,
-                               analysisName = input$mastCompName,
-                               useThresh = input$useAdaptThresh,
-                               freqExpressed = input$mastFreq,
-                               log2fcThreshold = input$mastFCThresh,
-                               fdrThreshold = input$mastFDRThresh,
-                               onlyPos = input$mastPosOnly)
+        vals$counts <- runDEAnalysis(method = input$deMethod,
+                                     inSCE = vals$counts,
+                                     useAssay = input$deAssay,
+                                     index1 = g1CellList,
+                                     index2 = g2CellList,
+                                     groupName1 = input$deG1Name,
+                                     groupName2 = input$deG2Name,
+                                     analysisName = input$deAnalysisName,
+                                     useThresh = input$deUseThresh,
+                                     covariates = input$deCovar,
+                                     #freqExpressed = input$mastFreq,
+                                     log2fcThreshold = input$deFCThresh,
+                                     fdrThreshold = input$deFDRThresh,
+                                     onlyPos = input$dePosOnly,
+                                     overwrite = overwrite)
       }
-      shinyalert::shinyalert("Success",
-                             text = "MAST Differential Expression completed.", type = "success")
-      allResName <- names(metadata(vals$counts)$MAST)
-      updateSelectInput(session, "mastResSel", choices = allResName)
+      shinyalert::shinyalert(
+        "Success",
+        text = "Differential expression analysis completed.",
+        type = "success"
+      )
     })
   }
 
-  observeEvent(input$runMAST, {
+  observeEvent(input$runDE, {
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
-    } else if(input$mastCompName == ""){
-      shinyalert("Error!", "Please enter differential expression analysis name.", type = "error")
+    } else if(input$deAnalysisName == ""){
+      shinyalert("Error!",
+                 "Please enter differential expression analysis name.",
+                 type = "error")
     } else {
-      allRes <- names(metadata(vals$counts)$MAST)
-      if(input$mastCompName %in% allRes){
-        shinyalert("Warning",
-                   "Entered differential experiment analysis name is already there.",
-                   "warning", showCancelButton = TRUE,
-                   confirmButtonText = "Overwrite",
-                   callbackR = function(x){if(isTRUE(x)){runMASTfromShiny()}})
+      allRes <- names(metadata(vals$counts)$diffExp)
+      if(input$deAnalysisName %in% allRes){
+        shinyalert(
+          "Warning",
+          "Entered differential experiment analysis name is already there.",
+          "warning", showCancelButton = TRUE,
+          confirmButtonText = "Overwrite",
+          callbackR = function(x){if(isTRUE(x)){runDEfromShiny(x)}})
       } else {
-          runMASTfromShiny()
+        runDEfromShiny(FALSE)
       }
     }
   })
 
-  output$mastResSelUI <- renderUI({
+  # DE: Result visualize ####
+  output$deResSelUI <- renderUI({
     if(!is.null(vals$counts)){
-      res <- names(metadata(vals$counts)$MAST)
-      selectInput("mastResSel", "Select Differential Expression Analysis", res)
+      res <- names(metadata(vals$counts)$diffExp)
+      selectInput("deResSel", "Select Differential Expression Analysis", res)
     }
   })
-
-  output$threshplot <- renderPlot({
+  # Threshold adapting plot
+  output$deThreshplot <- renderPlot({
     if(!is.null(vals$counts)){
-      vals$thres <- thresholdGenes(inSCE = vals$counts,
-        useAssay = input$mastAssay)
-      par(mfrow = c(5, 4))
-      plot(vals$thres)
-      par(mfrow = c(1, 1))
+      if(length(grep('log', input$deAssay, ignore.case = TRUE)) > 0){
+        thres <- thresholdGenes(inSCE = vals$counts,
+                                useAssay = input$deAssay)
+        par(mfrow = c(5, 4))
+        plot(thres)
+        par(mfrow = c(1, 1))
+      }
     }
   }, height = 800)
-
-  output$mastresults <- DT::renderDataTable({
-    if(!is.null(input$mastResSel)){
-      metadata(vals$counts)$MAST[[input$mastResSel]]$result
+  # Data table
+  output$deResult <- DT::renderDataTable({
+    if(!is.null(input$deResSel)){
+      metadata(vals$counts)$diffExp[[input$deResSel]]$result
     }
   }, filter = 'top')
 
-  isMastResult <- reactive(is.null(input$mastResSel) ||
-      input$mastResSel == "")
   observe({
-    if (isMastResult()) {
-      shinyjs::disable("mastDownload")
+    if (is.null(input$deResSel) ||
+        input$deResSel == "") {
+      shinyjs::disable("deDownload")
     } else {
-      shinyjs::enable("mastDownload")
+      shinyjs::enable("deDownload")
     }
   })
 
-  output$mastDownload <- downloadHandler(
+  output$deDownload <- downloadHandler(
     filename = function() {
-      paste0("mastResult_", input$mastResSel, ".csv")
+      paste0("deResult_", input$deResSel, ".csv")
     },
     content = function(file) {
-      fullTable <- metadata(vals$counts)$MAST[[input$mastResSel]]$result
-      filteredTable <- fullTable[input$mastresults_rows_all,]
-      utils::write.csv(filteredTable, file, row.names = FALSE)
+      fullTable <- metadata(vals$counts)$diffExp[[input$deResSel]]$result
+      filteredTable <- fullTable[input$deResult_rows_all,]
+      filteredTable <- filteredTable[rowSums(is.na(filteredTable)) != ncol(filteredTable), ]
+      utils::write.csv(filteredTable, file, row.names = FALSE, )
     }
   )
-
-  output$mastVioTotalUI <- renderUI({
-    topN <- input$mastVioNrow * input$mastVioNcol
+  # Violin plot
+  output$deVioTotalUI <- renderUI({
+    topN <- input$deVioNrow * input$deVioNcol
     p(as.character(topN))
   })
 
-  output$hurdleviolin <- renderPlot({
-    if(!is.null(input$mastResSel) &&
-       !input$mastResSel == ""){
-      plotMASTViolin(inSCE = vals$counts, useResult = input$mastResSel,
-                     threshP = input$mastVioUseThresh,
-                     nrow = input$mastVioNrow, ncol = input$mastVioNcol)
+  observeEvent(input$dePlotVio, {
+    if(!is.null(input$deResSel) &&
+       !input$deResSel == ""){
+      sce <- vals$counts
+      useResult <- input$deResSel
+      nrow <- input$deVioNRow
+      ncol <- input$deVioNCol
+      if(input$deVioLabel == "Default ID"){
+        labelBy = NULL
+      } else {
+        labelBy = input$deVioLabel
+      }
+      output$deViolinPlot <- renderPlot({
+        plotDEGViolin(inSCE = sce, useResult = useResult,
+                      #threshP = input$deVioUseThresh,
+                      nrow = nrow, ncol = ncol, labelBy = labelBy)
+      })
     }
   })
-
-  output$mastRegTotalUI <- renderUI({
-    topN <- input$mastRegNrow * input$mastRegNcol
+  # Linear Regression Plot
+  output$deRegTotalUI <- renderUI({
+    topN <- input$deRegNrow * input$deRegNcol
     p(as.character(topN))
   })
 
-  output$hurdlelm <- renderPlot({
-    if(!is.null(input$mastResSel) &&
-       !input$mastResSel == ""){
-      plotMASTRegression(inSCE = vals$counts, useResult = input$mastResSel,
-                         threshP = input$mastRegUseThresh,
-                         nrow = input$mastRegNrow, ncol = input$mastRegNcol)
+  observeEvent(input$dePlotReg, {
+    if(!is.null(input$deResSel) &&
+       !input$deResSel == ""){
+      sce <- vals$counts
+      useResult <- input$deResSel
+      nrow <- input$deRegNRow
+      ncol <- input$deRegNcol
+      if(input$deRegLabel == "Default ID"){
+        labelBy = NULL
+      } else {
+        labelBy = input$deRegLabel
+      }
+      output$deRegPlot <- renderPlot({
+        plotDEGRegression(inSCE = sce, useResult = useResult,
+                          #threshP = input$deVioUseThresh,
+                          nrow = nrow, ncol = ncol, labelBy = labelBy)
+      })
+    }
+  })
+  # Heatmap
+  output$deHMSplitColUI <- renderUI({
+    otherAvail <- input$deHMcolData
+    selectInput("deHMSplitCol", "Split columns by", multiple = TRUE,
+                choices = c('condition', otherAvail),
+                selected = 'condition')
+  })
+  output$deHMSplitRowUI <- renderUI({
+    otherAvail <- input$deHMrowData
+    selectInput("deHMSplitRow", "Split columns by", multiple = TRUE,
+                choices = c('regulation', otherAvail),
+                selected = 'regulation')
+  })
+
+  observeEvent(input$dePlotHM, {
+    if(!is.null(input$deResSel) &&
+       !input$deResSel == ""){
+      sce <- vals$counts
+      useResult <- input$deResSel
+      onlyPos <- input$deHMPosOnly
+      log2fcThreshold <- input$deHMFC
+      fdrThreshold <- input$deHMFDR
+      rowDataName <- input$deHMrowData
+      colDataName <- input$deHMcolData
+      colSplitBy <- input$deHMSplitCol
+      rowSplitBy <- input$deHMSplitRow
+      output$deHeatmap <- renderPlot({
+        plotDEGHeatmap(inSCE = sce, useResult = useResult, onlyPos = onlyPos,
+                       log2fcThreshold = log2fcThreshold,
+                       fdrThreshold = fdrThreshold, rowDataName = rowDataName,
+                       colDataName = colDataName, colSplitBy = colSplitBy,
+                       rowSplitBy = rowSplitBy)
+      })
     }
   })
 
-  output$hurdleHeatmap <- renderPlot({
-    if(!is.null(input$mastResSel) &&
-       !input$mastResSel == ""){
-      plotMASTHeatmap(inSCE = vals$counts, useResult = input$mastResSel,
-        onlyPos = input$mastHMPosOnly, log2fcThreshold = input$mastHMFC,
-        fdrThreshold = input$mastHMFDR, rowDataName = input$mastHMrowData,
-        colDataName = input$mastHMcolData, colSplitBy = input$mastHMSplitCol,
-        rowSplitBy = input$mastHMSplitRow)
-    }
-  })
 
   #-----------------------------------------------------------------------------
   # Page 5.3: MAST - Find Marker ####

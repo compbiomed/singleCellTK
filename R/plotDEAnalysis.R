@@ -50,7 +50,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                            nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
-    .checkMASTResultExists(inSCE, useResult, labelBy)
+    .checkDiffExpResultExists(inSCE, useResult, labelBy)
     # Extract
     result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     deg <- result$result
@@ -128,7 +128,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                nrow = 6, ncol = 6, defaultTheme = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
-    .checkMASTResultExists(inSCE, useResult, labelBy)
+    .checkDiffExpResultExists(inSCE, useResult, labelBy)
     # Extract
     result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
     deg <- result$result
@@ -263,7 +263,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     rowDataName = NULL, colDataName = NULL, colSplitBy = 'condition',
     rowSplitBy = 'regulation', title = paste0("MAST Result: ", useResult), ...){
     # Check
-    .checkMASTResultExists(inSCE, useResult)
+    .checkDiffExpResultExists(inSCE, useResult)
     extraArgs <- list(...)
     warnArgs <- c('featureIndex', 'cellIndex')
     if(any(warnArgs %in% names(extraArgs))){

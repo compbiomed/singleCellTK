@@ -88,3 +88,7 @@ used.
 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 \code{classGroup2} will be used.
 }
+\details{
+NOTE that ANOVA method does not produce Log2FC value, but P-value and FDR
+only.
+}

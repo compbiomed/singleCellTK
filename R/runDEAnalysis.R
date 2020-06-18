@@ -116,6 +116,33 @@
     )
 }
 
+#' Perform differential expression analysis on SCE with specified method
+#' Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
+#' @param method A single character for specific method. Choose from 'MAST',
+#' 'DESeq2', 'Limma', 'ANOVA'. Required
+#' @param ... Other arguments passed to specific functions. Refer to
+#' \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
+#' \code{\link{runANOVA}}
+#' @return Input SCE object with \code{metadata(inSCE)} updated with name
+#' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
+#' functions.
+#' @export
+runDEAnalysis <- function(method, ...){
+    if(!method %in% c('MAST', 'DESeq2', 'Limma', 'ANOVA')){
+        stop("method should be one of: 'MAST', 'DESeq2', 'Limma', 'ANOVA'")
+    }
+    if (method == 'MAST') {
+        defunc <- function(..., covariates) {runMAST(...)}
+    } else if (method == 'Limma') {
+        defunc <- function(..., useThresh) {runLimmaDE(...)}
+    } else if (method == 'DESeq2') {
+        defunc <- function(..., useThresh) {runDESeq2(...)}
+    } else if (method == 'ANOVA') {
+        defunc <- function(..., useThresh) {runANOVA(...)}
+    }
+    defunc(...)
+}
+
 #' Perform differential expression analysis on SCE with DESeq2.
 #'
 #' Condition specification allows two methods:
@@ -359,6 +386,9 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' used.
 #' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 #' \code{classGroup2} will be used.
+#'
+#' NOTE that ANOVA method does not produce Log2FC value, but P-value and FDR
+#' only.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for ANOVA.
 #' Default \code{"logcounts"}.
@@ -520,13 +550,14 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param analysisName A character scalar naming the DEG analysis. Required
 #' @param groupName1 A character scalar naming the group of interests. Required.
 #' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates Not applicable, will be ignored. Default \code{NULL}.
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
 #' greater than this value. Default \code{0.25}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
 #' value. Default \code{0.05}
+#' @param useThresh Whether to use adaptive thresholding to filter genes.
+#' Default \code{FALSE}.
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
@@ -540,12 +571,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     index2 = NULL, class = NULL, classGroup1 = NULL,
                     classGroup2 = NULL, analysisName, groupName1,
-                    groupName2, covariates = NULL, onlyPos = FALSE,
-                    log2fcThreshold = NULL, fdrThreshold = 0.05,
-                    useThresh = FALSE, overwrite = FALSE){
+                    groupName2, onlyPos = FALSE, log2fcThreshold = NULL,
+                    fdrThreshold = 0.05, useThresh = FALSE, overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
-                                 groupName2, analysisName, covariates,
+                                 groupName2, analysisName, NULL,
                                  overwrite)
 
     ix1 <- resultList$select$ix1

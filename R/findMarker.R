@@ -5,6 +5,9 @@
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
+#' @param method A single character for specific differential expression
+#' analysis method. Choose from 'MAST', 'DESeq2', 'Limma', 'ANOVA'. Default
+#' \code{"MAST"}.
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
