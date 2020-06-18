@@ -1678,8 +1678,9 @@ shinyServer(function(input, output, session) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
-                                       n_neighbors = input$neighborsUMAP,
-                                       n_iterations = input$iterUMAP,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
                                        alpha = input$alphaUMAP
                 )
                 updateReddimInputs()
