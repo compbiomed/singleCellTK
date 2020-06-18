@@ -8,10 +8,10 @@
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
-#' @param useThresh Whether to use adaptive thresholding to filter genes.
-#' Default \code{FALSE}.
-#' @param freqExpressed A numeric threshold that the genes expressed in less
-#' than this fraction of cells will be removed. Default \code{0.1}.
+#' @param covariate A character vector of additional covariates to use when
+#' building the model. All covariates must exist in
+#' \code{names(colData(inSCE))}. Not applicable when \code{method} is
+#' \code{"MAST"} method. Default \code{NULL}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value smaller than this
@@ -21,10 +21,10 @@
 #' regulated DEGs for each cluster.
 #' @export
 #' @author Yichen Wang
-findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
-                              cluster = 'cluster', log2fcThreshold = NULL,
-                              fdrThreshold = 1, useThresh = FALSE,
-                              freqExpressed = 0.1){
+findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
+                              cluster = 'cluster', covariate = NULL,
+                              log2fcThreshold = NULL, fdrThreshold = 1){
+                              #useThresh = FALSE){
     # Input checks
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
@@ -32,6 +32,15 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
         stop('"useAssay" name: ', useAssay, ' not found.')
     }
+    if(!method %in% c("MAST", "DESeq2", "Limma")){
+        stop('Method: "', method, '" not accepted. Choose from ',
+             '"MAST", "DESeq2", "Limma"')
+    } else {
+        message("Running with ", method)
+    }
+    funcDic <- list(MAST = runMAST,
+                    DESeq2 = runDESeq2,
+                    Limma = runLimmaDE)
     ## Check whether use colData or customized vector/factor
     if(is.character(cluster) && length(cluster) == 1){
         if(!cluster %in% names(SummarizedExperiment::colData(inSCE))){
@@ -58,12 +67,15 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     for(c in uniqClust){
         message('Computing for cluster: ', c)
         clusterIndex <- cluster == c
-        inSCE <- runMAST(inSCE, useAssay = useAssay, index1 = clusterIndex,
-                         analysisName = paste0('findMarker', c),
-                         onlyPos = TRUE, log2fcThreshold = log2fcThreshold,
-                         fdrThreshold = fdrThreshold, useThresh = useThresh,
-                         groupName1 = c, groupName2 = 'others')
-                         #freqExpressed = freqExpressed)
+        inSCE <- funcDic[[method]](inSCE, useAssay = useAssay,
+                                   index1 = clusterIndex,
+                                   analysisName = paste0('findMarker', c),
+                                   onlyPos = TRUE,
+                                   log2fcThreshold = log2fcThreshold,
+                                   fdrThreshold = fdrThreshold,
+                                   covariate = covariate,
+                                   #useThresh = useThresh,
+                                   groupName1 = c, groupName2 = 'others')
     }
     degFull <- NULL
     for(c in uniqClust){

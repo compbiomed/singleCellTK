@@ -520,9 +520,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param analysisName A character scalar naming the DEG analysis. Required
 #' @param groupName1 A character scalar naming the group of interests. Required.
 #' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates A character vector of additional covariates to use when
-#' building the model. All covariates must exist in
-#' \code{names(colData(inSCE))}. Default \code{NULL}.
+#' @param covariates Not applicable, will be ignored. Default \code{NULL}.
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
