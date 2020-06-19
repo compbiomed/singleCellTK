@@ -149,33 +149,17 @@ shinyPanelDiffex <- fluidPage(
           )
         ),
         fluidRow(
-            column(
-              width = 4,
-              style = 'margin-top: 18px;',
-              checkboxInput("dePosOnly", "Only up-regulated genes",
-                            value = FALSE)
-            ),
-            column(
-              width = 3,
-              conditionalPanel(
-                condition = "input.deMethod != 'MAST'",
-                selectInput("deCovar", "Select Covariates",
-                            clusterChoice, multiple = TRUE)
-              )
-            ),
-            column(
-              width = 4,
-              style = 'margin-top: 18px;',
-              conditionalPanel(
-                condition = "input.deMethod == 'MAST'",
-                checkboxInput("deUseThresh", "Use Adaptive Thresholds",
-                              value = FALSE)
-              )
-            )
-          #style = 'margin:4px;',
-          #div(style="display:inline-block;vertical-align:center;width:230px;margin-right:8px;",
-          #   numericInput("mastFreq", "Use gene expressed in more than:",
-          #                 min = 0, max = 1, step = 0.05, value = 0.1),),
+          column(
+            width = 4,
+            style = 'margin-top: 18px;',
+            checkboxInput("dePosOnly", "Only up-regulated genes",
+                          value = FALSE)
+          ),
+          column(
+            width = 3,
+            selectInput("deCovar", "Select Covariates",
+                        clusterChoice, multiple = TRUE)
+          )
         ),
         fluidRow(
           column(

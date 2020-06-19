@@ -24,7 +24,6 @@ shinyServer(function(input, output, session) {
     gsvaLimma = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
-    mastFMRCbin = 0,
     celdaMod = NULL,
     celdaList = NULL,
     celdaListAll = NULL,
@@ -81,8 +80,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "deHMSplitCol",
                       choices = c('condition', pdataOptions),
                       selected = 'condition')
-    updateSelectInput(session, "mastFMCluster", choices = pdataOptions)
-    updateSelectInput(session, "mastFMHMcolData",
+    updateSelectInput(session, "fmCluster", choices = pdataOptions)
+    updateSelectInput(session, "fmHMcolData",
                       choices = pdataOptions)
     updateSelectInput(session, "hmCellAnn", choices = pdataOptions)
     updateSelectInput(session, "pathwayPlotVar",
@@ -128,7 +127,7 @@ shinyServer(function(input, output, session) {
                       choices = c('Default ID', selectRowData))
     updateSelectInput(session, 'deRegLabel',
                       choices = c('Default ID', selectRowData))
-    updateSelectInput(session, "mastFMHMrowData",
+    updateSelectInput(session, "fmHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "hmGeneCol",
                       choices = selectRowData)
@@ -164,8 +163,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "batchCheckCorrAssay",
                       choices = c("", vals$batchResAssay))
     updateSelectInput(session, "deAssay", choices = currassays)
-    updateSelectInput(session, "mastFMAssay", choices = currassays)
-    updateSelectInput(session, "mastFMHMAssay", choices = currassays)
+    updateSelectInput(session, "fmAssay", choices = currassays)
+    updateSelectInput(session, "fmHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
@@ -4827,15 +4826,16 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)){
       df <- lapply(colData(vals$counts),
                    function(i){
-                     if(is.character(i)){
-                       if(length(unique(i)) == length(i)){
-                         return(i)
-                       } else {
-                         return(as.factor(i))
-                       }
+                     if(is.character(i) && !length(unique(i)) == length(i)){
+                       return(as.factor(i))
+                     } else if(is.integer(i) &&
+                               !length(unique(i)) == length(i)){
+                       return(as.factor(i))
+                     } else {
+                       return(i)
                      }
                    })
-      df <- data.frame(df)
+      df <- data.frame(df, row.names = colnames(vals$counts))
       DT::datatable(df, filter = "top", options = list(scrollX = TRUE))
     }
   }, server = TRUE)
@@ -4867,15 +4867,16 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)){
       df <- lapply(colData(vals$counts),
                    function(i){
-                     if(is.character(i)){
-                       if(length(unique(i)) == length(i)){
-                         return(i)
-                       } else {
-                         return(as.factor(i))
-                       }
+                     if(is.character(i) && !length(unique(i)) == length(i)){
+                       return(as.factor(i))
+                     } else if(is.integer(i) &&
+                               !length(unique(i)) == length(i)){
+                       return(as.factor(i))
+                     } else {
+                       return(i)
                      }
                    })
-      df <- data.frame(df)
+      df <- data.frame(df, row.names = colnames(vals$counts))
       DT::datatable(df, filter = "top", options = list(scrollX = TRUE))
     }
   }, server = TRUE)
@@ -4950,9 +4951,7 @@ shinyServer(function(input, output, session) {
                                      groupName1 = input$deG1Name,
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
-                                     useThresh = input$deUseThresh,
                                      covariates = input$deCovar,
-                                     #freqExpressed = input$mastFreq,
                                      log2fcThreshold = input$mastFCThresh,
                                      fdrThreshold = input$mastFDRThresh,
                                      onlyPos = input$mastPosOnly,
@@ -4966,9 +4965,7 @@ shinyServer(function(input, output, session) {
                                      groupName1 = input$deG1Name,
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
-                                     useThresh = input$deUseThresh,
                                      covariates = input$deCovar,
-                                     #freqExpressed = input$mastFreq,
                                      log2fcThreshold = input$deFCThresh,
                                      fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$dePosOnly,
@@ -4988,9 +4985,7 @@ shinyServer(function(input, output, session) {
                                      groupName1 = input$deG1Name,
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
-                                     useThresh = input$deUseThresh,
                                      covariates = input$deCovar,
-                                     #freqExpressed = input$mastFreq,
                                      log2fcThreshold = input$deFCThresh,
                                      fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$dePosOnly,
@@ -5160,89 +5155,87 @@ shinyServer(function(input, output, session) {
 
 
   #-----------------------------------------------------------------------------
-  # Page 5.3: MAST - Find Marker ####
+  # Page 5.2: Find Marker ####
   #-----------------------------------------------------------------------------
-  # MAST findMarker RUN ####
-  observeEvent(input$runMASTFM, {
+  # findMarker RUN ####
+  observeEvent(input$runFM, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
-      withBusyIndicatorServer("runMASTFM", {
-        vals$counts <- findMarkerDiffExp(vals$counts,
-          useAssay = input$mastFMAssay, cluster = input$mastFMCluster,
-          log2fcThreshold = input$mastFMLogFC, fdrThreshold = input$mastFMFDR,
-          useThresh = input$mastFMUseThresh, freqExpressed = input$mastFMFreq)
-        shinyalert::shinyalert("Success", "MAST Find Marker completed.",
+      withBusyIndicatorServer("runFM", {
+        vals$counts <- findMarkerDiffExp(inSCE = vals$counts,
+                                         method = input$fmMethod,
+                                         useAssay = input$fmAssay,
+                                         cluster = input$fmCluster,
+                                         log2fcThreshold = input$fmLogFC,
+                                         fdrThreshold = input$fmFDR)
+        shinyalert::shinyalert("Success", "Find Marker completed.",
                                "success")
       })
     }
   })
-  # MAST findMarker ResultTable ####
-  output$mastFMResClusterUI <- renderUI({
-    if(!is.null(vals$counts) &&
-       !is.null(input$mastFMCluster) &&
-       'findMarker' %in% names(metadata(vals$counts))){
-      allCluster <- colData(vals$counts)[[input$mastFMCluster]]
-      allCluster <- sort(as.vector(unique(allCluster)))
-      checkboxGroupInput("mastFMResCluster", "View Results for Cluster",
-                         choices = c('All', allCluster), selected = 'All',
-                         inline = TRUE)
-    }
-  })
-
-  output$mastFMResTable <- DT::renderDataTable({
+  # findMarker ResultTable ####
+  output$fmResTable <- DT::renderDataTable({
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts))){
       fullTable <- metadata(vals$counts)$findMarker
-      if('All' %in% input$mastFMResCluster){
-        fullTable
-      } else {
-        fullTable[fullTable[[input$mastFMCluster]] %in% input$mastFMResCluster,]
-      }
+      fullTable[,5] <- as.factor(fullTable[,5])
+      fullTable
     }
   }, filter = "top")
 
-  isMastFMResult <- reactive(!is.null(vals$counts) &&
-                             !is.null(metadata(vals$counts)$findMarker))
   observe({
-    if (isMastFMResult()) {
-      shinyjs::enable("mastFMDownload")
+    if (!is.null(vals$counts) &&
+        !is.null(metadata(vals$counts)$findMarker)) {
+      shinyjs::enable("fmDownload")
     } else {
-      shinyjs::disable("mastFMDownload")
+      shinyjs::disable("fmDownload")
     }
   })
 
-  output$mastFMDownload <- downloadHandler(
+  output$fmDownload <- downloadHandler(
     filename = function() {
-      paste0("mastMarkerResult_", input$mastFMCluster, ".csv")
+      paste0("findMarkerResult_", input$fmCluster, ".csv")
     },
     content = function(file) {
       fullTable <- metadata(vals$counts)$findMarker
-      filteredTable <- fullTable[input$mastFMResTable_rows_all,]
+      filteredTable <- fullTable[input$fmResTable_rows_all,]
       utils::write.csv(filteredTable, file, row.names = FALSE)
     }
   )
 
-  # MAST findMarker Heatmap ####
-  output$mastFMHMAssayUI <- renderUI({
+  # findMarker Heatmap ####
+  output$fmHMAssayUI <- renderUI({
     if(!is.null(vals$counts)){
       allAssay <- assayNames(vals$counts)
-      selectInput('mastFMHMAssay', "Assay to plot", allAssay,
-                  selected = input$mastFMAssay)
+      selectInput('fmHMAssay', "Assay to plot", allAssay,
+                  selected = input$fmAssay)
     }
   })
 
-  output$mastFMHeatmap <- renderPlot({
+  observeEvent(input$plotFM, {
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts)) &&
-       !is.null(input$mastFMHMAssay)){
-      plotMarkerDiffExp(inSCE = vals$counts, useAssay = input$mastFMHMAssay,
-        orderBy = input$mastFMHMOrder, log2fcThreshold = input$mastFMHMFC,
-        fdrThreshold = input$mastFMHMFDR, decreasing = input$mastFMHMdec,
-        rowDataName = input$mastFMHMrowData, colDataName = input$mastFMHMcolData
-      )
+       !is.null(input$fmHMAssay)){
+      inSCE <- vals$counts
+      useAssay <- input$fmHMAssay
+      orderBy <- input$fmHMOrder
+      log2fcThreshold <- input$fmHMFC
+      fdrThreshold <- input$fmHMFDR
+      decreasing <- input$fmHMdec
+      rowDataName <- input$fmHMrowData
+      colDataName <- input$fmHMcolData
+      # Take value before rendering plot, so that the plot doesnt auto re-render
+      # while we tweak the parameter
+      output$fmHeatmap <- renderPlot({
+        plotMarkerDiffExp(inSCE = inSCE, useAssay = useAssay, orderBy = orderBy,
+                          log2fcThreshold = log2fcThreshold,
+                          fdrThreshold = fdrThreshold, decreasing = decreasing,
+                          rowDataName = rowDataName, colDataName = colDataName)
+      })
     }
   })
+
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------
