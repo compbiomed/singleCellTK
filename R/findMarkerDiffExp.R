@@ -11,7 +11,7 @@
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
-#' @param covariate A character vector of additional covariates to use when
+#' @param covariates A character vector of additional covariates to use when
 #' building the model. All covariates must exist in
 #' \code{names(colData(inSCE))}. Not applicable when \code{method} is
 #' \code{"MAST"} method. Default \code{NULL}.
@@ -25,9 +25,8 @@
 #' @export
 #' @author Yichen Wang
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
-                              cluster = 'cluster', covariate = NULL,
-                              log2fcThreshold = NULL, fdrThreshold = 1){
-                              #useThresh = FALSE){
+                              cluster = 'cluster', covariates = NULL,
+                              log2fcThreshold = 0.25, fdrThreshold = 0.05){
     # Input checks
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
@@ -41,9 +40,6 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
     } else {
         message("Running with ", method)
     }
-    funcDic <- list(MAST = runMAST,
-                    DESeq2 = runDESeq2,
-                    Limma = runLimmaDE)
     ## Check whether use colData or customized vector/factor
     if(is.character(cluster) && length(cluster) == 1){
         if(!cluster %in% names(SummarizedExperiment::colData(inSCE))){
@@ -70,15 +66,15 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
     for(c in uniqClust){
         message('Computing for cluster: ', c)
         clusterIndex <- cluster == c
-        inSCE <- funcDic[[method]](inSCE, useAssay = useAssay,
-                                   index1 = clusterIndex,
-                                   analysisName = paste0('findMarker', c),
-                                   onlyPos = TRUE,
-                                   log2fcThreshold = log2fcThreshold,
-                                   fdrThreshold = fdrThreshold,
-                                   covariate = covariate,
-                                   #useThresh = useThresh,
-                                   groupName1 = c, groupName2 = 'others')
+        inSCE <- runDEAnalysis(method = method, inSCE = inSCE,
+                               useAssay = useAssay,
+                               index1 = clusterIndex,
+                               analysisName = paste0('findMarker', c),
+                               onlyPos = TRUE,
+                               log2fcThreshold = log2fcThreshold,
+                               fdrThreshold = fdrThreshold,
+                               covariates = covariates,
+                               groupName1 = c, groupName2 = 'others')
     }
     degFull <- NULL
     for(c in uniqClust){
@@ -96,6 +92,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
         S4Vectors::metadata(inSCE)$diffExp <- NULL
     }
     degFull <- degFull[stats::complete.cases(degFull),]
+
     S4Vectors::metadata(inSCE)$findMarker <- degFull
     return(inSCE)
 }

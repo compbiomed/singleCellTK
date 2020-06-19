@@ -62,6 +62,7 @@
         }
     }
     groupNames <- c(groupName1, groupName2)
+    annotation <- c(class, covariates)
     if(!is.null(index1)){
         cells1 <- colnames(inSCE[,index1])
         if(!is.null(index2)){
@@ -112,7 +113,8 @@
     return(
         list(useAssay = useAssay,
              groupNames = groupNames,
-             select = select)
+             select = select,
+             annotation = annotation)
     )
 }
 
@@ -127,20 +129,15 @@
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
 #' functions.
 #' @export
-runDEAnalysis <- function(method, ...){
+runDEAnalysis <- function(method = 'MAST', ...){
     if(!method %in% c('MAST', 'DESeq2', 'Limma', 'ANOVA')){
         stop("method should be one of: 'MAST', 'DESeq2', 'Limma', 'ANOVA'")
     }
-    if (method == 'MAST') {
-        defunc <- function(..., covariates) {runMAST(...)}
-    } else if (method == 'Limma') {
-        defunc <- function(..., useThresh) {runLimmaDE(...)}
-    } else if (method == 'DESeq2') {
-        defunc <- function(..., useThresh) {runDESeq2(...)}
-    } else if (method == 'ANOVA') {
-        defunc <- function(..., useThresh) {runANOVA(...)}
-    }
-    defunc(...)
+    funcList <- list(MAST = runMAST,
+                     DESeq2 = runDESeq2,
+                     Limma = runLimmaDE,
+                     ANOVA = runANOVA)
+    funcList[[method]](...)
 }
 
 #' Perform differential expression analysis on SCE with DESeq2.
@@ -550,14 +547,15 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param analysisName A character scalar naming the DEG analysis. Required
 #' @param groupName1 A character scalar naming the group of interests. Required.
 #' @param groupName2 A character scalar naming the control group. Required.
+#' @param covariates A character vector of additional covariates to use when
+#' building the model. All covariates must exist in
+#' \code{names(colData(inSCE))}. Default \code{NULL}.
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
 #' greater than this value. Default \code{0.25}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
 #' value. Default \code{0.05}
-#' @param useThresh Whether to use adaptive thresholding to filter genes.
-#' Default \code{FALSE}.
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
@@ -571,11 +569,12 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     index2 = NULL, class = NULL, classGroup1 = NULL,
                     classGroup2 = NULL, analysisName, groupName1,
-                    groupName2, onlyPos = FALSE, log2fcThreshold = NULL,
-                    fdrThreshold = 0.05, useThresh = FALSE, overwrite = FALSE){
+                    groupName2, covariates = NULL, onlyPos = FALSE,
+                    log2fcThreshold = NULL, fdrThreshold = 0.05,
+                    overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
-                                 groupName2, analysisName, NULL,
+                                 groupName2, analysisName, covariates,
                                  overwrite)
 
     ix1 <- resultList$select$ix1
@@ -590,11 +589,16 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
       mat <- as.matrix(mat)
     }
     mat <- featureNameDedup(mat)
+    cond <- rep(NA, ncol(inSCE))
+    cond[ix1] <- 'c1'
+    cond[ix2] <- 'c2'
+    cond <- cond[subsetIdx]
     cdat <- data.frame(wellKey = colnames(mat),
-                       condition = as.factor(c(rep("c1", length(cells1)),
-                                               rep("c2", length(cells2)))),
+                       condition = as.factor(cond),
                        ngeneson = rep("", (length(cells1) + length(cells2))),
                        stringsAsFactors = FALSE)
+    covariateDat <- data.frame(SummarizedExperiment::colData(inSCE[,subsetIdx])[,covariates,drop = FALSE])
+    cdat <- cbind(cdat, covariateDat)
     sca <- MAST::FromMatrix(mat, cdat)
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
@@ -602,27 +606,23 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     cond <- stats::relevel(cond, "c2")
     SummarizedExperiment::colData(sca)$condition <- cond
     # Calculation
-    ## Filtration
-    if(useThresh){
-      sca <- sca[which(MAST::freq(sca) > 0),]
-      invisible(utils::capture.output(thresh <-
-          MAST::thresholdSCRNACountMatrix(SummarizedExperiment::assay(sca),
-                                          nbins = 20, min_per_bin = 30)))
-      SummarizedExperiment::assays(sca) <-
+    sca <- sca[which(MAST::freq(sca) > 0),]
+    invisible(utils::capture.output(thresh <-
+        MAST::thresholdSCRNACountMatrix(SummarizedExperiment::assay(sca),
+                                        nbins = 20, min_per_bin = 30)))
+    SummarizedExperiment::assays(sca) <-
         list(thresh = thresh$counts_threshold,
              tpm = SummarizedExperiment::assay(sca))
-    }
-    #if(sum(MAST::freq(sca) > freqExpressed) <= 1){
-    #    stop("Not enough genes pass frequency expressed filter of 1")
-    #}
-    #sca <- sca[which(MAST::freq(sca) > freqExpressed),]
-    #message(paste("Using", nrow(sca), 'genes after filtration.'))
-    ##
     SummarizedExperiment::colData(sca)$cngeneson <-
         scale(colSums(SummarizedExperiment::assay(sca) > 0))
     if(all(is.na(SummarizedExperiment::colData(sca)$cngeneson))){
         SummarizedExperiment::colData(sca)$cngeneson <- 0
     }
+    zlmCond <- MAST::zlm(
+        as.formula(
+            paste0("~", paste(c("condition", "cngeneson", covariates),
+                              collapse = '+'))),
+        sca)
     zlmCond <- MAST::zlm(~condition + cngeneson, sca)
     summaryCond <- MAST::summary(zlmCond, doLRT = "conditionc1")
     summaryDt <- summaryCond$datatable

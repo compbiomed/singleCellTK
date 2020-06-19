@@ -8,7 +8,7 @@ plotDEGHeatmap(
   inSCE,
   useResult,
   onlyPos = FALSE,
-  log2fcThreshold = 1,
+  log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
   useAssay = NULL,
   featureAnnotations = NULL,
@@ -78,7 +78,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \item{title}{character. Main title of the heatmap. Default
 \code{"MAST Result: <useResult>"}.}
 
-\item{...}{Other arguments passed to `plotSCEHeatmap()`}
+\item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }
 \value{
 A ComplexHeatmap::Heatmap object
@@ -87,6 +87,11 @@ A ComplexHeatmap::Heatmap object
 A differential expression analysis function has to be run in advance so that
 information is stored in the metadata of the input SCE object. This function
 wraps plotSCEHeatmap.
+A feature annotation basing on the log2FC level called \code{"regulation"}
+will be automatically added. A cell annotation basing on the condition
+selection while running the analysis called \code{"condition"}, and the
+annotations used from \code{colData(inSCE)} while setting the condition and
+covariates will also be added.
 }
 \author{
 Yichen Wang

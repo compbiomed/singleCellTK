@@ -213,6 +213,11 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' A differential expression analysis function has to be run in advance so that
 #' information is stored in the metadata of the input SCE object. This function
 #' wraps plotSCEHeatmap.
+#' A feature annotation basing on the log2FC level called \code{"regulation"}
+#' will be automatically added. A cell annotation basing on the condition
+#' selection while running the analysis called \code{"condition"}, and the
+#' annotations used from \code{colData(inSCE)} while setting the condition and
+#' covariates will also be added.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' \code{runMAST()} has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
@@ -252,12 +257,12 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' \code{names(cellAnnotations)}. Default \code{"condition"}.
 #' @param title character. Main title of the heatmap. Default
 #' \code{"MAST Result: <useResult>"}.
-#' @param ... Other arguments passed to `plotSCEHeatmap()`
+#' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @return A ComplexHeatmap::Heatmap object
 #' @export
 #' @author Yichen Wang
 plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
-    log2fcThreshold = 1, fdrThreshold = 0.05, useAssay = NULL,
+    log2fcThreshold = 0.25, fdrThreshold = 0.05, useAssay = NULL,
     featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
     rowDataName = NULL, colDataName = NULL, colSplitBy = 'condition',
@@ -295,6 +300,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     cell.ix <- which(ix1 | ix2)
     allGenes <- rownames(inSCE)[gene.ix]
     allCells <- colnames(inSCE)[cell.ix]
+
     # Annotation organization
     ## Cells
     group <- vector()
@@ -322,7 +328,12 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     } else {
         cellAnnotationColor <- list(condition = kCol)
     }
-
+    if(!is.null(colDataName)){
+        colDataName <- colDataName[-which(colDataName %in% result$annotation)]
+        colDataName <- c(colDataName, result$annotation)
+    } else {
+        colDataName <- result$annotation
+    }
     ## Genes
     regulation <- vector()
     genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, "Gene"]

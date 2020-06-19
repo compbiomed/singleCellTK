@@ -15,10 +15,10 @@ runMAST(
   analysisName,
   groupName1,
   groupName2,
+  covariates = NULL,
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = 0.05,
-  useThresh = FALSE,
   overwrite = FALSE
 )
 }
@@ -56,6 +56,10 @@ will be compared with all other cells.}
 
 \item{groupName2}{A character scalar naming the control group. Required.}
 
+\item{covariates}{A character vector of additional covariates to use when
+building the model. All covariates must exist in
+\code{names(colData(inSCE))}. Default \code{NULL}.}
+
 \item{onlyPos}{Whether to only output DEG with positive log2_FC value.
 Default \code{FALSE}.}
 
@@ -64,9 +68,6 @@ greater than this value. Default \code{0.25}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value less than this
 value. Default \code{0.05}}
-
-\item{useThresh}{Whether to use adaptive thresholding to filter genes.
-Default \code{FALSE}.}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}
