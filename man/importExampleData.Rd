@@ -4,7 +4,7 @@
 \alias{importExampleData}
 \title{Retrieve example datasets}
 \usage{
-importExampleData(...)
+importExampleData(dataset, class = c("Matrix", "matrix"), delayedArray = FALSE)
 }
 \arguments{
 \item{dataset}{Character. Name of the dataset to retrieve.}
