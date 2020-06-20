@@ -36,11 +36,11 @@ shinyServer(function(input, output, session) {
     pcX = NULL,
     pcY = NULL,
     showAssayDetails = FALSE,
-    hmCSPresets = list("RWB" = c("red", "white", "blue"),
-                       "RdBu_r" = c("#b92732", "#f7f6f6", "#2971b1"),
-                       "BrBG" = c("#0c7068", "#f4f4f4", "#995d12"),
-                       "Blues" = c("#0b559f", "#6daed4", "#dae8f5"),
-                       "Greens" = c("#04702F", "#69C2A1", "#E1F3F6")),
+    hmCSPresets = list("RWB" = c("blue", "white", "red"),
+                       "RdBu_r" = c("#2971b1", "#f7f6f6", "#b92732"),
+                       "BrBG" = c("#995d12", "#f4f4f4", "#0c7068"),
+                       "Blues" = c("#dae8f5", "#6daed4", "#0b559f"),
+                       "Greens" = c("#E1F3F6", "#69C2A1", "#04702F")),
     hmCSURL = NULL,
     hmTmpColData = NULL,
     hmTmpRowData = NULL
@@ -3505,14 +3505,14 @@ shinyServer(function(input, output, session) {
   })
 
   # Heatmap: Import Analysis ####
-  output$hmImpMASTDEGUI <- renderUI({
+  output$hmImpDEGUI <- renderUI({
     if(!is.null(vals$counts)){
-      if("MAST" %in% names(metadata(vals$counts))){
-        analysis <- names(metadata(vals$counts)$MAST)
-        selectInput('hmImpMASTDEG', "Import results from analysis:",
+      if("diffExp" %in% names(metadata(vals$counts))){
+        analysis <- names(metadata(vals$counts)$diffExp)
+        selectInput('hmImpDEG', "Import results from analysis:",
                     analysis)
       } else {
-        p("MAST differential expression analysis not performed yet.")
+        p("Differential expression analysis not performed yet.")
       }
     }
   })
@@ -3520,36 +3520,41 @@ shinyServer(function(input, output, session) {
   observeEvent(input$hmImportRun, {
     if(!is.null(vals$counts)){
       if(!is.null(input$hmImport) &&
-         input$hmImport == "MAST DEG"){
-        if(!is.null(input$hmImpMASTDEG)){
-          result <- metadata(vals$counts)$MAST[[input$hmImpMASTDEG]]
+         input$hmImport == "Differential Expression"){
+        if(!is.null(input$hmImpDEG)){
+          result <- metadata(vals$counts)$diffExp[[input$hmImpDEG]]
           useAssay <- result$useAssay
           updateSelectInput(session, "hmAssay", selected = useAssay)
+          method <- result$method
           # Cell side
           addColData <- data.frame(row.names = colnames(vals$counts))
           idx <- rep(NA, ncol(vals$counts))
           idx[result$select$ix1] <- result$groupNames[1]
           idx[result$select$ix2] <- result$groupNames[2]
           hmTemp$cellIndex <- which(!is.na(idx))
-          conditionColName <- paste('MAST', input$hmImpMASTDEG, "condition",
+          conditionColName <- paste(method, input$hmImpDEG, "condition",
                                     sep = '_')
-          addColData[[conditionColName]] <- factor(idx, levels = result$groupNames)
+          addColData[[conditionColName]] <- factor(idx,
+                                                   levels = result$groupNames)
           colData(hmTemp$sce) <- cbind(colData(hmTemp$sce), addColData)
           hmTemp$cellTableCol <- conditionColName
           hmTemp$colDataName <- conditionColName
           hmTemp$colSplitBy <- conditionColName
-          hmTemp$colColorPresets[[conditionColName]] <- c('red', 'cyan', 'white')
-          names(hmTemp$colColorPresets[[conditionColName]]) <- c(result$groupNames, "NA")
+          hmTemp$colColorPresets[[conditionColName]] <- c('red', 'cyan',
+                                                          'white')
+          names(hmTemp$colColorPresets[[conditionColName]]) <-
+            c(result$groupNames, "NA")
           # Gene side
           addRowData <- data.frame(row.names = rownames(vals$counts))
           deg <- result$result
-          logFCColName <- paste("MAST", input$hmImpMASTDEG, "Log2FC",
+          deg <- deg[stats::complete.cases(deg),]
+          logFCColName <- paste(method, input$hmImpDEG, "Log2FC",
                                 sep = '_')
-          FDRColName <- paste("MAST", input$hmImpMASTDEG, "FDR",
+          FDRColName <- paste(method, input$hmImpDEG, "FDR",
                               sep = '_')
           addRowData[deg$Gene, logFCColName] <- deg$Log2_FC
           addRowData[deg$Gene, FDRColName] <- deg$FDR
-          regColName <- paste("MAST", input$hmImpMASTDEG, "regulation",
+          regColName <- paste(method, input$hmImpDEG, "regulation",
                               sep = '_')
           degUp <- deg[deg$Log2_FC > 0,]
           degDown <- deg[deg$Log2_FC < 0,]
@@ -3566,8 +3571,40 @@ shinyServer(function(input, output, session) {
           names(hmTemp$rowColorPresets[[regColName]]) <- c('up', 'down', 'NA')
         }
       } else if (!is.null(input$hmImport) &&
-                 input$hmImport == "Differential Expression"){
-          print('hi')
+                 input$hmImport == "Find Marker"){
+        markerTable <- metadata(vals$counts)$findMarker
+        markerTable <- markerTable[stats::complete.cases(markerTable),]
+        if(!is.null(markerTable)){
+          # Cell side
+          cluster <- colnames(markerTable)[5]
+          hmTemp$cellIndex <- seq_len(ncol(hmTemp$sce))
+          hmTemp$colDataName <- cluster
+          hmTemp$cellTableCol <- cluster
+          hmTemp$colSplitBy <- cluster
+          # Gene side
+          dup.gene <- unique(markerTable$Gene[duplicated(markerTable$Gene)])
+          for(g in dup.gene){
+            deg.gix <- markerTable$Gene == g
+            deg.gtable <- markerTable[deg.gix,]
+            toKeep <- which.max(deg.gtable$Log2_FC)
+            toRemove <- which(deg.gix)[-toKeep]
+            markerTable <- markerTable[-toRemove,]
+          }
+          hmTemp$geneIndex <- which(rownames(vals$counts) %in% markerTable$Gene)
+          addRowData <- data.frame(row.names = rownames(vals$counts))
+          addRowData[markerTable$Gene, "Marker_for_Cluster"] <- markerTable[,5]
+          addRowData[markerTable$Gene, "findMarker_Log2FC"] <-
+            markerTable$Log2_FC
+          addRowData[markerTable$Gene, "findMarker_FDR"] <- markerTable$FDR
+          rowData(hmTemp$sce) <- cbind(rowData(hmTemp$sce), addRowData)
+          hmTemp$geneTableCol <- c("Marker_for_Cluster",
+                                   "findMarker_Log2FC",
+                                   "findMarker_FDR")
+          hmTemp$rowDataName <- "Marker_for_Cluster"
+          hmTemp$rowSplitBy <- "Marker_for_Cluster"
+          hmTemp$rowColorPresets$Marker_for_Cluster <-
+            hmAnnAllColors$col[[cluster]]
+        }
       }
     }
   })
@@ -3893,7 +3930,7 @@ shinyServer(function(input, output, session) {
       }
 
     } else if(nUniq >= 1 && nUniq <= 12){
-      cats <- as.vector(unique(data))
+      cats <- as.character(unique(data))
       fluidRow(style = "padding-left:20px;",
         h4(colname),
         lapply(seq_along(cats), function(i) {
@@ -4052,8 +4089,8 @@ shinyServer(function(input, output, session) {
 
   observe({
     if(!input$hmCSPalette == ""){
-      highColor <- vals$hmCSPresets[[input$hmCSPalette]][1]
-      colourpicker::updateColourInput(session, 'hmCSHigh', value = highColor)
+      lowColor <- vals$hmCSPresets[[input$hmCSPalette]][1]
+      colourpicker::updateColourInput(session, 'hmCSLow', value = lowColor)
     }
   })
 
@@ -4066,8 +4103,8 @@ shinyServer(function(input, output, session) {
 
   observe({
     if(!input$hmCSPalette == ""){
-      lowColor <- vals$hmCSPresets[[input$hmCSPalette]][3]
-      colourpicker::updateColourInput(session, 'hmCSLow', value = lowColor)
+      highColor <- vals$hmCSPresets[[input$hmCSPalette]][3]
+      colourpicker::updateColourInput(session, 'hmCSHigh', value = highColor)
     }
   })
 

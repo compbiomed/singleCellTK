@@ -16,25 +16,14 @@ shinyPanelHeatmap <- fluidPage(
           selectInput("hmImport", NULL,
                       c("None",
                         "Differential Expression",
-                        "MAST DEG",
-                        "MAST Marker"),
+                        "Find Marker"),
                       selected = "None")),
       div(style="display:inline-block;vertical-align:bottom;width:50px;margin-left:8px;margin-bottom:15px;",
           actionButton("hmImportRun", "Import"))
     ),
     conditionalPanel(
-      condition = "input.hmImport == 'MAST DEG'",
-      uiOutput("hmImpMASTDEGUI")
-    ),
-    conditionalPanel(
       condition = "input.hmImport == 'Differential Expression'",
-      p("One-click import not implemented yet. ", style = 'color:grey;'),
-      p("However, by using 'Save Result' button at the analysis page, you can add the DEG table to the feature annotation table below. ", style = 'color:grey;'),
-      p("And then you can have the manual selection done.", style = 'color:grey;')
-    ),
-    conditionalPanel(
-      condition = "input.hmImport == 'MAST Marker'",
-      p("Not implemented yet.")
+      uiOutput("hmImpDEGUI")
     ),
     hr(),
     # Subset ####
@@ -159,7 +148,7 @@ shinyPanelHeatmap <- fluidPage(
       fluidRow(
         column(
           width = 4,
-          colourpicker::colourInput('hmCSHigh', 'High color',value = 'red')
+          colourpicker::colourInput('hmCSLow', 'Low color',value = 'blue')
         ),
         column(
           width = 4,
@@ -167,7 +156,7 @@ shinyPanelHeatmap <- fluidPage(
         ),
         column(
           width = 4,
-          colourpicker::colourInput('hmCSLow', 'Low color',value = 'blue')
+          colourpicker::colourInput('hmCSHigh', 'High color',value = 'red')
         )
       )
       # TODO: Do we add save preset button?
