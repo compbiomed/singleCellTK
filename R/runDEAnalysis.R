@@ -619,7 +619,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
         SummarizedExperiment::colData(sca)$cngeneson <- 0
     }
     zlmCond <- MAST::zlm(
-        as.formula(
+        stats::as.formula(
             paste0("~", paste(c("condition", "cngeneson", covariates),
                               collapse = '+'))),
         sca)
