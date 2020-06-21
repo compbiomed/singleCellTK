@@ -53,7 +53,7 @@
   annotations <- seurat@meta.data$seurat_clusters
   homotypicProp <- DoubletFinder::modelHomotypic(annotations)
   nExpPoi <- round(formationRate * ncol(seurat@assays$RNA))
-  seurat <- invisible(DoubletFinder::doubletFinder_v3(seurat,
+  seurat <- DoubletFinder::doubletFinder_v3(seurat,
     PCs = seuratPcs,
     pN = 0.25,
     pK = pkOptimal,
@@ -61,7 +61,7 @@
     reuse.pANN = FALSE,
     sct = FALSE,
     verbose = FALSE
-  ))
+  )
   names(seurat@meta.data)[6] <- "doubletFinderAnnScore"
   names(seurat@meta.data)[7] <- "doubletFinderLabel"
   return(seurat)
@@ -129,6 +129,10 @@ runDoubletFinder <- function(inSCE,
       doubletFinder_doublet_score = numeric(ncol(inSCE)),
       doubletFinder_doublet_label = numeric(ncol(inSCE))
     )
+    umapDims <- matrix(ncol = 2,
+                       nrow = ncol(inSCE))
+    rownames(umapDims) = colnames(inSCE)
+    colnames(umapDims) = c("UMAP_1", "UMAP_2")
 
     ## Loop through each sample and run doubletFinder
     samples <- unique(sample)
@@ -150,6 +154,13 @@ runDoubletFinder <- function(inSCE,
           seed = seed
         )
       ))
+      result <- suppressMessages(Seurat::RunUMAP(result,
+                                                 dims = 1:10,
+                                                 verbose = verbose))
+
+      seuratDims <- Seurat::Embeddings(result, reduction = "umap")
+      umapDims[sceSampleInd, 1] <- seuratDims[,1]
+      umapDims[sceSampleInd, 2] <- seuratDims[,2]
       output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
@@ -160,6 +171,7 @@ runDoubletFinder <- function(inSCE,
     inSCE@metadata$runDoubletFinder <- argsList[-1]
     inSCE@metadata$runDoubletFinder$packageVersion <- utils::packageDescription("DoubletFinder")$Version
     colData(inSCE) <- cbind(colData(inSCE), output)
+    reducedDim(inSCE,'doubletFinder_UMAP') <- umapDims
   }
   return(inSCE)
 }
