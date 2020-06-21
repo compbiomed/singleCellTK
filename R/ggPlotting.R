@@ -1046,7 +1046,7 @@ plotSCEViolin <- function(inSCE,
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
 #' @examples
-#' plotSCEViolinColData(
+#' plotSCEDensityColData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   coldata = "age", groupby = "sex"
 #' )
@@ -1120,7 +1120,8 @@ plotSCEDensityColData <- function(inSCE,
       axisSize = axisSize,
       defaultTheme = defaultTheme,
       title = title,
-      titleSize = titleSize
+      titleSize = titleSize,
+      cutoff = cutoff
     )
     return(p)
   })
@@ -1235,7 +1236,8 @@ plotSCEDensityAssayData <- function(inSCE,
       axisSize = axisSize,
       defaultTheme = defaultTheme,
       title = title,
-      titleSize = titleSize
+      titleSize = titleSize,
+      cutoff = cutoff
     )
     return(p)
   })
