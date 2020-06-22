@@ -109,7 +109,7 @@ Suggests:
     spelling,
     org.Mm.eg.db
 Remotes: 
-    joshua-d-campbell/DoubletFinder,
+    ykoga07/DoubletFinder,
     joshua-d-campbell/harmony,
     rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
