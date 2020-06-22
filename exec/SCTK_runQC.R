@@ -2,7 +2,7 @@
 
 ##Check to see if necessary packages are installed
 #CRAN packages
-cran.packages <- c("optparse", "yaml")
+cran.packages <- c("optparse", "yaml", "igraph", "Rtsne", "spam", "MCMCprecision")
 
 cran.package.check <- lapply(cran.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {

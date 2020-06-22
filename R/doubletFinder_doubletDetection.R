@@ -82,6 +82,7 @@
 #' @examples
 #' \dontrun{
 #' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runDoubletFinder(sce)
 #' }
 #' @export

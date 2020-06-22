@@ -74,7 +74,10 @@ runDoubletCells <- function(inSCE,
     output[sceSampleInd, ] <- result
   }
 
-  argsList = argsList[!names(argsList) %in% ("...")]
+  argsList <- argsList[!names(argsList) %in% ("...")]
+  dotList <- list(...)
+  dotList <- dotList[!names(dotList) %in% c("BNPARAM","BSPARAM","BPPARAM")]
+  argsList <- c(argsList, dotList)
   inSCE@metadata$runDoubletCells <- argsList[-1]
   inSCE@metadata$runDoubletCells$packageVersion <- utils::packageDescription("scran")$Version
   colData(inSCE) = cbind(colData(inSCE), output)

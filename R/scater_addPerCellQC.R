@@ -14,7 +14,7 @@
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
 #' @examples
-#' data(qcSceExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' mito.ix = grep("^MT-", rowData(sce)$feature_name)
 #' geneSet <- list("Mito"=rownames(sce)[mito.ix])
 #' sce <- runPerCellQC(sce, geneSetList = geneSet)
@@ -118,7 +118,10 @@ runPerCellQC <- function(inSCE,
   }
   inSCE <- scater::addPerCellQC(x = inSCE, exprs_values = useAssay, subsets = geneSets, ...)
 
-  argsList = argsList[!names(argsList) %in% ("...")]
+  argsList <- argsList[!names(argsList) %in% ("...")]
+  dotList <- list(...)
+  dotList <- dotList[!names(dotList) %in% c("BPPARAM")]
+  argsList <- c(argsList, dotList)
   S4Vectors::metadata(inSCE)$scater$addPerCellQC <- argsList[-1]
   S4Vectors::metadata(inSCE)$scater$addPerCellQC$packageVersion <- utils::packageDescription("scran")$Version
 

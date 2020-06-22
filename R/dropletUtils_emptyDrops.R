@@ -114,6 +114,7 @@ runEmptyDrops <- function(inSCE,
   
   colData(inSCE) = cbind(colData(inSCE), output)
  
+  argsList <- argsList[!names(argsList) %in% c("BPPARAM")]
   inSCE@metadata$runEmptyDrops <- argsList[-1]
   inSCE@metadata$runEmptyDrops$packageVersion <- utils::packageDescription("DropletUtils")$Version
   
