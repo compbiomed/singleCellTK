@@ -25,6 +25,15 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -48,6 +57,9 @@
                        binLabel = NULL,
                        dotSize = 2,
                        transparency = 1,
+                       colorLow = "white",
+                       colorMid = "gray",
+                       colorHigh = "blue",
                        defaultTheme = TRUE,
                        title = NULL,
                        titleSize = 15,
@@ -136,6 +148,14 @@
       ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
+    }
+    if (class(colorBySub) == "numeric"){
+        g <- g + ggplot2::scale_color_gradient2(
+            low = colorLow,
+            mid = colorMid,
+            high = colorHigh,
+            aesthetics = "colour",
+            midpoint = mean(colorBySub))
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
@@ -227,6 +247,15 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -263,6 +292,9 @@ plotSCEDimReduceColData <- function(inSCE,
                                     binLabel = NULL,
                                     dotSize = 2,
                                     transparency = 1,
+                                    colorLow = "white",
+                                    colorMid = "gray",
+                                    colorHigh = "blue",
                                     defaultTheme = TRUE,
                                     title = NULL,
                                     titleSize = 15,
@@ -285,6 +317,9 @@ plotSCEDimReduceColData <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize,
@@ -321,6 +356,15 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -347,6 +391,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      binLabel = NULL,
                                      dotSize = 2,
                                      transparency = 1,
+                                     colorLow = "white",
+                                     colorMid = "gray",
+                                     colorHigh = "blue",
                                      defaultTheme = TRUE,
                                      title = NULL,
                                      titleSize = 15,
@@ -366,6 +413,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
     colorBy = counts,
     shape = shape,
     transparency = 1,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     reducedDimName = reducedDimName,
     xlab = xlab,
     ylab = ylab,
@@ -416,6 +466,15 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -445,6 +504,9 @@ plotSCEScatter <- function(inSCE,
                            binLabel = NULL,
                            dotSize = 2,
                            transparency = 1,
+                           colorLow = "white",
+                           colorMid = "gray",
+                           colorHigh = "blue",
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 15,
@@ -491,6 +553,9 @@ plotSCEScatter <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize,

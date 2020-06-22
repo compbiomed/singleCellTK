@@ -156,7 +156,9 @@ runDoubletFinder <- function(inSCE,
       ))
       result <- suppressMessages(Seurat::RunUMAP(result,
                                                  dims = 1:10,
-                                                 verbose = verbose))
+                                                 verbose = verbose,
+                                                 umap.method = "umap-learn",
+                                                 metric = "correlation"))
 
       seuratDims <- Seurat::Embeddings(result, reduction = "umap")
       umapDims[sceSampleInd, 1] <- seuratDims[,1]
