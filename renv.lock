@@ -146,11 +146,11 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "joshua-d-campbell",
       "RemoteRepo": "DoubletFinder",
+      "RemoteUsername": "ykoga07",
       "RemoteRef": "master",
-      "RemoteSha": "64b1d61d2ae5e84cd4350ed8a4e409a0da880bdb",
-      "Hash": "b13505122c92b11a9917936b754b00c6"
+      "RemoteSha": "7e6d20cd3b8d7fde1b59191eac89f66d71c35add",
+      "Hash": "7d4ff12889e711bf4dc65ab6604ff0fd"
     },
     "DropletUtils": {
       "Package": "DropletUtils",
@@ -442,6 +442,12 @@
       "Version": "1.16.1",
       "Source": "Bioconductor",
       "Hash": "1f4c0859b8f338bd9f8c0b7967e719a3"
+    },
+    "TENxPBMCData": {
+      "Package": "TENxPBMCData",
+      "Version": "1.4.0",
+      "Source": "Bioconductor",
+      "Hash": "7aefab42d1f3786a48a4f0c1172a15e0"
     },
     "V8": {
       "Package": "V8",
