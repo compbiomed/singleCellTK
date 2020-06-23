@@ -583,6 +583,10 @@ plotSCEScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
@@ -597,52 +601,98 @@ plotSCEScatter <- function(inSCE,
                       dotSize = 1,
                       transparency = 1,
                       defaultTheme = TRUE,
+                      gridLine = FALSE,
+                      summary = NULL,
                       title = NULL,
                       titleSize = 15) {
-  if (is.null(groupby)) {
-    groupby <- rep("Sample", length(y))
-  }
-  df <- data.frame(x = groupby, y = y)
+    library(dplyr)
 
-  p <- ggplot2::ggplot(df) +
-    ggplot2::aes_string(
-      x = "x",
-      y = "y"
-    )
-  if (violin == TRUE) {
-    p <- p + ggplot2::geom_violin(trim = TRUE, scale = "width")
-  }
-  if (boxplot == TRUE) {
-    p <- p + ggplot2::geom_boxplot(width = 0.1)
-  }
-  if (dots == TRUE) {
-    p <- p + ggplot2::geom_jitter(
-      height = 0,
-      size = dotSize,
-      alpha = transparency
-    )
-  }
-  if (defaultTheme == TRUE) {
-    p <- .ggSCTKTheme(p)
-  }
-  if (!is.null(title)) {
-    p <- p + ggplot2::ggtitle(label = title) +
-      ggplot2::theme(plot.title = ggplot2::element_text(
-        hjust = 0.5,
-        size = titleSize
-      ))
-  }
-  if (!is.null(xlab)) {
-    p <- p + ggplot2::xlab(xlab) +
-      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
-  }
-  if (!is.null(ylab)) {
-    p <- p + ggplot2::ylab(ylab) +
-      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
-  }
+    if (is.null(groupby)) {
+        groupby <- rep("Sample", length(y))
+    }
+    df <- data.frame(x = groupby, y = y)
 
-  return(p)
+    p <- ggplot2::ggplot(df) +
+        ggplot2::aes_string(
+            x = "x",
+            y = "y"
+        )
+    if (dots == TRUE) {
+        p <- p + ggplot2::geom_jitter(
+            color = "blue",
+            width = 0.2,
+            height = 0,
+            size = dotSize,
+            alpha = transparency
+        )
+    }
+    if (boxplot == TRUE) {
+        p <- p + ggplot2::geom_boxplot(width = 0.5,
+                                       alpha = 0)
+    }
+    if (violin == TRUE) {
+        p <- p + ggplot2::geom_violin(trim = TRUE,
+                                      scale = "width",
+                                      size = 1,
+                                      fill = "grey",
+                                      alpha = 0.75)
+    }
+    if (defaultTheme == TRUE) {
+        p <- .ggSCTKTheme(p)
+    }
+    if (!is.null(title)) {
+        p <- p + ggplot2::ggtitle(label = title) +
+            ggplot2::theme(plot.title = ggplot2::element_text(
+                hjust = 0.5,
+                size = titleSize
+            ))
+    }
+
+    if(length(unique(df$x)) > 1){
+        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+    }else{
+        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                       axis.ticks.x = ggplot2::element_blank(),
+                       axis.title.x = ggplot2::element_blank())
+    }
+
+    if (gridLine == TRUE){
+        p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
+    }
+    if (!is.null(xlab)) {
+        p <- p + ggplot2::xlab(xlab) +
+            ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+    }
+    if (!is.null(ylab)) {
+        p <- p + ggplot2::ylab(ylab) +
+            ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+    }
+    if (!is.null(summary)){
+        if(summary == "mean"){
+            summ <- df %>% group_by(x) %>% summarize(value = mean(y))
+            fun <- mean
+        }else if(summary == "median"){
+            summ <- df %>% group_by(x) %>% summarize(value = median(y))
+            fun <- median
+        }else{
+            stop("`summary`` must be either `mean` or `median`.")
+        }
+        summary <- paste(toupper(substr(summary, 1, 1)),
+                         substr(summary, 2, nchar(summary)), sep="")
+        p <- p + ggplot2::geom_text(data = summ,
+                           ggplot2::aes(x = x,
+                               y = max(df$y) + (max(df$y) - min(df$y)) * 0.1,
+                               label = paste0(summary,": ", round(value, 5))))
+        p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
+                              fun.max = fun,
+                              geom = "crossbar",
+                              color = "red",
+                              linetype = "dashed")
+    }
+
+    return(p)
 }
+
 
 #' @title Violin plot of colData.
 #' @description Visualizes values stored in the colData slot of a
@@ -666,6 +716,10 @@ plotSCEScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 
@@ -688,6 +742,8 @@ plotSCEViolinColData <- function(inSCE,
                                  dotSize = 1,
                                  transparency = 1,
                                  defaultTheme = TRUE,
+                                 gridLine = FALSE,
+                                 summary = NULL,
                                  title = NULL,
                                  titleSize = NULL) {
     if (!is.null(coldata)) {
@@ -749,6 +805,8 @@ plotSCEViolinColData <- function(inSCE,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
+            gridLine = gridLine,
+            summary = summary,
             title = title,
             titleSize = titleSize
         )
@@ -789,6 +847,10 @@ plotSCEViolinColData <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @examples
@@ -811,6 +873,8 @@ plotSCEViolinAssayData <- function(inSCE,
                                    dotSize = 1,
                                    transparency = 1,
                                    defaultTheme = TRUE,
+                                   gridLine = FALSE,
+                                   summary = NULL,
                                    title = NULL,
                                    titleSize = NULL) {
     mat <- getBiomarker(
@@ -867,6 +931,8 @@ plotSCEViolinAssayData <- function(inSCE,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
+            gridLine = gridLine,
+            summary = summary,
             title = title,
             titleSize = titleSize
         )
@@ -911,6 +977,10 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 
@@ -935,6 +1005,8 @@ plotSCEViolin <- function(inSCE,
                           dotSize = 1,
                           transparency = 1,
                           defaultTheme = TRUE,
+                          gridLine = FALSE,
+                          summary = NULL,
                           title = NULL,
                           titleSize = NULL) {
   if (!slot %in% methods::slotNames(inSCE)) {
@@ -1008,6 +1080,8 @@ plotSCEViolin <- function(inSCE,
           dotSize = dotSize,
           transparency = transparency,
           defaultTheme = defaultTheme,
+          gridLine = gridLine,
+          summary = summary,
           title = title,
           titleSize = titleSize
       )
