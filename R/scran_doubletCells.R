@@ -1,9 +1,10 @@
 
-.runDoubletCells <- function(cell.matrix, ...) {
+.runDoubletCells <- function(cell.matrix, k = k, nIters = nIters, ...) {
 
   cell.matrix <- .convertToMatrix(cell.matrix)
 
-  scores <- matrix(scran::doubletCells(cell.matrix, ...), ncol=1)
+  scores <- matrix(scran::doubletCells(cell.matrix, k = k,
+                                       niters = nIters, ...), ncol=1)
   colnames(scores) <- "scran_doubletCells_score"
 
   return(scores)
@@ -18,6 +19,10 @@
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  \link[scran]{doubletCells} will be run on cells from each sample separately.
 #' @param useAssay  A string specifying which assay in the SCE to use.
+#' @param nNeighbors Number of nearest neighbors used to calculate density for
+#'  doublet detection. Default 50.
+#' @param simDoublets Number of simulated doublets created for doublet
+#'  detection. Default 10000.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param ... Additional arguments to pass to \link[scran]{doubletCells}.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
@@ -40,6 +45,8 @@
 runDoubletCells <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
+    nNeighbors = 50,
+    simDoublets = 10000,
     seed = 12345,
     ...
 ) {
@@ -69,7 +76,8 @@ runDoubletCells <- function(inSCE,
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
 
     result <- withr::with_seed(seed,
-              .runDoubletCells(cell.matrix = mat, ...))
+              .runDoubletCells(cell.matrix = mat, k = nNeighbors,
+                               nIters = simDoublets, ...))
 
     output[sceSampleInd, ] <- result
   }

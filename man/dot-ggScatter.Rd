@@ -6,6 +6,7 @@
 \usage{
 .ggScatter(
   inSCE,
+  sample = NULL,
   colorBy = NULL,
   shape = NULL,
   reducedDimName,
@@ -17,7 +18,7 @@
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotsize = 2,
+  dotSize = 2,
   transparency = 1,
   defaultTheme = TRUE,
   title = NULL,
@@ -28,6 +29,8 @@
 \arguments{
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{colorBy}{If provided, colors dots in the scatterplot based on value.}
 
@@ -61,7 +64,7 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotsize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 

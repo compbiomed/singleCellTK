@@ -82,6 +82,7 @@ Imports:
     shinycssloaders,
     shinythemes,
     umap,
+    uwot,
     DropletUtils,
     scds (>= 1.2.0),
     reticulate (>= 1.14),
@@ -95,7 +96,7 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-	rmarkdown
+    rmarkdown
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
