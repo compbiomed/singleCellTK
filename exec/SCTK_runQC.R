@@ -43,7 +43,7 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         help="Base path for the output from the preprocessing algorithm"),
     optparse::make_option(c("-P", "--preproc"),
         type = "character",
-        default="CellRangerV3",
+        default=NULL,
         help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
@@ -91,39 +91,44 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
-        help="YAML file containing parameters called by singleCellTK QC functions. Please check documentation for details."))
+        help="YAML file containing parameters called by singleCellTK QC functions. Please check documentation for details."),
+    optparse::make_option(c("-d", "--dataType"),
+        type="character",
+        default="Both",
+        help="Type of data as input. Default is Both, which means taking both droplet and cell matrix as input. If set as 'Droplet', it will only processes droplet data. If set as 'Cell', it will only processes cell data."))
 
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
 opt <- arguments$options
-process <- unlist(strsplit(opt$preproc, ","))
-sample <- unlist(strsplit(opt$sample, ","))
-directory <- unlist(strsplit(opt$directory, ","))
-gmt <- opt$gmt
-sep <- opt$delim
-split <- opt$split_sample
-basepath <- opt$base_path
-FilterDir <- opt$cell_data_path 
-RawDir <- opt$raw_data_path
-Reference <- opt$genome
-RawFile <- opt$raw_data
-FilterFile <- opt$cell_data
-yamlFile <- opt$yamlFile
-formats <- opt$outputFormat
+process <- unlist(strsplit(opt[["preproc"]], ","))
+sample <- unlist(strsplit(opt[["sample"]], ","))
+directory <- unlist(strsplit(opt[["directory"]], ","))
+gmt <- opt[["gmt"]]
+sep <- opt[["delim"]]
+split <- opt[["split_sample"]]
+basepath <- opt[["base_path"]]
+FilterDir <- opt[["cell_data_path"]] 
+RawDir <- opt[["raw_data_path"]]
+Reference <- opt[["genome"]]
+RawFile <- opt[["raw_data"]]
+FilterFile <- opt[["cell_data"]]
+yamlFile <- opt[["yamlFile"]]
+formats <- opt[["outputFormat"]]
+dataType <- opt[["dataType"]]
 
-if (!is.null(basepath)) { basepath <- unlist(strsplit(opt$base_path, ",")) } 
+if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["base_path"]], ",")) } 
 
-if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt$cell_data_path, ",")) } 
+if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cell_data_path"]], ",")) } 
 
-if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt$raw_data_path, ",")) } 
+if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["raw_data_path"]], ",")) } 
 
-if (!is.null(Reference)) { Reference <- unlist(strsplit(opt$genome, ",")) } 
+if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) } 
 
-if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt$raw_data, ",")) }
+if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["raw_data"]], ",")) }
 
-if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt$cell_data, ",")) } 
+if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cell_data"]], ",")) } 
 
-if (!is.null(formats)) { formats <- unlist(strsplit(opt$outputFormat, ",")) } 
+if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
 
 ## Parse parameters for QC algorithms
 if (!is.null(yamlFile)) {
@@ -151,16 +156,67 @@ if (length(formats) == 0) {
     formats <- c("R", "Python", "FlatFile", "HTAN")
 }
 
+if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
+    stop("-d / -dataType must be one of the following: 'Both', 'Droplet' or 'Cell'. ")
+}
+
 ## Checking argument
-if (is.null(RawFile) & is.null(RawFile)) {
-    if (is.null(basepath)) {
-        if ((is.null(FilterDir) || is.null(RawDir))) {
-            warning("Both 'cell_data_path' and 'raw_data_path' need to be specified when 'base_path' is NULL.")
-        } else {
-            # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
-            if (length(FilterDir) != length(RawDir)) {
-                stop("The length of '--cell_data_path' should be the same as the length of '--raw_data_path'.")
+if (dataType == "Both") {
+    if (is.null(RawFile) & is.null(FilterFile)) {
+        if (is.null(basepath)) {
+            if ((is.null(FilterDir) || is.null(RawDir))) {
+                stop("Both 'cell_data_path' and 'raw_data_path' need to be specified when 'base_path' is NULL.")
+            } else {
+                # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
+                if (length(FilterDir) != length(RawDir)) {
+                    stop("The length of '--cell_data_path' should be the same as the length of '--raw_data_path'.")
+                }
+                if (length(FilterDir) != length(sample)) {
+                    stop("The length of '--cell_data_path' should be the same as the length of '--sample'.")
+                }
+                if (length(FilterDir) != length(process)) {
+                    stop('The length of "--cell_data_path" should be the same as ',
+                             'the length of "--preproc"!')
+                }
             }
+        } else {
+            if (length(basepath) != length(process)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--preproc"!')
+            }
+            if (length(basepath) != length(sample)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--sample"!')    
+            }
+        }
+
+        if (length(Reference) != sum(process == 'CellRangerV2')) {
+            stop('The length of "--ref" should be the same as ',
+                     'the number of "CellRangerV2" in the "--preproc"!')        
+        }        
+    }
+
+    if (!is.null(RawFile) | !is.null(FilterFile)) {
+        if (length(RawFile) != length(FilterFile)) {
+             stop("The length of '--raw_data' and '--cell_data' should be the same when '--preproc' is SceRDS or CountMatrix.")
+        }
+        if (length(FilterFile) != length(sample)) {
+            stop("The length of '--cell_data' should be the same as the length of '--sample'.")
+        }
+        if (length(FilterFile) != length(process)) {
+            stop('The length of "--cell_data" should be the same as ',
+                     'the length of "--preproc"!')
+        }
+    }
+}
+
+if (dataType == "Cell") {
+    if (is.null(FilterFile)) {
+        if (is.null(basepath)) {
+            if ((is.null(FilterDir))) {
+                stop("'cell_data_path' need to be specified when 'base_path' is NULL.")
+            } 
+            # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
             if (length(FilterDir) != length(sample)) {
                 stop("The length of '--cell_data_path' should be the same as the length of '--sample'.")
             }
@@ -168,37 +224,77 @@ if (is.null(RawFile) & is.null(RawFile)) {
                 stop('The length of "--cell_data_path" should be the same as ',
                          'the length of "--preproc"!')
             }
+            
+        } else {
+            if (length(basepath) != length(process)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--preproc"!')
+            }
+            if (length(basepath) != length(sample)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--sample"!')    
+            }
         }
-    } else {
-        if (length(basepath) != length(process)) {
-            stop('The length of "--base_path" should be the same as ',
+
+        if (length(Reference) != sum(process == 'CellRangerV2')) {
+            stop('The length of "--ref" should be the same as ',
+                     'the number of "CellRangerV2" in the "--preproc"!')        
+        }       
+    }
+
+    if (!is.null(FilterFile)) {
+        if (length(FilterFile) != length(sample)) {
+            stop("The length of '--cell_data' should be the same as the length of '--sample'.")
+        }
+        if (length(FilterFile) != length(process)) {
+            stop('The length of "--cell_data" should be the same as ',
                      'the length of "--preproc"!')
         }
-        if (length(basepath) != length(sample)) {
-            stop('The length of "--base_path" should be the same as ',
-                     'the length of "--sample"!')    
+    }
+}
+
+if (dataType == "Droplet") {
+    if (is.null(RawFile)) {
+        if (is.null(basepath)) {
+            if ((is.null(RawDir))) {
+                stop("'raw_data_path' need to be specified when 'base_path' is NULL.")
+            } 
+            # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
+            if (length(RawDir) != length(sample)) {
+                stop("The length of '--raw_data_path' should be the same as the length of '--sample'.")
+            }
+            if (length(RawDir) != length(process)) {
+                stop('The length of "--raw_data_path" should be the same as ',
+                         'the length of "--preproc"!')
+            }
+            
+        } else {
+            if (length(basepath) != length(process)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--preproc"!')
+            }
+            if (length(basepath) != length(sample)) {
+                stop('The length of "--base_path" should be the same as ',
+                         'the length of "--sample"!')    
+            }
+        }
+
+        if (length(Reference) != sum(process == 'CellRangerV2')) {
+            stop('The length of "--ref" should be the same as ',
+                     'the number of "CellRangerV2" in the "--preproc"!')        
+        }       
+    }
+
+    if (!is.null(RawFile)) {
+        if (length(RawFile) != length(sample)) {
+            stop("The length of '--raw_data' should be the same as the length of '--sample'.")
+        }
+        if (length(RawFile) != length(process)) {
+            stop('The length of "--raw_data" should be the same as ',
+                     'the length of "--preproc"!')
         }
     }
-
-    if (length(Reference) != sum(process == 'CellRangerV2')) {
-        stop('The length of "--ref" should be the same as ',
-                 'the number of "CellRangerV2" in the "--preproc"!')        
-    }        
 }
-
-if (!is.null(RawFile) | !is.null(FilterFile)) {
-    if (length(RawFile) != length(FilterFile)) {
-         stop("The length of '--raw_data' and '--cell_data' should be the same when '--preproc' is SceRDS or CountMatrix.")
-    }
-    if (length(FilterFile) != length(sample)) {
-        stop("The length of '--cell_data' should be the same as the length of '--sample'.")
-    }
-    if (length(FilterFile) != length(process)) {
-        stop('The length of "--cell_data" should be the same as ',
-                 'the length of "--preproc"!')
-    }
-}
-
 
 ## Prepare for QC
 dropletSCE_list <- list()
@@ -207,6 +303,7 @@ geneSetCollection <- NULL
 if (!is.null(gmt)) {
     geneSetCollection <- GSEABase::getGmt(gmt, sep=sep)
 }
+
 
 level3Meta <- list()
 level4Meta <- list()
@@ -220,105 +317,107 @@ for(i in seq_along(process)) {
     ref <- Reference[i]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
-    dropletSCE <- NULL
-    cellSCE <- NULL
+    INPUT <- qcInputProcess(preproc,
+                            samplename,
+                            path,
+                            raw,
+                            fil,
+                            ref,
+                            rawFile,
+                            filFile,
+                            dataType)
 
-    if (preproc == "BUStools") {
-        dropletSCE <- importBUStools(BUStoolsDir = path, sample = samplename, class = "Matrix", delayedArray=FALSE)
-    } else if (preproc == "STARSolo") {
-        dropletSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
-        cellSCE <- importSTARsolo(STARsoloDir = path, sample = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
-    } else if (preproc == "CellRangerV3") {
-        if (!is.null(path)) {
-            dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
-            cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
-        } else {
-            dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
-            cellSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
-        }
-    } else if (preproc == "CellRangerV2") {
-        if(is.null(ref)){
-            stop("The name of genome reference needs to be specified.")
-        }
-        if (!is.null(path)) {
-            dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
-            cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
-        } else {
-            dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
-            cellSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
-        }
-    } else if (preproc == "SEQC") {
-        dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
-    } else if (preproc == "Optimus") {
-        dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename, delayedArray = FALSE)
-        cellSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
-    } else if (preproc == "DropEst") {
-        dropletSCE <- importDropEst(sampleDirs=path, dataType="raw", sampleNames=samplename, delayedArray=FALSE)
-        cellSCE <- importDropEst(sampleDirs=path, dataType="filtered", sampleNames=samplename, delayedArray=FALSE)
-    } else if (preproc == "SceRDS") {
-        dropletSCE <- readRDS(rawFile)
-        cellSCE <- readRDS(filFile)
-    } else if (preproc == "CountMatrix") {
-        dropletMM <- data.table::fread(rawFile)
-        dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
-        cellMM <- data.table::fread(filFile)
-        cellSCE <- constructSCE(data = cellMM, samplename = samplename)
-    } else {
-        stop(paste0("'", preproc, "' not supported."))
-    }
+    dropletSCE <- INPUT[[1]]
+    cellSCE <- INPUT[[2]]
     
-    if (!is.null(dropletSCE)) {
-        message(paste0(date(), " .. Running droplet QC"))        
-        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
-        
-        if (is.null(cellSCE)) {
+    if (dataType == "Cell") {
+        if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
+            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params, algorithms=c("emptyDrops"))
             ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
             cellSCE <- dropletSCE[,ix]
-        }    
-    }
-    
-    if (!is.null(cellSCE)) {
+        }
+
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms=c("scrublet","decontX"))
+    }
+
+    if (dataType == "Droplet") {
+        message(paste0(date(), " .. Running droplet QC"))        
+        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params,algorithms = c("barcodeRanks"))
+    }
+
+    if (dataType == "Both") {
+        if (!is.null(dropletSCE)) {
+            message(paste0(date(), " .. Running droplet QC"))        
+            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params,algorithms = c("barcodeRanks"))
+            
+            if (is.null(cellSCE)) {
+                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+                cellSCE <- dropletSCE[,ix]
+            }    
+        }
+
+        if (!is.null(cellSCE)) {
+            message(paste0(date(), " .. Running cell QC"))        
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms=c("scrublet","decontX"))
+        }
     }
     
     ## merge colData of dropletSCE and FilteredSCE
     mergedDropletSCE <- NULL
     mergedFilteredSCE <- NULL
-    if (!is.null(cellSCE) & !is.null(dropletSCE)) {
+
+    if (dataType == "Both") {
         mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
         mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
-    } else {
+    }
+
+    if (dataType == "Cell") {
         mergedFilteredSCE <- cellSCE
     }
 
-    if (isTRUE(split)) {
-        exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
-        exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
-        
-        ## Get parameters of QC functions
-        getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
-
-        ## generate meta data
-        if ("FlatFile" %in% formats) {
-            if ("HTAN" %in% formats) {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=TRUE)
-            } else {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=FALSE)  
-            }
-
-        level3Meta[[i]] <- meta[[1]]
-        level4Meta[[i]] <- meta[[2]]
-
-        } else {
-            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
-        }
+    if (dataType == "Droplet") {
+        mergedDropletSCE <- dropletSCE
     }
+
+    if (isTRUE(split)) {
+        if (dataType == "Both") {
+            exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+            exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+            
+            ## Get parameters of QC functions
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+
+            ## generate meta data
+            if ("FlatFile" %in% formats) {
+                if ("HTAN" %in% formats) {
+                    meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                        dir = directory, HTAN=TRUE)
+                } else {
+                    meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                        dir = directory, HTAN=FALSE)  
+                }
+
+            level3Meta[[i]] <- meta[[1]]
+            level4Meta[[i]] <- meta[[2]]
+
+            } else {
+                warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+            }
+        }
+
+        if (dataType == "Cell") {
+            exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+        }
+
+        if (dataType == "Droplet") {
+            exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        }
 
     dropletSCE_list[[samplename]] <- mergedDropletSCE
     cellSCE_list[[samplename]] <- mergedFilteredSCE
+    }
 }
 
 if (!isTRUE(split)) {
@@ -329,31 +428,42 @@ if (!isTRUE(split)) {
         samplename <- paste(sample, collapse="-")
     }
 
-    exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
-    exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+    if (dataType == "Both") { 
+        exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
-    ## Get parameters of QC functions
-    getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+        ## Get parameters of QC functions
+        getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
-    ## generate meta data
-    if ("FlatFile" %in% formats) {
-        if ("HTAN" %in% formats) {
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                dir = directory, HTAN=TRUE)
+        ## generate meta data
+        if ("FlatFile" %in% formats) {
+            if ("HTAN" %in% formats) {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=TRUE)
+            } else {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=FALSE)            
+            }
+
+            level3Meta <- list(meta[[1]])
+            level4Meta <- list(meta[[2]])
+
         } else {
-            meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                dir = directory, HTAN=FALSE)            
+            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
+    }
 
-        level3Meta <- list(meta[[1]])
-        level4Meta <- list(meta[[2]])
+    if (dataType == "Cell") {
+        exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+        getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+    }
 
-    } else {
-        warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+    if (dataType == "Droplet") {
+        exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
     }
 }
 
-if ("FlatFile" %in% formats) {
+if (("FlatFile" %in% formats) && (dataType == "Both")) {
     HTANLevel3 <- do.call(base::rbind, level3Meta)
     HTANLevel4 <- do.call(base::rbind, level4Meta)
     write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))

@@ -395,7 +395,7 @@ qcInputProcess <- function(preproc,
             dropletMM <- data.table::fread(rawFile)
             dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     ## preproc is not one of the method above. Stop the pipeline. 
