@@ -1,32 +1,32 @@
 #' Apply BBKNN batch effect correction method to SingleCellExperiment object
-#' 
-#' BBKNN, an extremely fast graph-based data integration algorithm. It modifies 
-#' the neighbourhood construction step to produce a graph that is balanced 
-#' across all batches of the data. 
+#'
+#' BBKNN, an extremely fast graph-based data integration algorithm. It modifies
+#' the neighbourhood construction step to produce a graph that is balanced
+#' across all batches of the data.
 #' @param inSCE SingleCellExperiment object. An object that stores your dataset
 #' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name 
-#' of the assay requiring batch correction in "inSCE", should exist in 
+#' @param useAssay character, default `"logcounts"`. A string indicating the name
+#' of the assay requiring batch correction in "inSCE", should exist in
 #' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the 
+#' @param batch character, default `"batch"`. A string indicating the
 #' field of `colData(inSCE)` that defines different batches.
-#' @param reducedDimName character, default `"BBKNN"`. The name for the 
+#' @param reducedDimName character, default `"BBKNN"`. The name for the
 #' corrected low-dimensional representation.
-#' @param nComponents integer, default `50L`. Number of principle components or 
-#' dimensionality, adopted in the pre-PCA-computation step, the BBKNN step (for 
-#' how many PCs the algorithm takes into account), and the final UMAP 
-#' combination step where the value represent the dimensionality of the updated 
+#' @param nComponents integer, default `50L`. Number of principle components or
+#' dimensionality, adopted in the pre-PCA-computation step, the BBKNN step (for
+#' how many PCs the algorithm takes into account), and the final UMAP
+#' combination step where the value represent the dimensionality of the updated
 #' reducedDim.
-#' @return SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
+#' @return SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)`
 #' updated with corrected low-dimentional representation
 #' @export
 #' @references Krzysztof Polański et al., 2020
-#' @examples  
+#' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runBBKNN(sceBatches)
 #' }
-runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch', 
+runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
                     reducedDimName = 'BBKNN', nComponents = 50L){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
@@ -48,7 +48,7 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
         stop(paste("\"batch\" name:", batch, "not found"))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
-    
+    nComponents <- as.integer(nComponents)
     ## Run algorithm
     adata <- .sce2adata(inSCE, useAssay = useAssay)
     sc$tl$pca(adata, n_comps = nComponents)
