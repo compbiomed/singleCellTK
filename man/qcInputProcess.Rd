@@ -17,6 +17,8 @@ qcInputProcess(
 )
 }
 \arguments{
+\item{preproc}{Method used to preprocess the data. It's one of the path provided in --preproc argument.}
+
 \item{samplename}{The sample name of the data. It's one of the path provided in --sample argument.}
 
 \item{path}{Base path of the dataset. It's one of the path provided in --bash_path argument.}

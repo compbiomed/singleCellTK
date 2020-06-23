@@ -13,7 +13,8 @@ runDoubletFinder(
   seuratPcs = 1:15,
   seuratRes = 1.5,
   formationRate = 0.075,
-  verbose = FALSE
+  verbose = FALSE,
+  numCores = 1
 )
 }
 \arguments{
@@ -40,6 +41,10 @@ Default 0.075.}
 
 \item{verbose}{Boolean. Wheter to print messages from Seurat and DoubletFinder.
 Default FALSE.}
+
+\item{numCores}{Integer. Number of cores used to run doubletFinder. Default is 1 (no parallel computing).}
+
+\item{seed.}{Integer. Random seed set for computation. Default is 12345.}
 }
 \value{
 SingleCellExperiment object containing the

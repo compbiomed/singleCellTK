@@ -95,7 +95,12 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-d", "--dataType"),
         type="character",
         default="Both",
-        help="Type of data as input. Default is Both, which means taking both droplet and cell matrix as input. If set as 'Droplet', it will only processes droplet data. If set as 'Cell', it will only processes cell data."))
+        help="Type of data as input. Default is Both, which means taking both droplet and cell matrix as input. If set as 'Droplet', it will only processes droplet data. If set as 'Cell', it will only processes cell data."),
+    optparse::make_option(c("-n", "--numCores"),
+        type="integer",
+        default=1,
+        help="Number of cores used to run the pipeline. By default is 1. Parallel computing is enabled if -n is greater than 1.")
+    )
 
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -115,6 +120,7 @@ FilterFile <- opt[["cell_data"]]
 yamlFile <- opt[["yamlFile"]]
 formats <- opt[["outputFormat"]]
 dataType <- opt[["dataType"]]
+numCores <- opt[["numCores"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["base_path"]], ",")) } 
 
@@ -137,6 +143,14 @@ if (!is.null(yamlFile)) {
     .parseConfig(qcParams, arguments)
 } else {
     Params <- list()
+}
+
+## checking numCores argument
+if (numCores > 1) {
+    multicoreParam <- MulticoreParam(workers = numCores)
+    Params$QCMetrics$BPPARAM <- multicoreParam
+    Params$emptyDrops$BPPARAM <- multicoreParam
+    Params$doubletFinder$numCores <- numCores
 }
 
 ### checking output formats

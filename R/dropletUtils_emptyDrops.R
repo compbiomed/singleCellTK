@@ -9,7 +9,15 @@
   
   barcode.matrix <- .convertToMatrix(barcode.matrix)
   
-  result <- DropletUtils::emptyDrops(m = barcode.matrix, lower=lower)
+  result <- DropletUtils::emptyDrops(m = barcode.matrix, 
+                                     lower = lower,
+                                     niters = niters,
+                                     test.ambient = test.ambient,
+                                     ignore = ignore,
+                                     alpha = alpha,
+                                     retain = retain,
+                                     barcode.args = barcode.args,
+                                     BPPARAM = BPPARAM)
   colnames(result) <- paste0("dropletUtils_emptyDrops_", colnames(result))
   
   return(result)

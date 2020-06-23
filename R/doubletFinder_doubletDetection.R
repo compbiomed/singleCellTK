@@ -1,5 +1,5 @@
 .runDoubletFinder <- function(counts, seuratPcs, seuratRes, formationRate,
-                              seuratNfeatures, verbose = FALSE) {
+                              seuratNfeatures, verbose = FALSE, numCores, seed) {
 
   ## Convert to sparse matrix if not already in that format
   counts <- .convertToMatrix(counts)
@@ -34,12 +34,12 @@
   seurat <- Seurat::FindClusters(seurat, resolution = seuratRes, verbose = verbose)
 
   invisible(sweepResListSeurat <- DoubletFinder::paramSweep_v3(seurat,
-    PCs = seuratPcs, sct = FALSE
+    PCs = seuratPcs, sct = FALSE, num.cores = numCores, seed = seed
   ))
   invisible(sweepStatsSeurat <- DoubletFinder::summarizeSweep(sweepResListSeurat,
     GT = FALSE
   ))
-  bcmvnSeurat <- DoubletFinder::find.pK(sweepStatsSeurat)
+  bcmvnSeurat <- DoubletFinder::find.pK(sweepStatsSeurat, verbose=verbose)
   pkOptimal <- as.numeric(as.matrix(bcmvnSeurat$pK[
     which.max(bcmvnSeurat$MeanBC)
   ]))
@@ -48,7 +48,7 @@
   nExpPoi <- round(formationRate * ncol(seurat@assays$RNA))
   seurat <- invisible(DoubletFinder::doubletFinder_v3(seurat,
     PCs = seuratPcs, pN = 0.25, pK = pkOptimal, nExp = nExpPoi,
-    reuse.pANN = FALSE, sct = FALSE
+    reuse.pANN = FALSE, sct = FALSE, verbose = verbose
   ))
   names(seurat@meta.data)[6] <- "doubletFinderAnnScore"
   names(seurat@meta.data)[7] <- "doubletFinderLabel"
@@ -77,6 +77,7 @@
 #'  Default 0.075.
 #' @param verbose Boolean. Wheter to print messages from Seurat and DoubletFinder.
 #'  Default FALSE.
+#' @param numCores Integer. Number of cores used to run doubletFinder. Default is 1 (no parallel computing). 
 #' @return SingleCellExperiment object containing the
 #'  'doublet_finder_doublet_score'.
 #' @examples
@@ -94,7 +95,8 @@ runDoubletFinder <- function(inSCE,
                              seuratPcs = 1:15,
                              seuratRes = 1.5,
                              formationRate = 0.075,
-                             verbose = FALSE){
+                             verbose = FALSE, 
+                             numCores = 1){
 
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -136,7 +138,9 @@ runDoubletFinder <- function(inSCE,
           seuratRes = res,
           seuratNfeatures = seuratNfeatures,
           formationRate = formationRate,
-          verbose = verbose
+          verbose = verbose,
+          numCores = numCores,
+          seed = seed
         )
       ))
       output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
