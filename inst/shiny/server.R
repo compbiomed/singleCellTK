@@ -3550,9 +3550,17 @@ shinyServer(function(input, output, session) {
           length(vals$batchResAssay) > 0 &
           !is.null(input$batchCheckCorrAssay)){
         if(input$batchCheckCorrAssay != ""){
-          plotSCEBatchFeatureMean(inSCE = vals$counts,
-            useAssay = input$batchCheckCorrAssay,
-            batch = input$batchCheckVar)
+          if(isAltExp(vals$counts, input$batchCheckCorrAssay))
+          {
+            plotSCEBatchFeatureMean(inSCE = altExp(vals$counts, input$batchCheckCorrAssay),
+                                    useAssay = "altExp",
+                                    batch = input$batchCheckVar)
+          }
+          else{
+            plotSCEBatchFeatureMean(inSCE = vals$counts,
+                                    useAssay = input$batchCheckCorrAssay,
+                                    batch = input$batchCheckVar)
+          }
         }
       } else if(input$batchCheckResType == 2 &
           length(vals$batchResReddim) > 0 &
@@ -3589,12 +3597,23 @@ shinyServer(function(input, output, session) {
           !is.null(input$batchCheckCorrAssay)){
         if(input$batchCheckCorrAssay != ""){
           pcaName <- paste0(input$batchCheckCorrAssay, "_PCA")
-          vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckCorrAssay,
-            reducedDimName = pcaName)
-          updateReddimInputs()
-          plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-            shape = shapeBy, reducedDimName = pcaName,
-            title = paste0(input$batchCheckCorrAssay, " corrected"))
+
+          if(isAltExp(vals$counts, input$batchCheckCorrAssay)){
+            altExp(vals$counts, input$batchCheckCorrAssay) <-  getPCA(altExp(vals$counts, input$batchCheckCorrAssay), useAssay = "altExp", reducedDimName = pcaName)
+            updateReddimInputs()
+            plotSCEDimReduceColData(altExp(vals$counts, input$batchCheckCorrAssay), colorBy = input$batchCheckVar,
+                                    shape = shapeBy, reducedDimName = pcaName,
+                                    title = paste0(input$batchCheckCorrAssay, " corrected"))
+          }
+          else{
+            vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckCorrAssay,
+             reducedDimName = pcaName)
+            updateReddimInputs()
+            plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
+                                    shape = shapeBy, reducedDimName = pcaName,
+                                    title = paste0(input$batchCheckCorrAssay, " corrected"))
+          }
+          
         }
       }
     }
@@ -3862,9 +3881,16 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("Srt3IntRun", {
         
-        vals$counts <- seuratIntegration(vals$counts, batch = input$batchCorrVar)
-        vals$batchResAssay <- "seuratIntegratedData"
+        
+        saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
+        vals$counts <- seuratIntegration(vals$counts, batch = input$batchCorrVar, newAssayName = saveassayname)
+
+        vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+        updateAssayInputs()
+        
         vals$batchCorrStatus <- "Seurat3 Integration Complete"
+
+        
         
       #   saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
       #   vals$counts <- runSeurat3Integration(vals$counts,

@@ -36,7 +36,8 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   }
   exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
   if (!is.matrix(exprsMat)){
-    stop("Input matrix ", useAssay, " is not a matrix")
+    #stop("Input matrix ", useAssay, " is not a matrix")
+    exprsMat <- as.matrix(exprsMat)
   }
   rv <- matrixStats::rowVars(exprsMat)
   featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]

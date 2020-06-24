@@ -534,27 +534,28 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
   return(inSCE)
 }
 
-seuratIntegration <- function(inSCE, useAssay = "counts", batch){
+seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay"){
   
-  print(head(colnames(inSCE)))
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
   seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:30, k.anchor = 1, k.filter = 5)
   seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:30, k.weight = 2)
-  tempMatrix <- Matrix::Matrix(nrow = nrow(inSCE), ncol = ncol(inSCE))
-  data <- methods::slot(seurat.integrated@assays$integrated, "data")
-  rownames(data) <- gsub("_", "-", rownames(data))
-  colnames(data) <- gsub("_", "-", colnames(data))
-  rownames(tempMatrix) <- gsub("_","-",rownames(inSCE))
-  colnames(tempMatrix) <- gsub("_","-",colnames(inSCE))
-  rows <- match(rownames(data), rownames(tempMatrix))
-  columns <- match(colnames(data), colnames(tempMatrix))
-  tempMatrix[rows, columns] <- data
-  assay(inSCE, "seuratIntegratedData") <- tempMatrix
+  altExp(inSCE, newAssayName) <- SingleCellExperiment(list(altExp = GetAssayData(seurat.integrated@assays$integrated, "data")))
+  colData(altExp(inSCE, newAssayName))<- colData(inSCE)
+
   return(inSCE)
 
+}
+
+isAltExp <- function(inSCE, assayName){
+  if(assayName %in% altExpNames(inSCE)){
+    return(TRUE)
+  }
+  else{
+    return(FALSE)
+  }
 }
 
 # ----
