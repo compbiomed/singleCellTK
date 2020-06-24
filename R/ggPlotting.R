@@ -590,6 +590,9 @@ plotSCEScatter <- function(inSCE,
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr %>%
 .ggViolin <- function(y,
                       groupby = NULL,
                       violin = TRUE,
@@ -605,16 +608,14 @@ plotSCEScatter <- function(inSCE,
                       summary = NULL,
                       title = NULL,
                       titleSize = 15) {
-    library(dplyr)
-
     if (is.null(groupby)) {
         groupby <- rep("Sample", length(y))
     }
-    df <- data.frame(x = groupby, y = y)
+    df <- data.frame(groupby = groupby, y = y)
 
     p <- ggplot2::ggplot(df) +
         ggplot2::aes_string(
-            x = "x",
+            x = "groupby",
             y = "y"
         )
     if (dots == TRUE) {
@@ -669,20 +670,23 @@ plotSCEScatter <- function(inSCE,
     }
     if (!is.null(summary)){
         if(summary == "mean"){
-            summ <- df %>% group_by(x) %>% summarize(value = mean(y))
-            fun <- mean
+            summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+            fun <- base::mean
         }else if(summary == "median"){
-            summ <- df %>% group_by(x) %>% summarize(value = median(y))
-            fun <- median
+            summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+            fun <- stats::median
         }else{
             stop("`summary`` must be either `mean` or `median`.")
         }
+        summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.1
         summary <- paste(toupper(substr(summary, 1, 1)),
                          substr(summary, 2, nchar(summary)), sep="")
+        summ$label <- paste0(summary,": ", round(summ$value, 5))
+
         p <- p + ggplot2::geom_text(data = summ,
-                           ggplot2::aes(x = x,
-                               y = max(df$y) + (max(df$y) - min(df$y)) * 0.1,
-                               label = paste0(summary,": ", round(value, 5))))
+                           ggplot2::aes_string(x = "x",
+                               y = "statY",
+                               label = "label"))
         p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
                               fun.max = fun,
                               geom = "crossbar",
