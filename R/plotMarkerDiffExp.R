@@ -71,8 +71,7 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
-    if(!all(colnames(degFull)[1:4] ==
-           c("Gene", "Pvalue", "Log2_FC", "FDR"))){
+    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
         stop('"findMarker" result cannot be interpreted properly')
     }
     if(!is.null(log2fcThreshold)){
