@@ -160,7 +160,7 @@
       g <- g + ggplot2::labs(color = "")
     }
 
-
+<<<<<<< Updated upstream
     if (isTRUE(labelClusters) && class(colorBySub) %in% c("character", "factor")) {
       centroidList <- lapply(unique(colorBySub), function(x) {
         dataframe.sub <- dataframe[dataframe$color == x, ]
@@ -179,11 +179,11 @@
       if (!is.null(shape)) {
         centroid$shape <- dataframe$shape[1]
       }
-
+=======
     if (!is.null(groupBy)){
       g <- g + ggplot2::facet_wrap(~groups)
     }
-
+>>>>>>> Stashed changes
 
       colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
       g <- g + ggplot2::geom_point(
