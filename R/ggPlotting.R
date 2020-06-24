@@ -1,19 +1,39 @@
-### Functions for plotting a scatter plot based on values stored in the
-### SingleCellExperiment object (Ex. clinical data, QC info)
-
-## Functions:
-### plotSCEDimReduceColData - wrapper function; takes values from the colData
-### slot in SingleCellExperiment object and passes it to .ggScatter fxn
-
-### .ggScatter - Baseline scatter plot function.
-
-### .ggSCTKTheme - Converts the ggplot to a specific theme (No background,
-### no grid, etc.)
-
-### .binSCTK - Bins input values based on the bin parameter.
-
-## Example data can be found here: /restricted/projectnb/camplab/home/ykoga07/codereview/
-
+#' @title Plot results of reduced dimensions data.
+#' @description Plot results of reduced dimensions data and colors the plots by
+#'  the input vector.
+#' @param inSCE Input SCtkExperiment object with saved dimension reduction
+#'  components or a variable with saved results. Required
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param colorBy If provided, colors dots in the scatterplot based on value.
+#' @param groupBy If provided, facet wrap the scatterplot based on value.
+#' @param conditionClass class of the annotation data used in colorBy. Options
+#'  are NULL, "factor" or "numeric". If NULL, class will default to the original
+#'  class. Default NULL.
+#' @param shape If provided, add shapes based on the value.
+#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
+#'  object. Required.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
+#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+#'  the index of the dimension to be plotted. Default is NULL.
+#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+#'  If more than one value, will bin numeric values using values as a cut point.
+#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
+#'  Default NULL.
+#' @param dotSize Size of dots. Default 2.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 15.
+#' @param labelClusters Logical. Whether the cluster labels are plotted.
+#'  Default FALSE.
+#' @param legendTitle title of legend. Default NULL.
+#' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
                        sample = NULL,
                        colorBy = NULL,
@@ -47,10 +67,11 @@
 
   samples <- unique(sample)
 
-  plotlist <- lapply(samples, function(x) {
+  plotlist <- lapply(samples, function(x){
     sceSampleInd <- which(sample == x)
     inSCESub <- inSCE[, sceSampleInd]
     colorBySub <- colorBy[sceSampleInd]
+  })
 
     dataframe <- data.frame(SingleCellExperiment::reducedDim(
       inSCESub,
@@ -108,6 +129,7 @@
 
     if (!is.null(colorBySub)) {
       dataframe$color <- colorBySub
+    }
 
     if (!is.null(groupBy)){
       dataframe$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
@@ -117,9 +139,8 @@
     }
     dataframe$Sample <- colnames(inSCESub)
     g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
-      label = "Sample"
-    )) +
-      ggplot2::geom_point(size = dotSize, alpha = transparency)
+      label = "Sample"))
+     + ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
 
@@ -148,7 +169,7 @@
     }
 
     if (!is.null(groupBy)){
-      g <- g + facet_wrap(~groups)
+      g <- g + ggplot2::facet_wrap(~groups)
     }
 
 
@@ -190,8 +211,6 @@
           color = "black"
         )
     }
-    return(g)
-  })
   return(cowplot::plot_grid(plotlist = plotlist))
 }
 
