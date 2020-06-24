@@ -51,7 +51,8 @@ test_that(desc = "Testing plotResults functions", {
     expect_is(r2, "list")
     r3 <- plotDoubletCellsResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r3, "list")
-    r4 <- plotDoubletFinderResults(inSCE = sceres, reducedDimName="UMAP")
+    r4 <- plotDoubletFinderResults(inSCE = sceres, reducedDimName="UMAP",
+	 verbose = FALSE, seed = 12345)
     expect_is(r4, "list")
     r5 <- plotCxdsResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r5, "list")
