@@ -147,10 +147,10 @@
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "DoubletFinder",
-      "RemoteUsername": "ykoga07",
+      "RemoteUsername": "joshua-d-campbell",
       "RemoteRef": "master",
-      "RemoteSha": "7e6d20cd3b8d7fde1b59191eac89f66d71c35add",
-      "Hash": "7d4ff12889e711bf4dc65ab6604ff0fd"
+      "RemoteSha": "8529394c1f44054c565f12ed719d6e381cf44a56",
+      "Hash": "6372c32e35ee9f0d9a347268fd0f70fa"
     },
     "DropletUtils": {
       "Package": "DropletUtils",
@@ -1508,10 +1508,10 @@
     },
     "patchwork": {
       "Package": "patchwork",
-      "Version": "1.0.0",
+      "Version": "1.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "16eee5b5edc41eec5af1149ccdc6b2c9"
+      "Hash": "d6b817898a400e82e6777d4f7e027100"
     },
     "pbapply": {
       "Package": "pbapply",
