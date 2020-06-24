@@ -279,12 +279,12 @@ qcInputProcess <- function(preproc,
 
     if (preproc == "BUStools") {
         dropletSCE <- importBUStools(BUStoolsDirs = path, samples = samplename, class = "Matrix", delayedArray=FALSE)
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     } 
 
     if (preproc == "SEQC") {
         dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     if (preproc == "STARSolo") {
@@ -296,7 +296,7 @@ qcInputProcess <- function(preproc,
         } else if (dataType == "Droplet") {
             dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     } 
 
     if (preproc == "CellRangerV3") {
@@ -319,7 +319,7 @@ qcInputProcess <- function(preproc,
                 dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
             }
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     if (preproc == "CellRangerV2") {
@@ -342,7 +342,7 @@ qcInputProcess <- function(preproc,
                 dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
             }
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     if (preproc == "Optimus") {
@@ -355,7 +355,7 @@ qcInputProcess <- function(preproc,
         } else if (dataType == "Droplet") {
             cellSCE <- NULL
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     if (preproc == "DropEst") {
@@ -367,7 +367,7 @@ qcInputProcess <- function(preproc,
         } else if (dataType == "Droplet") {
             dropletSCE <- importDropEst(sampleDirs=path, dataType="raw", sampleNames=samplename, delayedArray=FALSE)
         }
-        return(dropletSCE, cellSCE)    
+        return(list(dropletSCE, cellSCE))    
     }
 
     if (preproc == "SceRDS") {
@@ -379,7 +379,7 @@ qcInputProcess <- function(preproc,
         } else if (dataType == "Droplet") {
             dropletSCE <- readRDS(rawFile)
         }
-        return(dropletSCE, cellSCE)
+        return(list(dropletSCE, cellSCE))
     }
 
     if (preproc == "CountMatrix") {
