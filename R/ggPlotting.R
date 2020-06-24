@@ -888,7 +888,6 @@ plotSCEViolinAssayData <- function(inSCE,
         binary = "Continuous"
     )
     counts <- mat[, 2]
-
     if (!is.null(groupby)) {
         if (length(groupby) > 1) {
             if (length(groupby) != length(counts)) {
@@ -940,7 +939,6 @@ plotSCEViolinAssayData <- function(inSCE,
             title = title,
             titleSize = titleSize
         )
-
         return(p)
     })
 
@@ -1071,7 +1069,6 @@ plotSCEViolin <- function(inSCE,
       }else{
           groupbySub <- NULL
       }
-
       p <- .ggViolin(
           y = countSub,
           groupby = groupbySub,
@@ -1153,10 +1150,12 @@ plotSCEViolin <- function(inSCE,
         size = titleSize
       ))
   }
+
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
       ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
   }
+
   if (!is.null(ylab)) {
     p <- p + ggplot2::ylab(ylab) +
       ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
@@ -1254,7 +1253,6 @@ plotSCEDensityColData <- function(inSCE,
     if (!is.null(title) && length(samples) > 1) {
       title <- paste(title, x, sep = "_")
     }
-
     p <- .ggDensity(
       value = coldataSub,
       groupby = groupbySub,
@@ -1268,7 +1266,6 @@ plotSCEDensityColData <- function(inSCE,
     )
     return(p)
   })
-
   figNcol = NULL
   if (!is.null(groupby)) {
     if (length(unique(groupby)) > 1) {
@@ -1276,7 +1273,6 @@ plotSCEDensityColData <- function(inSCE,
     }
   }
 
-  # return(plotlist)
   return(cowplot::plot_grid(
     plotlist = plotlist,
     ncol = figNcol
