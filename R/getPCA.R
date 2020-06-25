@@ -57,8 +57,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   #     "PC", seq_len(nrow(pcaVariances(inSCE))))
   # }
   
-  inSCE <- scater::logNormCounts(inSCE)
-  inSCE <- runPCA(sce, name = reducedDimName)
+  inSCE <- runPCA(sce, name = reducedDimName, exprs_values = useAssay)
   pcaVariances(inSCE) <- S4Vectors::DataFrame(attr(reducedDims(inSCE)[[reducedDimName]], "percentVar"))
   rownames(pcaVariances(inSCE)) <- paste0("PC", seq_len(nrow(pcaVariances(inSCE))))
   return(inSCE)
