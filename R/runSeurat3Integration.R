@@ -16,7 +16,7 @@
 #' `assayNames(inSCE)`.
 #' @param batch character, default `"batch"`. A string indicating the
 #' field of `colData(inSCE)` that defines different batches.
-#' @param assayName character, default `"Seurat3Int"`. The name for the
+#' @param altExpName character, default `"Seurat3Int"`. The name for the
 #' corrected full-sized expression matrix. If the number of features returned
 #' is smaller the number of total feature, the returned matrix will be saved in
 #' `reducedDim(inSCE, assayName)`; if equal, `assay(inSCE, assayName)`.
@@ -34,7 +34,7 @@
 #' }
 runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',
                                   batch = 'batch',
-                                  assayName = "Seurat3Int",
+                                  altExpName = "Seurat3Int",
                                   nAnchors = nrow(inSCE), verbose = TRUE){
 
     ## Input check
