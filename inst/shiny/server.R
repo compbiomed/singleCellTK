@@ -3573,8 +3573,9 @@ shinyServer(function(input, output, session) {
       } else if (!is.null(input$hmImport) &&
                  input$hmImport == "Find Marker"){
         markerTable <- metadata(vals$counts)$findMarker
-        markerTable <- markerTable[stats::complete.cases(markerTable),]
-        if(!is.null(markerTable)){
+        if(!is.null(markerTable) &&
+           dim(markerTable)[1] > 0){
+          markerTable <- markerTable[stats::complete.cases(markerTable),]
           # Cell side
           cluster <- colnames(markerTable)[5]
           hmTemp$cellIndex <- seq_len(ncol(hmTemp$sce))
