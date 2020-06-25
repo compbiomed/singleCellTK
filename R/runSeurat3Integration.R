@@ -69,16 +69,9 @@ runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',
     srtInt <- Seurat::IntegrateData(anchorset = anchors, verbose = verbose)
     IntMat <- as.matrix(Seurat::GetAssayData(srtInt, assay = 'integrated'))
     IntMat <- IntMat[,colnames(inSCE)]
-    if(nrow(IntMat) == nrow(inSCE)){
-        origRowOrder <- gsub('_', '-', rownames(inSCE))
-        IntMat <- IntMat[origRowOrder,]
-        rownames(IntMat) <- rownames(inSCE)
-        SummarizedExperiment::assay(inSCE, assayName) <- IntMat
-    } else if(nrow(IntMat) < nrow(inSCE)){
-        assayList <- list()
-        assayList[[assayName]] <- IntMat
-        AE <- SingleCellExperiment::SingleCellExperiment(assay = assayList)
-        SingleCellExperiment::altExp(inSCE, assayName) <- AE
-    }
+    assayList <- list()
+    assayList[[assayName]] <- IntMat
+    AE <- SingleCellExperiment::SingleCellExperiment(assay = assayList)
+    SingleCellExperiment::altExp(inSCE, assayName) <- AE
     return(inSCE)
 }

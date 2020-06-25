@@ -17,9 +17,7 @@ shinyServer(function(input, output, session) {
   vals <- reactiveValues(
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
-    batchCorrStatus = "",
-    batchResAssay = NULL,
-    batchResReddim = NULL,
+    batchRes = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
     visplotobject = NULL,
@@ -160,8 +158,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "batchCorrAssay", choices = currassays)
     updateSelectInput(session, "batchCheckAssay", choices = currassays)
     updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckCorrAssay",
-                      choices = c("", vals$batchResAssay))
     updateSelectInput(session, "deAssay", choices = currassays)
     updateSelectInput(session, "fmAssay", choices = currassays)
     updateSelectInput(session, "fmHMAssay", choices = currassays)
@@ -192,8 +188,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delRedDimType", choices = currreddim)
     updateSelectInput(session, "FastMNNReddim", choices = currreddim)
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
-    updateSelectInput(session, "batchCheckCorrReddim",
-                      choices = c("", vals$batchResReddim))
   }
 
   updateEnrichDB <- function(){
@@ -931,8 +925,6 @@ shinyServer(function(input, output, session) {
         shinyalert::shinyalert("Error!", "The data upload failed!",
                                type = "error")
       }
-      vals$diffexheatmapplot <- NULL
-      vals$combatstatus <- ""
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
@@ -1180,8 +1172,6 @@ shinyServer(function(input, output, session) {
 #    withBusyIndicatorServer("downsampleGo", {
 #      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
 #      updateNumSamples()
-#      vals$combatstatus <- ""
-#      vals$diffexgenelist <- NULL
 #      vals$gsvaRes <- NULL
 #      vals$gsvaLimma <- NULL
 #      vals$visplotobject <- NULL
@@ -4274,11 +4264,8 @@ shinyServer(function(input, output, session) {
   })
 
   output$batchCheckResUI <- renderUI({
-    if(input$batchCheckResType == 1){
-      selectInput("batchCheckCorrAssay", "Corrected Assay", c("", vals$batchResAssay))
-    } else {
-      selectInput("batchCheckCorrReddim", "Corrected Reduced Dimension", c("", vals$batchResReddim))
-    }
+    selectInput("batchCheckCorrName", "Corrected Matrix",
+                c(names(vals$batchRes)))
   })
 
   output$batchOriVar <- renderPlot({
@@ -4300,7 +4287,7 @@ shinyServer(function(input, output, session) {
         shapeBy <- input$batchCheckCond
       }
       pcaName <- paste0(input$batchCheckOrigAssay, "_PCA")
-      if(!"PCA" %in% names(SingleCellExperiment::reducedDims(vals$counts))){
+      if(!pcaName %in% names(SingleCellExperiment::reducedDims(vals$counts))){
         vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckOrigAssay,
           reducedDimName = pcaName)
         updateReddimInputs()
@@ -4314,22 +4301,19 @@ shinyServer(function(input, output, session) {
   output$batchCorrVar <- renderPlot({
     if (!is.null(vals$counts) &
         input$batchCheckVar != "None"){
-      if(input$batchCheckResType == 1 &
-          length(vals$batchResAssay) > 0 &
-          !is.null(input$batchCheckCorrAssay)){
-        if(input$batchCheckCorrAssay != ""){
-          plotSCEBatchFeatureMean(inSCE = vals$counts,
-            useAssay = input$batchCheckCorrAssay,
-            batch = input$batchCheckVar)
-        }
-      } else if(input$batchCheckResType == 2 &
-          length(vals$batchResReddim) > 0 &
-          !is.null(input$batchCheckCorrReddim)){
-        if(input$batchCheckCorrReddim != ""){
-          plotSCEBatchFeatureMean(inSCE = vals$counts,
-            useReddim = input$batchCheckCorrReddim,
-            batch = input$batchCheckVar)
-        }
+      resName <- input$batchCheckCorrName
+      if (vals$batchRes[[resName]] == 'reddim'){
+        plotSCEBatchFeatureMean(inSCE = vals$counts,
+                                useReddim = resName,
+                                batch = input$batchCheckVar)
+      } else if (vals$batchRes[[resName]] == 'assay'){
+        plotSCEBatchFeatureMean(inSCE = vals$counts,
+                                useAssay = resName,
+                                batch = input$batchCheckVar)
+      } else if (vals$batchRes[[resName]] == 'altExp'){
+        plotSCEBatchFeatureMean(inSCE = vals$counts,
+                                useAltExp = resName,
+                                batch = input$batchCheckVar)
       }
     }
   })
@@ -4343,27 +4327,30 @@ shinyServer(function(input, output, session) {
       } else {
         shapeBy = input$batchCheckCond
       }
-      if(input$batchCheckResType == 2 &
-          length(vals$batchResReddim) > 0 &
-          !is.null(input$batchCheckCorrReddim)){
-        if(input$batchCheckCorrReddim != ""){
-          plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-            shape = shapeBy, reducedDimName = input$batchCheckCorrReddim,
-            conditionClass = "character",
-            title = paste0(input$batchCheckCorrReddim, " corrected"))
-        }
-      } else if (input$batchCheckResType == 1 &
-          length(vals$batchResAssay) > 0 &
-          !is.null(input$batchCheckCorrAssay)){
-        if(input$batchCheckCorrAssay != ""){
-          pcaName <- paste0(input$batchCheckCorrAssay, "_PCA")
-          vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckCorrAssay,
-            reducedDimName = pcaName)
-          updateReddimInputs()
-          plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-            shape = shapeBy, reducedDimName = pcaName,
-            title = paste0(input$batchCheckCorrAssay, " corrected"))
-        }
+      resName = input$batchCheckCorrName
+      if (vals$batchRes[[resName]] == 'reddim'){
+        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
+                                shape = shapeBy,
+                                reducedDimName = resName,
+                                conditionClass = "character",
+                                title = paste0(resName, " corrected"))
+      } else if (vals$batchRes[[resName]] == 'assay'){
+        pcaName <- paste0(resName, "_PCA")
+        vals$counts <- getPCA(vals$counts, useAssay = resName,
+                              reducedDimName = pcaName)
+        updateReddimInputs()
+        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
+                                shape = shapeBy, reducedDimName = pcaName,
+                                title = paste0(resName, " corrected"))
+      } else if (vals$batchRes[[resName]] == 'altExp'){
+        ae <- altExp(vals$counts, resName)
+        pcaName <- paste0(resName, "_PCA")
+        ae <- getPCA(ae, useAssay = resName, reducedDimName = pcaName)
+        reducedDim(vals$counts, pcaName) <- reducedDim(ae, pcaName)
+        updateReddimInputs()
+        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
+                                shape = shapeBy, reducedDimName = pcaName,
+                                title = paste0(resName, " corrected"))
       }
     }
   })
@@ -4381,11 +4368,9 @@ shinyServer(function(input, output, session) {
           nComponents = input$BBKNNNComp)
         shinyalert::shinyalert('Success!', 'BBKNN completed.',
           type = 'success')
-        vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
-        vals$batchCorrStatus <- "BBKNN Complete"
-      }
-      )
+      })
     }
   })
 
@@ -4414,7 +4399,8 @@ shinyServer(function(input, output, session) {
           } else {
             cov <- input$combatCond
           }
-          par.prior <- ifelse(input$combatParametric == "Parametric", TRUE, FALSE)
+          par.prior <- ifelse(input$combatParametric == "Parametric",
+                              TRUE, FALSE)
           vals$counts <- runComBat(inSCE = vals$counts,
                                    batch = input$batchCorrVar,
                                    useAssay = input$batchCorrAssay,
@@ -4422,11 +4408,10 @@ shinyServer(function(input, output, session) {
                                    mean.only = input$combatMeanOnly,
                                    ref.batch = input$combatRefBatch,
                                    assayName = saveassayname)
-          vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+          vals$batchRes[[saveassayname]] <- 'assay'
           updateAssayInputs()
-          shinyalert::shinyalert('Success!', 'ComBat completed.', type = 'success')
-          vals$batchCorrStatus <- "ComBat Complete"
-
+          shinyalert::shinyalert('Success!', 'ComBat completed.',
+                                 type = 'success')
         }
       })
     }
@@ -4451,11 +4436,9 @@ shinyServer(function(input, output, session) {
         )
         shinyalert::shinyalert('Success!', 'FastMNN completed.',
           type = 'success')
-        vals$batchCorrStatus <- "FastMNN Complete"
-        vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
-      }
-      )
+      })
     }
   })
 
@@ -4471,7 +4454,6 @@ shinyServer(function(input, output, session) {
           useAssay <- input$batchCorrAssay
         }
         if(is.na(as.numeric(input$HarmonyTheta))){
-          vals$batchCorrStatus <- ""
           stop("Theta value must be numeric.")
         } else {
           theta <- as.numeric(input$HarmonyTheta)
@@ -4484,11 +4466,9 @@ shinyServer(function(input, output, session) {
           theta = theta, nIter = input$HarmonyNIter)
         shinyalert::shinyalert('Success!', 'Harmony completed.',
           type = 'success')
-        vals$batchCorrStatus <- "Harmony Complete"
-        vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
-      }
-      )
+      })
     }
   })
 
@@ -4504,11 +4484,9 @@ shinyServer(function(input, output, session) {
           assayName = saveassayname)
         shinyalert::shinyalert('Success!', 'Limma completed.',
           type = 'success')
-        vals$batchCorrStatus <- "Limma Complete"
-        vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
-      }
-      )
+      })
     }
   })
 
@@ -4533,8 +4511,7 @@ shinyServer(function(input, output, session) {
               resolution = input$ligerResolution)
           shinyalert::shinyalert('Success!', 'LIGER completed.',
             type = 'success')
-          vals$batchCorrStatus <- "LIGER Complete"
-          vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+          vals$batchRes[[saveassayname]] <- 'reddim'
           updateReddimInputs()
         }
       })
@@ -4547,24 +4524,37 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("MNNRun", {
         saveassayname <- gsub(" ", "_", input$MNNSaveAssay)
-        if(is.na(as.numeric(input$MNNSigma))){
-          vals$batchCorrStatus <- ""
-          stop("Sigma value must be numeric.")
-        } else {
-          sigma <- as.numeric(input$MNNSigma)
-        }
         vals$counts <- runMNNCorrect(vals$counts,
-          useAssay = input$batchCorrAssay,
-          batch = input$batchCorrVar,
-          k = input$MNNK, sigma = sigma,
-          assayName = saveassayname)
+                                     useAssay = input$batchCorrAssay,
+                                     batch = input$batchCorrVar,
+                                     k = input$MNNK, sigma = input$MNNSigma,
+                                     assayName = saveassayname)
         shinyalert::shinyalert('Success!', 'MNN completed.',
           type = 'success')
-        vals$batchCorrStatus <- "MNN Complete"
-        vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
-      }
-      )
+      })
+    }
+  })
+
+  observeEvent(input$scnrmRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      withBusyIndicatorServer("scnrmRun", {
+        saveassayname <- gsub(" ", "_", input$scnrmSaveAssay)
+        vals$counts <- runSCANORAMA(vals$counts,
+                                    useAssay = input$batchCorrAssay,
+                                    batch = input$batchCorrVar,
+                                    SIGMA = input$scnrmSIGMA,
+                                    ALPHA = input$scnrmALPHA,
+                                    KNN = input$scnrmKNN,
+                                    assayName = saveassayname)
+        shinyalert::shinyalert('Success!', 'SCANORAMA completed.',
+                               type = 'success')
+        vals$batchRes[[saveassayname]] <- 'assay'
+        updateAssayInputs()
+      })
     }
   })
 
@@ -4606,8 +4596,7 @@ shinyServer(function(input, output, session) {
         )
         shinyalert::shinyalert('Success!', 'scMerge completed.',
           type = 'success')
-        vals$batchCorrStatus <- "scMerge Complete"
-        vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
       })
     }
@@ -4633,24 +4622,10 @@ shinyServer(function(input, output, session) {
           assayName = saveassayname,
           nAnchors = input$Srt3IntNAnch
         )
-        # According to input nAnchor, corrected matrix can be an "assay" or a
-        # "reducedDim". Here I temprorily make a condition basing on how Seurat
-        # performs empirically.
-        if(input$Srt3IntNAnch == nrow(vals$counts)){
-          # Usually in this condition, seurat returns a full-sized assay
-          vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
-          updateAssayInputs()
-        } else if(input$Srt3IntNAnch == nrow(vals$counts)){
-          # Under this condition, seurat usually returns a reduced matrix of
-          # <= nAnchor dimensions.
-          vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
-          updateReddimInputs()
-        }
+        vals$batchRes[[saveassayname]] <- 'altExp'
         shinyalert::shinyalert('Success!', 'Seurat3 Integration completed.',
           type = 'success')
-        vals$batchCorrStatus <- "Seurat3 Integration Complete"
-      }
-      )
+      })
     }
   })
 
@@ -4689,16 +4664,10 @@ shinyServer(function(input, output, session) {
         )
         shinyalert::shinyalert('Success!', 'ZINBWaVE completed.',
           type = 'success')
-        vals$batchCorrStatus <- "ZINBWaVE Complete"
-        vals$batchResReddim <- c(vals$batchResReddim, saveassayname)
+        vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
-      }
-      )
+      })
     }
-  })
-
-  output$batchCorrStatus <- renderUI({
-    span(vals$batchCorrStatus, style = "color:green;margin-top:30px;")
   })
 
   #-----------------------------------------------------------------------------
