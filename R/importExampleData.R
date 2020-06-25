@@ -5,7 +5,6 @@
 #' \link[scRNAseq]{scRNAseq} and
 #' \link[TENxPBMCData]{TENxPBMCData} packages. See 'Details' for a
 #' list of available datasets.
-#' @usage importExampleData(dataset, class = c("Matrix", "matrix"), delayedArray = FALSE)
 #' @param dataset Character. Name of the dataset to retrieve.
 #' @param class Character. The class of the expression matrix stored in the SCE 
 #'   object. Can be one of \code{"Matrix"} or \code{"matrix"}. \code{"Matrix"}
@@ -43,7 +42,7 @@
 #' sce <- importExampleData("pbmc3k")
 #' }
 #' @export
-importExampleData <- simpleLog %@% function(dataset, class = c("Matrix", "matrix"),
+importExampleData <- function(dataset, class = c("Matrix", "matrix"),
                               delayedArray = FALSE) {
   class <- match.arg(class)
   
