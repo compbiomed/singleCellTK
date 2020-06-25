@@ -109,6 +109,8 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
 #' \code{useReddim} for dimension reduced matrix instead. Default \code{NULL}.
 #' @param useReddim The name of the dimension reduced matrix that stores the
 #' value to plot. Default \code{NULL}.
+#' @param useAltExp The name of the alternative experiment that stores an assay
+#' of the value to plot. Default \code{NULL}.
 #' @param batch The column name of \code{colData(inSCE)} that indicates the
 #' batch annotation. Default \code{"batch"}.
 #' @param xlab label for x-axis. Default \code{"batch"}.
@@ -117,14 +119,13 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
-  batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
+  useAltExp = NULL, batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop("'inSCE' must inherit from 'SingleCellExperiment'.")
   }
-  if(is.null(useAssay) & is.null(useReddim)){
-    stop("Either `useAssay` or `useReddim` has to be specified.")
-  } else if(!is.null(useAssay) & !is.null(useReddim)){
-    stop("Only one of `useAssay` and `useReddim` can be specified.")
+  if(is.null(useAssay) + is.null(useReddim) + is.null(useAltExp) != 2){
+    stop("One and only one of `useAssay`, `useReddim`, ",
+         "`usAltExp` has to be specified.")
   }
   if(!is.null(useAssay)){
     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
@@ -137,6 +138,13 @@ plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
       stop("'useReddim not found in 'inSCE'.")
     }
     mat <- t(SingleCellExperiment::reducedDim(inSCE, useReddim))
+  }
+  if(!is.null(useAltExp)){
+    if(!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)){
+      stop("'useAltExp not found in 'inSCE'.")
+    }
+    ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
+    mat <- SummarizedExperiment::assay(ae)
   }
   if(is.null(batch)){
     stop("Batch annotation has to be given.")
