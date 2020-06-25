@@ -1,0 +1,46 @@
+---
+title: "Batch Correction on SingleCellExperiment Object"
+author: "Yichen Wang"
+---
+
+For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.
+They are BBKNN, ComBat, FastMNN, Harmony, LIGER, Limma, MNN, Scanorama, SCGEN, scMerge, Seurat Integration, and ZINBWaVE. 
+
+## Prerequsites
+
+- Latest `SingleCellTK` installed.
+```{r install, eval=FALSE}
+library(devtools)
+install_github("compbiomed/singleCellTK@devel")
+```
+- An SCE object consists of multiple batches of datasets that introduce batch effect to be corrected.  
+Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k"
+```{r prepareDataSet, message=FALSE, warning=FALSE}
+library(singleCellTK)
+pbmc3k <- importExampleData('pbmc3k')
+pbmc3k
+pbmc4k <- importExampleData('pbmc4k')
+pbmc4k
+# The way to combine multiple SCE objects varies depending on existing cell/gene metadata
+isecGene <- intersect(rownames(pbmc3k), rownames(pbmc4k))
+length(isecGene)
+pbmc3k.isec <- pbmc3k[isecGene,]
+pbmc4k.isec <- pbmc4k[isecGene,]
+rowData(pbmc4k.isec) <- rowData(pbmc3k.isec)
+sce.combine <- combineSCE(list(pbmc3k = pbmc3k.isec, pbmc4k = pbmc4k.isec))
+sce.combine
+sce.small <- sce.combine[sample(nrow(sce.combine), 500), sample(ncol(sce.combine), 500)]
+# Many of the batch correction methods require log-normalized counts
+sce.small <- scater_logNormCounts(inSCE = sce.small, logAssayName = 'logcounts', useAssay = 'counts')
+```
+
+## Run Batch Correction
+
+The basic way to run a batch correction method from singleCellTK is to select a function for the corresponding method above, and input the SCE object, specify the assay to correct, and the batch annotation.
+
+### BBKNN
+BBKNN is a method
+```{r bbknn, message=FALSE, warning=FALSE}
+sce.small <- runBBKNN(inSCE = sce.small, useAssay = 'logcounts', batch = 'sample', reducedDimName = 'BBKNN')
+sce.small
+```
