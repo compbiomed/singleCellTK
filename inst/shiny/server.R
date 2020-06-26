@@ -2000,8 +2000,7 @@ shinyServer(function(input, output, session) {
             choices = seq_len(vals$celdaMod@params$L))
 
         } else if (input$celdaModel == "celda_CG") {
-          vals$celdaMod <- celda_CG(counts = assay(vals$counts,
-            input$celdaAssay),
+          vals$celdaMod <- celda_CG(counts = assay(vals$counts,input$celdaAssay),
             K = input$cellClusterCG,
             L = input$geneModuleCG,
             alpha = input$celdaAlpha,
@@ -2016,7 +2015,8 @@ shinyServer(function(input, output, session) {
             nchains = input$celdaNChains)
           #cores = input$celdaCores)
           colData(vals$counts)$celdaCellCluster <- vals$celdaMod@clusters$z
-          rowData(vals$counts)$celdaGeneModule <- vals$celdaMod@clusters$y
+          rowData(vals$counts)$celdaGeneModule <- rep(NA, nrow(vals$counts))
+          rowData(vals$counts)$celdaGeneModule[ix] <- vals$celdaMod@clusters$y
           updateColDataNames()
           updateFeatureAnnots()
           # update feature modules in module heatmap panel
@@ -2053,8 +2053,7 @@ shinyServer(function(input, output, session) {
 
       withBusyIndicatorServer("renderHeatmap",
         output$celdaHeatmap <- renderPlot({
-          g <- celdaHeatmap(counts = assay(vals$counts,
-            input$celdaAssay),
+          g <- celdaHeatmap(counts = assay(vals$counts,input$celdaAssay),
             celdaMod = vals$celdaMod)
           g
         }, height = 600)
@@ -2079,190 +2078,6 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$counts, file)
     })
-
-
-  # celda grid search tab
-  observeEvent(input$runCeldaGS, {
-    # is there an error or not
-    if (is.null(vals$counts)) {
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      # selected count matrix
-      cm <- assay(vals$counts, input$celdaAssayGS)
-    }
-
-    # And each row/column of the count matrix must have at least one count
-    if (sum(rowSums(cm) == 0) >= 1 | sum(colSums(cm) == 0) >= 1) {
-      shinyalert::shinyalert("Error!",
-        "Each row and column of the count matrix must have at least one count.
-        Filter the data first.",
-        type = "error")
-    }
-
-    # Ensure that number of genes / cells is never more than
-    # the number of requested clusters for each
-    if (input$celdaModelGS == "celda_C") {
-      if (!is.null(input$GSRangeKlow) &&
-          !is.null(input$GSRangeKup) &&
-          ncol(cm) < input$GSRangeKup) {
-        shinyalert::shinyalert("Error!",
-          "Number of cells (columns) in count matrix must be >= K",
-          type = "error")
-      }
-    }
-
-    if (input$celdaModelGS == "celda_G") {
-      if (!is.null(input$GSRangeLlow) &&
-          !is.null(input$GSRangeLup) &&
-          nrow(cm) < input$GSRangeLup) {
-        shinyalert::shinyalert("Error!",
-          "Number of genes (rows) in count matrix must be >= L",
-          type = "error")
-      }
-    }
-
-    if (input$celdaModelGS == "celda_CG") {
-      if (!is.null(input$GSRangeKCGlow) &&
-          !is.null(input$GSRangeKCGup) &&
-          ncol(cm) < input$GSRangeKCGup) {
-        shinyalert::shinyalert("Error!",
-          "Number of cells (columns) in count matrix must be >= K",
-          type = "error")
-      }
-
-      if (!is.null(input$GSRangeLCGlow) &&
-          !is.null(input$GSRangeLCGup) &&
-          nrow(cm) < input$GSRangeLCGup) {
-        shinyalert::shinyalert("Error!",
-          "Number of genes (rows) in count matrix must be >= L",
-          type = "error")
-      }
-    }
-
-    withBusyIndicatorServer("runCeldaGS", {
-      if (input$celdaModelGS == "celda_C") {
-        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssayGS),
-          model = input$celdaModelGS,
-          paramsTest = list(K = seq(input$GSRangeKlow,
-            input$GSRangeKup,
-            input$interK)),
-          maxIter = input$celdaMaxIterGS,
-          nchains = input$celdaNChainsGS,
-          cores = input$celdaCoresGS,
-          bestOnly = TRUE)
-          #verbose = input$celdaGSVerbose)
-
-        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
-          "K",
-          vals$celdaList@runParams[["K"]],
-          sep = "_")
-        cgsName <- paste0(input$celdaModelGS,
-          "_K=",
-          min(vals$celdaList@runParams[["K"]]),
-          "to",
-          max(vals$celdaList@runParams[["K"]]),
-          "step",
-          input$interK)
-
-        if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@resList)
-          names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
-          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
-        } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
-        }
-
-      } else if (input$celdaModelGS == "celda_G") {
-        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssayGS),
-          model = input$celdaModelGS,
-          paramsTest = list(L = seq(input$GSRangeLlow,
-            input$GSRangeLup,
-            input$interL)),
-          maxIter = input$celdaMaxIterGS,
-          nchains = input$celdaNChainsGS,
-          cores = input$celdaCoresGS,
-          bestOnly = TRUE)
-          #verbose = input$celdaGSVerbose)
-
-        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
-          "L",
-          vals$celdaList@runParams[["L"]],
-          sep = "_")
-        cgsName <- paste0(input$celdaModelGS,
-          "_L=",
-          min(vals$celdaList@runParams[["L"]]),
-          "to",
-          max(vals$celdaList@runParams[["L"]]),
-          "step",
-          input$interL)
-
-        if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@resList)
-          names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
-          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
-        } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
-        }
-
-      } else if (input$celdaModelGS == "celda_CG") {
-        vals$celdaList <- celdaGridSearch(counts = assay(vals$counts,
-          input$celdaAssayGS),
-          model = input$celdaModelGS,
-          paramsTest = list(K = seq(input$GSRangeKCGlow,
-            input$GSRangeKCGup,
-            input$interKCG),
-            L = seq(input$GSRangeLCGlow,
-              input$GSRangeLCGup,
-              input$interLCG)),
-          maxIter = input$celdaMaxIterGS,
-          nchains = input$celdaNChainsGS,
-          cores = input$celdaCoresGS,
-          bestOnly = TRUE)
-          #verbose = input$celdaGSVerbose)
-
-        names(vals$celdaList@resList) <- paste(input$celdaModelGS,
-          "K",
-          vals$celdaList@runParams[["K"]],
-          "L",
-          vals$celdaList@runParams[["L"]],
-          sep = "_")
-        cgsName <- paste0(input$celdaModelGS,
-          "_K=",
-          min(vals$celdaList@runParams[["K"]]),
-          "to",
-          max(vals$celdaList@runParams[["K"]]),
-          "step",
-          input$interKCG,
-          "_L=",
-          min(vals$celdaList@runParams[["L"]]),
-          "to",
-          max(vals$celdaList@runParams[["L"]]),
-          "step",
-          input$interLCG)
-
-        if (is.null(vals$celdaListAll)) {
-          vals$celdaListAll <- list(vals$celdaList@resList)
-          names(vals$celdaListAll) <- cgsName
-          vals$celdaListAllNames <- list(names(vals$celdaList@resList))
-          names(vals$celdaListAllNames) <- names(vals$celdaListAll)
-        } else {
-          vals$celdaListAll[[cgsName]] <- vals$celdaList@resList
-          vals$celdaListAllNames[[cgsName]] <- names(vals$celdaList@resList)
-        }
-      }
-
-      if (!is.null(vals$celdaListAll)) {
-        updateSelectInput(session, "celdaSelectGSList",
-          choices = names(vals$celdaListAllNames))
-      }
-    })
-  })
 
   observeEvent(input$celdaSelectGSList, {
     updateSelectInput(session, "celdaSelectGSMod",
