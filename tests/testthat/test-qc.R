@@ -35,7 +35,8 @@ test_that(desc = "Testing scran", {
 }) 
 
 test_that(desc = "Testing DoubletFinder",  {
-  sce <- runDoubletFinder(sce, seuratPcs = 1:3, seuratNfeatures = 300, seuratRes = 1)
+  sce <- runDoubletFinder(sce, seuratPcs = 1:3, seuratNfeatures = 300, seuratRes = 1,
+	 verbose = FALSE, seed = 12345)
   expect_equal(length(colData(sce)$doubletFinder_doublet_score_Resolution_1),ncol(sce))
   expect_equal(class(colData(sce)$doubletFinder_doublet_score_Resolution_1), "numeric")
 })

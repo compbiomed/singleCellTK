@@ -20,6 +20,9 @@
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorLow = "white",
+  colorMid = "gray",
+  colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
@@ -67,6 +70,18 @@ Default NULL.}
 \item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{colorLow}{Character. A color available from `colors()`.
+The color will be used to signify the lowest values on the scale.
+Default 'white'.}
+
+\item{colorMid}{Character. A color available from `colors()`.
+The color will be used to signify the midpoint on the scale.
+Default 'gray'.}
+
+\item{colorHigh}{Character. A color available from `colors()`.
+The color will be used to signify the highest values on the scale.
+Default 'blue'.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
