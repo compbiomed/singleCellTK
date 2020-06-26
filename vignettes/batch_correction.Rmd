@@ -3,8 +3,78 @@ title: "Batch Correction on SingleCellExperiment Object"
 author: "Yichen Wang"
 ---
 
+## Introduction
+
 For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.
-They are BBKNN, ComBat, FastMNN, Harmony, LIGER, Limma, MNN, Scanorama, SCGEN, scMerge, Seurat Integration, and ZINBWaVE. 
+Here is a table for the method names, citations, and corresponding wrapper functions:
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Citation</th>
+    <th>Function</th>
+  </tr>
+  <tr>
+    <td>BBKNN</td>
+    <td>Polański, Krzysztof and et al., 2019</td>
+    <td><a href="../reference/runBBKNN.html">runBBKNN()</a></td>
+  </tr>
+  <tr>
+    <td>ComBat</td>
+    <td>Yuqing Zhang and et al., 2018</td>
+    <td><a href="../reference/runComBat.html">runComBat()</a></td>
+  </tr>
+  <tr>
+    <td>FastMNN</td>
+    <td>Aaron Lun, 2018</td>
+    <td><a href="../reference/runFastMNN.html">runFastMNN()</a></td>
+  </tr>
+  <tr>
+    <td>MNN</td>
+    <td>Laleh Haghverdi, 2018</td>
+    <td><a href="../reference/runMNNCorrect.html">runMNNCorrect()</a></td>
+  </tr>
+  <tr>
+    <td>Harmony</td>
+    <td>Ilya Korsunsky and et al., 2019</td>
+    <td><a href="../reference/runHarmony.html">runHarmony()</a></td>
+  </tr>
+  <tr>
+    <td>LIGER</td>
+    <td>Joshua Welch, et al., 2018</td>
+    <td><a href="../reference/runLIGER.html">runLIGER()</a></td>
+  </tr>
+  <tr>
+    <td>Limma</td>
+    <td>Gordon K Smyth, et al., 2003</td>
+    <td><a href="../reference/runLimmaBC.html">runLimmaBC()</a></td>
+  </tr>
+  <tr>
+    <td>Scanorama</td>
+    <td>Brian Hie et al, 2019</td>
+    <td><a href="../reference/runSCANORAMA.html">runSCANORAMA()</a></td>
+  </tr>
+  <tr>
+    <td>scGen</td>
+    <td>Mohammad Lotfollah et al., 2019</td>
+    <td><a href="../reference/runSCGEN.html">runSCGEN()</a></td>
+  </tr>
+  <tr>
+    <td>scMerge</td>
+    <td>Yingxin Lin et al., 2019</td>
+    <td><a href="../reference/runSCMerge.html">runSCMerge()</a></td>
+  </tr>
+  <tr>
+    <td>Seurat Integration</td>
+    <td>Tim Stuart et al., 2019</td>
+    <td><a href="../reference/runSeurat3Integration.html">runSeurat3Integration()</a></td>
+  </tr>
+  <tr>
+    <td>ZINBWaVE</td>
+    <td>Davide Risso et al., 2018</td>
+    <td><a href="../reference/runZINBWaVE.html">runZINBWaVE()</a></td>
+  </tr>
+</table>
 
 ## Prerequsites
 
@@ -15,7 +85,7 @@ install_github("compbiomed/singleCellTK@devel")
 ```
 - An SCE object consists of multiple batches of datasets that introduce batch effect to be corrected.  
 Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k"
-```{r prepareDataSet, message=FALSE, warning=FALSE}
+```{r prepareDataSet, message=FALSE, warning=FALSE, eval=FALSE}
 library(singleCellTK)
 pbmc3k <- importExampleData('pbmc3k')
 pbmc3k
@@ -40,7 +110,7 @@ The basic way to run a batch correction method from singleCellTK is to select a 
 
 ### BBKNN
 BBKNN is a method
-```{r bbknn, message=FALSE, warning=FALSE}
+```{r bbknn, message=FALSE, warning=FALSE, eval=FALSE}
 sce.small <- runBBKNN(inSCE = sce.small, useAssay = 'logcounts', batch = 'sample', reducedDimName = 'BBKNN')
 sce.small
 ```

@@ -11,3 +11,4 @@ misc/
 .Rprofile
 renv*
 
+^pkgdown$
