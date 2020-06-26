@@ -7,6 +7,7 @@
 plotSCEScatter(
   inSCE,
   slot,
+  sample = NULL,
   annotation,
   feature = NULL,
   shape = NULL,
@@ -18,8 +19,11 @@ plotSCEScatter(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotsize = 2,
+  dotSize = 2,
   transparency = 1,
+  colorLow = "white",
+  colorMid = "gray",
+  colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
@@ -33,6 +37,8 @@ components or a variable with saved results. Required}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata"}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{annotation}{Desired vector within the slot used for plotting.}
 
@@ -67,9 +73,21 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotsize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{colorLow}{Character. A color available from `colors()`.
+The color will be used to signify the lowest values on the scale.
+Default 'white'.}
+
+\item{colorMid}{Character. A color available from `colors()`.
+The color will be used to signify the midpoint on the scale.
+Default 'gray'.}
+
+\item{colorHigh}{Character. A color available from `colors()`.
+The color will be used to signify the highest values on the scale.
+Default 'blue'.}
 
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 

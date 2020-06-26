@@ -13,7 +13,10 @@
 #' @export
 #'
 #' @examples
-#' plotUMAP(mouseBrainSubsetSCE, shape = "No Shape", reducedDimName = "UMAP",
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' plotUMAP(sce, shape = "No Shape", reducedDimName = "UMAP",
 #'          runUMAP = TRUE, useAssay = "counts")
 #'
 plotUMAP <- function(inSCE, colorBy = "No Color", shape = "No Shape",

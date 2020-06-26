@@ -35,7 +35,10 @@ a UMAP plot of the reduced dimensions.
 Plot UMAP results either on already run results or run first and then plot.
 }
 \examples{
-plotUMAP(mouseBrainSubsetSCE, shape = "No Shape", reducedDimName = "UMAP",
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+plotUMAP(sce, shape = "No Shape", reducedDimName = "UMAP",
          runUMAP = TRUE, useAssay = "counts")
 
 }

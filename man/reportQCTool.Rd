@@ -32,8 +32,9 @@ A  function to generate .html Rmarkdown report for the specified QC algorithm ou
 }
 \examples{
 \donttest{
-data(sceQCExample, package = "singleCellTK")
-sceQCExample <- runDecontX(sceQCExample)
-reportQCTool(inSCE = sceQCExample, algorithm = "DecontX")
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- runDecontX(sce)
+reportQCTool(inSCE = sce, algorithm = "DecontX")
 }
 }

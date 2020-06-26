@@ -6,6 +6,7 @@
 \usage{
 plotSCEViolinColData(
   inSCE,
+  sample = NULL,
   coldata,
   groupby = NULL,
   violin = TRUE,
@@ -17,6 +18,8 @@ plotSCEViolinColData(
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
   titleSize = NULL
 )
@@ -24,6 +27,8 @@ plotSCEViolinColData(
 \arguments{
 \item{inSCE}{Input SCtkExperiment object with saved dimension reduction
 components or a variable with saved results. Required.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{coldata}{colData value that will be plotted.}
 
@@ -51,6 +56,12 @@ Default TRUE.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
+
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{title}{Title of plot. Default NULL.}
 

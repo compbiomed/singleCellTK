@@ -41,6 +41,7 @@ Imports:
     data.table,
     DelayedMatrixStats,
     DESeq2,
+    dplyr,
     DT,
     ggplot2,
     ggplotify,
@@ -82,6 +83,7 @@ Imports:
     shinycssloaders,
     shinythemes,
     umap,
+    uwot,
     DropletUtils,
     scds,
     reticulate (>= 1.14),
@@ -95,7 +97,7 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-	rmarkdown
+    rmarkdown
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
