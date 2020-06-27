@@ -13,28 +13,28 @@ runBBKNN(
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name
-of the assay requiring batch correction in "inSCE", should exist in
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{reducedDimName}{character, default `"BBKNN"`. The name for the
-corrected low-dimensional representation.}
+\item{reducedDimName}{A single character. The name for the corrected
+low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+Default \code{"BBKNN"}.}
 
-\item{nComponents}{integer, default `50L`. Number of principle components or
+\item{nComponents}{An integer. Number of principle components or the
 dimensionality, adopted in the pre-PCA-computation step, the BBKNN step (for
 how many PCs the algorithm takes into account), and the final UMAP
 combination step where the value represent the dimensionality of the updated
-reducedDim.}
+reducedDim. Default \code{50L}.}
 }
 \value{
-SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)`
-updated with corrected low-dimentional representation
+The input \linkS4class{SingleCellExperiment} object with
+\code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{
 BBKNN, an extremely fast graph-based data integration algorithm. It modifies
@@ -48,5 +48,5 @@ sceCorr <- runBBKNN(sceBatches)
 }
 }
 \references{
-Krzysztof Polański et al., 2020
+Krzysztof Polanski et al., 2020
 }

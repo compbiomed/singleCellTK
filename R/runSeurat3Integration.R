@@ -44,7 +44,7 @@ runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',
     if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"batch\" name:", batch, "not found"))
     }
-    assayName <- gsub(' ', '_', assayName)
+  altExpName <- gsub(' ', '_', altExpName)
 
     if(nAnchors > nrow(inSCE)){
         stop(paste("Specified nAnchors =", nAnchors,
@@ -70,8 +70,8 @@ runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',
     IntMat <- as.matrix(Seurat::GetAssayData(srtInt, assay = 'integrated'))
     IntMat <- IntMat[,colnames(inSCE)]
     assayList <- list()
-    assayList[[assayName]] <- IntMat
+    assayList[[altExpName]] <- IntMat
     AE <- SingleCellExperiment::SingleCellExperiment(assay = assayList)
-    SingleCellExperiment::altExp(inSCE, assayName) <- AE
+    SingleCellExperiment::altExp(inSCE, altExpName) <- AE
     return(inSCE)
 }

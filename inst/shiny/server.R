@@ -180,8 +180,16 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "depthAssay", choices = currassays)
     updateSelectInput(session, "cellsAssay", choices = currassays)
     updateSelectInput(session, "snapshotAssay", choices = currassays)
+    updateSelectInput(session, "exportAssay", choices = currassays)
     updateSelectInput(session, "hmAssay", choices = currassays)
   }
+
+  observe({
+    vals$counts
+    if (!is.null(vals$counts)) {
+      updateAssayInputs()
+    }
+  })
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
@@ -204,8 +212,7 @@ shinyServer(function(input, output, session) {
   })
 
 
-  # js$disableTabs()
-
+  js$disableTabs()
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
@@ -796,7 +803,7 @@ shinyServer(function(input, output, session) {
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
-        vals$original <- importExampleData(dataset = input$selectExampleData)
+        vals$original <- withConsoleRedirect(importExampleData(dataset = input$selectExampleData))
       } else if (input$uploadChoice == "rds") {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (base::inherits(importedrds, "SummarizedExperiment")) {
@@ -916,7 +923,7 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
         updateFeatureAnnots()
         updateNumSamples()
-        updateAssayInputs()
+        # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
         shinyjs::show(id="annotationData")
@@ -1216,7 +1223,7 @@ shinyServer(function(input, output, session) {
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
-      updateAssayInputs()
+      # updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
     }
@@ -1417,7 +1424,7 @@ shinyServer(function(input, output, session) {
             else {
                 showNotification("Error during assay transformation!", type = "error")
             }
-          updateAssayInputs()
+          # updateAssayInputs()
         }
     })
   })
@@ -1462,12 +1469,12 @@ shinyServer(function(input, output, session) {
                                              normAssayName = input$normalizeAssayOutname,
                                              normalizationMethod = input$normalizeAssayMethodSelect,
                                              scaleFactor = as.numeric(input$normalizationScaleFactor))
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
           assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
           vals$counts <- scater_logNormCounts(
@@ -1475,7 +1482,7 @@ shinyServer(function(input, output, session) {
             logAssayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
-          updateAssayInputs()
+          # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "SCT"){
           vals$counts <- seuratSCTransform(
@@ -1483,7 +1490,7 @@ shinyServer(function(input, output, session) {
             normAssayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
-          updateAssayInputs()
+          # updateAssayInputs()
         }
       }
     })
@@ -4619,7 +4626,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- runSeurat3Integration(vals$counts,
           useAssay = input$batchCorrAssay,
           batch = input$batchCorrVar,
-          assayName = saveassayname,
+          altExpName = saveassayname,
           nAnchors = input$Srt3IntNAnch
         )
         vals$batchRes[[saveassayname]] <- 'altExp'
@@ -5628,7 +5635,7 @@ shinyServer(function(input, output, session) {
                                          normAssayName = "seuratNormData",
                                          normalizationMethod = input$normalization_method,
                                          scaleFactor = as.numeric(input$scale_factor))
-      updateAssayInputs()
+      # updateAssayInputs()
       vals$counts <- .seuratInvalidate(inSCE = vals$counts)
     })
     updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
@@ -5647,7 +5654,7 @@ shinyServer(function(input, output, session) {
                                      scale = input$do.scale,
                                      center = input$do.center,
                                      scaleMax = input$scale.max)
-      updateAssayInputs()
+      # updateAssayInputs()
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
     })
     updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
@@ -6138,5 +6145,69 @@ shinyServer(function(input, output, session) {
       shinyjs::disable(
         selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
     }
+  })
+
+  #-----------------------------------------------------------------------------
+  # Page Download
+  #-----------------------------------------------------------------------------
+
+  path = '~'
+
+  observeEvent(
+    ignoreNULL = TRUE,
+    eventExpr = {
+      input$outputDirectory
+    },
+    handlerExpr = {
+      if (input$outputDirectory > 0) {
+        # condition prevents handler execution on initial app launch
+        path <<- shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'outputDirectory'))
+        shinyDirectoryInput::updateDirectoryInput(session, 'outputDirectory', value = path)
+      }
+    }
+  )
+
+  addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
+  addPopover(session, 'compressionLabel', '', "If output file compression is required, this variable accepts 'gzip' or 'lzf' as inputs", 'right')
+  addPopover(session, 'compressionOptsLabel', '', "Sets the compression level", 'right')
+  addPopover(session, 'forceDenseLabel', '', "Default False. Write sparse data as a dense matrix. Refer anndata.write_h5ad documentation for details.", 'right')
+
+  addPopover(session, 'gzipLabel', '', 'Set to true if output files are to be gzip compressed', 'right')
+  addPopover(session, 'overwriteLabel', '', 'Overwrites the file if it already exists', 'right')
+
+  observeEvent(input$exportData, {
+    withBusyIndicatorServer("exportData", {
+      if (is.null(vals$counts) && is.null(vals$original)) {
+        shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+        return
+      }
+
+      if (input$exportChoice == "rds") {
+        filename = paste("SCE-", Sys.Date(), ".rds", sep = "")
+        saveRDS(vals$counts, paste(path, "/", filename, sep = ""))
+      } else if (input$exportChoice == "annData") {
+        exportassay <- input$exportAssay
+        compression <- input$compression
+        compressionOpts = input$compressionOpts
+        forceDense <- input$forceDense
+        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
+        exportSCEtoAnnData(sce=vals$counts,
+                           useAssay = exportassay,
+                           outputDir=input$outputDirectory__chosen_dir,
+                           prefix = paste("SCE-", Sys.Date(),sep = ""),
+                           overwrite=overwrite,
+                           compression = compression,
+                           compressionOpts = compressionOpts,
+                           forceDense = forceDense)
+      } else if (input$exportChoice == "textfile") {
+        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
+        gzipped <- if(input$gzip == 'True') TRUE else FALSE
+        exportSCEtoFlatFile(sce = vals$counts,
+                            outputDir=path,
+                            overwrite=overwrite,
+                            gzipped=gzipped,
+                            sample = paste("SCE-", Sys.Date(),sep = ""))
+      }
+    })
   })
 })

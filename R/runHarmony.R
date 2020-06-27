@@ -1,38 +1,41 @@
 #' Apply Harmony batch effect correction method to SingleCellExperiment object
-#' 
-#' Harmony is an algorithm that projects cells into a shared embedding in which 
-#' cells group by cell type rather than dataset-specific conditions. 
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name 
-#' of the assay requiring batch correction in "inSCE", should exist in 
-#' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the 
-#' field of `colData(inSCE)` that defines different batches.
-#' @param reducedDimName character, default `"HARMONY"`. The name for the 
-#' corrected low-dimensional representation.
-#' @param pcInput bool, default `FALSE`. Whether to do correction on a low-dim
-#' matrix. If `TRUE`, will look for `useAssay` in `reducedDim(inSCE)`.
-#' @param nComponents integer, default `20`. Number of principle components or 
-#' dimensionality to generate in the resulting reducedDim. If `pcInput`, will
-#' directly follow the dimensionality of the specified reducedDim.
-#' @param nIter integer, default `10`. The max number of iterations to perform. 
-#' @param theta Numeric, default 5. Diversity clustering penalty parameter, 
-#' Larger value results in more diverse clusters.
-#' @return SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-#' updated with corrected low-dimentional representation.
+#'
+#' Harmony is an algorithm that projects cells into a shared embedding in which
+#' cells group by cell type rather than dataset-specific conditions.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param reducedDimName A single character. The name for the corrected
+#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+#' Default \code{"HARMONY"}.
+#' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
+#' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
+#' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
+#' @param nComponents An integer. The number of principle components or
+#' dimensionality to generate in the resulting matrix. If \code{pcInput} is set
+#' to \code{TRUE}, the output dimension will follow the low-dimension matrix,
+#' so this argument will be ignored. Default \code{50L}.
+#' @param nIter An integer. The max number of iterations to perform. Default
+#' \code{10L}.
+#' @param theta A Numeric scalar. Diversity clustering penalty parameter,
+#' Larger value results in more diverse clusters. Default \code{5}
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{reducedDim(inSCE, reducedDimName)} updated.
 #' @export
 #' @references Ilya Korsunsky, et al., 2019
-#' @examples  
+#' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runHarmony(sceBatches, nComponents = 10)
-runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE, 
-                       batch = "batch", reducedDimName = "HARMONY", 
-                       nComponents = 50, theta = 5, nIter = 10){
+#' sceCorr <- runHarmony(sceBatches, nComponents = 10L)
+runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
+                       batch = "batch", reducedDimName = "HARMONY",
+                       nComponents = 50L, theta = 5, nIter = 10L){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
-    }    
+    }
     if(pcInput){
         if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
             stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
@@ -46,17 +49,18 @@ runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
         stop(paste("\"batch\" name:", batch, "not found"))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
-    
+    nComponents <- as.integer(nComponents)
+    nIter <- as.integer(nIter)
     ## Run algorithm
     batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     if(pcInput){
         mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
     } else{
-        sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay, 
+        sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay,
                                  ncomponents = nComponents)
         mat <- SingleCellExperiment::reducedDim(sceTmp, 'PCA')
     }
-    h <- harmony::HarmonyMatrix(mat, batchCol, do_pca = FALSE, 
+    h <- harmony::HarmonyMatrix(mat, batchCol, do_pca = FALSE,
                                 theta = theta, max.iter.harmony = nIter)
     SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
     return(inSCE)

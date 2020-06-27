@@ -51,7 +51,7 @@ Visualizes values stored in the colData slot of a
  SingleCellExperiment object via a density plot.
 }
 \examples{
-plotSCEViolinColData(
+plotSCEDensityColData(
   inSCE = mouseBrainSubsetSCE,
   coldata = "age", groupby = "sex"
 )

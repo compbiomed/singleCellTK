@@ -25,6 +25,15 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -48,6 +57,9 @@
                        binLabel = NULL,
                        dotSize = 2,
                        transparency = 1,
+                       colorLow = "white",
+                       colorMid = "gray",
+                       colorHigh = "blue",
                        defaultTheme = TRUE,
                        title = NULL,
                        titleSize = 15,
@@ -136,6 +148,14 @@
       ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
+    }
+    if (class(colorBySub) == "numeric"){
+        g <- g + ggplot2::scale_color_gradient2(
+            low = colorLow,
+            mid = colorMid,
+            high = colorHigh,
+            aesthetics = "colour",
+            midpoint = mean(colorBySub))
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
@@ -227,6 +247,15 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -263,6 +292,9 @@ plotSCEDimReduceColData <- function(inSCE,
                                     binLabel = NULL,
                                     dotSize = 2,
                                     transparency = 1,
+                                    colorLow = "white",
+                                    colorMid = "gray",
+                                    colorHigh = "blue",
                                     defaultTheme = TRUE,
                                     title = NULL,
                                     titleSize = 15,
@@ -285,6 +317,9 @@ plotSCEDimReduceColData <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize,
@@ -321,6 +356,15 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -347,6 +391,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      binLabel = NULL,
                                      dotSize = 2,
                                      transparency = 1,
+                                     colorLow = "white",
+                                     colorMid = "gray",
+                                     colorHigh = "blue",
                                      defaultTheme = TRUE,
                                      title = NULL,
                                      titleSize = 15,
@@ -366,6 +413,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
     colorBy = counts,
     shape = shape,
     transparency = 1,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     reducedDimName = reducedDimName,
     xlab = xlab,
     ylab = ylab,
@@ -416,6 +466,15 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorLow Character. A color available from `colors()`.
+#'  The color will be used to signify the lowest values on the scale.
+#'  Default 'white'.
+#' @param colorMid Character. A color available from `colors()`.
+#'  The color will be used to signify the midpoint on the scale.
+#'  Default 'gray'.
+#' @param colorHigh Character. A color available from `colors()`.
+#'  The color will be used to signify the highest values on the scale.
+#'  Default 'blue'.
 #' @param defaultTheme adds grid to plot when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
@@ -445,6 +504,9 @@ plotSCEScatter <- function(inSCE,
                            binLabel = NULL,
                            dotSize = 2,
                            transparency = 1,
+                           colorLow = "white",
+                           colorMid = "gray",
+                           colorHigh = "blue",
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 15,
@@ -491,6 +553,9 @@ plotSCEScatter <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorLow = colorLow,
+    colorMid = colorMid,
+    colorHigh = colorHigh,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize,
@@ -518,9 +583,16 @@ plotSCEScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr %>%
 .ggViolin <- function(y,
                       groupby = NULL,
                       violin = TRUE,
@@ -532,52 +604,99 @@ plotSCEScatter <- function(inSCE,
                       dotSize = 1,
                       transparency = 1,
                       defaultTheme = TRUE,
+                      gridLine = FALSE,
+                      summary = NULL,
                       title = NULL,
                       titleSize = 15) {
-  if (is.null(groupby)) {
-    groupby <- rep("Sample", length(y))
-  }
-  df <- data.frame(x = groupby, y = y)
+    if (is.null(groupby)) {
+        groupby <- rep("Sample", length(y))
+    }
+    df <- data.frame(groupby = groupby, y = y)
 
-  p <- ggplot2::ggplot(df) +
-    ggplot2::aes_string(
-      x = "x",
-      y = "y"
-    )
-  if (violin == TRUE) {
-    p <- p + ggplot2::geom_violin(trim = TRUE, scale = "width")
-  }
-  if (boxplot == TRUE) {
-    p <- p + ggplot2::geom_boxplot(width = 0.1)
-  }
-  if (dots == TRUE) {
-    p <- p + ggplot2::geom_jitter(
-      height = 0,
-      size = dotSize,
-      alpha = transparency
-    )
-  }
-  if (defaultTheme == TRUE) {
-    p <- .ggSCTKTheme(p)
-  }
-  if (!is.null(title)) {
-    p <- p + ggplot2::ggtitle(label = title) +
-      ggplot2::theme(plot.title = ggplot2::element_text(
-        hjust = 0.5,
-        size = titleSize
-      ))
-  }
-  if (!is.null(xlab)) {
-    p <- p + ggplot2::xlab(xlab) +
-      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
-  }
-  if (!is.null(ylab)) {
-    p <- p + ggplot2::ylab(ylab) +
-      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
-  }
+    p <- ggplot2::ggplot(df) +
+        ggplot2::aes_string(
+            x = "groupby",
+            y = "y"
+        )
+    if (dots == TRUE) {
+        p <- p + ggplot2::geom_jitter(
+            color = "blue",
+            width = 0.2,
+            height = 0,
+            size = dotSize,
+            alpha = transparency
+        )
+    }
+    if (boxplot == TRUE) {
+        p <- p + ggplot2::geom_boxplot(width = 0.5,
+                                       alpha = 0)
+    }
+    if (violin == TRUE) {
+        p <- p + ggplot2::geom_violin(trim = TRUE,
+                                      scale = "width",
+                                      size = 1,
+                                      fill = "grey",
+                                      alpha = 0.75)
+    }
+    if (defaultTheme == TRUE) {
+        p <- .ggSCTKTheme(p)
+    }
+    if (!is.null(title)) {
+        p <- p + ggplot2::ggtitle(label = title) +
+            ggplot2::theme(plot.title = ggplot2::element_text(
+                hjust = 0.5,
+                size = titleSize
+            ))
+    }
 
-  return(p)
+    if(length(unique(df$x)) > 1){
+        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+    }else{
+        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                       axis.ticks.x = ggplot2::element_blank(),
+                       axis.title.x = ggplot2::element_blank())
+    }
+
+    if (gridLine == TRUE){
+        p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
+    }
+    if (!is.null(xlab)) {
+        p <- p + ggplot2::xlab(xlab) +
+            ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+    }
+    if (!is.null(ylab)) {
+        p <- p + ggplot2::ylab(ylab) +
+            ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+    }
+    if (!is.null(summary)){
+        if(summary == "mean"){
+            summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+            fun <- base::mean
+        }else if(summary == "median"){
+            summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+            fun <- stats::median
+        }else{
+            stop("`summary`` must be either `mean` or `median`.")
+        }
+        summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.1
+        summary <- paste(toupper(substr(summary, 1, 1)),
+                         substr(summary, 2, nchar(summary)), sep="")
+        summ$label <- paste0(summary,": ", round(summ$value, 5))
+
+        p <- p + ggplot2::geom_text(data = summ,
+                           ggplot2::aes_string(x = "x",
+                               y = "statY",
+                               label = "label"))
+        p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
+                              fun.max = fun,
+                              geom = "crossbar",
+                              color = "red",
+                              linetype = "dashed")
+    }
+
+    return(p)
 }
+
 
 #' @title Violin plot of colData.
 #' @description Visualizes values stored in the colData slot of a
@@ -601,6 +720,10 @@ plotSCEScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 
@@ -623,6 +746,8 @@ plotSCEViolinColData <- function(inSCE,
                                  dotSize = 1,
                                  transparency = 1,
                                  defaultTheme = TRUE,
+                                 gridLine = FALSE,
+                                 summary = NULL,
                                  title = NULL,
                                  titleSize = NULL) {
     if (!is.null(coldata)) {
@@ -684,6 +809,8 @@ plotSCEViolinColData <- function(inSCE,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
+            gridLine = gridLine,
+            summary = summary,
             title = title,
             titleSize = titleSize
         )
@@ -724,6 +851,10 @@ plotSCEViolinColData <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @examples
@@ -746,6 +877,8 @@ plotSCEViolinAssayData <- function(inSCE,
                                    dotSize = 1,
                                    transparency = 1,
                                    defaultTheme = TRUE,
+                                   gridLine = FALSE,
+                                   summary = NULL,
                                    title = NULL,
                                    titleSize = NULL) {
     mat <- getBiomarker(
@@ -755,7 +888,6 @@ plotSCEViolinAssayData <- function(inSCE,
         binary = "Continuous"
     )
     counts <- mat[, 2]
-
     if (!is.null(groupby)) {
         if (length(groupby) > 1) {
             if (length(groupby) != length(counts)) {
@@ -802,10 +934,11 @@ plotSCEViolinAssayData <- function(inSCE,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
+            gridLine = gridLine,
+            summary = summary,
             title = title,
             titleSize = titleSize
         )
-
         return(p)
     })
 
@@ -846,6 +979,10 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 
@@ -870,6 +1007,8 @@ plotSCEViolin <- function(inSCE,
                           dotSize = 1,
                           transparency = 1,
                           defaultTheme = TRUE,
+                          gridLine = FALSE,
+                          summary = NULL,
                           title = NULL,
                           titleSize = NULL) {
   if (!slot %in% methods::slotNames(inSCE)) {
@@ -930,7 +1069,6 @@ plotSCEViolin <- function(inSCE,
       }else{
           groupbySub <- NULL
       }
-
       p <- .ggViolin(
           y = countSub,
           groupby = groupbySub,
@@ -943,6 +1081,8 @@ plotSCEViolin <- function(inSCE,
           dotSize = dotSize,
           transparency = transparency,
           defaultTheme = defaultTheme,
+          gridLine = gridLine,
+          summary = summary,
           title = title,
           titleSize = titleSize
       )
@@ -1010,10 +1150,12 @@ plotSCEViolin <- function(inSCE,
         size = titleSize
       ))
   }
+
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
       ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
   }
+
   if (!is.null(ylab)) {
     p <- p + ggplot2::ylab(ylab) +
       ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
@@ -1046,7 +1188,7 @@ plotSCEViolin <- function(inSCE,
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
 #' @examples
-#' plotSCEViolinColData(
+#' plotSCEDensityColData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   coldata = "age", groupby = "sex"
 #' )
@@ -1111,7 +1253,6 @@ plotSCEDensityColData <- function(inSCE,
     if (!is.null(title) && length(samples) > 1) {
       title <- paste(title, x, sep = "_")
     }
-
     p <- .ggDensity(
       value = coldataSub,
       groupby = groupbySub,
@@ -1120,11 +1261,11 @@ plotSCEDensityColData <- function(inSCE,
       axisSize = axisSize,
       defaultTheme = defaultTheme,
       title = title,
-      titleSize = titleSize
+      titleSize = titleSize,
+      cutoff = cutoff
     )
     return(p)
   })
-
   figNcol = NULL
   if (!is.null(groupby)) {
     if (length(unique(groupby)) > 1) {
@@ -1132,7 +1273,6 @@ plotSCEDensityColData <- function(inSCE,
     }
   }
 
-  # return(plotlist)
   return(cowplot::plot_grid(
     plotlist = plotlist,
     ncol = figNcol
@@ -1235,7 +1375,8 @@ plotSCEDensityAssayData <- function(inSCE,
       axisSize = axisSize,
       defaultTheme = defaultTheme,
       title = title,
-      titleSize = titleSize
+      titleSize = titleSize,
+      cutoff = cutoff
     )
     return(p)
   })
