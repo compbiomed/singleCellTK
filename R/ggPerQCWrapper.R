@@ -47,6 +47,37 @@ plotRunPerCellQCResults <- function(inSCE,
 
     samples <- unique(sample)
 
+    if(length(samples) > 1){
+        combined.sum <- plotSCEViolinColData(inSCE=inSCE,
+                                              coldata="sum",
+                                              groupby=sample,
+                                              xlab="",
+                                              ylab="Counts",
+                                              violin = violin,
+                                              boxplot = boxplot,
+                                              dots=dots,
+                                              transparency = transparency,
+                                              title="Total counts per cell",
+                                              dotSize=dotSize,
+                                              gridLine = TRUE,
+                                              summary = "mean")
+        combined.detected <- plotSCEViolinColData(inSCE=inSCE,
+                                                  coldata="detected",
+                                                  groupby=sample,
+                                                  xlab="",
+                                                  ylab="Features",
+                                                  violin = violin,
+                                                  boxplot = boxplot,
+                                                  dots=dots,
+                                                  transparency = transparency,
+                                                  title="Total features detected per cell",
+                                                  dotSize=dotSize,
+                                                  gridLine = TRUE,
+                                                  summary = "mean")
+        combined.plots <- list(combined.sum, combined.detected)
+        names(combined.plots) <- c("Sum", "Detected")
+    }
+
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         sampleSub <- sample[sampleInd]
@@ -113,7 +144,8 @@ plotRunPerCellQCResults <- function(inSCE,
             violin.subset <- NULL
         }
 
-        res.list <- list(violin.sum, violin.detected,
+        res.list <- list(violin.sum,
+                         violin.detected,
                          violin.toppercent)
         names(res.list) <- c("sum", "detected", "toppercent")
         if(!is.null(violin.subset)){
@@ -121,8 +153,10 @@ plotRunPerCellQCResults <- function(inSCE,
         }
         return(res.list)
     })
+
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -201,6 +235,25 @@ plotScrubletResults <- function(inSCE,
 
     samples <- unique(sample)
 
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                            coldata="scrublet_score",
+                                            groupby=sample,
+                                            xlab="",
+                                            ylab="Doublet Score",
+                                            violin = violin,
+                                            boxplot = boxplot,
+                                            dots=dots,
+                                            transparency = transparency,
+                                            title="Scrublet Score",
+                                            dotSize=dotSize,
+                                            gridLine = TRUE,
+                                            summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "Scrublet_Score"
+
+    }
+
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         sampleSub <- sample[sampleInd]
@@ -274,6 +327,7 @@ plotScrubletResults <- function(inSCE,
     })
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -351,20 +405,42 @@ plotDoubletFinderResults <- function(inSCE,
     } else {
         sample <- rep(1, ncol(inSCE))
     }
-
     samples <- unique(sample)
+    df.scores <- grep(pattern = "doubletFinder_doublet_score_Resolution_",
+                      names(colData(inSCE)), value = TRUE)
+
+    df.labels <- grep(pattern = "doubletFinder_doublet_label_Resolution_",
+                      names(colData(inSCE)), value = TRUE)
+    if(length(samples) > 1){
+        combined.plots <- lapply(df.scores, function(x) plotSCEViolinColData(
+            inSCE=inSCE,
+            coldata=x,
+            sample = NULL,
+            xlab="",
+            ylab="Doublet Score",
+            groupby = sample,
+            violin = violin,
+            boxplot = boxplot,
+            dots=TRUE,
+            transparency = transparency,
+            defaultTheme = defaultTheme,
+            title=paste("DoubletFinder Score Resolution",
+                        gsub(pattern = "doubletFinder_doublet_score_Resolution_",
+                             "", x)),
+            dotSize=dotSize))
+
+        names(combined.plots) <- sapply(df.scores, function(x)
+            paste0("Violin_", gsub(pattern = "doubletFinder_doublet_score_",
+                                   "", x = x)))
+        # combined.plots <- list(combined.plots)
+        names(combined.plots) <- "DoubletFinder_Score"
+    }
+
 
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         sampleSub <- sample[sampleInd]
         inSCESub = inSCE[,sampleInd]
-
-        df.scores <- grep(pattern = "doubletFinder_doublet_score_Resolution_",
-                          names(colData(inSCESub)), value = TRUE)
-
-        df.labels <- grep(pattern = "doubletFinder_doublet_label_Resolution_",
-                          names(colData(inSCESub)), value = TRUE)
-
 
         scatterScore <- lapply(df.scores, function(x) plotSCEDimReduceColData(
             inSCE = inSCESub,
@@ -465,6 +541,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -541,6 +618,24 @@ plotDoubletCellsResults <- function(inSCE,
         sample <- rep(1, ncol(inSCE))
     }
     samples <- unique(sample)
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                                coldata="scran_doubletCells_Score",
+                                                groupby=sample,
+                                                xlab="",
+                                                ylab="Doublet Score",
+                                                violin = violin,
+                                                boxplot = boxplot,
+                                                dots=dots,
+                                                transparency = transparency,
+                                                title="DoubletCells Doublet Score",
+                                                dotSize=dotSize,
+                                                gridLine = TRUE,
+                                                summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "DoubletCells_Score"
+    }
+
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         sampleSub <- sample[sampleInd]
@@ -595,6 +690,7 @@ plotDoubletCellsResults <- function(inSCE,
     })
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -673,6 +769,24 @@ plotCxdsResults <- function(inSCE,
     }
 
     samples <- unique(sample)
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                               coldata="scds_cxds_score",
+                                               groupby=sample,
+                                               xlab="",
+                                               ylab="Doublet Score",
+                                               violin = violin,
+                                               boxplot = boxplot,
+                                               dots=dots,
+                                               transparency = transparency,
+                                               title="CXDS Doublet Score",
+                                               dotSize=dotSize,
+                                               gridLine = TRUE,
+                                               summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "CXDS_Score"
+    }
+
 
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
@@ -728,6 +842,7 @@ plotCxdsResults <- function(inSCE,
     })
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -805,6 +920,23 @@ plotBcdsResults <- function(inSCE,
     }
 
     samples <- unique(sample)
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                               coldata="scds_bcds_score",
+                                               groupby=sample,
+                                               xlab="",
+                                               ylab="Doublet Score",
+                                               violin = violin,
+                                               boxplot = boxplot,
+                                               dots=dots,
+                                               transparency = transparency,
+                                               title="BCDS Doublet Score",
+                                               dotSize=dotSize,
+                                               gridLine = TRUE,
+                                               summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "BCDS_Score"
+    }
 
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
@@ -861,6 +993,7 @@ plotBcdsResults <- function(inSCE,
     })
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -940,6 +1073,23 @@ plotScdsHybridResults <- function(inSCE,
     }
 
     samples <- unique(sample)
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                               coldata="scds_hybrid_score",
+                                               groupby=sample,
+                                               xlab="",
+                                               ylab="Doublet Score",
+                                               violin = violin,
+                                               boxplot = boxplot,
+                                               dots=dots,
+                                               transparency = transparency,
+                                               title="CXDS BCDS Doublet Score",
+                                               dotSize=dotSize,
+                                               gridLine = TRUE,
+                                               summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "CXDS_BCDS_Score"
+    }
 
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
@@ -996,6 +1146,7 @@ plotScdsHybridResults <- function(inSCE,
 
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
@@ -1075,6 +1226,24 @@ plotDecontXResults <- function(inSCE,
 
     samples <- unique(sample)
 
+    if(length(samples) > 1){
+        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
+                                                coldata="decontX_contamination",
+                                                groupby=sample,
+                                                xlab="",
+                                                ylab="DecontX Contamination",
+                                                violin = violin,
+                                                boxplot = boxplot,
+                                                dots=dots,
+                                                transparency = transparency,
+                                                title="DecontX Contamination Score",
+                                                dotSize=dotSize,
+                                                gridLine = TRUE,
+                                                summary = "mean")
+        combined.plots <- list(combined.plots)
+        names(combined.plots) <- "DecontX_Contamination"
+    }
+
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         sampleSub <- sample[sampleInd]
@@ -1149,6 +1318,8 @@ plotDecontXResults <- function(inSCE,
 
     if(length(unique(samples)) > 1){
         names(plotlist) <- samples
+        plotlist <- c(combined.plots, plotlist)
+
     }else{
         plotlist <- unlist(plotlist, recursive = F)
     }
