@@ -49,10 +49,10 @@ sctkPythonInstallConda(envname = "sctk-reticulate")
 }
 }
 \seealso{
-See \code{\link[reticulate]{conda_create}} for more information on creating a Conda environment. 
+See \code{\link[reticulate]{conda_create}} for more information on creating a Conda environment.
 See \code{\link[reticulate]{conda_install}} for more description of the installation parameters.
 See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
-See \code{\link[singleCellTK]{selectSCTKConda}} for reloading the Conda environment if R is restarted without 
-going through the whole installation process again. 
+See \code{\link[singleCellTK]{selectSCTKConda}} for reloading the Conda environment if R is restarted without
+going through the whole installation process again.
 See \url{https://docs.conda.io/en/latest/} for more information on Conda environments.
 }
