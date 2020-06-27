@@ -70,7 +70,7 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
   return(a)
 }
 
-batchqc_f.pvalue <- function(dat, mod, mod0) {
+.batchqc_f.pvalue <- function(dat, mod, mod0) {
   # F-test (full/reduced model) and returns R2 values
   # (full/reduced) as well.
   mod00 <- matrix(rep(1, ncol(dat)), ncol = 1)
