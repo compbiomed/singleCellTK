@@ -53,7 +53,7 @@ Uses doubletFinder to determine cells within the dataset
  suspected to be doublets.
 }
 \examples{
-\dontrun{
+\donttest{
 data(scExample, package = "singleCellTK")
 sce <- runDoubletFinder(sce)
 }
