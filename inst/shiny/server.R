@@ -212,13 +212,7 @@ shinyServer(function(input, output, session) {
   })
 
 
-<<<<<<< HEAD
-
-  # js$disableTabs()
-
-=======
   js$disableTabs()
->>>>>>> 86c08d7ca9de4f606591dec07889674f96129cd8
   # Close app on quit
   # session$onSessionEnded(stopApp)
 
