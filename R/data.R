@@ -81,3 +81,19 @@
 #' data('SEG')
 #' humanSEG <- SEG$human
 "SEG"
+
+#' MSigDB gene get Cctegory table
+#' 
+#' A table of gene set categories that can be download from MSigDB. The 
+#' categories and descriptions can be found here:
+#' https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp. The IDs in the 
+#' first column can be used to retrieve the gene sets for these categories
+#' using the \link{importGeneSetsFromMSigDB} function.
+
+#' @name msigdb_table
+#' @docType data
+#' @format A data.frame.
+#' @keywords datasets
+#' @examples
+#' data("msigdb_table")
+"msigdb_table"

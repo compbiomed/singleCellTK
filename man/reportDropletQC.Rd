@@ -22,8 +22,8 @@ A  function to generate .html Rmarkdown report containing the visualizations of 
 }
 \examples{
 \donttest{
-data(emptyDropsSceExample, package = "singleCellTK")
-sce <- runDropletQC(emptyDropsSceExample)
+data(scExample, package = "singleCellTK")
+sce <- runDropletQC(sce)
 reportDropletQC(inSCE = sce)
 }
 }

@@ -6,9 +6,9 @@
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \donttest{
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDropletQC(emptyDropsSceExample)
+#' \dontrun{
+#' data(scExample, package = "singleCellTK")
+#' sce <- runDropletQC(sce)
 #' reportDropletQC(inSCE = sce)
 #' }
 #' @export
@@ -33,8 +33,9 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runCellQC(sce)
 #' reportCellQC(inSCE = sce)
 #' }
