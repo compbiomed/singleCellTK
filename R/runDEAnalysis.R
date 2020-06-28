@@ -623,7 +623,6 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
             paste0("~", paste(c("condition", "cngeneson", covariates),
                               collapse = '+'))),
         sca)
-    zlmCond <- MAST::zlm(~condition + cngeneson, sca)
     summaryCond <- MAST::summary(zlmCond, doLRT = "conditionc1")
     summaryDt <- summaryCond$datatable
     fcHurdle <- merge(summaryDt[summaryDt$contrast == "conditionc1" &

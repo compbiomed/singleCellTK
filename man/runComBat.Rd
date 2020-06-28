@@ -2,12 +2,12 @@
 % Please edit documentation in R/runComBat.R
 \name{runComBat}
 \alias{runComBat}
-\title{runComBat}
+\title{Apply ComBat batch effect correction method to SingleCellExperiment object}
 \usage{
 runComBat(
   inSCE,
-  batch = "batch",
   useAssay = "logcounts",
+  batch = "batch",
   par.prior = TRUE,
   covariates = NULL,
   mean.only = FALSE,
@@ -16,13 +16,14 @@ runComBat(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. Required}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{batch}{A character scalar, for the name of a column in
-\code{\link[SummarizedExperiment]{colData}} to use as the batch variable.
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
+
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
 Default \code{"batch"}.}
-
-\item{useAssay}{The assay to correct. Default \code{"logcounts"}.}
 
 \item{par.prior}{A logical scalar. TRUE indicates parametric adjustments
 will be used, FALSE indicates non-parametric adjustments will be used.
@@ -37,38 +38,29 @@ Default \code{FALSE}.}
 \item{ref.batch}{If given, will use the selected batch as a reference for
 batch adjustment. Default \code{NULL}.}
 
-\item{assayName}{A character scalar for the new assay name to save the
-corrected expression. Default \code{"ComBat"}}
+\item{assayName}{A single characeter. The name for the corrected assay. Will
+be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+\code{"ComBat"}.}
 }
 \value{
-Input SCTK object with corrected assay updated at \code{assay(inSCE, assayName)}.
+The input \linkS4class{SingleCellExperiment} object with
+\code{assay(inSCE, assayName)} updated.
 }
 \description{
-Run ComBat batch correction method on a SCtkExperiment object
+The ComBat batch adjustment approach assumes that batch effects represent
+non-biological but systematic shifts in the mean or variability of genomic
+features for all samples within a processing batch. It uses either parametric
+or non-parametric empirical Bayes frameworks for adjusting data for batch
+effects.
 }
 \examples{
-if(requireNamespace("bladderbatch", quietly = TRUE)) {
-  library(bladderbatch)
-  data(bladderdata)
-
-  #subset for testing
-  dat <- bladderEset[1:50,]
-  dat <- as(as(dat, "SummarizedExperiment"), "SCtkExperiment")
-
-  # parametric adjustment
-  dat <- runComBat(inSCE = dat, useAssay = "exprs",
-                   batch = "batch", covariates = NULL,
-                   assayName = "parametric_combat")
-
-  # non-parametric adjustment, mean-only version
-  dat <- runComBat(inSCE = dat, useAssay = "exprs",
-                   batch = "batch", par.prior = FALSE,
-                   mean.only = TRUE, covariates = NULL,
-                   assayName = "nonparametric_combat_meanonly")
-
-  # reference-batch version, with covariates
-  dat <- runComBat(inSCE = dat, useAssay = "exprs",
-                   batch = "batch", covariates = "cancer",
-                   ref.batch = 3, assayName = "refbatch_combat_wcov")
+\dontrun{
+data('sceBatches', package = 'singleCellTK')
+# parametric adjustment
+sceCorr <- runComBat(sceBatches)
+# non-parametric adjustment, mean-only version
+sceCorr <- runComBat(sceBatches, par.prior=FALSE, mean.only=TRUE)
+# reference-batch version, with covariates
+sceCorr <- runComBat(sceBatches, covariates = "cell_type", ref.batch = 'w')
 }
 }
