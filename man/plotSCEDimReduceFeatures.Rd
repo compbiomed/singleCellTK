@@ -25,7 +25,8 @@ plotSCEDimReduceFeatures(
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
-  legendTitle = NULL
+  legendTitle = NULL,
+  groupBy = NULL
 )
 }
 \arguments{
