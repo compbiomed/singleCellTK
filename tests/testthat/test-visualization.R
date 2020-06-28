@@ -39,27 +39,28 @@ test_that(desc = "Testing plotSCEViolin functions", {
     expect_is(p3, "ggplot")
 })
 
-sceres <- sceres[, colData(sceres)$type != 'EmptyDroplet']
-sceres <- runCellQC(sceres, algorithms = c("QCMetrics", "cxds", "bcds", "cxds_bcds_hybrid",
-    "scrublet", "doubletFinder", "decontX"))
-sceres <- runDoubletCells(sceres, size.factors.norm = rep(1, ncol(sceres)))
 
 test_that(desc = "Testing plotResults functions", {
-    r1 <- plotRunPerCellQCResults(inSCE = sceres)
+  sceres <- sceres[, colData(sceres)$type != 'EmptyDroplet']
+  sceres <- runCellQC(sceres, algorithms = c("QCMetrics", "cxds", "bcds", "cxds_bcds_hybrid",
+                                             "scrublet", "doubletFinder", "decontX"))
+  sceres <- runDoubletCells(sceres, size.factors.norm = rep(1, ncol(sceres)))
+  
+  r1 <- plotRunPerCellQCResults(inSCE = sceres)
     expect_is(r1, "list")
-    r2 <- plotScrubletResults(inSCE = sceres, reducedDimName="UMAP")
+  r2 <- plotScrubletResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r2, "list")
-    r3 <- plotDoubletCellsResults(inSCE = sceres, reducedDimName="UMAP")
+  r3 <- plotDoubletCellsResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r3, "list")
-    r4 <- plotDoubletFinderResults(inSCE = sceres, reducedDimName="UMAP")
+  r4 <- plotDoubletFinderResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r4, "list")
-    r5 <- plotCxdsResults(inSCE = sceres, reducedDimName="UMAP")
+  r5 <- plotCxdsResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r5, "list")
-    r6 <- plotBcdsResults(inSCE = sceres, reducedDimName="UMAP")
+  r6 <- plotBcdsResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r6, "list")
-    r7 <- plotScdsHybridResults(inSCE = sceres, reducedDimName="UMAP")
+  r7 <- plotScdsHybridResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r7, "list")
-    r8 <- plotDecontXResults(inSCE = sceres, reducedDimName="UMAP")
+  r8 <- plotDecontXResults(inSCE = sceres, reducedDimName="UMAP")
     expect_is(r8, "list")
 })
 

@@ -89,7 +89,7 @@
 #' @return SingleCellExperiment object containing the
 #'  'doublet_finder_doublet_score'.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(scExample, package = "singleCellTK")
 #' sce <- runDoubletFinder(sce)
 #' }
