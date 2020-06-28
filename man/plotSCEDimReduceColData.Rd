@@ -8,6 +8,7 @@ plotSCEDimReduceColData(
   inSCE,
   sample = NULL,
   colorBy,
+  groupBy = NULL,
   conditionClass = NULL,
   shape = NULL,
   reducedDimName = NULL,
@@ -37,6 +38,9 @@ components or a variable with saved results. Required}
 
 \item{colorBy}{Color by a condition(any column of the annotation data).
 Required.}
+
+\item{groupBy}{Group by a condition(any column of the annotation data).
+Default NULL.}
 
 \item{conditionClass}{Class of the annotation data used in colorBy.
 Options are NULL, "factor" or "numeric". If NULL, class will default to the

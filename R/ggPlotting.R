@@ -83,7 +83,6 @@
     sceSampleInd <- which(sample == x)
     inSCESub <- inSCE[, sceSampleInd]
     colorBySub <- colorBy[sceSampleInd]
-  })
 
     dataframe <- data.frame(SingleCellExperiment::reducedDim(
       inSCESub,
@@ -151,8 +150,8 @@
     }
     dataframe$Sample <- colnames(inSCESub)
     g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
-      label = "Sample"))
-     + ggplot2::geom_point(size = dotSize, alpha = transparency)
+      label = "Sample")) + ggplot2::geom_point(size = dotSize,
+                                               alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
 
@@ -231,6 +230,7 @@
           color = "black"
         )
     }
+  })  
   return(cowplot::plot_grid(plotlist = plotlist))
 }
 
@@ -390,6 +390,8 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param legendTitle title of legend. Default NULL.
+#' @param groupBy Facet wrap the scatterplot based on value. 
+#' Default \code{NULL}.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' plotSCEDimReduceFeatures(
@@ -1661,6 +1663,10 @@ plotSCEDensity <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param violin Boolean. Whether to plot the violon densities for each group.
+#' Default \code{TRUE}.
+#' @param boxplot Boolean. Whether to plot the boxes for each group.
+#' Default \code{TRUE}.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
