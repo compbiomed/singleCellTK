@@ -27,11 +27,11 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' subset <- mouseBrainSubsetSCE[1:1000,]
-#' res <- DownsampleDepth(subset,
+#' res <- downSampleDepth(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
 #'
-DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, minCells = 3,
+downSampleDepth <- function(originalData, useAssay = "counts", minCount = 10, minCells = 3,
                             maxDepth = 10000000, realLabels,
                             depthResolution = 10, iterations = 10){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
@@ -96,11 +96,10 @@ DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' subset <- mouseBrainSubsetSCE[1:1000,]
-#' res <- DownsampleCells(subset,
+#' res <- downSampleCells(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
-#'
-DownsampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
+downSampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
                             minCellnum = 10, maxCellnum = 1000, realLabels,
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
