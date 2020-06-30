@@ -19,7 +19,7 @@ require(umap)
 
 ## Run QC functions
 
-```{r, "CellQC-import", eval = FALSE, include=FALSE}
+```{r, "CellQC-import", eval = TRUE, include=FALSE}
 sce.qc <- params$object
 ```
 

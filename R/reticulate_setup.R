@@ -24,7 +24,7 @@ pkg_resources <- NULL
   scgen <<- reticulate::import("scgen", delay_load = TRUE)
   sc <<- reticulate::import("scanpy", delay_load = TRUE)
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
-  pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
+  pkg_resources <<- reticulate::import('pkg_resources', delay_load = TRUE)
 }
 
 

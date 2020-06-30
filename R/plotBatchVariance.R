@@ -16,11 +16,13 @@
 #' batch+condition (if applicable).
 #' @export
 #' @examples
-#' if(requireNamespace("bladderbatch", quietly = TRUE)) {
-#'   library(bladderbatch)
-#'   data(bladderdata)
-#'   dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
-#'   plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#' \dontrun{
+#'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
+#'     library(bladderbatch)
+#'     data(bladderdata)
+#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
+#'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#'   }
 #' }
 #'
 plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
@@ -49,8 +51,8 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
     }
   }
   mod <- cbind(condMod, batchMod[, -1])
-  condTest <- batchqc_f.pvalue(mat, mod, batchMod)
-  batchTest <- batchqc_f.pvalue(mat, mod, condMod)
+  condTest <- .batchqc_f.pvalue(mat, mod, batchMod)
+  batchTest <- .batchqc_f.pvalue(mat, mod, condMod)
   r2Full <- condTest$r2Full
   condR2 <- batchTest$r2Reduced
   batchR2 <- condTest$r2Reduced
@@ -70,7 +72,7 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
   return(a)
 }
 
-batchqc_f.pvalue <- function(dat, mod, mod0) {
+.batchqc_f.pvalue <- function(dat, mod, mod0) {
   # F-test (full/reduced model) and returns R2 values
   # (full/reduced) as well.
   mod00 <- matrix(rep(1, ncol(dat)), ncol = 1)

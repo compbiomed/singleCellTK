@@ -5,34 +5,37 @@
 #' model accounts for zero inflation (dropouts), over-dispersion, and the count
 #' nature of the data. The model also accounts for the difference in library
 #' sizes and optionally for batch effects and/or other covariates.
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name
-#' of the assay requiring batch correction in "inSCE", should exist in
-#' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the
-#' field of `colData(inSCE)` that defines different batches.
-#' @param reducedDimName character, default `"zinbwave"`. The name for the
-#' corrected low-dimensional representation.
-#' @param nHVG integer, default `1000`. Number of highly variable genes to use
-#' when fitting the model
-#' @param nComponents integer, default `50L`. Number of principle components or
-#' dimensionality to generate in the resulting reducedDim.
-#' @param nIter integer, default `10`. The max number of iterations to perform.
-#' @param epsilon integer, default `1000`. Algorithmic parameter, by default, the
-#' epsilon parameter is set to the number of genes. We empirically found that a
-#' high epsilon is often required to obtained a good low-level representation.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Note that ZINBWaVE works for counts (integer) input rather
+#' than logcounts that other methods prefer. Default \code{"counts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param nHVG An integer. Number of highly variable genes to use when fitting
+#' the model. Default \code{1000L}.
+#' @param nComponents An integer. The number of principle components or
+#' dimensionality to generate in the resulting matrix. Default \code{50L}.
+#' @param nIter An integer, The max number of iterations to perform. Default
+#' \code{10L}.
+#' @param epsilon An integer. Algorithmic parameter. Empirically, a high epsilon
+#' is often required to obtained a good low-level representation. Default
+#' \code{1000L}.
+#' @param reducedDimName A single character. The name for the corrected
+#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+#' Default \code{"zinbwave"}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{reducedDim(inSCE, reducedDimName)} updated.
 #' @export
 #' @references Pollen, Alex A et al., 2014
 #' @examples
 #' \dontrun{
-#' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runZINBWaVE(sceBatches, nIter=5)
+#'     data('sceBatches', package = 'singleCellTK')
+#'     sceCorr <- runZINBWaVE(sceBatches, nIter = 5)
 #' }
-runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
-                        reducedDimName = 'zinbwave', nHVG = 1000,
-                        nComponents = 50, epsilon = 1000, nIter = 10){
-    #filterParams = NULL  <<< something told in tutorial but might be ignored
+runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
+                        nHVG = 1000L, nComponents = 50L, epsilon = 1000,
+                        nIter = 10L, reducedDimName = 'zinbwave'){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
@@ -44,26 +47,26 @@ runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
         stop(paste("\"batch name:", batch, "not found."))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
-
+    nHVG <- as.integer(nHVG)
+    nComponents <- as.integer(nComponents)
+    epsilon <- as.integer(epsilon)
+    nIter <- as.integer(nIter)
     # Run algorithm
-    tmpMatrix <- round(SummarizedExperiment::assay(inSCE, useAssay))
-    tmpSCE <- inSCE
-    SummarizedExperiment::assay(tmpSCE, useAssay) <- tmpMatrix
-
     ##ZINBWaVE tutorial style of HVG selection
     if(nHVG < nrow(inSCE)){
-        logAssay <- log1p(SummarizedExperiment::assay(tmpSCE, useAssay))
+        logAssay <- log1p(SummarizedExperiment::assay(inSCE, useAssay))
         vars <- matrixStats::rowVars(logAssay)
-        names(vars) <- rownames(tmpSCE)
+        names(vars) <- rownames(inSCE)
         vars <- sort(vars, decreasing = TRUE)
-        tmpSCE <- tmpSCE[names(vars)[1:nHVG],]
+        tmpSCE <- inSCE[names(vars)[1:nHVG],]
     }
     epsilon <- min(nrow(inSCE), epsilon)
-
+    print('start!')
     tmpSCE <- zinbwave::zinbwave(tmpSCE, K = nComponents, epsilon = epsilon,
                                  which_assay = useAssay,
-                                  X = paste('~', batch, sep = ''),
-                                  maxiter.optimize=nIter, verbose = TRUE)
-    reducedDim(inSCE, reducedDimName) <- reducedDim(tmpSCE, 'zinbwave')
+                                 X = paste('~', batch, sep = ''),
+                                 maxiter.optimize = nIter, verbose = TRUE)
+    SingleCellExperiment::reducedDim(inSCE, reducedDimName) <-
+        SingleCellExperiment::reducedDim(tmpSCE, 'zinbwave')
     return(inSCE)
 }

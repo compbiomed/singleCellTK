@@ -46,6 +46,7 @@ Imports:
     data.table,
     DelayedMatrixStats,
     DESeq2,
+    dplyr,
     DT,
     ggplot2,
     ggplotify,
@@ -62,6 +63,7 @@ Imports:
     mnormt,
     matrixStats,
     methods,
+    msigdbr,
     multtest,
     plotly,
     RColorBrewer,
@@ -102,7 +104,7 @@ Imports:
     TENxPBMCData,
     yaml,
     rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests:
     testthat,
     Rsubread,
