@@ -75,7 +75,7 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,15 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
 Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratRunUMAP</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNamesSeurat</span>, <span class='no'>reduction</span>, <span class='no'>dims</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratRunUMAP</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>useReduction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"pca"</span>, <span class='st'>"ica"</span>),
+  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"seuratUMAP"</span>,
+  <span class='kw'>dims</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>minDist</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
+  <span class='kw'>nNeighbors</span> <span class='kw'>=</span> <span class='fl'>30L</span>,
+  <span class='kw'>spread</span> <span class='kw'>=</span> <span class='fl'>1</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,20 +170,28 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
       <td><p>(sce) object on which to compute the UMAP</p></td>
     </tr>
     <tr>
-      <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <th>useReduction</th>
+      <td><p>Reduction to use for computing UMAP. One of "pca" or "ica". Default is <code>"pca"</code>.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
-    </tr>
-    <tr>
-      <th>reduction</th>
-      <td><p>selected reduction algorithm to use for computing UMAP ("pca" or "ica", default is "pca")</p></td>
+      <th>reducedDimName</th>
+      <td><p>Name of new reducedDims object containing Seurat UMAP Default <code>seuratUMAP</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>numerical value of how many reduction components to use for UMAP computation (default is 10)</p></td>
+      <td><p>Numerical value of how many reduction components to use for UMAP computation. Default <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>minDist</th>
+      <td><p>Sets the <code>"min.dist"</code> parameter to the underlying UMAP call. See <a href='https://rdrr.io/pkg/Seurat/man/RunUMAP.html'>RunUMAP</a> for more information. Default <code>0.3</code>.</p></td>
+    </tr>
+    <tr>
+      <th>nNeighbors</th>
+      <td><p>Sets the <code>"n.neighbors"</code> parameter to the underlying UMAP call. See <a href='https://rdrr.io/pkg/Seurat/man/RunUMAP.html'>RunUMAP</a> for more information. Default <code>30L</code>.</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>Sets the <code>"spread"</code> parameter to the underlying UMAP call. See <a href='https://rdrr.io/pkg/Seurat/man/RunUMAP.html'>RunUMAP</a> for more information. Default <code>1</code>.</p></td>
     </tr>
     </table>
 
@@ -194,7 +210,7 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

@@ -78,7 +78,7 @@ Normalizes the sce object according to the input parameters" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -160,7 +160,7 @@ Normalizes the sce object according to the input parameters</p>
     <pre class="usage"><span class='fu'>seuratNormalizeData</span>(
   <span class='no'>inSCE</span>,
   <span class='no'>useAssay</span>,
-  <span class='no'>geneNamesSeurat</span>,
+  <span class='kw'>normAssayName</span> <span class='kw'>=</span> <span class='st'>"seuratNormData"</span>,
   <span class='kw'>normalizationMethod</span> <span class='kw'>=</span> <span class='st'>"LogNormalize"</span>,
   <span class='kw'>scaleFactor</span> <span class='kw'>=</span> <span class='fl'>10000</span>
 )</pre>
@@ -174,19 +174,19 @@ Normalizes the sce object according to the input parameters</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <td><p>Assay containing raw counts to use for normalization.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
+      <th>normAssayName</th>
+      <td><p>Name of new assay containing normalized data. Default <code>seuratNormData</code>.</p></td>
     </tr>
     <tr>
       <th>normalizationMethod</th>
-      <td><p>selected normalization method (default is "LogNormalize")</p></td>
+      <td><p>selected normalization method. Default <code>"LogNormalize"</code>.</p></td>
     </tr>
     <tr>
       <th>scaleFactor</th>
-      <td><p>numeric value that represents the scaling factor (default is 10000)</p></td>
+      <td><p>numeric value that represents the scaling factor. Default <code>10000</code>.</p></td>
     </tr>
     </table>
 
@@ -205,7 +205,7 @@ Normalizes the sce object according to the input parameters</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

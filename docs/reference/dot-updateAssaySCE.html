@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>.updateAssaySCE
-Update/Modify/Add an assay in the provided sce object — .updateAssaySCE • singleCellTK</title>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object — .updateAssaySCE • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +41,9 @@ Update/Modify/Add an assay in the provided sce object — .updateAssaySCE • si
 
 
 <meta property="og:title" content=".updateAssaySCE
-Update/Modify/Add an assay in the provided sce object — .updateAssaySCE" />
+Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object — .updateAssaySCE" />
 <meta property="og:description" content=".updateAssaySCE
-Update/Modify/Add an assay in the provided sce object" />
+Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object" />
 
 
 
@@ -75,7 +75,7 @@ Update/Modify/Add an assay in the provided sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -142,40 +142,46 @@ Update/Modify/Add an assay in the provided sce object" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>.updateAssaySCE
-Update/Modify/Add an assay in the provided sce object</h1>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>dot-updateAssaySCE.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>.updateAssaySCE
-Update/Modify/Add an assay in the provided sce object</p>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.updateAssaySCE</span>(<span class='no'>inSCE</span>, <span class='no'>geneNames</span>, <span class='no'>seuratObject</span>, <span class='no'>assaySlotSCE</span>, <span class='no'>assaySlotSeurat</span>)</pre>
+    <pre class="usage"><span class='fu'>.updateAssaySCE</span>(
+  <span class='no'>inSCE</span>,
+  <span class='no'>seuratObject</span>,
+  <span class='no'>assaySlotSCE</span>,
+  <span class='kw'>seuratDataSlot</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+  <span class='kw'>seuratAssaySlot</span> <span class='kw'>=</span> <span class='st'>"RNA"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object to which we have to add assay to (copy to)</p></td>
-    </tr>
-    <tr>
-      <th>geneNames</th>
-      <td><p>for consistent formatting</p></td>
+      <td><p>Input SingleCellExperiment object</p></td>
     </tr>
     <tr>
       <th>seuratObject</th>
-      <td><p>from which we have to copy the assay (copy from)</p></td>
+      <td><p>Input Seurat object</p></td>
     </tr>
     <tr>
       <th>assaySlotSCE</th>
-      <td><p>the assay slot in sce object</p></td>
+      <td><p>Selected assay to update in the input SingleCellExperiment object</p></td>
     </tr>
     <tr>
-      <th>assaySlotSeurat</th>
-      <td><p>the assay slot in seurat object</p></td>
+      <th>seuratDataSlot</th>
+      <td><p>Selected data slot from the Seurat object. Default <code>"counts"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seuratAssaySlot</th>
+      <td><p>Selected assay from Seurat object. Default <code>"RNA"</code>.</p></td>
     </tr>
     </table>
 
@@ -191,7 +197,7 @@ Update/Modify/Add an assay in the provided sce object</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

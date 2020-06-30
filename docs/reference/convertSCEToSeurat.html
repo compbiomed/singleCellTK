@@ -75,7 +75,7 @@ Converts sce object to seurat while retaining all assays and metadata" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,22 +152,31 @@ Converts sce object to seurat while retaining all assays and metadata</h1>
 Converts sce object to seurat while retaining all assays and metadata</p>
     </div>
 
-    <pre class="usage"><span class='fu'>convertSCEToSeurat</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNames</span>)</pre>
+    <pre class="usage"><span class='fu'>convertSCEToSeurat</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>countsAssay</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>normAssay</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>scaledAssay</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object to convert to seurat</p></td>
+      <td><p>A <code>SingleCellExperiment</code> object to convert to a Seurat object.</p></td>
     </tr>
     <tr>
-      <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <th>countsAssay</th>
+      <td><p>Which assay to use from sce object for raw counts. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
-      <th>geneNames</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
+      <th>normAssay</th>
+      <td><p>Which assay to use from sce object for normalized data. Default <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>scaledAssay</th>
+      <td><p>Which assay to use from sce object for scaled data. Default <code>NULL</code>.</p></td>
     </tr>
     </table>
 
@@ -186,7 +195,7 @@ Converts sce object to seurat while retaining all assays and metadata</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

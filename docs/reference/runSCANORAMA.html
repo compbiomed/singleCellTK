@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+<title>Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object — runSCANORAMA • singleCellTK</title>
 
 
@@ -40,10 +40,10 @@ SingleCellExperiment object — runSCANORAMA • singleCellTK</title>
 
 
 
-<meta property="og:title" content="Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+<meta property="og:title" content="Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object — runSCANORAMA" />
-<meta property="og:description" content="SCANORAMA is analogous to computer vision algorithms for panorama stitching 
-that identify images with overlapping content and merge these into a larger 
+<meta property="og:description" content="SCANORAMA is analogous to computer vision algorithms for panorama stitching
+that identify images with overlapping content and merge these into a larger
 panorama." />
 
 
@@ -76,7 +76,7 @@ panorama." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -142,15 +142,15 @@ panorama." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+    <h1>Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runSCANORAMA.R'><code>R/runSCANORAMA.R</code></a></small>
     <div class="hidden name"><code>runSCANORAMA.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>SCANORAMA is analogous to computer vision algorithms for panorama stitching 
-that identify images with overlapping content and merge these into a larger 
+    <p>SCANORAMA is analogous to computer vision algorithms for panorama stitching
+that identify images with overlapping content and merge these into a larger
 panorama.</p>
     </div>
 
@@ -158,10 +158,10 @@ panorama.</p>
   <span class='no'>inSCE</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
-  <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"SCANORAMA"</span>,
   <span class='kw'>SIGMA</span> <span class='kw'>=</span> <span class='fl'>15</span>,
   <span class='kw'>ALPHA</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>KNN</span> <span class='kw'>=</span> <span class='fl'>20L</span>
+  <span class='kw'>KNN</span> <span class='kw'>=</span> <span class='fl'>20L</span>,
+  <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"SCANORAMA"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -169,46 +169,46 @@ panorama.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
-    </tr>
-    <tr>
-      <th>assayName</th>
-      <td><p>character, default `"SCANORAMA"`. The name for the 
-corrected full-sized expression matrix.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>SIGMA</th>
-      <td><p>numeric, default `15`. Algorithmic parameter, correction 
-smoothing parameter on Gaussian kernel.</p></td>
+      <td><p>A numeric scalar. Algorithmic parameter, correction smoothing
+parameter on Gaussian kernel. Default <code>15</code>.</p></td>
     </tr>
     <tr>
       <th>ALPHA</th>
-      <td><p>numeric, default `0.1`. Algorithmic parameter, alignment score 
-minimum cutoff.</p></td>
+      <td><p>A numeric scalar. Algorithmic parameter, alignment score
+minimum cutoff. Default <code>0.1</code>.</p></td>
     </tr>
     <tr>
       <th>KNN</th>
-      <td><p>integer, default `20L`. Algorithmic parameter, number of nearest 
-neighbors to use for matching.</p></td>
+      <td><p>An integer. Algorithmic parameter, number of nearest neighbors to
+use for matching. Default <code>20L</code>.</p></td>
+    </tr>
+    <tr>
+      <th>assayName</th>
+      <td><p>A single characeter. The name for the corrected assay. Will
+be saved to <code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>assay</a></code>. Default
+<code>"SCANORAMA"</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SingleCellExperiment object with `assay(inSCE, assayName)` updated 
-with corrected full-sized expression matrix.</p>
+    <p>The input SingleCellExperiment object with
+<code>assay(inSCE, assayName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Brian Hie et al, 2019</p>
@@ -229,7 +229,7 @@ with corrected full-sized expression matrix.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

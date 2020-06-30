@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>runMAST — runMAST • singleCellTK</title>
+<title>Perform differential expression analysis on SCE with MAST — runMAST • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,12 @@
 
 
 
-<meta property="og:title" content="runMAST — runMAST" />
-<meta property="og:description" content="Run MAST for differential expression analysis on a
-SingleCellExperiment inherited object." />
+<meta property="og:title" content="Perform differential expression analysis on SCE with MAST — runMAST" />
+<meta property="og:description" content="Condition specification allows two methods:
+1. Index level selection. Arguments index1 and index2 will be
+used.
+2. Annotation level selection. Arguments class, classGroup1 and
+classGroup2 will be used." />
 
 
 
@@ -73,7 +76,7 @@ SingleCellExperiment inherited object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -139,14 +142,17 @@ SingleCellExperiment inherited object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>runMAST</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runMAST.R'><code>R/runMAST.R</code></a></small>
+    <h1>Perform differential expression analysis on SCE with MAST</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runDEAnalysis.R'><code>R/runDEAnalysis.R</code></a></small>
     <div class="hidden name"><code>runMAST.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Run MAST for differential expression analysis on a
-SingleCellExperiment inherited object.</p>
+    <p>Condition specification allows two methods:
+1. Index level selection. Arguments <code>index1</code> and <code>index2</code> will be
+used.
+2. Annotation level selection. Arguments <code>class</code>, <code>classGroup1</code> and
+<code>classGroup2</code> will be used.</p>
     </div>
 
     <pre class="usage"><span class='fu'>runMAST</span>(
@@ -157,14 +163,14 @@ SingleCellExperiment inherited object.</p>
   <span class='kw'>class</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>classGroup1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>classGroup2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>comparisonName</span>,
-  <span class='kw'>groupName1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>groupName2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>useThresh</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>freqExpressed</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
+  <span class='no'>analysisName</span>,
+  <span class='no'>groupName1</span>,
+  <span class='no'>groupName2</span>,
+  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>onlyPos</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>log2fcThreshold</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fdrThreshold</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>fdrThreshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -176,8 +182,8 @@ SingleCellExperiment inherited object.</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character. A string specifying which assay to use for the
-MAST calculations. Default <code>"logcounts"</code>.</p></td>
+      <td><p>character. A string specifying which assay to use for MAST
+Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>index1</th>
@@ -189,14 +195,14 @@ which cells are of interests. Default <code>NULL</code>.</p></td>
       <th>index2</th>
       <td><p>Any type of indices that can subset a
 SingleCellExperiment inherited object by cells. specifies
-which cells are being compared with those specified by <code>index1</code>. If
-<code>NULL</code>, <code>index1</code> cells will be comapred with all other cells.
-Default <code>NULL</code>.</p></td>
+the control group against those specified by <code>index1</code>. If
+<code>NULL</code> when using index specification, <code>index1</code> cells will be
+compared with all other cells. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>class</th>
-      <td><p>A vector/factor with <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(inSCE)</a></code> elements, or a single
-string that specifies a column name of <code>colData(inSCE)</code>. Default
+      <td><p>A vector/factor with <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(inSCE)</a></code> elements, or a character
+scalar that specifies a column name of <code>colData(inSCE)</code>. Default
 <code>NULL</code>.</p></td>
     </tr>
     <tr>
@@ -207,33 +213,27 @@ are of interests. Default <code>NULL</code>.</p></td>
     <tr>
       <th>classGroup2</th>
       <td><p>a vector specifying which "levels" given in <code>class</code>
-will be compared with those specified by <code>classGroup1</code>. If <code>NULL</code>,
-<code>classGroup1</code> cells will be compared with all other cells.</p></td>
+is the control group against those specified by <code>classGroup1</code>. If
+<code>NULL</code> when using annotation specification, <code>classGroup1</code> cells
+will be compared with all other cells.</p></td>
     </tr>
     <tr>
-      <th>comparisonName</th>
-      <td><p>A string naming the DEG experiment. Will be required
-in downstream plotting functions.</p></td>
+      <th>analysisName</th>
+      <td><p>A character scalar naming the DEG analysis. Required</p></td>
     </tr>
     <tr>
       <th>groupName1</th>
-      <td><p>A string naming the first comparison group - the condition
-you are interested in.</p></td>
+      <td><p>A character scalar naming the group of interests. Required.</p></td>
     </tr>
     <tr>
       <th>groupName2</th>
-      <td><p>A string naming the second comparison group - the
-condition that the first group is being compared with.</p></td>
+      <td><p>A character scalar naming the control group. Required.</p></td>
     </tr>
     <tr>
-      <th>useThresh</th>
-      <td><p>Whether to use adaptive thresholding to filter genes.
-Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>freqExpressed</th>
-      <td><p>A numeric threshold that the genes expressed in less
-than this fraction of cells will be removed. Default <code>0.1</code>.</p></td>
+      <th>covariates</th>
+      <td><p>A character vector of additional covariates to use when
+building the model. All covariates must exist in
+<code><a href='https://rdrr.io/r/base/names.html'>names(colData(inSCE))</a></code>. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>onlyPos</th>
@@ -243,35 +243,30 @@ Default <code>FALSE</code>.</p></td>
     <tr>
       <th>log2fcThreshold</th>
       <td><p>Only out put DEGs with the absolute values of log2FC
-larger than this value. Default <code>NULL</code></p></td>
+greater than this value. Default <code>0.25</code></p></td>
     </tr>
     <tr>
       <th>fdrThreshold</th>
-      <td><p>Only out put DEGs with FDR value smaller than this
-value. Default <code>1</code></p></td>
+      <td><p>Only out put DEGs with FDR value less than this
+value. Default <code>0.05</code></p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>A logical scalar. Whether to overwrite result if exists.
+Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The input SingleCellExperiment object with
-<code>metadata(inSCE)$MAST</code> updated with the results: a list named by
-<code>comparisonName</code>, with <code>$groupNames</code> containing the naming of the
+<code>metadata(inSCE)$diffExp</code> updated with the results: a list named by
+<code>analysisName</code>, with <code>$groupNames</code> containing the naming of the
 two conditions, <code>$useAssay</code> storing the assay name that was used for
 calculation, <code>$select</code> storing the cell selection indices (logical) for
-each condition, and <code>$result</code> storing a <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code> of
-the DEGs summary.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+each condition, <code>$result</code> storing a <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code> of
+the DEGs summary, and <code>$method</code> storing <code>"MAST"</code>.</p>
 
-    <p>Condition group can be set by one and only one of the two ways: setting
-<code>index1</code> and <code>index2</code>, or setting <code>class</code>, <code>classGroup1</code>
-and <code>classGroup2</code>.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
-<span class='no'>sce.deg</span> <span class='kw'>&lt;-</span> <span class='fu'>runMAST</span>(<span class='no'>sceBatches</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"cell_type"</span>, <span class='kw'>comparisonName</span> <span class='kw'>=</span> <span class='st'>'aVSb'</span>,
-                   <span class='kw'>classGroup1</span> <span class='kw'>=</span> <span class='st'>'alpha'</span>, <span class='kw'>classGroup2</span> <span class='kw'>=</span> <span class='st'>'beta'</span>,
-                   <span class='kw'>groupName1</span> <span class='kw'>=</span> <span class='st'>'a'</span>, <span class='kw'>groupName2</span> <span class='kw'>=</span> <span class='st'>'b'</span>)</div><div class='output co'>#&gt; <span class='error'>Error in getClass(element.type): “SimpleAssays” is not a defined class</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -283,7 +278,7 @@ and <code>classGroup2</code>.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

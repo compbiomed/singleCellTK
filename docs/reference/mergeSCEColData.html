@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -189,8 +189,9 @@ used to combine inSCE1 and inSCE2. Default "column_name"</p></td>
     <span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='st'>"hgmm_1k_v3_20x20"</span>,
     <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='st'>"hgmm1kv3"</span>,
     <span class='kw'>dataType</span> <span class='kw'>=</span> <span class='st'>"filtered"</span>)
-<span class='no'>sce2</span> <span class='kw'>&lt;-</span> <span class='no'>emptyDropsSceExample</span>
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>mergeSCEColData</span>(<span class='kw'>inSCE1</span> <span class='kw'>=</span> <span class='no'>sce1</span>, <span class='kw'>inSCE2</span> <span class='kw'>=</span> <span class='no'>sce2</span>, <span class='kw'>id1</span> <span class='kw'>=</span> <span class='st'>"column_name"</span>, <span class='kw'>id2</span> <span class='kw'>=</span> <span class='st'>"column_name"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in SummarizedExperiment::colData(inSCE2)[, c(not.in.sce1), drop = FALSE]: object of type 'S4' is not subsettable</span></div></pre>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>)
+<span class='no'>sce2</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>mergeSCEColData</span>(<span class='kw'>inSCE1</span> <span class='kw'>=</span> <span class='no'>sce1</span>, <span class='kw'>inSCE2</span> <span class='kw'>=</span> <span class='no'>sce2</span>, <span class='kw'>id1</span> <span class='kw'>=</span> <span class='st'>"column_name"</span>, <span class='kw'>id2</span> <span class='kw'>=</span> <span class='st'>"column_name"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -202,7 +203,7 @@ used to combine inSCE1 and inSCE2. Default "column_name"</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

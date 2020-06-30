@@ -75,7 +75,7 @@ Plots the selected dimensionality reduction method" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,11 @@ Plots the selected dimensionality reduction method</h1>
 Plots the selected dimensionality reduction method</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratReductionPlot</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNamesSeurat</span>, <span class='no'>reduction</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratReductionPlot</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>useReduction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"pca"</span>, <span class='st'>"ica"</span>, <span class='st'>"tsne"</span>, <span class='st'>"umap"</span>),
+  <span class='kw'>showLegend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,16 +166,12 @@ Plots the selected dimensionality reduction method</p>
       <td><p>(sce) object which has the selected dimensionality reduction algorithm already computed and stored</p></td>
     </tr>
     <tr>
-      <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <th>useReduction</th>
+      <td><p>Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default <code>"umap"</code>.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
-    </tr>
-    <tr>
-      <th>reduction</th>
-      <td><p>one of selected algorithm from pca, ica, tsne and umap</p></td>
+      <th>showLegend</th>
+      <td><p>Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -190,7 +190,7 @@ Plots the selected dimensionality reduction method</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

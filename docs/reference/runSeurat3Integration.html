@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply Integration batch effect correction method from Seurat v3 to 
+<title>Apply Integration batch effect correction method from Seurat v3 to
 SingleCellExperiment object — runSeurat3Integration • singleCellTK</title>
 
 
@@ -40,9 +40,9 @@ SingleCellExperiment object — runSeurat3Integration • singleCellTK</title>
 
 
 
-<meta property="og:title" content="Apply Integration batch effect correction method from Seurat v3 to 
+<meta property="og:title" content="Apply Integration batch effect correction method from Seurat v3 to
 SingleCellExperiment object — runSeurat3Integration" />
-<meta property="og:description" content="Can get either a full-sized corrected assay or a dimension reduced corrected 
+<meta property="og:description" content="Can get either a full-sized corrected assay or a dimension reduced corrected
 matrix." />
 
 
@@ -75,7 +75,7 @@ matrix." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -141,14 +141,14 @@ matrix." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply Integration batch effect correction method from Seurat v3 to 
+    <h1>Apply Integration batch effect correction method from Seurat v3 to
 SingleCellExperiment object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runSeurat3Integration.R'><code>R/runSeurat3Integration.R</code></a></small>
     <div class="hidden name"><code>runSeurat3Integration.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Can get either a full-sized corrected assay or a dimension reduced corrected 
+    <p>Can get either a full-sized corrected assay or a dimension reduced corrected
 matrix.</p>
     </div>
 
@@ -156,7 +156,7 @@ matrix.</p>
   <span class='no'>inSCE</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
-  <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"Seurat3Int"</span>,
+  <span class='kw'>altExpName</span> <span class='kw'>=</span> <span class='st'>"Seurat3Int"</span>,
   <span class='kw'>nAnchors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>inSCE</span>),
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
@@ -166,46 +166,48 @@ matrix.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
-      <th>assayName</th>
-      <td><p>character, default `"Seurat3Int"`. The name for the 
-corrected full-sized expression matrix. If the number of features returned 
-is smaller the number of total feature, the returned matrix will be saved in 
-`reducedDim(inSCE, assayName)`; if equal, `assay(inSCE, assayName)`.</p></td>
+      <th>altExpName</th>
+      <td><p>A single character. The name for the
+<code><a href='https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html'>altExp</a></code> that stores the corrected assay.
+The name of this assay has the same name. Default <code>"Seurat3Int"</code>.</p></td>
     </tr>
     <tr>
       <th>nAnchors</th>
-      <td><p>integer, default `nrow(inSCE)`. The number of features to 
-anchor, and also the final dimensionality of the integrated matrix. Thus 
-default value turns to produce full-sized assay.</p></td>
+      <td><p>An integer. The number of features to anchor. The final
+number of the corrected features depends on this value. Default
+<code><a href='https://rdrr.io/r/base/nrow.html'>nrow(inSCE)</a></code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>bool, default `TRUE`. Whether to show detail information of 
-the process.</p></td>
+      <td><p>A logical scalar. Whether to show detail information of
+the process. Default <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The input SingleCellExperiment object with
+<code>altExp(inSCE, altExpName)</code> updated.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This method aims to first identify anchors between pairs of datasets, that 
-represent pairwise correspondences between individual cells in each 
-dataset, that is hypothesized to originate from the same cell state. These 
-anchors are then used to harmonize the datasets, or transfer information 
+    <p>This method aims to first identify anchors between pairs of datasets, that
+represent pairwise correspondences between individual cells in each
+dataset, that is hypothesized to originate from the same cell state. These
+anchors are then used to harmonize the datasets, or transfer information
 from one dataset to another.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -227,7 +229,7 @@ from one dataset to another.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

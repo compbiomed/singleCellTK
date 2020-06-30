@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -156,8 +156,9 @@
   <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
   <span class='kw'>seuratNfeatures</span> <span class='kw'>=</span> <span class='fl'>2000</span>,
   <span class='kw'>seuratPcs</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>15</span>,
-  <span class='kw'>seuratRes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.5</span>, <span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>2</span>),
+  <span class='kw'>seuratRes</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
   <span class='kw'>formationRate</span> <span class='kw'>=</span> <span class='fl'>0.075</span>,
+  <span class='kw'>nCores</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -182,7 +183,8 @@
     </tr>
     <tr>
       <th>seuratNfeatures</th>
-      <td><p>Integer. Number of highly variable genes to use. Default 2000.</p></td>
+      <td><p>Integer. Number of highly variable genes to use.
+Default 2000.</p></td>
     </tr>
     <tr>
       <th>seuratPcs</th>
@@ -191,16 +193,23 @@ determine number of clusters. Default 1:15.</p></td>
     </tr>
     <tr>
       <th>seuratRes</th>
-      <td><p>Numeric vector. The resolution parameter used in seurat, which adjusts the
-number of clusters determined via the algorithm. Default c(0.5, 1, 1.5, 2).</p></td>
+      <td><p>Numeric vector. The resolution parameter used in seurat,
+which adjusts the number of clusters determined via the algorithm.
+Default 1.5.</p></td>
     </tr>
     <tr>
       <th>formationRate</th>
-      <td><p>Doublet formation rate used within algorithm. Default 0.075.</p></td>
+      <td><p>Doublet formation rate used within algorithm.
+Default 0.075.</p></td>
+    </tr>
+    <tr>
+      <th>nCores</th>
+      <td><p>Number of cores used for running the function.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Boolean. Wheter to print messages from Seurat and DoubletFinder. Default FALSE.</p></td>
+      <td><p>Boolean. Wheter to print messages from Seurat and
+DoubletFinder. Default FALSE.</p></td>
     </tr>
     </table>
 
@@ -210,10 +219,10 @@ number of clusters determined via the algorithm. Default c(0.5, 1, 1.5, 2).</p><
  'doublet_finder_doublet_score'.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sceQCExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletFinder</span>(<span class='no'>sce</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletFinder</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:15 2020 ... Running 'doubletFinder'</span></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -225,7 +234,7 @@ number of clusters determined via the algorithm. Default c(0.5, 1, 1.5, 2).</p><
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -190,6 +190,42 @@
           <p><code><a href="importDropEst.html">importDropEst()</a></code> </p>
         </td>
         <td><p>Create a SingleCellExperiment Object from DropEst output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importExampleData.html">importExampleData()</a></code> </p>
+        </td>
+        <td><p>Retrieve example datasets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importFromFiles.html">importFromFiles()</a></code> </p>
+        </td>
+        <td><p>Create a SingleCellExperiment object from files</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importGeneSetsFromCollection.html">importGeneSetsFromCollection()</a></code> </p>
+        </td>
+        <td><p>Imports gene sets from a GeneSetCollection object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importGeneSetsFromGMT.html">importGeneSetsFromGMT()</a></code> </p>
+        </td>
+        <td><p>Imports gene sets from a GMT file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importGeneSetsFromList.html">importGeneSetsFromList()</a></code> </p>
+        </td>
+        <td><p>Imports gene sets from a list</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB()</a></code> </p>
+        </td>
+        <td><p>Imports gene sets from MSigDB</p></td>
       </tr><tr>
         
         <td>
@@ -316,9 +352,15 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="runComBat.html">runComBat()</a></code> </p>
+        </td>
+        <td><p>Apply ComBat batch effect correction method to SingleCellExperiment object</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="runFastMNN.html">runFastMNN()</a></code> </p>
         </td>
-        <td><p>Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+        <td><p>Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 correction method to SingleCellExperiment object</p></td>
       </tr><tr>
         
@@ -343,14 +385,14 @@ correction method to SingleCellExperiment object</p></td>
         <td>
           <p><code><a href="runMNNCorrect.html">runMNNCorrect()</a></code> </p>
         </td>
-        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="runSCANORAMA.html">runSCANORAMA()</a></code> </p>
         </td>
-        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object</p></td>
       </tr><tr>
         
@@ -369,14 +411,14 @@ SingleCellExperiment object</p></td>
         <td>
           <p><code><a href="runSeurat3Integration.html">runSeurat3Integration()</a></code> </p>
         </td>
-        <td><p>Apply Integration batch effect correction method from Seurat v3 to 
+        <td><p>Apply Integration batch effect correction method from Seurat v3 to
 SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="runZINBWaVE.html">runZINBWaVE()</a></code> </p>
         </td>
-        <td><p>Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object</p></td>
+        <td><p>Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -412,9 +454,34 @@ SingleCellExperiment object</p></td>
       <tr>
         
         <td>
+          <p><code><a href="runDEAnalysis.html">runDEAnalysis()</a></code> </p>
+        </td>
+        <td><p>Perform differential expression analysis on SCE with specified method
+Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="runMAST.html">runMAST()</a></code> </p>
         </td>
-        <td><p>runMAST</p></td>
+        <td><p>Perform differential expression analysis on SCE with MAST</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runDESeq2.html">runDESeq2()</a></code> </p>
+        </td>
+        <td><p>Perform differential expression analysis on SCE with DESeq2.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runLimmaDE.html">runLimmaDE()</a></code> </p>
+        </td>
+        <td><p>Perform differential expression analysis on SCE with Limma.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runANOVA.html">runANOVA()</a></code> </p>
+        </td>
+        <td><p>Perform differential expression analysis on SCE with ANOVA</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -438,6 +505,12 @@ in the data</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotBcdsResults.html">plotBcdsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runBcds outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotBiomarker.html">plotBiomarker()</a></code> </p>
         </td>
         <td><p>Given a set of genes, return a ggplot of expression
@@ -445,9 +518,35 @@ values.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotDiffEx.html">plotDiffEx()</a></code> </p>
+          <p><code><a href="plotCxdsResults.html">plotCxdsResults()</a></code> </p>
         </td>
-        <td><p>Plot Differential Expression</p></td>
+        <td><p>Plots for runCxds outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
+        </td>
+        <td><p>Heatmap visualization of DEG result</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDEGRegression.html">plotDEGRegression()</a></code> </p>
+        </td>
+        <td><p>plot the linear regression to show visualize the expression the of DEGs
+identified by differential expression analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDEGViolin.html">plotDEGViolin()</a></code> </p>
+        </td>
+        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
+identified by differential expression analysis</p></td>
       </tr><tr>
         
         <td>
@@ -457,23 +556,15 @@ values.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotMASTHeatmap.html">plotMASTHeatmap()</a></code> </p>
+          <p><code><a href="plotDoubletCellsResults.html">plotDoubletCellsResults()</a></code> </p>
         </td>
-        <td><p>Heatmap visualization of DEG result called by MAST</p></td>
+        <td><p>Plots for runDoubletCells outputs.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotMASTRegression.html">plotMASTRegression()</a></code> </p>
+          <p><code><a href="plotDoubletFinderResults.html">plotDoubletFinderResults()</a></code> </p>
         </td>
-        <td><p>plot the linear regression to show visualize the expression the of DEGs
-identified by MAST</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotMASTViolin.html">plotMASTViolin()</a></code> </p>
-        </td>
-        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
-identified by MAST</p></td>
+        <td><p>Plots for runDoubletFinder outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -486,6 +577,54 @@ identified by MAST</p></td>
           <p><code><a href="plotPCA.html">plotPCA()</a></code> </p>
         </td>
         <td><p>Plot PCA run data from its components.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runPerCellQC outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEBarAssayData.html">plotSCEBarAssayData()</a></code> </p>
+        </td>
+        <td><p>Bar plot of assay data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEBarColData.html">plotSCEBarColData()</a></code> </p>
+        </td>
+        <td><p>Bar plot of colData.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean()</a></code> </p>
+        </td>
+        <td><p>Plot mean feature value in each batch of a SingleCellExperiment object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEDensity.html">plotSCEDensity()</a></code> </p>
+        </td>
+        <td><p>Density plot of any data stored in the SingleCellExperiment object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEDensityAssayData.html">plotSCEDensityAssayData()</a></code> </p>
+        </td>
+        <td><p>Density plot of assay data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotSCEDensityColData.html">plotSCEDensityColData()</a></code> </p>
+        </td>
+        <td><p>Density plot of colData.</p></td>
       </tr><tr>
         
         <td>
@@ -531,6 +670,12 @@ identified by MAST</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScrublet outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotTSNE.html">plotTSNE()</a></code> </p>
         </td>
         <td><p>Plot t-SNE plot on dimensionality reduction data run from t-SNE method.</p></td>
@@ -554,6 +699,12 @@ identified by MAST</p></td>
       
       
       <tr>
+        
+        <td>
+          <p><code><a href="exportSCE.html">exportSCE()</a></code> </p>
+        </td>
+        <td><p>Export data in SingleCellExperiment object</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
@@ -581,7 +732,7 @@ Python annData object</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

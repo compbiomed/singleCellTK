@@ -75,7 +75,7 @@ Compute jackstraw plot and store the computations in the input sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ Compute jackstraw plot and store the computations in the input sce object</h1>
 Compute jackstraw plot and store the computations in the input sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratComputeJackStraw</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNamesSeurat</span>, <span class='no'>dims</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratComputeJackStraw</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='kw'>dims</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,15 +163,11 @@ Compute jackstraw plot and store the computations in the input sce object</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
-    </tr>
-    <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
+      <td><p>Assay containing scaled counts to use in JackStraw calculation.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>numeric value of how many components to use for jackstraw plot (default = number of computed principal components)</p></td>
+      <td><p>Number of components to test in Jackstraw. If <code>NULL</code>, then all components are used. Default <code>NULL</code>.</p></td>
     </tr>
     </table>
 
@@ -190,7 +186,7 @@ Compute jackstraw plot and store the computations in the input sce object</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

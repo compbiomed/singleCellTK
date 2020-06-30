@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Estimate numbers of detected genes, significantly differentially expressed
-genes, and median significant effect size — DownsampleCells • singleCellTK</title>
+genes, and median significant effect size — downSampleCells • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,7 @@ genes, and median significant effect size — DownsampleCells • singleCellTK</
 
 
 <meta property="og:title" content="Estimate numbers of detected genes, significantly differentially expressed
-genes, and median significant effect size — DownsampleCells" />
+genes, and median significant effect size — downSampleCells" />
 <meta property="og:description" content="Estimate numbers of detected genes, significantly differentially expressed
 genes, and median significant effect size" />
 
@@ -75,7 +75,7 @@ genes, and median significant effect size" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ genes, and median significant effect size</h1>
 genes, and median significant effect size</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DownsampleCells</span>(
+    <pre class="usage"><span class='fu'>downSampleCells</span>(
   <span class='no'>originalData</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
   <span class='kw'>minCountDetec</span> <span class='kw'>=</span> <span class='fl'>10</span>,
@@ -233,7 +233,7 @@ expressed, the median effect size defaults to infinity.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mouseBrainSubsetSCE"</span>)
 <span class='no'>subset</span> <span class='kw'>&lt;-</span> <span class='no'>mouseBrainSubsetSCE</span>[<span class='fl'>1</span>:<span class='fl'>1000</span>,]
-<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>DownsampleCells</span>(<span class='no'>subset</span>,
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>downSampleCells</span>(<span class='no'>subset</span>,
                        <span class='kw'>realLabels</span> <span class='kw'>=</span> <span class='st'>"level1class"</span>,
                        <span class='kw'>iterations</span><span class='kw'>=</span><span class='fl'>2</span>)</div></pre>
   </div>
@@ -247,7 +247,7 @@ expressed, the median effect size defaults to infinity.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">
