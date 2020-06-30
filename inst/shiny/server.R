@@ -2360,34 +2360,38 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$viewertabs, {
-    approach_list <- names(reducedDims(vals$counts))
-    if(input$viewertabs == "reducedDims Plot"){
-      updateSelectInput(session, "QuickAccess",
-        choices = c("", approach_list))
-      shinyjs::delay(5,shinyjs::enable("QuickAccess"))
-    }else if(input$viewertabs == "Scatter Plot"){
-      updateSelectInput(session, "QuickAccess",
-        choices = c("Custom"))
-      shinyjs::delay(5,shinyjs::enable("QuickAccess"))
-    }else{
-      updateSelectInput(session, "QuickAccess",
-        choices = c("Custom"))
-      shinyjs::delay(5,shinyjs::disable("QuickAccess"))
-    }
-    if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
-      updateSelectInput(session, "TypeSelect_Xaxis",
-        choices = c("None", "Cell Annotation"))
-      updateSelectInput(session, "TypeSelect_Yaxis",
-        choices = c("Expression Assays", "Cell Annotation"))
-      shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
-      shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
-    }else{
-      updateSelectInput(session, "TypeSelect_Xaxis",
-        choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
-      updateSelectInput(session, "TypeSelect_Yaxis",
-        choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
-      shinyjs::delay(5,shinyjs::enable("TypeSelect_Colorby"))
-      shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
+    if(!is.null(vals$counts)) {
+      if(!is.null(reducedDims(vals$counts))) {
+        approach_list <- names(reducedDims(vals$counts))
+        if(input$viewertabs == "reducedDims Plot"){
+          updateSelectInput(session, "QuickAccess",
+                            choices = c("", approach_list))
+          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+        }else if(input$viewertabs == "Scatter Plot"){
+          updateSelectInput(session, "QuickAccess",
+                            choices = c("Custom"))
+          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+        }else{
+          updateSelectInput(session, "QuickAccess",
+                            choices = c("Custom"))
+          shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+        }
+        if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
+          updateSelectInput(session, "TypeSelect_Xaxis",
+                            choices = c("None", "Cell Annotation"))
+          updateSelectInput(session, "TypeSelect_Yaxis",
+                            choices = c("Expression Assays", "Cell Annotation"))
+          shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
+          shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
+        }else{
+          updateSelectInput(session, "TypeSelect_Xaxis",
+                            choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
+          updateSelectInput(session, "TypeSelect_Yaxis",
+                            choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
+          shinyjs::delay(5,shinyjs::enable("TypeSelect_Colorby"))
+          shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
+        }
+      }
     }
   })
 

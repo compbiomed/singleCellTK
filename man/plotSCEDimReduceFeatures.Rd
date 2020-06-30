@@ -87,6 +87,9 @@ Default 'blue'.}
 \item{titleSize}{Size of title of plot. Default 15.}
 
 \item{legendTitle}{title of legend. Default NULL.}
+
+\item{groupBy}{Facet wrap the scatterplot based on value. 
+Default \code{NULL}.}
 }
 \value{
 a ggplot of the reduced dimensions.

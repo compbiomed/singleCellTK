@@ -31,6 +31,15 @@ components or a variable with saved results. Required.}
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
+<<<<<<< HEAD
+=======
+\item{violin}{Boolean. Whether to plot the violon densities for each group.
+Default \code{TRUE}.}
+
+\item{boxplot}{Boolean. Whether to plot the boxes for each group.
+Default \code{TRUE}.}
+
+>>>>>>> 5879b20f3eaad85342fdd6b1fd8b84006336ffaa
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
