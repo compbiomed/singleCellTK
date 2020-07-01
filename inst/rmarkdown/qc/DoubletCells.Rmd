@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: doublet cell annotation using scran doubletcell"
+title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ell"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -20,64 +20,26 @@ require(ggplot2)
 sce.qc<- params$object
 ```
 
-```{r "scran-doubletcell-umap", include=FALSE, warning=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
+```{r, "DoubletCells", results="asis"}
+    plotDoubletCells<- plotDoubletCellsResults(inSCE = sce.qc, reducedDimName = "UMAP")
+    i="DoubletCells"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotDoubletCells$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotDoubletCells$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotDoubletCells$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDoubletCells
 ```
 
-```{r, "scran-doubletcell-reddim", eval = FALSE, include=FALSE}
-#Log counts prior to running UMAP
-if (is.null(sce.qc@assays@data$logcounts)){
-  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
-  #get UMAP
-  if (!"UMAP" %in% reducedDimNames(sce.qc)){
-  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
-}
+```{r, include=FALSE}
+description_DoubletCells<- .descriptionDoubletCells()
 ```
 
-## Scran Doublet score
-
-Scran doubletCells identifies the potential doublet cells based on simulations of putative doublet expression profiles.
-
-```{r, "scran-doubletcell-score"}
-if (!is.null(sce.qc$scran_doubletCells_Score)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "scran_doubletCells_Score", xlab = "", ylab = "score", title = "Doublet score per cell", dotSize = 0.5)
-}else {
-  stop("The inSCE does not contain scran_doubletCells_Score")
-}
-```
-
-## Scran DoubletCells input info
-```{r, "scran-doubletcell-info"}
-if (!is.null(sce.qc@metadata$runDoubletCells)){
-  sce.qc@metadata$runDoubletCells
-}else{
-  print("The inSCE does not contain runDoubletCells info")
-}
-```
-## Session info
-```{r, "scran-doubletcell-session-info"}
-sessionInfo()
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DoubletCells`

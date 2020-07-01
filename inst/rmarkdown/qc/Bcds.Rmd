@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: computational doublet annotation using bcds"
+title: "Comprehensive reporting of QC metrics: computational doublet annotation using bcds"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -10,90 +10,32 @@ output:
     code_folding: hide
 ---
 
-```{r, "CxdsBcds-lib", message = F, include=FALSE}
+```{r, "Bcds-lib", message = F, include=FALSE}
 require(singleCellTK)
 require(umap)
 require(ggplot2)
 ```
 
-```{r, "CxdsBcds-umap", eval = FALSE, include=FALSE, warning=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
+```{r, "Bcds", results="asis"}
+   plotBcds<- plotBcdsResults(sce.qc, reducedDimName = "UMAP")
+    i="Bcds"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotBcds$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotBcds$densityScore
 
+    cat(paste0('## Violin Score \n\n'))
+    plotBcds$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runBcds
 ```
 
-```{r, "CxdsBcds-import", warning=FALSE, include=FALSE}
-sce.qc<- params$object
+```{r, "Bcds-desc", include=FALSE}
+descriprion_BcdsResults<- .descriptionBCDS()
 ```
 
-
-```{r, "CxdsBcds-reddim", eval = FALSE, include=FALSE}
-#Log counts prior to running UMAP
-if (is.null(sce.qc@assays@data$logcounts)){
-  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
-  #get UMAP
-  if (!"UMAP" %in% reducedDimNames(sce.qc)){
-  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
-}
-```
-
-## Bcds
-
-Bcds considers the full count information to identify doublets in UMI scRNA-Seq data with a binary classification approach using artificially generated doublets.
-
-## Doublet score
-
-The distribution of the bcds doublet scores. A high score indicates "doublet-like" cell: 
-```{r, "CxdsBcdsHybrid-score"}
-if (!is.null(sce.qc$scds_bcds_score) || !is.null(sce.qc$scds_bcds_call)){
-boxplot(sce.qc$scds_bcds_score  ~ sce.qc$scds_bcds_call, main="bcds", xlab="Doublet call by bcds", ylab="bcds score")} else {
-  stop("The inSCE does not contain scds_bcds_score or scds_bcds_call")
-}
-```
-
-
-Cells/doublets after projecting into reduced dimensions:
-```{r, "CxdsBcds-score-reddim"}
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_bcds_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "bcds", legendTitle = "Doublet Score")
-```
-
-```{r, "CxdsBcds-call-reddim"}
-if (!is.null(sce.qc$scds_bcds_call)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_bcds_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "bcds call", legendTitle = "Doublet Call", labelClusters = FALSE)
-}
-```
-
-## Bcds input info
-```{r, "CxdsBcds-info"}
-if (!is.null(sce.qc@metadata$runBcds)){
-sce.qc@metadata$runBcds
-} else{
-  print("The inSCE does not contain runBcds info")
-}
-```
-## Session info
-```{r, "CxdsBcds-session-info"}
-sessionInfo()
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r descriprion_BcdsResults`
