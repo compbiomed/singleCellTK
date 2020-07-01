@@ -544,7 +544,9 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:30, k.weight = 2)
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(altExp = GetAssayData(seurat.integrated@assays$integrated, "data")))
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
-
+  counts <- assay(altExp(inSCE, newAssayName), "altExp")
+  counts[is.na(counts)] <- 0
+  assay(altExp(inSCE, newAssayName), "altExp") <- counts
   return(inSCE)
 
 }

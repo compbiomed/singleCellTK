@@ -3532,7 +3532,7 @@ shinyServer(function(input, output, session) {
         shapeBy <- input$batchCheckCond
       }
       pcaName <- paste0(input$batchCheckOrigAssay, "_PCA")
-      if(!"PCA" %in% names(SingleCellExperiment::reducedDims(vals$counts))){
+      if(!pcaName %in% names(SingleCellExperiment::reducedDims(vals$counts))){
         vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckOrigAssay,
           reducedDimName = pcaName)
         updateReddimInputs()
@@ -3573,7 +3573,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   output$batchCorrReddim <- renderPlot({
     if (!is.null(vals$counts) &
         input$batchCheckVar != "None" &
@@ -3597,13 +3597,15 @@ shinyServer(function(input, output, session) {
           !is.null(input$batchCheckCorrAssay)){
         if(input$batchCheckCorrAssay != ""){
           pcaName <- paste0(input$batchCheckCorrAssay, "_PCA")
-
-          if(isAltExp(vals$counts, input$batchCheckCorrAssay)){
-            altExp(vals$counts, input$batchCheckCorrAssay) <-  getPCA(altExp(vals$counts, input$batchCheckCorrAssay), useAssay = "altExp", reducedDimName = pcaName)
+          if(!pcaName %in% names(SingleCellExperiment::reducedDims(altExp(vals$counts, input$batchCheckCorrAssay)))){
+            if(isAltExp(vals$counts, input$batchCheckCorrAssay)){
+              tempPlotObject <-  getPCA(altExp(vals$counts, input$batchCheckCorrAssay), useAssay = "altExp", reducedDimName = pcaName)
+            #print(altExp(vals$counts, input$batchCheckCorrAssay))
             updateReddimInputs()
-            plotSCEDimReduceColData(altExp(vals$counts, input$batchCheckCorrAssay), colorBy = input$batchCheckVar,
+            plotSCEDimReduceColData(tempPlotObject, colorBy = input$batchCheckVar,
                                     shape = shapeBy, reducedDimName = pcaName,
                                     title = paste0(input$batchCheckCorrAssay, " corrected"))
+            #altExp(vals$counts, input$batchCheckCorrAssay) <- tempPlotObject
           }
           else{
             vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckCorrAssay,
@@ -3613,7 +3615,8 @@ shinyServer(function(input, output, session) {
                                     shape = shapeBy, reducedDimName = pcaName,
                                     title = paste0(input$batchCheckCorrAssay, " corrected"))
           }
-          
+  }
+
         }
       }
     }
@@ -5882,4 +5885,281 @@ shinyServer(function(input, output, session) {
         selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
     }
   })
+  
+  
+  #Column Annotation irzam
+  observeEvent(input$button_series_fetch,
+               {
+                 print("fetch pressed")
+                 showModal(
+                   modalDialog(title = paste("Do you want to fetch series ", input$input_series_id, "?", sep = ""),
+                               tags$h4("Series Title: "),
+                               f_series_title(input$input_series_id),
+                               tags$br(),
+                               tags$h4("Number of Samples: "),
+                               f_number_of_samples(input$input_series_id),
+                               size = "m",
+                               easyClose = TRUE,
+                               footer = tagList(
+                                 actionButton("button_confirm_fetch_series", "Yes"),
+                                 modalButton("No")
+                               )
+                   )
+                 )
+               })
+  
+  
+  observeEvent(input$button_confirm_fetch_series,
+               {
+                 removeModal()
+                 series_sample_file_list <- f_sample_file_names(input$input_series_id)
+                 vals$columnAnnotation <- f_characteristics_samples(series_sample_file_list)
+                 
+                 #reactiveDF$data <- series_characteristics
+                 #backupDF_destination = paste(getwd(), "/", "backupDF.csv", sep = "")
+                 #write.table(reactiveDF$data, file = backupDF_destination, col.names = TRUE, row.names = FALSE, sep = ",")
+                 #updateNavbarPage(x, "mainPage", "View")
+                 
+                 
+               })
+  
+  output$output_phenotype_table <- renderUI(
+    {
+      output$table <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell') })
+      DT::dataTableOutput("table")
+    })
+  
+  
+  
+  #create selectinput for selecting attribute with colnames from incoming dataset 
+  #create selectinput for selecting attribute value
+  output$input_select_attribute <- renderUI(
+    {
+      selectInput("input_select_attribute", label = "select attribute", choices = colnames(vals$columnAnnotation))
+    })
+  
+  output$input_select_attribute_value <- renderUI(
+    {
+      selectInput("input_select_attribute_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute, colnames(vals$columnAnnotation))])
+    })
+  
+  #create selectinput for selecting merge_1 attribute
+  #create selectinput for selecting merge_2 attribute
+  output$input_select_attribute_merge_1 <- renderUI(
+    {
+      selectInput("input_select_attribute_merge_1", label = "select first column", choices = colnames(vals$columnAnnotation))
+    })
+  output$input_select_attribute_merge_2 <- renderUI(
+    {
+      selectInput("input_select_attribute_merge_2", label = "select second column", choices = colnames(vals$columnAnnotation))
+    })
+  
+  #create selectinput for selecting fill_1 attribute
+  #create selectinput for selecting fill_2 attribute
+  output$input_select_attribute_fill_1 <- renderUI(
+    {
+      selectInput("input_select_attribute_fill_1", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+    })
+  output$input_select_attribute_fill_2 <- renderUI(
+    {
+      selectInput("input_select_attribute_fill_2", label = "select column to fill", choices = colnames(vals$columnAnnotation))
+    })
+  
+  #create selectinput for selecting attribute value for magic fill
+  output$input_select_attribute_fill_value <- renderUI(
+    {
+      selectInput("input_select_attribute_fill_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute_fill_1, colnames(vals$columnAnnotation))])
+    })
+  
+  #update criteria parameter text input when attribute value selectinput is changed
+  observeEvent(input$input_select_attribute_value,
+               {
+                 updateTextInput(session = session, "input_criteria",value = input$input_select_attribute_value)
+               })
+  
+  #create selectinput for selecting attribute for clean operation
+  output$input_select_attribute_clean <- renderUI(
+    {
+      selectInput("input_select_attribute_clean", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+    })
+  
 })
+
+#Functions
+################
+#get series title from series id
+f_series_title <- function(series)
+{
+  withProgress(message = "",detail ="fetching series title", max = 1, value = 1,
+               {
+                 tryCatch(
+                   {
+                     url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
+                     url <- paste(url, series, sep = "")
+                     webpage <- read_html(url)
+                     series_title <- html_text(webpage)
+                     startingIndex <- str_locate_all(series_title, "Title")
+                     startingIndex <- as.data.frame(startingIndex)
+                     startingIndex <- startingIndex$start + 6
+                     series_title <- str_sub(series_title, startingIndex)
+                     endingIndex <- str_locate(series_title, "\\\n")
+                     endingIndex <- endingIndex[1] - 1
+                     series_title <- str_sub(series_title, 0, endingIndex)
+                     if (length(series_title) > 0)
+                     {
+                       series_title
+                     }
+                     else
+                     {
+                       -1
+                     }
+                   }, error = function(e) { print(e) })
+               })
+}
+
+
+#get total count of samples in the series id
+#also checks if series is found or not
+#if found returns sample count
+#not found returns -1
+f_number_of_samples <- function(series)
+{
+  withProgress(message="",detail = "fetching number of samples", max = 1, value = 1,
+               {
+                 tryCatch(
+                   {
+                     url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
+                     url <- paste(url, series, sep = "")
+                     webpage <- read_html(url)
+                     total_samples <- html_text(webpage)
+                     startingIndex <- str_locate_all(total_samples, "Samples \\(")
+                     startingIndex <- as.data.frame(startingIndex)
+                     startingIndex <- startingIndex$start + 9
+                     total_samples <- str_sub(total_samples, start = startingIndex)
+                     endingIndex <- str_locate(total_samples, "\\)")
+                     endingIndex <- endingIndex[1]
+                     total_samples <- str_sub(total_samples, start = 0, end = endingIndex - 1)
+                     if (total_samples >= 0)
+                     {
+                       as.numeric(total_samples)
+                     }
+                   }, error = function(e) {-1 })
+               })
+}
+
+
+#get characteristics from all sample files in a series
+f_characteristics_samples <- function(samples)
+{
+  withProgress(max = length(samples),value = 0,
+               {
+                 dfChar <- data.frame(stringsAsFactors = FALSE)
+                 tryCatch(
+                   {
+                     
+                     for (i in 1:length(samples))
+                     {
+                       print(i)
+                       incProgress(message = paste("Fetching Samples: ",i,"/",length(samples),sep = ""),amount = 1,detail = samples[i])
+                       url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
+                       url <- paste(url, samples[i], sep = "")
+                       webpage <- read_html(url)
+                       characteristics <- list()
+                       
+                       titleBlock <- webpage %>% html_nodes("td") %>% as.character()
+                       titleBlock <- titleBlock[42]
+                       startIndex <- str_locate(titleBlock, "justify\">")
+                       startIndex <- startIndex[2] + 1
+                       titleBlock <- str_sub(titleBlock, startIndex)
+                       endIndex <- str_locate(titleBlock, "</td>")
+                       endIndex <- endIndex[1] - 1
+                       titleBlock <- str_sub(titleBlock, 0, endIndex)
+                       
+                       charBlock <- webpage %>% html_nodes("td") %>% as.character()
+                       charBlock <- charBlock[52]
+                       startIndex <- str_locate(charBlock, "justify\">")
+                       startIndex <- startIndex[2] + 1
+                       charBlock <- str_sub(charBlock, startIndex)
+                       endIndex <- str_locate(charBlock, "</td>")
+                       endIndex <- endIndex[1] - 2
+                       charBlock <- str_sub(charBlock, 0, endIndex)
+                       charBlock <- str_split(charBlock, "<br>")[[1]]
+                       charBlock <- charBlock[-length(charBlock)]
+                       
+                       characteristics <- c(characteristics, paste("SampleName: ", samples[i]))
+                       characteristics <- c(characteristics, paste("SampleTitle: ", titleBlock))
+                       characteristics <- c(characteristics, charBlock) %>% as.character()
+                       
+                       colTitles = list()
+                       values = list()
+                       for (j in 1:length(characteristics))
+                       {
+                         splitValues = str_split(characteristics[j], ":")[[1]]
+                         for (j in 1:length(splitValues))
+                         {
+                           splitValues[j] = str_replace_all(splitValues[j], " ", "")
+                           splitValues[j] = str_replace_all(splitValues[j], "[^[:alnum:]]", "")
+                         }
+                         colTitles <- c(colTitles, splitValues[1])
+                         values <- c(values, splitValues[2])
+                       }
+                       if (nrow(dfChar) == 0)
+                       {
+                         dfChar <- data.frame(matrix(ncol = length(colTitles), nrow = 0), stringsAsFactors = FALSE)
+                         colnames(dfChar) <- colTitles
+                         dfChar[i,] <- values
+                       }
+                       else
+                       {
+                         dfChar[i,] <- values
+                       }
+                     }
+                     if (nrow(dfChar) > 1)
+                     {
+                       dfChar
+                     }
+                     else
+                     {
+                       stop("error: invalid sample list input to this function")
+                     }
+                   }, error = function(e) { print(e) })
+               })
+}
+
+
+#get sample file names for a given series id
+f_sample_file_names <- function(series)
+{
+  withProgress(message = "", detail = "retrieving sample names", max = 1, value = 1,
+               {
+                 tryCatch(
+                   {
+                     destFile = paste(getwd(), "/", series, ".txt", sep = "")
+                     download.file(paste("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", series, "&targ=self&view=brief&form=text", sep = ""), destfile = destFile)
+                     msString <- readtext(destFile, verbosity = 3)
+                     msString <- msString$text
+                     startingIndex <- str_locate(msString, "\\!Series\\_sample\\_id \\=")
+                     startingIndex <- startingIndex[1]
+                     endingIndex <- str_locate(msString, "\\!Series\\_contact\\_name \\=")
+                     endingIndex <- endingIndex[1]
+                     msString <- str_sub(msString, startingIndex, endingIndex)
+                     gsmFileNames <- str_split(msString, "\\!Series\\_sample\\_id \\=")
+                     gsmFileNames <- gsmFileNames[[1]]
+                     gsmSampleNames <- list()
+                     for (i in 1:length(gsmFileNames))
+                     {
+                       if (gsmFileNames[i] != "")
+                       {
+                         gsmSampleNames <- c(gsmSampleNames, gsmFileNames[i])
+                       }
+                     }
+                     for (i in 1:length(gsmSampleNames))
+                     {
+                       gsmSampleNames[i] <- str_split(gsmSampleNames[i], "\\\n")[[1]][1]
+                       gsmSampleNames[i] <- str_trim(gsmSampleNames[i], side = "both")
+                     }
+                     gsmSampleNames <- as.character(gsmSampleNames)
+                     gsmSampleNames
+                   }, error = function(e) { print("error: invalid series identifier") })
+               })
+}
