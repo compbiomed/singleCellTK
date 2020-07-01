@@ -58,6 +58,7 @@ Imports:
     mnormt,
     matrixStats,
     methods,
+    msigdbr,
     multtest,
     plotly,
     RColorBrewer,

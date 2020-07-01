@@ -20,11 +20,13 @@
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @examples
+#' \donttest{
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE = sce)
+#' }
 #' @export
 plotRunPerCellQCResults <- function(inSCE,
                                     sample = NULL,

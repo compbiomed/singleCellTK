@@ -23,8 +23,9 @@ the filtered count matrix with the output from runCellQC function}
 A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output
 }
 \examples{
-\donttest{
+\dontrun{
 data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runCellQC(sce)
 reportCellQC(inSCE = sce)
 }

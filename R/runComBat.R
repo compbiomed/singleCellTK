@@ -1,12 +1,16 @@
-#' runComBat
+#' Apply ComBat batch effect correction method to SingleCellExperiment object
 #'
-#' Run ComBat batch correction method on a SCtkExperiment object
-#'
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
-#' @param batch A character scalar, for the name of a column in
-#' \code{\link[SummarizedExperiment]{colData}} to use as the batch variable.
+#' The ComBat batch adjustment approach assumes that batch effects represent
+#' non-biological but systematic shifts in the mean or variability of genomic
+#' features for all samples within a processing batch. It uses either parametric
+#' or non-parametric empirical Bayes frameworks for adjusting data for batch
+#' effects.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
 #' Default \code{"batch"}.
-#' @param useAssay The assay to correct. Default \code{"logcounts"}.
 #' @param par.prior A logical scalar. TRUE indicates parametric adjustments
 #' will be used, FALSE indicates non-parametric adjustments will be used.
 #' Default \code{TRUE}.
@@ -16,37 +20,23 @@
 #' Default \code{FALSE}.
 #' @param ref.batch If given, will use the selected batch as a reference for
 #' batch adjustment. Default \code{NULL}.
-#' @param assayName A character scalar for the new assay name to save the
-#' corrected expression. Default \code{"ComBat"}
-#'
-#' @return Input SCTK object with corrected assay updated at \code{assay(inSCE, assayName)}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' \code{"ComBat"}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{assay(inSCE, assayName)} updated.
 #' @examples
-#' if(requireNamespace("bladderbatch", quietly = TRUE)) {
-#'   library(bladderbatch)
-#'   data(bladderdata)
-#'
-#'   #subset for testing
-#'   dat <- bladderEset[1:50,]
-#'   dat <- as(as(dat, "SummarizedExperiment"), "SCtkExperiment")
-#'
-#'   # parametric adjustment
-#'   dat <- runComBat(inSCE = dat, useAssay = "exprs",
-#'                    batch = "batch", covariates = NULL,
-#'                    assayName = "parametric_combat")
-#'
-#'   # non-parametric adjustment, mean-only version
-#'   dat <- runComBat(inSCE = dat, useAssay = "exprs",
-#'                    batch = "batch", par.prior = FALSE,
-#'                    mean.only = TRUE, covariates = NULL,
-#'                    assayName = "nonparametric_combat_meanonly")
-#'
-#'   # reference-batch version, with covariates
-#'   dat <- runComBat(inSCE = dat, useAssay = "exprs",
-#'                    batch = "batch", covariates = "cancer",
-#'                    ref.batch = 3, assayName = "refbatch_combat_wcov")
+#' \dontrun{
+#' data('sceBatches', package = 'singleCellTK')
+#' # parametric adjustment
+#' sceCorr <- runComBat(sceBatches)
+#' # non-parametric adjustment, mean-only version
+#' sceCorr <- runComBat(sceBatches, par.prior=FALSE, mean.only=TRUE)
+#' # reference-batch version, with covariates
+#' sceCorr <- runComBat(sceBatches, covariates = "cell_type", ref.batch = 'w')
 #' }
 #' @export
-runComBat <- function(inSCE, batch = 'batch', useAssay = "logcounts",
+runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                       par.prior = TRUE, covariates = NULL,
                       mean.only = FALSE, ref.batch = NULL,
                       assayName = "ComBat") {
@@ -57,7 +47,10 @@ runComBat <- function(inSCE, batch = 'batch', useAssay = "logcounts",
     stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
   }
   if(any(!c(batch, covariates) %in% names(SummarizedExperiment::colData(inSCE)))){
-    stop(paste("\"annotation\" name:", batch, "not found"))
+    anns <- c(batch, covariates)
+    notFound <- which(!anns %in% names(SummarizedExperiment::colData(inSCE)))
+    notFound <- anns[notFound]
+    stop("\"annotation\" name:", paste(notFound, collapse = ', '), "not found")
   }
   #prepare model matrix
   mod <- NULL
@@ -69,10 +62,10 @@ runComBat <- function(inSCE, batch = 'batch', useAssay = "logcounts",
 
   resassay <-
     sva::ComBat(dat = SummarizedExperiment::assay(inSCE, useAssay),
-                batch = SummarizedExperiment::colData(inSCE)[, batch],
+                batch = SummarizedExperiment::colData(inSCE)[[batch]],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
 
-  assay(inSCE, assayName) <- resassay
+  SummarizedExperiment::assay(inSCE, assayName) <- resassay
   return(inSCE)
 }

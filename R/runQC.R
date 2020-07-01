@@ -18,9 +18,10 @@
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' \dontrun{
-#' data(sce_chcl, package = "scds")
-#' sce <- runCellQC(sce_chcl)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runCellQC(sce)
 #' }
 #' @export
 runCellQC <- function(inSCE,
@@ -130,9 +131,10 @@ runCellQC <- function(inSCE,
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDropletQC(emptyDropsSceExample,
-#'   sample = colData(emptyDropsSceExample)$sample)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- runDropletQC(sce)
+#' }
 #' @export
 runDropletQC <- function(inSCE,
   algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
