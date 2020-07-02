@@ -42,6 +42,7 @@
 #'                               "yes", "no")
 #' sce <- subsetSCERows(sce, rowData = "isMito == 'yes'")                          
 #' @export
+#' @importFrom SummarizedExperiment assays assays<-
 subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
                           returnAsAltExp = TRUE, altExpName = "subset",
                           prependAltExpName = TRUE) {

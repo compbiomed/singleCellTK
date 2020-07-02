@@ -57,6 +57,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEDensityAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Sox2"
+  feature = "Apoe"
 )
 }

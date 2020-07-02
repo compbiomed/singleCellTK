@@ -395,7 +395,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' plotSCEDimReduceFeatures(
-#'   inSCE = mouseBrainSubsetSCE, feature = "Sox2",
+#'   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
 #'   shape = NULL, reducedDimName = "TSNE_counts",
 #'   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 #' )
@@ -507,12 +507,15 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
+#' donttest{
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
-#'   slot = "assays", annotation = "counts", feature = "Tspan12",
+#'   slot = "assays", annotation = "counts", feature = "Apoe",
 #'   reducedDimName = "TSNE_counts", labelClusters = FALSE
 #' )
+#' }
 #' @export
+#' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,
                            slot,
                            sample = NULL,
@@ -886,7 +889,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @examples
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2", groupby = "sex"
+#'   feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEViolinAssayData <- function(inSCE,
@@ -1015,7 +1018,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @examples
 #' plotSCEViolin(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Sox2", groupby = "sex"
+#'   annotation = "counts", feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEViolin <- function(inSCE,
@@ -1329,7 +1332,7 @@ plotSCEDensityColData <- function(inSCE,
 #' @examples
 #' plotSCEDensityAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2"
+#'   feature = "Apoe"
 #' )
 #' @export
 plotSCEDensityAssayData <- function(inSCE,
@@ -1448,7 +1451,7 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @examples
 #' plotSCEDensity(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Sox2", groupby = "sex"
+#'   annotation = "counts", feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEDensity <- function(inSCE,
@@ -1766,7 +1769,7 @@ plotSCEBarColData <- function(inSCE,
 #' @examples
 #' plotSCEBarAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2", groupby = "sex"
+#'   feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEBarAssayData <- function(inSCE,

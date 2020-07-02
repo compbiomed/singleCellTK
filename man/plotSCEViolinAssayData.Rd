@@ -78,6 +78,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEViolinAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Sox2", groupby = "sex"
+  feature = "Apoe", groupby = "sex"
 )
 }

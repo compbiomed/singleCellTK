@@ -26,5 +26,4 @@ Creates a table of summary metrics from an input
 \examples{
 data("mouseBrainSubsetSCE")
 summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-
 }

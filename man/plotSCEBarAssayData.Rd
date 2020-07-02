@@ -60,6 +60,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEBarAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Sox2", groupby = "sex"
+  feature = "Apoe", groupby = "sex"
 )
 }

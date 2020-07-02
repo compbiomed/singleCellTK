@@ -100,7 +100,7 @@ Plot results of reduced dimensions data and
 }
 \examples{
 plotSCEDimReduceFeatures(
-  inSCE = mouseBrainSubsetSCE, feature = "Sox2",
+  inSCE = mouseBrainSubsetSCE, feature = "Apoe",
   shape = NULL, reducedDimName = "TSNE_counts",
   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 )

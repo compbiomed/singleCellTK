@@ -83,6 +83,6 @@ Visualizes values stored in any slot of a
 \examples{
 plotSCEViolin(
   inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Sox2", groupby = "sex"
+  annotation = "counts", feature = "Apoe", groupby = "sex"
 )
 }
