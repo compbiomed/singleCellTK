@@ -534,14 +534,13 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
   return(inSCE)
 }
 
-seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay"){
-  
+seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay", kAnchor, kFilter, kWeight, ndims){
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
-  seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:30, k.anchor = 1, k.filter = 5)
-  seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:30, k.weight = 2)
+  seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
+  seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(altExp = GetAssayData(seurat.integrated@assays$integrated, "data")))
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
   counts <- assay(altExp(inSCE, newAssayName), "altExp")

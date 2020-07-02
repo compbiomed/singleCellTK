@@ -260,8 +260,7 @@ shinyPanelBatchcorrect <- fluidPage(
           uiOutput('Srt3IntNAnchUI'),
           textInput("Srt3IntSaveAssay", "Assay Name to Use:",
                     value = "Seurat3Int"),
-          #withBusyIndicatorUI(actionButton("Srt3IntRun", "Run"))
-          actionButton("Srt3IntRun", "Run")
+          withBusyIndicatorUI(actionButton("Srt3IntRun", "Run"))
         ),
         # ZINBWaVE ####
         conditionalPanel(

@@ -3880,8 +3880,21 @@ shinyServer(function(input, output, session) {
   output$Srt3IntNAnchUI <- renderUI({
     if(!is.null(vals$counts)){
       ngene <- nrow(vals$counts)
-      numericInput('Srt3IntNAnch', "Number of anchors",
-        value = ngene, min = 30, max = ngene, step = 1)
+      tagList(
+        
+      numericInput('Srt3IntNAnch', "Number of anchors:",
+        value = ngene, min = 30, max = ngene, step = 1),
+      
+      numericInput('Srt3IntKWeight', "kWeight:",
+                   value = 0, min = 0, step = 1),
+      
+      numericInput('Srt3IntKFilter', "kFilter:",
+                   value = 0, min = 0, step = 1),
+      
+      numericInput('Srt3IntNDims', "Number of Dimensions:",
+                   value = 0, min = 0, step = 1)
+      
+      )
     }
   })
 
@@ -3893,7 +3906,14 @@ shinyServer(function(input, output, session) {
         
         
         saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
-        vals$counts <- seuratIntegration(vals$counts, batch = input$batchCorrVar, newAssayName = saveassayname)
+        vals$counts <- seuratIntegration(
+          inSCE = vals$counts, 
+          batch = input$batchCorrVar, 
+          newAssayName = saveassayname,
+          kAnchor = input$Srt3IntNAnch,
+          kWeight = input$Srt3IntKWeight,
+          kFilter = input$Srt3IntKFilter,
+          ndims = input$Srt3IntNDims)
 
         vals$batchResAssay <- c(vals$batchResAssay, saveassayname)
         updateAssayInputs()
