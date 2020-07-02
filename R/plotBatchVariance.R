@@ -4,7 +4,7 @@
 #' Visualize the percent variation in the data that is explained by batch and
 #' condition if it is given.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
 #' @param batch The column in the annotation data that corresponds to batch.
 #' Required
@@ -20,7 +20,7 @@
 #'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
 #'     library(bladderbatch)
 #'     data(bladderdata)
-#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
+#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
 #'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
 #'   }
 #' }

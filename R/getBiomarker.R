@@ -1,10 +1,10 @@
-#' Given a list of genes and a SCtkExperiment object, return
+#' Given a list of genes and a SingleCellExperiment object, return
 #' the binary or continuous expression of the genes.
 #'
 #' @param gene gene list
 #' @param binary "Binary" for binary expression or "Continuous" for a gradient.
 #' Default: "Binary"
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "counts".
 #'
 #' @return getBiomarker(): A data.frame of expression values

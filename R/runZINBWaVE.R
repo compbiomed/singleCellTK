@@ -64,6 +64,6 @@ runZINBWaVE <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                                  which_assay = useAssay,
                                   X = paste('~', batch, sep = ''),
                                   maxiter.optimize=nIter, verbose = TRUE)
-    reducedDim(inSCE, reducedDimName) <- reducedDim(tmpSCE, 'zinbwave')
+    SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- reducedDim(tmpSCE, 'zinbwave')
     return(inSCE)
 }

@@ -117,6 +117,7 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #'                              geneSetList = mito,
 #'                              by = "feature_name")
 #' @export
+#' @importFrom SummarizedExperiment rowData
 importGeneSetsFromList <- function(inSCE, geneSetList,
                                    collectionName = "GeneSetCollection",
                                    by = "rownames") {
@@ -323,6 +324,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #'                                 mapping = "gene_symbol",
 #'                                 by = "feature_name")
 #' @export
+#' @importFrom SummarizedExperiment rowData
 importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
                                      species = "Homo sapiens",
                                      mapping = c("gene_symbol",

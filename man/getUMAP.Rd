@@ -20,7 +20,7 @@ getUMAP(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
@@ -60,8 +60,8 @@ before UMAP.}
 input in UMAP. Default 50.}
 }
 \value{
-a SCtkExperiment object with the reduced dimensions updated under
-reducedDimName specified.
+A \linkS4class{SingleCellExperiment} object with the reduced
+dimensions updated under reducedDimName specified.
 }
 \description{
 Uniform Manifold Approximation and Projection(UMAP) algorithm for

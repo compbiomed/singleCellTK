@@ -1,10 +1,11 @@
 #' Plot UMAP results either on already run results or run first and then plot.
 #'
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction components
-#'  or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components. Required
 #' @param colorBy color by a condition(any column of the annotation data).
 #' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment object. Required.
+#' @param reducedDimName saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param runUMAP If the dimension reduction components are already available
 #' set this to FALSE, otherwise set to TRUE. Default is False.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"

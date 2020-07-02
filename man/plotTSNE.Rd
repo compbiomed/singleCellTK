@@ -14,7 +14,7 @@ plotTSNE(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{colorBy}{color by condition.}
 

@@ -20,6 +20,7 @@
 #' geneSet <- list("Mito"=rownames(sce)[mito.ix])
 #' sce <- runPerCellQC(sce, geneSetList = geneSet)
 #' @export
+#' @importFrom SummarizedExperiment rowData
 runPerCellQC <- function(inSCE,
     useAssay = "counts",
     collectionName = NULL,

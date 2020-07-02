@@ -22,8 +22,8 @@ plotSCEDensity(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata"}
@@ -64,6 +64,6 @@ Visualizes values stored in any slot of a
 \examples{
 plotSCEDensity(
   inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Sox2", groupby = "sex"
+  annotation = "counts", feature = "Apoe", groupby = "sex"
 )
 }
