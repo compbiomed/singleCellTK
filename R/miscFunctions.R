@@ -1,6 +1,7 @@
-#' Summarize SCtkExperiment
+#' Summarize an assay in a \linkS4class{SingleCellExperiment}
 #'
-#' Creates a table of summary metrics from an input SCtkExperiment.
+#' Creates a table of summary metrics from an input
+#' \linkS4class{SingleCellExperiment}
 #'
 #' @param inSCE Input SingleCellExperiment object.
 #' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the first
@@ -16,7 +17,7 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-#'
+#' @importFrom SummarizedExperiment assays colData
 summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
 
   if(is.null(useAssay)) {
@@ -53,7 +54,7 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
 
 #' Filter Genes and Samples from a Single Cell Object
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
 #' @param useAssay Indicate which assay to use for filtering. Default is
 #' "counts"
 #' @param deletesamples List of samples to delete from the object.

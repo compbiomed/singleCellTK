@@ -1,7 +1,7 @@
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCount Numeric. The minimum number of reads found for a gene to be
@@ -27,11 +27,11 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' subset <- mouseBrainSubsetSCE[1:1000,]
-#' res <- DownsampleDepth(subset,
+#' res <- downSampleDepth(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
 #'
-DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, minCells = 3,
+downSampleDepth <- function(originalData, useAssay = "counts", minCount = 10, minCells = 3,
                             maxDepth = 10000000, realLabels,
                             depthResolution = 10, iterations = 10){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
@@ -64,7 +64,7 @@ DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData The \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCountDetec Numeric. The minimum number of reads found for a gene to
@@ -96,11 +96,10 @@ DownsampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' subset <- mouseBrainSubsetSCE[1:1000,]
-#' res <- DownsampleCells(subset,
+#' res <- downSampleCells(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
-#'
-DownsampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
+downSampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
                             minCellnum = 10, maxCellnum = 1000, realLabels,
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
@@ -166,7 +165,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 
 #' Returns significance data from a snapshot.
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData The \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param realLabels Character. The name of the condition of interest. Must match
@@ -208,7 +207,7 @@ iterateSimulations <- function(originalData, useAssay = "counts", realLabels, to
 #' Nonviable results (such as for genes with 0 counts in a simulated dataset)
 #' are coerced to 1.
 #'
-#' @describeIn subDiffEx Get PCA components for a SCtkE object
+#' @describeIn subDiffEx 
 #'
 #' @export
 #' @examples

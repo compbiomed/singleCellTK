@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: computational doublet annotation using cxdsBcdsHybrid"
+title: "Comprehensive reporting of QC metrics: computational doublet annotation using ScdsHybrid"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -20,81 +20,26 @@ require(ggplot2)
 sce.qc<- params$object
 ```
 
-```{r, "CxdsBcdsHybrid-umap", eval = FALSE, include=FALSE, warning=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
+```{r, "ScdsHybrid", results="asis"}
+    plotScdsHybrid<- plotScdsHybridResults(sce.qc, reducedDimName = "UMAP")
+    i="ScdsHybrid"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotScdsHybrid$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotScdsHybrid$densityScore
 
+    cat(paste0('## Violin Score \n\n'))
+    plotScdsHybrid$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runCxdsBcdsHybrid
 ```
 
-
-```{r, "CxdsBcdsHybrid-reddim", eval = FALSE, include=FALSE}
-#Log counts prior to running UMAP
-if (is.null(sce.qc@assays@data$logcounts)){
-  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
-  #get UMAP
-  if (!"UMAP" %in% reducedDimNames(sce.qc)){
-  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
-}
+```{r, "ScdsHybrid-desc", include=FALSE}
+description_ScdsHybrid<- .descriptionScdsHybrid()
 ```
 
-## CxdsBcdsHybrid
-
-CxdsBcdsHybrid combines two approaches to identify doublets in UMI scRNA-Seq data: binary classification  using artificially generated doublets using full count information and considering co-expression of gene pairs.
-
-## Doublet score
-
-The distribution of the cxdsBcdsHybrid doublet scores. A high score indicates "doublet-like" cell: 
-```{r, "CxdsBcdsHybrid-score"}
-if (!is.null(sce.qc$scds_hybrid_call) || !is.null(sce.qc$scds_hybrid_score)){
-boxplot(sce.qc$scds_hybrid_score ~ sce.qc$scds_hybrid_call, main="CxdsBcdsHybrid", xlab="Doublet call by CxdsBcdsHybrid", ylab="CxdsBcdsHybrid score")
-} else {
-  stop("The inSCE does not contain scds_hybrid_score or scds_hybrid_call")
-}
-```
-
-
-Cells/doublets after projecting into reduced dimensions:
-```{r, "CxdsBcdsHybrid-score-reddim"}
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_hybrid_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "Cxds_bcds_hybrid score", legendTitle = "Doublet score")
-```
-
-```{r, "CxdsBcdsHybrid-call-reddim"}
-if (!is.null(sce.qc$scds_hybrid_call)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scds_hybrid_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Cxds_bcds_hybrid call", legendTitle = "Doublet call", labelClusters = FALSE)
-}
-```
-
-## CxdsBcdsHybrid input info
-```{r, "CxdsBcdsHybrid-info"}
-if (!is.null(sce.qc@metadata$runCxdsBcdsHybrid)){
-sce.qc@metadata$runCxdsBcdsHybrid
-} else{
-  print("The inSCE does not contain runCxdsBcdsHybrid info")
-}
-```
-## Session info
-```{r, "CxdsBcdsHybrid-session-info"}
-sessionInfo()
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_ScdsHybrid`

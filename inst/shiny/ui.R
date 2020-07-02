@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinyFiles)
 library(ComplexHeatmap)
 library(limma)
 library(ggplot2)
@@ -35,6 +36,9 @@ library(readxl)
 library(broom)
 library(RColorBrewer)
 library(grDevices)
+library(shinyWidgets)
+library(stringr)
+library(Hmisc)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -119,8 +123,7 @@ source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
-source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMASTDE variable
-source("ui_05_3_mastMarker.R", local = TRUE) #creates shinyPanelMASTMarker variable
+source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
@@ -129,12 +132,12 @@ source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer varia
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 
 jsCode <- "
 
 shinyjs.disableTabs = function() {
-  let tabs = $('.nav li a').not('a[data-value=\"Upload\"]');
+  let tabs = $('.nav li a').not('a[data-value=\"Data\"], a[data-value=\"Import\"]');
   tabs.bind('click', function(e) {
     e.preventDefault();
     return false;
@@ -166,7 +169,6 @@ shinyUI(
     navbarPage(
       tooltitle,
       theme = shinytheme(shinyTheme),
-      #Upload Tab
       tabPanel("Data", shinyPanelData),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
@@ -175,8 +177,7 @@ shinyUI(
       navbarMenu(
         "Differential Expression & Marker Selection",
         tabPanel("Differential Expression", shinyPanelDiffex),
-        tabPanel("MAST - Differential Expression", shinyPanelMASTDE),
-        tabPanel("MAST - Find Marker", shinyPanelMASTMarker)
+        tabPanel("Find Marker", shinyPanelfindMarker)
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",

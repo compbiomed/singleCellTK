@@ -133,7 +133,8 @@ shinyPanelBatchcorrect <- fluidPage(
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
                     c("BBKNN", "ComBat", "FastMNN", "Harmony", "LIGER", "Limma",
-                      "MNN", "scMerge", "Seurat3 Integration", "ZINBWaVE")),
+                      "MNN", "scanorama", "scMerge", "Seurat3 Integration",
+                      "ZINBWaVE")),
         # BBKNN ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'BBKNN'",
@@ -149,7 +150,7 @@ shinyPanelBatchcorrect <- fluidPage(
           selectInput("combatCond", "Select Condition of Covariance:",
                       clusterChoice),
           radioButtons("combatParametric", "Adjustments:",
-                       c("Parametric", "Non-parametric"),
+                       c("Parametric" = TRUE, "Non-parametric" = FALSE),
                        selected = "Parametric"),
           checkboxInput("combatMeanOnly",
                         "Correct mean of the batch effect only",
@@ -157,7 +158,7 @@ shinyPanelBatchcorrect <- fluidPage(
           checkboxInput("combatRef", "Run reference batch combat:",
                         value = FALSE),
           uiOutput("selectCombatRefBatchUI"),
-          textInput("combatSaveAssay", "Assay Name to Use:", value = "combat"),
+          textInput("combatSaveAssay", "Assay Name to Use:", value = "ComBat"),
           withBusyIndicatorUI(actionButton("combatRun", "Run"))
         ),
         # FastMNN ####
@@ -217,11 +218,20 @@ shinyPanelBatchcorrect <- fluidPage(
         conditionalPanel(
           condition = "input.batchCorrMethods == 'MNN'",
           numericInput('MNNK', 'K value',
-                       value = 20, min = 1, max = 100000, step = 1),
-          textInput("MNNSigma", 'Sigma value', value = 0.1,
-                    placeholder = 'Type a number.'),
+                       value = 20, min = 1, step = 1),
+          numericInput("MNNSigma", 'Sigma value', value = 0.1),
           textInput("MNNSaveAssay", "Assay Name to Use:", value = "MNN"),
           withBusyIndicatorUI(actionButton("MNNRun", "Run"))
+        ),
+        # scanorama ####
+        conditionalPanel(
+          condition = "input.batchCorrMethods == 'scanorama'",
+          numericInput('scnrmSIGMA', 'Sigma value', 15),
+          numericInput('scnrmALPHA', 'Alpha value', 0.1),
+          numericInput('scnrmKNN', 'KNN value', 20, min = 1, step = 1),
+          textInput("scnrmSaveAssay", "Assay Name to Use:",
+                    value = "SCANORAMA"),
+          withBusyIndicatorUI(actionButton("scnrmRun", "Run"))
         ),
         # scMerge ####
         conditionalPanel(
@@ -306,9 +316,9 @@ shinyPanelBatchcorrect <- fluidPage(
               selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
               selectInput("batchCheckCond", "Additional Condition (optional)",
                 clusterChoice),
-              radioButtons('batchCheckResType', "Result Type",
-                choiceNames = c("assay", "reducedDim"),
-                choiceValues = c(1, 2)),
+              #radioButtons('batchCheckResType', "Result Type",
+              #  choiceNames = c("assay", "reducedDim"),
+              #  choiceValues = c(1, 2)),
               uiOutput("batchCheckResUI")
             )
           )

@@ -7,6 +7,7 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
+#' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
 #' @param geneSetList See \code{runPerCellQC}. Default NULL.
 #' @param geneSetListLocation See \code{runPerCellQC}. Default NULL.
 #' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
@@ -18,15 +19,17 @@
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' \dontrun{
-#' data(sce_chcl, package = "scds")
-#' sce <- runCellQC(sce_chcl)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runCellQC(sce)
 #' }
 #' @export
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
+  collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
@@ -42,9 +45,10 @@ runCellQC <- function(inSCE,
 
   if ("QCMetrics" %in% algorithms) {
     inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay,
-                                 geneSetList = geneSetList,
-                                 geneSetListLocation = geneSetListLocation,
-                                 geneSetCollection = geneSetCollection)
+                          collectionName = collectionName,
+                          geneSetList = geneSetList,
+                          geneSetListLocation = geneSetListLocation,
+                          geneSetCollection = geneSetCollection)
   }
 
   if ("scrublet" %in% algorithms) {
@@ -130,9 +134,10 @@ runCellQC <- function(inSCE,
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDropletQC(emptyDropsSceExample,
-#'   sample = colData(emptyDropsSceExample)$sample)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- runDropletQC(sce)
+#' }
 #' @export
 runDropletQC <- function(inSCE,
   algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),

@@ -2,8 +2,9 @@
 #' @description A wrapper function for \link[celda]{decontX}. Identify
 #'  potential contamination from experimental factors such as ambient RNA.
 #' @param inSCE Input \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param useAssay  A string specifying which assay in the SCE to use. Default 'counts'.
-#' @param geneSetList List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}.
+#' @param useAssay A string specifying which assay in the SCE to use. Default \code{"counts"}.
+#' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
+#' @param geneSetList List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}. Default \code{NULL}.
 #' @param geneSetListLocation Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in \code{rownames(inSCE)}.
 #' If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different
 #' gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(inSCE)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(inSCE)}. Default 'rownames'.
@@ -19,8 +20,10 @@
 #' geneSet <- list("Mito"=rownames(sce)[mito.ix])
 #' sce <- runPerCellQC(sce, geneSetList = geneSet)
 #' @export
+#' @importFrom SummarizedExperiment rowData
 runPerCellQC <- function(inSCE,
     useAssay = "counts",
+    collectionName = NULL,
     geneSetList = NULL,
     geneSetListLocation = "rownames",
     geneSetCollection = NULL,
@@ -31,6 +34,13 @@ runPerCellQC <- function(inSCE,
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
+  ## Add GeneSetColletion that has been previously imported
+  if(!is.null(collectionName)) {
+    gsc <- .retrieveGeneSetCollection(inSCE = inSCE,
+                                      collectionName = collectionName)
+    geneSetList <- c(geneSetList, GSEABase::geneIds(gsc))
+  }
+  
   ## Add gene sets in 'geneSetCollection' to 'geneSetList', if available
   original.length <- length(geneSetList)
   geneSetCollectionLocation <- c()
@@ -116,7 +126,8 @@ runPerCellQC <- function(inSCE,
   if(length(geneSets) == 0) {
     geneSets <- NULL
   }
-  inSCE <- scater::addPerCellQC(x = inSCE, exprs_values = useAssay, subsets = geneSets, ...)
+  inSCE <- scater::addPerCellQC(x = inSCE, exprs_values = useAssay, subsets = geneSets,
+                                use_altexps = FALSE, ...)
 
   argsList = argsList[!names(argsList) %in% ("...")]
   S4Vectors::metadata(inSCE)$scater$addPerCellQC <- argsList[-1]

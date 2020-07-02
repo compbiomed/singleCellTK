@@ -2,9 +2,12 @@ shinyPanelCellViewer <- fluidPage(
   tags$div(
     class = "container",
            h1("Cell Viewer"),
+           radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot"), selected = NULL),
            fluidRow(
              column(3,
                     wellPanel(style = "background: floralwhite",
+                      conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
+                        checkboxInput("vlnboxcheck", "Violin plot", value = FALSE)),
                             # Section 1 - Assay Settings
                             actionButton("cv_button1", h4(strong("Select Coordinates")),style = "background: floralwhite"),
                             # open by default
@@ -56,7 +59,7 @@ shinyPanelCellViewer <- fluidPage(
                             actionButton("cv_button2", h4(strong("Color")),style = "background: floralwhite"),
                             # open by default
                             tags$div(id = "cv_collapse2",
-                            selectInput(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions","Expression Assays","Cell Annotation")),
+                            radioGroupButtons(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions","Expression Assays","Cell Annotation"), direction = "vertical"),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Colorby"),
                                             selectizeInput("ApproachSelect_Colorby", label = h5("-> Approach:"),
@@ -88,35 +91,32 @@ shinyPanelCellViewer <- fluidPage(
 
                                             conditionalPanel(condition =  "input.checkColorbinning == 1",
                                                              numericInput("adjustColorbinning", h5("Number of Bins:"), value = 2, min =2))
-                                            ,
+                                            #,
 
 
-                                            selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL))
+                                            #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL)
+                              )
 ),
-
-
                               #-+-+-+-+-+-group by###################################
-
                               tags$hr(),
                               shinyjs::useShinyjs(),
                               # Section 1 - Assay Settings
                               actionButton("cv_button3", h4(strong("Group by")),style = "background: floralwhite"),
                               # open by default
                               tags$div(id = "cv_collapse3",
-                                       selectizeInput(inputId = "adjustgroupby", label = NULL, choices = c("None", annotation_list)),
-                                       conditionalPanel(condition = sprintf("input['%s'] != 'None'", "adjustgroupby"),
-                                                        radioButtons("SelectValueType",label = NULL,choices = c("Categorical", "Continuous")),
-                                                        conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectValueType"),
-                                                                         checkboxInput("checkbinning",h5("Perform Binning:"), value = FALSE)),
-                                                        conditionalPanel(condition = "input.checkbinning == 1",
-                                                                         numericInput("adjustbinning", h5("Number of Bins:"),value = 2, min =2))
-                                       )
+                                       selectizeInput(inputId = "adjustgroupby", label = NULL, choices = c("None", annotation_list))
+                                #,
+                                #       conditionalPanel(condition = sprintf("input['%s'] != 'None'", "adjustgroupby"),
+                                #                       radioButtons("SelectValueType",label = NULL,choices = c("Categorical", "Continuous")),
+                                #                       conditionalPanel(condition = sprintf("input['%s'] == 'Continuous'", "SelectValueType"),
+                                #                                         checkboxInput("checkbinning",h5("Perform Binning:"), value = FALSE)),
+                                #                       conditionalPanel(condition = "input.checkbinning == 1",
+                                #                                         numericInput("adjustbinning", h5("Number of Bins:"),value = 2, min =2))
+                                #       )
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
-
              )),#sidebarPanel_end
-
              #-+-+-+-+-+-mainPanel#################################
              column(9,wellPanel(style = "background: floralwhite",
                                 plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8),
@@ -133,14 +133,15 @@ shinyPanelCellViewer <- fluidPage(
                                 #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
                                 tags$hr(),
-                                fluidRow(column(6, textInput("adjusttitle", h5(strong("Title:"))))),
-                                fluidRow(column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
-                                         column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
-                                         column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
-                                         column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
-                                  )
-             ))
-           )#fluidrow_end
-           # )#well_end
+                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:")))),
+                                  column(6,textInput("adjustlegendtitle", h5(strong("Legend title:")))),
+                                  column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
+                                  column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
+                                  column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
+                                  column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
+                                )
+             )
+        )#fluidrow_end
+      )#well_end
   )#tag_end
 )#page_end

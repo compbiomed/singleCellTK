@@ -11,8 +11,7 @@
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
 #' topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10) #return top 10 variable genes
-#' print(topGenes)
-
+#' @importFrom SummarizedExperiment rowData
 getTopHVG <- function(inSCE, method, n = 2000) {
     topGenes <- list()
     if(method == "vst" || method == "dispersion" || method == "modelGeneVar"){
