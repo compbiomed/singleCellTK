@@ -21,8 +21,8 @@ plotSCEBarAssayData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required.}
 
 \item{useAssay}{Indicate which assay to use. Default "counts".}
 

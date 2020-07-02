@@ -5,7 +5,7 @@
 #' @param pcY User choice for the second principal component
 #' @param runPCA Run PCA if the reducedDimName does not exist. the Default is
 #' FALSE.
-#' @param inSCE Input SCTKExperiment object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reduction
 #' coordinates obtained from this method. This is stored in the SingleCellExperiment
@@ -40,24 +40,10 @@ plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
 
-  if (class(inSCE) == "SCtkExperiment"){
-    if (all(c(pcX, pcY) %in% rownames(pcaVariances(inSCE)))){
-      #use the variances in pcaVariances
-      variances <- pcaVariances(inSCE)
-      pcXlab <- paste0(
-        pcX, " ", toString(round(variances[pcX, ] * 100, 2)), "%")
-      pcYlab <- paste0(
-        pcY, " ", toString(round(variances[pcY, ] * 100, 2)), "%")
-    } else {
-      #do not use variances in the plot
-      pcXlab <- pcX
-      pcYlab <- pcY
-    }
-  } else {
-    #do not use variances in the plot
-    pcXlab <- pcX
-    pcYlab <- pcY
-  }
+  
+  # Need to add back in variances in the plot axis labels
+  pcXlab <- pcX
+  pcYlab <- pcY
 
   if (colorBy == "No Color"){
     colorBy <- NULL

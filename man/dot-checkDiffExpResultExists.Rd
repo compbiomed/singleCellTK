@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotDEAnalysis.R
 \name{.checkDiffExpResultExists}
 \alias{.checkDiffExpResultExists}
-\title{Check if the specified MAST result in SCtkExperiment object is complete.
+\title{Check if the specified MAST result in SingleCellExperiment object is complete.
 But does not garantee the biological correctness.}
 \usage{
 .checkDiffExpResultExists(inSCE, useResult, labelBy = NULL)
@@ -18,6 +18,6 @@ used when running a differential expression analysis function.}
 where to search for the labeling text. Default \code{NULL}.}
 }
 \description{
-Check if the specified MAST result in SCtkExperiment object is complete.
+Check if the specified MAST result in SingleCellExperiment object is complete.
 But does not garantee the biological correctness.
 }

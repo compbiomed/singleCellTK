@@ -9,7 +9,7 @@ enrichment}
 enrichRSCE(inSCE, glist, db = NULL)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{glist}{selected genes for enrichment analysis using enrichR(). Required}
 

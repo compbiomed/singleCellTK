@@ -47,8 +47,8 @@ object. Will be used only if "assays" slot is chosen. Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original

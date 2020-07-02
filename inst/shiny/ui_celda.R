@@ -153,7 +153,7 @@ shinyPanelCelda <- fluidPage(
                 withBusyIndicatorUI(actionButton(inputId = "renderHeatmap",
                   label = "Render Heatmap")),
                 tags$hr(),
-                downloadButton("downloadSCECelda", "Download SCtkExperiment")
+                downloadButton("downloadSCECelda", "Download SingleCellExperiment object (.rds)")
               ),
               mainPanel(
                 conditionalPanel(

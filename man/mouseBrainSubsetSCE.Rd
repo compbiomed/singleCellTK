@@ -3,10 +3,10 @@
 \docType{data}
 \name{mouseBrainSubsetSCE}
 \alias{mouseBrainSubsetSCE}
-\title{Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
+\title{Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE60361
 subset}
 \format{
-SCtkExperiment
+SingleCellExperiment
 }
 \source{
 DOI: 10.1126/science.aaa1934

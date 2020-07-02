@@ -1,7 +1,7 @@
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCount Numeric. The minimum number of reads found for a gene to be
@@ -64,7 +64,7 @@ downSampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
 #' Estimate numbers of detected genes, significantly differentially expressed
 #' genes, and median significant effect size
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData The \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param minCountDetec Numeric. The minimum number of reads found for a gene to
@@ -165,7 +165,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 
 #' Returns significance data from a snapshot.
 #'
-#' @param originalData SCtkExperiment. The SCtkExperiment object storing all
+#' @param originalData The \linkS4class{SingleCellExperiment} object storing all
 #' assay data from the shiny app.
 #' @param useAssay Character. The name of the assay to be used for subsampling.
 #' @param realLabels Character. The name of the condition of interest. Must match
@@ -207,7 +207,7 @@ iterateSimulations <- function(originalData, useAssay = "counts", realLabels, to
 #' Nonviable results (such as for genes with 0 counts in a simulated dataset)
 #' are coerced to 1.
 #'
-#' @describeIn subDiffEx Get PCA components for a SCtkE object
+#' @describeIn subDiffEx 
 #'
 #' @export
 #' @examples

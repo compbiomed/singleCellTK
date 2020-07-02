@@ -1,7 +1,7 @@
 #' Uniform Manifold Approximation and Projection(UMAP) algorithm for
 #' dimension reduction.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param reducedDimName a name to store the results of the dimension reduction
@@ -30,8 +30,8 @@
 #' @param initialDims  Number of dimensions from PCA to use as
 #' input in UMAP. Default 50.
 #'
-#' @return a SCtkExperiment object with the reduced dimensions updated under
-#' reducedDimName specified.
+#' @return A \linkS4class{SingleCellExperiment} object with the reduced
+#' dimensions updated under reducedDimName specified.
 #' @export
 #'
 #' @examples
@@ -53,10 +53,10 @@ getUMAP <- function(inSCE, useAssay = "logcounts",
                     spread = 1,
                     pca = TRUE,
                     initialDims = 50) {
-    if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-        stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-    }
-    #test for assay existing
+  if (!inherits(inSCE, "SingleCellExperiment")){
+    stop("Please use a SingleCellExperiment object")
+  }
+  #test for assay existing
     if (!all(useAssay %in% names(assays(inSCE)))){
         stop("assay '", useAssay, "' does not exist.")
     }

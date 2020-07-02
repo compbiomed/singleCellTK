@@ -30,8 +30,8 @@ plotSCEDimReduceFeatures(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -40,8 +40,8 @@ object. Plot will be colored based on feature value.}
 
 \item{shape}{add shapes to each condition. Default NULL.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
