@@ -3599,12 +3599,12 @@ shinyServer(function(input, output, session) {
           pcaName <- paste0(input$batchCheckCorrAssay, "_PCA")
           if(!pcaName %in% names(SingleCellExperiment::reducedDims(altExp(vals$counts, input$batchCheckCorrAssay)))){
             if(isAltExp(vals$counts, input$batchCheckCorrAssay)){
-              tempPlotObject <-  getPCA(altExp(vals$counts, input$batchCheckCorrAssay), useAssay = "altExp", reducedDimName = pcaName)
+              altExp(vals$counts, input$batchCheckCorrAssay) <-  getPCA(altExp(vals$counts, input$batchCheckCorrAssay), useAssay = "altExp", reducedDimName = pcaName)
             #print(altExp(vals$counts, input$batchCheckCorrAssay))
             updateReddimInputs()
-            plotSCEDimReduceColData(tempPlotObject, colorBy = input$batchCheckVar,
-                                    shape = shapeBy, reducedDimName = pcaName,
-                                    title = paste0(input$batchCheckCorrAssay, " corrected"))
+            # plotSCEDimReduceColData(altExp(vals$counts, input$batchCheckCorrAssay), colorBy = input$batchCheckVar,
+            #                         shape = shapeBy, reducedDimName = pcaName,
+            #                         title = paste0(input$batchCheckCorrAssay, " corrected"))
             #altExp(vals$counts, input$batchCheckCorrAssay) <- tempPlotObject
           }
           else{
@@ -3615,7 +3615,14 @@ shinyServer(function(input, output, session) {
                                     shape = shapeBy, reducedDimName = pcaName,
                                     title = paste0(input$batchCheckCorrAssay, " corrected"))
           }
-  }
+
+          }
+          
+          if(pcaName %in% names(SingleCellExperiment::reducedDims(altExp(vals$counts, input$batchCheckCorrAssay)))){
+            plotSCEDimReduceColData(altExp(vals$counts, input$batchCheckCorrAssay), colorBy = input$batchCheckVar,
+                                    shape = shapeBy, reducedDimName = pcaName,
+                                    title = paste0(input$batchCheckCorrAssay, " corrected"))
+          }
 
         }
       }
