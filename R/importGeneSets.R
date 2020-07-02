@@ -257,11 +257,12 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
   
   # Add GeneSetCollection back to metadata
   new.gsc <- GSEABase::GeneSetCollection(gs)
+  old.gsc <- NULL
   if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
-    old.gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]  
-  } else {
-    old.gsc <- NULL
-  }
+    if(collectionName %in% names(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+      old.gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]    
+    }
+  } 
   
   if(!is.null(old.gsc)) {
     # Remove any old gene sets with same name as new gene sets
@@ -301,6 +302,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' gene identifies will be mapped to that column in the \code{rowData}
 #' of \code{inSCE}. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
+#' @param verbose Boolean. Whether to display progress. Default \code{TRUE}.
 #' @details The gene identifiers in gene sets from MSigDB will be retrieved
 #' using the \code{\link{msigdbr}} package. They will be mapped to the IDs in
 #' \code{inSCE} using the \code{by} parameter and 
@@ -326,7 +328,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
                                      mapping = c("gene_symbol",
                                             "human_gene_symbol",
                                             "entrez_gene"), 
-                                     by = "rownames") {
+                                     by = "rownames",
+                                     verbose = TRUE) {
   
   mapping <- match.arg(mapping)
   
@@ -371,17 +374,35 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
     
     # Parse data.frame into list of GeneSets
     gs.names <- unique(gs$gs_name)
-    for(j in gs.names) {
-      #gs.list[[j]] <- gs[gs$gs_name == j,mapping]
-      gs.sub <- gs[gs$gs_name == j,mapping]
-      gs.list[[j]] <- GSEABase::GeneSet(setName = j,
+    num.gs.names <- length(gs.names)
+    if(isTRUE(verbose)){
+      message(paste0(date(), " .. Importing '", categoryIDs[i],
+                     "' gene sets (n = ", num.gs.names, ")"))
+    }
+    
+    for(j in seq_along(gs.names)) {
+      gs.sub <- gs[gs$gs_name == gs.names[j],mapping]
+      gs.list[[j]] <- GSEABase::GeneSet(setName = gs.names[j],
                         geneIds = gs.sub,
                         collectionType = GSEABase::BroadCollection(
                           category = tolower(category),
                           subCategory = subcat))
+      if(j %% 1000 == 0) {
+        if(isTRUE(verbose)) {
+          message(paste0(date(), " .... Completed ", j, " out of ",
+                         num.gs.names, " gene sets"))
+        }  
+      }
     }
+    if(isTRUE(verbose)) {
+      message(paste0(date(), " .... Completed ", num.gs.names, " gene sets ",
+                   "for ", i))
+    }  
     
     # Add to SCE
+    if(isTRUE(verbose)) {
+      message(paste0(date(), " .. Matching gene sets to '", by, "'"))
+    }  
     gsc <- GSEABase::GeneSetCollection(gs.list)
     inSCE <- importGeneSetsFromCollection(inSCE = inSCE,
                                           geneSetCollection = gsc,
@@ -392,11 +413,49 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
   return(inSCE)
 }
 
+
+#' @title Lists imported GeneSetCollections
+#' @description Returns a vector of GeneSetCollections that have been 
+#' imported and stored in \code{metadata(inSCE)$sctk$genesets}.
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @author Joshua D. Campbell
+#' @seealso \link{importGeneSetsFromList} for importing from lists,
+#' \link{importGeneSetsFromGMT} for importing from GMT files,
+# \link{importGeneSetsFromCollection} for importing from
+#' \linkS4class{GeneSetCollection} objects, and \link{importGeneSetsFromMSigDB}
+#' for importing MSigDB gene sets.
+#' @examples 
+#' data(scExample)
+#' library(GSEABase)
+#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
+#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+#' gsc1 <- GeneSetCollection(gs1)
+#' gsc2 <- GeneSetCollection(gs2)
+#' sce <- importGeneSetsFromCollection(inSCE = sce,
+#'                                     geneSetCollection = gsc1,
+#'                                     by = "rownames",
+#'                                     collectionName = "Collection1")
+#' sce <- importGeneSetsFromCollection(inSCE = sce,
+#'                                     geneSetCollection = gsc2,
+#'                                     by = "rownames",
+#'                                     collectionName = "Collection2")
+#' collections <- sctkListGeneSetCollections(sce)                              
+#' @export
+sctkListGeneSetCollections <- function(inSCE) {
+  if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+    res <- names(S4Vectors::metadata(inSCE)$sctk$genesets)
+  } else {
+    res <- "No GeneSetCollections have been imported."
+  }
+  return(res)
+}
+
 #' @title Shows MSigDB categories
 #' @description Returns a data.frame that shows MSigDB categories and 
 #' subcategories as well as descriptions for each. The entries in the ID
 #' column in this table can be used as input for \link{importGeneSetsFromMSigDB}.
 #' @author Joshua D. Campbell
+#' @seealso \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @export
 getMSigDBTable <- function() {
   # Issues for getting this to pass R CMD Check:
@@ -406,4 +465,21 @@ getMSigDBTable <- function() {
   rm(msigdb_table)
   utils::data(msigdb_table)
   return(msigdb_table)
+}
+
+
+.retrieveGeneSetCollection <- function(inSCE, collectionName) {
+  if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+    if(collectionName %in% names(S4Vectors::metadata(inSCE)$sctk$genesets)) {
+      gsc <- S4Vectors::metadata(inSCE)$sctk$genesets[[collectionName]]    
+    } else {
+      stop("No GeneSetCollection called '", collectionName, "' was found. ",
+           "The GeneSetColletions that are available include: ",
+           paste(names(S4Vectors::metadata(inSCE)$sctk$genesets),
+                 collapse = ", "))
+    }
+  } else {
+    stop("No GeneSetCollections have been imported.")
+  }
+  return(gsc)
 }
