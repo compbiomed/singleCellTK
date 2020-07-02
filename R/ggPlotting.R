@@ -507,7 +507,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
-#' donttest{
+#' \donttest{
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
 #'   slot = "assays", annotation = "counts", feature = "Apoe",
