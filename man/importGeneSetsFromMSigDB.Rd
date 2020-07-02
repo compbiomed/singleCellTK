@@ -9,7 +9,8 @@ importGeneSetsFromMSigDB(
   categoryIDs,
   species = "Homo sapiens",
   mapping = c("gene_symbol", "human_gene_symbol", "entrez_gene"),
-  by = "rownames"
+  by = "rownames",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ set to one of the column names of \code{rowData(inSCE)} in which case the
 gene identifies will be mapped to that column in the \code{rowData}
 of \code{inSCE}. See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
+
+\item{verbose}{Boolean. Whether to display progress. Default \code{TRUE}.}
 }
 \description{
 Gets a list of MSigDB gene sets stores it in the metadata of the

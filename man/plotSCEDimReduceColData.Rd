@@ -31,8 +31,8 @@ plotSCEDimReduceColData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -48,8 +48,8 @@ original class. Default NULL.}
 
 \item{shape}{Add shapes to each condition.}
 
-\item{reducedDimName}{Saved dimension reduction matrix name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{Saved dimension reduction matrix name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 

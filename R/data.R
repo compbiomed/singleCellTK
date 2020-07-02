@@ -1,4 +1,4 @@
-#' Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
+#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE60361
 #' subset
 #'
 #' A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et
@@ -9,7 +9,7 @@
 #'
 #' @name mouseBrainSubsetSCE
 #' @docType data
-#' @format SCtkExperiment
+#' @format SingleCellExperiment
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
 #' @examples

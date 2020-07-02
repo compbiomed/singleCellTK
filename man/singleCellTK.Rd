@@ -7,7 +7,7 @@
 singleCellTK(inSCE = NULL, includeVersion = TRUE, theme = "yeti")
 }
 \arguments{
-\item{inSCE}{The input SCtkExperiment class object}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{includeVersion}{Include the version number in the SCTK header. The
 default is TRUE.}
@@ -27,7 +27,7 @@ if(interactive()){
   singleCellTK()
 }
 
-#Load the app with a SCtkExperiment object
+# Load the app with a SingleCellExperiment object
 if(interactive()){
   data("mouseBrainSubsetSCE")
   singleCellTK(mouseBrainSubsetSCE)

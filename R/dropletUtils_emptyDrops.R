@@ -55,6 +55,7 @@
 #' sce <- runEmptyDrops(inSCE = sce)
 #' @import DropletUtils
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 runEmptyDrops <- function(inSCE,
                           sample = NULL,
                           useAssay = "counts", 

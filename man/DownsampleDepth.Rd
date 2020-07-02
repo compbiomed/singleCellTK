@@ -17,7 +17,7 @@ downSampleDepth(
 )
 }
 \arguments{
-\item{originalData}{SCtkExperiment. The SCtkExperiment object storing all
+\item{originalData}{\linkS4class{SingleCellExperiment} object storing all
 assay data from the shiny app.}
 
 \item{useAssay}{Character. The name of the assay to be used for subsampling.}

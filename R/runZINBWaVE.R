@@ -61,7 +61,6 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
         tmpSCE <- inSCE[names(vars)[1:nHVG],]
     }
     epsilon <- min(nrow(inSCE), epsilon)
-    print('start!')
     tmpSCE <- zinbwave::zinbwave(tmpSCE, K = nComponents, epsilon = epsilon,
                                  which_assay = useAssay,
                                  X = paste('~', batch, sep = ''),
