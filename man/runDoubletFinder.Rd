@@ -11,8 +11,9 @@ runDoubletFinder(
   seed = 12345,
   seuratNfeatures = 2000,
   seuratPcs = 1:15,
-  seuratRes = c(0.5, 1, 1.5, 2),
+  seuratRes = 1.5,
   formationRate = 0.075,
+  nCores = NULL,
   verbose = FALSE
 )
 }
@@ -33,13 +34,15 @@ determine number of clusters. Default 1:15.}
 
 \item{seuratRes}{Numeric vector. The resolution parameter used in seurat,
 which adjusts the number of clusters determined via the algorithm.
-Default c(0.5, 1, 1.5, 2).}
+Default 1.5.}
 
 \item{formationRate}{Doublet formation rate used within algorithm.
 Default 0.075.}
 
-\item{verbose}{Boolean. Wheter to print messages from Seurat and DoubletFinder.
-Default FALSE.}
+\item{nCores}{Number of cores used for running the function.}
+
+\item{verbose}{Boolean. Wheter to print messages from Seurat and
+DoubletFinder. Default FALSE.}
 }
 \value{
 SingleCellExperiment object containing the
@@ -50,8 +53,8 @@ Uses doubletFinder to determine cells within the dataset
  suspected to be doublets.
 }
 \examples{
-\dontrun{
-data(sceQCExample, package = "singleCellTK")
+\donttest{
+data(scExample, package = "singleCellTK")
 sce <- runDoubletFinder(sce)
 }
 }

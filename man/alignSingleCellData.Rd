@@ -2,7 +2,7 @@
 % Please edit documentation in R/alignSingleCellData.R
 \name{alignSingleCellData}
 \alias{alignSingleCellData}
-\title{Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object}
+\title{Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object}
 \usage{
 alignSingleCellData(
   inputfile1,
@@ -58,7 +58,7 @@ files are paired end.}
 Object to import into the shiny app.
 }
 \description{
-Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object
+Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object
 }
 \examples{
 \dontrun{

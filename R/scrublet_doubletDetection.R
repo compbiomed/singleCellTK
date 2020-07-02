@@ -79,12 +79,14 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' \dontrun{
-#' data(qcSceExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runScrublet(sce)
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment reducedDim
 runScrublet <- function(inSCE,
   sample = NULL,
   useAssay = "counts",

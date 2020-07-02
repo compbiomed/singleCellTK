@@ -1,4 +1,4 @@
-#' Example Single Cell RNA-Seq data in SCtkExperiment Object, GSE60361
+#' Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE60361
 #' subset
 #'
 #' A subset of 30 samples from a single cell RNA-Seq experiment from Zeisel, et
@@ -9,7 +9,7 @@
 #'
 #' @name mouseBrainSubsetSCE
 #' @docType data
-#' @format SCtkExperiment
+#' @format SingleCellExperiment
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
 #' @examples
@@ -33,21 +33,6 @@
 #' @examples
 #' data("scExample")
 "sce"
-
-#' Example PBMC_1k_v3_33538x20 SingleCellExperiment Object
-#'
-#' The following unfiltered PBMC_1k_v3 data were downloaded from
-#' https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0
-#' /pbmc_1k_v3
-#' Only the top 10 cells with most counts and the last 10 cells with non-zero
-#' counts are included in this example.
-#' This example only serves as a proof of concept and a tutoriol on how to
-#' run the functions in this package. The results should not be
-#' used for drawing scientific conclusions.
-#' @examples
-#' data("emptyDropsSceExample", package = "singleCellTK")
-#' @format A \link[SingleCellExperiment]{SingleCellExperiment} object.
-"emptyDropsSceExample"
 
 #' Example Single Cell RNA-Seq data in SingleCellExperiment object, with
 #' different batches annotated
@@ -81,3 +66,19 @@
 #' data('SEG')
 #' humanSEG <- SEG$human
 "SEG"
+
+#' MSigDB gene get Cctegory table
+#' 
+#' A table of gene set categories that can be download from MSigDB. The 
+#' categories and descriptions can be found here:
+#' https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp. The IDs in the 
+#' first column can be used to retrieve the gene sets for these categories
+#' using the \link{importGeneSetsFromMSigDB} function.
+
+#' @name msigdb_table
+#' @docType data
+#' @format A data.frame.
+#' @keywords datasets
+#' @examples
+#' data("msigdb_table")
+"msigdb_table"

@@ -2,13 +2,13 @@
 % Please edit documentation in R/getBiomarker.R
 \name{getBiomarker}
 \alias{getBiomarker}
-\title{Given a list of genes and a SCtkExperiment object, return
+\title{Given a list of genes and a SingleCellExperiment object, return
 the binary or continuous expression of the genes.}
 \usage{
 getBiomarker(inSCE, gene, binary = "Binary", useAssay = "counts")
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{gene}{gene list}
 
@@ -21,7 +21,7 @@ Default: "Binary"}
 getBiomarker(): A data.frame of expression values
 }
 \description{
-Given a list of genes and a SCtkExperiment object, return
+Given a list of genes and a SingleCellExperiment object, return
 the binary or continuous expression of the genes.
 }
 \examples{

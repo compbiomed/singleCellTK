@@ -87,7 +87,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
                                          sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 200),
                                          sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
-                                         numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
+                                         sliderInput("mindistUMAP", "minimum distance between points", min = 0.001, max = 0.1, value = 0.01), 
+					numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
                                        ),
                                        conditionalPanel(
                                          condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),

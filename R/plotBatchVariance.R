@@ -4,7 +4,7 @@
 #' Visualize the percent variation in the data that is explained by batch and
 #' condition if it is given.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
 #' @param batch The column in the annotation data that corresponds to batch.
 #' Required
@@ -16,11 +16,13 @@
 #' batch+condition (if applicable).
 #' @export
 #' @examples
-#' if(requireNamespace("bladderbatch", quietly = TRUE)) {
-#'   library(bladderbatch)
-#'   data(bladderdata)
-#'   dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
-#'   plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#' \dontrun{
+#'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
+#'     library(bladderbatch)
+#'     data(bladderdata)
+#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
+#'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#'   }
 #' }
 #'
 plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
@@ -49,8 +51,8 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
     }
   }
   mod <- cbind(condMod, batchMod[, -1])
-  condTest <- batchqc_f.pvalue(mat, mod, batchMod)
-  batchTest <- batchqc_f.pvalue(mat, mod, condMod)
+  condTest <- .batchqc_f.pvalue(mat, mod, batchMod)
+  batchTest <- .batchqc_f.pvalue(mat, mod, condMod)
   r2Full <- condTest$r2Full
   condR2 <- batchTest$r2Reduced
   batchR2 <- condTest$r2Reduced
@@ -70,7 +72,7 @@ plotBatchVariance <- function(inSCE, useAssay="logcounts", batch='batch',
   return(a)
 }
 
-batchqc_f.pvalue <- function(dat, mod, mod0) {
+.batchqc_f.pvalue <- function(dat, mod, mod0) {
   # F-test (full/reduced model) and returns R2 values
   # (full/reduced) as well.
   mod00 <- matrix(rep(1, ncol(dat)), ncol = 1)
@@ -109,6 +111,8 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
 #' \code{useReddim} for dimension reduced matrix instead. Default \code{NULL}.
 #' @param useReddim The name of the dimension reduced matrix that stores the
 #' value to plot. Default \code{NULL}.
+#' @param useAltExp The name of the alternative experiment that stores an assay
+#' of the value to plot. Default \code{NULL}.
 #' @param batch The column name of \code{colData(inSCE)} that indicates the
 #' batch annotation. Default \code{"batch"}.
 #' @param xlab label for x-axis. Default \code{"batch"}.
@@ -117,14 +121,13 @@ batchqc_f.pvalue <- function(dat, mod, mod0) {
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
-  batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
+  useAltExp = NULL, batch = 'batch', xlab='batch', ylab='Feature Mean', ...){
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop("'inSCE' must inherit from 'SingleCellExperiment'.")
   }
-  if(is.null(useAssay) & is.null(useReddim)){
-    stop("Either `useAssay` or `useReddim` has to be specified.")
-  } else if(!is.null(useAssay) & !is.null(useReddim)){
-    stop("Only one of `useAssay` and `useReddim` can be specified.")
+  if(is.null(useAssay) + is.null(useReddim) + is.null(useAltExp) != 2){
+    stop("One and only one of `useAssay`, `useReddim`, ",
+         "`usAltExp` has to be specified.")
   }
   if(!is.null(useAssay)){
     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
@@ -137,6 +140,13 @@ plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
       stop("'useReddim not found in 'inSCE'.")
     }
     mat <- t(SingleCellExperiment::reducedDim(inSCE, useReddim))
+  }
+  if(!is.null(useAltExp)){
+    if(!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)){
+      stop("'useAltExp not found in 'inSCE'.")
+    }
+    ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
+    mat <- SummarizedExperiment::assay(ae)
   }
   if(is.null(batch)){
     stop("Batch annotation has to be given.")

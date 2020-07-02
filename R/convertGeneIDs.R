@@ -6,12 +6,12 @@
 #' your desired annotation, and remove any duplicate annotations after
 #' conversion.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param inSymbol The input symbol type
 #' @param outSymbol The output symbol type
 #' @param database The org.*.eg.db database to use. The default is org.Hs.eg.db
 #'
-#' @return A SCtkExperiment with converted gene IDs.
+#' @return A \linkS4class{SingleCellExperiment} object with converted gene IDs.
 #' @export
 #' @examples
 #' if(requireNamespace("org.Mm.eg.db", quietly = TRUE)) {

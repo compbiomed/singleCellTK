@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: computing per cell QC metrics usind addPerCellQC"
+title: "Comprehensive reporting of QC metrics: computing per cell QC metrics usind addPerCellQC"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -17,136 +17,29 @@ require(ggplot2)
 ```
 
 ```{r, "QCMetrics-import", warning=FALSE, include=FALSE}
-
 sce.qc<- params$object
 ```
 
-```{r, "QCMetrics-umap", warning=FALSE, include=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
+```{r, "QCMetrics", results="asis"}
+    plotsQCMetrics<- plotRunPerCellQCResults(sce.qc)
+    i="QCMetrics"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Sum \n\n'))
+    plotsQCMetrics$sum
+    cat(paste0('## Total \n\n'))
+    plotsQCMetrics$detected
+    cat(paste0('## Subsets mito sum \n\n'))
+    plotsQCMetrics$subsets_mito_sum
+    cat(paste0('## Subsets mito detected \n\n'))
+    plotsQCMetrics$subsets_mito_detected
+    cat(paste0('## Subsets mito percent \n\n'))
+    plotsQCMetrics$subsets_mito_percent
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$scater
 ```
 
-
-```{r,"QCMetrics-reddim", eval = FALSE, include=FALSE, warning=FALSE}
-## compute log counts prior to running UMAP
-if (is.null(sce.qc@assays@data$logcounts)){
-  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
-  ## get UMAP
-  if (!"UMAP" %in% reducedDimNames(sce.qc)){
-  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
-}
+```{r, include=FALSE}
+description_runPerCellQC <- .descriptionRunPerCellQC()
 ```
-
-## QCMetrics
-
-Quality control metrics for each cell in SingleCellExperiment object:
-
-```{r, "QCMetrics-sum"}
-if (!is.null(sce.qc$sum)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "sum", xlab = "", ylab = "Counts", title = "Total counts per cell", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain total counts per cell")
-}
-```
-
-```{r, "QCMetrics-total"}
-if (!is.null(sce.qc$total)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "total", xlab = "", ylab = "Total counts", title = "Sum of counts for each cell across the main and alternative Experiments", dotSize = 0.5)
-}else {
-  print("The inSCE does not contain sum of counts for each cell across the main and alternative Experiments")
-}
-```
-
-```{r, "QCMetrics-mito"}
-if (!is.null(sce.qc$subsets_mito_sum)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "subsets_mito_sum", xlab = "", ylab = "Mitochondrial counts", title = "Total mitochondrial counts per cell", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain mitochondrial counts")
-}
-```
-
-```{r, "QCMetrics-detected"}
-if (!is.null(sce.qc$detected)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "detected", xlab = "", ylab = "Counts", title = "The number of observations above detection_limit", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain detected - the number of observations above detection limit")
-}
-```
-
-
-```{r, "QCMetrics-per50"}
-if (!is.null(sce.qc$percent_top_50)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_50", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=50 of most highly expressed genes", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain percent_top_50")
-}
-```
-
-```{r, "QCMetrics-per100"}
-if (!is.null(sce.qc$percent_top_100)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_100", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=100 of most highly expressed genes", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain percent_top_100")
-}
-```
-
-```{r, "QCMetrics-per200"}
-if (!is.null(sce.qc$percent_top_200)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_200", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=200 of most highly expressed genes", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain percent_top_200")
-}
-```
-
-
-```{r, "QCMetrics-per500"}
-if (!is.null(sce.qc$percent_top_500)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "percent_top_500", xlab = "", ylab = "% of counts", title = "% of counts assigned to the percent_topage=500 of most highly expressed genes", dotSize = 0.5)
-} else {
-  print("The inSCE does not contain percent_top_500")
-}
-```
-
-## Sample annonation
-```{r, "QCMetrics-ann"}
-if (!is.null(sce.qc$sample)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "sample" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Sample annotation", legendTitle = "Sample", labelClusters = FALSE)
-}
-
-```
-
-
-## QCMetrics input info
-```{r "QCMetrics-info"}
-if (!is.null(sce.qc@metadata$scater)){
-  sce.qc@metadata$scater
-} else{
-  print("The inSCE does not contain scater info")
-}
-```
-## Session info
-```{r, "QCMetrics-session-info"}
-sessionInfo()
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runPerCellQC`

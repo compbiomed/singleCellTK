@@ -86,6 +86,7 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}.
 #' @return sceObject updated sce object with highly variable genes computation stored
 #' @export
+#' @importFrom SummarizedExperiment rowData rowData<-
 seuratFindHVG <- function(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000) {
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber, verbose = FALSE)
@@ -114,6 +115,7 @@ seuratFindHVG <- function(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000) 
 #' @param nPCs numeric value of how many components to compute. Default \code{20}.
 #' @return sceObject updated sce object which now contains the computed principal components
 #' @export
+#' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) {
     seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = FALSE)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -133,6 +135,7 @@ seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) 
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @return sceObject updated sce object which now contains the computed independent components
 #' @export
+#' @importFrom SingleCellExperiment reducedDim<-
 seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) {
     seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), nics = as.double(nics), verbose = FALSE)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -252,6 +255,7 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
 #' @param perplexity Adjust the preplexity tuneable parameter for the underlying tSNE call. Default \code{30}.
 #' @return Updated sce object with tSNE computations stored
 #' @export
+#' @importFrom SingleCellExperiment reducedDim<-
 seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratTSNE", dims = 10, perplexity = 30) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
@@ -276,6 +280,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}. 
 #' @return Updated sce object with UMAP computations stored
 #' @export
+#' @importFrom SingleCellExperiment reducedDim<-
 seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30L, spread = 1) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
@@ -364,6 +369,7 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param assaySlotSCE Selected assay to update in the input SingleCellExperiment object
 #' @param seuratDataSlot Selected data slot from the Seurat object. Default \code{"counts"}.
 #' @param seuratAssaySlot Selected assay from Seurat object. Default \code{"RNA"}.
+#' @importFrom SummarizedExperiment assay<-
 .updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, seuratDataSlot = "counts", seuratAssaySlot = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL
   temp.matrix <- methods::slot(Seurat::GetAssay(seuratObject, seuratAssaySlot), seuratDataSlot)
@@ -398,6 +404,7 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
 #' @return seuratObject updated seurat object that contains all data from the input sce object
 #' @export
+#' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
   
   if(!is.null(countsAssay) && !(countsAssay %in% names(assays(inSCE)))) {
@@ -507,6 +514,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @param UMAP Remove UMAP from seurat. Default \code{TRUE}.
 #' @param clusters Remove clusters from seurat. Default \code{TRUE}.
 #' @return inSCE Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
+#' @importFrom SummarizedExperiment assay<-
 .seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
   if(scaleData){
     assay(inSCE, "seuratScaledData") <- NULL
@@ -541,11 +549,14 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
   seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
   seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
-  altExp(inSCE, newAssayName) <- SingleCellExperiment(list(altExp = GetAssayData(seurat.integrated@assays$integrated, "data")))
+  altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = GetAssayData(seurat.integrated@assays$integrated, "data")))
+  assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this when counts in above line set to altExp
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
-  counts <- assay(altExp(inSCE, newAssayName), "altExp")
+  #counts <- assay(altExp(inSCE, newAssayName), "altExp")
+  counts <- assay(altExp(inSCE, newAssayName), newAssayName)
   counts[is.na(counts)] <- 0
-  assay(altExp(inSCE, newAssayName), "altExp") <- counts
+  #assay(altExp(inSCE, newAssayName), "altExp") <- counts
+  assay(altExp(inSCE, newAssayName), newAssayName) <- counts #need to finalize this altExp issue
   return(inSCE)
 
 }

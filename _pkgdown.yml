@@ -23,7 +23,8 @@ reference:
   - title: Batch Correction
     contents:
     - plotBatchVariance
-    - ComBatSCE
+    - plotSCEBatchFeatureMean
+    - runComBat
     - runBBKNN
     - runHarmony
     - runLimmaBC
@@ -37,15 +38,16 @@ reference:
     - runZINBWaVE
   - title: Differential Expression
     contents:
-    - scDiffEx
-    - scDiffExANOVA
-    - scDiffExDESeq2
-    - scDiffExlimma
-    - plotDiffEx
-    - MAST
-    - MASTregression
-    - MASTviolin
+    - runDESeq2
+    - runLimmaDE
+    - runANOVA
+    - runMAST
+    - plotDEGViolin
+    - plotDEGRegression
+    - plotDEGHeatmap
     - thresholdGenes
+    - findMarkerDiffExp
+    - plotMarkerDiffExp
   - title: Pathway Activity Analysis
     contents:
     - gsvaPlot

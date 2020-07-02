@@ -4,8 +4,7 @@ library('singleCellTK')
 library('Seurat')
 library('testthat')
 
-#data(sce_chcl, package = "scds")
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 fullsce <- sce  ## sce including empty droplet
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 
@@ -36,9 +35,17 @@ test_that(desc = "Testing scran", {
 }) 
 
 test_that(desc = "Testing DoubletFinder",  {
-  sce <- runDoubletFinder(sce, seuratPcs = 1:3, seuratNfeatures = 100, seuratRes = 1)
+  sce <- runDoubletFinder(sce, seuratPcs = 1:3, seuratNfeatures = 300, seuratRes = 1,
+	 verbose = FALSE, seed = 12345)
   expect_equal(length(colData(sce)$doubletFinder_doublet_score_Resolution_1),ncol(sce))
   expect_equal(class(colData(sce)$doubletFinder_doublet_score_Resolution_1), "numeric")
+})
+
+
+test_that(desc = "Testing runDoubletCells", {
+  sceres <- runDoubletCells(sce)
+  expect_equal(length(colData(sceres)$scran_doubletCells_Score),ncol(sce))
+  expect_equal(class(colData(sceres)$scran_doubletCells_Score), "numeric")
 })
 
 test_that("Testing scrublet",{

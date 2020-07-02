@@ -41,6 +41,7 @@ Imports:
     data.table,
     DelayedMatrixStats,
     DESeq2,
+    dplyr,
     DT,
     ggplot2,
     ggplotify,
@@ -54,8 +55,10 @@ Imports:
     limma,
     MAST,
     Matrix,
+    mnormt,
     matrixStats,
     methods,
+    msigdbr,
     multtest,
     plotly,
     RColorBrewer,
@@ -81,6 +84,7 @@ Imports:
     shinycssloaders,
     shinythemes,
     umap,
+    uwot,
     DropletUtils,
     scds,
     reticulate (>= 1.14),
@@ -94,7 +98,7 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-	rmarkdown
+    rmarkdown
 RoxygenNote: 7.1.0
 Suggests:
     testthat,
@@ -109,6 +113,7 @@ Suggests:
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
+    rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input,
     campbio/celda@RELEASE_3_11
