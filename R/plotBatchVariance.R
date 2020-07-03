@@ -166,7 +166,6 @@ plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
     allMeans <- c(allMeans, DelayedArray::rowMeans(mat[,batchCol == i]))
     groupBy <- c(groupBy, rep(i, nrow(mat)))
   }
-  print(allMeans)
   p <- .ggViolin(allMeans, groupby = groupBy, xlab = xlab, ylab = ylab, ...)
   p <- .ggSCTKTheme(p)
   return(p)
