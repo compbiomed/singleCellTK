@@ -5,112 +5,221 @@ author: "Yichen Wang"
 
 ## Introduction
 
-For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.
-Here is a table for the method names, citations, and corresponding wrapper functions:
+For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.  
+
+Here is a table for the method names, citations, corresponding wrapper functions and where the results are updated:
 
 <table>
   <tr>
     <th>Method</th>
     <th>Citation</th>
     <th>Function</th>
+    <th>Result Slots</th>
   </tr>
   <tr>
     <td>BBKNN</td>
     <td>Polański, Krzysztof and et al., 2019</td>
     <td><a href="../reference/runBBKNN.html">runBBKNN()</a></td>
+    <td><code>reducedDim</code></td>
   </tr>
   <tr>
     <td>ComBat</td>
     <td>Yuqing Zhang and et al., 2018</td>
     <td><a href="../reference/runComBat.html">runComBat()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>FastMNN</td>
     <td>Aaron Lun, 2018</td>
     <td><a href="../reference/runFastMNN.html">runFastMNN()</a></td>
+    <td><code>reducedDim</code></td>
   </tr>
   <tr>
     <td>MNN</td>
     <td>Laleh Haghverdi, 2018</td>
     <td><a href="../reference/runMNNCorrect.html">runMNNCorrect()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>Harmony</td>
     <td>Ilya Korsunsky and et al., 2019</td>
     <td><a href="../reference/runHarmony.html">runHarmony()</a></td>
+    <td><code>reducedDim</code></td>
   </tr>
   <tr>
     <td>LIGER</td>
     <td>Joshua Welch, et al., 2018</td>
     <td><a href="../reference/runLIGER.html">runLIGER()</a></td>
+    <td><code>reducedDim</code></td>
   </tr>
   <tr>
     <td>Limma</td>
     <td>Gordon K Smyth, et al., 2003</td>
     <td><a href="../reference/runLimmaBC.html">runLimmaBC()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>Scanorama</td>
     <td>Brian Hie et al, 2019</td>
     <td><a href="../reference/runSCANORAMA.html">runSCANORAMA()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>scGen</td>
     <td>Mohammad Lotfollah et al., 2019</td>
     <td><a href="../reference/runSCGEN.html">runSCGEN()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>scMerge</td>
     <td>Yingxin Lin et al., 2019</td>
     <td><a href="../reference/runSCMerge.html">runSCMerge()</a></td>
+    <td><code>assay</code></td>
   </tr>
   <tr>
     <td>Seurat Integration</td>
     <td>Tim Stuart et al., 2019</td>
     <td><a href="../reference/runSeurat3Integration.html">runSeurat3Integration()</a></td>
+    <td><code>altExp</code></td>
   </tr>
   <tr>
     <td>ZINBWaVE</td>
     <td>Davide Risso et al., 2018</td>
     <td><a href="../reference/runZINBWaVE.html">runZINBWaVE()</a></td>
+    <td><code>reducedDim</code></td>
   </tr>
 </table>
 
-## Prerequsites
+For a result returned in `reducedDim`, it means that some sorts of dimension reduction method, such as PCA and UMAP, is performed during the correction. For a result returned in `assay`, all of the original features (i.e. genes) remain the same, thus it is a full-sized assay. For a result returned in `altExp`, it means that the values in the corrected assay still stand for the expression level of the original features, instead of any low-dimension embedding, but the number of these features are less than original 
+due to potential subsetting steps in the calculation.  
 
-- Latest `SingleCellTK` installed.
-```{r install, eval=FALSE}
+## Specifications
+
+- The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
+- For using method "BBKNN", "Scanorama" and "scGen", the corresponding Python3 modules has to be installed
+```{bash install, eval=FALSE}
+pip install scanpy bbknn scanorama scgen
+```
+
+## Installation
+The script will automatically try to install the "singleCellTK" package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:
+
+```{r eval=FALSE}
 library(devtools)
 install_github("compbiomed/singleCellTK@devel")
 ```
-- An SCE object consists of multiple batches of datasets that introduce batch effect to be corrected.  
-Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k"
-```{r prepareDataSet, message=FALSE, warning=FALSE, eval=FALSE}
+
+## Running the pipeline
+
+To run the pipeline, the most basic requirements are:
+
+- An assay of expression value, usually pre-processed.
+- The annotation of the batches.
+
+As we adopt [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/) (`sce`) object through out the whole SCTK for a collection of all matrices and metadatas of the dataset of interests, the assay to be corrected, called `"assayToCorr"`, has to be saved at `assay(sce, "assayToCorr")`. Meanwhile, the batch annotation information has to be saved in a column of `colData(sce)`.
+
+> Note that the batch annotation should better be saved as a `factor` in the `colData`, especially when the batches are represented by integer numbers, because some downstream analysis are likely to parse the non-character and non-logical information as continuous values instead of categorical values.
+
+### Example
+
+#### Prepare an SCE object with multiple batches
+
+Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k" (Kasper D. Hansen *et al.*, 2017), which you can import by a function called `importExampleData()`.
+```{r import, message=FALSE, warning=FALSE, eval=TRUE, results='hold'}
 library(singleCellTK)
 pbmc3k <- importExampleData('pbmc3k')
-pbmc3k
 pbmc4k <- importExampleData('pbmc4k')
-pbmc4k
-# The way to combine multiple SCE objects varies depending on existing cell/gene metadata
+print(paste(dim(pbmc3k), c('genes', 'cells')))
+print(paste(dim(pbmc4k), c('genes', 'cells')))
+```
+There is a function called `combineSCE()`, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. `rowData`) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.
+```{r combine, eval=TRUE, message=FALSE, warning=FALSE}
+## The strategy here is to only use the genes presented in both datasets.
+## Get the intersection of both gene lists.
 isecGene <- intersect(rownames(pbmc3k), rownames(pbmc4k))
-length(isecGene)
+## Subset each dataset by the intersection.
 pbmc3k.isec <- pbmc3k[isecGene,]
 pbmc4k.isec <- pbmc4k[isecGene,]
+## Overwrite the mismatches in rowData, a special case in this example.
 rowData(pbmc4k.isec) <- rowData(pbmc3k.isec)
-sce.combine <- combineSCE(list(pbmc3k = pbmc3k.isec, pbmc4k = pbmc4k.isec))
-sce.combine
-sce.small <- sce.combine[sample(nrow(sce.combine), 500), sample(ncol(sce.combine), 500)]
-# Many of the batch correction methods require log-normalized counts
-sce.small <- scater_logNormCounts(inSCE = sce.small, logAssayName = 'logcounts', useAssay = 'counts')
+## Apply combination function
+sce.combine <- combineSCE(list(pbmc3k = pbmc3k.isec, 
+                               pbmc4k = pbmc4k.isec))
+## Simply filter out the genes that are expressed in less than 1% of all cells.
+sce.filter <- sce.combine[rowSums(assay(sce.combine) > 0) >= 0.01 * ncol(sce.combine),]
+sce.filter
+```
+The batch annotation now is stored at `colData(sce.filter)$sample`. The summary can be checked by running:
+```{r checkBatch, eval=TRUE, message=FALSE, warning=FALSE}
+table(colData(sce.filter)$sample)
+```
+Before trying out any batch correction function, we recommend to use a small subset of example so the effect can be quickly examined. Additionally, most of the batch correction methods provided require a log-normalized assay as input, so we have to make sure of this.
+```{r subset, eval=TRUE, message=FALSE, warning=FALSE}
+sce.small <- sce.filter[sample(nrow(sce.filter), 500), sample(ncol(sce.filter), 500)]
+sce.small <- scater_logNormCounts(inSCE = sce.small,
+                                  useAssay = 'counts',
+                                  logAssayName = 'logcounts')
+sce.small
 ```
 
-## Run Batch Correction
+#### Run a batch correction method on the prepared SCE object
 
-The basic way to run a batch correction method from singleCellTK is to select a function for the corresponding method above, and input the SCE object, specify the assay to correct, and the batch annotation.
+The basic way to run a batch correction method from SingleCellTK is to select a function for the corresponding method, input the SCE object, specify the assay to correct, and the batch annotation.  
 
-### BBKNN
-BBKNN is a method
-```{r bbknn, message=FALSE, warning=FALSE, eval=FALSE}
-sce.small <- runBBKNN(inSCE = sce.small, useAssay = 'logcounts', batch = 'sample', reducedDimName = 'BBKNN')
+For example, here we will try the batch correction method provided by [Limma](https://rdrr.io/bioc/limma/man/removeBatchEffect.html), which fits a linear model to the data.
+```{r limmaBC, message=FALSE, warning=FALSE, eval=TRUE}
+sce.small <- runLimmaBC(inSCE = sce.small, 
+                        useAssay = 'logcounts', 
+                        batch = 'sample', 
+                        assayName = 'LIMMA')
 sce.small
+```
+
+#### Visualization
+
+In this documentation, we provide three ways to examine the removal of batch effect, in terms of visualization. 
+
+1. Plot the batch variance associated with an additional covariate.  
+
+This functionality is implemented in `plotBatchVariance()`. It plots a violin plot of the variance explained by the given batch annotation, an additional covariate, and the variance explained by combining these two conditions. However, the additional covariate does not necessarily exist when batch effect removal is wanted. It is useful when users combine already analyzed datasets.TODO.  
+
+2. Plot the mean expression level of each gene separately for each batch.  
+
+This functionality is implemented in `plotSCEBatchFeatureMean()`. The methodology is straight forward, which plots violin plots for all the batches, and within each batch, the plot illustrates the distribution of the mean expression level of each gene. Thus the batch effect can be observed from the mean and standard deviation of each batch.
+
+```{r featureMeanBefore, message=FALSE, warning=FALSE, eval=TRUE}
+plotSCEBatchFeatureMean(inSCE = sce.small, 
+                        useAssay = 'logcounts', 
+                        batch = 'sample', 
+                        title = 'Before Correction')
+```
+```{r featureMeanAfter, message=FALSE, warning=FALSE, eval=TRUE}
+plotSCEBatchFeatureMean(inSCE = sce.small, 
+                        useAssay = 'LIMMA', 
+                        batch = 'sample', 
+                        title = 'After Correction')
+```
+
+3. Plot a dimension reduced components to see the grouping of cells  
+
+There is no function special for batch correction, but this can be achieved simply by using the dimension reduction calculation functions (e.g. `getPCA()`, `getUMAP()` and `getTSNE()`) and `plotSCEDimReduceColData()`.
+
+```{r umapBefore, message=FALSE, warning=FALSE, eval=TRUE}
+sce.small <- getUMAP(inSCE = sce.small,
+                     useAssay = 'logcounts', 
+                     reducedDimName = 'UMAP')
+plotSCEDimReduceColData(inSCE = sce.small,
+                        colorBy = 'sample',
+                        reducedDimName = 'UMAP', 
+                        title = 'Before Correction')
+```
+
+```{r umapAfter, message=FALSE, warning=FALSE, eval=TRUE}
+sce.small <- getUMAP(inSCE = sce.small,
+                     useAssay = 'LIMMA', 
+                     reducedDimName = 'UMAP_LIMMA')
+plotSCEDimReduceColData(inSCE = sce.small,
+                        colorBy = 'sample',
+                        reducedDimName = 'UMAP_LIMMA',
+                        title = 'After Correction')
 ```
