@@ -230,6 +230,7 @@
           color = "black"
         )
     }
+    return(g)
   })  
   return(cowplot::plot_grid(plotlist = plotlist))
 }
@@ -675,7 +676,7 @@ plotSCEScatter <- function(inSCE,
             ))
     }
 
-    if(length(unique(df$x)) > 1){
+    if(length(unique(df$groupby)) > 1){
         p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
     }else{
         p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
@@ -710,7 +711,7 @@ plotSCEScatter <- function(inSCE,
         summ$label <- paste0(summary,": ", round(summ$value, 5))
 
         p <- p + ggplot2::geom_text(data = summ,
-                           ggplot2::aes_string(x = "x",
+                           ggplot2::aes_string(x = "groupby",
                                y = "statY",
                                label = "label"))
         p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
