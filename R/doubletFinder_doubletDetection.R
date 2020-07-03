@@ -335,6 +335,8 @@
 #' sce <- runDoubletFinder(sce)
 #' }
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment reducedDim<-
 runDoubletFinder <- function(inSCE,
                              useAssay = "counts",
                              sample = NULL,

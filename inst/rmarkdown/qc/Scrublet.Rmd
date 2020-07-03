@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: identifying doublets with scrublet"
+title: "Comprehensive reporting of QC metrics: identifying doublets with Scrublet"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -20,102 +20,28 @@ require(ggplot2)
 sce.qc<- params$object
 ```
 
-```{r, "scrublet-umap", eval = FALSE, include=FALSE, warning=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
-
+```{r, "Scrublet", results="asis"}
+    plotsScrublet<- plotScrubletResults(sce.qc, reducedDimName="UMAP")
+    i="Scrublet"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotsScrublet$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotsScrublet$densityScore
+   
+    cat(paste0('## Violin Score \n\n'))
+    plotsScrublet$violinScore
+ 
+    cat(paste0('## Scatter Call \n\n'))
+    plotsScrublet$scatterCall
+  
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runScrublet
 ```
 
-
-```{r, "scrublet-reddim", eval = FALSE, include=FALSE}
-#Log counts prior to running UMAP
-if (is.null(sce.qc@assays@data$logcounts)){
-  sce.qc@assays@data$logcounts = log10(sce.qc@assays@data$counts + 1)
-  #get UMAP
-  if (!"UMAP" %in% reducedDimNames(sce.qc)){
-  sce.qc = getUMAP(inSCE = sce.qc, useAssay = "logcounts")}
-}
-
+```{r, include=FALSE}
+description_Scrublet <- .descriptionScrublet()
 ```
-
-## Scrublet score/call
-
-Scrublet simulates doublets from the observed data and utilizes a k-nearest-neighbor classifier to estimate a continuous doublet_score (between 0 and 1) for each cell.
-
-```{r}
-if (!is.null(sce.qc$scrublet_score)){
-plotSCEViolinColData(inSCE = sce.qc, coldata = "scrublet_score", xlab = "", ylab = "Score", title = "Scrublet score", dotSize = 0.5)
-} else {
-  stop("The inSCE does not contain scrublet_score")
-}
-```
-
-### UMAP projection
-```{r, "scrublet-umap-viz"}
-if (!is.null(sce.qc$scrublet_score)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_score" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "Scrublet Doublet Score", legendTitle = "Doublet Score")
-} else {
-  print("The inSCE does not contain scrublet_score")
-}
-```
-
-```{r "scrublet-call"}
-if (!is.null(sce.qc$scrublet_call)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_call" , conditionClass = "factor", reducedDimName = "UMAP", dotsize = 1, title = "Scrublet Doublet Call", legendTitle = "Doublet Call", labelClusters = FALSE)
-} else {
-  print("The inSCE does not contain scrublet_call")
-}
-```
-
-### t-SNE projection
-```{r "scrublet-tsne-score"}
-if (!is.null(sce.qc$scrublet_score)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_score" , conditionClass = "numeric", reducedDimName = "scrublet_TSNE", dotsize = 1, title = "Scrublet Doublet Score", legendTitle = "Doublet Score")
-} else {
-  print("The inSCE does not contain scrublet_score")
-}
-```
-
-
-```{r, "scrublet-tsne-call"}
-if (!is.null(sce.qc$scrublet_call)){
-plotSCEDimReduceColData(inSCE = sce.qc, colorBy = "scrublet_call" , conditionClass = "factor", reducedDimName = "scrublet_TSNE", dotsize = 1, title = "Scrublet Doublet Call", legendTitle = "Doublet Call", labelClusters = FALSE)
-} else {
-  print("The inSCE does not contain scrublet_call")
-}
-```
-
-## Scrublet input info
-```{r, "scrublet-info"}
-if (!is.null(sce.qc@metadata$runScrublet)){
-  sce.qc@metadata$runScrublet
-} else{
-  print("The inSCE does not contain runScrublet info")
-}
-```
-## Session info
-```{r, "scrub;et-session-info"}
-sessionInfo()
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_Scrublet`

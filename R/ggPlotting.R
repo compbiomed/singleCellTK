@@ -1,8 +1,8 @@
 #' @title Plot results of reduced dimensions data.
 #' @description Plot results of reduced dimensions data and colors the plots by
 #'  the input vector.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy If provided, colors dots in the scatterplot based on value.
 #' @param groupBy If provided, facet wrap the scatterplot based on value.
@@ -10,8 +10,8 @@
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -239,8 +239,8 @@
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy Color by a condition(any column of the annotation data).
 #'  Required.
@@ -250,8 +250,8 @@
 #'  Options are NULL, "factor" or "numeric". If NULL, class will default to the
 #'  original class. Default NULL.
 #' @param shape Add shapes to each condition.
-#' @param reducedDimName Saved dimension reduction matrix name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction matrix name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -354,14 +354,14 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @title Dimension reduction plot tool for assay data
 #' @description Plot results of reduced dimensions data and
 #'  colors by feature data stored in the assays slot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param feature name of feature stored in assay of singleCellExperiment
 #'  object. Plot will be colored based on feature value.
 #' @param shape add shapes to each condition. Default NULL.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
@@ -396,7 +396,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' plotSCEDimReduceFeatures(
-#'   inSCE = mouseBrainSubsetSCE, feature = "Sox2",
+#'   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
 #'   shape = NULL, reducedDimName = "TSNE_counts",
 #'   useAssay = "counts", xlab = "tSNE1", ylab = "tSNE2"
 #' )
@@ -472,8 +472,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param feature name of feature stored in assay of SingleCellExperiment
 #'  object. Will be used only if "assays" slot is chosen. Default NULL.
 #' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
@@ -508,12 +508,15 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
+#' \donttest{
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
-#'   slot = "assays", annotation = "counts", feature = "Tspan12",
+#'   slot = "assays", annotation = "counts", feature = "Apoe",
 #'   reducedDimName = "TSNE_counts", labelClusters = FALSE
 #' )
+#' }
 #' @export
+#' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,
                            slot,
                            sample = NULL,
@@ -728,8 +731,8 @@ plotSCEScatter <- function(inSCE,
 #' @title Violin plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
 #' @param groupby Groupings for each numeric value. A user may input a vector
@@ -857,8 +860,8 @@ plotSCEViolinColData <- function(inSCE,
 #' @title Violin plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
@@ -887,7 +890,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @examples
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2", groupby = "sex"
+#'   feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEViolinAssayData <- function(inSCE,
@@ -982,8 +985,8 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @title Violin plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata"
@@ -1016,7 +1019,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @examples
 #' plotSCEViolin(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Sox2", groupby = "sex"
+#'   annotation = "counts", feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEViolin <- function(inSCE,
@@ -1198,8 +1201,8 @@ plotSCEViolin <- function(inSCE,
 #' @title Density plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a density plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
 #' @param groupby Groupings for each numeric value. A user may input a vector
@@ -1309,8 +1312,8 @@ plotSCEDensityColData <- function(inSCE,
 #' @title Density plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a density plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
@@ -1330,7 +1333,7 @@ plotSCEDensityColData <- function(inSCE,
 #' @examples
 #' plotSCEDensityAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2"
+#'   feature = "Apoe"
 #' )
 #' @export
 plotSCEDensityAssayData <- function(inSCE,
@@ -1425,8 +1428,8 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @title Density plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a densityn plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata"
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -1449,7 +1452,7 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @examples
 #' plotSCEDensity(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Sox2", groupby = "sex"
+#'   annotation = "counts", feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEDensity <- function(inSCE,
@@ -1658,8 +1661,8 @@ plotSCEDensity <- function(inSCE,
 #' @title Bar plot of colData.
 #' @description Visualizes values stored in the colData slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param coldata colData value that will be plotted.
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
@@ -1745,8 +1748,8 @@ plotSCEBarColData <- function(inSCE,
 #' @title Bar plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
 #'  SingleCellExperiment object via a violin plot.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
@@ -1767,7 +1770,7 @@ plotSCEBarColData <- function(inSCE,
 #' @examples
 #' plotSCEBarAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
-#'   feature = "Sox2", groupby = "sex"
+#'   feature = "Apoe", groupby = "sex"
 #' )
 #' @export
 plotSCEBarAssayData <- function(inSCE,

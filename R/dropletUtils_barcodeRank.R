@@ -59,6 +59,7 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE = sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 runBarcodeRankDrops <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts", 

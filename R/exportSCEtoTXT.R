@@ -18,6 +18,7 @@
 #' }
 #' 
 #' @export
+#' @importFrom SummarizedExperiment colData rowData
 exportSCEtoFlatFile <- function(sce,
                                 outputDir = "./",
                                 overwrite = TRUE,
