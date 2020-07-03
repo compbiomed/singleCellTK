@@ -5492,44 +5492,18 @@ shinyServer(function(input, output, session) {
   # Page Column Annotation (Data)
   #-----------------------------------------------------------------------------
   
-  observeEvent(input$button_series_fetch,
-               {
-                 showModal(
-                   modalDialog(title = paste("Do you want to fetch series ", input$input_series_id, "?", sep = ""),
-                               tags$h4("Series Title: "),
-                               f_series_title(input$input_series_id),
-                               tags$br(),
-                               tags$h4("Number of Samples: "),
-                               f_number_of_samples(input$input_series_id),
-                               size = "m",
-                               easyClose = TRUE,
-                               footer = tagList(
-                                 actionButton("button_confirm_fetch_series", "Yes"),
-                                 modalButton("No")
-                               )
-                   )
-                 )
-               })
+  observe({
+    if(!is.null(input$target_upload)){
+      #vals$columnAnnotation <- read.csv(input$target_upload$datapath, header = TRUE,sep = ",")
+      print(head(colData(vals$counts)))
+      vals$columnAnnotation <- as.data.frame(colData(vals$counts))  
+    }
+  })
   
-  
-  observeEvent(input$button_confirm_fetch_series,
-               {
-                 removeModal()
-                 series_sample_file_list <- f_sample_file_names(input$input_series_id)
-                 vals$columnAnnotation <- f_characteristics_samples(series_sample_file_list)
-                 
-                 #reactiveDF$data <- series_characteristics
-                 #backupDF_destination = paste(getwd(), "/", "backupDF.csv", sep = "")
-                 #write.table(reactiveDF$data, file = backupDF_destination, col.names = TRUE, row.names = FALSE, sep = ",")
-                 #updateNavbarPage(x, "mainPage", "View")
-                 
-                 
-               })
-  
-  output$output_phenotype_table <- renderUI(
+  output$output_columnAnnotation_table <- renderUI(
     {
-      output$table <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell') })
-      DT::dataTableOutput("table")
+      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell') })
+      DT::dataTableOutput("colOutTable")
     })
   
   
@@ -5586,6 +5560,178 @@ shinyServer(function(input, output, session) {
       selectInput("input_select_attribute_clean", label = "select attribute column", choices = colnames(vals$columnAnnotation))
     })
   
+  #confirm create bin button
+  observeEvent(input$button_confirm_bin,
+               {
+                 #getting variables
+                 selected_attribute <- input$input_select_attribute
+                 bin_name <- input$input_bin_name
+                 selected_column_no <- match(selected_attribute, colnames(vals$columnAnnotation))
+                 criteria_term <- input$input_criteria
+                 operator_term <- input$input_operator
+                 
+                 #get df from reactive input
+                 df <- vals$columnAnnotation
+                 
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+                 
+                 
+                 print(operator_term)
+                 if (operator_term == "=")
+                 {
+                   #updating created bins to dataframe
+                   df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
+                 }
+                 else if (operator_term == ">")
+                 {
+                   print(operator_term)
+                   
+                   print(df[, selected_column_no][df[, selected_column_no] > criteria_term])
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
+                 }
+                 else if (operator_term == "<")
+                 {
+                   print(operator_term)
+                   print(df[, selected_column_no][df[, selected_column_no] < criteria_term])
+                   
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
+                 }
+                 else if (operator_term == "<=")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
+                   
+                 }
+                 else if (operator_term == ">=")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
+                   
+                 }
+                 
+                 vals$columnAnnotation <- df
+               })
+  
+  #confirm merge button
+  #merge column button
+  #####################
+  observeEvent(input$button_confirm_merge,
+               {
+                 df <- vals$columnAnnotation
+                 colname1 <- input$input_select_attribute_merge_1
+                 colname2 <- input$input_select_attribute_merge_2
+                 df <- unite_(df, col = colname1, c(colname1, colname2))
+                 
+                 vals$columnAnnotation <- df
+
+               })
+  
+  #fill column button
+  ###################
+  observeEvent(input$button_confirm_fill,
+               {
+                 df <- vals$columnAnnotation
+                 
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+                 
+                 selected_attribute_1 <- input$input_select_attribute_fill_1
+                 selected_attribute_2 <- input$input_select_attribute_fill_2
+                 selected_column_no_1 <- match(selected_attribute_1, colnames(df))
+                 selected_column_no_2 <- match(selected_attribute_2, colnames(df))
+                 old_value <- input$input_select_attribute_fill_value
+                 new_value <- input$input_replace_text
+                 
+                 for (i in 1:nrow(df))
+                 {
+                   if (df[i, selected_column_no_1] == old_value)
+                   {
+                     df[i, selected_column_no_2] <- new_value
+                   }
+                 }
+                 
+                 vals$columnAnnotation <- df
+
+               })
+  
+  observeEvent(input$button_confirm_clean,
+               {
+                 df <- vals$columnAnnotation
+                 
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+                 
+                 
+                 selected_attribute <- input$input_select_attribute_clean
+                 selected_column_no <- match(selected_attribute, colnames(df))
+                 selected_choice <- input$input_removal_operation
+                 selected_choice_no <- match(selected_choice, c("remove alphabets", "remove digits", "remove spaces", "remove symbols"))
+                 
+                 print(selected_attribute)
+                 print(selected_column_no)
+                 print(selected_choice)
+                 print(selected_choice_no)
+                 
+                 if (selected_choice_no == 1)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     print(df[i, selected_column_no])
+                     print(gsub("[A-z]", "", df[i, selected_column_no]))
+                     df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
+                   }
+                   
+                 }
+                 else if (selected_choice_no == 2)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
+                   }
+                 }
+                 else if (selected_choice_no == 3)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
+                   }
+                 }
+                 else if (selected_choice_no == 4)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub("[:punct:]", "", df[i, selected_column_no]) #REGEX NOT WORKING PROPERLY
+                   }
+                 }
+                 
+                 vals$columnAnnotation <- df
+               })
+  
+  #add new empty column button
+  ############################
+  observeEvent(input$button_confirm_empty_column_name,
+               {
+                 df <- vals$columnAnnotation
+                 
+                
+                 colname <- input$input_empty_column_name
+                 df$newcolumn <- NA
+                 names(df)[ncol(df)] <- colname
+                 
+                 vals$columnAnnotation <- df
+                 
+               })
 
   #-----------------------------------------------------------------------------
   # Page Download
@@ -5651,182 +5797,3 @@ shinyServer(function(input, output, session) {
     })
   })
 })
-
-#Functions remove
-################
-#get series title from series id
-f_series_title <- function(series)
-{
-  withProgress(message = "",detail ="fetching series title", max = 1, value = 1,
-               {
-                 tryCatch(
-                   {
-                     url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
-                     url <- paste(url, series, sep = "")
-                     webpage <- read_html(url)
-                     series_title <- html_text(webpage)
-                     startingIndex <- str_locate_all(series_title, "Title")
-                     startingIndex <- as.data.frame(startingIndex)
-                     startingIndex <- startingIndex$start + 6
-                     series_title <- str_sub(series_title, startingIndex)
-                     endingIndex <- str_locate(series_title, "\\\n")
-                     endingIndex <- endingIndex[1] - 1
-                     series_title <- str_sub(series_title, 0, endingIndex)
-                     if (length(series_title) > 0)
-                     {
-                       series_title
-                     }
-                     else
-                     {
-                       -1
-                     }
-                   }, error = function(e) { print(e) })
-               })
-}
-
-
-#get total count of samples in the series id
-#also checks if series is found or not
-#if found returns sample count
-#not found returns -1
-f_number_of_samples <- function(series)
-{
-  withProgress(message="",detail = "fetching number of samples", max = 1, value = 1,
-               {
-                 tryCatch(
-                   {
-                     url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
-                     url <- paste(url, series, sep = "")
-                     webpage <- read_html(url)
-                     total_samples <- html_text(webpage)
-                     startingIndex <- str_locate_all(total_samples, "Samples \\(")
-                     startingIndex <- as.data.frame(startingIndex)
-                     startingIndex <- startingIndex$start + 9
-                     total_samples <- str_sub(total_samples, start = startingIndex)
-                     endingIndex <- str_locate(total_samples, "\\)")
-                     endingIndex <- endingIndex[1]
-                     total_samples <- str_sub(total_samples, start = 0, end = endingIndex - 1)
-                     if (total_samples >= 0)
-                     {
-                       as.numeric(total_samples)
-                     }
-                   }, error = function(e) {-1 })
-               })
-}
-
-
-#get characteristics from all sample files in a series
-f_characteristics_samples <- function(samples)
-{
-  withProgress(max = length(samples),value = 0,
-               {
-                 dfChar <- data.frame(stringsAsFactors = FALSE)
-                 tryCatch(
-                   {
-                     
-                     for (i in 1:length(samples))
-                     {
-                       print(i)
-                       incProgress(message = paste("Fetching Samples: ",i,"/",length(samples),sep = ""),amount = 1,detail = samples[i])
-                       url <- 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
-                       url <- paste(url, samples[i], sep = "")
-                       webpage <- read_html(url)
-                       characteristics <- list()
-                       
-                       titleBlock <- webpage %>% html_nodes("td") %>% as.character()
-                       titleBlock <- titleBlock[42]
-                       startIndex <- str_locate(titleBlock, "justify\">")
-                       startIndex <- startIndex[2] + 1
-                       titleBlock <- str_sub(titleBlock, startIndex)
-                       endIndex <- str_locate(titleBlock, "</td>")
-                       endIndex <- endIndex[1] - 1
-                       titleBlock <- str_sub(titleBlock, 0, endIndex)
-                       
-                       charBlock <- webpage %>% html_nodes("td") %>% as.character()
-                       charBlock <- charBlock[52]
-                       startIndex <- str_locate(charBlock, "justify\">")
-                       startIndex <- startIndex[2] + 1
-                       charBlock <- str_sub(charBlock, startIndex)
-                       endIndex <- str_locate(charBlock, "</td>")
-                       endIndex <- endIndex[1] - 2
-                       charBlock <- str_sub(charBlock, 0, endIndex)
-                       charBlock <- str_split(charBlock, "<br>")[[1]]
-                       charBlock <- charBlock[-length(charBlock)]
-                       
-                       characteristics <- c(characteristics, paste("SampleName: ", samples[i]))
-                       characteristics <- c(characteristics, paste("SampleTitle: ", titleBlock))
-                       characteristics <- c(characteristics, charBlock) %>% as.character()
-                       
-                       colTitles = list()
-                       values = list()
-                       for (j in 1:length(characteristics))
-                       {
-                         splitValues = str_split(characteristics[j], ":")[[1]]
-                         for (j in 1:length(splitValues))
-                         {
-                           splitValues[j] = str_replace_all(splitValues[j], " ", "")
-                           splitValues[j] = str_replace_all(splitValues[j], "[^[:alnum:]]", "")
-                         }
-                         colTitles <- c(colTitles, splitValues[1])
-                         values <- c(values, splitValues[2])
-                       }
-                       if (nrow(dfChar) == 0)
-                       {
-                         dfChar <- data.frame(matrix(ncol = length(colTitles), nrow = 0), stringsAsFactors = FALSE)
-                         colnames(dfChar) <- colTitles
-                         dfChar[i,] <- values
-                       }
-                       else
-                       {
-                         dfChar[i,] <- values
-                       }
-                     }
-                     if (nrow(dfChar) > 1)
-                     {
-                       dfChar
-                     }
-                     else
-                     {
-                       stop("error: invalid sample list input to this function")
-                     }
-                   }, error = function(e) { print(e) })
-               })
-}
-
-
-#get sample file names for a given series id
-f_sample_file_names <- function(series)
-{
-  withProgress(message = "", detail = "retrieving sample names", max = 1, value = 1,
-               {
-                 tryCatch(
-                   {
-                     destFile = paste(getwd(), "/", series, ".txt", sep = "")
-                     download.file(paste("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=", series, "&targ=self&view=brief&form=text", sep = ""), destfile = destFile)
-                     msString <- readtext(destFile, verbosity = 3)
-                     msString <- msString$text
-                     startingIndex <- str_locate(msString, "\\!Series\\_sample\\_id \\=")
-                     startingIndex <- startingIndex[1]
-                     endingIndex <- str_locate(msString, "\\!Series\\_contact\\_name \\=")
-                     endingIndex <- endingIndex[1]
-                     msString <- str_sub(msString, startingIndex, endingIndex)
-                     gsmFileNames <- str_split(msString, "\\!Series\\_sample\\_id \\=")
-                     gsmFileNames <- gsmFileNames[[1]]
-                     gsmSampleNames <- list()
-                     for (i in 1:length(gsmFileNames))
-                     {
-                       if (gsmFileNames[i] != "")
-                       {
-                         gsmSampleNames <- c(gsmSampleNames, gsmFileNames[i])
-                       }
-                     }
-                     for (i in 1:length(gsmSampleNames))
-                     {
-                       gsmSampleNames[i] <- str_split(gsmSampleNames[i], "\\\n")[[1]][1]
-                       gsmSampleNames[i] <- str_trim(gsmSampleNames[i], side = "both")
-                     }
-                     gsmSampleNames <- as.character(gsmSampleNames)
-                     gsmSampleNames
-                   }, error = function(e) { print("error: invalid series identifier") })
-               })
-}
