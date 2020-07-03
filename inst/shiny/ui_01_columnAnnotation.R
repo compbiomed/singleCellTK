@@ -5,12 +5,29 @@ shinyPanelColumnAnnotation <- fluidPage(
              fluidRow(
                 column(12,
                        panel(heading = "Upload",
-                             fileInput('target_upload', 'Choose file to upload',
-                                       accept = c(
-                                          'text/csv',
-                                          'text/comma-separated-values',
-                                          '.csv'
-                                       ))
+                             #h4("Select Column Annotation:"),
+                             radioGroupButtons(
+                               inputId = "colEditorChoiceRadio",
+                               label = "Select source for column annotation:",
+                               choices = c("existing colData", "upload new colData"), #update this to include values
+                               selected = "existing colData"
+                             ),
+                             conditionalPanel(
+                               condition = sprintf("input['%s'] == 'upload new colData'", "colEditorChoiceRadio"), #update this from above
+                               fileInput('uploadColDataFile', 'Choose file to upload',
+                                         accept = c(
+                                            'text/csv',
+                                            'text/comma-separated-values',
+                                            '.csv'
+                                         ))
+                             ),
+                             hr(),
+                             #h4("Save Changes:"),
+                             h6("Changes made to the annotation must be saved before they can be used in other modules of the toolkit:"),
+                             actionButton("button_save_colData","Save",icon = icon("save")),
+                             br(),
+                             h6("Reset annotation to point after changes were last saved:"),
+                             actionButton("button_restore_phenotype","Reset",icon = icon("refresh"))
                              )
                        )
              ),
@@ -47,15 +64,13 @@ shinyPanelColumnAnnotation <- fluidPage(
                                 tabPanel("Add Column",
                                          textInput("input_empty_column_name", "enter new empty column name"),
                                          actionButton("button_confirm_empty_column_name","Create Column")
-                                ),
-                                tabPanel("Restore",
-                                         h5("Warning: Any changes made to the the current phenotype data will be lost!"),
-                                         actionButton("button_restore_phenotype","Confirm Restore",icon = icon("refresh"))
+                                         #add default value
                                 )
                              )
                              )
                        )
              )
+            
              ),
       column(9,
             fluidRow(
@@ -70,7 +85,7 @@ shinyPanelColumnAnnotation <- fluidPage(
    
    
    
- h2("Column Annotation"),
+ #h2("Column Annotation"),
  #textInput("input_series_id", "Enter Series Identifier", placeholder = "GSE37751"),
 
  #actionButton("button_series_fetch","Fetch"),

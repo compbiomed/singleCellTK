@@ -5493,16 +5493,23 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   
   observe({
-    if(!is.null(input$target_upload)){
-      #vals$columnAnnotation <- read.csv(input$target_upload$datapath, header = TRUE,sep = ",")
+    if(!is.null(vals$counts)){
       print(head(colData(vals$counts)))
-      vals$columnAnnotation <- as.data.frame(colData(vals$counts))  
+      if(input$colEditorChoiceRadio == "existing colData"){ #update this with id
+        vals$columnAnnotation <- as.data.frame(colData(vals$counts))
+      }
+      if(input$colEditorChoiceRadio == "upload new colData"){
+        vals$columnAnnotation <- NULL
+        if(!is.null(input$uploadColDataFile)){
+          vals$columnAnnotation <- read.csv(input$uploadColDataFile$datapath, header = TRUE,sep = ",")
+        }
+      }
     }
   })
   
   output$output_columnAnnotation_table <- renderUI(
     {
-      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell') })
+      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell', options = list(pageLength = 26)) })
       DT::dataTableOutput("colOutTable")
     })
   
