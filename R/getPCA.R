@@ -35,7 +35,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
     stop(useAssay, " not in the assay list")
   }
   exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
-  if (!inherit(exprsMat, 'matrix')){
+  if (!inherits(exprsMat, 'matrix')){
     exprsMat <- as.matrix(exprsMat)
   }
   rv <- matrixStats::rowVars(exprsMat)
