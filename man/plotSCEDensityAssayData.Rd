@@ -20,8 +20,8 @@ plotSCEDensityAssayData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -57,6 +57,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEDensityAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Sox2"
+  feature = "Apoe"
 )
 }

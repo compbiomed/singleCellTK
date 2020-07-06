@@ -26,8 +26,9 @@ plotDoubletCellsResults(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results from runDoubletCells. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results from
+\link{runDoubletCells}. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}
@@ -46,8 +47,8 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
-\item{reducedDimName}{Saved dimension reduction name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{Saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 

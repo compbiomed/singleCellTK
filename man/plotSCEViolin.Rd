@@ -27,8 +27,8 @@ plotSCEViolin(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -83,6 +83,6 @@ Visualizes values stored in any slot of a
 \examples{
 plotSCEViolin(
   inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Sox2", groupby = "sex"
+  annotation = "counts", feature = "Apoe", groupby = "sex"
 )
 }

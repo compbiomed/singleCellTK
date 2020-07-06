@@ -16,7 +16,7 @@ plotPCA(
 )
 }
 \arguments{
-\item{inSCE}{Input SCTKExperiment object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{colorBy}{The variable to color clusters by}
 

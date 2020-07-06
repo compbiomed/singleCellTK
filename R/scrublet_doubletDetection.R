@@ -85,6 +85,8 @@
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment reducedDim
 runScrublet <- function(inSCE,
   sample = NULL,
   useAssay = "counts",

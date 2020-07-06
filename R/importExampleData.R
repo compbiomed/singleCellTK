@@ -42,6 +42,7 @@
 #' sce <- importExampleData("pbmc3k")
 #' }
 #' @export
+#' @importFrom SummarizedExperiment colData rowData colData<- assay assays
 importExampleData <- function(dataset, class = c("Matrix", "matrix"),
                               delayedArray = FALSE) {
   class <- match.arg(class)

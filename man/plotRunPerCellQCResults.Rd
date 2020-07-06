@@ -18,8 +18,9 @@ plotRunPerCellQCResults(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results from runPerCellQC. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results from
+runPerCellQC. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}

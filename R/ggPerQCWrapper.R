@@ -2,8 +2,9 @@
 #' @description A wrapper function which visualizes outputs from the
 #'  runPerCellQC function stored in the colData slot of the SingleCellExperiment
 #'  object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runPerCellQC. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' runPerCellQC. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param groupby Groupings for each numeric value. A user may input a vector
@@ -169,8 +170,9 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runScrublet function stored in the colData slot of the SingleCellExperiment
 #'  object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runScrublet. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runScrublet}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -182,8 +184,8 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -341,8 +343,9 @@ plotScrubletResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runDoubletFinder function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runDoubletFinder. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runDoubletFinder}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -354,8 +357,8 @@ plotScrubletResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -554,8 +557,9 @@ plotDoubletFinderResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runDoubletCells function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runDoubletCells. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runDoubletCells}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -567,8 +571,8 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -704,8 +708,9 @@ plotDoubletCellsResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runCxds function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runCxds. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runCxds}.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -717,8 +722,8 @@ plotDoubletCellsResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -855,8 +860,9 @@ plotCxdsResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runBcds function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runBcds. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runBcds}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -868,8 +874,8 @@ plotCxdsResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -1007,9 +1013,9 @@ plotBcdsResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runCxdsBcdsHybrid function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runCxdsBcdsHybrid.
-#'  Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runCxdsBcdsHybrid}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -1021,8 +1027,8 @@ plotBcdsResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -1159,8 +1165,9 @@ plotScdsHybridResults <- function(inSCE,
 #' @description A wrapper function which visualizes outputs from the
 #'  runDecontX function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
-#' @param inSCE Input SCtkExperiment object with saved dimension reduction
-#'  components or a variable with saved results from runDecontX. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runDecontX}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -1172,8 +1179,8 @@ plotScdsHybridResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the SCtkExperiment
-#'  object. Required.
+#' @param reducedDimName Saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies

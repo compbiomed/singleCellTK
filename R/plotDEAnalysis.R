@@ -1,4 +1,4 @@
-#' Check if the specified MAST result in SCtkExperiment object is complete.
+#' Check if the specified MAST result in SingleCellExperiment object is complete.
 #' But does not garantee the biological correctness.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. a
 #' differential expression analysis function has to be run in advance.

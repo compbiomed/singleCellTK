@@ -41,6 +41,7 @@
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runDoubletCells(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 runDoubletCells <- function(inSCE,
     sample = NULL,
     useAssay = "counts",

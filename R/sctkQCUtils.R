@@ -66,6 +66,7 @@ exportSCE <- function(inSCE,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
 #' objects in sceList. The colData is merged.  
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 combineSCE <- function(sceList) {
     qcList <- sapply(sceList, function(x) {colnames(x@colData)})
     qcMetNum <- sapply(qcList, length)
@@ -99,6 +100,7 @@ combineSCE <- function(sceList) {
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
 #' objects in sceList. The colData is merged.  
 #' @export
+#' @importFrom SummarizedExperiment assay colData
 generateMeta <- function(dropletSCE, 
                           cellSCE, 
                           samplename, 
