@@ -2,7 +2,7 @@
 #' Given a list of genes this function runs the enrichR() to perform Gene
 #' enrichment
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param glist selected genes for enrichment analysis using enrichR(). Required
 #' @param db selected database name from the enrichR database list. if NULL then
 #' enrichR will be run on all the available databases on the enrichR database.
@@ -23,9 +23,8 @@ enrichRSCE <- function(inSCE, glist, db = NULL){
 
   enrdb <- enrichR::listEnrichrDbs()$libraryName
 
-  if (!(class(inSCE) == "SingleCellExperiment" |
-        class(inSCE) == "SCtkExperiment")){
-    stop("Please use a singleCellTK or a SCtkExperiment object")
+  if (!inherits(inSCE, "SingleCellExperiment")){
+    stop("Please use a SingleCellExperiment object")
   }
 
   #test for gene list existing

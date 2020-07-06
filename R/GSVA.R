@@ -1,8 +1,8 @@
 .myenv <- new.env(parent = emptyenv())
 
-#' Run GSVA analysis on a SCtkExperiment object.
+#' Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param pathwaySource The pathway source if "Manual Input", the pathwayNames
 #' should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,

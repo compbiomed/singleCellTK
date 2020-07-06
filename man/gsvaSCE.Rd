@@ -3,7 +3,7 @@
 \name{gsvaSCE}
 \alias{gsvaSCE}
 \alias{gsvaPlot}
-\title{Run GSVA analysis on a SCtkExperiment object.}
+\title{Run GSVA analysis on a \linkS4class{SingleCellExperiment} object}
 \usage{
 gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
 
@@ -18,7 +18,7 @@ gsvaPlot(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
@@ -54,7 +54,7 @@ gsvaSCE(): A data.frame of pathway activity scores from GSVA.
 gsvaPlot(): The requested plot of the GSVA results.
 }
 \description{
-Run GSVA analysis on a SCtkExperiment object.
+Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
 }
 \section{Functions}{
 \itemize{
