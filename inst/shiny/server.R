@@ -5034,13 +5034,13 @@ shinyServer(function(input, output, session) {
     })
     if (input$pca_compute_elbow) {
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-        updateSliderInput(session = session, inputId = "pca_significant_pc_slider", value = .computeSignificantPC(vals$counts))
+        updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = .computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
           seuratElbowPlot(inSCE = vals$counts,
                           significantPC = .computeSignificantPC(vals$counts))
         })
         output$pca_significant_pc_output <- renderText({
-          .computeSignificantPC(vals$counts)
+          paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", .computeSignificantPC(vals$counts)," </span> </p> <hr>")
         })
       })
     }
@@ -5157,7 +5157,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- seuratFindClusters(inSCE = vals$counts,
                                           useAssay = "seuratScaledData",
                                           useReduction = input$reduction_clustering_method,
-                                          dims = input$pca_significant_pc_slider,
+                                          dims = input$pca_significant_pc_counter,
                                           algorithm = input$algorithm.use,
                                           groupSingletons = input$group.singletons,
                                           resolution = input$resolution_clustering)
@@ -5224,13 +5224,13 @@ shinyServer(function(input, output, session) {
   #Update PCA/ICA message in clustering tab
   output$display_message_clustering <- renderText({
     if(input$reduction_clustering_method == "pca"){
-      if(input$pca_significant_pc_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$pca_significant_pc_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_counter," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
     else{
-      if(input$ica_significant_ic_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$ica_significant_ic_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_counter," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
   })
@@ -5243,7 +5243,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- seuratRunTSNE(inSCE = vals$counts,
                                      useReduction = input$reduction_tsne_method,
                                      reducedDimName = "seuratTSNE",
-                                     dims = input$pca_significant_pc_slider,
+                                     dims = input$pca_significant_pc_counter,
                                      perplexity = input$perplexity_tsne)
         vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
@@ -5268,13 +5268,13 @@ shinyServer(function(input, output, session) {
   #Update PCA/ICA message in tSNE tab
   output$display_message_tsne <- renderText({
     if(input$reduction_tsne_method == "pca"){
-      if(input$pca_significant_pc_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$pca_significant_pc_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_counter," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
     else{
-      if(input$ica_significant_ic_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$ica_significant_ic_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_counter," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
   })
@@ -5287,7 +5287,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- seuratRunUMAP(inSCE = vals$counts,
                                      useReduction = input$reduction_umap_method,
                                      reducedDimName = "seuratUMAP",
-                                     dims = input$pca_significant_pc_slider,
+                                     dims = input$pca_significant_pc_counter,
                                      minDist = input$min_dist_umap,
                                      nNeighbors = input$n_neighbors_umap,
                                      spread = input$spread_umap)
@@ -5312,13 +5312,13 @@ shinyServer(function(input, output, session) {
   #Update PCA/ICA message in UMAP tab
   output$display_message_umap <- renderText({
     if(input$reduction_umap_method == "pca"){
-      if(input$pca_significant_pc_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_slider," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$pca_significant_pc_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$pca_significant_pc_counter," components</span> from PCA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
     else{ #ICA to do
-      if(input$ica_significant_ic_slider){
-        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_slider," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
+      if(input$ica_significant_ic_counter){
+        paste("<p>Analysis will be performed with <span style='color:red'>", input$ica_significant_ic_counter," components</span> from ICA. This number can be changed in the 'Dimensionality Reduction' section. </p>")
       }
     }
   })
@@ -5327,7 +5327,7 @@ shinyServer(function(input, output, session) {
   observe({
     req(vals$counts)
     if (!is.null(vals$counts@metadata$seurat$count_pc)) {
-      updateSliderInput(session = session, inputId = "pca_significant_pc_slider", max = vals$counts@metadata$seurat$count_pc)
+      updateSliderInput(session = session, inputId = "pca_significant_pc_counter", max = vals$counts@metadata$seurat$count_pc)
     }
   })
 
@@ -5335,26 +5335,26 @@ shinyServer(function(input, output, session) {
   observe({
     req(vals$counts)
     if (!is.null(vals$counts@metadata$seurat$count_ic)) {
-      updateSliderInput(session = session, inputId = "ica_significant_ic_slider", max = vals$counts@metadata$seurat$count_ic)
+      updateNumericInput(session = session, inputId = "ica_significant_ic_counter", max = vals$counts@metadata$seurat$count_ic)
     }
   })
 
   #Update tsne, umap and clustering selected number of principal components input
   observe({
     if (input$reduction_umap_method == "pca") {
-      updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_slider)
+      updateTextInput(session = session, inputId = "reduction_umap_count", value = input$pca_significant_pc_counter)
     }
     else if (input$reduction_umap_method == "ica") {
       updateTextInput(session = session, inputId = "reduction_umap_count", value = vals$counts@metadata$seurat$count_ic)
     }
     if (input$reduction_clustering_method == "pca") {
-      updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_slider)
+      updateTextInput(session = session, inputId = "reduction_clustering_count", value = input$pca_significant_pc_counter)
     }
     else if (input$reduction_clustering_method == "ica") {
       updateTextInput(session = session, inputId = "reduction_clustering_count", value = vals$counts@metadata$seurat$count_ic)
     }
     if (input$reduction_tsne_method == "pca") {
-      updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_slider)
+      updateTextInput(session = session, inputId = "reduction_tsne_count", value = input$pca_significant_pc_counter)
     }
     else if (input$reduction_tsne_method == "ica") {
       updateTextInput(session = session, inputId = "reduction_tsne_count", value = vals$counts@metadata$seurat$count_ic)

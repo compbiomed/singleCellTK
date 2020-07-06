@@ -74,9 +74,9 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "20"),
+                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
-                                            materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = TRUE),
+                                            materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
                                             conditionalPanel(
                                               condition = 'input.pca_compute_heatmap == true',
@@ -86,9 +86,10 @@ shinyPanelSeurat <- fluidPage(
                                             actionButton(inputId = "run_pca_button", "Run PCA")
                                              ),
                                         panel(heading = "Select No. of Components",
-                                            h5("Number of components suggested by ElbowPlot: "),
-                                            verbatimTextOutput(outputId = "pca_significant_pc_output", placeholder = TRUE),
-                                            sliderInput(inputId = "pca_significant_pc_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
+                                            #h5("Number of components suggested by ElbowPlot: "),
+                                            #verbatimTextOutput(outputId = "pca_significant_pc_output", placeholder = TRUE),
+                                            htmlOutput(outputId = "pca_significant_pc_output", inline = FALSE),
+                                            numericInput(inputId = "pca_significant_pc_counter", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10)
                                         )
                                           )
                                         )
@@ -157,7 +158,7 @@ shinyPanelSeurat <- fluidPage(
                                                panel(heading = "Select No. of Components",
                                                      #h5("Number of components suggested by ElbowPlot: "),
                                                      #verbatimTextOutput(outputId = "ica_significant_pc_output", placeholder = TRUE),
-                                                     sliderInput(inputId = "ica_significant_ic_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
+                                                     numericInput(inputId = "ica_significant_ic_counter", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10)
                                                )
                                         )
                                       )
