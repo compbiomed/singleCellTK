@@ -25,9 +25,8 @@
 
   numPc <- min(ncol(seurat@assays$RNA@scale.data) - 1, 50)
   seurat <- Seurat::RunPCA(seurat,
-    features =
-      Seurat::VariableFeatures(object = seurat),
-    npcs = numPc, verbose = verbose
+    features = Seurat::VariableFeatures(object = seurat),
+    npcs = numPc, verbose = verbose, seed.use = seed
   )
 
   seurat <- Seurat::FindNeighbors(seurat, dims = seuratPcs, verbose = verbose)

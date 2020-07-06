@@ -99,9 +99,16 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
     optparse::make_option(c("-n", "--numCores"),
         type="integer",
         default=1,
-        help="Number of cores used to run the pipeline. By default is 1. Parallel computing is enabled if -n is greater than 1.")
+        help="Number of cores used to run the pipeline. By default is 1. Parallel computing is enabled if -n is greater than 1."),
+    optparse::make_option(c("-D", "--detectCells"),
+        type="logical",
+        default=FALSE,
+        help="Detect cells from droplet matrix. Default is FALSE. This argument is only eavluated when -d is 'Droplet'. If set as TRUE, quality control will be performed on both the droplet and the detected cell matrix."),
+    optparse::make_option(c("-T", "--clusterType"),
+        type="character",
+        default="MulticoreParam",
+        help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1.")
     )
-
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
 opt <- arguments$options
@@ -120,7 +127,9 @@ FilterFile <- opt[["cell_data"]]
 yamlFile <- opt[["yamlFile"]]
 formats <- opt[["outputFormat"]]
 dataType <- opt[["dataType"]]
+detectCell <- opt[["detectCells"]]
 numCores <- opt[["numCores"]]
+clusterType <- opt[["clusterType"]] 
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["base_path"]], ",")) } 
 
@@ -146,10 +155,32 @@ if (!is.null(yamlFile)) {
 }
 
 ## checking numCores argument
+isWindows <- .Platform$OS.type == "windows"
+
 if (numCores > 1) {
-    multicoreParam <- MulticoreParam(workers = numCores)
-    Params$QCMetrics$BPPARAM <- multicoreParam
-    Params$emptyDrops$BPPARAM <- multicoreParam
+    if (numCores > parallel::detectCores()) {
+        warning("numCores is greater than number of cores available. Set numCores as maximum number of cores available.")
+    }
+
+    numCores <- min(numCores, parallel::detectCores())
+    message(as.character(numCores), " cores are used for parallel computation.")
+
+    if (clusterType == "MulticoreParam") {
+        parallelParam <- MulticoreParam(workers = numCores)
+
+        if (isTRUE(isWindows)) {
+            warning("'MulticoreParam' is not supported for Windows system. Setting 'clusterType' as 'SnowParam'. ")
+            parallelParam <- SnowParam(workers = numCores)            
+        }
+
+    } else if (clusterType == "SnowParam") {
+        parallelParam <- SnowParam(workers = numCores)
+    } else {
+        stop("'--clusterType' should be 'MulticoreParam' or 'SnowParam'.")
+    }
+
+    Params$QCMetrics$BPPARAM <- parallelParam
+    Params$emptyDrops$BPPARAM <- parallelParam
     Params$doubletFinder$numCores <- numCores
 }
 
@@ -346,24 +377,29 @@ for(i in seq_along(process)) {
     
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
-            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params, algorithms=c("emptyDrops"))
-            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & (dropletSCE$dropletUtils_emptyDrops_fdr < 0.01)
             cellSCE <- dropletSCE[,ix]
         }
 
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms=c("scrublet","decontX"))
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
     }
 
     if (dataType == "Droplet") {
         message(paste0(date(), " .. Running droplet QC"))        
-        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params,algorithms = c("barcodeRanks"))
+        dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
+        if (isTRUE(detectCell)) {
+            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+            cellSCE <- dropletSCE[,ix]
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        }
     }
 
     if (dataType == "Both") {
         if (!is.null(dropletSCE)) {
             message(paste0(date(), " .. Running droplet QC"))        
-            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params,algorithms = c("barcodeRanks"))
+            dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
             
             if (is.null(cellSCE)) {
                 ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
@@ -373,7 +409,7 @@ for(i in seq_along(process)) {
 
         if (!is.null(cellSCE)) {
             message(paste0(date(), " .. Running cell QC"))        
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms=c("scrublet","decontX"))
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
         }
     }
     
@@ -391,16 +427,23 @@ for(i in seq_along(process)) {
     }
 
     if (dataType == "Droplet") {
-        mergedDropletSCE <- dropletSCE
+        if (isTRUE(detectCell)) {
+            mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
+            mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)            
+        } else{
+            mergedDropletSCE <- dropletSCE
+        }
     }
 
     if (isTRUE(split)) {
-        if (dataType == "Both") {
+        if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
             
             ## Get parameters of QC functions
-            getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
+                         samplename = samplename, writeYAML = TRUE,
+                         skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
 
             ## generate meta data
             if ("FlatFile" %in% formats) {
@@ -420,29 +463,30 @@ for(i in seq_along(process)) {
             }
         }
 
-        if (dataType == "Cell") {
-            exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
-            getSceParams(inSCE = mergedFilteredSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
-        }
-
-        if (dataType == "Droplet") {
+        if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         }
 
+        if (dataType == "Cell") {
+            exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
+                         samplename = samplename, writeYAML = TRUE,
+                         skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
+        }
+
+    }
     dropletSCE_list[[samplename]] <- mergedDropletSCE
     cellSCE_list[[samplename]] <- mergedFilteredSCE
-    }
 }
 
 if (!isTRUE(split)) {
-    dropletSCE <- combineSCE(dropletSCE_list)
-    cellSCE <- combineSCE(cellSCE_list)
-
     if (length(sample) > 1) {
         samplename <- paste(sample, collapse="-")
     }
 
-    if (dataType == "Both") { 
+    if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
+        dropletSCE <- combineSCE(dropletSCE_list)
+        cellSCE <- combineSCE(cellSCE_list) 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
@@ -468,18 +512,22 @@ if (!isTRUE(split)) {
     }
 
     if (dataType == "Cell") {
+        cellSCE <- combineSCE(cellSCE_list)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
     }
 
-    if (dataType == "Droplet") {
+    if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
+        dropletSCE <- combineSCE(dropletSCE_list)
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
     }
 }
 
-if (("FlatFile" %in% formats) && (dataType == "Both")) {
-    HTANLevel3 <- do.call(base::rbind, level3Meta)
-    HTANLevel4 <- do.call(base::rbind, level4Meta)
-    write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
-    write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+if (("FlatFile" %in% formats)) {
+    if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
+        HTANLevel3 <- do.call(base::rbind, level3Meta)
+        HTANLevel4 <- do.call(base::rbind, level4Meta)
+        write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+        write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
+    }
 }

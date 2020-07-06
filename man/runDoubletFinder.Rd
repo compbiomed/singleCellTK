@@ -43,8 +43,6 @@ Default 0.075.}
 Default FALSE.}
 
 \item{numCores}{Integer. Number of cores used to run doubletFinder. Default is 1 (no parallel computing).}
-
-\item{seed.}{Integer. Random seed set for computation. Default is 12345.}
 }
 \value{
 SingleCellExperiment object containing the
