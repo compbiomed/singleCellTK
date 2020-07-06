@@ -59,10 +59,11 @@
 #' # This example only serves as an proof of concept and a tutorial on how to
 #' # run the function. The results should not be
 #' # used for drawing scientific conclusions.
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runEmptyDrops(inSCE = emptyDropsSceExample)
+#' data(scExample, package = "singleCellTK")
+#' sce <- runEmptyDrops(inSCE = sce)
 #' @import DropletUtils
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 runEmptyDrops <- function(inSCE,
                           sample = NULL,
                           useAssay = "counts", 

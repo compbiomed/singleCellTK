@@ -2,7 +2,7 @@
 % Please edit documentation in R/sce2adata.R
 \name{.sce2adata}
 \alias{.sce2adata}
-\title{Coverts SingleCellExperiment object from R to anndata.AnnData object in 
+\title{Coverts SingleCellExperiment object from R to anndata.AnnData object in
 Python}
 \usage{
 .sce2adata(SCE, useAssay = "counts")
@@ -12,8 +12,8 @@ Python}
 
 \item{useAssay}{Character, default `"counts"`. The name of assay of
 interests that will be set as the primary matrix of the output AnnData.
-Available options can be listed by `assayNames(SCE)`. Thee primary matrix 
-will be saved in `adata$X`, Other assays will be stored in `adata$obsm` 
+Available options can be listed by `assayNames(SCE)`. Thee primary matrix
+will be saved in `adata$X`, Other assays will be stored in `adata$obsm`
 together with the low-dimension representations (for now).}
 }
 \value{
@@ -21,6 +21,6 @@ A Python anndata.AnnData object
 }
 \description{
 The AnnData object here can be saved to .h5ad file and read into Python
-interactive console. Mostly used senario is when you want to apply 
+interactive console. Mostly used senario is when you want to apply
 reticulated Python function, which only works with an anndata.AnnData object.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/miscFunctions.R
 \name{summarizeSCE}
 \alias{summarizeSCE}
-\title{Summarize SCtkExperiment}
+\title{Summarize an assay in a \linkS4class{SingleCellExperiment}}
 \usage{
 summarizeSCE(inSCE, useAssay = NULL, sampleVariableName = NULL)
 }
@@ -20,10 +20,10 @@ to come from the same sample. Default \code{"sample"}.}
 A data.frame of summary metrics per sample.
 }
 \description{
-Creates a table of summary metrics from an input SCtkExperiment.
+Creates a table of summary metrics from an input
+\linkS4class{SingleCellExperiment}
 }
 \examples{
 data("mouseBrainSubsetSCE")
 summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-
 }

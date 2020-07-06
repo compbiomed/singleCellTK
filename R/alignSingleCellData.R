@@ -1,4 +1,4 @@
-#' Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object
+#' Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object
 #'
 #' @param inputfile1 An input file or list of files. Files can be fastq,
 #' fastq.gz, or bam, but must all be of the same type. Sample names will be the

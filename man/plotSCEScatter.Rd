@@ -21,6 +21,9 @@ plotSCEScatter(
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorLow = "white",
+  colorMid = "gray",
+  colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
@@ -44,8 +47,8 @@ object. Will be used only if "assays" slot is chosen. Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
@@ -74,6 +77,18 @@ Default NULL.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
+\item{colorLow}{Character. A color available from `colors()`.
+The color will be used to signify the lowest values on the scale.
+Default 'white'.}
+
+\item{colorMid}{Character. A color available from `colors()`.
+The color will be used to signify the midpoint on the scale.
+Default 'gray'.}
+
+\item{colorHigh}{Character. A color available from `colors()`.
+The color will be used to signify the highest values on the scale.
+Default 'blue'.}
+
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 
 \item{title}{Title of plot. Default NULL.}
@@ -92,9 +107,11 @@ Plot results of reduced dimensions data of counts stored in any
 slot in the SingleCellExperiment object.
 }
 \examples{
+\donttest{
 plotSCEScatter(
   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
-  slot = "assays", annotation = "counts", feature = "Tspan12",
+  slot = "assays", annotation = "counts", feature = "Apoe",
   reducedDimName = "TSNE_counts", labelClusters = FALSE
 )
+}
 }

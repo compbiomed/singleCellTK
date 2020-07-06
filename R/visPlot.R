@@ -3,7 +3,7 @@
 #' Given a plotting method with condition and gene list, return
 #' the respective visualization plot(s).
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay The assay to use in the visualization plot. Required
 #' @param method Visualization method. Available options are boxplot,
 #' scatterplot, or heatmap. Required
@@ -25,8 +25,8 @@
 #'         c("Cmtm5", "C1qa"))
 visPlot <- function(inSCE, useAssay, method, condition = NULL, glist,
                     facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
+  if (!inherits(inSCE, "SingleCellExperiment")){
+    stop("Please use a SingleCellExperiment object")
   }
   #test for assay existing
   if (!all(useAssay %in% names(assays(inSCE)))){

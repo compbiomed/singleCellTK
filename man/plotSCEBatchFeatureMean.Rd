@@ -8,6 +8,7 @@ plotSCEBatchFeatureMean(
   inSCE,
   useAssay = NULL,
   useReddim = NULL,
+  useAltExp = NULL,
   batch = "batch",
   xlab = "batch",
   ylab = "Feature Mean",
@@ -22,6 +23,9 @@ plotSCEBatchFeatureMean(
 
 \item{useReddim}{The name of the dimension reduced matrix that stores the
 value to plot. Default \code{NULL}.}
+
+\item{useAltExp}{The name of the alternative experiment that stores an assay
+of the value to plot. Default \code{NULL}.}
 
 \item{batch}{The column name of \code{colData(inSCE)} that indicates the
 batch annotation. Default \code{"batch"}.}

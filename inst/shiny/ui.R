@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinyFiles)
 library(ComplexHeatmap)
 library(limma)
 library(ggplot2)
@@ -35,6 +36,9 @@ library(readxl)
 library(broom)
 library(RColorBrewer)
 library(grDevices)
+library(shinyWidgets)
+library(stringr)
+library(Hmisc)
 
 source("helpers.R")
 source("colourGroupInput.R")
@@ -128,12 +132,12 @@ source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer varia
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 
 jsCode <- "
 
 shinyjs.disableTabs = function() {
-  let tabs = $('.nav li a').not('a[data-value=\"Upload\"]');
+  let tabs = $('.nav li a').not('a[data-value=\"Data\"], a[data-value=\"Import\"]');
   tabs.bind('click', function(e) {
     e.preventDefault();
     return false;
@@ -165,7 +169,6 @@ shinyUI(
     navbarPage(
       tooltitle,
       theme = shinytheme(shinyTheme),
-      #Upload Tab
       tabPanel("Data", shinyPanelData),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),

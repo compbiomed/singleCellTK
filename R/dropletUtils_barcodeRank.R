@@ -56,9 +56,10 @@
 #' # This example only serves as an proof of concept and a tutoriol on how to
 #' # run the function. The results should not be
 #' # used for drawing scientific conclusions.
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runBarcodeRankDrops(inSCE = emptyDropsSceExample)
+#' data(scExample, package = "singleCellTK")
+#' sce <- runBarcodeRankDrops(inSCE = sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
 runBarcodeRankDrops <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts", 

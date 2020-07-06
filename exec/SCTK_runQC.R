@@ -181,7 +181,7 @@ if (numCores > 1) {
 
     Params$QCMetrics$BPPARAM <- parallelParam
     Params$emptyDrops$BPPARAM <- parallelParam
-    Params$doubletFinder$numCores <- numCores
+    Params$doubletFinder$nCores <- numCores
 }
 
 ### checking output formats

@@ -19,8 +19,8 @@ plotSCEDensityColData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -51,7 +51,7 @@ Visualizes values stored in the colData slot of a
  SingleCellExperiment object via a density plot.
 }
 \examples{
-plotSCEViolinColData(
+plotSCEDensityColData(
   inSCE = mouseBrainSubsetSCE,
   coldata = "age", groupby = "sex"
 )

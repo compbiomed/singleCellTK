@@ -25,6 +25,8 @@
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runCxds(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -132,6 +134,8 @@ runCxds <- function(inSCE,
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runBcds(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -248,6 +252,8 @@ runBcds <- function(inSCE,
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runCxdsBcdsHybrid(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,
     seed = 12345,

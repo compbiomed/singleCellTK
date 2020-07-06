@@ -14,14 +14,15 @@ plotUMAP(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction components
-or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components. Required}
 
 \item{colorBy}{color by a condition(any column of the annotation data).}
 
 \item{shape}{add shapes to each condition.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment object. Required.}
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{runUMAP}{If the dimension reduction components are already available
 set this to FALSE, otherwise set to TRUE. Default is False.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/runSCANORAMA.R
 \name{runSCANORAMA}
 \alias{runSCANORAMA}
-\title{Apply the mutual nearest neighbors (MNN) batch effect correction method to 
+\title{Apply the mutual nearest neighbors (MNN) batch effect correction method to
 SingleCellExperiment object}
 \usage{
 runSCANORAMA(
@@ -19,32 +19,32 @@ runSCANORAMA(
 \item{inSCE}{SingleCellExperiment object. An object that stores your dataset
 and analysis procedures.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
+\item{useAssay}{character, default `"logcounts"`. A string indicating the name
+of the assay requiring batch correction in "inSCE", should exist in
 `assayNames(inSCE)`.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
+\item{batch}{character, default `"batch"`. A string indicating the
 field of `colData(inSCE)` that defines different batches.}
 
-\item{assayName}{character, default `"SCANORAMA"`. The name for the 
+\item{assayName}{character, default `"SCANORAMA"`. The name for the
 corrected full-sized expression matrix.}
 
-\item{SIGMA}{numeric, default `15`. Algorithmic parameter, correction 
+\item{SIGMA}{numeric, default `15`. Algorithmic parameter, correction
 smoothing parameter on Gaussian kernel.}
 
-\item{ALPHA}{numeric, default `0.1`. Algorithmic parameter, alignment score 
+\item{ALPHA}{numeric, default `0.1`. Algorithmic parameter, alignment score
 minimum cutoff.}
 
-\item{KNN}{integer, default `20L`. Algorithmic parameter, number of nearest 
+\item{KNN}{integer, default `20L`. Algorithmic parameter, number of nearest
 neighbors to use for matching.}
 }
 \value{
-SingleCellExperiment object with `assay(inSCE, assayName)` updated 
+SingleCellExperiment object with `assay(inSCE, assayName)` updated
 with corrected full-sized expression matrix.
 }
 \description{
-SCANORAMA is analogous to computer vision algorithms for panorama stitching 
-that identify images with overlapping content and merge these into a larger 
+SCANORAMA is analogous to computer vision algorithms for panorama stitching
+that identify images with overlapping content and merge these into a larger
 panorama.
 }
 \examples{

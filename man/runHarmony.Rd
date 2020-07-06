@@ -10,49 +10,51 @@ runHarmony(
   pcInput = FALSE,
   batch = "batch",
   reducedDimName = "HARMONY",
-  nComponents = 50,
+  nComponents = 50L,
   theta = 5,
-  nIter = 10
+  nIter = 10L
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{pcInput}{bool, default `FALSE`. Whether to do correction on a low-dim
-matrix. If `TRUE`, will look for `useAssay` in `reducedDim(inSCE)`.}
+\item{pcInput}{A logical scalar. Whether to use a low-dimension matrix for
+batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
+from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{reducedDimName}{character, default `"HARMONY"`. The name for the 
-corrected low-dimensional representation.}
+\item{reducedDimName}{A single character. The name for the corrected
+low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+Default \code{"HARMONY"}.}
 
-\item{nComponents}{integer, default `20`. Number of principle components or 
-dimensionality to generate in the resulting reducedDim. If `pcInput`, will
-directly follow the dimensionality of the specified reducedDim.}
+\item{nComponents}{An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. If \code{pcInput} is set
+to \code{TRUE}, the output dimension will follow the low-dimension matrix,
+so this argument will be ignored. Default \code{50L}.}
 
-\item{theta}{Numeric, default 5. Diversity clustering penalty parameter, 
-Larger value results in more diverse clusters.}
+\item{theta}{A Numeric scalar. Diversity clustering penalty parameter,
+Larger value results in more diverse clusters. Default \code{5}}
 
-\item{nIter}{integer, default `10`. The max number of iterations to perform.}
+\item{nIter}{An integer. The max number of iterations to perform. Default
+\code{10L}.}
 }
 \value{
-SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.
+The input \linkS4class{SingleCellExperiment} object with
+\code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{
-Harmony is an algorithm that projects cells into a shared embedding in which 
+Harmony is an algorithm that projects cells into a shared embedding in which
 cells group by cell type rather than dataset-specific conditions.
 }
 \examples{
- 
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runHarmony(sceBatches, nComponents = 10)
+sceCorr <- runHarmony(sceBatches, nComponents = 10L)
 }
 \references{
 Ilya Korsunsky, et al., 2019

@@ -1,7 +1,7 @@
 #' Given a set of genes, return a ggplot of expression
 #' values.
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param gene genelist to run the method on.
 #' @param binary binary/continuous color for the expression.
 #' @param shape shape parameter for the ggplot.
@@ -31,8 +31,8 @@ plotBiomarker <- function(inSCE, gene, binary="Binary",
     shape <- NULL
   }
   variances <- NULL
-  if (class(inSCE) == "SCtkExperiment"){
-    variances <- pcaVariances(inSCE)
+  if (!inherits(inSCE, "SingleCellExperiment")){
+    stop("Please use a SingleCellExperiment object")
   }
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     stop("Please supply a correct reducedDimName")
