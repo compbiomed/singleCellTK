@@ -1,35 +1,35 @@
 #' Apply scGen batch effect correction method to SingleCellExperiment object
-#' 
-#' scGen is a generative model to predict single-cell perturbation response 
-#' across cell types, studies and species. It works by combining variational 
+#'
+#' scGen is a generative model to predict single-cell perturbation response
+#' across cell types, studies and species. It works by combining variational
 #' autoencoders and latent space vector arithmetics for high-dimensional single-
 #' cell gene expression data.
-#' 
-#' Result does not look fine for now. Time consuming also even it allocates 32 
-#' cores.
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name 
-#' of the assay requiring batch correction in "inSCE", should exist in 
-#' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the field 
-#' of `colData(inSCE)` that defines different batches.
-#' @param cellType character, default `"cell_type"`. A string indicating the 
-#' field of `colData(inSCE)` that defines different cell types.
-#' @param assayName character, default `"SCGEN"`. The name for the corrected 
-#' full-sized expression matrix.
-#' @param nEpochs integer, default `100L`. Algorithmic parameter, number of 
-#' epochs to iterate and optimize network weights. 
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param cellType A single character. A string indicating a field in
+#' \code{colData(inSCE)} that defines different cell types. Default
+#' \code{'cell_type'}.
+#' @param nEpochs An integer. Algorithmic parameter, the number of epochs to
+#' iterate and optimize network weights. Default \code{50L}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' \code{"SCGEN"}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{assay(inSCE, assayName)} updated.
 #' @export
 #' @references Lotfollahi, Mohammad et al., 2019
-#' @examples 
+#' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runSCGEN(sceBatches)
 #' }
-runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch', 
-                     cellType = "cell_type", assayName = 'SCGEN', 
-                     nEpochs = 50L){
+runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
+                     cellType = "cell_type", nEpochs = 50L,
+                     assayName = 'SCGEN'){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
@@ -59,7 +59,7 @@ runSCGEN <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
     adata <- .sce2adata(inSCE, useAssay = useAssay)
     network = scgen$VAEArith(x_dimension = adata$n_vars)
     network$train(train_data = adata, n_epochs = nEpochs)
-    corrAdata <- scgen$batch_removal(network, adata, batch_key = batch, 
+    corrAdata <- scgen$batch_removal(network, adata, batch_key = batch,
                                      cell_label_key = cellType)
     corrMat <- t(corrAdata$X)
     SummarizedExperiment::assay(inSCE, assayName) <- corrMat
