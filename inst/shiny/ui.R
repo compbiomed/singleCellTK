@@ -200,8 +200,6 @@ shinyUI(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
                hidden(verbatimTextOutput(outputId="console")),
-               tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
-               tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
         )
       ),
       useShinyjs(),
