@@ -285,27 +285,30 @@ shinyPanelSeurat <- fluidPage(
                     column(8,
                            fluidRow(
                              column(12,
-                                    tags$div(class = "seurat_clustering_plots", tabsetPanel(type = "tabs",
-                                                tabPanel(title = "PCA Plot",
-                                                         panel(heading = "PCA Plot",
-                                                               plotlyOutput(outputId = "plot_pca_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "ICA Plot",
-                                                         panel(heading = "ICA Plot",
-                                                               plotlyOutput(outputId = "plot_ica_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "tSNE Plot",
-                                                         panel(heading = "tSNE Plot",
-                                                               plotlyOutput(outputId = "plot_tsne_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "UMAP Plot",
-                                                         panel(heading = "UMAP Plot",
-                                                               plotlyOutput(outputId = "plot_umap_clustering")
-                                                         )
-                                                )
+                                    # uiOutput("ui_seuratClustering_pca")
+                                    tags$div(class = "seurat_clustering_plots", tabsetPanel(id = "seuratClusteringPlotTabset", type = "tabs"
+                                                 # tabPanel(title = "PCA Plot",
+                                                 #          panel(heading = "PCA Plot",
+                                                 #                plotlyOutput(outputId = "plot_pca_clustering"),
+                                                 #                uiOutput("ui_seuratClustering_pca")
+                                                 #          )
+                                                 # )
+                                                # tabPanel(title = "ICA Plot",
+                                                #          panel(heading = "ICA Plot",
+                                                #                plotlyOutput(outputId = "plot_ica_clustering")
+                                                #          )
+                                                # ),
+                                                # tabPanel(title = "tSNE Plot",
+                                                #          panel(heading = "tSNE Plot",
+                                                #                plotlyOutput(outputId = "plot_tsne_clustering")
+                                                #          )
+                                                # ),
+                                                # tabPanel(title = "UMAP Plot",
+                                                #          panel(heading = "UMAP Plot",
+                                                #                plotlyOutput(outputId = "plot_umap_clustering")
+                                                #          )
+                                                # )
+
                                     ))
                              )
                              

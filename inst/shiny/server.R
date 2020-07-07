@@ -5166,6 +5166,13 @@ shinyServer(function(input, output, session) {
       showNotification("Find Clusters Complete")
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
+                                                                           panel(heading = "PCA Plot",
+                                                                                 plotlyOutput(outputId = "plot_pca_clustering")
+                                                                           )
+                                                                   )
+
+        )
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
           output$plot_pca_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5178,6 +5185,11 @@ shinyServer(function(input, output, session) {
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
       }
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "ICA Plot",
+                                                                   panel(heading = "ICA Plot",
+                                                                         plotlyOutput(outputId = "plot_ica_clustering")
+                                                                   )
+        ))
         withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
           output$plot_ica_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
