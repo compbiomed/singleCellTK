@@ -4,23 +4,23 @@
 #' SCANORAMA is analogous to computer vision algorithms for panorama stitching
 #' that identify images with overlapping content and merge these into a larger
 #' panorama.
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name
-#' of the assay requiring batch correction in "inSCE", should exist in
-#' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the
-#' field of `colData(inSCE)` that defines different batches.
-#' @param assayName character, default `"SCANORAMA"`. The name for the
-#' corrected full-sized expression matrix.
-#' @param SIGMA numeric, default `15`. Algorithmic parameter, correction
-#' smoothing parameter on Gaussian kernel.
-#' @param ALPHA numeric, default `0.1`. Algorithmic parameter, alignment score
-#' minimum cutoff.
-#' @param KNN integer, default `20L`. Algorithmic parameter, number of nearest
-#' neighbors to use for matching.
-#' @return SingleCellExperiment object with `assay(inSCE, assayName)` updated
-#' with corrected full-sized expression matrix.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param SIGMA A numeric scalar. Algorithmic parameter, correction smoothing
+#' parameter on Gaussian kernel. Default \code{15}.
+#' @param ALPHA A numeric scalar. Algorithmic parameter, alignment score
+#' minimum cutoff. Default \code{0.1}.
+#' @param KNN An integer. Algorithmic parameter, number of nearest neighbors to
+#' use for matching. Default \code{20L}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' \code{"SCANORAMA"}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{assay(inSCE, assayName)} updated.
 #' @export
 #' @references Brian Hie et al, 2019
 #' @examples
@@ -29,8 +29,8 @@
 #' sceCorr <- runSCANORAMA(sceBatches)
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
-                         assayName = 'SCANORAMA', SIGMA = 15, ALPHA = 0.1,
-                         KNN = 20L){
+                         SIGMA = 15, ALPHA = 0.1, KNN = 20L,
+                         assayName = 'SCANORAMA'){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")

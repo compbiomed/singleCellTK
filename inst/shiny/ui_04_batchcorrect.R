@@ -125,7 +125,10 @@ shinyPanelBatchcorrect <- fluidPage(
             )
         )
     ),
-  tabPanel("Batch Correction",
+  tabPanel(
+    "Batch Correction",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#ui-usage-1",
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
@@ -138,6 +141,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # BBKNN ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'BBKNN'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runBBKNN.html",
+                    "(help for BBKNN)", target = "_blank")),
           numericInput("BBKNNNComp", label = "Number of output dimension:",
                        value = 50L, min = 2, max = 100000, step = 1),
           textInput("BBKNNSaveReddim", "ReducedDim Name to Use:",
@@ -147,6 +152,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # ComBat ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'ComBat'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runComBat.html",
+                    "(help for ComBat)", target = "_blank")),
           selectInput("combatCond", "Select Condition of Covariance:",
                       clusterChoice),
           radioButtons("combatParametric", "Adjustments:",
@@ -164,6 +171,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # FastMNN ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'FastMNN'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runFastMNN.html",
+                    "(help for fastMNN)", target = "_blank")),
           checkboxInput('FastMNNPcInput', "Use low-dimension input instead",
                         value = FALSE),
           conditionalPanel(
@@ -178,6 +187,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # Harmony ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Harmony'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runHarmony.html",
+                    "(help for Harmony)", target = "_blank")),
           checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
                         value = FALSE),
           conditionalPanel(
@@ -198,6 +209,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # LIGER ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'LIGER'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLIGER.html",
+                    "(help for LIGER)", target = "_blank")),
           numericInput("ligerNComp", label = "Number of output dimension:",
                        value = 20L, min = 2, max = 100000, step = 1),
           numericInput("ligerLambda", label = "Lambda:",
@@ -211,12 +224,16 @@ shinyPanelBatchcorrect <- fluidPage(
         # Limma ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Limma'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLimmaBC.html",
+                    "(help for Limma)", target = "_blank")),
           textInput("limmaSaveAssay", "Assay Name to Use:", value = "LIMMA"),
           withBusyIndicatorUI(actionButton("limmaRun", "Run"))
         ),
         # MNN ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'MNN'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runMNNCorrect.html",
+                    "(help for MNN)", target = "_blank")),
           numericInput('MNNK', 'K value',
                        value = 20, min = 1, step = 1),
           numericInput("MNNSigma", 'Sigma value', value = 0.1),
@@ -226,6 +243,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # scanorama ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'scanorama'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runSCANORAMA.html",
+                    "(help for Scanorama)", target = "_blank")),
           numericInput('scnrmSIGMA', 'Sigma value', 15),
           numericInput('scnrmALPHA', 'Alpha value', 0.1),
           numericInput('scnrmKNN', 'KNN value', 20, min = 1, step = 1),
@@ -236,6 +255,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # scMerge ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'scMerge'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runSCMerge.html",
+                    "(help for scMerge)", target = "_blank")),
           ## SEG options
           radioButtons('scMergeSEGOpt', "Choose Stable Expressed Gene (SEG) seg",
                        choiceNames = c('Automatically identify',
@@ -267,6 +288,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # Seurat3 Integration ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Seurat3 Integration'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runSeurat3Integration.html",
+                    "(help for Seurat Integration)", target = "_blank")),
           uiOutput('Srt3IntNAnchUI'),
           textInput("Srt3IntSaveAssay", "Assay Name to Use:",
                     value = "Seurat3Int"),
@@ -275,6 +298,8 @@ shinyPanelBatchcorrect <- fluidPage(
         # ZINBWaVE ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'ZINBWaVE'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runZINVWaVE.html",
+                    "(help for ZINBWaVE)", target = "_blank")),
           span("Test on small example not passed yet, don't run.",
                style = 'color:red;'),
           uiOutput('zinbwaveNHvgUI'),
@@ -296,7 +321,7 @@ shinyPanelBatchcorrect <- fluidPage(
               width = 4,
               style='border-right: 1px solid #CCCCCC',
               h4('Original Status'),
-              plotOutput('batchOriVar',
+              plotOutput('batchOriVars',
                 height = "300px", width = "300px"),
               plotOutput('batchOriPCA',
                 height = "300px", width = "300px")
@@ -304,7 +329,7 @@ shinyPanelBatchcorrect <- fluidPage(
             column(
               width = 4,
               h4("Corrected Status"),
-              plotOutput('batchCorrVar',
+              plotOutput('batchCorrVars',
                 height = "300px", width = "300px"),
               plotOutput('batchCorrReddim',
                 height = "300px", width = "300px")
@@ -312,14 +337,14 @@ shinyPanelBatchcorrect <- fluidPage(
             column(
               width = 4,
               h3("Visualization Setting"),
+              h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
+                        "(What are plotted?)", target = "_blank")),
               selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
               selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
               selectInput("batchCheckCond", "Additional Condition (optional)",
                 clusterChoice),
-              #radioButtons('batchCheckResType', "Result Type",
-              #  choiceNames = c("assay", "reducedDim"),
-              #  choiceValues = c(1, 2)),
-              uiOutput("batchCheckResUI")
+              uiOutput("batchCheckResUI"),
+              withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
             )
           )
         )

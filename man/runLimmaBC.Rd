@@ -7,29 +7,28 @@
 runLimmaBC(inSCE, useAssay = "logcounts", assayName = "LIMMA", batch = "batch")
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{assayName}{character, default `"LIMMA"`. The name for the corrected 
-full-sized expression matrix.}
+\item{assayName}{A single characeter. The name for the corrected assay. Will
+be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+\code{"LIMMA"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 }
 \value{
-SingleCellExperiment object with `assay(inSCE, assayName)` updated 
-with corrected full-sized expression matrix.
+The input \linkS4class{SingleCellExperiment} object with
+\code{assay(inSCE, assayName)} updated.
 }
 \description{
-Limma's batch effect removal function fits a linear model to the data, then 
+Limma's batch effect removal function fits a linear model to the data, then
 removes the component due to the batch effects.
 }
 \examples{
- 
 data('sceBatches', package = 'singleCellTK')
 sceCorr <- runLimmaBC(sceBatches)
 }

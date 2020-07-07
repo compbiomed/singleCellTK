@@ -67,7 +67,7 @@ Imports:
     scater,
     scMerge (>= 1.2.0),
     scran,
-    Seurat,
+    Seurat (>= 3.1.3),
     shiny,
     shinyDirectoryInput,
     shinyFiles,
@@ -86,7 +86,7 @@ Imports:
     umap,
     uwot,
     DropletUtils,
-    scds,
+    scds (>= 1.2.0),
     reticulate (>= 1.14),
     tools,
     withr,
@@ -99,7 +99,7 @@ Imports:
     TENxPBMCData,
     yaml,
     rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests:
     testthat,
     Rsubread,
