@@ -58,13 +58,11 @@ test_that(desc = "Testing importOptimus", {
   expect_true(validObject(sce))
 }) 
 
-<<<<<<< HEAD
 test_that(desc = "Testing importAnnData", {
   sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
                        sampleNames = 'pbmc3k_20by20')
   expect_true(validObject(sce))
 })
-=======
 ##################################
 ## Importing Gene Set Functions
 ##################################
@@ -110,4 +108,3 @@ test_that(desc = "Testing importGeneSetFromMSigDB", {
                                   by = "feature_name")
   expect_true(inherits(sce@metadata$sctk$genesets$"C2-CP"[[1]], "GeneSet"))
 }) 
->>>>>>> 4127090a0c04ab251d1357d8787f6c0ea2c648d5
