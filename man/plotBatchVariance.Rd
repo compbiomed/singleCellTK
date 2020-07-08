@@ -5,10 +5,16 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCE, useAssay = "logcounts", batch, condition = NULL)
+plotBatchVariance(
+  inSCE,
+  useAssay = "logcounts",
+  batch = "batch",
+  condition = NULL,
+  pcInput = FALSE
+)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
 
@@ -17,6 +23,9 @@ Required}
 
 \item{condition}{The column in the annotation data that corresponds to
 condition. Optional}
+
+\item{pcInput}{A logical scalar indicating whether \code{useAssay} is in
+\code{names(reducedDims(inSCE))}. Default \code{FALSE}.}
 }
 \value{
 A boxplot of variation explained by batch, condition, and
@@ -27,11 +36,13 @@ Visualize the percent variation in the data that is explained by batch and
 condition if it is given.
 }
 \examples{
-if(requireNamespace("bladderbatch", quietly = TRUE)) {
-  library(bladderbatch)
-  data(bladderdata)
-  dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
-  plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+\dontrun{
+  if(requireNamespace("bladderbatch", quietly = TRUE)) {
+    library(bladderbatch)
+    data(bladderdata)
+    dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
+    plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+  }
 }
 
 }

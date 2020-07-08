@@ -2,14 +2,15 @@
 % Please edit documentation in R/miscFunctions.R
 \name{summarizeSCE}
 \alias{summarizeSCE}
-\title{Summarize SCtkExperiment}
+\title{Summarize an assay in a \linkS4class{SingleCellExperiment}}
 \usage{
-summarizeSCE(inSCE, useAssay = "counts", sampleVariableName = "sample")
+summarizeSCE(inSCE, useAssay = NULL, sampleVariableName = NULL)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object.}
+\item{inSCE}{Input SingleCellExperiment object.}
 
-\item{useAssay}{Indicate which assay to summarize. Default \code{"counts"}.}
+\item{useAssay}{Indicate which assay to summarize. If \code{NULL}, then the first
+assay in \code{inSCE} will be used. Default \code{NULL}.}
 
 \item{sampleVariableName}{Variable name in \code{colData} denoting which
 sample each cell belongs to. If \code{NULL}, all cells will be assumed
@@ -19,10 +20,10 @@ to come from the same sample. Default \code{"sample"}.}
 A data.frame of summary metrics per sample.
 }
 \description{
-Creates a table of summary metrics from an input SCtkExperiment.
+Creates a table of summary metrics from an input
+\linkS4class{SingleCellExperiment}
 }
 \examples{
 data("mouseBrainSubsetSCE")
 summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-
 }

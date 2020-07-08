@@ -40,6 +40,7 @@
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}.
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
+#' @export
 plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     log2fcThreshold = 1, fdrThreshold = 0.05, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
@@ -70,8 +71,7 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
-    if(!all(colnames(degFull)[1:4] ==
-           c("Gene", "Pvalue", "Log2_FC", "FDR"))){
+    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
         stop('"findMarker" result cannot be interpreted properly')
     }
     if(!is.null(log2fcThreshold)){

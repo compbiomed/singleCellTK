@@ -19,7 +19,7 @@ plotBiomarker(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{gene}{genelist to run the method on.}
 

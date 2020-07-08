@@ -1,9 +1,11 @@
-#' Summarize SCtkExperiment
+#' Summarize an assay in a \linkS4class{SingleCellExperiment}
 #'
-#' Creates a table of summary metrics from an input SCtkExperiment.
+#' Creates a table of summary metrics from an input
+#' \linkS4class{SingleCellExperiment}
 #'
-#' @param inSCE Input SCtkExperiment object. 
-#' @param useAssay Indicate which assay to summarize. Default \code{"counts"}.
+#' @param inSCE Input SingleCellExperiment object.
+#' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the first
+#' assay in \code{inSCE} will be used. Default \code{NULL}.
 #' @param sampleVariableName Variable name in \code{colData} denoting which
 #' sample each cell belongs to. If \code{NULL}, all cells will be assumed
 #' to come from the same sample. Default \code{"sample"}.
@@ -15,18 +17,22 @@
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' summarizeSCE(mouseBrainSubsetSCE, sample = NULL)
-#'
-summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"){
-  
+#' @importFrom SummarizedExperiment assays colData
+summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
+
+  if(is.null(useAssay)) {
+    useAssay <- names(assays(inSCE))[1]
+  }
+
   if(is.null(sampleVariableName)) {
     sampleVariable <- rep("Sample", ncol(inSCE))
   } else {
     if(!(sampleVariableName %in% colnames(colData(inSCE)))) {
       stop(paste0("'", sampleVariableName, "' was not found in the 'colData' of 'inSCE'."))
     }
-    sampleVariable <- colData(inSCE)[,sampleVariableName]  
+    sampleVariable <- colData(inSCE)[,sampleVariableName]
   }
-  
+
   numCells <- table(sampleVariable)
   var <- colSums(SummarizedExperiment::assay(inSCE, useAssay))
   meanCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = mean)
@@ -34,7 +40,7 @@ summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"
   var2 <- colSums(SummarizedExperiment::assay(inSCE, useAssay) > 0)
   meanDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = mean)
   medianDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = stats::median)
-  
+
   df <- data.frame("Sample" = names(numCells),
                    "Number of Cells" = as.integer(round(as.numeric(numCells))),
                    "Mean counts per cell" = as.integer(round(meanCounts[,2])),
@@ -45,99 +51,10 @@ summarizeSCE <- function(inSCE, useAssay="counts", sampleVariableName = "sample"
   return(df)
 }
 
-#' Create a SCtkExperiment object
-#'
-#' From a file of counts and a file of annotation information, create a
-#' SCtkExperiment object.
-#'
-#' @param assayFile The path to a text file that contains a header row of sample
-#' names, and rows of raw counts per gene for those samples.
-#' @param annotFile The path to a text file that contains columns of annotation
-#' information for each sample in the assayFile. This file should have the same
-#' number of rows as there are columns in the assayFile.
-#' @param featureFile The path to a text file that contains columns of
-#' annotation information for each gene in the count matrix. This file should
-#' have the same genes in the same order as assayFile. This is optional.
-#' @param assayName The name of the assay that you are uploading. The default
-#' is "counts".
-#' @param inputDataFrames If TRUE, assayFile and annotFile are read as data
-#' frames instead of file paths. The default is FALSE.
-#' @param createLogCounts If TRUE, create a log2(counts+1) normalized assay
-#' and include it in the object. The default is TRUE
-#' @return a SCtkExperiment object
-#' @export
-#' @examples
-#' data("mouseBrainSubsetSCE")
-#' counts_mat <- assay(mouseBrainSubsetSCE, "counts")
-#' sample_annot <- colData(mouseBrainSubsetSCE)
-#' row_annot <- rowData(mouseBrainSubsetSCE)
-#' newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot,
-#'                     featureFile = row_annot, assayName = "counts",
-#'                     inputDataFrames = TRUE, createLogCounts = TRUE)
-createSCE <- function(assayFile=NULL, annotFile=NULL, featureFile=NULL,
-                      assayName="counts", inputDataFrames=FALSE,
-                      createLogCounts=TRUE){
-  
-  if (is.null(assayFile)){
-    stop("You must supply a count file.")
-  }
-  if (inputDataFrames){
-    countsin <- assayFile
-    annotin <- annotFile
-    featurein <- featureFile
-  } else{
-    countsin <- utils::read.table(assayFile, sep = "\t", header = TRUE,
-                                  row.names = 1)
-    if (!is.null(annotFile)){
-      annotin <- utils::read.table(annotFile, sep = "\t", header = TRUE,
-                                   row.names = 1)
-    }
-    if (!is.null(featureFile)){
-      featurein <- utils::read.table(featureFile, sep = "\t", header = TRUE,
-                                     row.names = 1)
-    }
-  }
-  if (is.null(annotFile)){
-    annotin <- data.frame(row.names = colnames(countsin))
-    annotin$Sample <- rownames(annotin)
-    annotin <- S4Vectors::DataFrame(annotin)
-  }
-  if (is.null(featureFile)){
-    featurein <- data.frame(Gene = rownames(countsin))
-    rownames(featurein) <- featurein$Gene
-    featurein <- S4Vectors::DataFrame(featurein)
-  }
-  if (nrow(annotin) != ncol(countsin)){
-    stop("Different number of samples in input matrix and annotations: annot: ",
-         nrow(annotin), ", counts: ", ncol(countsin))
-  }
-  if (nrow(featurein) != nrow(countsin)){
-    stop("Different number of samples in input matrix and feature annotation",
-         nrow(featurein), ", counts: ", nrow(countsin))
-  }
-  if (any(rownames(annotin) != colnames(countsin))){
-    stop("Sample names in input matrix and annotation do not match!\nExample: ",
-         rownames(annotin)[rownames(annotin) != colnames(countsin)][1], " vs. ",
-         colnames(countsin)[rownames(annotin) != colnames(countsin)][1])
-  }
-  if (any(rownames(featurein) != rownames(countsin))){
-    stop("Sample names in input matrix and feature annotation do not match!")
-  }
-  assaylist <- list()
-  assaylist[[assayName]] <- as.matrix(countsin)
-  newassay <- SCtkExperiment(assays = assaylist,
-                             colData = annotin,
-                             rowData = featurein)
-  if (createLogCounts){
-    SummarizedExperiment::assay(newassay, paste0("log", assayName)) <-
-      log2(SummarizedExperiment::assay(newassay, assayName) + 1)
-  }
-  return(newassay)
-}
 
 #' Filter Genes and Samples from a Single Cell Object
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
 #' @param useAssay Indicate which assay to use for filtering. Default is
 #' "counts"
 #' @param deletesamples List of samples to delete from the object.
@@ -279,7 +196,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   chuS <- floor(floor(limit/dimN[1])) # size of chunk
   chuN <- ceiling(dimN[2]/chuS) # number of chunks
   Mat <- list()
-  
+
   for (i in 1:chuN) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
@@ -292,14 +209,14 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
-  
+
   return(x)
 }
 
 #' Resolve duplicated feature names in a matrix
-#' 
+#'
 #' Adds '-1', '-2', ... '-i' to multiple duplicated feature names
-#' @param countmat matrix, with row names as feature names that need to be 
+#' @param countmat matrix, with row names as feature names that need to be
 #' resolved.
 #' @return The same matrix as input with rowname duplication resolved.
 featureNameDedup <- function(countmat){
@@ -321,4 +238,107 @@ featureNameDedup <- function(countmat){
         }
     }
     return(countmat)
+}
+
+
+#' Retrieve cell/feature index by giving identifiers saved in col/rowData
+#'
+#' @description Originally written in \code{\link[celda]{retrieveFeatureIndex}}.
+#' Modified for also retrieving cell indices and only working for
+#' \linkS4class{SingleCellExperiment} object. This will return indices of
+#' features among the \code{rowData}/\code{colData}. Partial matching (i.e.
+#' grepping) can be used.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
+#' @param IDs Character vector of identifiers for features or cells to find in
+#' \code{rowData} or \code{colData} of \code{inSCE}
+#' @param axis A character scalar to specify whether to search for features or
+#' cells. Use \code{"row"}, \code{"feature"} or \code{"gene"} for features;
+#' \code{"col"} or \code{"cell"} for cells.
+#' @param by Character. In which column to search for features/cells in
+#' \code{rowData}/\code{colData}. Default \code{NULL} for search the
+#' \code{rownames}/\code{colnames}
+#' @param exactMatch A logical scalar. Whether to only identify exact matches
+#' or to identify partial matches using \code{\link{grep}}. Default \code{TRUE}
+#' @param firstMatch A logical scalar. Whether to only identify the first
+#' matches or to return all plausible matches. Default \code{TRUE}
+#' @return A unique, non-NA numeric vector of indices for the matching
+#' features/cells in \code{inSCE}.
+#' @author Yusuke Koga, Joshua Campbell
+#' @export
+retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
+                             exactMatch = TRUE, firstMatch = TRUE){
+  if(!inherits(inSCE, "SingleCellExperiment")){
+    stop("`inSCE` should inherits from a SingleCellExperiment object.")
+  }
+  if(!axis %in% c('row', 'col', 'cell', 'feature', 'gene')){
+    stop("Invalid axis specification")
+  }
+  if(axis %in% c('row', 'feature', 'gene')){
+    data <- SummarizedExperiment::rowData(inSCE)
+  } else {
+    data <- SummarizedExperiment::colData(inSCE)
+  }
+
+  if(!is.null(by)){
+    if(!by %in% colnames(data)){
+      stop('"', by, '" annotation not found for "', axis, '".')
+    }
+    search <- data[[by]]
+  } else {
+    if (is.null(rownames(data))) {
+      stop("'rownames' of 'inSCE' are 'NULL'. Please set 'rownames' or change",
+           " 'by' to search a different annotation of 'inSCE'.")
+    }
+    search <- rownames(data)
+  }
+  Indices <- numeric()
+  notFound <- numeric()
+  if (!isTRUE(exactMatch)) {
+    for(i in seq_along(IDs)){
+      g <- grep(IDs[i], search)
+      if(length(g) == 0){
+        notFound <- c(notFound, i)
+      } else if (length(g) == 1){
+        Indices <- c(Indices, g)
+      } else if(length(g) > 1){
+        if(isTRUE(firstMatch)){
+          Indices <- c(Indices, g[1])
+        } else {
+          Indices <- c(Indices, g)
+        }
+      }
+    }
+    dupMatched <- search[unique(Indices[duplicated(Indices)])]
+  } else {
+    if(isTRUE(firstMatch)){
+      Indices <- match(IDs, search)
+      notFound <- which(is.na(Indices))
+      Indices <- Indices[!is.na(Indices)]
+      dupMatched <- search[unique(Indices[duplicated(Indices)])]
+    } else {
+      Indices <- which(search %in% IDs)
+      notFound <- which(!IDs %in% search)
+      dupMatched <- unique(IDs[duplicated(IDs[IDs %in% search])])
+    }
+  }
+  if(length(notFound) == length(IDs)){
+    if (isTRUE(exactMatch)) {
+      warning("None of the provided features had matching items in '", by,
+              "'. Check the spelling or try setting `exactMatch` to FALSE.")
+    } else {
+      warning("None of the provided features had matching items in '", by,
+              "'. Check the spelling and make sure `by` is set to the ",
+              "appropriate annotation.")
+    }
+  } else if(length(notFound) > 0){
+    warning("The following IDs were not present in specified annotation: \n'",
+            paste(IDs[notFound], collapse = "', '"), "'")
+  }
+  if(length(dupMatched) > 0){
+    warning("Each of the following entries from '", by, "' was matched by ",
+            "multiple queries in 'IDs': \n'",
+            paste(dupMatched, collapse = "', '"), "'")
+  }
+  Indices <- unique(Indices)
+  return(Indices)
 }

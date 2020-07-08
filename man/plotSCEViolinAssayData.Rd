@@ -6,6 +6,7 @@
 \usage{
 plotSCEViolinAssayData(
   inSCE,
+  sample = NULL,
   useAssay = "counts",
   feature,
   groupby = NULL,
@@ -18,13 +19,17 @@ plotSCEViolinAssayData(
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
   titleSize = NULL
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
+dimension reduction components or a variable with saved results. Required.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{useAssay}{Indicate which assay to use. Default "counts".}
 
@@ -43,22 +48,28 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
-\item{xlab}{label for x-axis. Default NULL.}
+\item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
-\item{ylab}{label for y-axis. Default NULL.}
+\item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis labels. Default 10.}
 
-\item{dotSize}{size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 1.}
 
-\item{transparency}{transparency of the dots, values will be 0-1. Default 1.}
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
-\item{defaultTheme}{removes grid in plot and sets axis title size to 10
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{title}{title of plot. Default NULL.}
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
 
-\item{titleSize}{size of title of plot. Default 15.}
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
+\item{title}{Title of plot. Default NULL.}
+
+\item{titleSize}{Size of title of plot. Default 15.}
 }
 \description{
 Visualizes values stored in the assay slot of a
@@ -67,6 +78,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEViolinAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Sox2", groupby = "sex"
+  feature = "Apoe", groupby = "sex"
 )
 }

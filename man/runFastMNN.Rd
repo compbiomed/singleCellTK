@@ -2,43 +2,43 @@
 % Please edit documentation in R/runFastMNN.R
 \name{runFastMNN}
 \alias{runFastMNN}
-\title{Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+\title{Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 correction method to SingleCellExperiment object}
 \usage{
 runFastMNN(
   inSCE,
   useAssay = "logcounts",
-  reducedDimName = "MNN",
+  reducedDimName = "fastMNN",
   batch = "batch",
   pcInput = FALSE
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`. Alternatively, see `pcInput` parameter.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}. Alternatively, see
+\code{pcInput} parameter.}
 
-\item{reducedDimName}{character, default `"fastMNN"`. The name for the 
-corrected low-dimensional representation.}
+\item{reducedDimName}{A single character. The name for the corrected
+low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+Default \code{"fastMNN"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{pcInput}{bool, default `FALSE`. Whether to use a reduceDim matrix for 
-batch effect correction. If TRUE, `useAssay` should exist in 
-`reduceDimNames(inSCE)`. Note that more dimensions in precomputed reducedDim
-have shown better correction results.}
+\item{pcInput}{A logical scalar. Whether to use a low-dimension matrix for
+batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
+from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.}
 }
 \value{
-SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.
+The input \linkS4class{SingleCellExperiment} object with
+\code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{
-`fastMNN` is a variant of the `mnnCorrect` function, modified for speed and 
-more robust performance. For introduction of MNN, see `runMNNCorrect`
+fastMNN is a variant of the classic MNN method, modified for speed and more
+robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
 }
 \examples{
 \dontrun{

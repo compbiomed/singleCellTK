@@ -1,0 +1,270 @@
+---
+title: "Comprehensive reporting of QC metrics"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+    html_notebook: default
+---
+
+```{r "CellQC-lib", warning=FALSE, include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(umap)
+```
+
+```{r, "CellQC-import", eval = FALSE, include=FALSE}
+sce.qc <- params$object
+```
+
+```{r, "QCMetrics", results="asis"}
+    plotsQCMetrics<- plotRunPerCellQCResults(sce.qc)
+    i="QCMetrics"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Sum \n\n'))
+    plotsQCMetrics$sum
+    cat(paste0('## Total \n\n'))
+    plotsQCMetrics$detected
+    cat(paste0('## Subsets mito sum \n\n'))
+    plotsQCMetrics$subsets_mito_sum
+    cat(paste0('## Subsets mito detected \n\n'))
+    plotsQCMetrics$subsets_mito_detected
+    cat(paste0('## Subsets mito percent \n\n'))
+    plotsQCMetrics$subsets_mito_percent
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$scater
+```
+
+```{r, include=FALSE}
+description_runPerCellQC <- .descriptionRunPerCellQC()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runPerCellQC`
+
+```{r, "Scrublet", results="asis"}
+    plotsScrublet<- plotScrubletResults(sce.qc, reducedDimName="UMAP")
+    i="Scrublet"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotsScrublet$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotsScrublet$densityScore
+   
+    cat(paste0('## Violin Score \n\n'))
+    plotsScrublet$violinScore
+ 
+    cat(paste0('## Scatter Call \n\n'))
+    plotsScrublet$scatterCall
+  
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runScrublet
+```
+
+```{r, include=FALSE}
+description_Scrublet <- .descriptionScrublet()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_Scrublet`
+
+```{r, "DoubletFinder-0", results="asis"}
+    plotDoubletFinder<- plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP")
+    i="DoubletFinder"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score Resolution 0.5 \n\n'))
+    plotDoubletFinder$Scatter_Score_Resolution_0.5
+   
+    cat(paste0('## Scatter Score Resolution 1 \n\n'))
+    plotDoubletFinder$Scatter_Score_Resolution_1
+   
+    cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
+    plotDoubletFinder$Scatter_Score_Resolution_1.5
+ 
+    cat(paste0('## Scatter Score Resolution 2 \n\n'))
+    plotDoubletFinder$Scatter_Score_Resolution_2
+    
+    cat(paste0('## Density Resolution 0.5 \n\n'))
+    plotDoubletFinder$Density_Resolution_0.5
+    
+    cat(paste0('## Density Resolution 1 \n\n'))
+    plotDoubletFinder$Density_Resolution_1
+    
+    cat(paste0('## Density Resolution 0.5 \n\n'))
+    plotDoubletFinder$Density_Resolution_1.5
+ 
+    cat(paste0('## Density Resolution 2 \n\n'))
+    plotDoubletFinder$Density_Resolution_2
+  
+    cat(paste0('## Violin Resolution 0.5 \n\n'))
+    plotDoubletFinder$Violin_Resolution_0.5
+    
+    cat(paste0('## Violin Resolution 1 \n\n'))
+    plotDoubletFinder$Violin_Resolution_1
+    
+    cat(paste0('## Violin Resolution 1.5 \n\n'))
+    plotDoubletFinder$Violin_Resolution_1.5
+ 
+    cat(paste0('## Violin Resolution 1 \n\n'))
+    plotDoubletFinder$Violin_Resolution_2
+    
+    cat(paste0('## Scatter Call Resolution 0.5 \n\n'))
+    plotDoubletFinder$Scatter_Call_Resolution_0.5
+    
+    cat(paste0('## Scatter Call Resolution 1 \n\n'))
+    plotDoubletFinder$Scatter_Call_Resolution_1
+    
+    cat(paste0('## Scatter Call Resolution 1.5 \n\n'))
+    plotDoubletFinder$Scatter_Call_Resolution_1.5
+ 
+    cat(paste0('## Scatter Call Resolution 2 \n\n'))
+    plotDoubletFinder$Scatter_Call_Resolution_2
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDoubletFinder
+```
+
+
+```{r, include=FALSE}
+description_DoubletFinder <- .descriptionDoubletFinder()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DoubletFinder`
+
+
+```{r, "DoubletCells", results="asis"}
+    plotDoubletCells<- plotDoubletCellsResults(inSCE = sce.qc, reducedDimName = "UMAP")
+    i="DoubletCells"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotDoubletCells$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotDoubletCells$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotDoubletCells$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDoubletCells
+```
+
+```{r, include=FALSE}
+description_DoubletCells<- .descriptionDoubletCells()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DoubletCells`
+
+
+```{r, "Cxds", results="asis"}
+    plotCxds<- plotCxdsResults( sce.qc, reducedDimName = "UMAP")
+    i="Cxds"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotCxds$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotCxds$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotCxds$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runCxds
+```
+
+```{r, include=FALSE}
+descriprion_CxdsResults<- .descriptionCXDS()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r descriprion_CxdsResults`
+
+```{r, "Bcds", results="asis"}
+   plotBcds<- plotBcdsResults(sce.qc, reducedDimName = "UMAP")
+    i="Bcds"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotBcds$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotBcds$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotBcds$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runBcds
+```
+
+```{r, include=FALSE}
+descriprion_BcdsResults<- .descriptionBCDS()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r descriprion_BcdsResults`
+
+
+```{r, "ScdsHybrid", results="asis"}
+    plotScdsHybrid<- plotScdsHybridResults(sce.qc, reducedDimName = "UMAP")
+    i="ScdsHybrid"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotScdsHybrid$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotScdsHybrid$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotScdsHybrid$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runCxdsBcdsHybrid
+```
+
+```{r, include=FALSE}
+description_ScdsHybrid<- .descriptionScdsHybrid()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_ScdsHybrid`
+
+```{r, "DecontX", results="asis"}
+    plotDecontX<- plotDecontXResults(sce.qc, reducedDimName = "UMAP")
+    i="DecontX"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotDecontX$scatterDecon
+   
+    cat(paste0('## Density Score \n\n'))
+    plotDecontX$densityContamination
+
+    cat(paste0('## Violin Score \n\n'))
+    plotDecontX$violinContamination
+    
+    cat(paste0('## Violin Score \n\n'))
+    plotDecontX$scatterCluster
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDecontX
+```
+
+```{r, include=FALSE}
+description_DecontX<- .descriptionDecontX()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DecontX`
+
+# Session info
+```{r "CellQC-session-info"}
+sessionInfo()
+```
+
+
+

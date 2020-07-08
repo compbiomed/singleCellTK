@@ -1,4 +1,4 @@
-#' Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object
+#' Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object
 #'
 #' @param inputfile1 An input file or list of files. Files can be fastq,
 #' fastq.gz, or bam, but must all be of the same type. Sample names will be the
@@ -219,7 +219,7 @@ alignSingleCellData <- function(inputfile1, inputfile2=NULL, indexPath,
 
   #createsceset from the count file, multiqcdata, and annotations if they exist
   # (validate the sample names are right)
-  scobject <- createSCE(assayFile = countframe,
+  scobject <- importFromFiles(assayFile = countframe,
                         annotFile = sampleAnnotations,
                         featureFile = featureAnnotations,
                         inputDataFrames = TRUE)

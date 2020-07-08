@@ -9,6 +9,7 @@ runCellQC(
   algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
     "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
+  collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
@@ -25,6 +26,8 @@ Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
+
+\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.}
 
 \item{geneSetList}{See \code{runPerCellQC}. Default NULL.}
 
@@ -50,8 +53,9 @@ A wrapper function to run several QC algorithms on a
  object containing cells after empty droplets have been removed.
 }
 \examples{
-\dontrun{
-data(sce_chcl, package = "scds")
-sce <- runCellQC(sce_chcl)
+\donttest{
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- runCellQC(sce)
 }
 }

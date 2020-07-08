@@ -7,6 +7,7 @@
 runPerCellQC(
   inSCE,
   useAssay = "counts",
+  collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
@@ -16,9 +17,11 @@ runPerCellQC(
 \arguments{
 \item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use. Default 'counts'.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default \code{"counts"}.}
 
-\item{geneSetList}{List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}.}
+\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.}
+
+\item{geneSetList}{List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on \code{geneSetListLocation}. Default \code{NULL}.}
 
 \item{geneSetListLocation}{Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in \code{rownames(inSCE)}.
 If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different
@@ -39,7 +42,7 @@ A wrapper function for \link[celda]{decontX}. Identify
  potential contamination from experimental factors such as ambient RNA.
 }
 \examples{
-data(qcSceExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 mito.ix = grep("^MT-", rowData(sce)$feature_name)
 geneSet <- list("Mito"=rownames(sce)[mito.ix])
 sce <- runPerCellQC(sce, geneSetList = geneSet)

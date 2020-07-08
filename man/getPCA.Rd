@@ -2,12 +2,12 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{Get and plot PCA components for a SCtkE object}
+\title{Get and plot PCA components for a SingleCellExperiment object}
 \usage{
 getPCA(inSCE, useAssay = "logcounts", reducedDimName = "PCA")
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use for PCA. Default is "counts"}
 
@@ -15,8 +15,8 @@ getPCA(inSCE, useAssay = "logcounts", reducedDimName = "PCA")
 The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
 }
 \value{
-A SCtkE object with the specified reducedDim and
-pcaVariances updated
+A \linkS4class{SingleCellExperiment} object with the specified
+reducedDim
 }
 \description{
 Selects the 500 most variable genes in the SCE, performs

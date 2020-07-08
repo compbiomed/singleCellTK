@@ -1,8 +1,7 @@
 # decontamination algorithms
 library(singleCellTK)
 context("Testing decontamination algorithms")
-#sce <- mouseBrainSubsetSCE
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 
 test_that(desc = "Testing runDecontX", {

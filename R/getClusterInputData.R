@@ -1,6 +1,6 @@
 #' Get data to use as input clustering algorithms
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
 #' @param inputData A string ("Raw Data", "PCA Components", "tSNE Components", "UMAP Components")
 #' @param useAssay Indicate which assay to use for PCA. Default is "logcounts"
 #' @param reducedDimName If clustering on PCA, t-SNE or UMAP data, dimension name.

@@ -116,7 +116,7 @@ shinyPanelFilter <- fluidPage(
             )
           ),
           tags$hr(),
-          downloadButton("downloadSCE", "Download SCtkExperiment(.rds)")
+          downloadButton("downloadSCE", "Download SingleCellExperiment object (.rds)")
         ),
         mainPanel(
           wellPanel(

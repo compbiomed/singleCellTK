@@ -2,56 +2,62 @@
 % Please edit documentation in R/runZINBWaVE.R
 \name{runZINBWaVE}
 \alias{runZINBWaVE}
-\title{Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object}
+\title{Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object}
 \usage{
 runZINBWaVE(
   inSCE,
-  useAssay = "logcounts",
+  useAssay = "counts",
   batch = "batch",
-  reducedDimName = "zinbwave",
-  nHVG = 1000,
-  nComponents = 50,
+  nHVG = 1000L,
+  nComponents = 50L,
   epsilon = 1000,
-  nIter = 10
+  nIter = 10L,
+  reducedDimName = "zinbwave"
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Note that ZINBWaVE works for counts (integer) input rather
+than logcounts that other methods prefer. Default \code{"counts"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{reducedDimName}{character, default `"zinbwave"`. The name for the 
-corrected low-dimensional representation.}
+\item{nHVG}{An integer. Number of highly variable genes to use when fitting
+the model. Default \code{1000L}.}
 
-\item{nHVG}{integer, default `1000`. Number of highly variable genes to use 
-when fitting the model}
+\item{nComponents}{An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. Default \code{50L}.}
 
-\item{nComponents}{integer, default `50L`. Number of principle components or 
-dimensionality to generate in the resulting reducedDim.}
+\item{epsilon}{An integer. Algorithmic parameter. Empirically, a high epsilon
+is often required to obtained a good low-level representation. Default
+\code{1000L}.}
 
-\item{epsilon}{integer, default `1000`. Algorithmic parameter, by default, the 
-epsilon parameter is set to the number of genes. We empirically found that a 
-high epsilon is often required to obtained a good low-level representation.}
+\item{nIter}{An integer, The max number of iterations to perform. Default
+\code{10L}.}
 
-\item{nIter}{integer, default `10`. The max number of iterations to perform.}
+\item{reducedDimName}{A single character. The name for the corrected
+low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+Default \code{"zinbwave"}.}
+}
+\value{
+The input \linkS4class{SingleCellExperiment} object with
+\code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{
-A general and flexible zero-inflated negative binomial model that can be 
-used to provide a low-dimensional representations of scRNAseq data. The 
-model accounts for zero inflation (dropouts), over-dispersion, and the count 
-nature of the data. The model also accounts for the difference in library 
+A general and flexible zero-inflated negative binomial model that can be
+used to provide a low-dimensional representations of scRNAseq data. The
+model accounts for zero inflation (dropouts), over-dispersion, and the count
+nature of the data. The model also accounts for the difference in library
 sizes and optionally for batch effects and/or other covariates.
 }
 \examples{
 \dontrun{
-data('sceBatches', package = 'singleCellTK')
-sceCorr <- runZINBWaVE(sceBatches, nIter=5, filterParams=c(3, 3))
+    data('sceBatches', package = 'singleCellTK')
+    sceCorr <- runZINBWaVE(sceBatches, nIter = 5)
 }
 }
 \references{

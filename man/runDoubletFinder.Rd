@@ -11,8 +11,9 @@ runDoubletFinder(
   seed = 12345,
   seuratNfeatures = 2000,
   seuratPcs = 1:15,
-  seuratRes = c(0.5, 1, 1.5, 2),
+  seuratRes = 1.5,
   formationRate = 0.075,
+  nCores = NULL,
   verbose = FALSE
 )
 }
@@ -25,17 +26,23 @@ runDoubletFinder(
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{seuratNfeatures}{Integer. Number of highly variable genes to use. Default 2000.}
+\item{seuratNfeatures}{Integer. Number of highly variable genes to use.
+Default 2000.}
 
 \item{seuratPcs}{Numeric vector. The PCs used in seurat function to
 determine number of clusters. Default 1:15.}
 
-\item{seuratRes}{Numeric vector. The resolution parameter used in seurat, which adjusts the
-number of clusters determined via the algorithm. Default c(0.5, 1, 1.5, 2).}
+\item{seuratRes}{Numeric vector. The resolution parameter used in seurat,
+which adjusts the number of clusters determined via the algorithm.
+Default 1.5.}
 
-\item{formationRate}{Doublet formation rate used within algorithm. Default 0.075.}
+\item{formationRate}{Doublet formation rate used within algorithm.
+Default 0.075.}
 
-\item{verbose}{Boolean. Wheter to print messages from Seurat and DoubletFinder. Default FALSE.}
+\item{nCores}{Number of cores used for running the function.}
+
+\item{verbose}{Boolean. Wheter to print messages from Seurat and
+DoubletFinder. Default FALSE.}
 }
 \value{
 SingleCellExperiment object containing the
@@ -47,7 +54,8 @@ Uses doubletFinder to determine cells within the dataset
 }
 \examples{
 \dontrun{
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runDoubletFinder(sce)
 }
 }

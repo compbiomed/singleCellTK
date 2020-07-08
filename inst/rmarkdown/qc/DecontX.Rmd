@@ -1,0 +1,48 @@
+---
+title: "Comprehensive reporting of QC metrics: contamination identification using decontX"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "decontX-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "decontX-input",  warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "DecontX", results="asis"}
+    plotDecontX<- plotDecontXResults(sce.qc, reducedDimName = "UMAP")
+    i="DecontX"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotDecontX$scatterDecon
+   
+    cat(paste0('## Density Score \n\n'))
+    plotDecontX$densityContamination
+
+    cat(paste0('## Violin Score \n\n'))
+    plotDecontX$violinContamination
+    
+    cat(paste0('## Violin Score \n\n'))
+    plotDecontX$scatterCluster
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDecontX
+```
+
+```{r, include=FALSE}
+description_DecontX<- .descriptionDecontX()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DecontX`

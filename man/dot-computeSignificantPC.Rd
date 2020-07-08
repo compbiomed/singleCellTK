@@ -3,21 +3,17 @@
 \name{.computeSignificantPC}
 \alias{.computeSignificantPC}
 \title{.computeSignificantPC
-Computes the significant principal components from an input sce object (must containt pca slot) using stdev}
+Computes the significant principal components from an input sce object (must contain pca slot) using stdev}
 \usage{
-.computeSignificantPC(inSCE, useAssay, geneNamesSeurat)
+.computeSignificantPC(inSCE)
 }
 \arguments{
 \item{inSCE}{(sce) object with pca computed}
-
-\item{useAssay}{which assay to use from sce object}
-
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
 }
 \value{
 max_components a numerical value indicating how many number of components are considered significant
 }
 \description{
 .computeSignificantPC
-Computes the significant principal components from an input sce object (must containt pca slot) using stdev
+Computes the significant principal components from an input sce object (must contain pca slot) using stdev
 }

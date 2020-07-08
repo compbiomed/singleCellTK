@@ -7,6 +7,7 @@
 #'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
+#' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
 #' @param geneSetList See \code{runPerCellQC}. Default NULL.
 #' @param geneSetListLocation See \code{runPerCellQC}. Default NULL.
 #' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
@@ -18,15 +19,17 @@
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' \dontrun{
-#' data(sce_chcl, package = "scds")
-#' sce <- runCellQC(sce_chcl)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runCellQC(sce)
 #' }
 #' @export
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
     "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
+  collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
@@ -41,16 +44,20 @@ runCellQC <- function(inSCE,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay,
-                                 geneSetList = geneSetList,
-                                 geneSetListLocation = geneSetListLocation,
-                                 geneSetCollection = geneSetCollection)
+    inSCE <- do.call(runPerCellQC,
+      c(list(inSCE = quote(inSCE), 
+        useAssay = useAssay,
+        collectionName = collectionName,
+        geneSetList = geneSetList,
+        geneSetListLocation = geneSetListLocation,
+        geneSetCollection = geneSetCollection), 
+        paramsList[["QCMetrics"]]))
   }
 
   if ("scrublet" %in% algorithms) {
 
     inSCE <- do.call(runScrublet, 
-      c(list(inSCE = inSCE, 
+      c(list(inSCE = quote(inSCE), 
         sample = sample,
         useAssay = useAssay,
         seed = seed), 
@@ -59,7 +66,7 @@ runCellQC <- function(inSCE,
 
   if ("doubletCells" %in% algorithms) {
     inSCE <- do.call(runDoubletCells, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
       seed = seed),
@@ -68,7 +75,7 @@ runCellQC <- function(inSCE,
 
   if ("doubletFinder" %in% algorithms) {
     inSCE <- do.call(runDoubletFinder, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed),
       paramsList[["doubletFinder"]]))
@@ -76,7 +83,7 @@ runCellQC <- function(inSCE,
 
   if ("cxds" %in% algorithms) {
     inSCE <- do.call(runCxds, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -85,7 +92,7 @@ runCellQC <- function(inSCE,
 
   if ("bcds" %in% algorithms) {
     inSCE <- do.call(runBcds, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -94,7 +101,7 @@ runCellQC <- function(inSCE,
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
     inSCE <- do.call(runCxdsBcdsHybrid, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
       estNdbl = TRUE),
@@ -103,7 +110,7 @@ runCellQC <- function(inSCE,
 
   if ("decontX" %in% algorithms) {
     inSCE <- do.call(runDecontX, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
       seed = seed),
@@ -130,9 +137,10 @@ runCellQC <- function(inSCE,
 #'  specified algorithms in the \link[SummarizedExperiment]{colData}
 #' of \code{inSCE}.
 #' @examples
-#' data(emptyDropsSceExample, package = "singleCellTK")
-#' sce <- runDropletQC(emptyDropsSceExample,
-#'   sample = colData(emptyDropsSceExample)$sample)
+#' \donttest{
+#' data(scExample, package = "singleCellTK")
+#' sce <- runDropletQC(sce)
+#' }
 #' @export
 runDropletQC <- function(inSCE,
   algorithms = c("QCMetrics", "emptyDrops", "barcodeRanks"),
@@ -146,12 +154,15 @@ runDropletQC <- function(inSCE,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay)
+    inSCE <- do.call(runPerCellQC, 
+      c(list(inSCE = quote(inSCE), 
+        useAssay = useAssay),
+        paramsList[["QCMetrics"]]))
   }
 
   if (any("emptyDrops" %in% algorithms)) {
     inSCE <- do.call(runEmptyDrops, 
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay),
       paramsList[["emptyDrops"]]))
@@ -159,7 +170,7 @@ runDropletQC <- function(inSCE,
 
   if (any("barcodeRanks" %in% algorithms)) {
     inSCE <- do.call(runBarcodeRankDrops,
-      c(list(inSCE = inSCE,
+      c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay),
       paramsList[["barcodeRanks"]]))

@@ -5,10 +5,18 @@
 \title{convertSeuratToSCE
 Converts the input seurat object to a sce object}
 \usage{
-convertSeuratToSCE(seuratObject)
+convertSeuratToSCE(
+  seuratObject,
+  normAssayName = "seuratNormData",
+  scaledAssayName = "seuratScaledData"
+)
 }
 \arguments{
-\item{seuratObject}{input object}
+\item{seuratObject}{Input Seurat object}
+
+\item{normAssayName}{Name of assay to store the normalized data. Default \code{"seuratNormData"}.}
+
+\item{scaledAssayName}{Name of assay to store the scaled data. Default \code{"seuratScaledData"}.}
 }
 \value{
 inSCE output object

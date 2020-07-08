@@ -8,27 +8,27 @@ Computes the clusters from the input sce object and stores them back in sce obje
 seuratFindClusters(
   inSCE,
   useAssay,
-  geneNamesSeurat,
-  reduction,
-  dims,
-  algorithm,
-  groupSingletons
+  useReduction = c("pca", "ica"),
+  dims = 10,
+  algorithm = c("louvain", "multilevel", "SLM"),
+  groupSingletons = TRUE,
+  resolution = 0.8
 )
 }
 \arguments{
 \item{inSCE}{(sce) object from which clusters should be computed and stored in}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing scaled counts to use for clustering.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting#'}
+\item{useReduction}{Reduction method to use for computing clusters. One of "pca" or "ica". Default \code{"pca"}.}
 
-\item{reduction}{selected reduction method to use for computing clusters ("pca" or "ica", default is "pca")}
+\item{dims}{numeric value of how many components to use for computing clusters. Default \code{10}.}
 
-\item{dims}{numeric value of how many components to use for computing clusters (default is 10)}
+\item{algorithm}{selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use \code{louvain} for "original Louvain algorithm" and \code{multilevel} for "Louvain algorithm with multilevel refinement". Default \code{louvain}.}
 
-\item{algorithm}{selected algorithm to compute clusters (default is "original Louvain algorithm")}
+\item{groupSingletons}{boolean if singletons should be grouped together or not. Default \code{TRUE}.}
 
-\item{groupSingletons}{boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)}
+\item{resolution}{Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.}
 }
 \value{
 sceObject; updated sce object which now contains the computed clusters

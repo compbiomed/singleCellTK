@@ -5,16 +5,33 @@
 \title{seuratComputeHeatmap
 Computes the heatmap plot object from the pca slot in the input sce object}
 \usage{
-seuratComputeHeatmap(inSCE, useAssay, geneNamesSeurat, dims)
+seuratComputeHeatmap(
+  inSCE,
+  useAssay,
+  useReduction = c("pca", "ica"),
+  dims = NULL,
+  nfeatures = 30,
+  fast = TRUE,
+  combine = TRUE,
+  raster = TRUE
+)
 }
 \arguments{
 \item{inSCE}{(sce) object from which to compute heatmap (pca should be computed)}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useAssay}{Assay containing scaled counts to use in heatmap.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{useReduction}{Reduction method to use for computing clusters. One of "pca" or "ica". Default \code{"pca"}.}
 
-\item{dims}{numerical value indicating how many components to use for the computation of heatmap plot object (default is number of pca components computed)}
+\item{dims}{Number of components to generate heatmap plot objects. If \code{NULL}, a heatmap will be generated for all components. Default \code{NULL}.}
+
+\item{nfeatures}{Numer of features to include in the heatmap. Default \code{30}.}
+
+\item{fast}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+
+\item{combine}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+
+\item{raster}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
 }
 \value{
 plot object

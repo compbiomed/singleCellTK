@@ -79,12 +79,14 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' \dontrun{
-#' data(qcSceExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runScrublet(sce)
 #' }
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment reducedDim
 runScrublet <- function(inSCE,
   sample = NULL,
   useAssay = "counts",
@@ -138,7 +140,8 @@ runScrublet <- function(inSCE,
   message(paste0(date(), " ... Running 'scrublet'"))
   
   ##  Getting current arguments values
-  argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),

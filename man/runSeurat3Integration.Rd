@@ -2,50 +2,52 @@
 % Please edit documentation in R/runSeurat3Integration.R
 \name{runSeurat3Integration}
 \alias{runSeurat3Integration}
-\title{Apply Integration batch effect correction method from Seurat v3 to 
+\title{Apply Integration batch effect correction method from Seurat v3 to
 SingleCellExperiment object}
 \usage{
 runSeurat3Integration(
   inSCE,
   useAssay = "logcounts",
   batch = "batch",
-  assayName = "Seurat3Int",
+  altExpName = "Seurat3Int",
   nAnchors = nrow(inSCE),
   verbose = TRUE
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{assayName}{character, default `"Seurat3Int"`. The name for the 
-corrected full-sized expression matrix. If the number of features returned 
-is smaller the number of total feature, the returned matrix will be saved in 
-`reducedDim(inSCE, assayName)`; if equal, `assay(inSCE, assayName)`.}
+\item{altExpName}{A single character. The name for the
+\code{\link[SingleCellExperiment]{altExp}} that stores the corrected assay.
+The name of this assay has the same name. Default \code{"Seurat3Int"}.}
 
-\item{nAnchors}{integer, default `nrow(inSCE)`. The number of features to 
-anchor, and also the final dimensionality of the integrated matrix. Thus 
-default value turns to produce full-sized assay.}
+\item{nAnchors}{An integer. The number of features to anchor. The final
+number of the corrected features depends on this value. Default
+\code{nrow(inSCE)}.}
 
-\item{verbose}{bool, default `TRUE`. Whether to show detail information of 
-the process.}
+\item{verbose}{A logical scalar. Whether to show detail information of
+the process. Default \code{TRUE}.}
+}
+\value{
+The input \linkS4class{SingleCellExperiment} object with
+\code{altExp(inSCE, altExpName)} updated.
 }
 \description{
-Can get either a full-sized corrected assay or a dimension reduced corrected 
+Can get either a full-sized corrected assay or a dimension reduced corrected
 matrix.
 }
 \details{
-This method aims to first identify anchors between pairs of datasets, that 
-represent pairwise correspondences between individual cells in each 
-dataset, that is hypothesized to originate from the same cell state. These 
-anchors are then used to harmonize the datasets, or transfer information 
+This method aims to first identify anchors between pairs of datasets, that
+represent pairwise correspondences between individual cells in each
+dataset, that is hypothesized to originate from the same cell state. These
+anchors are then used to harmonize the datasets, or transfer information
 from one dataset to another.
 }
 \examples{

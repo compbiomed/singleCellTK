@@ -12,7 +12,7 @@ getClusterInputData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. Required}
 
 \item{inputData}{A string ("Raw Data", "PCA Components", "tSNE Components", "UMAP Components")}
 

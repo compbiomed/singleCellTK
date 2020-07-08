@@ -3,8 +3,13 @@ library('SingleCellExperiment')
 library('Seurat')
 library('testthat')
 library('singleCellTK')
+library('GSEABase')
 
 context("Testing import functions")
+
+#####################################
+## Importing scRNA-seq Data Functions
+#####################################
 
 test_that(desc = "Testing importBUStools", {
   
@@ -53,8 +58,56 @@ test_that(desc = "Testing importOptimus", {
   expect_true(validObject(sce))
 }) 
 
+<<<<<<< HEAD
 test_that(desc = "Testing importAnnData", {
   sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
                        sampleNames = 'pbmc3k_20by20')
   expect_true(validObject(sce))
 })
+=======
+##################################
+## Importing Gene Set Functions
+##################################
+
+test_that(desc = "Testing importGeneSetFromGMT", {
+  data(scExample)
+  gmt <- system.file("extdata/mito_subset.gmt", package = "singleCellTK")
+  sce <- importGeneSetsFromGMT(inSCE = sce, file = gmt, by = NULL,
+                               collectionName = "test")
+  expect_true(inherits(sce@metadata$sctk$genesets$test[[1]], "GeneSet"))
+}) 
+
+test_that(desc = "Testing importGeneSetFromList", {
+  data(scExample)
+  gs1 <- rownames(sce)[1:10]
+  gs2 <- rownames(sce)[11:20]
+  gs <- list("geneset1" = gs1, "geneset2" = gs2)
+  sce <- importGeneSetsFromList(inSCE = sce,
+                                geneSetList = gs,
+                                collectionName = "test",
+                                by = "rownames")
+  expect_true(inherits(sce@metadata$sctk$genesets$test[[1]], "GeneSet"))
+}) 
+
+test_that(desc = "Testing importGeneSetFromCollection", {
+  data(scExample)
+  gs1 <- GSEABase::GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
+  gs2 <- GSEABase::GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+  gsc <- GSEABase::GeneSetCollection(list(gs1, gs2))
+  sce <- importGeneSetsFromCollection(inSCE = sce,
+                                      geneSetCollection = gsc,
+                                      collectionName = "test",
+                                      by = "rownames")
+  expect_true(inherits(sce@metadata$sctk$genesets$test[[1]], "GeneSet"))
+}) 
+
+test_that(desc = "Testing importGeneSetFromMSigDB", {
+  data(scExample)
+  sce <- importGeneSetsFromMSigDB(inSCE = sce,
+                                  categoryIDs = "C2-CP",
+                                  species = "Homo sapiens",
+                                  mapping = "gene_symbol",
+                                  by = "feature_name")
+  expect_true(inherits(sce@metadata$sctk$genesets$"C2-CP"[[1]], "GeneSet"))
+}) 
+>>>>>>> 4127090a0c04ab251d1357d8787f6c0ea2c648d5

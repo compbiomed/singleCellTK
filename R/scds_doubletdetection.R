@@ -21,10 +21,12 @@
 #'  \emph{cxds_score} and optionally \emph{cxds_call}.
 #'  Please refer to the documentation of \link[scds]{cxds} for details.
 #' @examples
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runCxds(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -46,7 +48,8 @@ runCxds <- function(inSCE,
     message(paste0(date(), " ... Running 'cxds'"))
     
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
     ## Define result matrix for all samples
     if (estNdbl) {
@@ -127,10 +130,12 @@ runCxds <- function(inSCE,
 #'  \emph{bcds_score} and optionally \emph{bcds_call}.
 #'  Please refer to the documentation of \link[scds]{bcds} for details.
 #' @examples
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runBcds(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -155,7 +160,8 @@ runBcds <- function(inSCE,
     message(paste0(date(), " ... Running 'bcds'"))
     
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
     ## Define result matrix for all samples
     if (estNdbl) {
@@ -242,10 +248,12 @@ runBcds <- function(inSCE,
 #'  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
 #'  details.
 #' @examples
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runCxdsBcdsHybrid(sce)
 #' @export
+#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment counts counts<-
 runCxdsBcdsHybrid <- function(inSCE,
     sample = NULL,
     seed = 12345,
@@ -268,8 +276,9 @@ runCxdsBcdsHybrid <- function(inSCE,
     message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
 
     ## Getting current arguments
-    argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-    
+    #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
+    argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
     ## Define result matrix for all samples
     if (estNdbl) {
         output <- S4Vectors::DataFrame(row.names = colnames(inSCE),

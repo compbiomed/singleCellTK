@@ -18,6 +18,7 @@
 #' }
 #' 
 #' @export
+#' @importFrom SummarizedExperiment colData rowData
 exportSCEtoFlatFile <- function(sce,
                                 outputDir = "./",
                                 overwrite = TRUE,
@@ -160,5 +161,4 @@ exportSCEtoFlatFile <- function(sce,
     saveRDS(object = S4Vectors::metadata(sce), file = filename)
   }
 }
-
 

@@ -5,18 +5,24 @@
 \title{seuratRunTSNE
 Computes tSNE from the given sce object and stores the tSNE computations back into the sce object}
 \usage{
-seuratRunTSNE(inSCE, useAssay, geneNamesSeurat, reduction, dims)
+seuratRunTSNE(
+  inSCE,
+  useReduction = c("pca", "ica"),
+  reducedDimName = "seuratTSNE",
+  dims = 10,
+  perplexity = 30
+)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute the tSNE}
 
-\item{useAssay}{which assay to use from sce object}
+\item{useReduction}{selected reduction algorithm to use for computing tSNE. One of "pca" or "ica". Default \code{"pca"}.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
+\item{reducedDimName}{Name of new reducedDims object containing Seurat tSNE Default \code{seuratTSNE}.}
 
-\item{reduction}{selected reduction algorithm to use for computing tSNE ("pca" or "ica", default is "pca")}
+\item{dims}{Number of reduction components to use for tSNE computation. Default \code{10}.}
 
-\item{dims}{numerical value of how many reduction components to use for tSNE computation (default is 10)}
+\item{perplexity}{Adjust the preplexity tuneable parameter for the underlying tSNE call. Default \code{30}.}
 }
 \value{
 Updated sce object with tSNE computations stored

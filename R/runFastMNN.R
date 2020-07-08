@@ -1,23 +1,23 @@
-#' Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+#' Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 #' correction method to SingleCellExperiment object
-#' 
-#' `fastMNN` is a variant of the `mnnCorrect` function, modified for speed and 
-#' more robust performance. For introduction of MNN, see `runMNNCorrect`
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name 
-#' of the assay requiring batch correction in "inSCE", should exist in 
-#' `assayNames(inSCE)`. Alternatively, see `pcInput` parameter.
-#' @param batch character, default `"batch"`. A string indicating the 
-#' field of `colData(inSCE)` that defines different batches.
-#' @param reducedDimName character, default `"fastMNN"`. The name for the 
-#' corrected low-dimensional representation.
-#' @param pcInput bool, default `FALSE`. Whether to use a reduceDim matrix for 
-#' batch effect correction. If TRUE, `useAssay` should exist in 
-#' `reduceDimNames(inSCE)`. Note that more dimensions in precomputed reducedDim
-#' have shown better correction results.
-#' @return SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-#' updated with corrected low-dimentional representation.
+#'
+#' fastMNN is a variant of the classic MNN method, modified for speed and more
+#' robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
+#' @param inSCE  inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}. Alternatively, see
+#' \code{pcInput} parameter.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param reducedDimName A single character. The name for the corrected
+#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+#' Default \code{"fastMNN"}.
+#' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
+#' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
+#' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{reducedDim(inSCE, reducedDimName)} updated.
 #' @export
 #' @references Lun ATL, et al., 2016
 #' @examples
@@ -25,8 +25,9 @@
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 #' }
-runFastMNN <- function(inSCE, useAssay = "logcounts", reducedDimName = "MNN", 
-                       batch = 'batch', pcInput = FALSE){
+runFastMNN <- function(inSCE, useAssay = "logcounts",
+                       reducedDimName = "fastMNN", batch = 'batch',
+                       pcInput = FALSE){
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop("\"inSCE\" should be a SingleCellExperiment Object.")
@@ -40,17 +41,17 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", reducedDimName = "MNN",
             stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
         }
     }
-    
+
     if(!(batch %in% names(SummarizedExperiment::colData(inSCE)))){
         stop(paste("\"batch name:", batch, "not found."))
     }
     reducedDimName <- gsub(' ', '_', reducedDimName)
-    
+
     ## Run algorithm
     batches <- list()
     batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
     batchFactor <- as.factor(batchCol)
-    
+
     if(pcInput){
         mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
         redMNN <- batchelor::reducedMNN(mat, batch = batchFactor)

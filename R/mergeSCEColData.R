@@ -18,7 +18,8 @@
 #'     sampleDirs = "hgmm_1k_v3_20x20",
 #'     sampleNames = "hgmm1kv3",
 #'     dataType = "filtered")
-#' sce2 <- emptyDropsSceExample
+#' data(scExample)
+#' sce2 <- sce
 #' sce <- mergeSCEColData(inSCE1 = sce1, inSCE2 = sce2, id1 = "column_name", id2 = "column_name")
 #' @export
 mergeSCEColData <- function(inSCE1, inSCE2, id1 = "column_name", id2 = "column_name"){

@@ -5,16 +5,14 @@
 \title{seuratElbowPlot
 Computes the plot object for elbow plot from the pca slot in the input sce object}
 \usage{
-seuratElbowPlot(inSCE, useAssay, geneNamesSeurat, significantPC)
+seuratElbowPlot(inSCE, significantPC = NULL, reduction = "pca")
 }
 \arguments{
 \item{inSCE}{(sce) object from which to compute the elbow plot (pca should be computed)}
 
-\item{useAssay}{which assay to use from sce object}
+\item{significantPC}{Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.}
 
-\item{geneNamesSeurat}{a list of rowames/genenames/featurenames for seurat object for consistent formatting}
-
-\item{significantPC}{a numerical value indicating the number of significant principal components (used to alter the color of the significant components)}
+\item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
 }
 \value{
 plot object
