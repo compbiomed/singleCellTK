@@ -5016,6 +5016,14 @@ shinyServer(function(input, output, session) {
   #Run PCA
   observeEvent(input$run_pca_button, {
     req(vals$counts)
+    
+    #remove tabs if not generated
+    removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
+    removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
+    removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
+    removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
+
+    
     withProgress(message = "Running PCA", max = 1, value = 1, {
       vals$counts <- seuratPCA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
@@ -5025,6 +5033,12 @@ shinyServer(function(input, output, session) {
       vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
+    
+    appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
+                                                        panel(heading = "PCA Plot",
+                                                              plotlyOutput(outputId = "plot_pca")
+                                                        )
+    ))
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       output$plot_pca <- renderPlotly({
         plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5033,6 +5047,12 @@ shinyServer(function(input, output, session) {
       })
     })
     if (input$pca_compute_elbow) {
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
+                                                          panel(heading = "Elbow Plot",
+                                                                plotlyOutput(outputId = "plot_elbow_pca")
+                                                          )
+      ))
+      
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
         updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = .computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
@@ -5045,6 +5065,12 @@ shinyServer(function(input, output, session) {
       })
     }
     if (input$pca_compute_jackstraw) {
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
+                                                          panel(heading = "JackStraw Plot",
+                                                                plotlyOutput(outputId = "plot_jackstraw_pca")
+                                                          )
+      ))
+      
       withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
         vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
@@ -5056,6 +5082,25 @@ shinyServer(function(input, output, session) {
       })
     }
     if (input$pca_compute_heatmap) {
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                          panel(heading = "Heatmap Plot",
+                                                                panel(heading = "Plot Options",
+                                                                      fluidRow(
+                                                                        column(6,
+                                                                               pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                                        ),
+                                                                        column(6,
+                                                                               sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                                        )
+                                                                      ),
+                                                                      actionButton(inputId = "plot_heatmap_pca_button", "Plot")
+                                                                ),
+                                                                panel(heading = "Plot",
+                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                                                )
+                                                          )
+      ))
+      
       withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
         vals$counts@metadata$seurat$heatmap_pca <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
@@ -5100,6 +5145,11 @@ shinyServer(function(input, output, session) {
   #Run ICA
   observeEvent(input$run_ica_button, {
     req(vals$counts)
+    
+    #remove tabs if not generated
+    removeTab(inputId = "seuratICAPlotTabset", target = "ICA Plot")
+    removeTab(inputId = "seuratICAPlotTabset", target = "Heatmap Plot")
+    
     withProgress(message = "Running ICA", max = 1, value = 1, {
       vals$counts <- seuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
@@ -5108,6 +5158,13 @@ shinyServer(function(input, output, session) {
       vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
       vals$counts <- .seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
     })
+    
+    appendTab(inputId = "seuratICAPlotTabset", tabPanel(title = "ICA Plot",
+                                                        panel(heading = "ICA Plot",
+                                                              plotlyOutput(outputId = "plot_ica")
+                                                        )
+    ))
+    
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
       output$plot_ica <- renderPlotly({
         plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5116,6 +5173,25 @@ shinyServer(function(input, output, session) {
       })
     })
     if (input$ica_compute_heatmap) {
+      appendTab(inputId = "seuratICAPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                          panel(heading = "Heatmap Plot",
+                                                                panel(heading = "Plot Options",
+                                                                      fluidRow(
+                                                                        column(6,
+                                                                               pickerInput(inputId = "picker_dimheatmap_components_ica", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                                        ),
+                                                                        column(6,
+                                                                               sliderInput(inputId = "slider_dimheatmap_ica", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                                        )
+                                                                      ),
+                                                                      actionButton(inputId = "plot_heatmap_ica_button", "Plot")
+                                                                ),
+                                                                panel(heading = "Plot",
+                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
+                                                                )
+                                                          )
+      ))
+      
       withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
         vals$counts@metadata$seurat$heatmap_ica <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
@@ -5153,6 +5229,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$find_clusters_button, {
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
+      
+      #Remove plot tabs if generated before
+      removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
+      removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
+      removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
+      removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
+      
+      
       withProgress(message = "Finding clusters", max = 1, value = 1, {
         vals$counts <- seuratFindClusters(inSCE = vals$counts,
                                           useAssay = "seuratScaledData",
@@ -5203,6 +5287,13 @@ shinyServer(function(input, output, session) {
       }
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                   panel(heading = "tSNE Plot",
+                                                                         plotlyOutput(outputId = "plot_tsne_clustering")
+                                                                   )
+        )
+        )
+        
         withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
           output$plot_tsne_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5216,6 +5307,12 @@ shinyServer(function(input, output, session) {
       }
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+        appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                           panel(heading = "UMAP Plot",
+                                                                                 plotlyOutput(outputId = "plot_umap_clustering")
+                                                                           )
+        )
+        )
         withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
           output$plot_umap_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,

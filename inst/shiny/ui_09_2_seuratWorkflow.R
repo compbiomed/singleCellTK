@@ -97,40 +97,40 @@ shinyPanelSeurat <- fluidPage(
                             column(8,
                                 fluidRow(
                                     column(12,
-                                        tags$div(class = "seurat_pca_plots", tabsetPanel(type = "tabs",
-                                            tabPanel(title = "PCA Plot",
-                                                panel(heading = "PCA Plot",
-                                                    plotlyOutput(outputId = "plot_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "Elbow Plot",
-                                                panel(heading = "Elbow Plot",
-                                                    plotlyOutput(outputId = "plot_elbow_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "JackStraw Plot",
-                                                panel(heading = "JackStraw Plot",
-                                                    plotlyOutput(outputId = "plot_jackstraw_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "Heatmap Plot",
-                                                panel(heading = "Heatmap Plot",
-                                                    panel(heading = "Plot Options",
-                                                        fluidRow(
-                                                            column(6,
-                                                                pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-                                                            ),
-                                                            column(6,
-                                                                sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-                                                            )
-                                                        ),
-                                                        actionButton(inputId = "plot_heatmap_pca_button", "Plot")
-                                                        ),
-                                                    panel(heading = "Plot",
-                                                        jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
-                                                        )
-                                                     )
-                                                    )
+                                        tags$div(class = "seurat_pca_plots", tabsetPanel(id = "seuratPCAPlotTabset", type = "tabs"#,
+                                            # tabPanel(title = "PCA Plot",
+                                            #     panel(heading = "PCA Plot",
+                                            #         plotlyOutput(outputId = "plot_pca")
+                                            #          )
+                                            #         ),
+                                            # tabPanel(title = "Elbow Plot",
+                                            #     panel(heading = "Elbow Plot",
+                                            #         plotlyOutput(outputId = "plot_elbow_pca")
+                                            #          )
+                                            #         ),
+                                            # tabPanel(title = "JackStraw Plot",
+                                            #     panel(heading = "JackStraw Plot",
+                                            #         plotlyOutput(outputId = "plot_jackstraw_pca")
+                                            #          )
+                                            #         ),
+                                            # tabPanel(title = "Heatmap Plot",
+                                            #     panel(heading = "Heatmap Plot",
+                                            #         panel(heading = "Plot Options",
+                                            #             fluidRow(
+                                            #                 column(6,
+                                            #                     pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                            #                 ),
+                                            #                 column(6,
+                                            #                     sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                            #                 )
+                                            #             ),
+                                            #             actionButton(inputId = "plot_heatmap_pca_button", "Plot")
+                                            #             ),
+                                            #         panel(heading = "Plot",
+                                            #             jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                            #             )
+                                            #          )
+                                            #         )
                                                    ))
                                           )
 
@@ -166,30 +166,30 @@ shinyPanelSeurat <- fluidPage(
                                column(8,
                                       fluidRow(
                                         column(12,
-                                                tags$div(class = "seurat_ica_plots", tabsetPanel(type = "tabs",
-                                                           tabPanel(title = "ICA Plot",
-                                                                    panel(heading = "ICA Plot",
-                                                                          plotlyOutput(outputId = "plot_ica")
-                                                                    )
-                                                           ),
-                                                           tabPanel(title = "Heatmap Plot",
-                                                                    panel(heading = "Heatmap Plot",
-                                                                          panel(heading = "Plot Options",
-                                                                                fluidRow(
-                                                                                  column(6,
-                                                                                         pickerInput(inputId = "picker_dimheatmap_components_ica", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-                                                                                  ),
-                                                                                  column(6,
-                                                                                         sliderInput(inputId = "slider_dimheatmap_ica", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-                                                                                  )
-                                                                                ),
-                                                                                actionButton(inputId = "plot_heatmap_ica_button", "Plot")
-                                                                          ),
-                                                                          panel(heading = "Plot",
-                                                                                jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
-                                                                          )
-                                                                    )
-                                                           )
+                                                tags$div(class = "seurat_ica_plots", tabsetPanel(id="seuratICAPlotTabset", type = "tabs"#,
+                                                           # tabPanel(title = "ICA Plot",
+                                                           #          panel(heading = "ICA Plot",
+                                                           #                plotlyOutput(outputId = "plot_ica")
+                                                           #          )
+                                                           # ),
+                                                           # tabPanel(title = "Heatmap Plot",
+                                                           #          panel(heading = "Heatmap Plot",
+                                                           #                panel(heading = "Plot Options",
+                                                           #                      fluidRow(
+                                                           #                        column(6,
+                                                           #                               pickerInput(inputId = "picker_dimheatmap_components_ica", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                           #                        ),
+                                                           #                        column(6,
+                                                           #                               sliderInput(inputId = "slider_dimheatmap_ica", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                           #                        )
+                                                           #                      ),
+                                                           #                      actionButton(inputId = "plot_heatmap_ica_button", "Plot")
+                                                           #                ),
+                                                           #                panel(heading = "Plot",
+                                                           #                      jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
+                                                           #                )
+                                                           #          )
+                                                           # )
                                                ))
                                                )
                                       )
