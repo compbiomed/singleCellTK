@@ -25,14 +25,9 @@ ad <- NULL
   scgen <<- reticulate::import("scgen", delay_load = TRUE)
   sc <<- reticulate::import("scanpy", delay_load = TRUE)
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
-<<<<<<< HEAD
   pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
   ad <<- reticulate::import('anndata',delay_load = TRUE,convert = FALSE)
-=======
-  pkg_resources <<- reticulate::import('pkg_resources', delay_load = TRUE)
->>>>>>> 4127090a0c04ab251d1357d8787f6c0ea2c648d5
 }
-
 
 #' @name sctkPythonInstallConda
 #' @title Installs Python packages into a Conda environment
