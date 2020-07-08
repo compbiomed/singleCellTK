@@ -28,7 +28,6 @@ ad <- NULL
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
   pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
   ad <<- reticulate::import('anndata',delay_load = TRUE,convert = FALSE)
-  blt <<- reticulate::import_builtins()
 }
 
 

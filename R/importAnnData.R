@@ -34,7 +34,8 @@
   unstructured_data <- reticulate::py_to_r(anndata$uns_keys())
   for(uns_name in unstructured_data){
     tryCatch({
-      metadata(sce)[[uns_name]] <- reticulate::py_to_r(anndata$uns[uns_name])
+      #metadata(sce)[[uns_name]] <- reticulate::py_to_r(anndata$uns[uns_name])
+      sce@metadata[[sampleName]]$annData[[uns_name]] <- reticulate::py_to_r(anndata$uns[uns_name])
     }, error = function(x){
       error_message <- paste0("Warning: unable to add unstructured data (.uns slot): '",uns_name,"' to SCE metadata. Skipping. ")
       message(error_message)
