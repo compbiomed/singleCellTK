@@ -58,6 +58,11 @@ test_that(desc = "Testing importOptimus", {
   expect_true(validObject(sce))
 }) 
 
+test_that(desc = "Testing importAnnData", {
+  sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
+                       sampleNames = 'pbmc3k_20by20')
+  expect_true(validObject(sce))
+})
 ##################################
 ## Importing Gene Set Functions
 ##################################
