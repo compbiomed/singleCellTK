@@ -5602,23 +5602,39 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   
   observe({
-    if(!is.null(vals$counts)){
-      print(head(colData(vals$counts)))
-      if(input$colEditorChoiceRadio == "existing colData"){ #update this with id
-        vals$columnAnnotation <- as.data.frame(colData(vals$counts))
-      }
-      if(input$colEditorChoiceRadio == "upload new colData"){
-        vals$columnAnnotation <- NULL
-        if(!is.null(input$uploadColDataFile)){
-          vals$columnAnnotation <- read.csv(input$uploadColDataFile$datapath, header = TRUE,sep = ",")
+      if(!is.null(vals$counts)){
+        if(input$colEditorChoiceRadio == "existing colData"){ #update this with id
+          vals$columnAnnotation <- as.data.frame(colData(vals$counts))
+        }
+        else if(input$colEditorChoiceRadio == "upload new colData"){
+          vals$columnAnnotation <- NULL
+          if(!is.null(input$uploadColDataFile)){
+            temp <- read.csv(input$uploadColDataFile$datapath, header = TRUE,sep = ",") 
+            if(nrow(colData(vals$counts)) == nrow(temp)){
+              if(input$colEditorUploadReplaceOption == "replace"){
+                vals$columnAnnotation <- temp
+              }
+              else{
+                x <- as.data.frame(colData(vals$counts))
+                y <- as.data.frame(temp)
+                commonCols <- intersect(colnames(x), colnames(y))
+                x[, commonCols] <- y[,commonCols]
+                y[, commonCols] <- NULL
+                vals$columnAnnotation <- cbind(x, y)
+              }
+            }
+            else{
+              showNotification("Number of rows of the assay and the input colData must be equal", type = "error")
+              warning("Number of rows of the assay and the input colData must be equal")
+            }
+          }
         }
       }
-    }
   })
   
   output$output_columnAnnotation_table <- renderUI(
     {
-      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell', options = list(pageLength = 26)) })
+      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell', options = list(pageLength = 5)) })
       DT::dataTableOutput("colOutTable")
     })
   
@@ -5631,9 +5647,15 @@ shinyServer(function(input, output, session) {
       selectInput("input_select_attribute", label = "select attribute", choices = colnames(vals$columnAnnotation))
     })
   
+  output$input_select_attribute_delete <- renderUI(
+    {
+      selectInput("input_select_attribute_delete", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
+    })
+  
+  #create selectinput for selecting column to delete
   output$input_select_attribute_value <- renderUI(
     {
-      selectInput("input_select_attribute_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute, colnames(vals$columnAnnotation))])
+        selectInput("input_select_attribute_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute, colnames(vals$columnAnnotation))])
     })
   
   #create selectinput for selecting merge_1 attribute
@@ -5739,7 +5761,7 @@ shinyServer(function(input, output, session) {
                  df <- vals$columnAnnotation
                  colname1 <- input$input_select_attribute_merge_1
                  colname2 <- input$input_select_attribute_merge_2
-                 df <- unite_(df, col = colname1, c(colname1, colname2))
+                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$input_select_separator_merge)
                  
                  vals$columnAnnotation <- df
 
@@ -5842,12 +5864,37 @@ shinyServer(function(input, output, session) {
                  
                 
                  colname <- input$input_empty_column_name
-                 df$newcolumn <- NA
+                 df$newcolumn <- input$input_default_value_add_column
                  names(df)[ncol(df)] <- colname
                  
                  vals$columnAnnotation <- df
                  
                })
+  
+  #delete column
+  observeEvent(input$button_confirm_delete_column,{
+    #getting variables
+    selected_attribute <- input$input_select_attribute_delete
+    
+    #get df from reactive input
+    df <- vals$columnAnnotation
+    
+    #delete
+    df[[selected_attribute]] <- NULL
+    
+    vals$columnAnnotation <- df
+  })
+  
+  #restore saved/original colData
+  observeEvent(input$button_restore_phenotype,{
+    vals$columnAnnotation <- as.data.frame(colData(vals$counts))
+  })
+  
+  #save unsaved changes
+  observeEvent(input$button_save_colData,{
+      colData(vals$counts) <- DataFrame(vals$columnAnnotation)
+    print(head(colData(vals$counts)))
+  })
 
   #-----------------------------------------------------------------------------
   # Page Download
