@@ -25,7 +25,7 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 
 \item{PCA}{Remove PCA from seurat. Default \code{TRUE}.}
 
-\item{ICA}{Remove ICS from seurat. Default \code{TRUE}.}
+\item{ICA}{Remove ICA from seurat. Default \code{TRUE}.}
 
 \item{tSNE}{Remove tSNE from seurat. Default \code{TRUE}.}
 
@@ -34,7 +34,7 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 \item{clusters}{Remove clusters from seurat. Default \code{TRUE}.}
 }
 \value{
-inSCE Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
+Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
 }
 \description{
 .seuratInvalidate

@@ -3,8 +3,8 @@
 #' .getComponentNames
 #' Creates a list of PC/IC components to populate the picker for PC/IC heatmap generation
 #' @param maxComponents Number of components to return for the picker
-#' @param component Which component to use. Choices are \code{"PC"} or \code{"IC"}.
-#' @return componentNames list of component names (appended with "PC")
+#' @param component Which component to use. Choices are \code{PC} or \code{IC}.
+#' @return List of component names (appended with \code{PC} or \code{IC})
 .getComponentNames <- function(maxComponents, component = c("PC", "IC")){
   componentNames <- list()
   for (i in seq(maxComponents)) {
@@ -17,7 +17,7 @@
 #' Adds the input seurat object to the metadata slot of the input sce object (after removing the data matrices)
 #' @param inSCE (sce) object to which seurat object should be added in the metadata slot (copy to)
 #' @param seuratObject seurat object which should be added to the metadata slot of sce object (copy from)
-#' @return updated sce object which now contains the seurat object in its metadata slot (excluding data matrices)
+#' @return Updated \code{SingleCellExperiment} object which now contains the seurat object in its metadata slot (excluding data matrices)
 .addSeuratToMetaDataSCE <- function(inSCE, seuratObject) {
     seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
     seuratObject@assays$RNA@data <- methods::new("dgCMatrix")
@@ -29,7 +29,7 @@
 #' .computeSignificantPC
 #' Computes the significant principal components from an input sce object (must contain pca slot) using stdev
 #' @param inSCE (sce) object with pca computed
-#' @return max_components a numerical value indicating how many number of components are considered significant
+#' @return A numerical value indicating how many number of components are considered significant
 .computeSignificantPC <- function(inSCE) {
     seuratObject <- convertSCEToSeurat(inSCE)
     max_components <- 0
@@ -49,7 +49,7 @@
 #' @param normAssayName Name of new assay containing normalized data. Default \code{seuratNormData}.
 #' @param normalizationMethod selected normalization method. Default \code{"LogNormalize"}.
 #' @param scaleFactor numeric value that represents the scaling factor. Default \code{10000}.
-#' @return sceObject normalized sce object
+#' @return Normalized \code{SingleCellExperiment} object
 #' @export
 seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
     seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
@@ -68,7 +68,7 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
 #' @param scale boolean if data should be scaled or not. Default \code{TRUE}.
 #' @param center boolean if data should be centered or not. Default \code{TRUE}
 #' @param scaleMax maximum numeric value to return for scaled data. Default \code{10}.
-#' @return sceObject scaled sce object
+#' @return Scaled \code{SingleCellExperiment} object
 #' @export
 seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData", model = "linear", scale = TRUE, center = TRUE, scaleMax = 10) {
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
@@ -84,7 +84,7 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @param useAssay Assay containing scaled counts to use for detecting highly variable genes.
 #' @param hvgMethod selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
 #' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}.
-#' @return sceObject updated sce object with highly variable genes computation stored
+#' @return Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
 seuratFindHVG <- function(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000) {
@@ -113,7 +113,7 @@ seuratFindHVG <- function(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000) 
 #' @param useAssay Assay containing scaled counts to use in PCA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat PCA. Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default \code{20}.
-#' @return sceObject updated sce object which now contains the computed principal components
+#' @return Updated \code{SingleCellExperiment} object which now contains the computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) {
@@ -133,7 +133,7 @@ seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) 
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA Default \code{seuratICA}.
 #' @param nics Number of independent components to compute. Default \code{20}.
-#' @return sceObject updated sce object which now contains the computed independent components
+#' @return Updated \code{SingleCellExperiment} object which now contains the computed independent components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) {
@@ -152,7 +152,7 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 #' @param inSCE (sce) object on which to compute and store jackstraw plot
 #' @param useAssay Assay containing scaled counts to use in JackStraw calculation.
 #' @param dims Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.
-#' @return sceObject updated sce object with jackstraw computations stored in it
+#' @return Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
 #' @export
 seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
@@ -225,7 +225,7 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @param algorithm selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use \code{louvain} for "original Louvain algorithm" and \code{multilevel} for "Louvain algorithm with multilevel refinement". Default \code{louvain}.
 #' @param groupSingletons boolean if singletons should be grouped together or not. Default \code{TRUE}.
 #' @param resolution Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.
-#' @return sceObject; updated sce object which now contains the computed clusters
+#' @return Updated sce object which now contains the computed clusters
 #' @export
 seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8) {
     algorithm <- match.arg(algorithm)
@@ -385,7 +385,7 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param seuratObject Input Seurat object
 #' @param normAssayName Name of assay to store the normalized data. Default \code{"seuratNormData"}.
 #' @param scaledAssayName Name of assay to store the scaled data. Default \code{"seuratScaledData"}.
-#' @return inSCE output object
+#' @return \code{SingleCellExperiment} output object
 #' @export
 convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", scaledAssayName = "seuratScaledData") {
   inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
@@ -403,7 +403,7 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @param countsAssay Which assay to use from sce object for raw counts. Default \code{NULL}.
 #' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
 #' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
-#' @return seuratObject updated seurat object that contains all data from the input sce object
+#' @return Updated seurat object that contains all data from the input sce object
 #' @export
 #' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
@@ -487,7 +487,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
 #' @param inSCE Input SingleCellExperiment object
 #' @param normAssayName Name for the output data assay. Default \code{"SCTCounts"}.
 #' @param useAssay Name for the input data assay. Default \code{"counts"}.
-#' @return inSCE Updated SingleCellExperiment object containing the transformed data
+#' @return Updated SingleCellExperiment object containing the transformed data
 #' @export
 #' @examples
 #' data(sce_chcl, package = "scds")
@@ -510,11 +510,11 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @param scaleData Remove scaled data from seurat. Default \code{TRUE}.
 #' @param varFeatures Remove variable features from seurat. Default \code{TRUE}. 
 #' @param PCA Remove PCA from seurat. Default \code{TRUE}.
-#' @param ICA Remove ICS from seurat. Default \code{TRUE}.
+#' @param ICA Remove ICA from seurat. Default \code{TRUE}.
 #' @param tSNE Remove tSNE from seurat. Default \code{TRUE}.
 #' @param UMAP Remove UMAP from seurat. Default \code{TRUE}.
 #' @param clusters Remove clusters from seurat. Default \code{TRUE}.
-#' @return inSCE Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
+#' @return Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
 #' @importFrom SummarizedExperiment assay<-
 .seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
   if(scaleData){
@@ -557,10 +557,8 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #'
 #' @return A \code{SingleCellExperiment} object that contains the batch-corrected assay inside the \code{altExp} slot of the object
 #' @export
-#'
-#' @examples
 seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay", kAnchor, kFilter, kWeight, ndims = 10){
-   if(!useAssay %in% assayNames(inSCE)){
+   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
     stop(paste(useAssay, "not found in the input object assays"))
   }
   if(is.null(batch)){
@@ -579,12 +577,12 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
   
   #find anchors
-  seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
-  seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
+  seurat.anchors <- Seurat::FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
+  seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
   
   #store results back in altExp slot of sce object
-  altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = GetAssayData(seurat.integrated@assays$integrated, "data")))
-  assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this if counts in above line set to altExp
+  altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")))
+  SummarizedExperiment::assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this if counts in above line set to altExp
   
   #store back colData from sce into the altExp slot
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)

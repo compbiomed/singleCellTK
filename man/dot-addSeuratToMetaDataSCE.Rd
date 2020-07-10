@@ -13,7 +13,7 @@ Adds the input seurat object to the metadata slot of the input sce object (after
 \item{seuratObject}{seurat object which should be added to the metadata slot of sce object (copy from)}
 }
 \value{
-updated sce object which now contains the seurat object in its metadata slot (excluding data matrices)
+Updated \code{SingleCellExperiment} object which now contains the seurat object in its metadata slot (excluding data matrices)
 }
 \description{
 .addSeuratToMetaDataSCE

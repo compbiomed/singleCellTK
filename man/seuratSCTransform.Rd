@@ -15,7 +15,7 @@ seuratSCTransform(inSCE, normAssayName = "SCTCounts", useAssay = "counts")
 \item{useAssay}{Name for the input data assay. Default \code{"counts"}.}
 }
 \value{
-inSCE Updated SingleCellExperiment object containing the transformed data
+Updated SingleCellExperiment object containing the transformed data
 }
 \description{
 seuratSCTransform

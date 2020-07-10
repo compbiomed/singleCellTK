@@ -40,13 +40,6 @@ library(shinyWidgets)
 library(stringr)
 library(Hmisc)
 
-#remove these below
-# library(shiny)
-# library("rvest")
-# library(stringr)
-# library(stringi)
-# library(readtext)
-# library(DT)
 
 source("helpers.R")
 source("colourGroupInput.R")
