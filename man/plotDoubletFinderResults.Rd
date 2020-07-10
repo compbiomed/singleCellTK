@@ -22,7 +22,7 @@ plotDoubletFinderResults(
   dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
-  titleSize = 15
+  titleSize = 18
 )
 }
 \arguments{

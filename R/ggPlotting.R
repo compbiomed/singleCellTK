@@ -14,6 +14,8 @@
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
@@ -42,6 +44,8 @@
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #'  Default FALSE.
 #' @param legendTitle title of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default 12.
+#' @param legendSize size of legend. Default 10.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
                        sample = NULL,
@@ -53,6 +57,8 @@
                        labelClusters = FALSE,
                        xlab = NULL,
                        ylab = NULL,
+                       axisSize = 10,
+                       axisLabelSize = 10,
                        dim1 = NULL,
                        dim2 = NULL,
                        bin = NULL,
@@ -65,7 +71,9 @@
                        defaultTheme = TRUE,
                        title = NULL,
                        titleSize = 15,
-                       legendTitle = NULL) {
+                       legendTitle = NULL,
+                       legendTitleSize = 12,
+                       legendSize = 10) {
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -171,6 +179,10 @@
     if (defaultTheme == TRUE) {
       g <- .ggSCTKTheme(g)
     }
+    g <- g + ggplot2::theme(axis.title =
+                                ggplot2::element_text(size = axisLabelSize),
+                            axis.text =
+                                ggplot2::element_text(size = axisSize))
     if (!is.null(title)) {
       if (length(samples) > 1) {
         title <- paste(title, x, sep = "_")
@@ -182,9 +194,12 @@
         ))
     }
     if (!is.null(legendTitle)) {
-      g <- g + ggplot2::labs(color = legendTitle)
+      g <- g + ggplot2::labs(color = legendTitle) +
+          ggplot2::theme(legend.title=element_text(size=legendTitleSize),
+                         legend.text=ggplot2::element_text(size=legendSize))
     } else {
-        g <- g + ggplot2::labs(color = "")
+        g <- g + ggplot2::labs(color = "") +
+            ggplot2::theme(legend.text=ggplot2::element_text(size=legendSize))
     }
 
     if (!is.null(groupBy)){
@@ -231,7 +246,7 @@
         )
     }
     return(g)
-  })  
+  })
   return(cowplot::plot_grid(plotlist = plotlist))
 }
 
@@ -260,6 +275,8 @@
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -280,6 +297,8 @@
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #' @param legendTitle title of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default 12.
+#' @param legendSize size of legend. Default 10.
 #'  Default FALSE.
 #' @return a ggplot of the reduced dimensions.
 #' @export
@@ -306,6 +325,8 @@ plotSCEDimReduceColData <- function(inSCE,
                                     reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
+                                    axisSize = 10,
+                                    axisLabelSize = 10,
                                     dim1 = NULL,
                                     dim2 = NULL,
                                     bin = NULL,
@@ -319,7 +340,9 @@ plotSCEDimReduceColData <- function(inSCE,
                                     title = NULL,
                                     titleSize = 15,
                                     labelClusters = TRUE,
-                                    legendTitle = NULL) {
+                                    legendTitle = NULL,
+                                    legendTitleSize = 12,
+                                    legendSize = 10) {
   colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
 
   g <- .ggScatter(
@@ -334,6 +357,8 @@ plotSCEDimReduceColData <- function(inSCE,
     ylab = ylab,
     dim1 = dim1,
     dim2 = dim2,
+    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
     bin = bin,
     binLabel = binLabel,
     dotSize = dotSize,
@@ -345,7 +370,9 @@ plotSCEDimReduceColData <- function(inSCE,
     title = title,
     titleSize = titleSize,
     labelClusters = labelClusters,
-    legendTitle = legendTitle
+    legendTitle = legendTitle,
+    legendTitle = legendTitleSize,
+    legendSize = legendSize
   )
   return(g)
 }
@@ -391,7 +418,9 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param legendTitle title of legend. Default NULL.
-#' @param groupBy Facet wrap the scatterplot based on value. 
+#' @param legendTitleSize size of legend title. Default 12.
+#' @param legendSize size of legend. Default 10.
+#' @param groupBy Facet wrap the scatterplot based on value.
 #' Default \code{NULL}.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
@@ -422,6 +451,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      title = NULL,
                                      titleSize = 15,
                                      legendTitle = NULL,
+                                     legendSize = 10,
+                                     legendTitleSize = 12,
                                      groupBy = NULL) {
   mat <- getBiomarker(
     inSCE = inSCE,
@@ -453,6 +484,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
     title = title,
     titleSize = titleSize,
     legendTitle = legendTitle,
+    legendTitle = legendTitleSize,
+    legendSize = legendSize,
     groupBy = groupBy
   )
 
@@ -506,6 +539,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #' @param legendTitle title of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default 12.
+#' @param legendSize size of legend. Default 10.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' \donttest{
@@ -540,7 +575,9 @@ plotSCEScatter <- function(inSCE,
                            title = NULL,
                            titleSize = 15,
                            labelClusters = TRUE,
-                           legendTitle = NULL) {
+                           legendTitle = NULL,
+                           legendTitleSize = 12,
+                           legendSize = 10) {
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
@@ -589,7 +626,9 @@ plotSCEScatter <- function(inSCE,
     title = title,
     titleSize = titleSize,
     labelClusters = labelClusters,
-    legendTitle = legendTitle
+    legendTitle = legendTitle,
+    legendTitleSize = legendTitleSize,
+    legendSize = legendSize
   )
   return(g)
 }
@@ -608,7 +647,8 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -631,6 +671,7 @@ plotSCEScatter <- function(inSCE,
                       xlab = NULL,
                       ylab = NULL,
                       axisSize = 10,
+                      axisLabelSize = 10,
                       dotSize = 1,
                       transparency = 1,
                       defaultTheme = TRUE,
@@ -679,8 +720,14 @@ plotSCEScatter <- function(inSCE,
             ))
     }
 
+    ###
+    p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
+    ###
+
     if(length(unique(df$groupby)) > 1){
-        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+        p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
+                                                                    hjust = 1,
+                                                                    size = axisSize))
     }else{
         p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                        axis.ticks.x = ggplot2::element_blank(),
@@ -692,11 +739,11 @@ plotSCEScatter <- function(inSCE,
     }
     if (!is.null(xlab)) {
         p <- p + ggplot2::xlab(xlab) +
-            ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+            ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize))
     }
     if (!is.null(ylab)) {
         p <- p + ggplot2::ylab(ylab) +
-            ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+            ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize))
     }
     if (!is.null(summary)){
         if(summary == "mean"){
@@ -716,7 +763,8 @@ plotSCEScatter <- function(inSCE,
         p <- p + ggplot2::geom_text(data = summ,
                            ggplot2::aes_string(x = "groupby",
                                y = "statY",
-                               label = "label"))
+                               label = "label"),
+                           size = 5)
         p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
                               fun.max = fun,
                               geom = "crossbar",
@@ -745,7 +793,8 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -773,6 +822,7 @@ plotSCEViolinColData <- function(inSCE,
                                  xlab = NULL,
                                  ylab = NULL,
                                  axisSize = 10,
+                                 axisLabelSize = 10,
                                  dotSize = 1,
                                  transparency = 1,
                                  defaultTheme = TRUE,
@@ -836,6 +886,7 @@ plotSCEViolinColData <- function(inSCE,
             xlab = xlab,
             ylab = ylab,
             axisSize = axisSize,
+            axisLabelSize = axisLabelSize,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
@@ -876,7 +927,8 @@ plotSCEViolinColData <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -904,6 +956,7 @@ plotSCEViolinAssayData <- function(inSCE,
                                    xlab = NULL,
                                    ylab = NULL,
                                    axisSize = 10,
+                                   axisLabelSize = 10,
                                    dotSize = 1,
                                    transparency = 1,
                                    defaultTheme = TRUE,
@@ -961,6 +1014,7 @@ plotSCEViolinAssayData <- function(inSCE,
             xlab = xlab,
             ylab = ylab,
             axisSize = axisSize,
+            axisLabelSize = axisLabelSize,
             dotSize = dotSize,
             transparency = transparency,
             defaultTheme = defaultTheme,
@@ -1004,7 +1058,8 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -1034,6 +1089,7 @@ plotSCEViolin <- function(inSCE,
                           xlab = NULL,
                           ylab = NULL,
                           axisSize = 10,
+                          axisLabelSize = 10,
                           dotSize = 1,
                           transparency = 1,
                           defaultTheme = TRUE,
@@ -1108,6 +1164,7 @@ plotSCEViolin <- function(inSCE,
           xlab = xlab,
           ylab = ylab,
           axisSize = axisSize,
+          axisLabelSize = axisLabelSize,
           dotSize = dotSize,
           transparency = transparency,
           defaultTheme = defaultTheme,
@@ -1139,7 +1196,8 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -1151,6 +1209,7 @@ plotSCEViolin <- function(inSCE,
                        xlab = NULL,
                        ylab = NULL,
                        axisSize = 10,
+                       axisLabelSize = 10,
                        defaultTheme = TRUE,
                        title = NULL,
                        titleSize = 15,
@@ -1183,13 +1242,14 @@ plotSCEViolin <- function(inSCE,
 
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
-      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize))
   }
 
   if (!is.null(ylab)) {
     p <- p + ggplot2::ylab(ylab) +
-      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize))
   }
+  p <- p + ggplot2::theme(axis.text = ggplot2::element_text(size = axisSize))
 
   if (!is.null(cutoff)) {
     p <- p + ggplot2::geom_vline(xintercept = cutoff, color = "red")
@@ -1210,7 +1270,8 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -1230,6 +1291,7 @@ plotSCEDensityColData <- function(inSCE,
                                   xlab = NULL,
                                   ylab = NULL,
                                   axisSize = 10,
+                                  axisLabelSize = 10,
                                   defaultTheme = TRUE,
                                   title = NULL,
                                   titleSize = NULL,
@@ -1289,6 +1351,7 @@ plotSCEDensityColData <- function(inSCE,
       xlab = xlab,
       ylab = ylab,
       axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
       defaultTheme = defaultTheme,
       title = title,
       titleSize = titleSize,
@@ -1323,7 +1386,8 @@ plotSCEDensityColData <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -1344,6 +1408,7 @@ plotSCEDensityAssayData <- function(inSCE,
                                     xlab = NULL,
                                     ylab = NULL,
                                     axisSize = 10,
+                                    axisLabelSize = 10,
                                     defaultTheme = TRUE,
                                     cutoff = NULL,
                                     title = NULL,
@@ -1403,6 +1468,7 @@ plotSCEDensityAssayData <- function(inSCE,
       xlab = xlab,
       ylab = ylab,
       axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
       defaultTheme = defaultTheme,
       title = title,
       titleSize = titleSize,
@@ -1442,7 +1508,8 @@ plotSCEDensityAssayData <- function(inSCE,
 #' object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -1465,6 +1532,7 @@ plotSCEDensity <- function(inSCE,
                            xlab = NULL,
                            ylab = NULL,
                            axisSize = 10,
+                           axisLabelSize = 10,
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = NULL,
@@ -1542,6 +1610,7 @@ plotSCEDensity <- function(inSCE,
       xlab = xlab,
       ylab = ylab,
       axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
       defaultTheme = defaultTheme,
       title = title,
       titleSize = titleSize
@@ -1599,7 +1668,8 @@ plotSCEDensity <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -1612,7 +1682,7 @@ plotSCEDensity <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
+  axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
@@ -1648,11 +1718,11 @@ plotSCEDensity <- function(inSCE,
   }
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
-      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisSize))
+      ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize))
   }
   if (!is.null(ylab)) {
     p <- p + ggplot2::ylab(ylab) +
-      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisSize))
+      ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize))
   }
 
   return(p)
@@ -1675,7 +1745,8 @@ plotSCEDensity <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -1697,7 +1768,7 @@ plotSCEBarColData <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
+  axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
@@ -1734,7 +1805,7 @@ plotSCEBarColData <- function(inSCE,
     dots = dots,
     xlab = xlab,
     ylab = ylab,
-    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
     dotSize = dotSize,
     transparency = transparency,
     defaultTheme = defaultTheme,
@@ -1760,7 +1831,8 @@ plotSCEBarColData <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -1780,7 +1852,7 @@ plotSCEBarAssayData <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
+  axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
@@ -1816,7 +1888,7 @@ plotSCEBarAssayData <- function(inSCE,
     dots = dots,
     xlab = xlab,
     ylab = ylab,
-    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
     dotSize = dotSize,
     transparency = transparency,
     defaultTheme = defaultTheme,

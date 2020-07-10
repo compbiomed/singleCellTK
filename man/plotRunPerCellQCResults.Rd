@@ -12,7 +12,8 @@ plotRunPerCellQCResults(
   boxplot = FALSE,
   dots = TRUE,
   dotSize = 0.5,
-  axisSize = 10,
+  axisSize = 15,
+  axisLabelSize = 18,
   transparency = 1,
   defaultTheme = TRUE
 )

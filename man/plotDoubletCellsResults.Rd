@@ -12,6 +12,7 @@ plotDoubletCellsResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
+  logScore = TRUE,
   reducedDimName = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -22,7 +23,7 @@ plotDoubletCellsResults(
   dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
-  titleSize = 15
+  titleSize = 18
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ Default TRUE.}
 
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
+
+\item{logScore}{Boolean. If TRUE, the doublet score will be log normalized.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}

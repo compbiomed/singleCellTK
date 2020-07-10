@@ -15,6 +15,8 @@
   labelClusters = FALSE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -27,7 +29,9 @@
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
-  legendTitle = NULL
+  legendTitle = NULL,
+  legendTitleSize = 12,
+  legendSize = 10
 )
 }
 \arguments{
@@ -55,6 +59,10 @@ Default FALSE.}
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -94,6 +102,10 @@ when TRUE. Default TRUE.}
 \item{titleSize}{Size of title of plot. Default 15.}
 
 \item{legendTitle}{title of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{legendSize}{size of legend. Default 10.}
 }
 \value{
 a ggplot of the reduced dimensions.
