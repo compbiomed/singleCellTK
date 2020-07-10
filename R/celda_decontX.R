@@ -33,7 +33,8 @@ runDecontX <- function(inSCE,
   message(paste0(date(), " ... Running 'DecontX'"))
 
   inSCE <- celda::decontX(x = inSCE, batch = sample, assayName = useAssay, ...)
-  argsList = argsList[!names(argsList) %in% ("...")]
+  argsList <- argsList[!names(argsList) %in% ("...")]
+  
   inSCE@metadata$runDecontX <- argsList[-1]
   inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
 

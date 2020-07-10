@@ -42,7 +42,7 @@ A wrapper function for \link[celda]{decontX}. Identify
  potential contamination from experimental factors such as ambient RNA.
 }
 \examples{
-data(qcSceExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 mito.ix = grep("^MT-", rowData(sce)$feature_name)
 geneSet <- list("Mito"=rownames(sce)[mito.ix])
 sce <- runPerCellQC(sce, geneSetList = geneSet)
