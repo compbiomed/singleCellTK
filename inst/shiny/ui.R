@@ -41,22 +41,15 @@ library(stringr)
 library(Hmisc)
 
 #remove these below
-library(shiny)
-library("rvest")
-library(stringr)
-library(stringi)
-library(readtext)
-library(DT)
+# library(shiny)
+# library("rvest")
+# library(stringr)
+# library(stringi)
+# library(readtext)
+# library(DT)
 
 source("helpers.R")
 source("colourGroupInput.R")
-source("../../R/seuratFunctions.R")
-source("../../R/computeZScore.R")
-source("../../R/trimCounts.R")
-source("../../R/scran_modelGeneVar.R")
-source("../../R/getTopHVG.R")
-source("../../R/scater_logNormCounts.R")
-source("../../R/miscFunctions.R")
 data("c2BroadSets")
 
 #test internet connection for enrichR connectivity

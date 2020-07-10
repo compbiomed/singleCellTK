@@ -17,7 +17,7 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 )
 }
 \arguments{
-\item{inSCE}{Input SingleCellExperiment object to remove Seurat data from.}
+\item{inSCE}{Input \code{SingleCellExperiment} object to remove Seurat data from.}
 
 \item{scaleData}{Remove scaled data from seurat. Default \code{TRUE}.}
 

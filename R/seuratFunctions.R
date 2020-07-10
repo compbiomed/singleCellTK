@@ -506,7 +506,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 
 #' .seuratInvalidate
 #' Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
-#' @param inSCE Input SingleCellExperiment object to remove Seurat data from.
+#' @param inSCE Input \code{SingleCellExperiment} object to remove Seurat data from.
 #' @param scaleData Remove scaled data from seurat. Default \code{TRUE}.
 #' @param varFeatures Remove variable features from seurat. Default \code{TRUE}. 
 #' @param PCA Remove PCA from seurat. Default \code{TRUE}.
@@ -543,32 +543,63 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
   return(inSCE)
 }
 
-seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay", kAnchor, kFilter, kWeight, ndims){
+
+#' seuratIntegration
+#' A wrapper function to Seurat Batch-Correction/Integration workflow.
+#' @param inSCE Input \code{SingleCellExperiment} object that contains the assay to batch-correct.
+#' @param useAssay Assay to batch-correct.
+#' @param batch Batch variable from \code{colData} slot of \code{SingleCellExperiment} object.
+#' @param newAssayName Assay name for the batch-corrected ouput assay.
+#' @param kAnchor Number of neighbours to use for finding the anchors in the \link[Seurat]{FindIntegrationAnchors} function.
+#' @param kFilter Number of neighbours to use for filtering the anchors in the \link[Seurat]{FindIntegrationAnchors} function.
+#' @param kWeight Number of neighbours to use when weigthing the anchors in the \link[Seurat]{IntegrateData} function.
+#' @param ndims Number of dimensions to use. Default \code{10}.
+#'
+#' @return A \code{SingleCellExperiment} object that contains the batch-corrected assay inside the \code{altExp} slot of the object
+#' @export
+#'
+#' @examples
+seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay", kAnchor, kFilter, kWeight, ndims = 10){
+   if(!useAssay %in% assayNames(inSCE)){
+    stop(paste(useAssay, "not found in the input object assays"))
+  }
+  if(is.null(batch)){
+    stop("batch variable must be provided for batch-correction")
+  }
+  if(kAnchor == 0 || kFilter == 0 || kWeight == 0){
+    stop("kAnchor, kFilter or kWeight cannot be zero. Please input correct parameters.")
+  }
+  
+  #create seurat object
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
+  
+  #split seurat object by batch variable
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
+  
+  #find anchors
   seurat.anchors <- FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
   seurat.integrated <- IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
+  
+  #store results back in altExp slot of sce object
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = GetAssayData(seurat.integrated@assays$integrated, "data")))
-  assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this when counts in above line set to altExp
+  assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this if counts in above line set to altExp
+  
+  #store back colData from sce into the altExp slot
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
+  
   #counts <- assay(altExp(inSCE, newAssayName), "altExp")
+  #remove NA values from counts and replace with zero so can be used properly by dgCMatrix
   counts <- assay(altExp(inSCE, newAssayName), newAssayName)
   counts[is.na(counts)] <- 0
+  
+  #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
-  assay(altExp(inSCE, newAssayName), newAssayName) <- counts #need to finalize this altExp issue
+  assay(altExp(inSCE, newAssayName), newAssayName) <- counts 
+  
   return(inSCE)
 
-}
-
-isAltExp <- function(inSCE, assayName){
-  if(assayName %in% altExpNames(inSCE)){
-    return(TRUE)
-  }
-  else{
-    return(FALSE)
-  }
 }
 
 # ----
