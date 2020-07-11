@@ -104,6 +104,10 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="logical",
         default=FALSE,
         help="Detect cells from droplet matrix. Default is FALSE. This argument is only eavluated when -d is 'Droplet'. If set as TRUE, quality control will be performed on both the droplet and the detected cell matrix."),
+    optparse::make_option(c("-m", "--cellDetectMethod"),
+        type="character",
+        default='EmptyDrops',
+        help="Methods to detect cells. Default is 'EmptyDrops'. Other options could be 'Knee' or 'Inflection'. More information is provided in the documentation. "),
     optparse::make_option(c("-T", "--clusterType"),
         type="character",
         default="MulticoreParam",
@@ -130,6 +134,7 @@ dataType <- opt[["dataType"]]
 detectCell <- opt[["detectCells"]]
 numCores <- opt[["numCores"]]
 clusterType <- opt[["clusterType"]] 
+cellCalling <- opt[["cellDetectMethod"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["base_path"]], ",")) } 
 
@@ -341,6 +346,10 @@ if (dataType == "Droplet") {
     }
 }
 
+if (!cellCalling %in% c("Knee", "Inflection", "EmptyDrops")) {
+    step("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
+}
+
 ## Prepare for QC
 dropletSCE_list <- list()
 cellSCE_list <- list()
@@ -390,7 +399,13 @@ for(i in seq_along(process)) {
         message(paste0(date(), " .. Running droplet QC"))        
         dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
         if (isTRUE(detectCell)) {
-            ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+            if (cellCalling == "EmptyDrops") {
+                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01 
+            } else if (cellCalling == "Knee") {
+                ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1                 
+            } else {
+                ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
+            }
             cellSCE <- dropletSCE[,ix]
             cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
         }
@@ -402,7 +417,13 @@ for(i in seq_along(process)) {
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
             
             if (is.null(cellSCE)) {
-                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
+                if (cellCalling == "EmptyDrops") {
+                    ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01 
+                } else if (cellCalling == "Knee") {
+                    ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1                 
+                } else {
+                    ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
+                }
                 cellSCE <- dropletSCE[,ix]
             }    
         }
@@ -411,6 +432,9 @@ for(i in seq_along(process)) {
             message(paste0(date(), " .. Running cell QC"))        
             cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
         }
+
+        cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
+        SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat
     }
     
     ## merge colData of dropletSCE and FilteredSCE
