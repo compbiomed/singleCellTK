@@ -11,7 +11,8 @@ plotBatchVariance(
   useReddim = NULL,
   useAltExp = NULL,
   batch = "batch",
-  condition = NULL
+  condition = NULL,
+  title = NULL
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ that stores an assay of the value to plot. Default \code{NULL}.}
 
 \item{condition}{A single character. The name of an additional condition
 annotation column in \code{colData(inSCE)}. Default \code{NULL}.}
+
+\item{title}{A single character. The title text on the top. Default
+\code{NULL}.}
 }
 \value{
 A ggplot object of a boxplot of variation explained by batch,

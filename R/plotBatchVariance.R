@@ -24,6 +24,8 @@
 #' \code{colData(inSCE)}. Default \code{"batch"}.
 #' @param condition A single character. The name of an additional condition
 #' annotation column in \code{colData(inSCE)}. Default \code{NULL}.
+#' @param title A single character. The title text on the top. Default
+#' \code{NULL}.
 #' @return A ggplot object of a boxplot of variation explained by batch,
 #' condition, and batch+condition.
 #' @export
@@ -39,7 +41,7 @@
 #'
 plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
                               useAltExp = NULL, batch = 'batch',
-                              condition=NULL) {
+                              condition=NULL, title = NULL) {
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop("'inSCE' must inherit from 'SingleCellExperiment'.")
   }
@@ -117,7 +119,8 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
        ggplot2::xlab("Model") +
        ggplot2::ylab("Percent Explained Variation") +
        ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
-                                  guide = FALSE)
+                                  guide = FALSE) +
+       ggplot2::ggtitle(title)
   a <- .ggSCTKTheme(a)
   return(a)
 }
