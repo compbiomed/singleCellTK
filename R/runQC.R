@@ -44,11 +44,14 @@ runCellQC <- function(inSCE,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay,
-                          collectionName = collectionName,
-                          geneSetList = geneSetList,
-                          geneSetListLocation = geneSetListLocation,
-                          geneSetCollection = geneSetCollection)
+    inSCE <- do.call(runPerCellQC,
+      c(list(inSCE = quote(inSCE), 
+        useAssay = useAssay,
+        collectionName = collectionName,
+        geneSetList = geneSetList,
+        geneSetListLocation = geneSetListLocation,
+        geneSetCollection = geneSetCollection), 
+        paramsList[["QCMetrics"]]))
   }
 
   if ("scrublet" %in% algorithms) {
@@ -151,7 +154,10 @@ runDropletQC <- function(inSCE,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    inSCE <- runPerCellQC(inSCE = inSCE, useAssay = useAssay)
+    inSCE <- do.call(runPerCellQC, 
+      c(list(inSCE = quote(inSCE), 
+        useAssay = useAssay),
+        paramsList[["QCMetrics"]]))
   }
 
   if (any("emptyDrops" %in% algorithms)) {
