@@ -20,7 +20,7 @@
 plotTSNE <- function(inSCE, colorBy="No Color", shape="No Shape",
                      reducedDimName="TSNE", runTSNE=FALSE,
                      useAssay="logcounts"){
-  if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))){
+  if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runTSNE){
       inSCE <- getTSNE(inSCE, useAssay = useAssay,
                        reducedDimName = reducedDimName)

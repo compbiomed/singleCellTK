@@ -22,7 +22,7 @@
 plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
                     useAssay="logcounts"){
-  if (is.null(SingleCellExperiment::reducedDim(inSCE, reducedDimName))){
+  if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runPCA){
       inSCE <- getPCA(inSCE, useAssay = useAssay,
                       reducedDimName = reducedDimName)
