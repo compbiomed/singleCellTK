@@ -11,7 +11,7 @@ plotRunPerCellQCResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
-  dotSize = 0.5,
+  dotSize = 1,
   axisSize = 15,
   axisLabelSize = 18,
   transparency = 1,
@@ -41,9 +41,9 @@ Default TRUE.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default 15.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default 18.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -59,10 +59,10 @@ A wrapper function which visualizes outputs from the
 }
 \examples{
 \donttest{
-data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+data(scExample, package="singleCellTK")
+sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runPerCellQC(sce)
-plotRunPerCellQCResults(inSCE = sce)
+plotRunPerCellQCResults(inSCE=sce)
 }
 }

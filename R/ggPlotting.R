@@ -1632,31 +1632,228 @@ plotSCEDensity <- function(inSCE,
   ))
 }
 
+#' @title Plots for runEmptyDrops outputs.
+#' @description A plotting function which visualizes outputs from the
+#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+#'  object via scatterplot.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runScrublet}. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Default NULL.
+#' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
+#'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param dotSize Size of dots. Default 1.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 12.
+#' @param axisLabelSize Size of x/y-axis labels. Default 15.
+#' @param legendTitle Title of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default 12.
+#' @param legendSize size of legend. Default 10.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- runEmptyDrops(inSCE=sce)
+#' plotEmptyDropsScatter(inSCE=sce)
+#' @export
+plotEmptyDropsScatter <- function(inSCE,
+                                  sample = NULL,
+                                  fdrCutoff = 0.01,
+                                  defaultTheme = TRUE,
+                                  dotSize = 1,
+                                  title = NULL,
+                                  titleSize = 18,
+                                  xlab = NULL,
+                                  ylab = NULL,
+                                  axisSize = 12,
+                                  axisLabelSize = 15,
+                                  legendTitle = NULL,
+                                  legendTitleSize = 12,
+                                  legendSize = 10){
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
+    }
 
-.ggSCTKTheme <- function(gg) {
-  return(gg + ggplot2::theme_bw() +
-    ggplot2::theme(
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.text = ggplot2::element_text(size = 10),
-      axis.title = ggplot2::element_text(size = 10)
+    samples <- unique(sample)
+
+    plotlist <- lapply(samples, function(x){
+        sceSampleInd <- which(sample == x)
+        inSCESub <- inSCE[, sceSampleInd]
+        inSCESub = inSCESub[,!is.na(inSCESub$dropletUtils_emptyDrops_fdr)]
+        isCell <- unlist(lapply(inSCESub$dropletUtils_emptyDrops_fdr, function(x){
+            if(!is.na(x)){
+                if(x <= fdrCutoff){
+                    return("Putative Cell")
+                }else{
+                    return("Empty Droplet")
+                }
+            }
+
+        }))
+
+        df <- data.frame(x = inSCESub$dropletUtils_emptyDrops_total,
+                         y = -(inSCESub$dropletUtils_emptyDrops_logprob),
+                         isCell = isCell)
+
+        p <- ggplot2::ggplot(df, ggplot2::aes_string("x",
+                                                     "y", color = "isCell")) +
+            ggplot2::geom_point(size = dotSize) +
+            ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=2))) +
+            ggplot2::scale_color_manual(values = c("gray", "red"))
+
+        if (defaultTheme == TRUE) {
+            p <- .ggSCTKTheme(p)
+        }
+
+        if (!is.null(title)) {
+            if(length(samples) > 1){
+                title = paste(title, x, sep = "_")
+            }
+            p <- p + ggplot2::ggtitle(label = title) +
+                ggplot2::theme(plot.title = ggplot2::element_text(
+                    hjust = 0.5,
+                    size = titleSize
+                ))
+        }
+        if (!is.null(xlab)) {
+            p <- p + ggplot2::xlab(xlab) +
+                ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.x = ggplot2::element_text(size = axisSize))
+        }
+        if (!is.null(ylab)) {
+            p <- p + ggplot2::ylab(ylab) +
+                ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.y = ggplot2::element_text(size = axisSize))
+        }
+        if (!is.null(legendTitle)) {
+            p <- p + ggplot2::labs(color = legendTitle) +
+                ggplot2::theme(legend.title=ggplot2::element_text(size=legendTitleSize),
+                               legend.text=ggplot2::element_text(size=legendSize))
+        } else {
+            p <- p + ggplot2::labs(color = "") +
+                ggplot2::theme(legend.text=ggplot2::element_text(size=legendSize))
+        }
+        return(p)
+    })
+    return(cowplot::plot_grid(
+        plotlist = plotlist,
+        ncol = 1
     ))
 }
 
-.binSCTK <- function(value, bin, binLabel = NULL) {
-  if (!is.null(binLabel)) {
-    if (length(bin) == 1) {
-      if (bin != length(binLabel)) {
-        stop("'binLabel' must be equal to the bin length")
-      }
-    } else if (length(bin) > 1) {
-      if (bin != length(binLabel) + 1) {
-        stop("'binLabel' must be equal to the bin length")
-      }
+#' @title Plots for runEmptyDrops outputs.
+#' @description A plotting function which visualizes outputs from the
+#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+#'  object via scatterplot.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runScrublet}. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Default NULL.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param dotSize Size of dots. Default 1.
+#' @param title Title of plot. Default NULL.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param xlab Character vector. Label for x-axis. Default NULL.
+#' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 12.
+#' @param axisLabelSize Size of x/y-axis labels. Default 15.
+#' @param legendSize size of legend. Default 10.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- runBarcodeRankDrops(inSCE=sce)
+#' plotBarcodeRankScatter(inSCE=sce)
+#' @export
+plotBarcodeRankScatter <- function(inSCE,
+                                   sample = NULL,
+                                   defaultTheme = TRUE,
+                                   dotSize = 1,
+                                   title = NULL,
+                                   titleSize = 18,
+                                   xlab = NULL,
+                                   ylab = NULL,
+                                   axisSize = 12,
+                                   axisLabelSize = 15,
+                                   legendSize = 10){
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
     }
-  }
-  value.bin <- cut(x = value, breaks = bin, labels = binLabel)
-  return(value.bin)
+
+    samples <- unique(sample)
+    plotlist <- lapply(samples, function(x){
+        sceSampleInd <- which(sample == x)
+        meta = S4Vectors::metadata(inSCE)
+
+        df = data.frame(rank = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank[sceSampleInd],
+                        umi = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_total[sceSampleInd])
+        df = df[which(df$umi != 0),]
+
+        p <- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
+            ggplot2::geom_point(size=dotSize, shape=20) +
+            ggplot2::scale_x_log10() +
+            ggplot2::scale_y_log10()
+
+        p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$knee, linetype = "Knee"), colour = 'red') +
+            ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$inflection, linetype = "Inflection"), colour= 'blue') +
+            ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
+                                           guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
+                                                                         override.aes = list(color = c("blue", "red"))))
+
+        if (defaultTheme == TRUE) {
+            p <- .ggSCTKTheme(p)
+        }
+        if (!is.null(title)) {
+            p <- p + ggplot2::ggtitle(label = title) +
+                ggplot2::theme(plot.title = ggplot2::element_text(
+                    hjust = 0.5,
+                    size = titleSize
+                ))
+        }
+        if (!is.null(xlab)) {
+            p <- p + ggplot2::xlab(xlab) +
+                ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.x = ggplot2::element_text(size = axisSize))
+        }else{
+            p <- p + ggplot2::xlab("Rank") +
+                ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.x = ggplot2::element_text(size = axisSize))
+        }
+
+        if (!is.null(ylab)) {
+            p <- p + ggplot2::ylab(ylab) +
+                ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.y = ggplot2::element_text(size = axisSize))
+        }else{
+            p <- p + ggplot2::ylab("Total UMI Counts") +
+                ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
+                               axis.text.y = ggplot2::element_text(size = axisSize))
+        }
+        return(p)
+    })
+    return(cowplot::plot_grid(
+        plotlist = plotlist,
+        ncol = 1
+    ))
+
 }
 
 #' @title Bar plot plotting tool.
@@ -1904,4 +2101,31 @@ plotSCEBarAssayData <- function(inSCE,
 
   return(p)
 }
+
+.ggSCTKTheme <- function(gg) {
+    return(gg + ggplot2::theme_bw() +
+               ggplot2::theme(
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   axis.text = ggplot2::element_text(size = 10),
+                   axis.title = ggplot2::element_text(size = 10)
+               ))
+}
+
+.binSCTK <- function(value, bin, binLabel = NULL) {
+    if (!is.null(binLabel)) {
+        if (length(bin) == 1) {
+            if (bin != length(binLabel)) {
+                stop("'binLabel' must be equal to the bin length")
+            }
+        } else if (length(bin) > 1) {
+            if (bin != length(binLabel) + 1) {
+                stop("'binLabel' must be equal to the bin length")
+            }
+        }
+    }
+    value.bin <- cut(x = value, breaks = bin, labels = binLabel)
+    return(value.bin)
+}
+
 

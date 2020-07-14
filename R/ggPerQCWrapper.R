@@ -17,179 +17,256 @@
 #'  Default TRUE.
 #' @param dotSize Size of dots. Default 1.
 #' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @examples
 #' \donttest{
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
-#' plotRunPerCellQCResults(inSCE = sce)
+#' plotRunPerCellQCResults(inSCE=sce)
 #' }
 #' @export
 plotRunPerCellQCResults <- function(inSCE,
-                                    sample = NULL,
-                                    groupby = NULL,
-                                    violin = TRUE,
-                                    boxplot = FALSE,
-                                    dots = TRUE,
-                                    dotSize = 0.5,
-                                    axisSize = 15,
-                                    axisLabelSize = 18,
-                                    transparency = 1,
-                                    defaultTheme = TRUE,
-                                    titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
+                                    sample=NULL,
+                                    groupby=NULL,
+                                    violin=TRUE,
+                                    boxplot=FALSE,
+                                    dots=TRUE,
+                                    dotSize=1,
+                                    axisSize=15,
+                                    axisLabelSize=18,
+                                    transparency=1,
+                                    defaultTheme=TRUE,
+                                    titleSize=18) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
+    }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
+
+  samples <- unique(sample)
+
+  if (length(samples) > 1) {
+    combined.sum <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="sum",
+      groupby=sample,
+      xlab="",
+      ylab="Counts",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Total counts per cell",
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median",
+      titleSize=titleSize
+    )
+    combined.detected <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="detected",
+      groupby=sample,
+      xlab="",
+      ylab="Features",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Total features detected per cell",
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median",
+      titleSize=titleSize
+    )
+    combined.plots <- list(combined.sum, combined.detected)
+    names(combined.plots) <- c("Sum", "Detected")
+  }
+
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    violin.sum <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="sum",
+      sample=sampleSub,
+      xlab="",
+      ylab="Counts",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Total counts per cell",
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median",
+      titleSize=titleSize
+    )
+
+    violin.detected <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="detected",
+      sample=sampleSub,
+      xlab="",
+      ylab="Features",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Total features detected per cell",
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median",
+      titleSize=titleSize
+    )
+
+    violin.toppercent <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="percent_top_50",
+      sample=sampleSub,
+      xlab="",
+      ylab="Gene expression percentage (%)",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Top 50 gene expression percentage",
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median",
+      titleSize=titleSize
+    )
+
+    if (any(grepl(
+      pattern="subsets_",
+      names(colData(inSCESub))
+    ))) {
+      subsets <- grep(
+        pattern="subsets_",
+        names(colData(inSCESub)), value=TRUE
+      )
+
+      violin.subset <- lapply(subsets, function(x) {
+        plotSCEViolinColData(
+          inSCE=inSCESub,
+          coldata=x,
+          sample=sampleSub,
+          xlab="",
+          ylab=x,
+          groupby=groupby,
+          violin=violin,
+          boxplot=boxplot,
+          dots=dots,
+          transparency=transparency,
+          axisSize=axisSize,
+          axisLabelSize=axisLabelSize,
+          title=paste0(x, " per cell"),
+          dotSize=dotSize,
+          titleSize=titleSize
+        )
+      })
+      names(violin.subset) <- subsets
     } else {
-        sample <- rep(1, ncol(inSCE))
+      violin.subset <- NULL
     }
 
-    samples <- unique(sample)
-
-    if(length(samples) > 1){
-        combined.sum <- plotSCEViolinColData(inSCE=inSCE,
-                                              coldata="sum",
-                                              groupby=sample,
-                                              xlab="",
-                                              ylab="Counts",
-                                              violin = violin,
-                                              boxplot = boxplot,
-                                              dots=dots,
-                                              transparency = transparency,
-                                              title="Total counts per cell",
-                                              dotSize=dotSize,
-                                             axisSize = axisSize,
-                                             axisLabelSize = axisLabelSize,
-                                              gridLine = TRUE,
-                                              summary = "median",
-                                             titleSize = titleSize)
-        combined.detected <- plotSCEViolinColData(inSCE=inSCE,
-                                                  coldata="detected",
-                                                  groupby=sample,
-                                                  xlab="",
-                                                  ylab="Features",
-                                                  violin = violin,
-                                                  boxplot = boxplot,
-                                                  dots=dots,
-                                                  transparency = transparency,
-                                                  title="Total features detected per cell",
-                                                  dotSize=dotSize,
-                                                  axisSize = axisSize,
-                                                  axisLabelSize = axisLabelSize,
-                                                  gridLine = TRUE,
-                                                  summary = "median",
-                                                  titleSize = titleSize)
-        combined.plots <- list(combined.sum, combined.detected)
-        names(combined.plots) <- c("Sum", "Detected")
+    res.list <- list(
+      violin.sum,
+      violin.detected,
+      violin.toppercent
+    )
+    names(res.list) <- c("sum", "detected", "toppercent")
+    if (!is.null(violin.subset)) {
+      res.list <- c(res.list, violin.subset)
     }
+    return(res.list)
+  })
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        violin.sum <-plotSCEViolinColData(inSCE=inSCESub,
-                                          coldata="sum",
-                                          sample = sampleSub,
-                                          xlab="",
-                                          ylab="Counts",
-                                          groupby = groupby,
-                                          violin = violin,
-                                          boxplot = boxplot,
-                                          dots=dots,
-                                          transparency = transparency,
-                                          title="Total counts per cell",
-                                          dotSize=dotSize,
-                                          axisSize = axisSize,
-                                          axisLabelSize = axisLabelSize,
-                                          summary = "median",
-                                          titleSize = titleSize)
-
-        violin.detected <- plotSCEViolinColData(inSCE=inSCESub,
-                                                coldata="detected",
-                                                sample = sampleSub,
-                                                xlab="",
-                                                ylab="Features",
-                                                groupby = groupby,
-                                                violin = violin,
-                                                boxplot = boxplot,
-                                                dots=dots,
-                                                transparency = transparency,
-                                                title="Total features detected per cell",
-                                                dotSize=dotSize,
-                                                axisSize = axisSize,
-                                                axisLabelSize = axisLabelSize,
-                                                summary = "median",
-                                                titleSize = titleSize)
-
-        violin.toppercent <- plotSCEViolinColData(inSCE=inSCESub,
-                                                  coldata="percent_top_50",
-                                                  sample = sampleSub,
-                                                  xlab="",
-                                                  ylab="Gene expression percentage (%)",
-                                                  groupby = groupby,
-                                                  violin = violin,
-                                                  boxplot = boxplot,
-                                                  dots=dots,
-                                                  transparency = transparency,
-                                                  title="Top 50 gene expression percentage",
-                                                  dotSize=dotSize,
-                                                  axisSize = axisSize,
-                                                  axisLabelSize = axisLabelSize,
-                                                  summary = "median",
-                                                  titleSize = titleSize)
-
-        if(any(grepl(pattern = "subsets_",
-                     names(colData(inSCESub))))){
-
-            subsets <- grep(pattern = "subsets_",
-                            names(colData(inSCESub)), value = TRUE)
-
-            violin.subset <- lapply(subsets, function(x) plotSCEViolinColData(inSCE=inSCESub,
-                                                                              coldata=x,
-                                                                              sample = sampleSub,
-                                                                              xlab="",
-                                                                              ylab=x,
-                                                                              groupby = groupby,
-                                                                              violin = violin,
-                                                                              boxplot = boxplot,
-                                                                              dots=dots,
-                                                                              transparency = transparency,
-                                                                              axisSize = axisSize,
-                                                                              axisLabelSize = axisLabelSize,
-                                                                              title=paste0(x," per cell"),
-                                                                              dotSize=dotSize,
-                                                                              titleSize = titleSize))
-            names(violin.subset) <- subsets
-        }else{
-            violin.subset <- NULL
-        }
-
-        res.list <- list(violin.sum,
-                         violin.detected,
-                         violin.toppercent)
-        names(res.list) <- c("sum", "detected", "toppercent")
-        if(!is.null(violin.subset)){
-            res.list <- c(res.list, violin.subset)
-        }
-        return(res.list)
-    })
-
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
+
+#' @title Plots for runEmptyDrops outputs.
+#' @description A wrapper function which visualizes outputs from the
+#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+#'  object via plots.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runScrublet}. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Default NULL.
+#' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
+#'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param dotSize Size of dots. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- runEmptyDrops(inSCE=sce)
+#' plotEmptyDropsResults(inSCE=sce)
+#' @export
+plotEmptyDropsResults <- function(inSCE,
+                                  sample=NULL,
+                                  fdrCutoff=0.01,
+                                  defaultTheme=TRUE,
+                                  dotSize=1,
+                                  titleSize=18,
+                                  axisLabelSize=18,
+                                  axisSize=15,
+                                  legendSize=15,
+                                  legendTitleSize=16) {
+  scatterEmptyDrops <- plotEmptyDropsScatter(inSCE,
+    sample=sample,
+    fdrCutoff=fdrCutoff,
+    dotSize=dotSize,
+    title="EmptyDrops, Total UMI counts vs Log-Probability",
+    titleSize=titleSize,
+    defaultTheme=TRUE,
+    xlab="Total UMI count",
+    ylab="-Log Probability",
+    axisLabelSize=axisLabelSize,
+    axisSize=axisSize,
+    legendTitle=paste0("Cutoff:\nFDR < ", fdrCutoff),
+    legendTitleSize=legendTitleSize,
+    legendSize=legendSize
+  )
+
+  res.list <- list(scatterEmptyDrops)
+  names(res.list) <- c("scatterEmptyDrops")
+  return(res.list)
+}
+
 
 #' @title Plots for runScrublet outputs.
 #' @description A wrapper function which visualizes outputs from the
@@ -223,160 +300,179 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
-#' plotScrubletResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotScrubletResults <- function(inSCE,
-                                sample = NULL,
-                                shape = NULL,
-                                groupby = NULL,
-                                violin = TRUE,
-                                boxplot = FALSE,
-                                dots = TRUE,
+                                sample=NULL,
+                                shape=NULL,
+                                groupby=NULL,
+                                violin=TRUE,
+                                boxplot=FALSE,
+                                dots=TRUE,
                                 reducedDimName,
-                                xlab = NULL,
-                                ylab = NULL,
-                                dim1 = NULL,
-                                dim2 = NULL,
-                                bin = NULL,
-                                binLabel = NULL,
-                                dotSize = 0.5,
-                                transparency = 1,
-                                defaultTheme = TRUE,
-                                titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                                xlab=NULL,
+                                ylab=NULL,
+                                dim1=NULL,
+                                dim2=NULL,
+                                bin=NULL,
+                                binLabel=NULL,
+                                defaultTheme=TRUE,
+                                dotSize=1,
+                                transparency=1,
+                                titleSize=18,
+                                axisLabelSize=18,
+                                axisSize=15,
+                                legendSize=15,
+                                legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    samples <- unique(sample)
+  samples <- unique(sample)
 
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                            coldata="scrublet_score",
-                                            groupby=sample,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            title="Scrublet Score",
-                                            titleSize = titleSize,
-                                            dotSize=dotSize,
-                                            axisSize = 15,
-                                            axisLabelSize = 18,
-                                            gridLine = TRUE,
-                                            summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "Scrublet_Score"
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scrublet_score",
+      groupby=sample,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="Scrublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "Scrublet_Score"
+  }
 
-    }
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterScore <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scrublet_score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="Scrublet Doublet Score",
+      titleSize=titleSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Score",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize
+    )
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        scatterScore <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "scrublet_score",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                title = "Scrublet Doublet Score",
-                                                titleSize = titleSize,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Doublet Score",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+    densityScore <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scrublet_score",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=15,
+      axisLabelSize=18,
+      defaultTheme=defaultTheme,
+      cutoff=0.5,
+      title="Density, Scrublet Score",
+      titleSize=titleSize
+    )
 
-        densityScore <- plotSCEDensityColData(inSCE = inSCESub,
-                                              sample = sampleSub,
-                                              coldata = "scrublet_score",
-                                              groupby = groupby,
-                                              xlab = "Score",
-                                              ylab = "Density",
-                                              axisSize = 15,
-                                              axisLabelSize = 18,
-                                              defaultTheme = defaultTheme,
-                                              cutoff = 0.5,
-                                              title = "Density, Scrublet Score",
-                                              titleSize = titleSize)
+    violinScore <- plotSCEViolinColData(
+      inSCE=inSCESub, coldata="scrublet_score",
+      sample=sampleSub,
+      xlab="",
+      ylab="Doublet Score",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="Scrublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize, axisLabelSize=axisLabelSize,
+      summary="median"
+    )
 
-        violinScore <- plotSCEViolinColData(inSCE=inSCESub, coldata="scrublet_score",
-                                            sample = sampleSub,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            groupby = groupby,
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            defaultTheme = defaultTheme,
-                                            title="Scrublet Score",
-                                            titleSize = titleSize,
-                                            dotSize=dotSize,
-                                            axisSize = 15, axisLabelSize = 18,
-                                            summary = "median")
+    scatterCall <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scrublet_call",
+      conditionClass="factor",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="Scrublet Doublet Assignment",
+      titleSize=titleSize,
+      axisSize=axisSize, axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Assignment",
+      legendTitleSize=16,
+      legendSize=15
+    )
 
-        scatterCall <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                               sample = sampleSub,
-                                               colorBy = "scrublet_call",
-                                               conditionClass = "factor",
-                                               shape = shape,
-                                               reducedDimName = reducedDimName,
-                                               xlab = xlab,
-                                               ylab = ylab,
-                                               dim1 = dim1,
-                                               dim2 = dim2,
-                                               bin = bin,
-                                               binLabel = binLabel,
-                                               dotSize = dotSize,
-                                               transparency = transparency,
-                                               defaultTheme = defaultTheme,
-                                               title = "Scrublet Doublet Assignment",
-                                               titleSize = titleSize,
-                                               axisSize = 15, axisLabelSize = 18,
-                                               labelClusters = FALSE,
-                                               legendTitle = "Doublet Assignment",
-                                               legendTitleSize = 16,
-                                               legendSize = 15)
-
-        res.list <- list(scatterScore, densityScore, violinScore, scatterCall)
-        names(res.list) <- c("scatterScore", "densityScore", "violinScore", "scatterCall")
-        return(res.list)
-    })
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
-
+    res.list <- list(scatterScore, densityScore, violinScore, scatterCall)
+    names(res.list) <- c("scatterScore", "densityScore", "violinScore", "scatterCall")
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runDoubletFinder outputs.
@@ -411,197 +507,262 @@ plotScrubletResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletFinder(sce)
-#' plotDoubletFinderResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotDoubletFinderResults <- function(inSCE,
-                                     sample = NULL,
-                                     shape = NULL,
-                                     groupby = NULL,
-                                     violin = TRUE,
-                                     boxplot = FALSE,
-                                     dots = TRUE,
-                                     reducedDimName = NULL,
-                                     xlab = NULL,
-                                     ylab = NULL,
-                                     dim1 = NULL,
-                                     dim2 = NULL,
-                                     bin = NULL,
-                                     binLabel = NULL,
-                                     dotSize = 0.5,
-                                     transparency = 1,
-                                     defaultTheme = TRUE,
-                                     titleSize = 18) {
-
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                                     sample=NULL,
+                                     shape=NULL,
+                                     groupby=NULL,
+                                     violin=TRUE,
+                                     boxplot=FALSE,
+                                     dots=TRUE,
+                                     reducedDimName=NULL,
+                                     xlab=NULL,
+                                     ylab=NULL,
+                                     dim1=NULL,
+                                     dim2=NULL,
+                                     bin=NULL,
+                                     binLabel=NULL,
+                                     defaultTheme=TRUE,
+                                     dotSize=1,
+                                     transparency=1,
+                                     titleSize=18,
+                                     axisLabelSize=18,
+                                     axisSize=15,
+                                     legendSize=15,
+                                     legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
-    samples <- unique(sample)
-    df.scores <- grep(pattern = "doubletFinder_doublet_score_Resolution_",
-                      names(colData(inSCE)), value = TRUE)
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
+  samples <- unique(sample)
+  df.scores <- grep(
+    pattern="doubletFinder_doublet_score_Resolution_",
+    names(colData(inSCE)), value=TRUE
+  )
 
-    df.labels <- grep(pattern = "doubletFinder_doublet_label_Resolution_",
-                      names(colData(inSCE)), value = TRUE)
-    if(length(samples) > 1){
-        combined.plots <- lapply(df.scores, function(x) plotSCEViolinColData(
-            inSCE=inSCE,
-            coldata=x,
-            sample = NULL,
-            xlab="",
-            ylab="Doublet Score",
-            groupby = sample,
-            violin = violin,
-            boxplot = boxplot,
-            dots=TRUE,
-            transparency = transparency,
-            axisSize = 15, axisLabelSize = 18,
-            defaultTheme = defaultTheme,
-            title=paste("DoubletFinder Score Resolution",
-                        gsub(pattern = "doubletFinder_doublet_score_Resolution_",
-                             "", x)),
-            dotSize=dotSize))
-
-        names(combined.plots) <- sapply(df.scores, function(x)
-            paste0("Violin_", gsub(pattern = "doubletFinder_doublet_score_",
-                                   "", x = x)))
-        # combined.plots <- list(combined.plots)
-        names(combined.plots) <- "DoubletFinder_Score"
-    }
-
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-
-        scatterScore <- lapply(df.scores, function(x) plotSCEDimReduceColData(
-            inSCE = inSCESub,
-            sample = sampleSub,
-            conditionClass = "numeric",
-            shape = shape,
-            colorBy = x,
-            reducedDimName = reducedDimName,
-            xlab = xlab,
-            ylab = ylab,
-            dim1 = dim1,
-            dim2 = dim2,
-            bin = bin,
-            binLabel = binLabel,
-            dotSize = dotSize,
-            transparency = transparency,
-            defaultTheme = defaultTheme,
-            axisSize = 15, axisLabelSize = 18,
-            legendTitleSize = 16,
-            title = paste("DoubletFinder Doublet Score Resolution",
-                          gsub(pattern = "doubletFinder_doublet_score_Resolution_",
-                               "", x)),
-            titleSize = titleSize,
-            labelClusters = FALSE,
-            legendTitle = "Doublet Score",
-            legendSize = 15
-        ))
-
-        names(scatterScore) <- sapply(df.scores, function(x)
-            paste0("Scatter_Score_", gsub(pattern = "doubletFinder_doublet_score_",
-                                          "", x = x)))
-
-        densityScore <- lapply(df.scores, function(x) plotSCEDensityColData(
-            inSCE = inSCESub,
-            sample = sampleSub,
-            coldata = x,
-            groupby = groupby,
-            xlab = "Score",
-            ylab = "Density",
-            axisSize = 15, axisLabelSize = 18,
-            defaultTheme = defaultTheme,
-            cutoff = 0.5,
-            titleSize = titleSize,
-            title = paste("Density, DoubletFinder Score Resolution",
-                          gsub(pattern = "doubletFinder_doublet_score_Resolution_",
-                               "", x))))
-
-        names(densityScore) <- sapply(df.scores, function(x)
-            paste0("Density_", gsub(pattern = "doubletFinder_doublet_score_",
-                                    "", x = x)))
-
-        violinScore <- lapply(df.scores, function(x) plotSCEViolinColData(
-            inSCE=inSCESub,
-            coldata=x,
-            sample = sampleSub,
-            xlab="",
-            ylab="Doublet Score",
-            groupby = groupby,
-            violin = violin,
-            boxplot = boxplot,
-            dots=dots,
-            transparency = transparency,
-            defaultTheme = defaultTheme,
-            axisSize = 15, axisLabelSize = 18,
-            summary = "median",
-            title=paste("DoubletFinder Score Resolution",
-                        gsub(pattern = "doubletFinder_doublet_score_Resolution_",
-                             "", x)),
-            titleSize = titleSize,
-            dotSize=dotSize))
-
-        names(violinScore) <- sapply(df.scores, function(x)
-            paste0("Violin_", gsub(pattern = "doubletFinder_doublet_score_",
-                                    "", x = x)))
-
-        scatterCall <- lapply(df.labels, function(x) plotSCEDimReduceColData(
-            inSCE = inSCESub,
-            sample = sampleSub,
-            conditionClass = "factor",
-            shape = shape,
-            colorBy = x,
-            reducedDimName = reducedDimName,
-            xlab = xlab,
-            ylab = ylab,
-            dim1 = dim1,
-            dim2 = dim2,
-            bin = bin,
-            binLabel = binLabel,
-            dotSize = dotSize,
-            transparency = transparency,
-            defaultTheme = defaultTheme,
-            title = paste("DoubletFinder Doublet Call Resolution",
-                          gsub(pattern = "doubletFinder_doublet_label_Resolution_",
-                               "", x)),
-            titleSize = titleSize,
-            axisSize = 15, axisLabelSize = 18,
-            labelClusters = FALSE,
-            legendTitle = "Doublet Score",
-            legendTitleSize = 16,
-            legendSize = 15
-        ))
-
-        names(scatterCall) <- sapply(df.labels, function(x)
-            paste0("Scatter_Call_",gsub(pattern = "doubletFinder_doublet_label_",
-                                        "", x = x)))
-
-        res.list <- c(scatterScore, densityScore, violinScore, scatterCall)
-        return(res.list)
+  df.labels <- grep(
+    pattern="doubletFinder_doublet_label_Resolution_",
+    names(colData(inSCE)), value=TRUE
+  )
+  if (length(samples) > 1) {
+    combined.plots <- lapply(df.scores, function(x) {
+      plotSCEViolinColData(
+        inSCE=inSCE,
+        coldata=x,
+        sample=NULL,
+        xlab="",
+        ylab="Doublet Score",
+        groupby=sample,
+        violin=violin,
+        boxplot=boxplot,
+        dots=TRUE,
+        transparency=transparency,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        defaultTheme=defaultTheme,
+        title=paste(
+          "DoubletFinder Score Resolution",
+          gsub(
+            pattern="doubletFinder_doublet_score_Resolution_",
+            "", x
+          )
+        ),
+        dotSize=dotSize
+      )
     })
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
+
+    names(combined.plots) <- sapply(df.scores, function(x) {
+      paste0("Violin_", gsub(
+        pattern="doubletFinder_doublet_score_",
+        "", x=x
+      ))
+    })
+    # combined.plots <- list(combined.plots)
+    names(combined.plots) <- "DoubletFinder_Score"
+  }
+
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+
+    scatterScore <- lapply(df.scores, function(x) {
+      plotSCEDimReduceColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        conditionClass="numeric",
+        shape=shape,
+        colorBy=x,
+        reducedDimName=reducedDimName,
+        xlab=xlab,
+        ylab=ylab,
+        dim1=dim1,
+        dim2=dim2,
+        bin=bin,
+        binLabel=binLabel,
+        dotSize=dotSize,
+        transparency=transparency,
+        defaultTheme=defaultTheme,
+        title=paste(
+          "DoubletFinder Doublet Score Resolution",
+          gsub(
+            pattern="doubletFinder_doublet_score_Resolution_",
+            "", x
+          )
+        ),
+        titleSize=titleSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        labelClusters=FALSE,
+        legendTitle="Doublet Score",
+        legendSize=legendSize,
+        legendTitleSize=legendTitleSize
+      )
+    })
+
+    names(scatterScore) <- sapply(df.scores, function(x) {
+      paste0("Scatter_Score_", gsub(
+        pattern="doubletFinder_doublet_score_",
+        "", x=x
+      ))
+    })
+
+    densityScore <- lapply(df.scores, function(x) {
+      plotSCEDensityColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        coldata=x,
+        groupby=groupby,
+        xlab="Score",
+        ylab="Density",
+        axisSize=axisSize, axisLabelSize=axisLabelSize,
+        defaultTheme=defaultTheme,
+        cutoff=0.5,
+        titleSize=titleSize,
+        title=paste(
+          "Density, DoubletFinder Score Resolution",
+          gsub(
+            pattern="doubletFinder_doublet_score_Resolution_",
+            "", x
+          )
+        )
+      )
+    })
+
+    names(densityScore) <- sapply(df.scores, function(x) {
+      paste0("Density_", gsub(
+        pattern="doubletFinder_doublet_score_",
+        "", x=x
+      ))
+    })
+
+    violinScore <- lapply(df.scores, function(x) {
+      plotSCEViolinColData(
+        inSCE=inSCESub,
+        coldata=x,
+        sample=sampleSub,
+        xlab="",
+        ylab="Doublet Score",
+        groupby=groupby,
+        violin=violin,
+        boxplot=boxplot,
+        dots=dots,
+        transparency=transparency,
+        defaultTheme=defaultTheme,
+        summary="median",
+        title=paste(
+          "DoubletFinder Score Resolution",
+          gsub(
+            pattern="doubletFinder_doublet_score_Resolution_",
+            "", x
+          )
+        ),
+        titleSize=titleSize,
+        dotSize=dotSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize
+      )
+    })
+
+    names(violinScore) <- sapply(df.scores, function(x) {
+      paste0("Violin_", gsub(
+        pattern="doubletFinder_doublet_score_",
+        "", x=x
+      ))
+    })
+
+    scatterCall <- lapply(df.labels, function(x) {
+      plotSCEDimReduceColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        conditionClass="factor",
+        shape=shape,
+        colorBy=x,
+        reducedDimName=reducedDimName,
+        xlab=xlab,
+        ylab=ylab,
+        dim1=dim1,
+        dim2=dim2,
+        bin=bin,
+        binLabel=binLabel,
+        dotSize=dotSize,
+        transparency=transparency,
+        defaultTheme=defaultTheme,
+        title=paste(
+          "DoubletFinder Doublet Call Resolution",
+          gsub(
+            pattern="doubletFinder_doublet_label_Resolution_",
+            "", x
+          )
+        ),
+        titleSize=titleSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        labelClusters=FALSE,
+        legendTitle="Doublet Score",
+        legendSize=legendSize,
+        legendTitleSize=legendTitleSize
+      )
+    })
+
+    names(scatterCall) <- sapply(df.labels, function(x) {
+      paste0("Scatter_Call_", gsub(
+        pattern="doubletFinder_doublet_label_",
+        "", x=x
+      ))
+    })
+
+    res.list <- c(scatterScore, densityScore, violinScore, scatterCall)
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runDoubletCells outputs.
@@ -637,143 +798,163 @@ plotDoubletFinderResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletCells(sce)
-#' plotDoubletCellsResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotDoubletCellsResults <- function(inSCE,
-                                    sample = NULL,
-                                    shape = NULL,
-                                    groupby = NULL,
-                                    violin = TRUE,
-                                    boxplot = FALSE,
-                                    dots = TRUE,
-                                    logScore = TRUE,
-                                    reducedDimName = NULL,
-                                    xlab = NULL,
-                                    ylab = NULL,
-                                    dim1 = NULL,
-                                    dim2 = NULL,
-                                    bin = NULL,
-                                    binLabel = NULL,
-                                    dotSize = 0.5,
-                                    transparency = 1,
-                                    defaultTheme = TRUE,
-                                    titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                                    sample=NULL,
+                                    shape=NULL,
+                                    groupby=NULL,
+                                    violin=TRUE,
+                                    boxplot=FALSE,
+                                    dots=TRUE,
+                                    logScore=TRUE,
+                                    reducedDimName=NULL,
+                                    xlab=NULL,
+                                    ylab=NULL,
+                                    dim1=NULL,
+                                    dim2=NULL,
+                                    bin=NULL,
+                                    binLabel=NULL,
+                                    defaultTheme=TRUE,
+                                    dotSize=1,
+                                    transparency=1,
+                                    titleSize=18,
+                                    axisLabelSize=18,
+                                    axisSize=15,
+                                    legendSize=15,
+                                    legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    if(logScore){
-        colData(inSCE)$scran_doubletCells_Score <- log10(colData(inSCE)$scran_doubletCells_Score + 1)
-        titleDoubletCells = "DoubletCells Doublet Score, log10"
-    }else{
-        titleDoubletCells = "DoubletCells Doublet Score"
-    }
+  if (logScore) {
+    colData(inSCE)$scran_doubletCells_Score <- log10(colData(inSCE)$scran_doubletCells_Score + 1)
+    titleDoubletCells <- "DoubletCells Doublet Score, log10"
+  } else {
+    titleDoubletCells <- "DoubletCells Doublet Score"
+  }
 
-    samples <- unique(sample)
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                                coldata="scran_doubletCells_Score",
-                                                groupby=sample,
-                                                xlab="",
-                                                ylab="Doublet Score",
-                                                violin = violin,
-                                                boxplot = boxplot,
-                                                dots=dots,
-                                                transparency = transparency,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                title=titleDoubletCells,
-                                               titleSize = titleSize,
-                                                dotSize=dotSize,
-                                                gridLine = TRUE,
-                                                summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "DoubletCells_Score"
-    }
+  samples <- unique(sample)
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scran_doubletCells_Score",
+      groupby=sample,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      title=titleDoubletCells,
+      titleSize=titleSize,
+      dotSize=dotSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "DoubletCells_Score"
+  }
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        scatterScore <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "scran_doubletCells_Score",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                colorLow = "gray",
-                                                colorHigh = "blue",
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                title = titleDoubletCells,
-                                                titleSize = titleSize,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Doublet Score",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterScore <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scran_doubletCells_Score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      colorLow="gray",
+      colorHigh="blue",
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      title=titleDoubletCells,
+      titleSize=titleSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Score",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize
+    )
 
-        densityScore <- plotSCEDensityColData(inSCE = inSCESub,
-                                              sample = sampleSub,
-                                              coldata = "scran_doubletCells_Score",
-                                              groupby = groupby,
-                                              xlab = "Score",
-                                              ylab = "Density",
-                                              axisSize = 15, axisLabelSize = 18,
-                                              defaultTheme = defaultTheme,
-                                              title = paste0("Density, ", titleDoubletCells),
-                                              titleSize = titleSize)
+    densityScore <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scran_doubletCells_Score",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize, axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title=paste0("Density, ", titleDoubletCells),
+      titleSize=titleSize
+    )
 
-        violinScore <- plotSCEViolinColData(inSCE=inSCESub,
-                                            coldata="scran_doubletCells_Score",
-                                            sample = sampleSub,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            groupby = groupby,
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            title=titleDoubletCells,
-                                            titleSize = titleSize,
-                                            defaultTheme = defaultTheme,
-                                            axisSize = 15, axisLabelSize = 18,
-                                            dotSize=dotSize,
-                                            summary = "median")
+    violinScore <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="scran_doubletCells_Score",
+      sample=sampleSub,
+      xlab="",
+      ylab="Doublet Score",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title=titleDoubletCells,
+      titleSize=titleSize,
+      defaultTheme=defaultTheme,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      dotSize=dotSize,
+      summary="median"
+    )
 
-        res.list <- list(scatterScore, densityScore, violinScore)
-        names(res.list) <- c("scatterScore", "densityScore", "violinScore")
-        return(res.list)
-    })
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
-
+    res.list <- list(scatterScore, densityScore, violinScore)
+    names(res.list) <- c("scatterScore", "densityScore", "violinScore")
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runCxds outputs.
@@ -808,133 +989,155 @@ plotDoubletCellsResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxds(sce)
-#' plotCxdsResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotCxdsResults <- function(inSCE,
-                            sample = NULL,
-                            shape = NULL,
-                            groupby = NULL,
-                            violin = TRUE,
-                            boxplot = FALSE,
-                            dots = TRUE,
-                            reducedDimName = NULL,
-                            xlab = NULL,
-                            ylab = NULL,
-                            dim1 = NULL,
-                            dim2 = NULL,
-                            bin = NULL,
-                            binLabel = NULL,
-                            dotSize = 0.5,
-                            transparency = 1,
-                            defaultTheme = TRUE,
-                            titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                            sample=NULL,
+                            shape=NULL,
+                            groupby=NULL,
+                            violin=TRUE,
+                            boxplot=FALSE,
+                            dots=TRUE,
+                            reducedDimName=NULL,
+                            xlab=NULL,
+                            ylab=NULL,
+                            dim1=NULL,
+                            dim2=NULL,
+                            bin=NULL,
+                            binLabel=NULL,
+                            defaultTheme=TRUE,
+                            dotSize=1,
+                            transparency=1,
+                            titleSize=18,
+                            axisLabelSize=18,
+                            axisSize=15,
+                            legendSize=15,
+                            legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    samples <- unique(sample)
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                               coldata="scds_cxds_score",
-                                               groupby=sample,
-                                               xlab="",
-                                               ylab="Doublet Score",
-                                               violin = violin,
-                                               boxplot = boxplot,
-                                               dots=dots,
-                                               transparency = transparency,
-                                               title="CXDS Doublet Score",
-                                               titleSize = titleSize,
-                                               dotSize=dotSize,
-                                               axisSize = 15, axisLabelSize = 18,
-                                               gridLine = TRUE,
-                                               summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "CXDS_Score"
-    }
+  samples <- unique(sample)
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scds_cxds_score",
+      groupby=sample,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="CXDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "CXDS_Score"
+  }
 
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        scatterScore <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "scds_cxds_score",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                title = "CXDS Doublet Score",
-                                                titleSize = titleSize,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Doublet Score",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterScore <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scds_cxds_score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="CXDS Doublet Score",
+      titleSize=titleSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Score",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize
+    )
 
-        densityScore <- plotSCEDensityColData(inSCE = inSCESub,
-                                              sample = sampleSub,
-                                              coldata = "scds_cxds_score",
-                                              groupby = groupby,
-                                              xlab = "Score",
-                                              ylab = "Density",
-                                              axisSize = 15, axisLabelSize = 18,
-                                              defaultTheme = defaultTheme,
-                                              title = "Density, CXDS Score",
-                                              titleSize = titleSize)
+    densityScore <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scds_cxds_score",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title="Density, CXDS Score",
+      titleSize=titleSize
+    )
 
-        violinScore <- plotSCEViolinColData(inSCE=inSCESub,
-                                            coldata="scds_cxds_score",
-                                            sample = sampleSub,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            groupby = groupby,
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            title="CXDS Doublet Score",
-                                            titleSize = titleSize,
-                                            defaultTheme = defaultTheme,
-                                            dotSize=dotSize,
-                                            axisSize = 15, axisLabelSize = 18,
-                                            summary = "median")
+    violinScore <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="scds_cxds_score",
+      sample=sampleSub,
+      xlab="",
+      ylab="Doublet Score",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="CXDS Doublet Score",
+      titleSize=titleSize,
+      defaultTheme=defaultTheme,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median"
+    )
 
-        res.list <- list(scatterScore, densityScore, violinScore)
-        names(res.list) <- c("scatterScore", "densityScore", "violinScore")
-        return(res.list)
-    })
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
+    res.list <- list(scatterScore, densityScore, violinScore)
+    names(res.list) <- c("scatterScore", "densityScore", "violinScore")
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runBcds outputs.
@@ -969,133 +1172,154 @@ plotCxdsResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runBcds(sce)
-#' plotBcdsResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotBcdsResults <- function(inSCE,
-                            sample = NULL,
-                            shape = NULL,
-                            groupby = NULL,
-                            violin = TRUE,
-                            boxplot = FALSE,
-                            dots = TRUE,
-                            reducedDimName = NULL,
-                            xlab = NULL,
-                            ylab = NULL,
-                            dim1 = NULL,
-                            dim2 = NULL,
-                            bin = NULL,
-                            binLabel = NULL,
-                            dotSize = 0.5,
-                            transparency = 1,
-                            defaultTheme = TRUE,
-                            titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                            sample=NULL,
+                            shape=NULL,
+                            groupby=NULL,
+                            violin=TRUE,
+                            boxplot=FALSE,
+                            dots=TRUE,
+                            reducedDimName=NULL,
+                            xlab=NULL,
+                            ylab=NULL,
+                            dim1=NULL,
+                            dim2=NULL,
+                            bin=NULL,
+                            binLabel=NULL,
+                            defaultTheme=TRUE,
+                            dotSize=1,
+                            transparency=1,
+                            titleSize=18,
+                            axisLabelSize=18,
+                            axisSize=15,
+                            legendSize=15,
+                            legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    samples <- unique(sample)
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                               coldata="scds_bcds_score",
-                                               groupby=sample,
-                                               xlab="",
-                                               ylab="Doublet Score",
-                                               violin = violin,
-                                               boxplot = boxplot,
-                                               dots=dots,
-                                               transparency = transparency,
-                                               title="BCDS Doublet Score",
-                                               titleSize = titleSize,
-                                               dotSize=dotSize,
-                                               axisSize = 15, axisLabelSize = 18,
-                                               gridLine = TRUE,
-                                               summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "BCDS_Score"
-    }
+  samples <- unique(sample)
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scds_bcds_score",
+      groupby=sample,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="BCDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "BCDS_Score"
+  }
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        scatterScore <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "scds_bcds_score",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                title = "BCDS Doublet Score",
-                                                titleSize = titleSize,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Doublet Score",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterScore <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scds_bcds_score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="BCDS Doublet Score",
+      titleSize=titleSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Score",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize
+    )
 
-        densityScore <- plotSCEDensityColData(inSCE = inSCESub,
-                                              sample = sampleSub,
-                                              coldata = "scds_bcds_score",
-                                              groupby = groupby,
-                                              xlab = "Score",
-                                              ylab = "Density",
-                                              axisSize = 15, axisLabelSize = 18,
-                                              defaultTheme = defaultTheme,
-                                              title = "Density, BCDS Score")
+    densityScore <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scds_bcds_score",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title="Density, BCDS Score"
+    )
 
 
-        violinScore <- plotSCEViolinColData(inSCE=inSCESub,
-                                            coldata="scds_bcds_score",
-                                            sample = sampleSub,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            groupby = groupby,
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            defaultTheme = defaultTheme,
-                                            title="BCDS Doublet Score",
-                                            titleSize = titleSize,
-                                            dotSize=dotSize,
-                                            axisSize = 15, axisLabelSize = 18,
-                                            summary = "median")
+    violinScore <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="scds_bcds_score",
+      sample=sampleSub,
+      xlab="",
+      ylab="Doublet Score",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="BCDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median"
+    )
 
-        res.list <- list(scatterScore, densityScore, violinScore)
-        names(res.list) <- c("scatterScore", "densityScore", "violinScore")
-        return(res.list)
-    })
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
-
+    res.list <- list(scatterScore, densityScore, violinScore)
+    names(res.list) <- c("scatterScore", "densityScore", "violinScore")
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runCxdsBcdsHybrid outputs.
@@ -1130,133 +1354,155 @@ plotBcdsResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxdsBcdsHybrid(sce)
-#' plotScdsHybridResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotScdsHybridResults <- function(inSCE,
-                                  sample = NULL,
-                                  shape = NULL,
-                                  groupby = NULL,
-                                  violin = TRUE,
-                                  boxplot = FALSE,
-                                  dots = TRUE,
-                                  reducedDimName = NULL,
-                                  xlab = NULL,
-                                  ylab = NULL,
-                                  dim1 = NULL,
-                                  dim2 = NULL,
-                                  bin = NULL,
-                                  binLabel = NULL,
-                                  dotSize = 0.5,
-                                  transparency = 1,
-                                  defaultTheme = TRUE,
-                                  titleSize = 18) {
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                                  sample=NULL,
+                                  shape=NULL,
+                                  groupby=NULL,
+                                  violin=TRUE,
+                                  boxplot=FALSE,
+                                  dots=TRUE,
+                                  reducedDimName=NULL,
+                                  xlab=NULL,
+                                  ylab=NULL,
+                                  dim1=NULL,
+                                  dim2=NULL,
+                                  bin=NULL,
+                                  binLabel=NULL,
+                                  defaultTheme=TRUE,
+                                  dotSize=1,
+                                  transparency=1,
+                                  titleSize=18,
+                                  axisLabelSize=18,
+                                  axisSize=15,
+                                  legendSize=15,
+                                  legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    samples <- unique(sample)
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                               coldata="scds_hybrid_score",
-                                               groupby=sample,
-                                               xlab="",
-                                               ylab="Doublet Score",
-                                               violin = violin,
-                                               boxplot = boxplot,
-                                               dots=dots,
-                                               transparency = transparency,
-                                               title="CXDS BCDS Doublet Score",
-                                               titleSize = titleSize,
-                                               dotSize=dotSize,
-                                               axisSize = 15, axisLabelSize = 18,
-                                               gridLine = TRUE,
-                                               summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "CXDS_BCDS_Score"
-    }
+  samples <- unique(sample)
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scds_hybrid_score",
+      groupby=sample,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="CXDS BCDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "CXDS_BCDS_Score"
+  }
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub = inSCE[,sampleInd]
-        scatterScore <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "scds_hybrid_score",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                title = "CXDS BCDS Doublet Score",
-                                                titleSize = titleSize,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Doublet Score",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterScore <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scds_hybrid_score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="CXDS BCDS Doublet Score",
+      titleSize=titleSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet Score",
+      legendTitleSize=legendTitleSize,
+      legendSize=legendSize
+    )
 
-        densityScore <- plotSCEDensityColData(inSCE = inSCESub,
-                                              sample = sampleSub,
-                                              coldata = "scds_hybrid_score",
-                                              groupby = groupby,
-                                              xlab = "Score",
-                                              ylab = "Density",
-                                              axisSize = 15, axisLabelSize = 18,
-                                              defaultTheme = defaultTheme,
-                                              title = "Density, CXDS BCDS Hybrid Score",
-                                              titleSize = titleSize)
+    densityScore <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scds_hybrid_score",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title="Density, CXDS BCDS Hybrid Score",
+      titleSize=titleSize
+    )
 
-        violinScore <- plotSCEViolinColData(inSCE=inSCESub,
-                                            coldata="scds_hybrid_score",
-                                            sample = sampleSub,
-                                            xlab="",
-                                            ylab="Doublet Score",
-                                            groupby = groupby,
-                                            violin = violin,
-                                            boxplot = boxplot,
-                                            dots=dots,
-                                            transparency = transparency,
-                                            defaultTheme = defaultTheme,
-                                            title="CXDS BCDS Doublet Score",
-                                            titleSize = titleSize,
-                                            dotSize=dotSize,
-                                            axisSize = 15, axisLabelSize = 18,
-                                            summary = "median")
+    violinScore <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="scds_hybrid_score",
+      sample=sampleSub,
+      xlab="",
+      ylab="Doublet Score",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="CXDS BCDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      summary="median"
+    )
 
-        res.list <- list(scatterScore, densityScore, violinScore)
-        names(res.list) <- c("scatterScore", "densityScore", "violinScore")
-        return(res.list)
-    })
+    res.list <- list(scatterScore, densityScore, violinScore)
+    names(res.list) <- c("scatterScore", "densityScore", "violinScore")
+    return(res.list)
+  })
 
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-    return(plotlist)
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
+  return(plotlist)
 }
 
 #' @title Plots for runDecontX outputs.
@@ -1291,158 +1537,188 @@ plotScdsHybridResults <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param titleSize Size of title of plot. Default 15.
+#' @param dotSize Size of dots. Default 1.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @param legendTitleSize size of legend title. Default 16.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' data(scExample, package="singleCellTK")
+#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
-#' plotDecontXResults(inSCE = sce, reducedDimName = "UMAP")
+#' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotDecontXResults <- function(inSCE,
-                               sample = NULL,
-                               shape = NULL,
-                               groupby = NULL,
-                               violin = TRUE,
-                               boxplot = FALSE,
-                               dots = TRUE,
-                               reducedDimName = NULL,
-                               xlab = NULL,
-                               ylab = NULL,
-                               dim1 = NULL,
-                               dim2 = NULL,
-                               bin = NULL,
-                               binLabel = NULL,
-                               dotSize = 0.5,
-                               transparency = 1,
-                               defaultTheme = TRUE,
-                               titleSize = 18) {
-
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                 " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
+                               sample=NULL,
+                               shape=NULL,
+                               groupby=NULL,
+                               violin=TRUE,
+                               boxplot=FALSE,
+                               dots=TRUE,
+                               reducedDimName=NULL,
+                               xlab=NULL,
+                               ylab=NULL,
+                               dim1=NULL,
+                               dim2=NULL,
+                               bin=NULL,
+                               binLabel=NULL,
+                               defaultTheme=TRUE,
+                               dotSize=1,
+                               transparency=1,
+                               titleSize=18,
+                               axisLabelSize=18,
+                               axisSize=15,
+                               legendSize=15,
+                               legendTitleSize=16) {
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop(
+        "'sample' must be the same length as the number",
+        " of columns in 'inSCE'"
+      )
     }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-    samples <- unique(sample)
+  samples <- unique(sample)
 
-    if(length(samples) > 1){
-        combined.plots <- plotSCEViolinColData(inSCE=inSCE,
-                                                coldata="decontX_contamination",
-                                                groupby=sample,
-                                                xlab="",
-                                                ylab="DecontX Contamination",
-                                                violin = violin,
-                                                boxplot = boxplot,
-                                                dots=dots,
-                                               axisSize = 15, axisLabelSize = 18,
-                                                transparency = transparency,
-                                                title="DecontX Contamination Score",
-                                               titleSize = titleSize,
-                                                dotSize=dotSize,
-                                                gridLine = TRUE,
-                                                summary = "median")
-        combined.plots <- list(combined.plots)
-        names(combined.plots) <- "DecontX_Contamination"
-    }
+  if (length(samples) > 1) {
+    combined.plots <- plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="decontX_contamination",
+      groupby=sample,
+      xlab="",
+      ylab="DecontX Contamination",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      transparency=transparency,
+      title="DecontX Contamination Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      gridLine=TRUE,
+      summary="median"
+    )
+    combined.plots <- list(combined.plots)
+    names(combined.plots) <- "DecontX_Contamination"
+  }
 
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub <- inSCE[,sampleInd]
-        scatterDecon <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                sample = sampleSub,
-                                                colorBy = "decontX_contamination",
-                                                conditionClass = "numeric",
-                                                shape = shape,
-                                                reducedDimName = reducedDimName,
-                                                xlab = xlab,
-                                                ylab = ylab,
-                                                dim1 = dim1,
-                                                dim2 = dim2,
-                                                bin = bin,
-                                                binLabel = binLabel,
-                                                dotSize = dotSize,
-                                                axisSize = 15, axisLabelSize = 18,
-                                                transparency = transparency,
-                                                defaultTheme = defaultTheme,
-                                                title = "DecontX Contamination",
-                                                titleSize = titleSize,
-                                                labelClusters = FALSE,
-                                                legendTitle = "Contamination",
-                                                legendTitleSize = 16,
-                                                legendSize = 15)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+    scatterDecon <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="decontX_contamination",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="DecontX Contamination",
+      titleSize=titleSize,
+      labelClusters=FALSE,
+      legendTitle="Contamination",
+      legendTitleSize=legendTitleSize,
+      legendSize=legendSize
+    )
 
-        densityContamination <- plotSCEDensityColData(inSCE = inSCESub,
-                                                      sample = sampleSub,
-                                                      coldata = "decontX_contamination",
-                                                      groupby = groupby,
-                                                      xlab = "Score",
-                                                      ylab = "Density",
-                                                      axisSize = 15, axisLabelSize = 18,
-                                                      defaultTheme = defaultTheme,
-                                                      title = "Density, DecontX Contamination Score",
-                                                      titleSize = titleSize)
+    densityContamination <- plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="decontX_contamination",
+      groupby=groupby,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title="Density, DecontX Contamination Score",
+      titleSize=titleSize
+    )
 
-        violinContamination <- plotSCEViolinColData(inSCE=inSCESub,
-                                                    coldata="decontX_contamination",
-                                                    sample = sampleSub,
-                                                    xlab="", ylab="DecontX Contamination",
-                                                    groupby = groupby, violin = violin, boxplot = boxplot, dots=dots, transparency = transparency,
-                                                    title="DecontX Contamination Score",
-                                                    titleSize = titleSize,
-                                                    defaultTheme = defaultTheme,
-                                                    axisSize = 15, axisLabelSize = 18,
-                                                    dotSize=dotSize,
-                                                    summary = "median")
+    violinContamination <- plotSCEViolinColData(
+      inSCE=inSCESub,
+      coldata="decontX_contamination",
+      sample=sampleSub,
+      xlab="", ylab="DecontX Contamination",
+      groupby=groupby,
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="DecontX Contamination Score",
+      titleSize=titleSize,
+      defaultTheme=defaultTheme,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      dotSize=dotSize,
+      summary="median"
+    )
 
-        scatterCluster <- plotSCEDimReduceColData(inSCE = inSCESub,
-                                                  sample = sampleSub,
-                                                  colorBy = "decontX_clusters",
-                                                  conditionClass = "factor",
-                                                  shape = shape,
-                                                  reducedDimName = reducedDimName,
-                                                  xlab = xlab,
-                                                  ylab = ylab,
-                                                  dim1 = dim1,
-                                                  dim2 = dim2,
-                                                  bin = bin,
-                                                  binLabel = binLabel,
-                                                  axisSize = 15, axisLabelSize = 18,
-                                                  dotSize = dotSize,
-                                                  transparency = transparency,
-                                                  defaultTheme = defaultTheme,
-                                                  title = "DecontX Clusters",
-                                                  titleSize = titleSize,
-                                                  labelClusters = TRUE,
-                                                  legendTitle = "Clusters",
-                                                  legendTitleSize = 16,
-                                                  legendSize = 15)
+    scatterCluster <- plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="decontX_clusters",
+      conditionClass="factor",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="DecontX Clusters",
+      titleSize=titleSize,
+      labelClusters=TRUE,
+      legendTitle="Clusters",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize
+    )
 
-        res.list <- list(scatterDecon, densityContamination,
-                         violinContamination, scatterCluster)
-        names(res.list) <- c("scatterDecon",
-                             "densityContamination",
-                             "violinContamination",
-                             "scatterCluster")
-        return(res.list)
-    })
+    res.list <- list(
+      scatterDecon, densityContamination,
+      violinContamination, scatterCluster
+    )
+    names(res.list) <- c(
+      "scatterDecon",
+      "densityContamination",
+      "violinContamination",
+      "scatterCluster"
+    )
+    return(res.list)
+  })
 
-    if(length(unique(samples)) > 1){
-        names(plotlist) <- samples
-        plotlist <- c(combined.plots, plotlist)
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(combined.plots, plotlist)
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
 
-    }else{
-        plotlist <- unlist(plotlist, recursive = F)
-    }
-
-    return(plotlist)
+  return(plotlist)
 }
-
