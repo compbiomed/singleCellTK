@@ -252,3 +252,154 @@ constructSCE <- function(data, samplename) {
   
     return(sce)
 }
+
+#' Create SingleCellExperiment object from command line input arguments
+#' @param preproc Method used to preprocess the data. It's one of the path provided in --preproc argument.
+#' @param path Base path of the dataset. It's one of the path provided in --bash_path argument.  
+#' @param samplename The sample name of the data. It's one of the path provided in --sample argument.  
+#' @param raw The directory contains droplet matrix, gene and cell barcodes information. It's one of the path provided in --raw_data_path argument.
+#' @param fil The directory contains cell matrix, gene and cell barcodes information. It's one of the path provided in --cell_data_path argument.
+#' @param ref The name of reference used by cellranger. Only need for CellrangerV2 data. 
+#' @param rawFile The full path of the RDS file or Matrix file of the raw gene count matrix. It's one of the path provided in --raw_data argument.
+#' @param filFile The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.
+#' @param dataType Type of the input. It can be "Both", "Droplet" or "Cell". It's one of the path provided in --genome argument.
+#' @return A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' the droplet or cell data or both,depending on the dataType that users provided.  
+#' @export
+qcInputProcess <- function(preproc,
+    samplename,
+    path,
+    raw,
+    fil,
+    ref,
+    rawFile,
+    filFile,
+    dataType) {
+
+    dropletSCE <- NULL
+    cellSCE <- NULL
+
+    if (preproc == "BUStools") {
+        dropletSCE <- importBUStools(BUStoolsDirs = path, samples = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    } 
+
+    if (preproc == "SEQC") {
+        dropletSCE <- importSEQC(seqcDirs = path, samples = samplename, prefix = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "STARSolo") {
+        if (dataType == "Both") {
+            dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+            cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Cell") {
+            cellSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/filtered", class = "Matrix", delayedArray=FALSE)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- importSTARsolo(STARsoloDirs = path, samples = samplename, STARsoloOuts = "Gene/raw", class = "Matrix", delayedArray=FALSE)
+        }
+        return(list(dropletSCE, cellSCE))
+    } 
+
+    if (preproc == "CellRangerV3") {
+        if (!is.null(path)) {
+            if (dataType == "Both") {
+                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
+                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Cell") {
+                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Droplet") {
+                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
+            }
+        } else {
+            if (dataType == "Both") {
+                dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+                cellSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Cell") {
+                cellSCE <- importCellRangerV3Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Droplet") {
+                dropletSCE <- importCellRangerV3Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            }
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "CellRangerV2") {
+        if (!is.null(path)) {
+            if (dataType == "Both") {
+                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
+                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
+            } else if (dataType == "Cell") {
+                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
+            } else if (dataType == "Droplet") {
+                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
+            }
+        } else {
+            if (dataType == "Both") {
+                dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+                cellSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Cell") {
+                cellSCE <- importCellRangerV2Sample(dataDir = fil, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            } else if (dataType == "Droplet") {
+                dropletSCE <- importCellRangerV2Sample(dataDir = raw, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+            }
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "Optimus") {
+        ## by default has both droplet and cell data. 
+        dropletSCE <- importOptimus(OptimusDirs = path, samples = samplename, delayedArray = FALSE)
+        cellSCE <- dropletSCE[,which(dropletSCE$dropletUtils_emptyDrops_IsCell)]
+
+        if (dataType == "Cell") {
+            dropletSCE <- NULL
+        } else if (dataType == "Droplet") {
+            cellSCE <- NULL
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "DropEst") {
+        if (dataType == "Both") {
+            dropletSCE <- importDropEst(sampleDirs=path, dataType="raw", sampleNames=samplename, delayedArray=FALSE)
+            cellSCE <- importDropEst(sampleDirs=path, dataType="filtered", sampleNames=samplename, delayedArray=FALSE)
+        } else if (dataType == "Cell") {
+            cellSCE <- importDropEst(sampleDirs=path, dataType="filtered", sampleNames=samplename, delayedArray=FALSE)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- importDropEst(sampleDirs=path, dataType="raw", sampleNames=samplename, delayedArray=FALSE)
+        }
+        return(list(dropletSCE, cellSCE))    
+    }
+
+    if (preproc == "SceRDS") {
+        if (dataType == "Both") {
+            dropletSCE <- readRDS(rawFile)
+            cellSCE <- readRDS(filFile)
+        } else if (dataType == "Cell") {
+            cellSCE <- readRDS(filFile)
+        } else if (dataType == "Droplet") {
+            dropletSCE <- readRDS(rawFile)
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    if (preproc == "CountMatrix") {
+        if (dataType == "Both") {
+            dropletMM <- data.table::fread(rawFile)
+            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
+            cellMM <- data.table::fread(filFile)
+            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
+        } else if (dataType == "Cell") {
+            cellMM <- data.table::fread(filFile)
+            cellSCE <- constructSCE(data = cellMM, samplename = samplename)
+        } else if (dataType == "Droplet") {
+            dropletMM <- data.table::fread(rawFile)
+            dropletSCE <- constructSCE(data = dropletMM, samplename = samplename)
+        }
+        return(list(dropletSCE, cellSCE))
+    }
+
+    ## preproc is not one of the method above. Stop the pipeline. 
+    stop(paste0("'", preproc, "' not supported."))
+}

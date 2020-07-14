@@ -7,6 +7,33 @@
 
 ## Installation
 
+### System setup
+
+If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
+
+![](/exec/32bit-R.png)
+
+#### Window's user
+For window's users, please install [rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) based on your R version. Make sure to click 'Edit the system PATH' box when you see this window:
+
+![](/exec/rtools.png)
+
+After installing rtools, install 'devtools' package with the following command. If it asks whether install the package that requires compilation, type 'y'. 
+```
+install.packages('devtools')
+```
+
+#### macOS user
+For macbook's users, please install gfortran with brew. If you have not installed brew, please check [this link](https://brew.sh/) to set up brew on your machine. 
+```
+brew install gcc
+```
+
+After that, install 'devtools' package with the following command.
+```
+install.packages('devtools')
+```
+
 ### Release Version
 
 You can download the release version of the Single Cell Toolkit in
@@ -38,10 +65,6 @@ the following version from this repository:
 # install.packages("devtools")
 devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
 ```
-
-If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
-
-![](/exec/32bit-R.png)
 
 #### Troubleshooting Installation
 

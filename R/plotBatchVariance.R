@@ -155,14 +155,18 @@ plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
       stop("'batch' not found in 'inSCE'.")
     }
   }
+  if(!inherits(mat, 'matrix')){
+    mat <- as.matrix(mat)
+  }
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   uniqBatch <- as.vector(unique(batchCol)) #as.vector in case batchCol is factor
   allMeans <- numeric()
   groupBy <- character()
   for(i in uniqBatch){
     allMeans <- c(allMeans, DelayedArray::rowMeans(mat[,batchCol == i]))
-    groupBy <- c(groupBy, rep(i, nrow(inSCE)))
+    groupBy <- c(groupBy, rep(i, nrow(mat)))
   }
   p <- .ggViolin(allMeans, groupby = groupBy, xlab = xlab, ylab = ylab, ...)
+  p <- .ggSCTKTheme(p)
   return(p)
 }

@@ -15,40 +15,39 @@ runLIGER(
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{reducedDimName}{character, default `"LIGER"`. The name for the 
-corrected low-dimensional representation.}
+\item{reducedDimName}{A single character. The name for the corrected
+low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+Default \code{"LIGER"}.}
 
-\item{nComponents}{integer, default `20L`. Number of principle components or 
-dimensionality (factors, for this algorithm) to generate in the resulting 
-reducedDim.}
+\item{nComponents}{An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. Default \code{20L}.}
 
-\item{lambda}{numeric, default `5.0`. Algorithmic parameter, the penalty 
-parameter which limits the dataset-specific component of the factorization.}
+\item{lambda}{A numeric scalar. Algorithmic parameter, the penalty
+parameter which limits the dataset-specific component of the factorization.
+Default \code{5.0}.}
 
-\item{resolution}{numeric, default `1.0`. Algorithmic paramter, the 
-clustering resolution, increasing this increases the number of communities 
-detected.}
+\item{resolution}{A numeric scalar. Algorithmic paramter, the clustering
+resolution, increasing this increases the number of communities detected.
+Default \code{1.0}}
 }
 \value{
-SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.
+The input \linkS4class{SingleCellExperiment} object with
+\code{reducedDim(inSCE, reducedDimName)} updated.
 }
 \description{
-LIGER relies on integrative non-negative matrix factorization to identify 
+LIGER relies on integrative non-negative matrix factorization to identify
 shared and dataset-specific factors.
 }
 \examples{
- 
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
 sceCorr <- runLIGER(sceBatches)
