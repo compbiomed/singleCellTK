@@ -15,7 +15,7 @@ plotSCEDensityColData(
   axisLabelSize = 10,
   defaultTheme = TRUE,
   title = NULL,
-  titleSize = NULL,
+  titleSize = 18,
   cutoff = NULL
 )
 }

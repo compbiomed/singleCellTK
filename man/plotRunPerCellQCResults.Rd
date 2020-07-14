@@ -15,7 +15,8 @@ plotRunPerCellQCResults(
   axisSize = 15,
   axisLabelSize = 18,
   transparency = 1,
-  defaultTheme = TRUE
+  defaultTheme = TRUE,
+  titleSize = 18
 )
 }
 \arguments{
@@ -40,12 +41,16 @@ Default TRUE.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
-\item{axisSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
+
+\item{titleSize}{Size of title of plot. Default 18.}
 }
 \description{
 A wrapper function which visualizes outputs from the

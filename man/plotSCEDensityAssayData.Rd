@@ -17,7 +17,7 @@ plotSCEDensityAssayData(
   defaultTheme = TRUE,
   cutoff = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = 18
 )
 }
 \arguments{

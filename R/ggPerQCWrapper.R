@@ -16,7 +16,9 @@
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param dotSize Size of dots. Default 1.
-#' @param axisSize Size of x/y-axis labels. Default 10.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -36,9 +38,11 @@ plotRunPerCellQCResults <- function(inSCE,
                                     boxplot = FALSE,
                                     dots = TRUE,
                                     dotSize = 0.5,
-                                    axisSize = 15, axisLabelSize = 18,
+                                    axisSize = 15,
+                                    axisLabelSize = 18,
                                     transparency = 1,
-                                    defaultTheme = TRUE) {
+                                    defaultTheme = TRUE,
+                                    titleSize = 18) {
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop("'sample' must be the same length as the number",
@@ -63,8 +67,10 @@ plotRunPerCellQCResults <- function(inSCE,
                                               title="Total counts per cell",
                                               dotSize=dotSize,
                                              axisSize = axisSize,
+                                             axisLabelSize = axisLabelSize,
                                               gridLine = TRUE,
-                                              summary = "median")
+                                              summary = "median",
+                                             titleSize = titleSize)
         combined.detected <- plotSCEViolinColData(inSCE=inSCE,
                                                   coldata="detected",
                                                   groupby=sample,
@@ -77,8 +83,10 @@ plotRunPerCellQCResults <- function(inSCE,
                                                   title="Total features detected per cell",
                                                   dotSize=dotSize,
                                                   axisSize = axisSize,
+                                                  axisLabelSize = axisLabelSize,
                                                   gridLine = TRUE,
-                                                  summary = "median")
+                                                  summary = "median",
+                                                  titleSize = titleSize)
         combined.plots <- list(combined.sum, combined.detected)
         names(combined.plots) <- c("Sum", "Detected")
     }
@@ -100,7 +108,9 @@ plotRunPerCellQCResults <- function(inSCE,
                                           title="Total counts per cell",
                                           dotSize=dotSize,
                                           axisSize = axisSize,
-                                          summary = "median")
+                                          axisLabelSize = axisLabelSize,
+                                          summary = "median",
+                                          titleSize = titleSize)
 
         violin.detected <- plotSCEViolinColData(inSCE=inSCESub,
                                                 coldata="detected",
@@ -115,7 +125,9 @@ plotRunPerCellQCResults <- function(inSCE,
                                                 title="Total features detected per cell",
                                                 dotSize=dotSize,
                                                 axisSize = axisSize,
-                                                summary = "median")
+                                                axisLabelSize = axisLabelSize,
+                                                summary = "median",
+                                                titleSize = titleSize)
 
         violin.toppercent <- plotSCEViolinColData(inSCE=inSCESub,
                                                   coldata="percent_top_50",
@@ -130,7 +142,9 @@ plotRunPerCellQCResults <- function(inSCE,
                                                   title="Top 50 gene expression percentage",
                                                   dotSize=dotSize,
                                                   axisSize = axisSize,
-                                                  summary = "median")
+                                                  axisLabelSize = axisLabelSize,
+                                                  summary = "median",
+                                                  titleSize = titleSize)
 
         if(any(grepl(pattern = "subsets_",
                      names(colData(inSCESub))))){
@@ -149,8 +163,10 @@ plotRunPerCellQCResults <- function(inSCE,
                                                                               dots=dots,
                                                                               transparency = transparency,
                                                                               axisSize = axisSize,
+                                                                              axisLabelSize = axisLabelSize,
                                                                               title=paste0(x," per cell"),
-                                                                              dotSize=dotSize))
+                                                                              dotSize=dotSize,
+                                                                              titleSize = titleSize))
             names(violin.subset) <- subsets
         }else{
             violin.subset <- NULL
@@ -259,8 +275,10 @@ plotScrubletResults <- function(inSCE,
                                             dots=dots,
                                             transparency = transparency,
                                             title="Scrublet Score",
+                                            titleSize = titleSize,
                                             dotSize=dotSize,
-                                            axisSize = 15, axisLabelSize = 18,
+                                            axisSize = 15,
+                                            axisLabelSize = 18,
                                             gridLine = TRUE,
                                             summary = "median")
         combined.plots <- list(combined.plots)
@@ -292,6 +310,7 @@ plotScrubletResults <- function(inSCE,
                                                 axisSize = 15, axisLabelSize = 18,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Doublet Score",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityScore <- plotSCEDensityColData(inSCE = inSCESub,
@@ -300,10 +319,12 @@ plotScrubletResults <- function(inSCE,
                                               groupby = groupby,
                                               xlab = "Score",
                                               ylab = "Density",
-                                              axisSize = 15, axisLabelSize = 18,
+                                              axisSize = 15,
+                                              axisLabelSize = 18,
                                               defaultTheme = defaultTheme,
                                               cutoff = 0.5,
-                                              title = "Density, Scrublet Score")
+                                              title = "Density, Scrublet Score",
+                                              titleSize = titleSize)
 
         violinScore <- plotSCEViolinColData(inSCE=inSCESub, coldata="scrublet_score",
                                             sample = sampleSub,
@@ -316,6 +337,7 @@ plotScrubletResults <- function(inSCE,
                                             transparency = transparency,
                                             defaultTheme = defaultTheme,
                                             title="Scrublet Score",
+                                            titleSize = titleSize,
                                             dotSize=dotSize,
                                             axisSize = 15, axisLabelSize = 18,
                                             summary = "median")
@@ -340,6 +362,7 @@ plotScrubletResults <- function(inSCE,
                                                axisSize = 15, axisLabelSize = 18,
                                                labelClusters = FALSE,
                                                legendTitle = "Doublet Assignment",
+                                               legendTitleSize = 16,
                                                legendSize = 15)
 
         res.list <- list(scatterScore, densityScore, violinScore, scatterCall)
@@ -481,6 +504,7 @@ plotDoubletFinderResults <- function(inSCE,
             transparency = transparency,
             defaultTheme = defaultTheme,
             axisSize = 15, axisLabelSize = 18,
+            legendTitleSize = 16,
             title = paste("DoubletFinder Doublet Score Resolution",
                           gsub(pattern = "doubletFinder_doublet_score_Resolution_",
                                "", x)),
@@ -504,10 +528,10 @@ plotDoubletFinderResults <- function(inSCE,
             axisSize = 15, axisLabelSize = 18,
             defaultTheme = defaultTheme,
             cutoff = 0.5,
+            titleSize = titleSize,
             title = paste("Density, DoubletFinder Score Resolution",
                           gsub(pattern = "doubletFinder_doublet_score_Resolution_",
-                               "", x))),
-            titleSize = titleSize)
+                               "", x))))
 
         names(densityScore) <- sapply(df.scores, function(x)
             paste0("Density_", gsub(pattern = "doubletFinder_doublet_score_",
@@ -560,6 +584,7 @@ plotDoubletFinderResults <- function(inSCE,
             axisSize = 15, axisLabelSize = 18,
             labelClusters = FALSE,
             legendTitle = "Doublet Score",
+            legendTitleSize = 16,
             legendSize = 15
         ))
 
@@ -706,6 +731,7 @@ plotDoubletCellsResults <- function(inSCE,
                                                 titleSize = titleSize,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Doublet Score",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityScore <- plotSCEDensityColData(inSCE = inSCESub,
@@ -867,6 +893,7 @@ plotCxdsResults <- function(inSCE,
                                                 axisSize = 15, axisLabelSize = 18,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Doublet Score",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityScore <- plotSCEDensityColData(inSCE = inSCESub,
@@ -1026,6 +1053,7 @@ plotBcdsResults <- function(inSCE,
                                                 axisSize = 15, axisLabelSize = 18,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Doublet Score",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityScore <- plotSCEDensityColData(inSCE = inSCESub,
@@ -1186,6 +1214,7 @@ plotScdsHybridResults <- function(inSCE,
                                                 axisSize = 15, axisLabelSize = 18,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Doublet Score",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityScore <- plotSCEDensityColData(inSCE = inSCESub,
@@ -1348,6 +1377,7 @@ plotDecontXResults <- function(inSCE,
                                                 titleSize = titleSize,
                                                 labelClusters = FALSE,
                                                 legendTitle = "Contamination",
+                                                legendTitleSize = 16,
                                                 legendSize = 15)
 
         densityContamination <- plotSCEDensityColData(inSCE = inSCESub,
@@ -1393,6 +1423,7 @@ plotDecontXResults <- function(inSCE,
                                                   titleSize = titleSize,
                                                   labelClusters = TRUE,
                                                   legendTitle = "Clusters",
+                                                  legendTitleSize = 16,
                                                   legendSize = 15)
 
         res.list <- list(scatterDecon, densityContamination,

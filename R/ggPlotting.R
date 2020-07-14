@@ -158,19 +158,21 @@
     }
     dataframe$Sample <- colnames(inSCESub)
     g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
-      label = "Sample")) + ggplot2::geom_point(size = dotSize,
-                                               alpha = transparency)
+                                                        label = "Sample")) + ggplot2::geom_point(size = dotSize,
+                                                                                                 alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
 
     }
     if (class(colorBySub) == "numeric"){
-        g <- g + ggplot2::scale_color_gradient2(
-            low = colorLow,
-            mid = colorMid,
-            high = colorHigh,
-            aesthetics = "colour",
-            midpoint = mean(colorBySub))
+      g <- g + ggplot2::scale_color_gradient2(
+        low = colorLow,
+        mid = colorMid,
+        high = colorHigh,
+        aesthetics = "colour",
+        midpoint = mean(colorBySub))
+    }else if (class(colorBySub) == "character" | class(colorBySub) == "factor"){
+      g <- g + ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
@@ -180,9 +182,9 @@
       g <- .ggSCTKTheme(g)
     }
     g <- g + ggplot2::theme(axis.title =
-                                ggplot2::element_text(size = axisLabelSize),
+                              ggplot2::element_text(size = axisLabelSize),
                             axis.text =
-                                ggplot2::element_text(size = axisSize))
+                              ggplot2::element_text(size = axisSize))
     if (!is.null(title)) {
       if (length(samples) > 1) {
         title <- paste(title, x, sep = "_")
@@ -195,11 +197,11 @@
     }
     if (!is.null(legendTitle)) {
       g <- g + ggplot2::labs(color = legendTitle) +
-          ggplot2::theme(legend.title=element_text(size=legendTitleSize),
-                         legend.text=ggplot2::element_text(size=legendSize))
+        ggplot2::theme(legend.title=ggplot2::element_text(size=legendTitleSize),
+                       legend.text=ggplot2::element_text(size=legendSize))
     } else {
-        g <- g + ggplot2::labs(color = "") +
-            ggplot2::theme(legend.text=ggplot2::element_text(size=legendSize))
+      g <- g + ggplot2::labs(color = "") +
+        ggplot2::theme(legend.text=ggplot2::element_text(size=legendSize))
     }
 
     if (!is.null(groupBy)){
@@ -226,10 +228,9 @@
         centroid$shape <- dataframe$shape[1]
       }
 
-    if (!is.null(groupBy)){
-      g <- g + ggplot2::facet_wrap(~groups)
-    }
-
+      if (!is.null(groupBy)){
+        g <- g + ggplot2::facet_wrap(~groups)
+      }
 
       colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
       g <- g + ggplot2::geom_point(
@@ -371,7 +372,7 @@ plotSCEDimReduceColData <- function(inSCE,
     titleSize = titleSize,
     labelClusters = labelClusters,
     legendTitle = legendTitle,
-    legendTitle = legendTitleSize,
+    legendTitleSize = legendTitleSize,
     legendSize = legendSize
   )
   return(g)
@@ -484,7 +485,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
     title = title,
     titleSize = titleSize,
     legendTitle = legendTitle,
-    legendTitle = legendTitleSize,
+    legendTitleSize = legendTitleSize,
     legendSize = legendSize,
     groupBy = groupBy
   )
@@ -1212,7 +1213,7 @@ plotSCEViolin <- function(inSCE,
                        axisLabelSize = 10,
                        defaultTheme = TRUE,
                        title = NULL,
-                       titleSize = 15,
+                       titleSize = 18,
                        cutoff = NULL) {
   if (is.null(groupby)) {
     groupby <- rep("Sample", length(value))
@@ -1294,7 +1295,7 @@ plotSCEDensityColData <- function(inSCE,
                                   axisLabelSize = 10,
                                   defaultTheme = TRUE,
                                   title = NULL,
-                                  titleSize = NULL,
+                                  titleSize = 18,
                                   cutoff = NULL) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
@@ -1412,7 +1413,7 @@ plotSCEDensityAssayData <- function(inSCE,
                                     defaultTheme = TRUE,
                                     cutoff = NULL,
                                     title = NULL,
-                                    titleSize = NULL) {
+                                    titleSize = 18) {
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -1535,7 +1536,7 @@ plotSCEDensity <- function(inSCE,
                            axisLabelSize = 10,
                            defaultTheme = TRUE,
                            title = NULL,
-                           titleSize = NULL,
+                           titleSize = 18,
                            cutoff = NULL) {
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
@@ -1682,6 +1683,7 @@ plotSCEDensity <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
   axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
@@ -1768,6 +1770,7 @@ plotSCEBarColData <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
   axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
@@ -1805,6 +1808,7 @@ plotSCEBarColData <- function(inSCE,
     dots = dots,
     xlab = xlab,
     ylab = ylab,
+    axisSize = axisSize,
     axisLabelSize = axisLabelSize,
     dotSize = dotSize,
     transparency = transparency,
@@ -1852,6 +1856,7 @@ plotSCEBarAssayData <- function(inSCE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
   axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
@@ -1888,6 +1893,7 @@ plotSCEBarAssayData <- function(inSCE,
     dots = dots,
     xlab = xlab,
     ylab = ylab,
+    axisSize = axisSize,
     axisLabelSize = axisLabelSize,
     dotSize = dotSize,
     transparency = transparency,

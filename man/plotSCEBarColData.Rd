@@ -13,6 +13,7 @@ plotSCEBarColData(
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
   axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
@@ -44,6 +45,8 @@ Default TRUE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
 \item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dotSize}{Size of dots. Default 1.}
@@ -56,8 +59,6 @@ when TRUE. Default TRUE.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
-
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
 }
 \description{
 Visualizes values stored in the colData slot of a

@@ -13,7 +13,7 @@
   axisLabelSize = 10,
   defaultTheme = TRUE,
   title = NULL,
-  titleSize = 15,
+  titleSize = 18,
   cutoff = NULL
 )
 }
