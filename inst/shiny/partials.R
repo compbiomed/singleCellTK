@@ -1,3 +1,39 @@
+#------------#
+# ROW MAKING #
+#------------#
+
+make3ColTableRow <- function(selector, id, col1, col2) {
+  fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+  removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+  insertUI(
+    selector = selector,
+    ui = fluidRow(
+      id = id,
+      tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+      column(4, col1),
+      column(4, col2),
+      column(4, actionButton(paste0("remove", id), "X"))
+    )
+  )
+}
+
+make4ColTableRow <- function(selector, id, col1, col2, col3) {
+  fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+  removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+  insertUI(
+    selector = selector,
+    ui = fluidRow(
+      id = id,
+      tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+      column(3, col1),
+      column(3, col2),
+      column(3, col3),
+      column(3, actionButton(paste0("remove", id), "X"))
+    )
+  )
+}
+
+
 #---------------#
 # IMPORT MODALS #
 #---------------#
@@ -96,6 +132,68 @@ importCRBDir <- function(failed = FALSE) {
     footer = tagList(
       modalButton("Cancel"),
       actionButton("BDirOK", "OK")
+    )
+  )
+}
+
+#--------------#
+# QC/FILTERING #
+#--------------#
+
+qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE,
+                    geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
+  modalDialog(
+    h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
+    if (!is.null(assays))
+      selectInput("qcAssaySelect", paste0("Select assay for ", requireAssayStr), assays),
+    if (geneSetList)
+      tags$hr(),
+    if (geneSetList)
+      h4(tags$b("Parameters for QCMetrics:")),
+    # The following selectInputs are just place holders until there is gene set code
+    if (geneSetList)
+      selectInput("geneSetList", "Select Gene Set List", assays),
+    if (geneSetListLocation)
+      selectInput("geneLocation", "Select Gene Set List Location", assays),
+    if (geneSetCollection)
+      selectInput("geneCollection", "Select Gene Set Collection", assays),
+    
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+    
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("modalRunQC", "Run")
+    )
+  )
+}
+
+filteringModal <- function(failed=FALSE, colNames) {
+  modalDialog(
+    h3("Select a Column"),
+    selectInput("filterColSelect", "", colNames),
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+    tags$div(id = "filterCriteria"),
+    
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("filtModalOK", "OK")
+    )
+  )
+}
+
+rowFilteringModal <- function(failed=FALSE, rowNames) {
+  modalDialog(
+    h3("Select a Column"),
+    selectInput("filterRowSelect", "", rowNames),
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+    tags$div(id = "rowFilterCriteria"),
+    
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("rowFiltModalOK", "OK")
     )
   )
 }

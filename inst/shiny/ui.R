@@ -116,7 +116,9 @@ if (is.null(getShinyOption("theme"))){
   shinyTheme <- getShinyOption("theme")
 }
 
-source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
+# source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
+source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
@@ -169,7 +171,11 @@ shinyUI(
     navbarPage(
       tooltitle,
       theme = shinytheme(shinyTheme),
-      tabPanel("Data", shinyPanelData),
+      navbarMenu(
+        "Data",
+        tabPanel("Import", shinyPanelImport),
+        tabPanel("Export", shinyPanelExport)
+      ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
