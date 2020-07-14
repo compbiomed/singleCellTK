@@ -11,7 +11,9 @@
 #' the respective databases along with p-values, z-scores etc.,
 #' @export
 #' @examples
+#' \dontrun{
 #' enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017")
+#' }
 enrichRSCE <- function(inSCE, glist, db = NULL){
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection

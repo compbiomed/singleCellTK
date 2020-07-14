@@ -20,6 +20,7 @@ library(Biobase)
 library(base)
 library(SingleCellExperiment)
 library(singleCellTK)
+library(celda)
 library(shinycssloaders)
 library(shinythemes)
 library(umap)
@@ -73,9 +74,9 @@ if (is.null(getShinyOption("theme"))){
 
 source("ui_01_upload.R", local = TRUE) #creates shinyPanelUpload variable
 source("ui_02_filter.R", local = TRUE) #creates shinyPanelFilter variable
-#source("ui_03_cluster.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_03_1_genewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
+source("ui_03_3_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_mast.R", local = TRUE) #creates shinyPanelMAST variable
@@ -106,7 +107,8 @@ shinyUI(
     navbarMenu(
       "Visualization & Clustering",
       tabPanel("Genewise Visualization", shinyPanelVis),
-      tabPanel("Samplewise Vis & Clustering", shinyPanelCluster)
+      tabPanel("Samplewise Vis & Clustering", shinyPanelCluster),
+      tabPanel("Celda", shinyPanelCelda)
     ),
     tabPanel("Batch Correction", shinyPanelBatchcorrect),
     navbarMenu(
