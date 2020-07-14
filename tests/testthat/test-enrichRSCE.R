@@ -8,7 +8,7 @@ test_that("Should fail when the object supplied is not a sctk/ sctkexperiment ob
 
 test_that("Should fail when an incorrect gene name is provided", {
   expect_error(enrichRSCE(mouseBrainSubsetSCE, "mohammed",
-                          "GO_Cellular_Component_2017"),
+                          "GOQ_Cellular_Component_2017"),
                "Gene in gene list not found in input object.")
 })
 
