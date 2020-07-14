@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggPlotting.R
 \name{plotBarcodeRankScatter}
 \alias{plotBarcodeRankScatter}
-\title{Plots for runEmptyDrops outputs.}
+\title{Plots for runBarcodeRankDrops outputs.}
 \usage{
 plotBarcodeRankScatter(
   inSCE,
@@ -21,7 +21,7 @@ plotBarcodeRankScatter(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
-\link{runScrublet}. Required.}
+\link{runBarcodeRankDrops}. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}
@@ -47,7 +47,7 @@ when TRUE. Default TRUE.}
 }
 \description{
 A plotting function which visualizes outputs from the
- runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+ runBarcodeRankDrops function stored in the colData slot of the SingleCellExperiment
  object via scatterplot.
 }
 \examples{

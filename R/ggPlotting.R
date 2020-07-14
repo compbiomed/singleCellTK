@@ -1638,7 +1638,7 @@ plotSCEDensity <- function(inSCE,
 #'  object via scatterplot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runScrublet}. Required.
+#' \link{runEmptyDrops}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
@@ -1752,13 +1752,13 @@ plotEmptyDropsScatter <- function(inSCE,
     ))
 }
 
-#' @title Plots for runEmptyDrops outputs.
+#' @title Plots for runBarcodeRankDrops outputs.
 #' @description A plotting function which visualizes outputs from the
-#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+#'  runBarcodeRankDrops function stored in the colData slot of the SingleCellExperiment
 #'  object via scatterplot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runScrublet}. Required.
+#' \link{runBarcodeRankDrops}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
