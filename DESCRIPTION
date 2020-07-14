@@ -61,8 +61,12 @@ Imports:
     celda,
     shinycssloaders,
     shinythemes,
-    umap
-RoxygenNote: 6.1.1
+    umap,
+    scater,
+    scran,
+    hypeR,
+    reactable
+RoxygenNote: 7.1.1
 Suggests:
     testthat,
     Rsubread,

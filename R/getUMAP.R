@@ -11,6 +11,8 @@
 #' @param n_iterations number of iterations performed during layout optimization.
 #' Default is 200.
 #' @param alpha initial value of "learning rate" of layout optimization. Default is 1.
+#' @param init initial embedding of the data points. Default is 'spectral' embedding, other option is 'random'.
+#' @param metric distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.
 #'
 #' @return a SCtkExperiment object with the reduced dimensions updated under
 #' reducedDimName specified.
@@ -19,11 +21,11 @@
 #' @examples
 #' umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
 #'                     reducedDimName = "UMAP", n_neighbors = 3, n_iterations = 200,
-#'                     alpha = 1)
+#'                     alpha = 1, init = "spectral", metric = "euclidean")
 #' reducedDims(umap_res)
 #'
 getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+                    n_neighbors = 5, n_iterations = 200, alpha = 1, init="spectral", metric="euclidean") {
   if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
     stop("Please use a SingleCellExperiment or a SCtkExperiment object")
   }
@@ -36,6 +38,8 @@ getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
   custom.config$n_neighbors <- n_neighbors
   custom.config$alpha <- alpha
   custom.config$n_epochs <- n_iterations
+  custom.config$init <- init
+  custom.config$metric <- metric
   umap_results <- umap::umap(t(matColData), config = custom.config)
   if (is.null(rownames(inSCE))) {
     rownames(umap_results$layout) <- colnames(inSCE)

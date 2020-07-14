@@ -14,7 +14,7 @@ shinyPanelFilter <- fluidPage(
   useShinyalert(),
   tags$div(
     class = "container",
-    h1("Data Summary & Filtering"),
+    h4("QC & Filtering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v04-tab02_Data-Summary-and-Filtering.html",
               "(help)", target = "_blank")),
     tabsetPanel(
@@ -52,10 +52,10 @@ shinyPanelFilter <- fluidPage(
               shinyjs::hidden(
                 tags$div(id = "f_collapse2",
                          wellPanel(
-                           checkboxInput("removeNoexpress", "Remove genes with 0 expression across all samples (Recommended)", value = TRUE),
-                           numericInput("minDetectGene", label = "Minimum Detected Genes per Sample.", value = 1700, min = 1, max = 100000),
+                           checkboxInput("removeNoexpress", "Remove genes with 0 expression across all Cells (Recommended)", value = TRUE),
+                           numericInput("minDetectGene", label = "Minimum Detected Genes per Cells", value = 1700, min = 1, max = 100000),
                            numericInput("LowExpression", "% Low Gene Expression to Filter", value = 40, min = 0, max = 100),
-                           selectInput("deletesamplelist", "Select Samples:", sampleChoice, multiple = TRUE),
+                           selectInput("deletesamplelist", "Select Cells:", sampleChoice, multiple = TRUE),
                            fluidRow(
                              column(6, withBusyIndicatorUI(actionButton("filterData", "Filter Data"))),
                              column(6, actionButton("resetData", "Reset All"))
@@ -64,7 +64,7 @@ shinyPanelFilter <- fluidPage(
                 )
               ),
               # Section 3 - Filter Samples by Annotation
-              actionButton("f_button3", "Filter Samples by Annotation"),
+              actionButton("f_button3", "Filter Cells by Annotation"),
               shinyjs::hidden(
                 tags$div(id = "f_collapse3",
                          wellPanel(
@@ -112,7 +112,7 @@ shinyPanelFilter <- fluidPage(
               shinyjs::hidden(
                 tags$div(id = "f_collapse7",
                          wellPanel(
-                           numericInput("downsampleNum", "Number of samples to keep:", min = 2,
+                           numericInput("downsampleNum", "Number of cells to keep:", min = 2,
                                         max = numSamples, value = numSamples, step = 1),
                            withBusyIndicatorUI(actionButton("downsampleGo", "Subset Data"))
                          )
@@ -134,7 +134,7 @@ shinyPanelFilter <- fluidPage(
                 plotlyOutput("geneshist"),
                 tags$hr(),
                 h4("Data Table:"),
-                helpText("Note: Shows table only if samples < 50"),
+                helpText("Note: Shows table only if cells < 50"),
                 DT::dataTableOutput("contents")
               )
             )
@@ -142,38 +142,83 @@ shinyPanelFilter <- fluidPage(
         )
       ),
       tabPanel(
-        "Assay Details",
+        "Assay Normalization",
         wellPanel(
           br(),
-          fluidRow(
+          #fluidRow(
             sidebarLayout(
               sidebarPanel(
-                h4("Assay Options:"),
-                selectInput("assayModifyAction", "Assay Actions:",
-                            c("Log Transform" = "log", "Create CPM" = "cpm",
-                              "Rename" = "rename", "Delete" = "delete")),
-                conditionalPanel(
-                  condition = "input.assayModifyAction == 'cpm'",
-                  h5("Select a count assay to use for CPM calculation:")
+                fluidRow(
+                  column(5, h3("Settings:")),
+                  column(3, br(), actionButton("Norm_hideAllSections", "Hide All")),
+                  column(3, br(), actionButton("Norm_showAllSections", "Show All"))
                 ),
-                selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                conditionalPanel(
-                  condition = "input.assayModifyAction != 'delete'",
-                  textInput("modifyAssayOutname", "Assay Name", "",
-                            placeholder = "What should the assay be called?")
+                br(),
+                actionButton("norm1", "Basic Options"),
+                shinyjs::hidden(
+                tags$div(
+                  id = "nm1",
+                  wellPanel(
+                    selectInput("assayModifyAction", "Assay Actions:",
+                                c("Log Transform" = "log", "Create CPM" = "cpm",
+                                  "Rename" = "rename", "Delete" = "delete")),
+                    conditionalPanel(
+                      condition = "input.assayModifyAction == 'cpm'",
+                      h5("Select a count assay to use for CPM calculation:")
+                    ),
+                    selectInput("modifyAssaySelect", "Select Assay:", currassays),
+                    conditionalPanel(
+                      condition = "input.assayModifyAction != 'delete'",
+                      textInput("modifyAssayOutname", "Assay Name", "",
+                                placeholder = "What should the assay be called?")
+                    ),
+                    withBusyIndicatorUI(actionButton("modifyAssay", "Run"))
+                    )
+                  )
                 ),
-                withBusyIndicatorUI(actionButton("modifyAssay", "Run"))
+                  actionButton("norm2", "Advanced Options"),
+                  shinyjs::hidden(
+                  tags$div(
+                    id = "nm2",
+                    wellPanel(
+                      selectInput("normalizeAssay", "Normalization:",
+                                  c("Library Size normalization (by scater)" = "libSizeNorm",
+                                    "Normalization by deconvolution (by scran)" = "deconvoNorm")),
+                      conditionalPanel(
+                        condition = "input.normalizeAssay == 'libSizeNorm'",
+                        selectInput("libSizeNormAssaySelect", "Assay:", currassays),
+                        helpText("Note: select 'counts' assay"),
+                        textInput("libSizeAssayName", "Name:")
+                      ),
+                      conditionalPanel(
+                        condition = "input.normalizeAssay == 'deconvoNorm'",
+                        selectInput("deconvoAssaySelect", "Assay:", currassays),
+                        textInput("clusterMin", "Min no. of cells per cluster", "10"),
+                        textInput("deconvoAssayName", "Name:")
+                      ),
+                      withBusyIndicatorUI(actionButton("modifyNorm", "Run"))
+                    )
+                  )
+                )
               ),
               mainPanel(
                 fluidRow(
-                  column(12,
+                  column(6,
                          h4("Available Assays:"),
                          tableOutput("assayList")
+                         ),
+                         conditionalPanel(
+                           condition = "input.normalizeAssay == TRUE",
+                           column(6,
+                                  h4("plots"),
+                                  plotOutput("normPlot")
+                           )
+                           #uiOutput("normPlots")
                   )
                 )
               )
             )
-          )
+          #)
         )
       ),
       tabPanel(
@@ -198,9 +243,43 @@ shinyPanelFilter <- fluidPage(
             )
           ),
           mainPanel(
-            tags$h4("Annotation data(colData):"),
+            tags$h4("Column Annotation data(colData):"),
             tags$br(),
             DT::dataTableOutput("colDataDataFrame")
+            )
+          )
+        )
+      ),
+      tabPanel(
+        "Batch Correction",
+        wellPanel(
+          sidebarLayout(
+            sidebarPanel(
+              selectInput("combatAssay", "Select Assay:", currassays),
+              tags$hr(),
+              h4("Plot Batch Effect:"),
+              selectInput("batchVarPlot", "Select Batch Annotation:", c("none", clusterChoice)),
+              selectInput("conditionVarPlot", "Select Condition Annotation:", c("none", clusterChoice)),
+              tags$hr(),
+              h4("Run Batch Correction:"),
+              selectInput("batchMethod", "Select Method:", "ComBat"),
+              selectInput("combatBatchVar", "Select Batch Condition:", clusterChoice),
+              selectInput("combatConditionVar", "Select Additional Covariates:",
+                          clusterChoice, multiple = TRUE),
+              radioButtons("combatParametric", "Adjustments:", c("Parametric",
+                                                                 "Non-parametric"),
+                           selected = "Parametric"),
+              checkboxInput("combatMeanOnly", "Correct mean of the batch effect only",
+                            value = FALSE),
+              checkboxInput("combatRef", "Run reference batch combat:",
+                            value = FALSE),
+              uiOutput("selectCombatRefBatchUI"),
+              textInput("combatSaveAssay", "Assay Name to Use:", value = "combat"),
+              withBusyIndicatorUI(actionButton("combatRun", "Run"))
+            ),
+            mainPanel(
+              uiOutput("combatStatus"),
+              plotOutput("combatBoxplot", height = "600px")
             )
           )
         )

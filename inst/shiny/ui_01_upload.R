@@ -30,7 +30,7 @@ shinyPanelUpload <- fluidPage(
     tags$div(id = "uploadAlert", alertText),
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
-                                                 "Upload SCtkExperiment RDS File" = "rds",
+                                                 "Upload SummarizedExperiment/SCExperiment RDS File" = "rds",
                                                  "Use example data" = "example")
     ),
     tags$hr(),
@@ -165,9 +165,9 @@ shinyPanelUpload <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
-      h3("Choose an RDS file that contains a SCtkExperiment Object:"),
+      h3("Choose an RDS file that contains a SummarizedExperiment/SCExperiment Object:"),
       fileInput(
-        "rdsFile", "SCtkExperiment RDS file:", accept = c(".rds", ".RDS")
+        "rdsFile", "SCExperiment RDS file:", accept = c(".rds", ".RDS")
       )
     ),
     withBusyIndicatorUI(

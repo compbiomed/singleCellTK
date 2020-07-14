@@ -1,7 +1,7 @@
 shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
-    h3("Samplewise Visualization and Clustering"),
+    h3("Cellwise Visualization and Clustering"),
     h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
               "(help)", target = "_blank")),
       # SHINYJS COLLAPSE --------------------------
@@ -36,7 +36,9 @@ shinyPanelCluster <- fluidPage(
                                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
                                          sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 200),
                                          sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
-                                         numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
+                                         numericInput("alphaUMAP", "learning rate(alpha)", value = 1),
+                                         selectInput("metricUMAP", "metric", c("euclidean", "manhattan", "cosine", "pearson")),
+                                         selectInput("initUMAP", "initial embedding", c("spectral", "random"))
                                        ),
                                        conditionalPanel(
                                          condition = sprintf("input['%s'] == 'tSNE'", "dimRedPlotMethod"),
@@ -119,6 +121,7 @@ shinyPanelCluster <- fluidPage(
                      ),
                      #plotlyOutput("clusterPlot", height = "600px"),
                      tags$hr(),
+                     #tags$div(id = "pcVar", uiOutput("pctable"))
                      uiOutput("pctable")
                    )
                  )
