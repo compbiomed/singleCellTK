@@ -1,4 +1,3 @@
-
 .runDoubletCells <- function(cell.matrix = cell.matrix, 
                               k = k,
                               nIters = nIters,
