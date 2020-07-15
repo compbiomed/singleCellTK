@@ -61,9 +61,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "combatCond",
                       choices = c('None', pdataOptions))
     updateSelectInput(session, "batchCorrVar",
-                      choices = c('None', pdataOptions))
+                      choices = pdataOptions)
     updateSelectInput(session, "batchCheckVar",
-                      choices = c('None', pdataOptions))
+                      choices = pdataOptions)
     updateSelectInput(session, "batchCheckCond",
                       choices = c('None', pdataOptions))
     updateSelectInput(session, "deC1Class",
@@ -949,6 +949,7 @@ shinyServer(function(input, output, session) {
       vals$dendrogram <- NULL
       vals$pcX <- NULL
       vals$pcY <- NULL
+      vals$batchRes <- NULL
     })
   })
 
@@ -1228,6 +1229,7 @@ shinyServer(function(input, output, session) {
       vals$dendrogram <- NULL
       vals$pcX <- NULL
       vals$pcY <- NULL
+      vals$batchRes <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
       updateNumSamples()
@@ -3572,90 +3574,89 @@ shinyServer(function(input, output, session) {
                 c(names(vals$batchRes)))
   })
 
-  output$batchOriVar <- renderPlot({
-    if (!is.null(vals$counts) &
-        input$batchCheckVar != "None"){
-      plotSCEBatchFeatureMean(inSCE = vals$counts,
-        useAssay = input$batchCheckOrigAssay,
-        batch = input$batchCheckVar)
-    }
-  })
-
-  output$batchOriPCA <- renderPlot({
-    if(!is.null(vals$counts) &
-        input$batchCheckVar != "None" &
-        input$batchCheckVar != input$batchCheckCond){
-      if(input$batchCheckCond == "None"){
-        shapeBy <- NULL
-      } else {
-        shapeBy <- input$batchCheckCond
-      }
-      pcaName <- paste0(input$batchCheckOrigAssay, "_PCA")
-      if(!pcaName %in% names(SingleCellExperiment::reducedDims(vals$counts))){
-        vals$counts <- getPCA(vals$counts, useAssay = input$batchCheckOrigAssay,
-          reducedDimName = pcaName)
-        updateReddimInputs()
-      }
-      plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-        shape = shapeBy, reducedDimName = pcaName,
-        title = paste0("Original ", input$batchCheckOrigAssay, " PCA"))
-    }
-  })
-
-  output$batchCorrVar <- renderPlot({
-    if (!is.null(vals$counts) &
-        input$batchCheckVar != "None"){
-      resName <- input$batchCheckCorrName
-      if (vals$batchRes[[resName]] == 'reddim'){
-        plotSCEBatchFeatureMean(inSCE = vals$counts,
-                                useReddim = resName,
-                                batch = input$batchCheckVar)
-      } else if (vals$batchRes[[resName]] == 'assay'){
-        plotSCEBatchFeatureMean(inSCE = vals$counts,
-                                useAssay = resName,
-                                batch = input$batchCheckVar)
-      } else if (vals$batchRes[[resName]] == 'altExp'){
-        plotSCEBatchFeatureMean(inSCE = vals$counts,
-                                useAltExp = resName,
-                                batch = input$batchCheckVar)
-      }
-    }
-  })
-
-  output$batchCorrReddim <- renderPlot({
-    if (!is.null(vals$counts) &
-        input$batchCheckVar != "None" &
-        input$batchCheckVar != input$batchCheckCond){
-      if(input$batchCheckCond == "None"){
-        shapeBy = NULL
-      } else {
-        shapeBy = input$batchCheckCond
-      }
-      resName = input$batchCheckCorrName
-      if (vals$batchRes[[resName]] == 'reddim'){
-        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-                                shape = shapeBy,
-                                reducedDimName = resName,
-                                conditionClass = "character",
-                                title = paste0(resName, " corrected"))
-      } else if (vals$batchRes[[resName]] == 'assay'){
-        pcaName <- paste0(resName, "_PCA")
-        vals$counts <- getPCA(vals$counts, useAssay = resName,
-                              reducedDimName = pcaName)
-        updateReddimInputs()
-        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-                                shape = shapeBy, reducedDimName = pcaName,
-                                title = paste0(resName, " corrected"))
-      } else if (vals$batchRes[[resName]] == 'altExp'){
-        ae <- altExp(vals$counts, resName)
-        pcaName <- paste0(resName, "_PCA")
-        ae <- getPCA(ae, useAssay = resName, reducedDimName = pcaName)
-        reducedDim(vals$counts, pcaName) <- reducedDim(ae, pcaName)
-        updateReddimInputs()
-        plotSCEDimReduceColData(vals$counts, colorBy = input$batchCheckVar,
-                                shape = shapeBy, reducedDimName = pcaName,
-                                title = paste0(resName, " corrected"))
-      }
+  observeEvent(input$plotBatchCheck, {
+    if(!is.null(vals$counts) &&
+       !is.null(input$batchCheckCorrName) &&
+       input$batchCheckVar != input$batchCheckCond){
+      withBusyIndicatorServer("plotBatchCheck", {
+        # Get "input" outside "renderPlot" expression so the plots aren't update
+        # automatically but after pressing "Plot" button.
+        ## Generals
+        useAssay <- input$batchCheckOrigAssay
+        batch <- input$batchCheckVar
+        if(input$batchCheckCond == "None"){
+          shapeBy <- NULL
+        } else {
+          shapeBy <- input$batchCheckCond
+        }
+        ## Original assay PCA
+        oriAssayPCAName <- paste0(input$batchCheckOrigAssay, "_PCA")
+        if(!oriAssayPCAName %in% names(reducedDims(vals$counts))){
+          # TODO: Think about whether to perform this only on temp SCE
+          # instead of vals$counts
+          vals$counts <- getPCA(vals$counts,
+                                useAssay = input$batchCheckOrigAssay,
+                                reducedDimName = oriAssayPCAName)
+          updateReddimInputs()
+        }
+        resName <- input$batchCheckCorrName
+        ## Corrected assay/altExp PCA
+        if (vals$batchRes[[resName]] == 'assay'){
+          corrAssayPCAName = paste0(resName, "_PCA")
+          vals$counts <- getPCA(vals$counts, useAssay = resName,
+                                reducedDimName = corrAssayPCAName)
+          updateReddimInputs()
+        } else if (vals$batchRes[[resName]] == 'altExp'){
+          ae <- altExp(vals$counts, resName)
+          corrAltExpPCAName <- paste0(resName, "_PCA")
+          ae <- getPCA(ae, useAssay = resName,
+                       reducedDimName = corrAltExpPCAName)
+          reducedDim(vals$counts, corrAltExpPCAName) <-
+            reducedDim(ae, corrAltExpPCAName)
+          updateReddimInputs()
+        }
+        inSCE <- vals$counts
+        ## Update plots
+        output$batchOriVars <- renderPlot({
+          plotSCEBatchFeatureMean(inSCE = inSCE,
+                                  useAssay = useAssay,
+                                  batch = batch)
+        })
+        output$batchOriPCA <- renderPlot({
+          plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
+                                  reducedDimName = oriAssayPCAName,
+                                  title = paste0("Original ", useAssay, " PCA"))
+        })
+        output$batchCorrVars <- renderPlot({
+          if (vals$batchRes[[resName]] == 'reddim'){
+            plotSCEBatchFeatureMean(inSCE = inSCE, useReddim = resName,
+                                    batch = batch)
+          } else if (vals$batchRes[[resName]] == 'assay'){
+            plotSCEBatchFeatureMean(inSCE = inSCE, useAssay = resName,
+                                    batch = batch)
+          } else if (vals$batchRes[[resName]] == 'altExp'){
+            plotSCEBatchFeatureMean(inSCE = inSCE, useAltExp = resName,
+                                    batch = batch)
+          }
+        })
+        output$batchCorrReddim <- renderPlot({
+          if (vals$batchRes[[resName]] == 'reddim'){
+            plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
+                                    reducedDimName = resName,
+                                    conditionClass = "character",
+                                    title = paste0(resName, " corrected"))
+          } else if (vals$batchRes[[resName]] == 'assay'){
+            plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
+                                    reducedDimName = corrAssayPCAName,
+                                    conditionClass = "character",
+                                    title = paste0(resName, " corrected"))
+          } else if (vals$batchRes[[resName]] == 'altExp'){
+            plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
+                                    reducedDimName = corrAltExpPCAName,
+                                    title = paste0(resName, " corrected"))
+          }
+        })
+      })
     }
   })
 
@@ -3864,8 +3865,7 @@ shinyServer(function(input, output, session) {
 
   output$scMergeNBatch <- renderUI({
     if(!is.null(vals$counts) &&
-        !is.null(input$batchCorrVar) &&
-        !input$batchCorrVar == 'None'){
+        !is.null(input$batchCorrVar)){
       nBatch <- length(unique(SummarizedExperiment::colData(vals$counts)[[input$batchCorrVar]]))
       span(paste0("Please input ", nBatch, " integer(s), separated by ','."))
     }

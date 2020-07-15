@@ -9,38 +9,38 @@ runSCANORAMA(
   inSCE,
   useAssay = "logcounts",
   batch = "batch",
-  assayName = "SCANORAMA",
   SIGMA = 15,
   ALPHA = 0.1,
-  KNN = 20L
+  KNN = 20L,
+  assayName = "SCANORAMA"
 )
 }
 \arguments{
-\item{inSCE}{SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{character, default `"logcounts"`. A string indicating the name
-of the assay requiring batch correction in "inSCE", should exist in
-`assayNames(inSCE)`.}
+\item{useAssay}{A single character indicating the name of the assay requiring
+batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{character, default `"batch"`. A string indicating the
-field of `colData(inSCE)` that defines different batches.}
+\item{batch}{A single character indicating a field in
+\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+Default \code{"batch"}.}
 
-\item{assayName}{character, default `"SCANORAMA"`. The name for the
-corrected full-sized expression matrix.}
+\item{SIGMA}{A numeric scalar. Algorithmic parameter, correction smoothing
+parameter on Gaussian kernel. Default \code{15}.}
 
-\item{SIGMA}{numeric, default `15`. Algorithmic parameter, correction
-smoothing parameter on Gaussian kernel.}
+\item{ALPHA}{A numeric scalar. Algorithmic parameter, alignment score
+minimum cutoff. Default \code{0.1}.}
 
-\item{ALPHA}{numeric, default `0.1`. Algorithmic parameter, alignment score
-minimum cutoff.}
+\item{KNN}{An integer. Algorithmic parameter, number of nearest neighbors to
+use for matching. Default \code{20L}.}
 
-\item{KNN}{integer, default `20L`. Algorithmic parameter, number of nearest
-neighbors to use for matching.}
+\item{assayName}{A single characeter. The name for the corrected assay. Will
+be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+\code{"SCANORAMA"}.}
 }
 \value{
-SingleCellExperiment object with `assay(inSCE, assayName)` updated
-with corrected full-sized expression matrix.
+The input \linkS4class{SingleCellExperiment} object with
+\code{assay(inSCE, assayName)} updated.
 }
 \description{
 SCANORAMA is analogous to computer vision algorithms for panorama stitching
