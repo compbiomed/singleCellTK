@@ -5050,8 +5050,8 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
         updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = .computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
-          seuratElbowPlot(inSCE = vals$counts,
-                          significantPC = .computeSignificantPC(vals$counts))
+                seuratElbowPlot(inSCE = vals$counts,
+                                      significantPC = .computeSignificantPC(vals$counts))
         })
         output$pca_significant_pc_output <- renderText({
           paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", .computeSignificantPC(vals$counts)," </span> </p> <hr>")

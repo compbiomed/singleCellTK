@@ -192,7 +192,12 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL) {
 #' @export
 seuratPlotHVG <- function(inSCE) {
     seuratObject <- convertSCEToSeurat(inSCE)
-    return(Seurat::VariableFeaturePlot(seuratObject))
+    plot <- Seurat::VariableFeaturePlot(seuratObject)
+    plot$labels$colour <- "Variable"
+    if(requireNamespace("stringr", quietly = TRUE)){
+      plot$data$colors <- stringr::str_to_title(plot$data$colors)
+    }
+    return(plot)
 }
 
 #' seuratReductionPlot
@@ -326,6 +331,9 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
       plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
       plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point() 
     }
+    plot$labels$x <- "PC"
+    plot$labels$y <- "Standard Deviation"
+    plot$labels$colour <- "Significant"
     return(plot)
 }
 
