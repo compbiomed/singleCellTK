@@ -6,7 +6,7 @@
 #' @param ndim Number of principal components to obtain from the PCA computation. Default \code{50}.
 #' @param ntop Number of top features to use with PCA. Default \code{500}.
 #'
-#' @return
+#' @return A \code{SingleCellExperiment} object with stored PCA computation
 #' @export
 #'
 #' @examples

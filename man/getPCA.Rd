@@ -25,7 +25,7 @@ getPCA(
 \item{ntop}{Number of top features to use with PCA. Default \code{500}.}
 }
 \value{
-
+A \code{SingleCellExperiment} object with stored PCA computation
 }
 \description{
 getPCA
