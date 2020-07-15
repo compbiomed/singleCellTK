@@ -5591,115 +5591,125 @@ shinyServer(function(input, output, session) {
   
   
   #-----------------------------------------------------------------------------
-  # Page Column Annotation (Data)
+  # Page: Column Annotation (colData)
   #-----------------------------------------------------------------------------
   
+  #populate colData from sce object when uploaded
   observe({
       if(!is.null(vals$counts)){
-        if(input$colEditorChoiceRadio == "existing colData"){ #update this with id
+        if(!is.null(colData(vals$counts))){
           vals$columnAnnotation <- as.data.frame(colData(vals$counts))
-        }
-        else if(input$colEditorChoiceRadio == "upload new colData"){
-          vals$columnAnnotation <- NULL
-          if(!is.null(input$uploadColDataFile)){
-            temp <- read.csv(input$uploadColDataFile$datapath, header = TRUE,sep = ",") 
-            if(nrow(colData(vals$counts)) == nrow(temp)){
-              if(input$colEditorUploadReplaceOption == "replace"){
-                vals$columnAnnotation <- temp
-              }
-              else{
-                x <- as.data.frame(colData(vals$counts))
-                y <- as.data.frame(temp)
-                commonCols <- intersect(colnames(x), colnames(y))
-                x[, commonCols] <- y[,commonCols]
-                y[, commonCols] <- NULL
-                vals$columnAnnotation <- cbind(x, y)
-              }
-            }
-            else{
-              showNotification("Number of rows of the assay and the input colData must be equal", type = "error")
-              warning("Number of rows of the assay and the input colData must be equal")
-            }
-          }
         }
       }
   })
   
-  output$output_columnAnnotation_table <- renderUI(
+  #import colData from local storage
+  observeEvent(input$importDataButton_colData, {
+    withBusyIndicatorServer("importDataButton_colData",{
+      if(!is.null(input$uploadFile_colData)){
+        temp <- read.csv(input$uploadFile_colData$datapath, header = TRUE,sep = ",") 
+        if(nrow(colData(vals$counts)) == nrow(temp)){
+          if(input$editorChoiceRadio_colData == "replace"){
+            vals$columnAnnotation <- temp
+          }
+          else{
+            x <- as.data.frame(colData(vals$counts))
+            y <- as.data.frame(temp)
+            commonCols <- intersect(colnames(x), colnames(y))
+            x[, commonCols] <- y[,commonCols]
+            y[, commonCols] <- NULL
+            vals$columnAnnotation <- cbind(x, y)
+          }
+        }
+        else{
+          showNotification("Number of rows of the assay and the input colData must be equal", type = "error")
+        }
+      }
+      else{
+        showNotification("No file selected to upload", type = "error")
+      }
+    })
+    
+    #Render a warning message if there are unsaved changes to colData
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
+  
+  #Render table with colData
+  output$outputColumnAnnotationTable_colData <- renderUI(
     {
       output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell', options = list(pageLength = 5)) })
       DT::dataTableOutput("colOutTable")
     })
   
-  
-  
   #create selectinput for selecting attribute with colnames from incoming dataset 
   #create selectinput for selecting attribute value
-  output$input_select_attribute <- renderUI(
+  output$inputSelectAttribute_colData <- renderUI(
     {
-      selectInput("input_select_attribute", label = "select attribute", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttribute_colData", label = "select attribute", choices = colnames(vals$columnAnnotation))
     })
-  
-  output$input_select_attribute_delete <- renderUI(
+  output$inputSelectAttributeDelete_colData <- renderUI(
     {
-      selectInput("input_select_attribute_delete", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeDelete_colData", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
     })
   
   #create selectinput for selecting column to delete
-  output$input_select_attribute_value <- renderUI(
+  output$inputSelectAttributeValue_colData <- renderUI(
     {
-        selectInput("input_select_attribute_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute, colnames(vals$columnAnnotation))])
+        selectInput("inputSelectAttributeValue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttribute_colData, colnames(vals$columnAnnotation))])
     })
   
   #create selectinput for selecting merge_1 attribute
   #create selectinput for selecting merge_2 attribute
-  output$input_select_attribute_merge_1 <- renderUI(
+  output$inputSelectAttributeMerge1_colData <- renderUI(
     {
-      selectInput("input_select_attribute_merge_1", label = "select first column", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeMerge1_colData", label = "select first column", choices = colnames(vals$columnAnnotation))
     })
-  output$input_select_attribute_merge_2 <- renderUI(
+  output$inputSelectAttributeMerge2_colData <- renderUI(
     {
-      selectInput("input_select_attribute_merge_2", label = "select second column", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeMerge2_colData", label = "select second column", choices = colnames(vals$columnAnnotation))
     })
   
   #create selectinput for selecting fill_1 attribute
   #create selectinput for selecting fill_2 attribute
-  output$input_select_attribute_fill_1 <- renderUI(
+  output$inputSelectAttributeFill1_colData <- renderUI(
     {
-      selectInput("input_select_attribute_fill_1", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeFill1_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
     })
-  output$input_select_attribute_fill_2 <- renderUI(
+  output$inputSelectAttributeFill2_colData <- renderUI(
     {
-      selectInput("input_select_attribute_fill_2", label = "select column to fill", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeFill2_colData", label = "select column to fill", choices = colnames(vals$columnAnnotation))
     })
   
   #create selectinput for selecting attribute value for magic fill
-  output$input_select_attribute_fill_value <- renderUI(
+  output$inputSelectAttributeFillvalue_colData <- renderUI(
     {
-      selectInput("input_select_attribute_fill_value", label = "select attribute value", choices = vals$columnAnnotation[, match(input$input_select_attribute_fill_1, colnames(vals$columnAnnotation))])
+      selectInput("inputSelectAttributeFillvalue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttributeFill1_colData, colnames(vals$columnAnnotation))])
     })
   
   #update criteria parameter text input when attribute value selectinput is changed
-  observeEvent(input$input_select_attribute_value,
+  observeEvent(input$inputSelectAttributeValue_colData,
                {
-                 updateTextInput(session = session, "input_criteria",value = input$input_select_attribute_value)
+                 updateTextInput(session = session, "inputCriteria_colData",value = input$inputSelectAttributeValue_colData)
                })
   
   #create selectinput for selecting attribute for clean operation
-  output$input_select_attribute_clean <- renderUI(
+  output$inputSelectAttributeClean_colData <- renderUI(
     {
-      selectInput("input_select_attribute_clean", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      selectInput("inputSelectAttributeClean_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
     })
   
   #confirm create bin button
-  observeEvent(input$button_confirm_bin,
+  observeEvent(input$buttonConfirmBin_colData,
                {
                  #getting variables
-                 selected_attribute <- input$input_select_attribute
-                 bin_name <- input$input_bin_name
+                 selected_attribute <- input$inputSelectAttribute_colData
+                 bin_name <- input$inputBinName_colData
                  selected_column_no <- match(selected_attribute, colnames(vals$columnAnnotation))
-                 criteria_term <- input$input_criteria
-                 operator_term <- input$input_operator
+                 criteria_term <- input$inputCriteria_colData
+                 operator_term <- input$inputOperator_colData
                  
                  #get df from reactive input
                  df <- vals$columnAnnotation
@@ -5711,58 +5721,53 @@ shinyServer(function(input, output, session) {
                    }
                  }
                  
-                 
-                 print(operator_term)
                  if (operator_term == "=")
                  {
-                   #updating created bins to dataframe
                    df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
                  }
                  else if (operator_term == ">")
                  {
-                   print(operator_term)
-                   
-                   print(df[, selected_column_no][df[, selected_column_no] > criteria_term])
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
                  }
                  else if (operator_term == "<")
                  {
-                   print(operator_term)
-                   print(df[, selected_column_no][df[, selected_column_no] < criteria_term])
-                   
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
                  }
                  else if (operator_term == "<=")
                  {
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
-                   
                  }
                  else if (operator_term == ">=")
                  {
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
-                   
                  }
                  
                  vals$columnAnnotation <- df
+                 
+                 output$changesWarning_colData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
                })
   
   #confirm merge button
-  #merge column button
-  #####################
-  observeEvent(input$button_confirm_merge,
+  observeEvent(input$buttonConfirmMerge_colData,
                {
                  df <- vals$columnAnnotation
-                 colname1 <- input$input_select_attribute_merge_1
-                 colname2 <- input$input_select_attribute_merge_2
-                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$input_select_separator_merge)
+                 colname1 <- input$inputSelectAttributeMerge1_colData
+                 colname2 <- input$inputSelectAttributeMerge2_colData
+                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$inputSelectSeparatorMerge_colData)
                  
                  vals$columnAnnotation <- df
-
+                 
+                 output$changesWarning_colData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
                })
   
   #fill column button
-  ###################
-  observeEvent(input$button_confirm_fill,
+  observeEvent(input$buttonConfirmFill_colData,
                {
                  df <- vals$columnAnnotation
                  
@@ -5773,12 +5778,12 @@ shinyServer(function(input, output, session) {
                    }
                  }
                  
-                 selected_attribute_1 <- input$input_select_attribute_fill_1
-                 selected_attribute_2 <- input$input_select_attribute_fill_2
+                 selected_attribute_1 <- input$inputSelectAttributeFill1_colData
+                 selected_attribute_2 <- input$inputSelectAttributeFill2_colData
                  selected_column_no_1 <- match(selected_attribute_1, colnames(df))
                  selected_column_no_2 <- match(selected_attribute_2, colnames(df))
-                 old_value <- input$input_select_attribute_fill_value
-                 new_value <- input$input_replace_text
+                 old_value <- input$inputSelectAttributeFillvalue_colData
+                 new_value <- input$inputReplaceText_colData
                  
                  for (i in 1:nrow(df))
                  {
@@ -5789,10 +5794,15 @@ shinyServer(function(input, output, session) {
                  }
                  
                  vals$columnAnnotation <- df
-
+                 
+                 output$changesWarning_colData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
                })
   
-  observeEvent(input$button_confirm_clean,
+  #confirm clean button
+  observeEvent(input$buttonConfirmClean_colData,
                {
                  df <- vals$columnAnnotation
                  
@@ -5803,23 +5813,15 @@ shinyServer(function(input, output, session) {
                    }
                  }
                  
-                 
-                 selected_attribute <- input$input_select_attribute_clean
+                 selected_attribute <- input$inputSelectAttributeClean_colData
                  selected_column_no <- match(selected_attribute, colnames(df))
-                 selected_choice <- input$input_removal_operation
+                 selected_choice <- input$inputRemovalOperation_colData
                  selected_choice_no <- match(selected_choice, c("remove alphabets", "remove digits", "remove spaces", "remove symbols"))
-                 
-                 print(selected_attribute)
-                 print(selected_column_no)
-                 print(selected_choice)
-                 print(selected_choice_no)
                  
                  if (selected_choice_no == 1)
                  {
                    for (i in 1:nrow(df))
                    {
-                     print(df[i, selected_column_no])
-                     print(gsub("[A-z]", "", df[i, selected_column_no]))
                      df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
                    }
                    
@@ -5842,32 +5844,41 @@ shinyServer(function(input, output, session) {
                  {
                    for (i in 1:nrow(df))
                    {
-                     df[i, selected_column_no] <- gsub("[:punct:]", "", df[i, selected_column_no]) #REGEX NOT WORKING PROPERLY
+                     df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
                    }
                  }
                  
                  vals$columnAnnotation <- df
+                 
+                 output$changesWarning_colData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
                })
   
   #add new empty column button
-  ############################
-  observeEvent(input$button_confirm_empty_column_name,
+  observeEvent(input$buttonConfirmEmptyColumnName_colData,
                {
                  df <- vals$columnAnnotation
                  
                 
-                 colname <- input$input_empty_column_name
-                 df$newcolumn <- input$input_default_value_add_column
+                 colname <- input$inputEmptyColumnName_colData
+                 df$newcolumn <- input$inputDefaultValueAddColumn_colData
                  names(df)[ncol(df)] <- colname
                  
                  vals$columnAnnotation <- df
                  
+                 output$changesWarning_colData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
                })
   
-  #delete column
-  observeEvent(input$button_confirm_delete_column,{
+  #delete column button
+  observeEvent(input$buttonConfirmDeleteColumn_colData,{
+    
     #getting variables
-    selected_attribute <- input$input_select_attribute_delete
+    selected_attribute <- input$inputSelectAttributeDelete_colData
     
     #get df from reactive input
     df <- vals$columnAnnotation
@@ -5876,19 +5887,347 @@ shinyServer(function(input, output, session) {
     df[[selected_attribute]] <- NULL
     
     vals$columnAnnotation <- df
+    
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
   })
   
   #restore saved/original colData
-  observeEvent(input$button_restore_phenotype,{
+  observeEvent(input$buttonRestore_colData,{
     vals$columnAnnotation <- as.data.frame(colData(vals$counts))
+    output$changesWarning_colData <- NULL
+    showNotification("Changes reverted back to last checkpoint.")
   })
   
-  #save unsaved changes
-  observeEvent(input$button_save_colData,{
+  #save changes to colData
+  observeEvent(input$buttonSave_colData,{
       colData(vals$counts) <- DataFrame(vals$columnAnnotation)
-    print(head(colData(vals$counts)))
+      output$changesWarning_colData <- NULL
+      showNotification("Changes saved successfully.")
+  })
+  
+  
+  #-----------------------------------------------------------------------------
+  # Page: Row Annotation (rowData)
+  #-----------------------------------------------------------------------------
+  
+  #populate colData from sce object when uploaded
+  observe({
+    if(!is.null(vals$counts)){
+      if(!is.null(rowData(vals$counts))){
+        vals$rowAnnotation <- as.data.frame(rowData(vals$counts))
+      }
+    }
+  })
+  
+  #import rowData from local storage
+  observeEvent(input$importDataButton_rowData, {
+    withBusyIndicatorServer("importDataButton_rowData",{
+      if(!is.null(input$uploadFile_rowData)){
+        temp <- read.csv(input$uploadFile_rowData$datapath, header = TRUE,sep = ",")
+        if(nrow(rowData(vals$counts)) == nrow(temp)){
+          if(input$editorChoiceRadio_rowData == "replace"){
+            vals$rowAnnotation <- temp
+          }
+          else{
+            x <- as.data.frame(rowData(vals$counts))
+            y <- as.data.frame(temp)
+            commonCols <- intersect(colnames(x), colnames(y))
+            x[, commonCols] <- y[,commonCols]
+            y[, commonCols] <- NULL
+            vals$rowAnnotation <- cbind(x, y)
+          }
+        }
+        else{
+          showNotification("Number of rows of the assay and the input rowData must be equal", type = "error")
+        }
+      }
+      else{
+        showNotification("No file selected to upload", type = "error")
+      }
+    })
+
+    #Render a warning message if there are unsaved changes to rowData
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
   })
 
+  #Render table with rowData
+  output$outputColumnAnnotationTable_rowData <- renderUI(
+    {
+      output$rowOutTable <- DT::renderDataTable({ DT::datatable(vals$rowAnnotation, editable = 'cell', options = list(pageLength = 5)) })
+      DT::dataTableOutput("rowOutTable")
+    })
+
+  #create selectinput for selecting attribute with colnames from incoming dataset
+  #create selectinput for selecting attribute value
+  output$inputSelectAttribute_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttribute_rowData", label = "select attribute", choices = colnames(vals$rowAnnotation))
+    })
+  output$inputSelectAttributeDelete_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeDelete_rowData", label = "select attribute to delete", choices = colnames(vals$rowAnnotation))
+    })
+
+  #create selectinput for selecting column to delete
+  output$inputSelectAttributeValue_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeValue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttribute_rowData, colnames(vals$rowAnnotation))])
+    })
+
+  #create selectinput for selecting merge_1 attribute
+  #create selectinput for selecting merge_2 attribute
+  output$inputSelectAttributeMerge1_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeMerge1_rowData", label = "select first column", choices = colnames(vals$rowAnnotation))
+    })
+  output$inputSelectAttributeMerge2_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeMerge2_rowData", label = "select second column", choices = colnames(vals$rowAnnotation))
+    })
+
+  #create selectinput for selecting fill_1 attribute
+  #create selectinput for selecting fill_2 attribute
+  output$inputSelectAttributeFill1_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeFill1_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+    })
+  output$inputSelectAttributeFill2_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeFill2_rowData", label = "select column to fill", choices = colnames(vals$rowAnnotation))
+    })
+
+  #create selectinput for selecting attribute value for magic fill
+  output$inputSelectAttributeFillvalue_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeFillvalue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData, colnames(vals$rowAnnotation))])
+    })
+
+  #update criteria parameter text input when attribute value selectinput is changed
+  observeEvent(input$inputSelectAttributeValue_rowData,
+               {
+                 updateTextInput(session = session, "inputCriteria_rowData",value = input$inputSelectAttributeValue_rowData)
+               })
+
+  #create selectinput for selecting attribute for clean operation
+  output$inputSelectAttributeClean_rowData <- renderUI(
+    {
+      selectInput("inputSelectAttributeClean_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+    })
+
+  #confirm create bin button
+  observeEvent(input$buttonConfirmBin_rowData,
+               {
+                 #getting variables
+                 selected_attribute <- input$inputSelectAttribute_rowData
+                 bin_name <- input$inputBinName_rowData
+                 selected_column_no <- match(selected_attribute, colnames(vals$rowAnnotation))
+                 criteria_term <- input$inputCriteria_rowData
+                 operator_term <- input$inputOperator_rowData
+
+                 #get df from reactive input
+                 df <- vals$rowAnnotation
+
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+
+                 if (operator_term == "=")
+                 {
+                   df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
+                 }
+                 else if (operator_term == ">")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
+                 }
+                 else if (operator_term == "<")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
+                 }
+                 else if (operator_term == "<=")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
+                 }
+                 else if (operator_term == ">=")
+                 {
+                   df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
+                 }
+
+                 vals$rowAnnotation <- df
+
+                 output$changesWarning_rowData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+               })
+
+  #confirm merge button
+  observeEvent(input$buttonConfirmMerge_rowData,
+               {
+                 df <- vals$rowAnnotation
+                 colname1 <- input$inputSelectAttributeMerge1_rowData
+                 colname2 <- input$inputSelectAttributeMerge2_rowData
+                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$inputSelectSeparatorMerge_rowData)
+
+                 vals$rowAnnotation <- df
+
+                 output$changesWarning_rowData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+               })
+
+  #fill column button
+  observeEvent(input$buttonConfirmFill_rowData,
+               {
+                 df <- vals$rowAnnotation
+
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+
+                 selected_attribute_1 <- input$inputSelectAttributeFill1_rowData
+                 selected_attribute_2 <- input$inputSelectAttributeFill2_rowData
+                 selected_column_no_1 <- match(selected_attribute_1, colnames(df))
+                 selected_column_no_2 <- match(selected_attribute_2, colnames(df))
+                 old_value <- input$inputSelectAttributeFillvalue_rowData
+                 new_value <- input$inputReplaceText_rowData
+
+                 for (i in 1:nrow(df))
+                 {
+                   if (df[i, selected_column_no_1] == old_value)
+                   {
+                     df[i, selected_column_no_2] <- new_value
+                   }
+                 }
+
+                 vals$rowAnnotation <- df
+
+                 output$changesWarning_rowData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+               })
+
+  #confirm clean button
+  observeEvent(input$buttonConfirmClean_rowData,
+               {
+                 df <- vals$rowAnnotation
+
+                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
+                 for (i in 1:length(colnames(df))) {
+                   if (is.factor(df[, i])) {
+                     df[,i] = as.character(df[,i])
+                   }
+                 }
+
+                 selected_attribute <- input$inputSelectAttributeClean_rowData
+                 selected_column_no <- match(selected_attribute, colnames(df))
+                 selected_choice <- input$inputRemovalOperation_rowData
+                 selected_choice_no <- match(selected_choice, c("remove alphabets", "remove digits", "remove spaces", "remove symbols"))
+
+                 if (selected_choice_no == 1)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
+                   }
+
+                 }
+                 else if (selected_choice_no == 2)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
+                   }
+                 }
+                 else if (selected_choice_no == 3)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
+                   }
+                 }
+                 else if (selected_choice_no == 4)
+                 {
+                   for (i in 1:nrow(df))
+                   {
+                     df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
+                   }
+                 }
+
+                 vals$rowAnnotation <- df
+
+                 output$changesWarning_rowData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+               })
+
+  #add new empty column button
+  observeEvent(input$buttonConfirmEmptyColumnName_rowData,
+               {
+                 df <- vals$rowAnnotation
+
+
+                 colname <- input$inputEmptyColumnName_rowData
+                 df$newcolumn <- input$inputDefaultValueAddColumn_rowData
+                 names(df)[ncol(df)] <- colname
+
+                 vals$columnAnnotation <- df
+
+                 output$changesWarning_rowData <- renderUI({
+                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+                 })
+                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+               })
+
+  #delete column button
+  observeEvent(input$buttonConfirmDeleteColumn_rowData,{
+
+    #getting variables
+    selected_attribute <- input$inputSelectAttributeDelete_rowData
+
+    #get df from reactive input
+    df <- vals$rowAnnotation
+
+    #delete
+    df[[selected_attribute]] <- NULL
+
+    vals$rowAnnotation <- df
+
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
+
+  #restore saved/original rowData
+  observeEvent(input$buttonRestore_rowData,{
+    vals$rowAnnotation <- as.data.frame(rowData(vals$counts))
+    output$changesWarning_rowData <- NULL
+    showNotification("Changes reverted back to last checkpoint.")
+  })
+
+  #save changes to rowData
+  observeEvent(input$buttonSave_rowData,{
+    rowData(vals$counts) <- DataFrame(vals$rowAnnotation)
+    output$changesWarning_rowData <- NULL
+    showNotification("Changes saved successfully.")
+  })
+  
+  
   #-----------------------------------------------------------------------------
   # Page Download
   #-----------------------------------------------------------------------------
