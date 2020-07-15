@@ -95,8 +95,10 @@ shinyPanelSeurat <- fluidPage(
                             column(8,
                                 fluidRow(
                                     column(12,
+                                           hidden(
                                         tags$div(class = "seurat_pca_plots", tabsetPanel(id = "seuratPCAPlotTabset", type = "tabs"
-                                                   ))
+                                                   )
+                                                 ))
                                           )
 
                                         )
@@ -131,8 +133,10 @@ shinyPanelSeurat <- fluidPage(
                                column(8,
                                       fluidRow(
                                         column(12,
+                                               hidden(
                                                 tags$div(class = "seurat_ica_plots", tabsetPanel(id="seuratICAPlotTabset", type = "tabs"
                                                ))
+                                               )
                                                )
                                       )
                                       )
@@ -227,8 +231,10 @@ shinyPanelSeurat <- fluidPage(
                     column(8,
                            fluidRow(
                              column(12,
+                                    hidden(
                                     tags$div(class = "seurat_clustering_plots", tabsetPanel(id = "seuratClusteringPlotTabset", type = "tabs"
                                     ))
+                                    )
                              )
                              
                            )

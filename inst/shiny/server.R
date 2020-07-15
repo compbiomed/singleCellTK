@@ -5031,7 +5031,8 @@ shinyServer(function(input, output, session) {
                                                         panel(heading = "PCA Plot",
                                                               plotlyOutput(outputId = "plot_pca")
                                                         )
-    ))
+    ), select = TRUE)
+    
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       output$plot_pca <- renderPlotly({
         plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5131,7 +5132,9 @@ shinyServer(function(input, output, session) {
 
     shinyjs::enable(
       selector = "div[value='tSNE/UMAP']")
-
+    
+    shinyjs::show(selector = ".seurat_pca_plots")
+    
     showNotification("PCA Complete")
   })
 
@@ -5156,7 +5159,7 @@ shinyServer(function(input, output, session) {
                                                         panel(heading = "ICA Plot",
                                                               plotlyOutput(outputId = "plot_ica")
                                                         )
-    ))
+    ), select = TRUE)
     
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
       output$plot_ica <- renderPlotly({
@@ -5214,6 +5217,8 @@ shinyServer(function(input, output, session) {
 
     shinyjs::enable(
       selector = "div[value='tSNE/UMAP']")
+    
+    shinyjs::show(selector = ".seurat_ica_plots")
 
     showNotification("ICA Complete")
   })
@@ -5247,7 +5252,7 @@ shinyServer(function(input, output, session) {
                                                                            panel(heading = "PCA Plot",
                                                                                  plotlyOutput(outputId = "plot_pca_clustering")
                                                                            )
-                                                                   )
+                                                                   ), select = TRUE
 
         )
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
@@ -5266,7 +5271,7 @@ shinyServer(function(input, output, session) {
                                                                    panel(heading = "ICA Plot",
                                                                          plotlyOutput(outputId = "plot_ica_clustering")
                                                                    )
-        ))
+        ), select = TRUE)
         withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
           output$plot_ica_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
@@ -5317,6 +5322,8 @@ shinyServer(function(input, output, session) {
           selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
       }
+      
+      shinyjs::show(selector = ".seurat_clustering_plots")
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
