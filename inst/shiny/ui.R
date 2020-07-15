@@ -119,6 +119,7 @@ if (is.null(getShinyOption("theme"))){
 # source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
 source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
 source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
+source("ui_01_gene_sets.R", local = TRUE) #creates shinyPanelGeneSets variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
@@ -173,7 +174,8 @@ shinyUI(
       theme = shinytheme(shinyTheme),
       navbarMenu(
         "Data",
-        tabPanel("Import", shinyPanelImport),
+        tabPanel("Import SCE", shinyPanelImport),
+        tabPanel("Import Gene Sets", shinyPanelGeneSets),
         tabPanel("Export", shinyPanelExport)
       ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),

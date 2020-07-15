@@ -922,6 +922,48 @@ shinyServer(function(input, output, session) {
       vals$pcX <- NULL
       vals$pcY <- NULL
       vals$batchRes <- NULL
+      # print(rowData(getMSigDBTable()))
+      updateCheckboxGroupInput(session, 'geneSetDB', choices = getMSigDBTable()$ID)
+    })
+  })
+  
+  #-----------#
+  # Gene Sets #
+  #-----------#
+  observeEvent(input$uploadGS, {
+    withBusyIndicatorServer("uploadGS", {
+      if (input$geneSetSourceChoice == "gsGMTUpload") {
+        if (is.null(input$geneSetGMT)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else if (!nzchar(input$gsCollectionNameGMT)){
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          importGeneSetsFromGMT(vals$original, input$geneSetGMT, collectionName = input$gsCollectionName)
+        }
+
+      } else if (input$geneSetSourceChoice == "gsDBUpload") {
+        if (is.null(input$geneSetDB)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
+        }
+
+      } else if (input$geneSetSourceChoice == "gsPasteUpload") {
+        if (!nzchar(input$geneSetText)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else if (!nzchar(input$gsCollectionNameText)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          setList <- strsplit(input$geneSetText, "\n")
+          importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+        }
+      }
+      newGSchoices <- sctkListGeneSetCollections(vals$original)
+      print(S4Vectors::metadata(vals$original)$sctk)
+      updateSelectInput(session, "QCMgeneSets", choices = newGSchoices)
     })
   })
 
@@ -1067,6 +1109,7 @@ shinyServer(function(input, output, session) {
       }
       print(input$qcAssaySelect)
       print(paramsList[['cxds']])
+      print(vals$original)
       runCellQC(inSCE = vals$original,
                 algorithms = algoList,
                 sample = qcSample,
@@ -1075,58 +1118,59 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$modalRunQC, {
-    qcAlgosList <- strsplit(input$qcAlgos, " ")
-    currassays <- names(assays(vals$counts))
-    if (is.null(input$qcAssaySelect)) {
-      if ("QCMetrics" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
-      } else if ("scrublet" %in% qcAlgosList){
-        showModal(qcModal(assays = currassays, failed=TRUE))
-      } else if ("doubletCells" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, failed = TRUE))
-      } else if ("decontX" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, failed = TRUE))
-      }
-    } else {
-      removeModal()
-      runHandler(qcAlgosList)
-    }
-  })
-  
-
-  runHandler <- function(qcAlgosList) {
-    print(input$qcAssaySelect)
-    if ("QCMetrics" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           geneSetList = input$geneSetList,
-                           geneSetListLocation = input$geneLocation,
-                           geneSetCollection = input$geneCollection,
-                           useAssay = input$qcAssaySelect)
-    } else if ("scrublet" %in% qcAlgosList){
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
-    } else if ("doubletCells" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
-    } else if ("decontX" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
-    } else {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL)
-    }
-    print(afterQC)
-  }
+  # OLD IMPLEMENTATION
+  # observeEvent(input$modalRunQC, {
+  #   qcAlgosList <- strsplit(input$qcAlgos, " ")
+  #   currassays <- names(assays(vals$counts))
+  #   if (is.null(input$qcAssaySelect)) {
+  #     if ("QCMetrics" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
+  #     } else if ("scrublet" %in% qcAlgosList){
+  #       showModal(qcModal(assays = currassays, failed=TRUE))
+  #     } else if ("doubletCells" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, failed = TRUE))
+  #     } else if ("decontX" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, failed = TRUE))
+  #     }
+  #   } else {
+  #     removeModal()
+  #     runHandler(qcAlgosList)
+  #   }
+  # })
+  # 
+  # 
+  # runHandler <- function(qcAlgosList) {
+  #   print(input$qcAssaySelect)
+  #   if ("QCMetrics" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          geneSetList = input$geneSetList,
+  #                          geneSetListLocation = input$geneLocation,
+  #                          geneSetCollection = input$geneCollection,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("scrublet" %in% qcAlgosList){
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("doubletCells" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("decontX" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL)
+  #   }
+  #   print(afterQC)
+  # }
   
   #-----------#
   # FILTERING #
