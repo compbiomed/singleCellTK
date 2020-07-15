@@ -1,10 +1,36 @@
 
-.runDoubletCells <- function(cell.matrix, k = k, nIters = nIters, ...) {
+.runDoubletCells <- function(cell.matrix = cell.matrix, 
+                              k = k,
+                              nIters = nIters,
+                              size.factors.norm = NULL,
+                              size.factors.content = NULL,
+                              subset.row = NULL,
+                              block = 10000,
+                              d = 50,
+                              force.match=FALSE,
+                              force.k=20,
+                              force.ndist=3,
+                              BNPARAM=BNPARAM, 
+                              BSPARAM=BSPARAM, 
+                              BPPARAM=BPPARAM
+                              ) {
 
   cell.matrix <- .convertToMatrix(cell.matrix)
 
   scores <- matrix(scran::doubletCells(cell.matrix, k = k,
-                                       niters = nIters, ...), ncol=1)
+                                       niters = nIters, 
+                                       size.factors.norm = NULL,
+                                       size.factors.content = NULL,
+                                       subset.row = NULL,
+                                       block = 10000,
+                                       d = 50,
+                                       force.match=FALSE,
+                                       force.k=20,
+                                       force.ndist=3,
+                                       BNPARAM=BNPARAM, 
+                                       BSPARAM=BSPARAM, 
+                                       BPPARAM=BPPARAM
+                                       ), ncol=1)
   colnames(scores) <- "scran_doubletCells_score"
 
   return(scores)
@@ -24,7 +50,29 @@
 #' @param simDoublets Number of simulated doublets created for doublet
 #'  detection. Default 10000.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param ... Additional arguments to pass to \link[scran]{doubletCells}.
+#' @param size.factors.norm A numeric vector of size factors for normalization 
+#'  of \code{x} prior to PCA and distance calculations. If \code{NULL}, defaults 
+#'  to size factors derived from the library sizes of \code{x}. For the SingleCellExperiment 
+#'  method, the default values are taken from \code{\link{sizeFactors}(x)}, if they are available.
+#' @param size.factors.content A numeric vector of size factors for RNA content 
+#'  normalization of \code{x} prior to simulating doublets. #' This is orthogonal to 
+#'  the values in \code{size.factors.norm}
+#' @param subset.row See \code{?"\link{scran-gene-selection}"}.
+#' @param block An integer scalar controlling the rate of doublet generation, 
+#'  to keep memory usage low.
+#' @param d An integer scalar specifying the number of components to retain after the PCA.
+#' @param force.match A logical scalar indicating whether remapping of simulated 
+#'  doublets to original cells should be performed.
+#' @param force.k An integer scalar specifying the number of neighbours to use for 
+#'  remapping if \code{force.match=TRUE}.
+#' @param force.ndist A numeric scalar specifying the bandwidth for remapping 
+#'  if \code{force.match=TRUE}.
+#' @param BNPARAM A \code{\link[BiocNeighbors]{BiocNeighborParam}} object specifying the nearest neighbor algorithm.
+#' This should be an algorithm supported by \code{\link[BiocNeighbors]{findNeighbors}}.
+#' @param BSPARAM A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to 
+#'  use for PCA, if \code{d} is not \code{NA}.
+#' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam}} object specifying whether the 
+#'  neighbour searches should be parallelized.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
 #'  \code{runDoubletCells} runs \link[scran]{doubletCells} for each
 #'  \code{sample} within \code{inSCE} iteratively. The
@@ -47,9 +95,19 @@ runDoubletCells <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
     nNeighbors = 50,
-    simDoublets = 10000,
+    simDoublets = max(10000, ncol(inSCE)),
     seed = 12345,
-    ...
+    size.factors.norm = NULL,
+    size.factors.content = NULL,
+    subset.row = NULL,
+    block = 10000,
+    d = 50,
+    force.match=FALSE,
+    force.k=20,
+    force.ndist=3,
+    BNPARAM=BiocNeighbors::KmknnParam(), 
+    BSPARAM=BiocSingular::bsparam(), 
+    BPPARAM=BiocParallel::SerialParam()
 ) {
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -77,16 +135,29 @@ runDoubletCells <- function(inSCE,
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
 
     result <- withr::with_seed(seed,
-              .runDoubletCells(cell.matrix = mat, k = nNeighbors,
-                               nIters = simDoublets, ...))
+              .runDoubletCells(cell.matrix = mat, 
+                               k = nNeighbors,
+                               nIters = simDoublets,
+                               size.factors.norm = NULL,
+                               size.factors.content = NULL,
+                               subset.row = NULL,
+                               block = 10000,
+                               d = 50,
+                               force.match=FALSE,
+                               force.k=20,
+                               force.ndist=3,
+                               BNPARAM=BNPARAM, 
+                               BSPARAM=BSPARAM, 
+                               BPPARAM=BPPARAM
+                               ))
 
     output[sceSampleInd, ] <- result
   }
 
-  argsList <- argsList[!names(argsList) %in% ("...")]
-  dotList <- list(...)
-  dotList <- dotList[!names(dotList) %in% c("BNPARAM","BSPARAM","BPPARAM")]
-  argsList <- c(argsList, dotList)
+  argsList <- argsList[!names(argsList) %in% c("BNPARAM","BSPARAM","BPPARAM")]
+  #dotList <- list(...)
+  #dotList <- dotList[!names(dotList) %in% c("BNPARAM","BSPARAM","BPPARAM")]
+  #argsList <- c(argsList, dotList)
   inSCE@metadata$runDoubletCells <- argsList[-1]
   inSCE@metadata$runDoubletCells$packageVersion <- utils::packageDescription("scran")$Version
   colData(inSCE) = cbind(colData(inSCE), output)
