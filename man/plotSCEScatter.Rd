@@ -28,7 +28,9 @@ plotSCEScatter(
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
-  legendTitle = NULL
+  legendTitle = NULL,
+  legendTitleSize = 12,
+  legendSize = 10
 )
 }
 \arguments{
@@ -98,6 +100,10 @@ Default 'blue'.}
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
 \item{legendTitle}{title of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{legendSize}{size of legend. Default 10.}
 }
 \value{
 a ggplot of the reduced dimensions.
