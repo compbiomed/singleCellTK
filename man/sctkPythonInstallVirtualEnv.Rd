@@ -7,7 +7,7 @@
 sctkPythonInstallVirtualEnv(
   envname = "sctk-reticulate",
   packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama",
-    "bbknn", "scgen"),
+    "bbknn", "scgen", "anndata"),
   selectEnvironment = TRUE,
   python = NULL
 )

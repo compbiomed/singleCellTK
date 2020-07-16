@@ -31,7 +31,7 @@ seuratFindClusters(
 \item{resolution}{Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.}
 }
 \value{
-sceObject; updated sce object which now contains the computed clusters
+Updated sce object which now contains the computed clusters
 }
 \description{
 seuratFindClusters
