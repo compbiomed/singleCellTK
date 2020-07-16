@@ -13,7 +13,8 @@ runCxdsBcdsHybrid(
   bcdsArgs = list(),
   verb = FALSE,
   estNdbl = FALSE,
-  force = FALSE
+  force = FALSE,
+  useAssay = "counts"
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ and \code{bcds}. Default \code{500}.}
 \item{estNdbl}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.}
 
 \item{force}{See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.}
+
+\item{useAssay}{A string specifying which assay in the SCE to use.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
