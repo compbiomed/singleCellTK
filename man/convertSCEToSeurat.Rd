@@ -22,7 +22,7 @@ convertSCEToSeurat(
 \item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}.}
 }
 \value{
-seuratObject updated seurat object that contains all data from the input sce object
+Updated seurat object that contains all data from the input sce object
 }
 \description{
 convertSCEToSeurat

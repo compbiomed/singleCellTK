@@ -26,7 +26,7 @@ seuratNormalizeData(
 \item{scaleFactor}{numeric value that represents the scaling factor. Default \code{10000}.}
 }
 \value{
-sceObject normalized sce object
+Normalized \code{SingleCellExperiment} object
 }
 \description{
 seuratNormalizeData
