@@ -20,8 +20,8 @@ require(ggplot2)
 sce.qc<- params$object
 ```
 
-```{r, "QCMetrics", results="asis"}
-    plotsQCMetrics<- plotRunPerCellQCResults(sce.qc)
+```{r, "QCMetrics", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsQCMetrics<- suppressWarnings(plotRunPerCellQCResults(sce.qc))
     i="QCMetrics"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## Sum \n\n'))
@@ -38,8 +38,8 @@ sce.qc<- params$object
     sce.qc@metadata$scater
 ```
 
-```{r, include=FALSE}
-description_runPerCellQC <- .descriptionRunPerCellQC()
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runPerCellQC <- descriptionRunPerCellQC()
 ```
 # {.unlisted .unnumbered .toc-ignore}
 `r description_runPerCellQC`

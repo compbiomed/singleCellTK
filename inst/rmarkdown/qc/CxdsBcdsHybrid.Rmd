@@ -20,8 +20,8 @@ require(ggplot2)
 sce.qc<- params$object
 ```
 
-```{r, "ScdsHybrid", results="asis"}
-    plotScdsHybrid<- plotScdsHybridResults(sce.qc, reducedDimName = "UMAP")
+```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, reducedDimName = "UMAP"))
     i="ScdsHybrid"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
@@ -37,8 +37,8 @@ sce.qc<- params$object
     sce.qc@metadata$runCxdsBcdsHybrid
 ```
 
-```{r, "ScdsHybrid-desc", include=FALSE}
-description_ScdsHybrid<- .descriptionScdsHybrid()
+```{r, "ScdsHybrid-desc", include=FALSE, warning=FALSE, message=FALSE}
+description_ScdsHybrid<- descriptionScdsHybrid()
 ```
 
 # {.unlisted .unnumbered .toc-ignore}
