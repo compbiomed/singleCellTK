@@ -15,7 +15,7 @@ seuratComputeJackStraw(inSCE, useAssay, dims = NULL)
 \item{dims}{Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.}
 }
 \value{
-sceObject updated sce object with jackstraw computations stored in it
+Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
 }
 \description{
 seuratComputeJackStraw

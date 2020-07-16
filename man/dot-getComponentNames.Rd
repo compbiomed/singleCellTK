@@ -10,10 +10,10 @@ Creates a list of PC/IC components to populate the picker for PC/IC heatmap gene
 \arguments{
 \item{maxComponents}{Number of components to return for the picker}
 
-\item{component}{Which component to use. Choices are \code{"PC"} or \code{"IC"}.}
+\item{component}{Which component to use. Choices are \code{PC} or \code{IC}.}
 }
 \value{
-componentNames list of component names (appended with "PC")
+List of component names (appended with \code{PC} or \code{IC})
 }
 \description{
 .getComponentNames

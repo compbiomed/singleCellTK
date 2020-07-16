@@ -17,7 +17,7 @@ seuratICA(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20)
 \item{nics}{Number of independent components to compute. Default \code{20}.}
 }
 \value{
-sceObject updated sce object which now contains the computed independent components
+Updated \code{SingleCellExperiment} object which now contains the computed independent components
 }
 \description{
 seuratICA

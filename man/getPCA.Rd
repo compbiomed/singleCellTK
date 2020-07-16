@@ -2,38 +2,36 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{Get and plot PCA components for a SingleCellExperiment object}
+\title{getPCA
+A wrapper to \link[scater]{runPCA} function to compute principal component analysis (PCA) from a given \code{SingleCellExperiment} object.}
 \usage{
-getPCA(inSCE, useAssay = "logcounts", reducedDimName = "PCA")
+getPCA(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "PCA",
+  ndim = 50,
+  ntop = 500
+)
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
+\item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{useAssay}{Indicate which assay to use for PCA. Default is "counts"}
+\item{useAssay}{Assay to use for PCA computation.}
 
-\item{reducedDimName}{Store the PCA data with this name. The default is PCA.
-The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.}
+\item{reducedDimName}{Name to use for the reduced output assay.}
+
+\item{ndim}{Number of principal components to obtain from the PCA computation. Default \code{50}.}
+
+\item{ntop}{Number of top features to use with PCA. Default \code{500}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with the specified
-reducedDim
+A \code{SingleCellExperiment} object with stored PCA computation
 }
 \description{
-Selects the 500 most variable genes in the SCE, performs
-PCA based on them and stores the values in the reducedDims slot of
-the SCE object.
+getPCA
+A wrapper to \link[scater]{runPCA} function to compute principal component analysis (PCA) from a given \code{SingleCellExperiment} object.
 }
 \examples{
-data("mouseBrainSubsetSCE")
-#add a CPM assay
-assay(mouseBrainSubsetSCE, "cpm") <- apply(assay(mouseBrainSubsetSCE,
-                                                 "counts"),
-                                           2, function(x) {
-                                             x / (sum(x) / 1000000)
-                                           })
-mouseBrainSubsetSCE <- getPCA(mouseBrainSubsetSCE,
-                              useAssay = "cpm",
-                              reducedDimName = "PCA_cpm")
-reducedDims(mouseBrainSubsetSCE)
-
+data(sce_chcl, package = "scds")
+sce_chcl <- getPCA(sce_chcl, useAssay = "logcounts")
 }
