@@ -1,4 +1,5 @@
 shinyPanelRowAnnotation <- fluidPage(
+  includeCSS('styles.css'),
   bsCollapse(multiple = TRUE, open = c("Options", "Annotation"),
              bsCollapsePanel("Options",
                              tabsetPanel(

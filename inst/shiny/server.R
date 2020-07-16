@@ -4,6 +4,9 @@ options(useFancyQuotes = FALSE)
 options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
+source("partials.R", local = TRUE) # creates several smaller UI components
+source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   # library(fs)
@@ -167,7 +170,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInput(session, "assaySelectFS", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
-    # updateSelectInput(session, "qcAssaySelect", choices = currassays)
+    updateSelectInput(session, "qcAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
     updateSelectInput(session, "enrichAssay", choices = currassays)
     updateSelectInput(session, "celdaAssay", choices = currassays)
@@ -246,6 +249,7 @@ shinyServer(function(input, output, session) {
   importBUSFiles <- reactiveValues(files = list(), id_count = 0)
   importSEQFiles <- reactiveValues(files = list(), id_count = 0)
   importOptFiles <- reactiveValues(files = list(), id_count = 0)
+
 
   # modal to import all preprocessed data except for CellRanger data
   importModal <- function(failed=FALSE, needsDir=FALSE) {
@@ -348,6 +352,7 @@ shinyServer(function(input, output, session) {
       )
     )
   }
+
 
   # see https://github.com/wleepang/shiny-directory-input
   observeEvent(
@@ -515,20 +520,8 @@ shinyServer(function(input, output, session) {
         importCR3Files$id_count <- importCR3Files$id_count + 1
         selector <- "#newSampleCR3"
       }
-      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
-      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
-      # add row for new sample in UI
-      insertUI(
-        selector = selector,
-        ui = fluidRow(
-          id = id,
-          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
-          column(3, dirname(samplePath)),
-          column(3, basename(samplePath)),
-          column(3, input$sSampleID),
-          column(3, actionButton(paste0("remove", id), "X"))
-        )
-      )
+      # add new row to table
+      make4ColTableRow(selector, id, dirname(samplePath), basename(samplePath), input$sSampleID)
       # handler to remove the sample that was just added
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
@@ -581,19 +574,8 @@ shinyServer(function(input, output, session) {
         importCR3Files$id_count <- importCR3Files$id_count + 1
         selector <- "#newSampleCR3"
       }
-      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
-      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
-      insertUI(
-        selector = selector,
-        ui = fluidRow(
-          id = id,
-          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
-          column(3, dataPath),
-          column(3, ""),
-          column(3, input$dSampleID),
-          column(3, actionButton(paste0("remove", id), "X"))
-        )
-      )
+      # add new row to table
+      make4ColTableRow(selector, id, dataPath, "", input$dSampleID)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
           selector = paste0("#", id)
@@ -773,19 +755,7 @@ shinyServer(function(input, output, session) {
         importOptFiles$id_count <- importOptFiles$id_count + 1
         selector <- "#newSampleOpt"
       }
-      fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
-      removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
-      insertUI(
-        selector = selector,
-        ui = fluidRow(
-          id = id,
-          tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
-          column(3, basePath),
-          column(3, input$sampleID),
-          column(3, input$sampleName),
-          column(3, actionButton(paste0("remove", id), "X"))
-        )
-      )
+      make4ColTableRow(selector, id, basePath, input$sampleID, input$sampleName)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
           selector = paste0("#", id)
@@ -936,6 +906,8 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
+        updateSelectInput(session, "QCMgeneSets", choices = sctkListGeneSetCollections(vals$original))
+        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))))
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -952,6 +924,48 @@ shinyServer(function(input, output, session) {
       vals$pcX <- NULL
       vals$pcY <- NULL
       vals$batchRes <- NULL
+      # print(rowData(getMSigDBTable()))
+      updateCheckboxGroupInput(session, 'geneSetDB', choices = getMSigDBTable()$ID)
+    })
+  })
+  
+  #-----------#
+  # Gene Sets #
+  #-----------#
+  observeEvent(input$uploadGS, {
+    withBusyIndicatorServer("uploadGS", {
+      if (input$geneSetSourceChoice == "gsGMTUpload") {
+        if (is.null(input$geneSetGMT)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else if (!nzchar(input$gsCollectionNameGMT)){
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          importGeneSetsFromGMT(vals$original, input$geneSetGMT, collectionName = input$gsCollectionName)
+        }
+
+      } else if (input$geneSetSourceChoice == "gsDBUpload") {
+        if (is.null(input$geneSetDB)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
+        }
+
+      } else if (input$geneSetSourceChoice == "gsPasteUpload") {
+        if (!nzchar(input$geneSetText)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else if (!nzchar(input$gsCollectionNameText)) {
+          shinyjs::show(id = "gsUploadError", anim = FALSE)
+        } else {
+          shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          setList <- strsplit(input$geneSetText, "\n")
+          importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+        }
+      }
+      newGSchoices <- sctkListGeneSetCollections(vals$original)
+      print(S4Vectors::metadata(vals$original)$sctk)
+      updateSelectInput(session, "QCMgeneSets", choices = newGSchoices)
     })
   })
 
@@ -992,46 +1006,43 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "deleterowDatabutton", class = "btn-block")
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
 
+  #----#
+  # QC #
+  #----#
+  # Hide and show parameters for QC functions
+  shinyjs::onclick("QCMetrics", shinyjs::toggle(id = "QCMetricsParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("doubletCells", shinyjs::toggle(id = "doubletCellsParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("cxds", shinyjs::toggle(id = "cxdsParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("bcds", shinyjs::toggle(id = "bcdsParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("cxds_bcds_hybrid", shinyjs::toggle(id = "cxds_bcds_hybridParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("scrublet", shinyjs::toggle(id = "scrubletParams",
+                                                   anim = FALSE), add = TRUE)
+  shinyjs::onclick("doubletFinder", shinyjs::toggle(id = "doubletFinderParams",
+                                                   anim = FALSE), add = TRUE)
+  
+  
   qc_choice_list <- list("doubletCells", "cxds", "bcds",
                       "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
-
-  # Event handler for "Select All" button in QC checklist
-  observe({
-    if(input$selectallQC == 0) return(NULL)
-    else if (input$selectallQC%%2 == 0) {
-      updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list)
-    } else {
-      updateCheckboxGroupInput(session,"qcAlgos","",choices=qc_choice_list, selected=qc_choice_list)
-    }
-  })
-
-  qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE,
-                      geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
-    modalDialog(
-      h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
-      if (!is.null(assays))
-        selectInput("qcAssaySelect", paste0("Select assay for ", requireAssayStr), assays),
-      if (geneSetList)
-        tags$hr(),
-      if (geneSetList)
-        h4(tags$b("Parameters for QCMetrics:")),
-      # The following selectInputs are just place holders until there is gene set code
-      if (geneSetList)
-        selectInput("geneSetList", "Select Gene Set List", assays),
-      if (geneSetListLocation)
-        selectInput("geneLocation", "Select Gene Set List Location", assays),
-      if (geneSetCollection)
-        selectInput("geneCollection", "Select Gene Set Collection", assays),
-
-      if (failed)
-        div(tags$b("Please fill out all the required fields", style = "color: red;")),
-
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("modalRunQC", "Run")
-      )
-    )
-  }
+  # holds all the input ids for the QC algorithm parameters by algorithm name
+  qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
+                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),
+                       bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp"),
+                       cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
+                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
+                                               verb="CXBCverb"),
+                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratPcs="DFseuratPcs", seuratRes="DFseuratRes", 
+                                            formationRate="DFformationRate", verbose="DFverbose"),
+                       scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
+                                       stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
+                                       useApproxNeighbors="SuseApproxNeighbors", distanceMetric="SdistanceMetric", getDoubletNeighborParents="SgetDoubletNeighborParents", minCounts="SminCounts", 
+                                       minCells="SminCells", minGeneVariabilityPctl="SminGeneVariabilityPctl", logTransform="SlogTransform", meanCenter="SmeanCenter", 
+                                       normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
+                      )
 
   findOverlapping <- function(arr1, arr2) {
     filter <- vector()
@@ -1044,9 +1055,18 @@ shinyServer(function(input, output, session) {
     }
     return(arr1[filter])
   }
+  
+  qcInputExists <- function() {
+    for (algo in qc_choice_list) {
+      if (input[[algo]]) {
+        return(TRUE)
+      }
+    }
+    return(FALSE)
+  }
 
   observeEvent(input$runQC, {
-    if (is.null(input$qcAlgos)) {
+    if (!qcInputExists()) {
       insertUI(
         selector = "#qcPageErrors",
         ui = wellPanel(id = "noSelected", tags$b("Please select at least one algorithm.", style = "color: red;"))
@@ -1056,93 +1076,302 @@ shinyServer(function(input, output, session) {
         selector = "#qcPageErrors",
         ui = wellPanel(id = "noSCE", tags$b("Please upload a sample first.", style = "color: red;"))
       )
+    } else if (is.null(input$qcAssaySelect)) {
+      insertUI(
+        selector = "#qcPageErrors",
+        ui = wellPanel(id = "noQCAssay", tags$b("Please select an assay.", style = "color: red;"))
+      )
     } else {
-      qcAlgosList <- strsplit(input$qcAlgos, " ")
-      currassays <- names(assays(vals$counts))
-      requireAssay <- list("QCMetrics", "scrublet", "doubletCells", "decontX")
-      requireAssayArr <- findOverlapping(qcAlgosList, requireAssay)
-
       removeUI(
         selector = "#noSelected"
       )
       removeUI(
         selector = "#noSCE"
       )
-      if ("QCMetrics" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, requireAssayStr = paste(requireAssayArr, collapse = ', ')))
-      } else if (length(requireAssayArr) > 0) {
-        showModal(qcModal(assays = currassays, requireAssayStr = paste(requireAssayArr, collapse = ', ')))
+      removeUI(
+        selector = "#noQCAssay"
+      )
+      useAssay <- input$qcAssaySelect
+      qcSample <- input$qcSampleSelect
+      if (qcSample == "None") {
+        qcSample <- NULL
+      }
+      algoList = list()
+      paramsList <- list()
+      for (algo in qc_choice_list) {
+        if (input[[algo]]) {
+          algoList <- c(algoList, algo)
+          inputIds <- qc_input_ids[[algo]]
+          algoParams <- list()
+          for (key in names(inputIds)) {
+            algoParams[[key]] = input[[inputIds[[key]]]]
+          }
+          paramsList[[algo]] = algoParams
+        }
+      }
+      print(input$qcAssaySelect)
+      print(paramsList[['cxds']])
+      print(vals$original)
+      runCellQC(inSCE = vals$original,
+                algorithms = algoList,
+                sample = qcSample,
+                useAssay = input$qcAssaySelect,
+                paramsList = paramsList)
+    }
+  })
+
+  # OLD IMPLEMENTATION
+  # observeEvent(input$modalRunQC, {
+  #   qcAlgosList <- strsplit(input$qcAlgos, " ")
+  #   currassays <- names(assays(vals$counts))
+  #   if (is.null(input$qcAssaySelect)) {
+  #     if ("QCMetrics" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
+  #     } else if ("scrublet" %in% qcAlgosList){
+  #       showModal(qcModal(assays = currassays, failed=TRUE))
+  #     } else if ("doubletCells" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, failed = TRUE))
+  #     } else if ("decontX" %in% qcAlgosList) {
+  #       showModal(qcModal(assays = currassays, failed = TRUE))
+  #     }
+  #   } else {
+  #     removeModal()
+  #     runHandler(qcAlgosList)
+  #   }
+  # })
+  # 
+  # 
+  # runHandler <- function(qcAlgosList) {
+  #   print(input$qcAssaySelect)
+  #   if ("QCMetrics" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          geneSetList = input$geneSetList,
+  #                          geneSetListLocation = input$geneLocation,
+  #                          geneSetCollection = input$geneCollection,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("scrublet" %in% qcAlgosList){
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("doubletCells" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else if ("decontX" %in% qcAlgosList) {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL,
+  #                          useAssay = input$qcAssaySelect)
+  #   } else {
+  #     afterQC <- runCellQC(inSCE = vals$original,
+  #                          algorithms = qcAlgosList,
+  #                          sample = NULL)
+  #   }
+  #   print(afterQC)
+  # }
+  
+  #-----------#
+  # FILTERING #
+  #-----------#
+  
+  filteringParams <- reactiveValues(params = list(), id_count = 0)
+  rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
+  
+  observeEvent(input$addFilteringParam, {
+    showModal(filteringModal(colNames = names(colData(vals$counts))))
+  })
+  
+  observeEvent(input$addRowFilteringParam, {
+    showModal(rowFilteringModal(rowNames = names(rowData(vals$counts))))
+  })
+  
+  observeEvent(input$filterColSelect, {
+    removeUI(selector = "#newThresh")
+    isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
+    if (length(vals$counts[[input$filterColSelect]]) > 0) {
+      if (isNum) {
+        minCol <- min(vals$counts[[input$filterColSelect]])
+        maxCol <- max(vals$counts[[input$filterColSelect]])
+        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minCol, maxCol)
+        insertUI(
+          selector = "#filterCriteria",
+          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
+        )
       } else {
-        runHandler(qcAlgosList)
-      }
-    }
-  })
-
-  observeEvent(input$modalRunQC, {
-    qcAlgosList <- strsplit(input$qcAlgos, " ")
-    currassays <- names(assays(vals$counts))
-    if (is.null(input$qcAssaySelect)) {
-      if ("QCMetrics" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
-      } else if ("scrublet" %in% qcAlgosList){
-        showModal(qcModal(assays = currassays, failed=TRUE))
-      } else if ("doubletCells" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, failed = TRUE))
-      } else if ("decontX" %in% qcAlgosList) {
-        showModal(qcModal(assays = currassays, failed = TRUE))
+        insertUI(
+          selector = "#filterCriteria",
+          ui = tags$div(id="newThresh",
+                        checkboxGroupInput("filterThresh", "Please select which columns to keep:",
+                                           choiceNames = as.vector(unique(vals$counts[[input$filterColSelect]])),
+                                           choiceValues = as.vector(unique(vals$counts[[input$filterColSelect]]))
+                        ),
+          )
+        )
       }
     } else {
-      removeModal()
-      runHandler(qcAlgosList)
+      insertUI(
+        selector = "#filterCriteria",
+        ui = tags$div(id="newThresh", tags$b("This column does not have any filtering criteria", style = "color: red;"))
+      )
     }
   })
-
-  runHandler <- function(qcAlgosList) {
-    print(input$qcAssaySelect)
-    if ("QCMetrics" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           geneSetList = input$geneSetList,
-                           geneSetListLocation = input$geneLocation,
-                           geneSetCollection = input$geneCollection,
-                           useAssay = input$qcAssaySelect)
-    } else if ("scrublet" %in% qcAlgosList){
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
-    } else if ("doubletCells" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
-    } else if ("decontX" %in% qcAlgosList) {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL,
-                           useAssay = input$qcAssaySelect)
+  
+  observeEvent(input$filterRowSelect, {
+    removeUI(selector = "#newThresh")
+    isNum <- is.numeric(vals$counts[[input$filterRowSelect]][0])
+    if (length(vals$counts[[input$filterRowSelect]]) > 0) {
+      if (isNum) {
+        minRow <- min(vals$counts[[input$filterRowSelect]])
+        maxRow <- max(vals$counts[[input$filterRowSelect]])
+        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minRow, maxRow)
+        insertUI(
+          selector = "#rowFilterCriteria",
+          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minRow, min = minRow, max = maxRow))
+        )
+      } else {
+        insertUI(
+          selector = "#rowFilterCriteria",
+          ui = tags$div(id="newThresh",
+                        checkboxGroupInput("filterThresh", "Please select which columns to filter out:",
+                                           choiceNames = as.vector(unique(vals$counts[[input$filterRowSelect]])),
+                                           choiceValues = as.vector(unique(vals$counts[[input$filterRowSelect]]))
+                        ),
+          )
+        )
+      }
     } else {
-      afterQC <- runCellQC(inSCE = vals$original,
-                           algorithms = qcAlgosList,
-                           sample = NULL)
+      insertUI(
+        selector = "#rowFilterCriteria",
+        ui = tags$div(id="newThresh", tags$b("This row does not have any filtering criteria", style = "color: red;"))
+      )
     }
-    print(afterQC)
-    # UNCOMMENT BELOW to show summary table after QC (must uncomment in ui_02_qc as well)
-    # output$qcSummary <- renderTable({
-    #   req(afterQC)
-    #   if(is.null(input$qcAssaySelect)) {
-    #     assaySelect <- "counts"
-    #   } else {
-    #     assaySelect <- input$qcAssaySelect
-    #   }
-    #   singleCellTK::summarizeTable(inSCE = afterQC,
-    #                                useAssay = "counts",
-    #                                expressionCutoff = input$minDetectGene)
-    # })
-    # shinyjs::show(id="qcData")
+  })
+  
+  addToFilterParams <- function(name, criteria, id, dimension='col') {
+    threshStr <- ""
+    if (is.numeric(criteria)) {
+      threshStr <- sprintf("%s > %.5f", name, criteria)
+    } else {
+      threshArr <- list()
+      for (c in criteria) {
+        threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
+      }
+      threshStr <- paste(threshArr, collapse = " | ")
+    }
+    
+    if (dimension == 'col') {
+      entry <- list(col=name, param=threshStr, id=id)
+      filteringParams$params <- c(filteringParams$params, list(entry))
+      filteringParams$id_count <- filteringParams$id_count + 1
+    } else {
+      entry <- list(row=name, param=threshStr, id=id)
+      rowFilteringParams$params <- c(rowFilteringParams$params, list(entry))
+      rowFilteringParams$id_count <- rowFilteringParams$id_count + 1
+    }
   }
+  
+  observeEvent(input$filtModalOK, {
+    if ((!nzchar(input$filterThresh)) || (is.null(input$filterColSelect))) {
+      showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
+    } else {
+      id <- paste0("filteringParam", filteringParams$id_count)
+      # new row in parameters table
+      addToFilterParams(input$filterColSelect, input$filterThresh, id, dimension = 'col')
+      threshStr <- ""
+      if (is.numeric(input$filterThresh)) {
+        threshStr <- sprintf("> %.5f", input$filterThresh)
+      } else {
+        threshStr <- paste(input$filterThresh, collapse = ', ')
+      }
+      
+      make3ColTableRow("#newFilteringParams", id, input$filterColSelect, threshStr)
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        toRemove <- vector()
+        for (entry in filteringParams$params) {
+          if (entry$id == id) {
+            toRemove <- c(toRemove, FALSE)
+          } else {
+            toRemove <- c(toRemove, TRUE)
+          }
+        }
+        filteringParams$params <- filteringParams$params[toRemove]
+      })
+      removeModal()
+    }
+  })
+  
+  observeEvent(input$rowFiltModalOK, {
+    if ((!nzchar(input$filterThresh)) || (is.null(input$filterRowSelect))) {
+      showModal(rowFilteringModal(failed=TRUE, rowNames = names(rowData(vals$counts))))
+    } else {
+      id <- paste0("rowFilteringParam", rowFilteringParams$id_count)
+      # new row in parameters table
+      if (is.numeric(input$filterThresh)) {
+        threshStr <- sprintf("> %.5f", input$filterThresh)
+      } else {
+        threshStr <- paste(input$filterThresh, collapse = ', ')
+      }
+      addToFilterParams(input$filterRowSelect, input$filterThresh, id, dimension = 'row')
+      make3ColTableRow("#newRowFilteringParams", id, input$filterRowSelect, threshStr)
+      observeEvent(input[[paste0("remove", id)]],{
+        removeUI(
+          selector = paste0("#", id)
+        )
+        toRemove <- vector()
+        for (entry in rowFilteringParams$params) {
+          if (entry$id == id) {
+            toRemove <- c(toRemove, FALSE)
+          } else {
+            toRemove <- c(toRemove, TRUE)
+          }
+        }
+        rowFilteringParams$params <- rowFilteringParams$params[toRemove]
+      })
+      removeModal()
+    }
+  })
+  
+  observeEvent(input$clearAllParams, {
+    for (entry in filteringParams$params) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    filteringParams$params <- list()
+  })
+  
+  observeEvent(input$clearAllRowParams, {
+    for (entry in rowFilteringParams$params) {
+      removeUI(selector = paste0("#", entry$id))
+    }
+    rowFilteringParams$params <- list()
+  })
+  
+  formatFilteringCriteria <- function(paramsReactive) {
+    criteria = list()
+    for (entry in paramsReactive) {
+      criteria <- c(criteria, entry$param)
+    }
+    return(criteria)
+  }
+  
+  observeEvent(input$filterSCE, {
+    colInput <- formatFilteringCriteria(filteringParams$params)
+    if (length(colInput) > 0) {
+      subsetSCECols(vals$original, colData = colInput)
+    }
 
+    rowInput <- formatFilteringCriteria(rowFilteringParams$params)
+    if (length(rowInput) > 0) {
+      subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
+    }
+  })
+  
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
     req(vals$counts)
