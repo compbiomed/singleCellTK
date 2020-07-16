@@ -813,7 +813,7 @@ shinyServer(function(input, output, session) {
                                    featureFile = input$featureFile$datapath,
                                    assayName = input$inputAssayType)
       } else if (input$uploadChoice == "example"){
-        vals$original <- withConsoleRedirect(importExampleData(dataset = input$selectExampleData))
+        vals$original <- withConsoleMsgRedirect(importExampleData(dataset = input$selectExampleData))
       } else if (input$uploadChoice == "rds") {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (base::inherits(importedrds, "SummarizedExperiment")) {

@@ -147,16 +147,33 @@ allSections <- function(action, collapseList) {
   }
 }
 
-# Code snippet from https://gist.github.com/jcheng5/3830244757f8ca25d4b00ce389ea41b3
 withConsoleRedirect <- function(expr) {
-  # Change type="output" to type="message" to catch stderr
-  # (messages, warnings, and errors) instead of stdout.
-  txt <- capture.output(results <- expr, type = "output")
-  if (length(txt) > 0) {
+  options(warn = 1)
+  tmpSinkfileName <- tempfile()
+  tmpFD <- file(tmpSinkfileName, open = "wt")
+  sink(tmpFD, type="output", split = TRUE)
+  sink(tmpFD, type = "message")
+  
+  result <- expr
+  
+  sink(type = "message")
+  sink()
+  console.out <- readChar(tmpSinkfileName, file.info(tmpSinkfileName)$size)
+  unlink(tmpSinkfileName)
+  if (length(console.out) > 0) {
     insertUI(paste0("#", "console"), where = "beforeEnd",
-             ui = tags$p(paste0(txt, "\n", collapse = ""))
+             ui = tags$p(paste0(console.out, "\n", collapse = ""))
     )
   }
-  results
+  result
 }
 
+withConsoleMsgRedirect <- function(expr) {
+  withCallingHandlers({
+    result <- expr
+  },
+  message = function(m) {
+    shinyjs::html(id = "console", html = m$message, add = TRUE)
+  })
+  result
+}
