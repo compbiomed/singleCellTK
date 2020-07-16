@@ -611,18 +611,6 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "norm1", class = "btn-block")
   shinyjs::addClass(id = "norm2", class = "btn-block")
   
-  # output$libSizeNorm <- renderUI({
-  #   selectInput("libSizeNormAssaySelect", "Assay:", currassays)
-  #   helpText("Note: select 'counts' assay")
-  #   textInput("libSizeAssayName", "Name:")
-  # })
-  # 
-  # output$deconvoOptions <- renderUI({
-  #   selectInput("deconvoAssaySelect", "Assay:", currassays)
-  #   textInput("clusterMin", "Min no. of cells in each cluster", "2")
-  #   textInput("deconvoAssayName", "Name:")
-  # })
-  
   observeEvent(input$modifyNorm,{
     req(vals$counts)
     withBusyIndicatorServer("modifyNorm", {
@@ -727,33 +715,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # observeEvent(input$modifyAssay, {
-  #   req(vals$counts)
-  #   withBusyIndicatorServer("modifyAssay", {
-  # 
-  #   })
-  #   })
-  libSizeAssay <- reactive({
-    if(!is.null(input$libSizeAssayName)) {
-      libSizeAssay <- input$libSizeAssayName
-    }
-    })
-  observe({
-    req(vals$counts)
-   # withBusyIndicatorServer("modifyNorm", {
-    output$normPlot <- renderPlot({
-    req(input$libSizeAssayName)
-    #libSizeName <- reactive(input$libSizeAssayName)
-      libAssay <- isolate(input$libSizeAssayName)
-      if (libAssay %in% assays(vals$counts)) {
-        nPlot <- hist(log10(assay(vals$counts, input$input$libSizeAssayName), xlab="Log10[Size factor]", col='grey80'))
-      }
-    nPlot
-    })
-    #})
-  })
-
-
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
@@ -864,7 +825,6 @@ shinyServer(function(input, output, session) {
           } else {
             if (input$dimRedPlotMethod == "PCA"){
               if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
-              #if(is.null(reducedDim(vals$counts, input$dimRedNameInput))){
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = input$dimRedNameInput)
@@ -872,25 +832,24 @@ shinyServer(function(input, output, session) {
               }
             } else if (input$dimRedPlotMethod == "tSNE"){
               if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
-              #if(is.null(reducedDim(vals$counts, input$dimRedNameInput))){
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
                                        perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
+                                       n_iterations = input$iterTSNE,
+                                       run_pca = input$pca_dimred)
                 updateReddimInputs()
               }
             } else {
               if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
-              #if(is.null(reducedDim(vals$counts, input$dimRedNameInput))){
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
+                                       run_pca = input$pca_dimred,
                                        n_neighbors = input$neighborsUMAP,
                                        n_iterations = input$iterUMAP,
                                        alpha = input$alphaUMAP,
-                                       metric = input$metricUMAP,
-                                       init = input$initUMAP
+                                       metric = input$metricUMAP
                 )
                 updateReddimInputs()
               }
@@ -2669,7 +2628,7 @@ shinyServer(function(input, output, session) {
     reactive_plot()
   })
   
-  output$hyptab <- renderReactable({
+  output$hyptab <- reactable::renderReactable({
     reactive_table()
   })
   

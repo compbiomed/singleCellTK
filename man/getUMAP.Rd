@@ -12,8 +12,8 @@ getUMAP(
   n_neighbors = 5,
   n_iterations = 200,
   alpha = 1,
-  init = "spectral",
-  metric = "euclidean"
+  metric = "euclidean",
+  run_pca = TRUE
 )
 }
 \arguments{
@@ -32,9 +32,9 @@ Default is 200.}
 
 \item{alpha}{initial value of "learning rate" of layout optimization. Default is 1.}
 
-\item{init}{initial embedding of the data points. Default is 'spectral' embedding, other option is 'random'.}
-
 \item{metric}{distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.}
+
+\item{run_pca}{run tSNE on PCA components? Default is TRUE.}
 }
 \value{
 a SCtkExperiment object with the reduced dimensions updated under
@@ -47,7 +47,7 @@ dimension reduction.
 \examples{
 umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
                     reducedDimName = "UMAP", n_neighbors = 3, n_iterations = 200,
-                    alpha = 1, init = "spectral", metric = "euclidean")
+                    alpha = 1, metric = "euclidean",  run_pca = TRUE)
 reducedDims(umap_res)
 
 }

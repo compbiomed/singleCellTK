@@ -65,7 +65,8 @@ Imports:
     scater,
     scran,
     hypeR,
-    reactable
+    reactable,
+    uwot
 RoxygenNote: 7.1.1
 Suggests:
     testthat,

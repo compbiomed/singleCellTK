@@ -9,7 +9,8 @@ getTSNE(
   useAssay = "logcounts",
   reducedDimName = "TSNE",
   n_iterations = 1000,
-  perplexity = NULL
+  perplexity = NULL,
+  run_pca = TRUE
 )
 }
 \arguments{
@@ -21,7 +22,9 @@ getTSNE(
 
 \item{n_iterations}{maximum iterations. Default is 1000}
 
-\item{perplexity}{perplexity parameter. Default is 5}
+\item{perplexity}{perplexity parameter.}
+
+\item{run_pca}{run tSNE on PCA components? Default is TRUE.}
 }
 \value{
 A SCtkE object with the specified reducedDim and

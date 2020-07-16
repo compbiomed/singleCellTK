@@ -206,19 +206,10 @@ shinyPanelFilter <- fluidPage(
                   column(6,
                          h4("Available Assays:"),
                          tableOutput("assayList")
-                         ),
-                         conditionalPanel(
-                           condition = "input.normalizeAssay == TRUE",
-                           column(6,
-                                  h4("plots"),
-                                  plotOutput("normPlot")
-                           )
-                           #uiOutput("normPlots")
-                  )
+                         )
                 )
               )
             )
-          #)
         )
       ),
       tabPanel(

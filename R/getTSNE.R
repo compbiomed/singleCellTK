@@ -1,9 +1,11 @@
 #' Run t-SNE dimensionality reduction method on the assay data.
+#'
 #' @param inSCE Input SCtkExperiment object. Required
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reductions
 #' @param n_iterations maximum iterations. Default is 1000
-#' @param perplexity perplexity parameter. Default is 5
+#' @param perplexity perplexity parameter. 
+#' @param run_pca run tSNE on PCA components? Default is TRUE.
 #'
 #' @return A SCtkE object with the specified reducedDim and
 #' pcaVariances updated
@@ -21,7 +23,7 @@
 #' reducedDims(mouseBrainSubsetSCE)
 #'
 getTSNE <- function(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
-                    n_iterations = 1000, perplexity = NULL){
+                    n_iterations = 1000, perplexity = NULL, run_pca = TRUE){
   if (nrow(inSCE) < 500){
     ntop <- nrow(inSCE)
   } else{
@@ -45,7 +47,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
     perplexity <- floor(ncol(inSCE) / 5)
   }
   tsneOut <- Rtsne::Rtsne(t(exprsToPlot), perplexity = perplexity,
-                           initial_dims = max(50, ncol(inSCE)), max_iter = n_iterations)
+                           initial_dims = max(50, ncol(inSCE)), max_iter = n_iterations, pca = run_pca)
   tsneOut <- tsneOut$Y[, c(1, 2)]
   rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")

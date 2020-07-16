@@ -27,6 +27,8 @@ library(umap)
 library(scater)
 library(scran)
 library(hypeR)
+library(uwot)
+library(reactable)
 
 source("helpers.R")
 source("colourGroupInput.R")
