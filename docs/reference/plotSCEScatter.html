@@ -73,7 +73,7 @@ slot in the SingleCellExperiment object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,17 +152,23 @@ slot in the SingleCellExperiment object.</p>
     <pre class="usage"><span class='fu'>plotSCEScatter</span>(
   <span class='no'>inSCE</span>,
   <span class='no'>slot</span>,
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>annotation</span>,
   <span class='kw'>feature</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>shape</span> <span class='kw'>=</span> <span class='st'>"No Shape"</span>,
+  <span class='kw'>shape</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>conditionClass</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>dim1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>dim2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dotsize</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>bin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>binLabel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dotSize</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>transparency</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>colorLow</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
+  <span class='kw'>colorMid</span> <span class='kw'>=</span> <span class='st'>"gray"</span>,
+  <span class='kw'>colorHigh</span> <span class='kw'>=</span> <span class='st'>"blue"</span>,
   <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
@@ -184,13 +190,17 @@ components or a variable with saved results. Required</p></td>
 options: "assays", "colData", "metadata"</p></td>
     </tr>
     <tr>
+      <th>sample</th>
+      <td><p>Character vector. Indicates which sample each cell belongs to.</p></td>
+    </tr>
+    <tr>
       <th>annotation</th>
       <td><p>Desired vector within the slot used for plotting.</p></td>
     </tr>
     <tr>
       <th>feature</th>
       <td><p>name of feature stored in assay of SingleCellExperiment
-object. Will be used only if "assays" slot is chosen. Deafult NULL.</p></td>
+object. Will be used only if "assays" slot is chosen. Default NULL.</p></td>
     </tr>
     <tr>
       <th>shape</th>
@@ -209,28 +219,60 @@ class. Default NULL.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
-      <td><p>label for x-axis</p></td>
+      <td><p>Character vector. Label for x-axis. Default NULL.</p></td>
     </tr>
     <tr>
       <th>ylab</th>
-      <td><p>label for y-axis</p></td>
+      <td><p>Character vector. Label for y-axis. Default NULL.</p></td>
     </tr>
     <tr>
       <th>dim1</th>
-      <td><p>1st dimension to be used for plotting. Default is NULL.</p></td>
+      <td><p>1st dimension to be used for plotting. Can either be a string which specifies
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.</p></td>
     </tr>
     <tr>
       <th>dim2</th>
-      <td><p>2nd dimension to be used for plotting. Default is NULL.
+      <td><p>2nd dimension to be used for plotting. Can either be a string which specifies
+ the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+ the index of the dimension to be plotted. Default is NULL.
 Default is second PCA component for PCA data and NULL otherwise.</p></td>
     </tr>
     <tr>
-      <th>dotsize</th>
-      <td><p>size of dots. Default 2.</p></td>
+      <th>bin</th>
+      <td><p>Numeric vector. If single value, will divide the numeric values into the `bin` groups.
+If more than one value, will bin numeric values using values as a cut point.</p></td>
+    </tr>
+    <tr>
+      <th>binLabel</th>
+      <td><p>Character vector. Labels for the bins created by the `bin` parameter.
+Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>dotSize</th>
+      <td><p>Size of dots. Default 2.</p></td>
     </tr>
     <tr>
       <th>transparency</th>
-      <td><p>transparency of the dots, values will be 0-1. Default 1.</p></td>
+      <td><p>Transparency of the dots, values will be 0-1. Default 1.</p></td>
+    </tr>
+    <tr>
+      <th>colorLow</th>
+      <td><p>Character. A color available from `colors()`.
+The color will be used to signify the lowest values on the scale.
+Default 'white'.</p></td>
+    </tr>
+    <tr>
+      <th>colorMid</th>
+      <td><p>Character. A color available from `colors()`.
+The color will be used to signify the midpoint on the scale.
+Default 'gray'.</p></td>
+    </tr>
+    <tr>
+      <th>colorHigh</th>
+      <td><p>Character. A color available from `colors()`.
+The color will be used to signify the highest values on the scale.
+Default 'blue'.</p></td>
     </tr>
     <tr>
       <th>defaultTheme</th>
@@ -238,11 +280,11 @@ Default is second PCA component for PCA data and NULL otherwise.</p></td>
     </tr>
     <tr>
       <th>title</th>
-      <td><p>title of plot. Default NULL.</p></td>
+      <td><p>Title of plot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>titleSize</th>
-      <td><p>size of title of plot. Default 15.</p></td>
+      <td><p>Size of title of plot. Default 15.</p></td>
     </tr>
     <tr>
       <th>labelClusters</th>
@@ -275,7 +317,7 @@ Default is second PCA component for PCA data and NULL otherwise.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

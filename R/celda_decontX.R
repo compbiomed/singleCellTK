@@ -13,10 +13,9 @@
 #'  \link[SummarizedExperiment]{colData} slot. Additionally, the
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
-#' \dontrun{
-#' data(sceQCExample, package = "singleCellTK")
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runDecontX(sce)
-#' }
 #' @export
 runDecontX <- function(inSCE,
     sample = NULL,

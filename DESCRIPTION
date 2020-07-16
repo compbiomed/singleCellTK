@@ -16,7 +16,8 @@ Authors@R:c(person(given=c("Joshua","D."), family="Campbell", email="camp@bu.edu
     person(given="Yusuke", family="Koga", email="ykoga07@bu.edu", role=c("aut")),
     person(given=c("Shruthi"), family="Bandyadka", email="sbandya@bu.edu", role=c("aut")), 
     person(given=c("Anastasia"), family="Leshchyk", email="aleshchk@bu.edu", role=c("aut")),
-    person(given=c("Rui"), family="Hong", role=c("aut")))
+    person(given=c("Rui"), family="Hong", role=c("aut")),
+    person(given=c("Yichen"), family="Wang", email="wangych@bu.edu", role=c("aut")))
 Maintainer: Joshua D. Campbell, Ph.D. <camp@bu.edu>
 Depends:
     R (>= 3.6.0),
@@ -45,6 +46,7 @@ Imports:
     data.table,
     DelayedMatrixStats,
     DESeq2,
+    dplyr,
     DT,
     ggplot2,
     ggplotify,
@@ -58,8 +60,10 @@ Imports:
     limma,
     MAST,
     Matrix,
+    mnormt,
     matrixStats,
     methods,
+    msigdbr,
     multtest,
     plotly,
     RColorBrewer,
@@ -85,6 +89,7 @@ Imports:
     shinycssloaders,
     shinythemes,
     umap,
+    uwot,
     DropletUtils,
     scds,
     reticulate (>= 1.14),
@@ -98,8 +103,8 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-	rmarkdown
-RoxygenNote: 7.1.0
+    rmarkdown
+RoxygenNote: 7.1.1
 Suggests:
     testthat,
     Rsubread,
@@ -113,6 +118,7 @@ Suggests:
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
+    rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input,
     campbio/celda@RELEASE_3_11

@@ -7,6 +7,7 @@
 plotSCEScatter(
   inSCE,
   slot,
+  sample = NULL,
   annotation,
   feature = NULL,
   shape = NULL,
@@ -18,8 +19,11 @@ plotSCEScatter(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotsize = 2,
+  dotSize = 2,
   transparency = 1,
+  colorLow = "white",
+  colorMid = "gray",
+  colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
@@ -34,6 +38,8 @@ components or a variable with saved results. Required}
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata"}
 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
 \item{annotation}{Desired vector within the slot used for plotting.}
 
 \item{feature}{name of feature stored in assay of SingleCellExperiment
@@ -41,8 +47,8 @@ object. Will be used only if "assays" slot is chosen. Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
-\item{reducedDimName}{saved dimension reduction name in the SCtkExperiment
-object. Required.}
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
@@ -67,9 +73,21 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotsize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{colorLow}{Character. A color available from `colors()`.
+The color will be used to signify the lowest values on the scale.
+Default 'white'.}
+
+\item{colorMid}{Character. A color available from `colors()`.
+The color will be used to signify the midpoint on the scale.
+Default 'gray'.}
+
+\item{colorHigh}{Character. A color available from `colors()`.
+The color will be used to signify the highest values on the scale.
+Default 'blue'.}
 
 \item{defaultTheme}{adds grid to plot when TRUE. Default TRUE.}
 
@@ -89,9 +107,11 @@ Plot results of reduced dimensions data of counts stored in any
 slot in the SingleCellExperiment object.
 }
 \examples{
+\donttest{
 plotSCEScatter(
   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
-  slot = "assays", annotation = "counts", feature = "Tspan12",
+  slot = "assays", annotation = "counts", feature = "Apoe",
   reducedDimName = "TSNE_counts", labelClusters = FALSE
 )
+}
 }

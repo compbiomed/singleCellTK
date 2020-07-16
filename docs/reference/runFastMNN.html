@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+<title>Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 correction method to SingleCellExperiment object — runFastMNN • singleCellTK</title>
 
 
@@ -40,10 +40,10 @@ correction method to SingleCellExperiment object — runFastMNN • singleCellTK
 
 
 
-<meta property="og:title" content="Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+<meta property="og:title" content="Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 correction method to SingleCellExperiment object — runFastMNN" />
-<meta property="og:description" content="`fastMNN` is a variant of the `mnnCorrect` function, modified for speed and 
-more robust performance. For introduction of MNN, see `runMNNCorrect`" />
+<meta property="og:description" content="fastMNN is a variant of the classic MNN method, modified for speed and more
+robust performance. For introduction of MNN, see runMNNCorrect." />
 
 
 
@@ -75,7 +75,7 @@ more robust performance. For introduction of MNN, see `runMNNCorrect`" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -141,21 +141,21 @@ more robust performance. For introduction of MNN, see `runMNNCorrect`" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a fast version of the mutual nearest neighbors (MNN) batch effect 
+    <h1>Apply a fast version of the mutual nearest neighbors (MNN) batch effect
 correction method to SingleCellExperiment object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runFastMNN.R'><code>R/runFastMNN.R</code></a></small>
     <div class="hidden name"><code>runFastMNN.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>`fastMNN` is a variant of the `mnnCorrect` function, modified for speed and 
-more robust performance. For introduction of MNN, see `runMNNCorrect`</p>
+    <p>fastMNN is a variant of the classic MNN method, modified for speed and more
+robust performance. For introduction of MNN, see <code><a href='runMNNCorrect.html'>runMNNCorrect</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>runFastMNN</span>(
   <span class='no'>inSCE</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
-  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"MNN"</span>,
+  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"fastMNN"</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
   <span class='kw'>pcInput</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -165,38 +165,38 @@ more robust performance. For introduction of MNN, see `runMNNCorrect`</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`. Alternatively, see `pcInput` parameter.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>. Alternatively, see
+<code>pcInput</code> parameter.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>character, default `"fastMNN"`. The name for the 
-corrected low-dimensional representation.</p></td>
+      <td><p>A single character. The name for the corrected
+low-dimensional representation. Will be saved to <code>reducedDim(inSCE)</code>.
+Default <code>"fastMNN"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>pcInput</th>
-      <td><p>bool, default `FALSE`. Whether to use a reduceDim matrix for 
-batch effect correction. If TRUE, `useAssay` should exist in 
-`reduceDimNames(inSCE)`. Note that more dimensions in precomputed reducedDim
-have shown better correction results.</p></td>
+      <td><p>A logical scalar. Whether to use a low-dimension matrix for
+batch effect correction. If <code>TRUE</code>, <code>useAssay</code> will be searched
+from <code>reducedDimNames(inSCE)</code>. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.</p>
+    <p>The input SingleCellExperiment object with
+<code>reducedDim(inSCE, reducedDimName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Lun ATL, et al., 2016</p>
@@ -217,7 +217,7 @@ updated with corrected low-dimentional representation.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

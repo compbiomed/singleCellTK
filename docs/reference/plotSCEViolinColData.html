@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -151,6 +151,7 @@
 
     <pre class="usage"><span class='fu'>plotSCEViolinColData</span>(
   <span class='no'>inSCE</span>,
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>coldata</span>,
   <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>violin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -162,6 +163,8 @@
   <span class='kw'>dotSize</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>transparency</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>gridLine</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>summary</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
@@ -172,7 +175,11 @@
     <tr>
       <th>inSCE</th>
       <td><p>Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required</p></td>
+components or a variable with saved results. Required.</p></td>
+    </tr>
+    <tr>
+      <th>sample</th>
+      <td><p>Character vector. Indicates which sample each cell belongs to.</p></td>
     </tr>
     <tr>
       <th>coldata</th>
@@ -200,36 +207,46 @@ Default TRUE.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
-      <td><p>label for x-axis. Default NULL.</p></td>
+      <td><p>Character vector. Label for x-axis. Default NULL.</p></td>
     </tr>
     <tr>
       <th>ylab</th>
-      <td><p>label for y-axis. Default NULL.</p></td>
+      <td><p>Character vector. Label for y-axis. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisSize</th>
-      <td><p>size of x/y-axis labels. Default 10.</p></td>
+      <td><p>Size of x/y-axis labels. Default 10.</p></td>
     </tr>
     <tr>
       <th>dotSize</th>
-      <td><p>size of dots. Default 1.</p></td>
+      <td><p>Size of dots. Default 1.</p></td>
     </tr>
     <tr>
       <th>transparency</th>
-      <td><p>transparency of the dots, values will be 0-1. Default 1.</p></td>
+      <td><p>Transparency of the dots, values will be 0-1. Default 1.</p></td>
     </tr>
     <tr>
       <th>defaultTheme</th>
-      <td><p>removes grid in plot and sets axis title size to 10
+      <td><p>Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
+      <th>gridLine</th>
+      <td><p>Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>summary</th>
+      <td><p>Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.</p></td>
+    </tr>
+    <tr>
       <th>title</th>
-      <td><p>title of plot. Default NULL.</p></td>
+      <td><p>Title of plot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>titleSize</th>
-      <td><p>size of title of plot. Default 15.</p></td>
+      <td><p>Size of title of plot. Default 15.</p></td>
     </tr>
     </table>
 
@@ -250,7 +267,7 @@ when TRUE. Default TRUE.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

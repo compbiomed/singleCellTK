@@ -75,7 +75,7 @@ condition if it is given." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,13 @@ in the data</h1>
 condition if it is given.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotBatchVariance</span>(<span class='no'>inSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='no'>batch</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>plotBatchVariance</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
+  <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
+  <span class='kw'>condition</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>pcInput</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +181,11 @@ Required</p></td>
       <td><p>The column in the annotation data that corresponds to
 condition. Optional</p></td>
     </tr>
+    <tr>
+      <th>pcInput</th>
+      <td><p>A logical scalar indicating whether <code>useAssay</code> is in
+<code><a href='https://rdrr.io/r/base/names.html'>names(reducedDims(inSCE))</a></code>. Default <code>FALSE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -183,13 +194,14 @@ condition. Optional</p></td>
 batch+condition (if applicable).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"bladderbatch"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-  <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>bladderbatch</span>)
-  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>bladderdata</span>)
-  <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as</span>(<span class='fu'>as</span>(<span class='no'>bladderEset</span>, <span class='st'>"SummarizedExperiment"</span>), <span class='st'>"SCtkExperiment"</span>)
-  <span class='fu'>plotBatchVariance</span>(<span class='no'>dat</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"exprs"</span>, <span class='kw'>batch</span><span class='kw'>=</span><span class='st'>"batch"</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"cancer"</span>)
-}</div><div class='img'><img src='plotBatchVariance-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+  <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"bladderbatch"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+    <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>bladderbatch</span>)
+    <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>bladderdata</span>)
+    <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as</span>(<span class='fu'>as</span>(<span class='no'>bladderEset</span>, <span class='st'>"SummarizedExperiment"</span>), <span class='st'>"SCtkExperiment"</span>)
+    <span class='fu'>plotBatchVariance</span>(<span class='no'>dat</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"exprs"</span>, <span class='kw'>batch</span><span class='kw'>=</span><span class='st'>"batch"</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"cancer"</span>)
+  }
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -201,7 +213,7 @@ batch+condition (if applicable).</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

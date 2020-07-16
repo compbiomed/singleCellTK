@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Apply scGen batch effect correction method to SingleCellExperiment object — runSCGEN" />
-<meta property="og:description" content="scGen is a generative model to predict single-cell perturbation response 
-across cell types, studies and species. It works by combining variational 
+<meta property="og:description" content="scGen is a generative model to predict single-cell perturbation response
+across cell types, studies and species. It works by combining variational
 autoencoders and latent space vector arithmetics for high-dimensional single-
 cell gene expression data." />
 
@@ -75,7 +75,7 @@ cell gene expression data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -147,8 +147,8 @@ cell gene expression data." />
     </div>
 
     <div class="ref-description">
-    <p>scGen is a generative model to predict single-cell perturbation response 
-across cell types, studies and species. It works by combining variational 
+    <p>scGen is a generative model to predict single-cell perturbation response
+across cell types, studies and species. It works by combining variational
 autoencoders and latent space vector arithmetics for high-dimensional single-
 cell gene expression data.</p>
     </div>
@@ -158,8 +158,8 @@ cell gene expression data.</p>
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
   <span class='kw'>cellType</span> <span class='kw'>=</span> <span class='st'>"cell_type"</span>,
-  <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"SCGEN"</span>,
-  <span class='kw'>nEpochs</span> <span class='kw'>=</span> <span class='fl'>50L</span>
+  <span class='kw'>nEpochs</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
+  <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"SCGEN"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,41 +167,42 @@ cell gene expression data.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the field 
-of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>cellType</th>
-      <td><p>character, default `"cell_type"`. A string indicating the 
-field of `colData(inSCE)` that defines different cell types.</p></td>
-    </tr>
-    <tr>
-      <th>assayName</th>
-      <td><p>character, default `"SCGEN"`. The name for the corrected 
-full-sized expression matrix.</p></td>
+      <td><p>A single character. A string indicating a field in
+<code>colData(inSCE)</code> that defines different cell types. Default
+<code>'cell_type'</code>.</p></td>
     </tr>
     <tr>
       <th>nEpochs</th>
-      <td><p>integer, default `100L`. Algorithmic parameter, number of 
-epochs to iterate and optimize network weights.</p></td>
+      <td><p>An integer. Algorithmic parameter, the number of epochs to
+iterate and optimize network weights. Default <code>50L</code>.</p></td>
+    </tr>
+    <tr>
+      <th>assayName</th>
+      <td><p>A single characeter. The name for the corrected assay. Will
+be saved to <code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>assay</a></code>. Default
+<code>"SCGEN"</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Result does not look fine for now. Time consuming also even it allocates 32 
-cores.</p>
+    <p>The input SingleCellExperiment object with
+<code>assay(inSCE, assayName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Lotfollahi, Mohammad et al., 2019</p>
@@ -222,7 +223,7 @@ cores.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

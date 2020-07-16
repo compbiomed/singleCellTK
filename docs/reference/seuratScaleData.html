@@ -75,7 +75,7 @@ Scales the input sce object according to the input parameters" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -155,11 +155,11 @@ Scales the input sce object according to the input parameters</p>
     <pre class="usage"><span class='fu'>seuratScaleData</span>(
   <span class='no'>inSCE</span>,
   <span class='no'>useAssay</span>,
-  <span class='no'>geneNamesSeurat</span>,
-  <span class='kw'>model.use</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
-  <span class='kw'>do.scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>do.center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>scale.max</span> <span class='kw'>=</span> <span class='fl'>10</span>
+  <span class='kw'>scaledAssayName</span> <span class='kw'>=</span> <span class='st'>"seuratScaledData"</span>,
+  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"linear"</span>,
+  <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>scaleMax</span> <span class='kw'>=</span> <span class='fl'>10</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,27 +171,27 @@ Scales the input sce object according to the input parameters</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <td><p>Assay containing normalized counts to scale.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
+      <th>scaledAssayName</th>
+      <td><p>Name of new assay containing scaled data. Default <code>seuratScaledData</code>.</p></td>
     </tr>
     <tr>
-      <th>model.use</th>
-      <td><p>selected model to use for scaling data (default is "linear")</p></td>
+      <th>model</th>
+      <td><p>selected model to use for scaling data. Default <code>"linear"</code>.</p></td>
     </tr>
     <tr>
-      <th>do.scale</th>
-      <td><p>boolean if data should be scaled or not (TRUE or FALSE, default is TRUE)</p></td>
+      <th>scale</th>
+      <td><p>boolean if data should be scaled or not. Default <code>TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>do.center</th>
-      <td><p>boolean if data should be centered or not (TRUE or FALSE, default is TRUE)</p></td>
+      <th>center</th>
+      <td><p>boolean if data should be centered or not. Default <code>TRUE</code></p></td>
     </tr>
     <tr>
-      <th>scale.max</th>
-      <td><p>maximum numeric value to return for scaled data (default is 10)</p></td>
+      <th>scaleMax</th>
+      <td><p>maximum numeric value to return for scaled data. Default <code>10</code>.</p></td>
     </tr>
     </table>
 
@@ -210,7 +210,7 @@ Scales the input sce object according to the input parameters</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

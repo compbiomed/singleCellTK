@@ -1,12 +1,12 @@
 #' Run t-SNE dimensionality reduction method on the assay data.
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reductions
 #' @param n_iterations maximum iterations. Default is 1000
 #' @param perplexity perplexity parameter. Default is 5
 #'
-#' @return A SCtkE object with the specified reducedDim and
-#' pcaVariances updated
+#' @return A \linkS4class{SingleCellExperiment} object with the specified
+#' reducedDim updated
 #'
 #' @export
 #' @examples

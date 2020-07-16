@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object — runZINBWaVE • singleCellTK</title>
+<title>Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object — runZINBWaVE • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object — runZINBWaVE" />
-<meta property="og:description" content="A general and flexible zero-inflated negative binomial model that can be 
-used to provide a low-dimensional representations of scRNAseq data. The 
-model accounts for zero inflation (dropouts), over-dispersion, and the count 
-nature of the data. The model also accounts for the difference in library 
+<meta property="og:title" content="Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object — runZINBWaVE" />
+<meta property="og:description" content="A general and flexible zero-inflated negative binomial model that can be
+used to provide a low-dimensional representations of scRNAseq data. The
+model accounts for zero inflation (dropouts), over-dispersion, and the count
+nature of the data. The model also accounts for the difference in library
 sizes and optionally for batch effects and/or other covariates." />
 
 
@@ -76,7 +76,7 @@ sizes and optionally for batch effects and/or other covariates." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -142,28 +142,28 @@ sizes and optionally for batch effects and/or other covariates." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply ZINBWaVE Batch effect correction mathod to SingleCellExperiment object</h1>
+    <h1>Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runZINBWaVE.R'><code>R/runZINBWaVE.R</code></a></small>
     <div class="hidden name"><code>runZINBWaVE.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A general and flexible zero-inflated negative binomial model that can be 
-used to provide a low-dimensional representations of scRNAseq data. The 
-model accounts for zero inflation (dropouts), over-dispersion, and the count 
-nature of the data. The model also accounts for the difference in library 
+    <p>A general and flexible zero-inflated negative binomial model that can be
+used to provide a low-dimensional representations of scRNAseq data. The
+model accounts for zero inflation (dropouts), over-dispersion, and the count
+nature of the data. The model also accounts for the difference in library
 sizes and optionally for batch effects and/or other covariates.</p>
     </div>
 
     <pre class="usage"><span class='fu'>runZINBWaVE</span>(
   <span class='no'>inSCE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
-  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"zinbwave"</span>,
-  <span class='kw'>nHVG</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>nHVG</span> <span class='kw'>=</span> <span class='fl'>1000L</span>,
+  <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
   <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>nIter</span> <span class='kw'>=</span> <span class='fl'>10</span>
+  <span class='kw'>nIter</span> <span class='kw'>=</span> <span class='fl'>10L</span>,
+  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"zinbwave"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,55 +171,61 @@ sizes and optionally for batch effects and/or other covariates.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Note that ZINBWaVE works for counts (integer) input rather
+than logcounts that other methods prefer. Default <code>"counts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
-    </tr>
-    <tr>
-      <th>reducedDimName</th>
-      <td><p>character, default `"zinbwave"`. The name for the 
-corrected low-dimensional representation.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>nHVG</th>
-      <td><p>integer, default `1000`. Number of highly variable genes to use 
-when fitting the model</p></td>
+      <td><p>An integer. Number of highly variable genes to use when fitting
+the model. Default <code>1000L</code>.</p></td>
     </tr>
     <tr>
       <th>nComponents</th>
-      <td><p>integer, default `50L`. Number of principle components or 
-dimensionality to generate in the resulting reducedDim.</p></td>
+      <td><p>An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. Default <code>50L</code>.</p></td>
     </tr>
     <tr>
       <th>epsilon</th>
-      <td><p>integer, default `1000`. Algorithmic parameter, by default, the 
-epsilon parameter is set to the number of genes. We empirically found that a 
-high epsilon is often required to obtained a good low-level representation.</p></td>
+      <td><p>An integer. Algorithmic parameter. Empirically, a high epsilon
+is often required to obtained a good low-level representation. Default
+<code>1000L</code>.</p></td>
     </tr>
     <tr>
       <th>nIter</th>
-      <td><p>integer, default `10`. The max number of iterations to perform.</p></td>
+      <td><p>An integer, The max number of iterations to perform. Default
+<code>10L</code>.</p></td>
+    </tr>
+    <tr>
+      <th>reducedDimName</th>
+      <td><p>A single character. The name for the corrected
+low-dimensional representation. Will be saved to <code>reducedDim(inSCE)</code>.
+Default <code>"zinbwave"</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The input SingleCellExperiment object with
+<code>reducedDim(inSCE, reducedDimName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Pollen, Alex A et al., 2014</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
-<span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runZINBWaVE</span>(<span class='no'>sceBatches</span>, <span class='kw'>nIter</span><span class='kw'>=</span><span class='fl'>5</span>, <span class='kw'>filterParams</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>, <span class='fl'>3</span>))
+    <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
+    <span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runZINBWaVE</span>(<span class='no'>sceBatches</span>, <span class='kw'>nIter</span> <span class='kw'>=</span> <span class='fl'>5</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -232,7 +238,7 @@ high epsilon is often required to obtained a good low-level representation.</p><
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

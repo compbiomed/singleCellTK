@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Apply BBKNN batch effect correction method to SingleCellExperiment object — runBBKNN" />
-<meta property="og:description" content="BBKNN, an extremely fast graph-based data integration algorithm. It modifies 
-the neighbourhood construction step to produce a graph that is balanced 
+<meta property="og:description" content="BBKNN, an extremely fast graph-based data integration algorithm. It modifies
+the neighbourhood construction step to produce a graph that is balanced
 across all batches of the data." />
 
 
@@ -74,7 +74,7 @@ across all batches of the data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -146,8 +146,8 @@ across all batches of the data." />
     </div>
 
     <div class="ref-description">
-    <p>BBKNN, an extremely fast graph-based data integration algorithm. It modifies 
-the neighbourhood construction step to produce a graph that is balanced 
+    <p>BBKNN, an extremely fast graph-based data integration algorithm. It modifies
+the neighbourhood construction step to produce a graph that is balanced
 across all batches of the data.</p>
     </div>
 
@@ -164,46 +164,45 @@ across all batches of the data.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>character, default `"BBKNN"`. The name for the 
-corrected low-dimensional representation.</p></td>
+      <td><p>A single character. The name for the corrected
+low-dimensional representation. Will be saved to <code>reducedDim(inSCE)</code>.
+Default <code>"BBKNN"</code>.</p></td>
     </tr>
     <tr>
       <th>nComponents</th>
-      <td><p>integer, default `50L`. Number of principle components or 
-dimensionality, adopted in the pre-PCA-computation step, the BBKNN step (for 
-how many PCs the algorithm takes into account), and the final UMAP 
-combination step where the value represent the dimensionality of the updated 
-reducedDim.</p></td>
+      <td><p>An integer. Number of principle components or the
+dimensionality, adopted in the pre-PCA-computation step, the BBKNN step (for
+how many PCs the algorithm takes into account), and the final UMAP
+combination step where the value represent the dimensionality of the updated
+reducedDim. Default <code>50L</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation</p>
+    <p>The input SingleCellExperiment object with
+<code>reducedDim(inSCE, reducedDimName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Krzysztof Polański et al., 2020</p>
+    <p>Krzysztof Polanski et al., 2020</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
 <span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runBBKNN</span>(<span class='no'>sceBatches</span>)
 }</div></pre>
@@ -218,7 +217,7 @@ updated with corrected low-dimentional representation</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

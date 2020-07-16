@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -228,44 +228,6 @@ is TRUE.</p></td>
 <p>Plot GSVA Results</p></li>
 </ul>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>maits</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"MAST"</span>)
-<span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>c2BroadSets</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"GSVAdata"</span>)
-<span class='no'>maitslogtpm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>maits</span>$<span class='no'>expressionmat</span>)
-<span class='no'>genesToSubset</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>)[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>) <span class='kw'>%in%</span>
-                 <span class='kw pkg'>GSEABase</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-class.html'>geneIds</a></span>(<span class='no'>c2BroadSets</span><span class='kw'>[[</span><span class='st'>"KEGG_PROTEASOME"</span>]]))]
-<span class='no'>maitslogtpm</span> <span class='kw'>&lt;-</span> <span class='no'>maitslogtpm</span>[<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>) <span class='kw'>%in%</span> <span class='no'>genesToSubset</span>, ]
-<span class='no'>maitsfeatures</span> <span class='kw'>&lt;-</span> <span class='no'>maits</span>$<span class='no'>fdat</span>[<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maits</span>$<span class='no'>fdat</span>) <span class='kw'>%in%</span> <span class='no'>genesToSubset</span>, ]
-<span class='no'>maitsSCE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createSCE.html'>createSCE</a></span>(<span class='kw'>assayFile</span> <span class='kw'>=</span> <span class='no'>maitslogtpm</span>, <span class='kw'>annotFile</span> <span class='kw'>=</span> <span class='no'>maits</span>$<span class='no'>cdat</span>,
-                      <span class='kw'>featureFile</span> <span class='kw'>=</span> <span class='no'>maitsfeatures</span>, <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"logtpm"</span>,
-                      <span class='kw'>inputDataFrames</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>createLogCounts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'>rowData</span>(<span class='no'>maitsSCE</span>)$<span class='no'>testbiomarker</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>maitsSCE</span>))
-<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>gsvaSCE</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>maitsSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logtpm"</span>,
-               <span class='kw'>pathwaySource</span> <span class='kw'>=</span> <span class='st'>"Manual Input"</span>, <span class='kw'>pathwayNames</span> <span class='kw'>=</span> <span class='st'>"testbiomarker"</span>,
-               <span class='kw'>parallel.sz</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; Estimating GSVA scores for 1 gene sets.
-#&gt; Computing observed enrichment scores
-#&gt; Estimating ECDFs with Gaussian kernels
-#&gt; Using parallel with 1 cores
-#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</div><div class='input'><span class='co'>#Create a small example to run</span>
-<span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>maits</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"MAST"</span>)
-<span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>c2BroadSets</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"GSVAdata"</span>)
-<span class='no'>maitslogtpm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>maits</span>$<span class='no'>expressionmat</span>)
-<span class='no'>genesToSubset</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>)[<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>) <span class='kw'>%in%</span>
-                 <span class='kw pkg'>GSEABase</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-class.html'>geneIds</a></span>(<span class='no'>c2BroadSets</span><span class='kw'>[[</span><span class='st'>"KEGG_PROTEASOME"</span>]]))]
-<span class='no'>maitslogtpm</span> <span class='kw'>&lt;-</span> <span class='no'>maitslogtpm</span>[<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maitslogtpm</span>) <span class='kw'>%in%</span> <span class='no'>genesToSubset</span>, ]
-<span class='no'>maitsfeatures</span> <span class='kw'>&lt;-</span> <span class='no'>maits</span>$<span class='no'>fdat</span>[<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>maits</span>$<span class='no'>fdat</span>) <span class='kw'>%in%</span> <span class='no'>genesToSubset</span>, ]
-<span class='no'>maitsSCE</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='createSCE.html'>createSCE</a></span>(<span class='kw'>assayFile</span> <span class='kw'>=</span> <span class='no'>maitslogtpm</span>, <span class='kw'>annotFile</span> <span class='kw'>=</span> <span class='no'>maits</span>$<span class='no'>cdat</span>,
-                      <span class='kw'>featureFile</span> <span class='kw'>=</span> <span class='no'>maitsfeatures</span>, <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"logtpm"</span>,
-                      <span class='kw'>inputDataFrames</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>createLogCounts</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'>rowData</span>(<span class='no'>maitsSCE</span>)$<span class='no'>testbiomarker</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>maitsSCE</span>))
-<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>gsvaSCE</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>maitsSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logtpm"</span>,
-               <span class='kw'>pathwaySource</span> <span class='kw'>=</span> <span class='st'>"Manual Input"</span>, <span class='kw'>pathwayNames</span> <span class='kw'>=</span> <span class='st'>"testbiomarker"</span>,
-               <span class='kw'>parallel.sz</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; Estimating GSVA scores for 1 gene sets.
-#&gt; Computing observed enrichment scores
-#&gt; Estimating ECDFs with Gaussian kernels
-#&gt; Using parallel with 1 cores
-#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</div><div class='input'><span class='fu'>gsvaPlot</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>maitsSCE</span>, <span class='kw'>gsvaData</span> <span class='kw'>=</span> <span class='no'>res</span>,
-         <span class='kw'>plotType</span> <span class='kw'>=</span> <span class='st'>"Violin"</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"condition"</span>)</div><div class='img'><img src='gsvaSCE-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -277,7 +239,7 @@ is TRUE.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

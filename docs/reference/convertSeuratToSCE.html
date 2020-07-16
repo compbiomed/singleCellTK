@@ -75,7 +75,7 @@ Converts the input seurat object to a sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,14 +152,26 @@ Converts the input seurat object to a sce object</h1>
 Converts the input seurat object to a sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>convertSeuratToSCE</span>(<span class='no'>seuratObject</span>)</pre>
+    <pre class="usage"><span class='fu'>convertSeuratToSCE</span>(
+  <span class='no'>seuratObject</span>,
+  <span class='kw'>normAssayName</span> <span class='kw'>=</span> <span class='st'>"seuratNormData"</span>,
+  <span class='kw'>scaledAssayName</span> <span class='kw'>=</span> <span class='st'>"seuratScaledData"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>seuratObject</th>
-      <td><p>input object</p></td>
+      <td><p>Input Seurat object</p></td>
+    </tr>
+    <tr>
+      <th>normAssayName</th>
+      <td><p>Name of assay to store the normalized data. Default <code>"seuratNormData"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>scaledAssayName</th>
+      <td><p>Name of assay to store the scaled data. Default <code>"seuratScaledData"</code>.</p></td>
     </tr>
     </table>
 
@@ -178,7 +190,7 @@ Converts the input seurat object to a sce object</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

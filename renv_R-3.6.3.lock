@@ -149,8 +149,8 @@
       "RemoteUsername": "joshua-d-campbell",
       "RemoteRepo": "DoubletFinder",
       "RemoteRef": "master",
-      "RemoteSha": "64b1d61d2ae5e84cd4350ed8a4e409a0da880bdb",
-      "Hash": "b13505122c92b11a9917936b754b00c6"
+      "RemoteSha": "8529394c1f44054c565f12ed719d6e381cf44a56",
+      "Hash": "6372c32e35ee9f0d9a347268fd0f70fa"
     },
     "DropletUtils": {
       "Package": "DropletUtils",

@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Apply Harmony batch effect correction method to SingleCellExperiment object — runHarmony" />
-<meta property="og:description" content="Harmony is an algorithm that projects cells into a shared embedding in which 
+<meta property="og:description" content="Harmony is an algorithm that projects cells into a shared embedding in which
 cells group by cell type rather than dataset-specific conditions." />
 
 
@@ -73,7 +73,7 @@ cells group by cell type rather than dataset-specific conditions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -145,7 +145,7 @@ cells group by cell type rather than dataset-specific conditions." />
     </div>
 
     <div class="ref-description">
-    <p>Harmony is an algorithm that projects cells into a shared embedding in which 
+    <p>Harmony is an algorithm that projects cells into a shared embedding in which
 cells group by cell type rather than dataset-specific conditions.</p>
     </div>
 
@@ -155,9 +155,9 @@ cells group by cell type rather than dataset-specific conditions.</p>
   <span class='kw'>pcInput</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>batch</span> <span class='kw'>=</span> <span class='st'>"batch"</span>,
   <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"HARMONY"</span>,
-  <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
   <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>nIter</span> <span class='kw'>=</span> <span class='fl'>10</span>
+  <span class='kw'>nIter</span> <span class='kw'>=</span> <span class='fl'>10L</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -165,59 +165,61 @@ cells group by cell type rather than dataset-specific conditions.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>pcInput</th>
-      <td><p>bool, default `FALSE`. Whether to do correction on a low-dim
-matrix. If `TRUE`, will look for `useAssay` in `reducedDim(inSCE)`.</p></td>
+      <td><p>A logical scalar. Whether to use a low-dimension matrix for
+batch effect correction. If <code>TRUE</code>, <code>useAssay</code> will be searched
+from <code>reducedDimNames(inSCE)</code>. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>character, default `"HARMONY"`. The name for the 
-corrected low-dimensional representation.</p></td>
+      <td><p>A single character. The name for the corrected
+low-dimensional representation. Will be saved to <code>reducedDim(inSCE)</code>.
+Default <code>"HARMONY"</code>.</p></td>
     </tr>
     <tr>
       <th>nComponents</th>
-      <td><p>integer, default `20`. Number of principle components or 
-dimensionality to generate in the resulting reducedDim. If `pcInput`, will
-directly follow the dimensionality of the specified reducedDim.</p></td>
+      <td><p>An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. If <code>pcInput</code> is set
+to <code>TRUE</code>, the output dimension will follow the low-dimension matrix,
+so this argument will be ignored. Default <code>50L</code>.</p></td>
     </tr>
     <tr>
       <th>theta</th>
-      <td><p>Numeric, default 5. Diversity clustering penalty parameter, 
-Larger value results in more diverse clusters.</p></td>
+      <td><p>A Numeric scalar. Diversity clustering penalty parameter,
+Larger value results in more diverse clusters. Default <code>5</code></p></td>
     </tr>
     <tr>
       <th>nIter</th>
-      <td><p>integer, default `10`. The max number of iterations to perform.</p></td>
+      <td><p>An integer. The max number of iterations to perform. Default
+<code>10L</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.</p>
+    <p>The input SingleCellExperiment object with
+<code>reducedDim(inSCE, reducedDimName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Ilya Korsunsky, et al., 2019</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
-<span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runHarmony</span>(<span class='no'>sceBatches</span>, <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='error'>Error in getClass(element.type): “SimpleAssays” is not a defined class</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
+<span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runHarmony</span>(<span class='no'>sceBatches</span>, <span class='kw'>nComponents</span> <span class='kw'>=</span> <span class='fl'>10L</span>)</div><div class='output co'>#&gt; <span class='message'>Harmony 1/10</span></div><div class='output co'>#&gt; <span class='message'>Harmony 2/10</span></div><div class='output co'>#&gt; <span class='message'>Harmony converged after 2 iterations</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,7 +231,7 @@ updated with corrected low-dimentional representation.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

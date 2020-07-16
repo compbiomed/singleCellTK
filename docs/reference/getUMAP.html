@@ -75,7 +75,7 @@ dimension reduction." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -155,10 +155,15 @@ dimension reduction.</p>
     <pre class="usage"><span class='fu'>getUMAP</span>(
   <span class='no'>inSCE</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"UMAP"</span>,
-  <span class='kw'>n_neighbors</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>n_iterations</span> <span class='kw'>=</span> <span class='fl'>200</span>,
-  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  <span class='kw'>nNeighbors</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+  <span class='kw'>nIterations</span> <span class='kw'>=</span> <span class='fl'>200</span>,
+  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>minDist</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+  <span class='kw'>spread</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>pca</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>initialDims</span> <span class='kw'>=</span> <span class='fl'>50</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -173,23 +178,57 @@ dimension reduction.</p>
       <td><p>Indicate which assay to use. The default is "logcounts".</p></td>
     </tr>
     <tr>
+      <th>sample</th>
+      <td><p>Character vector. Indicates which sample each cell belongs to.</p></td>
+    </tr>
+    <tr>
       <th>reducedDimName</th>
       <td><p>a name to store the results of the dimension reduction
 coordinates obtained from this method. This is stored in the SingleCellExperiment
-object in the reducedDims slot. Required.</p></td>
+object in the reducedDims slot. Default "UMAP".</p></td>
     </tr>
     <tr>
-      <th>n_neighbors</th>
-      <td><p>specify the number of nearest neighbors. Default is 5.</p></td>
+      <th>nNeighbors</th>
+      <td><p>The size of local neighborhood used for
+manifold approximation. Larger values result in more global
+views of the manifold, while smaller values result in more
+local data being preserved. Default 30.
+ See `?uwot::umap` for more information.</p></td>
     </tr>
     <tr>
-      <th>n_iterations</th>
+      <th>nIterations</th>
       <td><p>number of iterations performed during layout optimization.
 Default is 200.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
       <td><p>initial value of "learning rate" of layout optimization. Default is 1.</p></td>
+    </tr>
+    <tr>
+      <th>minDist</th>
+      <td><p>The effective minimum distance between embedded points.
+Smaller values will result in a more clustered/clumped
+embedding where nearby points on the manifold are drawn
+closer together, while larger values will result on a more
+even dispersal of points. Default 0.01.
+See `?uwot::umap` for more information.</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>The effective scale of embedded points. In combination with
+‘min_dist’, this determines how clustered/clumped the
+embedded points are. Default 1.
+See `?uwot::umap` for more information.</p></td>
+    </tr>
+    <tr>
+      <th>pca</th>
+      <td><p>Logical. Whether to perform dimensionality reduction with PCA
+before UMAP.</p></td>
+    </tr>
+    <tr>
+      <th>initialDims</th>
+      <td><p>Number of dimensions from PCA to use as
+input in UMAP. Default 50.</p></td>
     </tr>
     </table>
 
@@ -199,11 +238,14 @@ Default is 200.</p></td>
 reducedDimName specified.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>umap_res</span> <span class='kw'>&lt;-</span> <span class='fu'>getUMAP</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>mouseBrainSubsetSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
-                    <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"UMAP"</span>, <span class='kw'>n_neighbors</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>n_iterations</span> <span class='kw'>=</span> <span class='fl'>200</span>,
-                    <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: failed creating initial embedding; using random embedding instead</span></div><div class='input'><span class='fu'>reducedDims</span>(<span class='no'>umap_res</span>)</div><div class='output co'>#&gt; List of length 5
-#&gt; names(5): PCA_counts PCA_logcounts TSNE_counts TSNE_logcounts UMAP</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
+<span class='no'>umap_res</span> <span class='kw'>&lt;-</span> <span class='fu'>getUMAP</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+                    <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"UMAP"</span>, <span class='kw'>nNeighbors</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+                    <span class='kw'>nIterations</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>spread</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pca</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                    <span class='kw'>initialDims</span> <span class='kw'>=</span> <span class='fl'>50</span>)
+<span class='fu'>reducedDims</span>(<span class='no'>umap_res</span>)</div><div class='output co'>#&gt; List of length 1
+#&gt; names(1): UMAP</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -215,7 +257,7 @@ reducedDimName specified.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

@@ -1,24 +1,24 @@
 #' Apply Limma's batch effect correction method to SingleCellExperiment object
-#' 
-#' Limma's batch effect removal function fits a linear model to the data, then 
+#'
+#' Limma's batch effect removal function fits a linear model to the data, then
 #' removes the component due to the batch effects.
-#' @param inSCE SingleCellExperiment object. An object that stores your dataset
-#' and analysis procedures.
-#' @param useAssay character, default `"logcounts"`. A string indicating the name 
-#' of the assay requiring batch correction in "inSCE", should exist in 
-#' `assayNames(inSCE)`.
-#' @param batch character, default `"batch"`. A string indicating the 
-#' field of `colData(inSCE)` that defines different batches.
-#' @param assayName character, default `"LIMMA"`. The name for the corrected 
-#' full-sized expression matrix.
-#' @return SingleCellExperiment object with `assay(inSCE, assayName)` updated 
-#' with corrected full-sized expression matrix.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param batch A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' \code{"LIMMA"}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{assay(inSCE, assayName)} updated.
 #' @export
 #' @references Gordon K Smyth, et al., 2003
-#' @examples  
+#' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' sceCorr <- runLimmaBC(sceBatches)
-runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA", 
+runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
                        batch = "batch") {
     ## Input check
     if(!inherits(inSCE, "SingleCellExperiment")){
@@ -30,9 +30,9 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
     if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
         stop(paste("\"batch\" name:", batch, "not found."))
     }
-    
+
     assayName <- gsub(' ', '_', assayName)
-    
+
     ## Run algorithm
     ## One more check for the batch names
     batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]

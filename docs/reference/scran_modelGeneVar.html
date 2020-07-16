@@ -75,7 +75,7 @@ Generates and stores variability data from scran::modelGeneVar in the input sing
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -173,15 +173,23 @@ Generates and stores variability data from scran::modelGeneVar in the input sing
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sce_chcl</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"scds"</span>)
-<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>scran_modelGeneVar</span>(<span class='no'>sce_chcl</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='error'>Error: 'modelGeneVar' is not an exported object from 'namespace:scran'</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>rowData</span>(<span class='no'>sce_chcl</span>)))</div><div class='output co'>#&gt; DataFrame with 6 rows and 1 column
-#&gt;                        gene
-#&gt;                 &lt;character&gt;
-#&gt; C12orf73           C12orf73
-#&gt; RNU6-1256P       RNU6-1256P
-#&gt; RN7SL749P         RN7SL749P
-#&gt; RNU6-157P         RNU6-157P
-#&gt; SP1                     SP1
-#&gt; RP11-100E13.1 RP11-100E13.1</div></pre>
+<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>scran_modelGeneVar</span>(<span class='no'>sce_chcl</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: collapsing to unique 'x' values</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'>rowData</span>(<span class='no'>sce_chcl</span>)))</div><div class='output co'>#&gt; DataFrame with 6 rows and 4 columns
+#&gt;                        gene scran_modelGeneVar_mean
+#&gt;                 &lt;character&gt;               &lt;numeric&gt;
+#&gt; C12orf73           C12orf73                  0.3455
+#&gt; RNU6-1256P       RNU6-1256P                       0
+#&gt; RN7SL749P         RN7SL749P                       0
+#&gt; RNU6-157P         RNU6-157P                       0
+#&gt; SP1                     SP1                  0.0615
+#&gt; RP11-100E13.1 RP11-100E13.1                   0.004
+#&gt;               scran_modelGeneVar_totalVariance scran_modelGeneVar_bio
+#&gt;                                      &lt;numeric&gt;              &lt;numeric&gt;
+#&gt; C12orf73                     0.448353926963464    -0.0165869843482693
+#&gt; RNU6-1256P                                   0                      0
+#&gt; RN7SL749P                                    0                      0
+#&gt; RNU6-157P                                    0                      0
+#&gt; SP1                         0.0647501250625316   -0.00961413649821154
+#&gt; RP11-100E13.1              0.00398599299649809  -0.000859396801156632</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -193,7 +201,7 @@ Generates and stores variability data from scran::modelGeneVar in the input sing
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

@@ -54,7 +54,11 @@ pretty_code = function (f) {
 .delayed_decorate = function (d1, d2, decorator_calls)
   structure(decorator(function (f) d1(d2(f))), calls = decorator_calls)
 
-# Console logging 
+#' 
+#' @name simpleLog
+#' @title A decorator that prints the arguments to the decorated function
+#' @param f A function to decorate
+#' 
 simpleLog <- decorator %@% function(f) {
   function(...) {
     print(match.call())

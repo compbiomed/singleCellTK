@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -151,7 +151,15 @@
  profiles. Generate a doublet score for each cell.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runDoubletCells</span>(<span class='no'>inSCE</span>, <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>runDoubletCells</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+  <span class='kw'>nNeighbors</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>simDoublets</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +176,16 @@
     <tr>
       <th>useAssay</th>
       <td><p>A string specifying which assay in the SCE to use.</p></td>
+    </tr>
+    <tr>
+      <th>nNeighbors</th>
+      <td><p>Number of nearest neighbors used to calculate density for
+doublet detection. Default 50.</p></td>
+    </tr>
+    <tr>
+      <th>simDoublets</th>
+      <td><p>Number of simulated doublets created for doublet
+detection. Default 10000.</p></td>
     </tr>
     <tr>
       <th>seed</th>
@@ -200,8 +218,9 @@
     <div class='dont-index'><p><a href='https://rdrr.io/pkg/scran/man/doubletCells.html'>doubletCells</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sceQCExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]</div><div class='output co'>#&gt; <span class='error'>Error in colData(sce)$type: $ operator not defined for this S4 class</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='error'>Error in rep(1, ncol(inSCE)): invalid 'times' argument</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:13 2020 ... Running 'doubletCells'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -213,7 +232,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

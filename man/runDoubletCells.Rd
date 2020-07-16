@@ -4,7 +4,15 @@
 \alias{runDoubletCells}
 \title{Detect doublet cells using \link[scran]{doubletCells}.}
 \usage{
-runDoubletCells(inSCE, sample = NULL, useAssay = "counts", seed = 12345, ...)
+runDoubletCells(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  nNeighbors = 50,
+  simDoublets = 10000,
+  seed = 12345,
+  ...
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
@@ -13,6 +21,12 @@ runDoubletCells(inSCE, sample = NULL, useAssay = "counts", seed = 12345, ...)
 \link[scran]{doubletCells} will be run on cells from each sample separately.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use.}
+
+\item{nNeighbors}{Number of nearest neighbors used to calculate density for
+doublet detection. Default 50.}
+
+\item{simDoublets}{Number of simulated doublets created for doublet
+detection. Default 10000.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
@@ -36,7 +50,7 @@ This function is a wrapper function for \link[scran]{doubletCells}.
  \link[SummarizedExperiment]{colData} of \code{inSCE}.
 }
 \examples{
-data(sceQCExample, package = "singleCellTK")
+data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runDoubletCells(sce)
 }

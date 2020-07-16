@@ -75,7 +75,7 @@ Find highly variable genes and store in the input sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ Find highly variable genes and store in the input sce object</h1>
 Find highly variable genes and store in the input sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratFindHVG</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNamesSeurat</span>, <span class='no'>hvgMethod</span>, <span class='no'>hvgNumber</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratFindHVG</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='kw'>hvgMethod</span> <span class='kw'>=</span> <span class='st'>"vst"</span>, <span class='kw'>hvgNumber</span> <span class='kw'>=</span> <span class='fl'>2000</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,19 +163,15 @@ Find highly variable genes and store in the input sce object</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
-    </tr>
-    <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
+      <td><p>Assay containing scaled counts to use for detecting highly variable genes.</p></td>
     </tr>
     <tr>
       <th>hvgMethod</th>
-      <td><p>selected method to use for computation of highly variable genes (default is "vst")</p></td>
+      <td><p>selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default <code>"vst"</code>.</p></td>
     </tr>
     <tr>
       <th>hvgNumber</th>
-      <td><p>numeric value of how many genes to select as highly variable (default is 2000)</p></td>
+      <td><p>numeric value of how many genes to select as highly variable. Default <code>2000</code>.</p></td>
     </tr>
     </table>
 
@@ -194,7 +190,7 @@ Find highly variable genes and store in the input sce object</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

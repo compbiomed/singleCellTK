@@ -75,7 +75,7 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -152,7 +152,13 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
 Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratRunTSNE</span>(<span class='no'>inSCE</span>, <span class='no'>useAssay</span>, <span class='no'>geneNamesSeurat</span>, <span class='no'>reduction</span>, <span class='no'>dims</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratRunTSNE</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>useReduction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"pca"</span>, <span class='st'>"ica"</span>),
+  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"seuratTSNE"</span>,
+  <span class='kw'>dims</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>perplexity</span> <span class='kw'>=</span> <span class='fl'>30</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,20 +168,20 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
       <td><p>(sce) object on which to compute the tSNE</p></td>
     </tr>
     <tr>
-      <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <th>useReduction</th>
+      <td><p>selected reduction algorithm to use for computing tSNE. One of "pca" or "ica". Default <code>"pca"</code>.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting</p></td>
-    </tr>
-    <tr>
-      <th>reduction</th>
-      <td><p>selected reduction algorithm to use for computing tSNE ("pca" or "ica", default is "pca")</p></td>
+      <th>reducedDimName</th>
+      <td><p>Name of new reducedDims object containing Seurat tSNE Default <code>seuratTSNE</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>numerical value of how many reduction components to use for tSNE computation (default is 10)</p></td>
+      <td><p>Number of reduction components to use for tSNE computation. Default <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>perplexity</th>
+      <td><p>Adjust the preplexity tuneable parameter for the underlying tSNE call. Default <code>30</code>.</p></td>
     </tr>
     </table>
 
@@ -194,7 +200,7 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

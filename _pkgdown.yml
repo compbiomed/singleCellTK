@@ -22,6 +22,7 @@ reference:
 - title: "Batch Effect Correction"
 - contents:
   - runBBKNN
+  - runComBat
   - runFastMNN
   - runHarmony
   - runLIGER
@@ -37,7 +38,11 @@ reference:
   - runDecontX
 - title: "Differential Expression"
 - contents:
+  - runDEAnalysis
   - runMAST
+  - runDESeq2
+  - runLimmaDE
+  - runANOVA
 - title: "Visualization"
 - contents: 
   - starts_with("plot")

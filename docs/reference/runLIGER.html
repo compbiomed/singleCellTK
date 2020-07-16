@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Apply LIGER batch effect correction method to SingleCellExperiment object — runLIGER" />
-<meta property="og:description" content="LIGER relies on integrative non-negative matrix factorization to identify 
+<meta property="og:description" content="LIGER relies on integrative non-negative matrix factorization to identify
 shared and dataset-specific factors." />
 
 
@@ -73,7 +73,7 @@ shared and dataset-specific factors." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -145,7 +145,7 @@ shared and dataset-specific factors." />
     </div>
 
     <div class="ref-description">
-    <p>LIGER relies on integrative non-negative matrix factorization to identify 
+    <p>LIGER relies on integrative non-negative matrix factorization to identify
 shared and dataset-specific factors.</p>
     </div>
 
@@ -164,55 +164,54 @@ shared and dataset-specific factors.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment object. An object that stores your dataset
-and analysis procedures.</p></td>
+      <td><p>SingleCellExperiment inherited object. Required.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>character, default `"logcounts"`. A string indicating the name 
-of the assay requiring batch correction in "inSCE", should exist in 
-`assayNames(inSCE)`.</p></td>
+      <td><p>A single character indicating the name of the assay requiring
+batch correction. Default <code>"logcounts"</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>character, default `"batch"`. A string indicating the 
-field of `colData(inSCE)` that defines different batches.</p></td>
+      <td><p>A single character indicating a field in
+<code><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a></code> that annotates the batches.
+Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>character, default `"LIGER"`. The name for the 
-corrected low-dimensional representation.</p></td>
+      <td><p>A single character. The name for the corrected
+low-dimensional representation. Will be saved to <code>reducedDim(inSCE)</code>.
+Default <code>"LIGER"</code>.</p></td>
     </tr>
     <tr>
       <th>nComponents</th>
-      <td><p>integer, default `20L`. Number of principle components or 
-dimensionality (factors, for this algorithm) to generate in the resulting 
-reducedDim.</p></td>
+      <td><p>An integer. The number of principle components or
+dimensionality to generate in the resulting matrix. Default <code>20L</code>.</p></td>
     </tr>
     <tr>
       <th>lambda</th>
-      <td><p>numeric, default `5.0`. Algorithmic parameter, the penalty 
-parameter which limits the dataset-specific component of the factorization.</p></td>
+      <td><p>A numeric scalar. Algorithmic parameter, the penalty
+parameter which limits the dataset-specific component of the factorization.
+Default <code>5.0</code>.</p></td>
     </tr>
     <tr>
       <th>resolution</th>
-      <td><p>numeric, default `1.0`. Algorithmic paramter, the 
-clustering resolution, increasing this increases the number of communities 
-detected.</p></td>
+      <td><p>A numeric scalar. Algorithmic paramter, the clustering
+resolution, increasing this increases the number of communities detected.
+Default <code>1.0</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SingleCellExperiment object with `reducedDim(inSCE, reducedDimName)` 
-updated with corrected low-dimentional representation.</p>
+    <p>The input SingleCellExperiment object with
+<code>reducedDim(inSCE, reducedDimName)</code> updated.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Joshua Welch, et al., 2018</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>'sceBatches'</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>'singleCellTK'</span>)
 <span class='no'>sceCorr</span> <span class='kw'>&lt;-</span> <span class='fu'>runLIGER</span>(<span class='no'>sceBatches</span>)
 }</div></pre>
@@ -227,7 +226,7 @@ updated with corrected low-dimentional representation.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">

@@ -75,7 +75,7 @@ Computes the clusters from the input sce object and stores them back in sce obje
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.7.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
       </span>
     </div>
 
@@ -155,11 +155,11 @@ Computes the clusters from the input sce object and stores them back in sce obje
     <pre class="usage"><span class='fu'>seuratFindClusters</span>(
   <span class='no'>inSCE</span>,
   <span class='no'>useAssay</span>,
-  <span class='no'>geneNamesSeurat</span>,
-  <span class='no'>reduction</span>,
-  <span class='no'>dims</span>,
-  <span class='no'>algorithm</span>,
-  <span class='no'>groupSingletons</span>
+  <span class='kw'>useReduction</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"pca"</span>, <span class='st'>"ica"</span>),
+  <span class='kw'>dims</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"louvain"</span>, <span class='st'>"multilevel"</span>, <span class='st'>"SLM"</span>),
+  <span class='kw'>groupSingletons</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>resolution</span> <span class='kw'>=</span> <span class='fl'>0.8</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,27 +171,27 @@ Computes the clusters from the input sce object and stores them back in sce obje
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>which assay to use from sce object</p></td>
+      <td><p>Assay containing scaled counts to use for clustering.</p></td>
     </tr>
     <tr>
-      <th>geneNamesSeurat</th>
-      <td><p>a list of rowames/genenames/featurenames for seurat object for consistent formatting#'</p></td>
-    </tr>
-    <tr>
-      <th>reduction</th>
-      <td><p>selected reduction method to use for computing clusters ("pca" or "ica", default is "pca")</p></td>
+      <th>useReduction</th>
+      <td><p>Reduction method to use for computing clusters. One of "pca" or "ica". Default <code>"pca"</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>numeric value of how many components to use for computing clusters (default is 10)</p></td>
+      <td><p>numeric value of how many components to use for computing clusters. Default <code>10</code>.</p></td>
     </tr>
     <tr>
       <th>algorithm</th>
-      <td><p>selected algorithm to compute clusters (default is "original Louvain algorithm")</p></td>
+      <td><p>selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use <code>louvain</code> for "original Louvain algorithm" and <code>multilevel</code> for "Louvain algorithm with multilevel refinement". Default <code>louvain</code>.</p></td>
     </tr>
     <tr>
       <th>groupSingletons</th>
-      <td><p>boolean if singletons should be grouped together or not (TRUE or FALSE, default is TRUE)</p></td>
+      <td><p>boolean if singletons should be grouped together or not. Default <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>resolution</th>
+      <td><p>Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default <code>0.8</code>.</p></td>
     </tr>
     </table>
 
@@ -210,7 +210,7 @@ Computes the clusters from the input sce object and stores them back in sce obje
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong.</p>
+  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
 </div>
 
 <div class="pkgdown">
