@@ -5,7 +5,7 @@ options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
-source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
+# source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -932,7 +932,17 @@ shinyServer(function(input, output, session) {
   #-----------#
   # Gene Sets #
   #-----------#
+  formatGeneSetList <- function(setListStr) {
+    setListArr <- strsplit(setListStr, "\n")
+    setListList <- list()
+    for (set in setListArr) {
+      setListList[[set]] <- set
+    }
+  }
+  
   observeEvent(input$uploadGS, {
+    newGSchoices <- sctkListGeneSetCollections(vals$original)
+    print(S4Vectors::metadata(vals$original)$sctk)
     withBusyIndicatorServer("uploadGS", {
       if (input$geneSetSourceChoice == "gsGMTUpload") {
         if (is.null(input$geneSetGMT)) {
@@ -959,7 +969,9 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          setList <- strsplit(input$geneSetText, "\n")
+          # setList <- strsplit(input$geneSetText, "\n")
+          setList <- formatGeneSetList(input$geneSetText)
+          print(setList)
           importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
         }
       }
@@ -1066,58 +1078,69 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$runQC, {
-    if (!qcInputExists()) {
-      insertUI(
-        selector = "#qcPageErrors",
-        ui = wellPanel(id = "noSelected", tags$b("Please select at least one algorithm.", style = "color: red;"))
-      )
-    } else if (is.null(vals$counts)) {
-      insertUI(
-        selector = "#qcPageErrors",
-        ui = wellPanel(id = "noSCE", tags$b("Please upload a sample first.", style = "color: red;"))
-      )
-    } else if (is.null(input$qcAssaySelect)) {
-      insertUI(
-        selector = "#qcPageErrors",
-        ui = wellPanel(id = "noQCAssay", tags$b("Please select an assay.", style = "color: red;"))
-      )
-    } else {
-      removeUI(
-        selector = "#noSelected"
-      )
-      removeUI(
-        selector = "#noSCE"
-      )
-      removeUI(
-        selector = "#noQCAssay"
-      )
-      useAssay <- input$qcAssaySelect
-      qcSample <- input$qcSampleSelect
-      if (qcSample == "None") {
-        qcSample <- NULL
-      }
-      algoList = list()
-      paramsList <- list()
-      for (algo in qc_choice_list) {
-        if (input[[algo]]) {
-          algoList <- c(algoList, algo)
-          inputIds <- qc_input_ids[[algo]]
-          algoParams <- list()
-          for (key in names(inputIds)) {
-            algoParams[[key]] = input[[inputIds[[key]]]]
-          }
-          paramsList[[algo]] = algoParams
+    withBusyIndicatorServer("runQC", {
+      if (!qcInputExists()) {
+        insertUI(
+          selector = "#qcPageErrors",
+          ui = wellPanel(id = "noSelected", tags$b("Please select at least one algorithm.", style = "color: red;"))
+        )
+      } else if (is.null(vals$counts)) {
+        insertUI(
+          selector = "#qcPageErrors",
+          ui = wellPanel(id = "noSCE", tags$b("Please upload a sample first.", style = "color: red;"))
+        )
+      } else if (is.null(input$qcAssaySelect)) {
+        insertUI(
+          selector = "#qcPageErrors",
+          ui = wellPanel(id = "noQCAssay", tags$b("Please select an assay.", style = "color: red;"))
+        )
+      } else {
+        removeUI(
+          selector = "#noSelected"
+        )
+        removeUI(
+          selector = "#noSCE"
+        )
+        removeUI(
+          selector = "#noQCAssay"
+        )
+        useAssay <- input$qcAssaySelect
+        qcSample <- input$qcSampleSelect
+        if (qcSample == "None") {
+          qcSample <- NULL
         }
+        algoList = list()
+        paramsList <- list()
+        for (algo in qc_choice_list) {
+          if (input[[algo]]) {
+            algoList <- c(algoList, algo)
+            inputIds <- qc_input_ids[[algo]]
+            algoParams <- list()
+            for (key in names(inputIds)) {
+              if(typeof(inputIds[[key]]) == "list") {
+                paramSubList <- list()
+                for (key2 in names(inputIds[[key]])) {
+                  paramSubList[[key2]] <- input[[inputIds[[key]][[key2]]]]
+                }
+                algoParams[[key]] = paramSubList
+              } else {
+                algoParams[[key]] = input[[inputIds[[key]]]]
+              }
+            }
+            paramsList[[algo]] = algoParams
+          }
+        }
+        # print(input$qcAssaySelect)
+        print(paramsList[['cxds_bcds_hybrid']])
+        # print(vals$original)
+        runCellQC(inSCE = vals$original,
+                  algorithms = algoList,
+                  sample = qcSample,
+                  useAssay = input$qcAssaySelect,
+                  paramsList = paramsList)
+        print(vals$original)
       }
-      print(input$qcAssaySelect)
-      print(paramsList[['cxds']])
-      print(vals$original)
-      runCellQC(inSCE = vals$original,
-                algorithms = algoList,
-                sample = qcSample,
-                useAssay = input$qcAssaySelect,
-                paramsList = paramsList)
-    }
+    })
   })
 
   # OLD IMPLEMENTATION
