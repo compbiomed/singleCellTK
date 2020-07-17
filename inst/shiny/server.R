@@ -5951,6 +5951,7 @@ shinyServer(function(input, output, session) {
                  
                  #get df from reactive input
                  df <- vals$columnAnnotation
+                 data_type <- .backupRestoreDataTypes(df, operation = "backup")
                  
                  #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
                  for (i in 1:length(colnames(df))) {
@@ -5980,6 +5981,7 @@ shinyServer(function(input, output, session) {
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
                  }
                  
+                 df <- .backupRestoreDataTypes(df, data_type, operation = "restore")
                  vals$columnAnnotation <- df
                  
                  output$changesWarning_colData <- renderUI({

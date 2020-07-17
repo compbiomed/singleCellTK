@@ -342,3 +342,30 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   Indices <- unique(Indices)
   return(Indices)
 }
+
+.backupRestoreDataTypes <- function(df, data_type = NULL, operation = "backup"){
+  if(operation == "backup"){
+    data_type <- list()
+    for (i in 1:length(colnames(df))) {
+      data_type[[colnames(df)[i]]] <- c(typeof(df[,i]), is.factor(df[,i]))
+    }
+    return(data_type)
+  }
+  else if(operation == "restore"){
+    print(head(df))
+    for (i in 1:length(colnames(df))) {
+      if(data_type[[i]][2] == TRUE){
+        df[,i] <- as.factor(df[,i])
+      }
+      else{
+        df[,i] <- switch(data_type[[i]][1], 
+                         "integer" = as.integer(df[,i]), 
+                         "character" = as.character(df[,i]), 
+                         "double" = as.double(df[,i]),
+                         "logical" = as.logical(df[,i]), 
+                         "numeric" = as.numeric(df[,i]))
+      }
+    }
+    return(df)
+  }
+}
