@@ -12,7 +12,8 @@ runCxds(
   binThresh = 0,
   verb = FALSE,
   retRes = FALSE,
-  estNdbl = FALSE
+  estNdbl = FALSE,
+  useAssay = "counts"
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ Default NULL.}
 \item{retRes}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
 
 \item{estNdbl}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+
+\item{useAssay}{A string specifying which assay in the SCE to use.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

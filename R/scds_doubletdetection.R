@@ -15,6 +15,7 @@
 #' @param verb See \link[scds]{cxds} for more information. Default \code{FALSE}.
 #' @param retRes See \link[scds]{cxds} for more information. Default \code{FALSE}.
 #' @param estNdbl See \link[scds]{cxds} for more information. Default \code{FALSE}.
+#' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -34,7 +35,8 @@ runCxds <- function(inSCE,
     binThresh = 0,
     verb = FALSE, 
     retRes = FALSE,
-    estNdbl = FALSE) {
+    estNdbl = FALSE,
+    useAssay = "counts") {
 
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
@@ -67,7 +69,8 @@ runCxds <- function(inSCE,
         sceSampleInd <- sample == samples[i]
         sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- .convertToMatrix(counts(sceSample))
+        mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
+        counts(sceSample) <- .convertToMatrix(mat)
         
         result <- NULL
         nGene <- 500
@@ -124,6 +127,7 @@ runCxds <- function(inSCE,
 #' @param nmax See \link[scds]{bcds} for more information. Default \code{"tune"}.
 #' @param varImp See \link[scds]{bcds} for more information. Default \code{FALSE}.
 #' @param estNdbl See \link[scds]{bcds} for more information. Default \code{FALSE}.
+#' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{bcds} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -145,7 +149,8 @@ runBcds <- function(inSCE,
     retRes = FALSE,
     nmax = "tune", 
     varImp = FALSE,
-    estNdbl = FALSE
+    estNdbl = FALSE,
+    useAssay = "counts"
     ) {
 
     if (!is.null(sample)) {
@@ -179,7 +184,8 @@ runBcds <- function(inSCE,
         sceSampleInd <- sample == samples[i]
         sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- .convertToMatrix(counts(sceSample))
+        mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
+        counts(sceSample) <- .convertToMatrix(mat)
         
         result <- NULL
         nGene <- 500
@@ -241,6 +247,7 @@ runBcds <- function(inSCE,
 #' @param verb See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
 #' @param estNdbl See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
 #' @param force See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
+#' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
 #'  \link[SummarizedExperiment]{colData} slot. The columns include
@@ -262,7 +269,8 @@ runCxdsBcdsHybrid <- function(inSCE,
     bcdsArgs = list(), 
     verb = FALSE,
     estNdbl = FALSE,
-    force = FALSE) {
+    force = FALSE,
+    useAssay = "counts") {
 
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
@@ -295,7 +303,8 @@ runCxdsBcdsHybrid <- function(inSCE,
         sceSampleInd <- sample == samples[i]
         sceSample <- inSCE[, sceSampleInd]
 
-        counts(sceSample) <- .convertToMatrix(counts(sceSample))
+        mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
+        counts(sceSample) <- .convertToMatrix(mat)
 
         result <- NULL
         nGene <- 500

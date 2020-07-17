@@ -9,9 +9,19 @@ runDoubletCells(
   sample = NULL,
   useAssay = "counts",
   nNeighbors = 50,
-  simDoublets = 10000,
+  simDoublets = max(10000, ncol(inSCE)),
   seed = 12345,
-  ...
+  size.factors.norm = NULL,
+  size.factors.content = NULL,
+  subset.row = NULL,
+  block = 10000,
+  d = 50,
+  force.match = FALSE,
+  force.k = 20,
+  force.ndist = 3,
+  BNPARAM = BiocNeighbors::KmknnParam(),
+  BSPARAM = BiocSingular::bsparam(),
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
@@ -30,7 +40,39 @@ detection. Default 10000.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{...}{Additional arguments to pass to \link[scran]{doubletCells}.}
+\item{size.factors.norm}{A numeric vector of size factors for normalization 
+of \code{x} prior to PCA and distance calculations. If \code{NULL}, defaults 
+to size factors derived from the library sizes of \code{x}. For the SingleCellExperiment 
+method, the default values are taken from \code{\link{sizeFactors}(x)}, if they are available.}
+
+\item{size.factors.content}{A numeric vector of size factors for RNA content 
+normalization of \code{x} prior to simulating doublets. #' This is orthogonal to 
+the values in \code{size.factors.norm}}
+
+\item{subset.row}{See \code{?"\link{scran-gene-selection}"}.}
+
+\item{block}{An integer scalar controlling the rate of doublet generation, 
+to keep memory usage low.}
+
+\item{d}{An integer scalar specifying the number of components to retain after the PCA.}
+
+\item{force.match}{A logical scalar indicating whether remapping of simulated 
+doublets to original cells should be performed.}
+
+\item{force.k}{An integer scalar specifying the number of neighbours to use for 
+remapping if \code{force.match=TRUE}.}
+
+\item{force.ndist}{A numeric scalar specifying the bandwidth for remapping 
+if \code{force.match=TRUE}.}
+
+\item{BNPARAM}{A \code{\link[BiocNeighbors]{BiocNeighborParam}} object specifying the nearest neighbor algorithm.
+This should be an algorithm supported by \code{\link[BiocNeighbors]{findNeighbors}}.}
+
+\item{BSPARAM}{A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to 
+use for PCA, if \code{d} is not \code{NA}.}
+
+\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam}} object specifying whether the 
+neighbour searches should be parallelized.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
