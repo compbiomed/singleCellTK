@@ -5909,45 +5909,61 @@ shinyServer(function(input, output, session) {
   #create selectinput for selecting attribute value
   output$inputSelectAttribute_colData <- renderUI(
     {
-      selectInput("inputSelectAttribute_colData", label = "select attribute", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttribute_colData", label = "select attribute", choices = colnames(vals$columnAnnotation))
+      }
     })
   output$inputSelectAttributeDelete_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeDelete_colData", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeDelete_colData", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
+      }
     })
   
   #create selectinput for selecting column to delete
   output$inputSelectAttributeValue_colData <- renderUI(
     {
+      if(ncol(vals$columnAnnotation) > 0){
         selectInput("inputSelectAttributeValue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttribute_colData, colnames(vals$columnAnnotation))])
+      }
     })
   
   #create selectinput for selecting merge_1 attribute
   #create selectinput for selecting merge_2 attribute
   output$inputSelectAttributeMerge1_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeMerge1_colData", label = "select first column", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeMerge1_colData", label = "select first column", choices = colnames(vals$columnAnnotation))
+      }
     })
   output$inputSelectAttributeMerge2_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeMerge2_colData", label = "select second column", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeMerge2_colData", label = "select second column", choices = colnames(vals$columnAnnotation))
+      }
     })
   
   #create selectinput for selecting fill_1 attribute
   #create selectinput for selecting fill_2 attribute
   output$inputSelectAttributeFill1_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeFill1_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeFill1_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      }
     })
   output$inputSelectAttributeFill2_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeFill2_colData", label = "select column to fill", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeFill2_colData", label = "select column to fill", choices = colnames(vals$columnAnnotation))
+      }
     })
   
   #create selectinput for selecting attribute value for magic fill
   output$inputSelectAttributeFillvalue_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeFillvalue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttributeFill1_colData, colnames(vals$columnAnnotation))])
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeFillvalue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttributeFill1_colData, colnames(vals$columnAnnotation))])
+      }
     })
   
   #update criteria parameter text input when attribute value selectinput is changed
@@ -5959,7 +5975,9 @@ shinyServer(function(input, output, session) {
   #create selectinput for selecting attribute for clean operation
   output$inputSelectAttributeClean_colData <- renderUI(
     {
-      selectInput("inputSelectAttributeClean_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      if(ncol(vals$columnAnnotation) > 0){
+        selectInput("inputSelectAttributeClean_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+      }
     })
   
   #confirm create bin button
@@ -6224,45 +6242,61 @@ shinyServer(function(input, output, session) {
   #create selectinput for selecting attribute value
   output$inputSelectAttribute_rowData <- renderUI(
     {
-      selectInput("inputSelectAttribute_rowData", label = "select attribute", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttribute_rowData", label = "select attribute", choices = colnames(vals$rowAnnotation))
+      }
     })
   output$inputSelectAttributeDelete_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeDelete_rowData", label = "select attribute to delete", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeDelete_rowData", label = "select attribute to delete", choices = colnames(vals$rowAnnotation))
+      }
     })
 
   #create selectinput for selecting column to delete
   output$inputSelectAttributeValue_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeValue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttribute_rowData, colnames(vals$rowAnnotation))])
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeValue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttribute_rowData, colnames(vals$rowAnnotation))])
+      }
     })
 
   #create selectinput for selecting merge_1 attribute
   #create selectinput for selecting merge_2 attribute
   output$inputSelectAttributeMerge1_rowData <- renderUI(
     {
+      if(ncol(vals$rowAnnotation) > 0){
       selectInput("inputSelectAttributeMerge1_rowData", label = "select first column", choices = colnames(vals$rowAnnotation))
+      }
     })
   output$inputSelectAttributeMerge2_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeMerge2_rowData", label = "select second column", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeMerge2_rowData", label = "select second column", choices = colnames(vals$rowAnnotation))
+      }
     })
 
   #create selectinput for selecting fill_1 attribute
   #create selectinput for selecting fill_2 attribute
   output$inputSelectAttributeFill1_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeFill1_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeFill1_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+      }
     })
   output$inputSelectAttributeFill2_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeFill2_rowData", label = "select column to fill", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeFill2_rowData", label = "select column to fill", choices = colnames(vals$rowAnnotation))
+      }
     })
 
   #create selectinput for selecting attribute value for magic fill
   output$inputSelectAttributeFillvalue_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeFillvalue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData, colnames(vals$rowAnnotation))])
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeFillvalue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData, colnames(vals$rowAnnotation))])
+      }
     })
 
   #update criteria parameter text input when attribute value selectinput is changed
@@ -6274,7 +6308,9 @@ shinyServer(function(input, output, session) {
   #create selectinput for selecting attribute for clean operation
   output$inputSelectAttributeClean_rowData <- renderUI(
     {
-      selectInput("inputSelectAttributeClean_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+      if(ncol(vals$rowAnnotation) > 0){
+        selectInput("inputSelectAttributeClean_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+      }
     })
 
   #confirm create bin button

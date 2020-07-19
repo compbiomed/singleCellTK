@@ -344,7 +344,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 
-#no need for all datatypes, just for factor
+#backup and restore datatypes from an input dataframe
 .manageDataTypes <- function(df, operation = "backup"){
   if(operation == "backup"){
     data <- list()
@@ -362,18 +362,23 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
         data$df[,i] <- as.factor(data$df[,i])
       }
       else{
-       # data$df[,i] <- switch(data$data_type[[i]][1], 
-        #                 "integer" = as.integer(data$df[,i]), 
-         #                "character" = as.character(data$df[,i]), 
-          #               "double" = as.double(data$df[,i]),
-           #              "logical" = as.logical(data$df[,i]), 
-            #             "numeric" = as.numeric(data$df[,i]))
+        #currently not needed and causing issues when a bin is created
+        #it reverts back to numeric thus raising an error
+        #may not be needed at all
+        # data$df[,i] <- switch(data$data_type[[i]][1], 
+        #                  "integer" = as.integer(data$df[,i]), 
+        #                  "character" = as.character(data$df[,i]), 
+        #                  "double" = as.double(data$df[,i]),
+        #                  "logical" = as.logical(data$df[,i]), 
+        #                  "numeric" = as.numeric(data$df[,i]))
       }
     }
   }
   return(data)
 }
 
+#converts the columns of a dataframe from factor to character
+#for use with .manageDataTypes
 .convertFactorToCharacter <- function(df){
   for (i in 1:length(colnames(df))) {
     if (is.factor(df[, i])) {
@@ -382,4 +387,3 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   return(df)
 }
-
