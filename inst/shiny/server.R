@@ -1884,14 +1884,14 @@ shinyServer(function(input, output, session) {
             shinyalert::shinyalert("Error", "Name already exists!", type = "error")
           } else {
             if (input$dimRedPlotMethod == "PCA"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = input$dimRedNameInput)
                 updateReddimInputs()
               }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
@@ -1900,7 +1900,7 @@ shinyServer(function(input, output, session) {
                 updateReddimInputs()
               }
             } else {
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,

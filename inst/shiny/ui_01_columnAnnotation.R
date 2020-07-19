@@ -1,7 +1,6 @@
 shinyPanelColumnAnnotation <- fluidPage(
   includeCSS('styles.css'),
-   bsCollapse(multiple = TRUE, open = c("Options", "Annotation"),
-              bsCollapsePanel("Options",
+              panel(heading = "Options for editing and importing Cell Annotation data",
                               tabsetPanel(
                                  tabPanel("Bins",
                                           panel(
@@ -56,7 +55,7 @@ shinyPanelColumnAnnotation <- fluidPage(
                                               inputId = "editorChoiceRadio_colData",
                                               label = "Select source for column annotation:",
                                               choices = c("Replace Cell Annotations" = "replace", "Add to existing Cell Annotations" = "concatenate"),
-                                              selected = "replace"
+                                              selected = "concatenate"
                                             ),
                                             h6("You can either replace the existing colData or you can add/merge the new colData with the existing one."),
                                             conditionalPanel(
@@ -92,8 +91,7 @@ shinyPanelColumnAnnotation <- fluidPage(
                               )
                               ),
               
-              bsCollapsePanel("Annotation",
+              panel(heading = "Table of Cell Annotations",
                               uiOutput("outputColumnAnnotationTable_colData")
-              )
               )
 )
