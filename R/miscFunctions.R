@@ -343,29 +343,43 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(Indices)
 }
 
-.backupRestoreDataTypes <- function(df, data_type = NULL, operation = "backup"){
+
+#no need for all datatypes, just for factor
+.manageDataTypes <- function(df, operation = "backup"){
   if(operation == "backup"){
-    data_type <- list()
-    for (i in 1:length(colnames(df))) {
-      data_type[[colnames(df)[i]]] <- c(typeof(df[,i]), is.factor(df[,i]))
+    data <- list()
+    data$data_type <- list()
+    data$df <- df
+    for (i in 1:length(colnames(data$df))) {
+      data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]), is.factor(data$df[,i]))
     }
-    return(data_type)
+    data$df <- .convertFactorToCharacter(df)
   }
   else if(operation == "restore"){
-    print(head(df))
-    for (i in 1:length(colnames(df))) {
-      if(data_type[[i]][2] == TRUE){
-        df[,i] <- as.factor(df[,i])
+    data <- df
+    for (i in 1:length(colnames(data$df))) {
+      if(data$data_type[[i]][2] == TRUE){
+        data$df[,i] <- as.factor(data$df[,i])
       }
       else{
-        df[,i] <- switch(data_type[[i]][1], 
-                         "integer" = as.integer(df[,i]), 
-                         "character" = as.character(df[,i]), 
-                         "double" = as.double(df[,i]),
-                         "logical" = as.logical(df[,i]), 
-                         "numeric" = as.numeric(df[,i]))
+       # data$df[,i] <- switch(data$data_type[[i]][1], 
+        #                 "integer" = as.integer(data$df[,i]), 
+         #                "character" = as.character(data$df[,i]), 
+          #               "double" = as.double(data$df[,i]),
+           #              "logical" = as.logical(data$df[,i]), 
+            #             "numeric" = as.numeric(data$df[,i]))
       }
     }
-    return(df)
   }
+  return(data)
 }
+
+.convertFactorToCharacter <- function(df){
+  for (i in 1:length(colnames(df))) {
+    if (is.factor(df[, i])) {
+      df[,i] = as.character(df[,i])
+    }
+  }
+  return(df)
+}
+

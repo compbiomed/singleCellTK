@@ -5972,17 +5972,11 @@ shinyServer(function(input, output, session) {
                  criteria_term <- input$inputCriteria_colData
                  operator_term <- input$inputOperator_colData
                  
-                 #get df from reactive input
-                 df <- vals$columnAnnotation
-                 data_type <- .backupRestoreDataTypes(df, operation = "backup")
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 df <- data$df
                  
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-                 
+                 #perform operations
                  if (operator_term == "=")
                  {
                    df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
@@ -6004,8 +5998,10 @@ shinyServer(function(input, output, session) {
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
                  }
                  
-                 df <- .backupRestoreDataTypes(df, data_type, operation = "restore")
-                 vals$columnAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
@@ -6032,15 +6028,11 @@ shinyServer(function(input, output, session) {
   #fill column button
   observeEvent(input$buttonConfirmFill_colData,
                {
-                 df <- vals$columnAnnotation
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 df <- data$df
                  
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-                 
+                 #perform operation
                  selected_attribute_1 <- input$inputSelectAttributeFill1_colData
                  selected_attribute_2 <- input$inputSelectAttributeFill2_colData
                  selected_column_no_1 <- match(selected_attribute_1, colnames(df))
@@ -6056,7 +6048,10 @@ shinyServer(function(input, output, session) {
                    }
                  }
                  
-                 vals$columnAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
@@ -6067,15 +6062,11 @@ shinyServer(function(input, output, session) {
   #confirm clean button
   observeEvent(input$buttonConfirmClean_colData,
                {
-                 df <- vals$columnAnnotation
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 df <- data$df
                  
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-                 
+                 #perform operation
                  selected_attribute <- input$inputSelectAttributeClean_colData
                  selected_column_no <- match(selected_attribute, colnames(df))
                  selected_choice <- input$inputRemovalOperation_colData
@@ -6111,7 +6102,10 @@ shinyServer(function(input, output, session) {
                    }
                  }
                  
-                 vals$columnAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
@@ -6123,7 +6117,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonConfirmEmptyColumnName_colData,
                {
                  df <- vals$columnAnnotation
-                 
                 
                  colname <- input$inputEmptyColumnName_colData
                  df$newcolumn <- input$inputDefaultValueAddColumn_colData
@@ -6167,6 +6160,7 @@ shinyServer(function(input, output, session) {
   #save changes to colData
   observeEvent(input$buttonSave_colData,{
       colData(vals$counts) <- DataFrame(vals$columnAnnotation)
+      print(head(colData(vals$counts)))
       output$changesWarning_colData <- NULL
       showNotification("Changes saved successfully.")
   })
@@ -6293,16 +6287,11 @@ shinyServer(function(input, output, session) {
                  criteria_term <- input$inputCriteria_rowData
                  operator_term <- input$inputOperator_rowData
 
-                 #get df from reactive input
-                 df <- vals$rowAnnotation
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 df <- data$df
 
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-
+                 #operations
                  if (operator_term == "=")
                  {
                    df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
@@ -6324,7 +6313,10 @@ shinyServer(function(input, output, session) {
                    df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
                  }
 
-                 vals$rowAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
@@ -6351,15 +6343,11 @@ shinyServer(function(input, output, session) {
   #fill column button
   observeEvent(input$buttonConfirmFill_rowData,
                {
-                 df <- vals$rowAnnotation
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 df <- data$df
 
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-
+                 #operations
                  selected_attribute_1 <- input$inputSelectAttributeFill1_rowData
                  selected_attribute_2 <- input$inputSelectAttributeFill2_rowData
                  selected_column_no_1 <- match(selected_attribute_1, colnames(df))
@@ -6375,7 +6363,10 @@ shinyServer(function(input, output, session) {
                    }
                  }
 
-                 vals$rowAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
@@ -6386,15 +6377,11 @@ shinyServer(function(input, output, session) {
   #confirm clean button
   observeEvent(input$buttonConfirmClean_rowData,
                {
-                 df <- vals$rowAnnotation
+                 #get df from reactive input, backup column datatypes and convert factor to character
+                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 df <- data$df
 
-                 #check if df column is factor, convert to character ... REMOVE OR UPDATE THIS
-                 for (i in 1:length(colnames(df))) {
-                   if (is.factor(df[, i])) {
-                     df[,i] = as.character(df[,i])
-                   }
-                 }
-
+                 #operations
                  selected_attribute <- input$inputSelectAttributeClean_rowData
                  selected_column_no <- match(selected_attribute, colnames(df))
                  selected_choice <- input$inputRemovalOperation_rowData
@@ -6430,7 +6417,10 @@ shinyServer(function(input, output, session) {
                    }
                  }
 
-                 vals$rowAnnotation <- df
+                 #restore datatypes
+                 data$df <- df
+                 data <- .manageDataTypes(data, operation = "restore")
+                 vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
                    HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
