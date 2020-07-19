@@ -345,11 +345,13 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 
 
 #backup and restore datatypes from an input dataframe
+#needs refactoring and a better way to check for factor
 .manageDataTypes <- function(df, operation = "backup"){
   if(operation == "backup"){
     data <- list()
     data$data_type <- list()
     data$df <- df
+    #find a better way to check for factor
     for (i in 1:length(colnames(data$df))) {
       data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]), is.factor(data$df[,i]))
     }
@@ -357,7 +359,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   else if(operation == "restore"){
     data <- df
-    for (i in 1:length(colnames(data$df))) {
+    for (i in seq(length(colnames(data$df)))) {
       if(data$data_type[[i]][2] == TRUE){
         data$df[,i] <- as.factor(data$df[,i])
       }
@@ -380,7 +382,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 #converts the columns of a dataframe from factor to character
 #for use with .manageDataTypes
 .convertFactorToCharacter <- function(df){
-  for (i in 1:length(colnames(df))) {
+  for (i in seq(length(colnames(df)))) {
     if (is.factor(df[, i])) {
       df[,i] = as.character(df[,i])
     }
