@@ -605,7 +605,6 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   assay(altExp(inSCE, newAssayName), newAssayName) <- counts 
   
   return(inSCE)
-
 }
 
 # ----
