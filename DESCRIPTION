@@ -110,7 +110,8 @@ Suggests:
     bladderbatch,
     xtable,
     spelling,
-    org.Mm.eg.db
+    org.Mm.eg.db,
+    stringr
 Remotes: 
     joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,

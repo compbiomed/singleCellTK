@@ -40,6 +40,7 @@ library(shinyWidgets)
 library(stringr)
 library(Hmisc)
 
+
 source("helpers.R")
 source("colourGroupInput.R")
 data("c2BroadSets")
@@ -116,7 +117,11 @@ if (is.null(getShinyOption("theme"))){
   shinyTheme <- getShinyOption("theme")
 }
 
-source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
+source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
+source("ui_01_gene_sets.R", local = TRUE) #creates shinyPanelGeneSets variable
+source("ui_01_columnAnnotation.R", local = TRUE) #creates shinyPanelColumnAnnotation variable
+source("ui_01_rowAnnotation.R", local = TRUE) #creates shinyPanelRowAnnotation variable
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
@@ -169,7 +174,14 @@ shinyUI(
     navbarPage(
       tooltitle,
       theme = shinytheme(shinyTheme),
-      tabPanel("Data", shinyPanelData),
+      navbarMenu(
+        "Data",
+        tabPanel("Import SCE", shinyPanelImport),
+        tabPanel("Import Gene Sets", shinyPanelGeneSets),
+        tabPanel("Column Annotation", shinyPanelColumnAnnotation),
+        tabPanel("Row Annotation", shinyPanelRowAnnotation),
+        tabPanel("Export", shinyPanelExport)
+      ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
@@ -201,8 +213,6 @@ shinyUI(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
                hidden(verbatimTextOutput(outputId="console")),
-               tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
-               tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
         )
       ),
       useShinyjs(),

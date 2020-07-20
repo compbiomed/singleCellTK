@@ -14,7 +14,8 @@ runBcds(
   retRes = FALSE,
   nmax = "tune",
   varImp = FALSE,
-  estNdbl = FALSE
+  estNdbl = FALSE,
+  useAssay = "counts"
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ Default NULL.}
 \item{varImp}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
 
 \item{estNdbl}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+
+\item{useAssay}{A string specifying which assay in the SCE to use.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

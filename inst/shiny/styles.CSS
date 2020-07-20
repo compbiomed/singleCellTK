@@ -32,12 +32,14 @@
 }
 
 #consoleDiv {
-  pointer-events: none;
+  position: fixed; 
+  bottom: 0; 
+  z-index: 5; 
+  padding: 0;
+  width: 100%;
 }
 
-#consoleToggle {
-  pointer-events: auto;
+#console {
+  height: 150px; 
+  margin-bottom: 0
 }
-
-
-
