@@ -634,7 +634,6 @@ plotSCEScatter <- function(inSCE,
   return(g)
 }
 
-
 #' @title Violin plot plotting tool.
 #' @description Visualizes specified values via a violin plot.
 #' @param y Numeric values to be plotted on y-axis.
