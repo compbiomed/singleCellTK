@@ -232,8 +232,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      visplotobject1 <- NULL
-      visplotobject2 <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
@@ -335,8 +335,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      visplotobject1 <- NULL
-      visplotobject2 <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -375,8 +375,8 @@ shinyServer(function(input, output, session) {
         vals$diffexgenelist <- NULL
         vals$gsvaRes <- NULL
         vals$gsvaLimma <- NULL
-        visplotobject1 <- NULL
-        visplotobject2 <- NULL
+        vals$visplotobject1 <- NULL
+        vals$visplotobject2 <- NULL
         vals$enrichRes <- NULL
         vals$diffexBmName <- NULL
         diffExValues$diffExList <- NULL
@@ -410,8 +410,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      visplotobject1 <- NULL
-      visplotobject2 <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -472,8 +472,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$enrichRes <- NULL
-      visplotobject1 <- NULL
-      visplotobject2 <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
@@ -532,8 +532,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$enrichRes <- NULL
-      visplotobject1 <- NULL
-      visplotobject2 <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -553,8 +553,8 @@ shinyServer(function(input, output, session) {
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
     vals$enrichRes <- NULL
-    visplotobject1 <- NULL
-    visplotobject2 <- NULL
+    vals$visplotobject1 <- NULL
+    vals$visplotobject2 <- NULL
     vals$diffexheatmapplot <- NULL
     vals$diffexBmName <- NULL
     diffExValues$diffExList <- NULL
