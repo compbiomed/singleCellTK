@@ -932,17 +932,18 @@ shinyServer(function(input, output, session) {
   #-----------#
   # Gene Sets #
   #-----------#
+  
   formatGeneSetList <- function(setListStr) {
-    setListArr <- strsplit(setListStr, "\n")
+    setListArr <- strsplit(setListStr, "\n")[[1]]
     setListList <- list()
     for (set in setListArr) {
       setListList[[set]] <- set
     }
+    return(setListList)
   }
   
   observeEvent(input$uploadGS, {
-    newGSchoices <- sctkListGeneSetCollections(vals$original)
-    print(S4Vectors::metadata(vals$original)$sctk)
+    
     withBusyIndicatorServer("uploadGS", {
       if (input$geneSetSourceChoice == "gsGMTUpload") {
         if (is.null(input$geneSetGMT)) {
@@ -951,7 +952,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          importGeneSetsFromGMT(vals$original, input$geneSetGMT, collectionName = input$gsCollectionName)
+          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, collectionName = input$gsCollectionNameGMT)
         }
 
       } else if (input$geneSetSourceChoice == "gsDBUpload") {
@@ -959,7 +960,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
+          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
@@ -969,14 +970,12 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          # setList <- strsplit(input$geneSetText, "\n")
           setList <- formatGeneSetList(input$geneSetText)
-          print(setList)
-          importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+          vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
         }
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
-      print(S4Vectors::metadata(vals$original)$sctk)
+      print(S4Vectors::metadata(vals$original)$sctk$genesets)
       updateSelectInput(session, "QCMgeneSets", choices = newGSchoices)
     })
   })
@@ -1130,10 +1129,7 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
-        # print(input$qcAssaySelect)
-        print(paramsList[['cxds_bcds_hybrid']])
-        # print(vals$original)
-        runCellQC(inSCE = vals$original,
+        vals$original <- runCellQC(inSCE = vals$original,
                   algorithms = algoList,
                   sample = qcSample,
                   useAssay = input$qcAssaySelect,
