@@ -17,7 +17,7 @@ seuratFindHVG(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000)
 \item{hvgNumber}{numeric value of how many genes to select as highly variable. Default \code{2000}.}
 }
 \value{
-sceObject updated sce object with highly variable genes computation stored
+Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 }
 \description{
 seuratFindHVG

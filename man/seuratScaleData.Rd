@@ -31,7 +31,7 @@ seuratScaleData(
 \item{scaleMax}{maximum numeric value to return for scaled data. Default \code{10}.}
 }
 \value{
-sceObject scaled sce object
+Scaled \code{SingleCellExperiment} object
 }
 \description{
 seuratScaleData

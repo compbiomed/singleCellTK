@@ -74,9 +74,9 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "20"),
+                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
-                                            materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = TRUE),
+                                            materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
                                             conditionalPanel(
                                               condition = 'input.pca_compute_heatmap == true',
@@ -86,9 +86,8 @@ shinyPanelSeurat <- fluidPage(
                                             actionButton(inputId = "run_pca_button", "Run PCA")
                                              ),
                                         panel(heading = "Select No. of Components",
-                                            h5("Number of components suggested by ElbowPlot: "),
-                                            verbatimTextOutput(outputId = "pca_significant_pc_output", placeholder = TRUE),
-                                            sliderInput(inputId = "pca_significant_pc_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
+                                            htmlOutput(outputId = "pca_significant_pc_output", inline = FALSE),
+                                            numericInput(inputId = "pca_significant_pc_counter", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10)
                                         )
                                           )
                                         )
@@ -96,41 +95,10 @@ shinyPanelSeurat <- fluidPage(
                             column(8,
                                 fluidRow(
                                     column(12,
-                                        tags$div(class = "seurat_pca_plots", tabsetPanel(type = "tabs",
-                                            tabPanel(title = "PCA Plot",
-                                                panel(heading = "PCA Plot",
-                                                    plotlyOutput(outputId = "plot_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "Elbow Plot",
-                                                panel(heading = "Elbow Plot",
-                                                    plotlyOutput(outputId = "plot_elbow_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "JackStraw Plot",
-                                                panel(heading = "JackStraw Plot",
-                                                    plotlyOutput(outputId = "plot_jackstraw_pca")
-                                                     )
-                                                    ),
-                                            tabPanel(title = "Heatmap Plot",
-                                                panel(heading = "Heatmap Plot",
-                                                    panel(heading = "Plot Options",
-                                                        fluidRow(
-                                                            column(6,
-                                                                pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-                                                            ),
-                                                            column(6,
-                                                                sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-                                                            )
-                                                        ),
-                                                        actionButton(inputId = "plot_heatmap_pca_button", "Plot")
-                                                        ),
-                                                    panel(heading = "Plot",
-                                                        jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
-                                                        )
-                                                     )
-                                                    )
-                                                   ))
+                                           hidden(
+                                        tags$div(class = "seurat_pca_plots", tabsetPanel(id = "seuratPCAPlotTabset", type = "tabs"
+                                                   )
+                                                 ))
                                           )
 
                                         )
@@ -157,7 +125,7 @@ shinyPanelSeurat <- fluidPage(
                                                panel(heading = "Select No. of Components",
                                                      #h5("Number of components suggested by ElbowPlot: "),
                                                      #verbatimTextOutput(outputId = "ica_significant_pc_output", placeholder = TRUE),
-                                                     sliderInput(inputId = "ica_significant_ic_slider", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10, round = TRUE)
+                                                     numericInput(inputId = "ica_significant_ic_counter", label = "Select number of components for downstream analysis: ", min = 1, max = 20, value = 10)
                                                )
                                         )
                                       )
@@ -165,31 +133,10 @@ shinyPanelSeurat <- fluidPage(
                                column(8,
                                       fluidRow(
                                         column(12,
-                                                tags$div(class = "seurat_ica_plots", tabsetPanel(type = "tabs",
-                                                           tabPanel(title = "ICA Plot",
-                                                                    panel(heading = "ICA Plot",
-                                                                          plotlyOutput(outputId = "plot_ica")
-                                                                    )
-                                                           ),
-                                                           tabPanel(title = "Heatmap Plot",
-                                                                    panel(heading = "Heatmap Plot",
-                                                                          panel(heading = "Plot Options",
-                                                                                fluidRow(
-                                                                                  column(6,
-                                                                                         pickerInput(inputId = "picker_dimheatmap_components_ica", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-                                                                                  ),
-                                                                                  column(6,
-                                                                                         sliderInput(inputId = "slider_dimheatmap_ica", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-                                                                                  )
-                                                                                ),
-                                                                                actionButton(inputId = "plot_heatmap_ica_button", "Plot")
-                                                                          ),
-                                                                          panel(heading = "Plot",
-                                                                                jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
-                                                                          )
-                                                                    )
-                                                           )
+                                               hidden(
+                                                tags$div(class = "seurat_ica_plots", tabsetPanel(id="seuratICAPlotTabset", type = "tabs"
                                                ))
+                                               )
                                                )
                                       )
                                       )
@@ -284,28 +231,10 @@ shinyPanelSeurat <- fluidPage(
                     column(8,
                            fluidRow(
                              column(12,
-                                    tags$div(class = "seurat_clustering_plots", tabsetPanel(type = "tabs",
-                                                tabPanel(title = "PCA Plot",
-                                                         panel(heading = "PCA Plot",
-                                                               plotlyOutput(outputId = "plot_pca_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "ICA Plot",
-                                                         panel(heading = "ICA Plot",
-                                                               plotlyOutput(outputId = "plot_ica_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "tSNE Plot",
-                                                         panel(heading = "tSNE Plot",
-                                                               plotlyOutput(outputId = "plot_tsne_clustering")
-                                                         )
-                                                ),
-                                                tabPanel(title = "UMAP Plot",
-                                                         panel(heading = "UMAP Plot",
-                                                               plotlyOutput(outputId = "plot_umap_clustering")
-                                                         )
-                                                )
+                                    hidden(
+                                    tags$div(class = "seurat_clustering_plots", tabsetPanel(id = "seuratClusteringPlotTabset", type = "tabs"
                                     ))
+                                    )
                              )
                              
                            )

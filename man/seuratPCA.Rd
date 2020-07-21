@@ -17,7 +17,7 @@ seuratPCA(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20)
 \item{nPCs}{numeric value of how many components to compute. Default \code{20}.}
 }
 \value{
-sceObject updated sce object which now contains the computed principal components
+Updated \code{SingleCellExperiment} object which now contains the computed principal components
 }
 \description{
 seuratPCA

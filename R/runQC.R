@@ -86,6 +86,7 @@ runCellQC <- function(inSCE,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
+      useAssay = useAssay,
       estNdbl = TRUE),
       paramsList[["cxds"]]))
   }
@@ -95,6 +96,7 @@ runCellQC <- function(inSCE,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
+      useAssay = useAssay,
       estNdbl = TRUE),
       paramsList[["bcds"]]))
   }
@@ -104,6 +106,7 @@ runCellQC <- function(inSCE,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
+      useAssay = useAssay,
       estNdbl = TRUE),
       paramsList[["cxds_bcds_hybrid"]]))
   }
