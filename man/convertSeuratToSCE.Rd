@@ -19,7 +19,7 @@ convertSeuratToSCE(
 \item{scaledAssayName}{Name of assay to store the scaled data. Default \code{"seuratScaledData"}.}
 }
 \value{
-inSCE output object
+\code{SingleCellExperiment} output object
 }
 \description{
 convertSeuratToSCE

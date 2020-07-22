@@ -4,7 +4,22 @@
 \alias{runDecontX}
 \title{Detecting contamination with DecontX.}
 \usage{
-runDecontX(inSCE, sample = NULL, useAssay = "counts", ...)
+runDecontX(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  z = NULL,
+  maxIter = 500,
+  delta = c(10, 10),
+  estimateDelta = TRUE,
+  convergence = 0.001,
+  iterLogLik = 10,
+  varGenes = 5000,
+  dbscanEps = 1,
+  seed = 12345,
+  logfile = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
@@ -16,7 +31,58 @@ sample separately.}
 \item{useAssay}{A string specifying which assay in the SCE to use. Default
 'counts'.}
 
-\item{...}{Additional arguments to pass to \link[celda]{decontX}.}
+\item{z}{Numeric or character vector. Cell cluster labels. If NULL,
+PCA will be used to reduce the dimensionality of the dataset initially,
+'\link[uwot]{umap}' from the 'uwot' package
+will be used to further reduce the dataset to 2 dimenions and
+the '\link[dbscan]{dbscan}' function from the 'dbscan' package
+will be used to identify clusters of broad cell types. Default NULL.}
+
+\item{maxIter}{Integer. Maximum iterations of the EM algorithm. Default 500.}
+
+\item{delta}{Numeric Vector of length 2. Concentration parameters for
+the Dirichlet prior for the contamination in each cell. The first element
+is the prior for the native counts while the second element is the prior for
+the contamination counts. These essentially act as pseudocounts for the
+native and contamination in each cell. If \code{estimateDelta = TRUE},
+this is only used to produce a random sample of proportions for an initial
+value of contamination in each cell. Then
+\code{\link[MCMCprecision]{fit_dirichlet}} is used to update
+\code{delta} in each iteration.
+If \code{estimateDelta = FALSE}, then \code{delta} is fixed with these
+values for the entire inference procedure. Fixing \code{delta} and
+setting a high number in the second element will force \code{decontX}
+to be more aggressive and estimate higher levels of contamination at
+the expense of potentially removing native expression.
+Default \code{c(10, 10)}.}
+
+\item{estimateDelta}{Boolean. Whether to update \code{delta} at each
+iteration.}
+
+\item{convergence}{Numeric. The EM algorithm will be stopped if the maximum
+difference in the contamination estimates between the previous and
+current iterations is less than this. Default 0.001.}
+
+\item{iterLogLik}{Integer. Calculate log likelihood every \code{iterLogLik}
+iteration. Default 10.}
+
+\item{varGenes}{Integer. The number of variable genes to use in
+dimensionality reduction before clustering. Variability is calcualted using
+\code{\link[scran]{modelGeneVar}} function from the 'scran' package.
+Used only when z is not provided. Default 5000.}
+
+\item{dbscanEps}{Numeric. The clustering resolution parameter
+used in '\link[dbscan]{dbscan}' to estimate broad cell clusters.
+Used only when z is not provided. Default 1.}
+
+\item{seed}{Integer. Passed to \link[withr]{with_seed}. For reproducibility,
+a default value of 12345 is used. If NULL, no calls to
+\link[withr]{with_seed} are made.}
+
+\item{logfile}{Character. Messages will be redirected to a file named
+`logfile`. If NULL, messages will be printed to stdout.  Default NULL.}
+
+\item{verbose}{Logical. Whether to print log messages. Default TRUE.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with

@@ -26,6 +26,8 @@ plotSCEDimReduceFeatures(
   title = NULL,
   titleSize = 15,
   legendTitle = NULL,
+  legendSize = 10,
+  legendTitleSize = 12,
   groupBy = NULL
 )
 }
@@ -88,7 +90,11 @@ Default 'blue'.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 
-\item{groupBy}{Facet wrap the scatterplot based on value. 
+\item{legendSize}{size of legend. Default 10.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{groupBy}{Facet wrap the scatterplot based on value.
 Default \code{NULL}.}
 }
 \value{

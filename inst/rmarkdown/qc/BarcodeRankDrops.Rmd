@@ -1,5 +1,5 @@
 ---
-title: "Interactive Analysis of Single Cell RNA-Seq Data: computing barcode ranks with barcodeRank"
+title: "Comprehensive reporting of droplet QC metrics: computing barcode ranks with barcodeRank"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -22,89 +22,19 @@ require(singleCellTK)
 sce<-params$object
 ```
 
-```{r "DropletQC-umap", include=FALSE, warning=FALSE}
-getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
-  if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
-    stop("Please use a SingleCellExperiment or a SCtkExperiment object")
-  }
-  #test for assay existing
-  if (!all(useAssay %in% names(assays(inSCE)))){
-    stop("assay '", useAssay, "' does not exist.")
-  }
-  matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  matColData <- as.matrix(matColData)
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
-  }
-  umap_results <- umap_results$layout
-  colnames(umap_results) <- c("UMAP1", "UMAP2")
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
-  return(inSCE)
-}
+```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
+    i="BarcodeRanks"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Total UMI counts vs Rank \n\n'))
+    plotsBarcodeRank
+    title(main="Total UMI counts vs Rank")
+    cat(paste0('## Session info \n\n'))
+    sce@metadata$runBarcodeRankDrops
 ```
 
-```{r "BarcodeRank-reddim", include = FALSE, include=FALSE, warning=FALSE}
-#Log counts prior to running UMAP
-if (is.null(sce@assays@data$logcounts)){
-  sce@assays@data$logcounts = log10(sce@assays@data$counts + 1)}
-  #get UMAP
-if (!"UMAP" %in% reducedDimNames(sce)){
-  sce = getUMAP(inSCE = sce, useAssay = "logcounts")}
-
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runBarcodeRank <- descriptionBarcodeRank()
 ```
-
-##BarcodeRank
-
-BarcodeRank computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA.
-
-```{r, "BarcodeRank-knee-plot"}
-if (length(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank)!=0){
-  plot(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank, metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_total, log="xy", xlab="Rank", ylab="Total")
-o <- order(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank)
-lines(metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank[o], metadata(sce)$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_fitted[o], col="red")
-if (length(sce$dropletUtils_BarcodeRank_Knee)!=0 || length(sce$dropletUtils_BarcodeRank_Inflection)!=0){
-  abline(h=sce$dropletUtils_BarcodeRank_Knee, col="dodgerblue", lty=2)
-abline(h=sce$dropletUtils_BarcodeRank_Inflection, col="forestgreen", lty=2)
-}else{
-  stop("The barcodeRank knee or inflection are missing")
-}
-legend("bottomleft", lty=2, col=c("dodgerblue", "forestgreen"), 
-    legend=c("knee", "inflection"))
-}else{
-  stop("The barcodeRank is missing")
-}
-```
-
-Projection the output into a reduced dimentional space
-```{r "BarcodeRank-knee"}
-if (!is.null(sce$dropletUtils_BarcodeRank_Knee)){
-  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_BarcodeRank_Knee" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "BarcodeRank Knee score per sample", legendTitle = "Knee score")
-}else{
-  print("BarcodeRank Knee is missing")
-}
-```
-
-```{r "BarcodeRank-inflection"}
-if (!is.null(sce$dropletUtils_BarcodeRank_Inflection)){
-  plotSCEDimReduceColData(inSCE = sce, colorBy = "dropletUtils_BarcodeRank_Inflection" , conditionClass = "numeric", reducedDimName = "UMAP", dotsize = 1, title = "BarcodeRank inflection score per sample", legendTitle = "Inflection score")
-}else{
-  print("BarcodeRank inflection is missing")}
-```
-
-## BarcodeRankDrops input info
-```{r "BarcodeRank-info"}
-if (!is.null(sce@metadata$runBarcodeRankDrops)){
-  print(sce@metadata$runBarcodeRankDrops)
-} 
-```
-
-## SessionInfo
-```{r "BarcodeRank-session-info", results=TRUE}
-print(sessionInfo())
-```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runBarcodeRank`
