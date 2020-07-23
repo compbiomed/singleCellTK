@@ -1,7 +1,6 @@
 shinyPanelRowAnnotation <- fluidPage(
   includeCSS('styles.css'),
-  bsCollapse(multiple = TRUE, open = c("Options", "Annotation"),
-             bsCollapsePanel("Options",
+             panel(heading = "Options for editing and importing Feature Annotation data",
                              tabsetPanel(
                                tabPanel("Bins",
                                         panel(
@@ -55,12 +54,12 @@ shinyPanelRowAnnotation <- fluidPage(
                                           radioButtons(
                                             inputId = "editorChoiceRadio_rowData",
                                             label = "Select source for column annotation:",
-                                            choices = c("Replace Feature Annotations", "Add to existing Feature Annotations"), #update this to include values
-                                            selected = "Replace Feature Annotations"
+                                            choices = c("Replace Feature Annotations" = "replace", "Add to existing Feature Annotations" = "concatenate"), #update this to include values
+                                            selected = "concatenate"
                                           ),
                                           h6("You can either replace the existing rowData or you can add/merge the new rowData with the existing one."),
                                           conditionalPanel(
-                                            condition = "input.editorChoiceRadio_rowData == 'Add to existing Feature Annotations'",
+                                            condition = "input.editorChoiceRadio_rowData == 'concatenate'",
                                             HTML("<h6><span style='color:red'> Warning:</span> Adding to existing rowData will override the columns with same names! </h6>")
                                           ),
                                           fileInput('uploadFile_rowData', 'Choose file to upload',
@@ -93,8 +92,7 @@ shinyPanelRowAnnotation <- fluidPage(
                              )
              ),
              
-             bsCollapsePanel("Annotation",
+             panel(heading = "Table of Feature Annotations",
                              uiOutput("outputColumnAnnotationTable_rowData")
              )
-  )
 )

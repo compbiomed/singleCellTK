@@ -138,7 +138,7 @@ shinyPanelQC <- fluidPage(
           selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select a Sample", list()),
           
-          actionButton("runQC", "Run"),
+          withBusyIndicatorUI(actionButton("runQC", "Run")),
           tags$div(id = "qcPageErrors"),
           
         ),
