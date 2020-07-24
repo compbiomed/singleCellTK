@@ -1,5 +1,5 @@
 shinyPanelColumnAnnotation <- fluidPage(
-  includeCSS('styles.css'),
+  includeCSS('styles.CSS'),
               panel(heading = "Options for editing and importing Cell Annotation data",
                               tabsetPanel(
                                  tabPanel("Bins",
