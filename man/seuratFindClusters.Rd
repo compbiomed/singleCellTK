@@ -12,7 +12,8 @@ seuratFindClusters(
   dims = 10,
   algorithm = c("louvain", "multilevel", "SLM"),
   groupSingletons = TRUE,
-  resolution = 0.8
+  resolution = 0.8,
+  externalReduction = NULL
 )
 }
 \arguments{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{.seuratInvalidate}
 \alias{.seuratInvalidate}
-\title{.seuratInvalidate
+\title{seuratInvalidate
 Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.}
 \usage{
 .seuratInvalidate(
@@ -37,6 +37,6 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
 }
 \description{
-.seuratInvalidate
+seuratInvalidate
 Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
 }
