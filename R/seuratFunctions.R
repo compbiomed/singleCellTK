@@ -532,7 +532,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @return Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
 #' @export
 #' @importFrom SummarizedExperiment assay<-
-.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
+seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
   if(scaleData){
     assay(inSCE, "seuratScaledData") <- NULL
   }
