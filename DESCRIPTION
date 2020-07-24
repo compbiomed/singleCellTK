@@ -72,6 +72,7 @@ Imports:
     shiny,
     shinyDirectoryInput,
     shinyFiles,
+    shinyWidgets,
     shinyjs,
     shinyBS,
     shinyjqui,
