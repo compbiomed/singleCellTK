@@ -37,7 +37,7 @@ if (!reticulate::py_module_available(module = "scrublet")) {
 }
 
 ##Read in flags from command line using optparse
-option_list <- list(optparse::make_option(c("-b", "--base_path"),
+option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type="character",
         default=NULL,
         help="Base path for the output from the preprocessing algorithm"),
@@ -64,23 +64,23 @@ option_list <- list(optparse::make_option(c("-b", "--base_path"),
         type="character",
         default=NULL,
         help="The name of genome reference. This is only required for CellRangerV2 data."), 
-    optparse::make_option(c("-C","--cell_data_path"),
+    optparse::make_option(c("-C","--cellPath"),
         type="character",
         default=NULL,
-        help="The directory contains cell matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
-    optparse::make_option(c("-R","--raw_data_path"),
+        help="The directory contains cell matrix, gene and cell barcodes information. Default is NULL. If 'basePath' is NULL, both 'cellPath' and 'rawPath' should also be specified."),
+    optparse::make_option(c("-R","--rawPath"),
         type="character",
         default=NULL,
-        help="The directory contains droplet matrix, gene and cell barcodes information. Default is NULL. If 'base_path' is NULL, both 'cell_data_path' and 'raw_data_path' should also be specified."),
-    optparse::make_option(c("-S","--split_sample"),
+        help="The directory contains droplet matrix, gene and cell barcodes information. Default is NULL. If 'basePath' is NULL, both 'cellPath' and 'rawPath' should also be specified."),
+    optparse::make_option(c("-S","--splitSample"),
         type="logical",
         default=TRUE,
         help="Save SingleCellExperiment object for each sample. Default is FALSE. If TRUE, all samples will be combined and only one combimed SingleCellExperiment object will be saved."),
-    optparse::make_option(c("-r","--raw_data"),
+    optparse::make_option(c("-r","--rawData"),
         type="character",
         default=NULL,
         help="The full path of the RDS file or Matrix file of the raw gene count matrix. This would be provided only when --preproc is SceRDS or CountMatrix."),
-    optparse::make_option(c("-c","--cell_data"),
+    optparse::make_option(c("-c","--cellData"),
         type="character",
         default=NULL,
         help="The full path of the RDS file or Matrix file of the cell count matrix. This would be use only when --preproc is SceRDS or CountMatrix."),
@@ -121,13 +121,13 @@ sample <- unlist(strsplit(opt[["sample"]], ","))
 directory <- unlist(strsplit(opt[["directory"]], ","))
 gmt <- opt[["gmt"]]
 sep <- opt[["delim"]]
-split <- opt[["split_sample"]]
-basepath <- opt[["base_path"]]
-FilterDir <- opt[["cell_data_path"]] 
-RawDir <- opt[["raw_data_path"]]
+split <- opt[["splitSample"]]
+basepath <- opt[["basePath"]]
+FilterDir <- opt[["cellPath"]] 
+RawDir <- opt[["rawPath"]]
 Reference <- opt[["genome"]]
-RawFile <- opt[["raw_data"]]
-FilterFile <- opt[["cell_data"]]
+RawFile <- opt[["rawData"]]
+FilterFile <- opt[["cellData"]]
 yamlFile <- opt[["yamlFile"]]
 formats <- opt[["outputFormat"]]
 dataType <- opt[["dataType"]]
@@ -136,17 +136,17 @@ numCores <- opt[["numCores"]]
 clusterType <- opt[["clusterType"]] 
 cellCalling <- opt[["cellDetectMethod"]]
 
-if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["base_path"]], ",")) } 
+if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
 
-if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cell_data_path"]], ",")) } 
+if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cellPath"]], ",")) } 
 
-if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["raw_data_path"]], ",")) } 
+if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["rawPath"]], ",")) } 
 
 if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) } 
 
-if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["raw_data"]], ",")) }
+if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
 
-if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cell_data"]], ",")) } 
+if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) } 
 
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
 
@@ -216,27 +216,27 @@ if (dataType == "Both") {
     if (is.null(RawFile) & is.null(FilterFile)) {
         if (is.null(basepath)) {
             if ((is.null(FilterDir) || is.null(RawDir))) {
-                stop("Both 'cell_data_path' and 'raw_data_path' need to be specified when 'base_path' is NULL.")
+                stop("Both 'cellPath' and 'rawPath' need to be specified when 'basePath' is NULL.")
             } else {
-                # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
+                # message("'basePath' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
                 if (length(FilterDir) != length(RawDir)) {
-                    stop("The length of '--cell_data_path' should be the same as the length of '--raw_data_path'.")
+                    stop("The length of '--cellPath' should be the same as the length of '--rawPath'.")
                 }
                 if (length(FilterDir) != length(sample)) {
-                    stop("The length of '--cell_data_path' should be the same as the length of '--sample'.")
+                    stop("The length of '--cellPath' should be the same as the length of '--sample'.")
                 }
                 if (length(FilterDir) != length(process)) {
-                    stop('The length of "--cell_data_path" should be the same as ',
+                    stop('The length of "--cellPath" should be the same as ',
                              'the length of "--preproc"!')
                 }
             }
         } else {
             if (length(basepath) != length(process)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--preproc"!')
             }
             if (length(basepath) != length(sample)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')    
             }
         }
@@ -249,13 +249,13 @@ if (dataType == "Both") {
 
     if (!is.null(RawFile) | !is.null(FilterFile)) {
         if (length(RawFile) != length(FilterFile)) {
-             stop("The length of '--raw_data' and '--cell_data' should be the same when '--preproc' is SceRDS or CountMatrix.")
+             stop("The length of '--rawData' and '--cellData' should be the same when '--preproc' is SceRDS or CountMatrix.")
         }
         if (length(FilterFile) != length(sample)) {
-            stop("The length of '--cell_data' should be the same as the length of '--sample'.")
+            stop("The length of '--cellData' should be the same as the length of '--sample'.")
         }
         if (length(FilterFile) != length(process)) {
-            stop('The length of "--cell_data" should be the same as ',
+            stop('The length of "--cellData" should be the same as ',
                      'the length of "--preproc"!')
         }
     }
@@ -265,24 +265,24 @@ if (dataType == "Cell") {
     if (is.null(FilterFile)) {
         if (is.null(basepath)) {
             if ((is.null(FilterDir))) {
-                stop("'cell_data_path' need to be specified when 'base_path' is NULL.")
+                stop("'cellPath' need to be specified when 'basePath' is NULL.")
             } 
             # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
             if (length(FilterDir) != length(sample)) {
-                stop("The length of '--cell_data_path' should be the same as the length of '--sample'.")
+                stop("The length of '--cellPath' should be the same as the length of '--sample'.")
             }
             if (length(FilterDir) != length(process)) {
-                stop('The length of "--cell_data_path" should be the same as ',
+                stop('The length of "--cellPath" should be the same as ',
                          'the length of "--preproc"!')
             }
             
         } else {
             if (length(basepath) != length(process)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--preproc"!')
             }
             if (length(basepath) != length(sample)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')    
             }
         }
@@ -295,10 +295,10 @@ if (dataType == "Cell") {
 
     if (!is.null(FilterFile)) {
         if (length(FilterFile) != length(sample)) {
-            stop("The length of '--cell_data' should be the same as the length of '--sample'.")
+            stop("The length of '--cellData' should be the same as the length of '--sample'.")
         }
         if (length(FilterFile) != length(process)) {
-            stop('The length of "--cell_data" should be the same as ',
+            stop('The length of "--cellData" should be the same as ',
                      'the length of "--preproc"!')
         }
     }
@@ -308,24 +308,24 @@ if (dataType == "Droplet") {
     if (is.null(RawFile)) {
         if (is.null(basepath)) {
             if ((is.null(RawDir))) {
-                stop("'raw_data_path' need to be specified when 'base_path' is NULL.")
+                stop("'rawPath' need to be specified when 'basePath' is NULL.")
             } 
             # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
             if (length(RawDir) != length(sample)) {
-                stop("The length of '--raw_data_path' should be the same as the length of '--sample'.")
+                stop("The length of '--rawPath' should be the same as the length of '--sample'.")
             }
             if (length(RawDir) != length(process)) {
-                stop('The length of "--raw_data_path" should be the same as ',
+                stop('The length of "--rawPath" should be the same as ',
                          'the length of "--preproc"!')
             }
             
         } else {
             if (length(basepath) != length(process)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--preproc"!')
             }
             if (length(basepath) != length(sample)) {
-                stop('The length of "--base_path" should be the same as ',
+                stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')    
             }
         }
@@ -338,10 +338,10 @@ if (dataType == "Droplet") {
 
     if (!is.null(RawFile)) {
         if (length(RawFile) != length(sample)) {
-            stop("The length of '--raw_data' should be the same as the length of '--sample'.")
+            stop("The length of '--rawData' should be the same as the length of '--sample'.")
         }
         if (length(RawFile) != length(process)) {
-            stop('The length of "--raw_data" should be the same as ',
+            stop('The length of "--rawData" should be the same as ',
                      'the length of "--preproc"!')
         }
     }
