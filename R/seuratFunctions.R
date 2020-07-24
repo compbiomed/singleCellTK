@@ -232,11 +232,18 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @param resolution Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.
 #' @return Updated sce object which now contains the computed clusters
 #' @export
-seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8) {
+seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8, externalReduction = NULL) {
+    
+  
     algorithm <- match.arg(algorithm)
     useReduction <- match.arg(useReduction)
     
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+    
+    if(!is.null(externalReduction)){
+      seuratObject@reductions <- list(pca = externalReduction)
+    }
+    
     seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction, dims = seq(dims))
     no_algorithm <- 1
     if (algorithm == "louvain") {

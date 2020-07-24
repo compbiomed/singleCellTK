@@ -2064,6 +2064,28 @@ shinyServer(function(input, output, session) {
                                         colnames(colData(vals$counts))),
                             selected = input$clusterName)
         }
+        else if (input$clusteringAlgorithm == "Seurat"){
+          #irzam
+          #print(reducedDim(vals$counts, currdimname))
+          stdev <- as.numeric(attr(reducedDim(vals$counts, currdimname), "percentVar"))
+          new_pca <- CreateDimReducObject(embeddings = reducedDim(vals$counts, currdimname), assay = "RNA", stdev = stdev, key = "PC")
+
+           vals$counts <- seuratFindClusters(inSCE = vals$counts,
+                                             useAssay = "tophat_counts",
+                                             useReduction = "pca",
+                                             externalReduction = new_pca)
+                                            # dims = input$pca_significant_pc_counter,
+                                            # algorithm = input$algorithm.use,
+                                            # groupSingletons = input$group.singletons,
+                                            # resolution = input$resolution_clustering)
+           updateColDataNames()
+           updateSelectInput(session, "colorBy",
+                             choices = c("No Color", "Gene Expression",
+                                         colnames(colData(vals$counts))),
+                             selected = input$clusterName)
+           print(vals$counts)
+          print("Seurat cluster")
+        }
       })
     }
   })
