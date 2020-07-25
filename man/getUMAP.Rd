@@ -34,7 +34,7 @@ Default is 200.}
 
 \item{metric}{distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.}
 
-\item{run_pca}{run tSNE on PCA components? Default is TRUE.}
+\item{run_pca}{run UMAP on PCA components? Default is TRUE.}
 }
 \value{
 a SCtkExperiment object with the reduced dimensions updated under

@@ -34,7 +34,7 @@ getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
-  exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
+  exprsMat <- base::as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
   if (!is.matrix(exprsMat)){
     stop("Input matrix ", useAssay, " is not a matrix")
   }

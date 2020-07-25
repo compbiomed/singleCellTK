@@ -12,7 +12,7 @@
 #' Default is 200.
 #' @param alpha initial value of "learning rate" of layout optimization. Default is 1.
 #' @param metric distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.
-#' @param run_pca run tSNE on PCA components? Default is TRUE.
+#' @param run_pca run UMAP on PCA components? Default is TRUE.
 #'
 #' @return a SCtkExperiment object with the reduced dimensions updated under
 #' reducedDimName specified.
@@ -37,14 +37,8 @@ getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
   matColData <- SummarizedExperiment::assay(inSCE, useAssay)
   data <- as.data.frame(t(matColData))
   if(run_pca == TRUE) {
-    
-    getpca <- getPCA(inSCE = inSCE, useAssay = useAssay, reducedDimName = "PCA_UMAP")
-    retpca <- reducedDim(getpca, "PCA_UMAP")
-    pc_mat <- as.matrix(t(retpca))[, 1:2]
-   
-    #running umap with p1
     umap_results <- uwot::umap(data,
-                               init = pc_mat,
+                               pca = min(50, nrow(data)),
                                n_neighbors = n_neighbors,
                                metric = metric,
                                learning_rate = alpha,

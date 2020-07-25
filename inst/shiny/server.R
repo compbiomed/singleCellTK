@@ -172,6 +172,9 @@ shinyServer(function(input, output, session) {
         if (input$selectExampleData == "mouseBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
+        } else if (input$selectExampleData == "campBrainSubset"){
+          data(list = paste0(input$selectExampleData, "SCE"))
+          vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
           data(maits, package = "MAST")
           vals$original <- createSCE(assayFile = t(maits$expressionmat),
