@@ -193,6 +193,23 @@ shinyServer(function(input, output, session) {
       updateAssayInputs()
     }
   })
+  
+  observe({
+    vals$original
+    # if (!is.null(metadata(vals$original)$sctk$genesets)) {
+    if (!is.null(vals$original)) {
+      if (!is.null(metadata(vals$original)$sctk$genesets)) {
+        newGSchoices <- sctkListGeneSetCollections(vals$original)
+        updateSelectInput(session, "gsExisting", choices = c("None", newGSchoices))
+        updateSelectInput(session, "QCMgeneSets", choices =c("None", newGSchoices))
+        shinyjs::show(id = "gsAddToExisting", anim = FALSE)
+      } else {
+        shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
+        updateSelectInput(session, "gsExisting", choices = c("None"), selected = "None")
+        updateSelectInput(session, "QCMgeneSets", choices =c("None"), selected = "None")
+      }
+    }
+  })
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
@@ -906,8 +923,7 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateSelectInput(session, "QCMgeneSets", choices = sctkListGeneSetCollections(vals$original))
-        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))))
+        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))), selected = "sample")
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -942,6 +958,22 @@ shinyServer(function(input, output, session) {
     return(setListList)
   }
   
+  handleGSPasteOption <- function() {
+    if (!nzchar(input$geneSetText)) {
+      shinyjs::show(id = "gsUploadError", anim = FALSE)
+    } else if ((!nzchar(input$gsCollectionNameText)) && (input$gsExisting == "None")) {
+      shinyjs::show(id = "gsUploadError", anim = FALSE)
+    } else {
+      shinyjs::hide(id = "gsUploadError", anim = FALSE)
+      setList <- formatGeneSetList(input$geneSetText)
+      if (!nzchar(input$gsCollectionNameText)) {
+        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+      } else if (input$gsExisting != "None") {
+        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsExisting)
+      }
+    }
+  }
+  
   observeEvent(input$uploadGS, {
     
     withBusyIndicatorServer("uploadGS", {
@@ -964,19 +996,10 @@ shinyServer(function(input, output, session) {
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
-        if (!nzchar(input$geneSetText)) {
-          shinyjs::show(id = "gsUploadError", anim = FALSE)
-        } else if (!nzchar(input$gsCollectionNameText)) {
-          shinyjs::show(id = "gsUploadError", anim = FALSE)
-        } else {
-          shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          setList <- formatGeneSetList(input$geneSetText)
-          vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
-        }
+        handleGSPasteOption()
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
       print(S4Vectors::metadata(vals$original)$sctk$genesets)
-      updateSelectInput(session, "QCMgeneSets", choices = newGSchoices)
     })
   })
 
@@ -1023,6 +1046,8 @@ shinyServer(function(input, output, session) {
   # Hide and show parameters for QC functions
   shinyjs::onclick("QCMetrics", shinyjs::toggle(id = "QCMetricsParams",
                                                    anim = FALSE), add = TRUE)
+  shinyjs::onclick("decontX", shinyjs::toggle(id = "decontXParams",
+                                                   anim = FALSE), add = TRUE)
   shinyjs::onclick("doubletCells", shinyjs::toggle(id = "doubletCellsParams",
                                                    anim = FALSE), add = TRUE)
   shinyjs::onclick("cxds", shinyjs::toggle(id = "cxdsParams",
@@ -1041,19 +1066,29 @@ shinyServer(function(input, output, session) {
                       "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
+                       
                        cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),
+                       
                        bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp"),
+                       
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
                                                bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
                                                verb="CXBCverb"),
-                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratPcs="DFseuratPcs", seuratRes="DFseuratRes", 
-                                            formationRate="DFformationRate", verbose="DFverbose"),
+                       
+                       decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
+                                      iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
+                       
+                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
+                       
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
                                        useApproxNeighbors="SuseApproxNeighbors", distanceMetric="SdistanceMetric", getDoubletNeighborParents="SgetDoubletNeighborParents", minCounts="SminCounts", 
                                        minCells="SminCells", minGeneVariabilityPctl="SminGeneVariabilityPctl", logTransform="SlogTransform", meanCenter="SmeanCenter", 
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
                       )
+  # to keep track of whether an algo has already been run
+  qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, 
+                        QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
   findOverlapping <- function(arr1, arr2) {
     filter <- vector()
@@ -1074,6 +1109,60 @@ shinyServer(function(input, output, session) {
       }
     }
     return(FALSE)
+  }
+  
+  # format the parameters for decontX
+  prepDecontXParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["decontX"]]
+    dxParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      dxParams[[key]] = input[[inputIds[[key]]]]
+    }
+    
+    # put in the delta params (c-bind the two priors)
+    dxParams[["delta"]] <- c(input$DXnativePrior, input$DXcontPrior)
+    
+    # logfile param
+    if (is.null(input$DXlogfile)) {
+      dxParams[["logfile"]] <- NULL
+    } else {
+      dxParams[["logfile"]] <- input$DXlogfile$datapath
+    }
+    
+    # labels
+    if (!nzchar(input$DXz)) {
+      dxParams[["z"]] <- NULL
+    } else {
+      dxParams[["z"]] <- strsplit(input$DXz, " ")[[1]]
+    }
+
+    if (!nzchar(input$DXbatch)) {
+      dxParams[["batch"]] <- NULL
+    } else {
+      dxParams[["batch"]] <- strsplit(input$DXbatch, " ")[[1]]
+    }
+  
+    # add to master params list
+    paramsList[["decontX"]] = dxParams
+    return(paramsList)
+  }
+  
+  # format the parameters for doubletFinder
+  prepDoubletFinderParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["doubletFinder"]]
+    dfParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      dfParams[[key]] = input[[inputIds[[key]]]]
+    }
+    
+    # put in the seuratPcs param (range from 1 to given value)
+    dfParams[["seuratPcs"]] <- 1:input$DFseuratPcs
+    
+    # add to master params list
+    paramsList[["doubletFinder"]] = dfParams
+    return(paramsList)
   }
 
   observeEvent(input$runQC, {
@@ -1104,7 +1193,7 @@ shinyServer(function(input, output, session) {
           selector = "#noQCAssay"
         )
         useAssay <- input$qcAssaySelect
-        qcSample <- input$qcSampleSelect
+        qcSample <- colData(vals$original)[,input$qcSampleSelect]
         if (qcSample == "None") {
           qcSample <- NULL
         }
@@ -1113,6 +1202,16 @@ shinyServer(function(input, output, session) {
         for (algo in qc_choice_list) {
           if (input[[algo]]) {
             algoList <- c(algoList, algo)
+            # use the specific prep functions for decontX and doubletFinder
+            if (algo == "decontX") {
+              paramsList <- prepDecontXParams(paramsList)
+              next
+            }
+            if (algo == "doubletFinder") {
+              paramsList <- prepDoubletFinderParams(paramsList)
+              next
+            }
+            # everything else can go through the rest of the loop
             inputIds <- qc_input_ids[[algo]]
             algoParams <- list()
             for (key in names(inputIds)) {
@@ -1123,7 +1222,11 @@ shinyServer(function(input, output, session) {
                 }
                 algoParams[[key]] = paramSubList
               } else {
-                algoParams[[key]] = input[[inputIds[[key]]]]
+                if (nzchar(input[[inputIds[[key]]]])) {
+                  algoParams[[key]] = NULL
+                } else {
+                  algoParams[[key]] = input[[inputIds[[key]]]]
+                }
               }
             }
             paramsList[[algo]] = algoParams
@@ -1135,6 +1238,13 @@ shinyServer(function(input, output, session) {
                   useAssay = input$qcAssaySelect,
                   paramsList = paramsList)
         print(vals$original)
+        if (!is.null(vals$original)) {
+          # show the tabs for the result plots
+          showQCResTabs(algoList, qc_algo_status)
+          for (a in algoList) {
+            qc_algo_status[[a]] <- "tab"
+          }
+        }
       }
     })
   })

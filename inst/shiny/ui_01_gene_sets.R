@@ -28,8 +28,21 @@ shinyPanelGeneSets <- fluidPage(
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsPasteUpload'", "geneSetSourceChoice"),
       h3("Paste in your gene set:"),
-      textInput('gsCollectionNameText', label='Collection Name'),
-      textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
+      textInput('gsCollectionNameText', label='Create a new collection (enter collection name)'),
+      shinyjs::hidden(
+        tags$div(id = "gsAddToExisting",
+                 h4("-OR-"),
+                 selectInput("gsExisting", "Add to an existing collection", c("None")),
+                 textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
+        )
+      ),
+      # shinyjs::hidden(
+      #   tags$div(id = "gsAddToExisting",
+      #            h4("-OR-"),
+                 # selectInput("gsExisting", "Add to an existing collection", c("None")),
+                 # textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
+      #   ),
+      # )
     ),
     
     withBusyIndicatorUI(
