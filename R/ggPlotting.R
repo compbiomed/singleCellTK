@@ -248,7 +248,7 @@
     }
     return(g)
   })
-  return(cowplot::plot_grid(plotlist = plotlist))
+  return(plotly::subplot(plotlist = plotlist))
 }
 
 
@@ -501,8 +501,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
-#'  options: "assays", "colData", "metadata"
-#' @param annotation Desired vector within the slot used for plotting.
+#'  options: "assays", "colData", "metadata". Default NULL.
+#' @param annotation Desired vector within the slot used for plotting. Default NULL.
 #' @param feature name of feature stored in assay of SingleCellExperiment
 #'  object. Will be used only if "assays" slot is chosen. Default NULL.
 #' @param shape add shapes to each condition.
@@ -554,7 +554,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @export
 #' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,
-                           slot,
+                           slot = NULL,
                            sample = NULL,
                            annotation,
                            feature = NULL,
@@ -579,22 +579,26 @@ plotSCEScatter <- function(inSCE,
                            legendTitle = NULL,
                            legendTitleSize = 12,
                            legendSize = 10) {
-  if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
+  if (!is.null(slot)){
+    if (!slot %in% methods::slotNames(inSCE)) {
+      stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
 	     specified slot exists.")
-  }
+    }
 
-  sceSubset <- do.call(slot, args = list(inSCE))
+    sceSubset <- do.call(slot, args = list(inSCE))
 
-  if (!annotation %in% names(sceSubset)) {
-    stop("'annotation' must be an annotation stored within the specified
+    if (!annotation %in% names(sceSubset)) {
+      stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
+    }
+
+    annotation.ix <- match(annotation, names(sceSubset))
   }
 
-  annotation.ix <- match(annotation, names(sceSubset))
-
-  if (slot == "assays" && !is.null(feature)) {
+  if (is.null(slot)){
+    colorPlot <- NULL
+  } else if (slot == "assays" && !is.null(feature)) {
     counts <- sceSubset[[annotation.ix]]
     if (feature %in% rownames(counts)) {
       colorPlot <- counts[feature, ]
