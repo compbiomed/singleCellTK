@@ -81,8 +81,7 @@
 #'  'scran_doubletCell_Score' column added to the
 #'  \link[SummarizedExperiment]{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
-#'  \url{https://ltla.github.io/SingleCellThoughts/software/
-#' doublet_detection/bycell.html}
+#'  \url{https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html}
 #' @seealso \link[scran]{doubletCells}
 #' @examples
 #' data(scExample, package = "singleCellTK")
