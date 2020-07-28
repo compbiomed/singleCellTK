@@ -505,6 +505,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param annotation Desired vector within the slot used for plotting. Default NULL.
 #' @param feature name of feature stored in assay of SingleCellExperiment
 #'  object. Will be used only if "assays" slot is chosen. Default NULL.
+#' @param groupBy Group by a condition(any column of the annotation data).
+#'  Default NULL.
 #' @param shape add shapes to each condition.
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
@@ -558,6 +560,7 @@ plotSCEScatter <- function(inSCE,
                            sample = NULL,
                            annotation,
                            feature = NULL,
+                           groupBy = NULL,
                            shape = NULL,
                            reducedDimName = NULL,
                            conditionClass = NULL,
@@ -613,6 +616,7 @@ plotSCEScatter <- function(inSCE,
     inSCE = inSCE,
     sample = sample,
     colorBy = colorPlot,
+    groupBy = groupBy,
     conditionClass = conditionClass,
     shape = shape,
     reducedDimName = reducedDimName,
