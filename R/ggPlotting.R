@@ -28,15 +28,18 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorScale Vector. Needs to be same length as the
+#'  number of unique levels of `colorBy`. Will be used only if
+#'  conditionClass = "factor" or "character". Default NULL.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
-#'  Default 'white'.
+#'  Default 'white'. Will be used only if conditionClass = "numeric".
 #' @param colorMid Character. A color available from `colors()`.
 #'  The color will be used to signify the midpoint on the scale.
-#'  Default 'gray'.
+#'  Default 'gray'. Will be used only if conditionClass = "numeric".
 #' @param colorHigh Character. A color available from `colors()`.
 #'  The color will be used to signify the highest values on the scale.
-#'  Default 'blue'.
+#'  Default 'blue'. Will be used only if conditionClass = "numeric".
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -65,6 +68,7 @@
                        binLabel = NULL,
                        dotSize = 2,
                        transparency = 1,
+                       colorScale = NULL,
                        colorLow = "white",
                        colorMid = "gray",
                        colorHigh = "blue",
@@ -172,7 +176,11 @@
         aesthetics = "colour",
         midpoint = mean(colorBySub))
     }else if (class(colorBySub) == "character" | class(colorBySub) == "factor"){
-      g <- g + ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
+      g <- g +
+          ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
+      if(all(!is.null(colorScale))){
+          g <- g+ ggplot2::scale_color_manual(values=c(colorScale))
+      }
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
@@ -251,7 +259,6 @@
   return(cowplot::plot_grid(plotlist = plotlist))
 }
 
-
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
@@ -284,6 +291,9 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorScale Vector. Needs to be same length as the
+#'  number of unique levels of colorBy. Will be used only if
+#'  conditionClass = "factor" or "character". Default NULL.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
 #'  Default 'white'.
@@ -334,6 +344,7 @@ plotSCEDimReduceColData <- function(inSCE,
                                     binLabel = NULL,
                                     dotSize = 2,
                                     transparency = 1,
+                                    colorScale = NULL,
                                     colorLow = "white",
                                     colorMid = "gray",
                                     colorHigh = "blue",
@@ -364,6 +375,7 @@ plotSCEDimReduceColData <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorScale = colorScale,
     colorLow = colorLow,
     colorMid = colorMid,
     colorHigh = colorHigh,

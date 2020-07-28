@@ -22,6 +22,7 @@ plotSCEDimReduceColData(
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorScale = NULL,
   colorLow = "white",
   colorMid = "gray",
   colorHigh = "blue",
@@ -80,6 +81,10 @@ Default NULL.}
 \item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{colorScale}{Vector. Needs to be same length as the
+number of unique levels of colorBy. Will be used only if
+conditionClass = "factor" or "character". Default NULL.}
 
 \item{colorLow}{Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.

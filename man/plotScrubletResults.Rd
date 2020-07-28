@@ -11,6 +11,7 @@ plotScrubletResults(
   groupby = NULL,
   violin = TRUE,
   boxplot = FALSE,
+  combinePlot = FALSE,
   dots = TRUE,
   reducedDimName,
   xlab = NULL,

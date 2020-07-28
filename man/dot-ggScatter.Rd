@@ -23,6 +23,7 @@
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorScale = NULL,
   colorLow = "white",
   colorMid = "gray",
   colorHigh = "blue",
@@ -82,17 +83,21 @@ Default NULL.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
+\item{colorScale}{Vector. Needs to be same length as the
+number of unique levels of `colorBy`. Will be used only if
+conditionClass = "factor" or "character". Default NULL.}
+
 \item{colorLow}{Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
-Default 'white'.}
+Default 'white'. Will be used only if conditionClass = "numeric".}
 
 \item{colorMid}{Character. A color available from `colors()`.
 The color will be used to signify the midpoint on the scale.
-Default 'gray'.}
+Default 'gray'. Will be used only if conditionClass = "numeric".}
 
 \item{colorHigh}{Character. A color available from `colors()`.
 The color will be used to signify the highest values on the scale.
-Default 'blue'.}
+Default 'blue'. Will be used only if conditionClass = "numeric".}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}

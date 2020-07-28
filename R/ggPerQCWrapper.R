@@ -322,6 +322,7 @@ plotScrubletResults <- function(inSCE,
                                 groupby=NULL,
                                 violin=TRUE,
                                 boxplot=FALSE,
+                                combinePlot = FALSE,
                                 dots=TRUE,
                                 reducedDimName,
                                 xlab=NULL,
@@ -452,6 +453,7 @@ plotScrubletResults <- function(inSCE,
       binLabel=binLabel,
       dotSize=dotSize,
       transparency=transparency,
+      colorScale = c("gray","red"),
       defaultTheme=defaultTheme,
       title="Scrublet Doublet Assignment",
       titleSize=titleSize,
@@ -471,6 +473,10 @@ plotScrubletResults <- function(inSCE,
     plotlist <- c(combined.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+
+  if(combinePlot){
+      plotlist <- cowplot::plot_grid(plotlist = plotlist, ncol = sqrt(length(plotlist)))
   }
   return(plotlist)
 }
@@ -728,6 +734,7 @@ plotDoubletFinderResults <- function(inSCE,
         binLabel=binLabel,
         dotSize=dotSize,
         transparency=transparency,
+        colorScale = c("gray","red"),
         defaultTheme=defaultTheme,
         title=paste(
           "DoubletFinder Doublet Call Resolution",
