@@ -177,3 +177,87 @@ withConsoleMsgRedirect <- function(expr) {
   })
   result
 }
+
+
+#-----------#
+# Gene Sets #
+#-----------#
+formatGeneSetList <- function(setListStr) {
+  setListArr <- strsplit(setListStr, "\n")[[1]]
+  setListList <- list()
+  for (set in setListArr) {
+    setListList[[set]] <- set
+  }
+  return(setListList)
+}
+
+formatGeneSetDBChoices <- function(dbIDs, dbCats) {
+  splitIds = strsplit(dbIDs, " ")
+  choices <- list()
+  
+  for (i in seq_along(splitIds)) {
+    entry <- splitIds[i][[1]]
+    choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
+  }
+  
+  print(choices)
+  return(choices)
+}
+
+
+#--------------#
+# QC/Filtering #
+#--------------#
+
+findOverlapping <- function(arr1, arr2) {
+  filter <- vector()
+  for (x in arr1) {
+    if (x %in% arr2) {
+      filter <- c(filter, TRUE)
+    } else {
+      filter <- c(filter, FALSE)
+    }
+  }
+  return(arr1[filter])
+}
+
+qcInputExists <- function() {
+  for (algo in qc_choice_list) {
+    if (input[[algo]]) {
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
+
+addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col') {
+  threshStr <- ""
+  if (is.numeric(criteria)) {
+    threshStr <- sprintf("%s > %.5f", name, criteria)
+  } else {
+    threshArr <- list()
+    for (c in criteria) {
+      threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
+    }
+    threshStr <- paste(threshArr, collapse = " | ")
+  }
+  
+  if (dimension == 'col') {
+    entry <- list(col=name, param=threshStr, id=id)
+    paramsReactive$params <- c(paramsReactive$params, list(entry))
+    paramsReactive$id_count <- paramsReactive$id_count + 1
+  } else {
+    entry <- list(row=name, param=threshStr, id=id)
+    paramsReactive$params <- c(paramsReactive$params, list(entry))
+    paramsReactive$id_count <- paramsReactive$id_count + 1
+  }
+}
+
+
+
+
+
+
+
+
+
