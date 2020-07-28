@@ -173,6 +173,7 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
+      id = "navbar",
       theme = shinytheme(shinyTheme),
       navbarMenu(
         "Data",
@@ -206,7 +207,7 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
-                 tabPanel("Cell Viewer", shinyPanelCellViewer),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer, value = "CellViewer"),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
       footer = includeHTML("www/footer.html"),
       fluidRow(
