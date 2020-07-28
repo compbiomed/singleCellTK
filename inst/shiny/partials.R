@@ -140,33 +140,44 @@ importCRBDir <- function(failed = FALSE) {
 # QC/FILTERING #
 #--------------#
 
-qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE,
-                    geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
-  modalDialog(
-    h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
-    if (!is.null(assays))
-      selectInput("qcAssaySelect", paste0("Select assay for ", requireAssayStr), assays),
-    if (geneSetList)
-      tags$hr(),
-    if (geneSetList)
-      h4(tags$b("Parameters for QCMetrics:")),
-    # The following selectInputs are just place holders until there is gene set code
-    if (geneSetList)
-      selectInput("geneSetList", "Select Gene Set List", assays),
-    if (geneSetListLocation)
-      selectInput("geneLocation", "Select Gene Set List Location", assays),
-    if (geneSetCollection)
-      selectInput("geneCollection", "Select Gene Set Collection", assays),
-    
-    if (failed)
-      div(tags$b("Please fill out all the required fields", style = "color: red;")),
-    
-    footer = tagList(
-      modalButton("Cancel"),
-      actionButton("modalRunQC", "Run")
-    )
-  )
+# qcModal <- function(assays=NULL, geneSetList=FALSE, geneSetListLocation=FALSE,
+#                     geneSetCollection=FALSE, failed=FALSE, requireAssayStr='') {
+#   modalDialog(
+#     h3("QC Paramters - some of the algorithms you have selected require the following extra parameters:"),
+#     if (!is.null(assays))
+#       selectInput("qcAssaySelect", paste0("Select assay for ", requireAssayStr), assays),
+#     if (geneSetList)
+#       tags$hr(),
+#     if (geneSetList)
+#       h4(tags$b("Parameters for QCMetrics:")),
+#     # The following selectInputs are just place holders until there is gene set code
+#     if (geneSetList)
+#       selectInput("geneSetList", "Select Gene Set List", assays),
+#     if (geneSetListLocation)
+#       selectInput("geneLocation", "Select Gene Set List Location", assays),
+#     if (geneSetCollection)
+#       selectInput("geneCollection", "Select Gene Set Collection", assays),
+#     
+#     if (failed)
+#       div(tags$b("Please fill out all the required fields", style = "color: red;")),
+#     
+#     footer = tagList(
+#       modalButton("Cancel"),
+#       actionButton("modalRunQC", "Run")
+#     )
+#   )
+# }
+
+# creates tabs for results from QC
+showQCResTabs <- function(algoList, statuses) {
+  for (algo in algoList) {
+    id <- paste0(algo, "Tab")
+    if (is.null(statuses[[algo]])) {
+      appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id)))
+    }
+  }
 }
+
 
 filteringModal <- function(failed=FALSE, colNames) {
   modalDialog(
