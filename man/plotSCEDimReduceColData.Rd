@@ -32,7 +32,8 @@ plotSCEDimReduceColData(
   labelClusters = TRUE,
   legendTitle = NULL,
   legendTitleSize = 12,
-  legendSize = 10
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -112,6 +113,10 @@ Default 'blue'.}
 
 \item{legendSize}{size of legend. Default 10.
 Default FALSE.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

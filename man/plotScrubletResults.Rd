@@ -9,9 +9,9 @@ plotScrubletResults(
   sample = NULL,
   shape = NULL,
   groupby = NULL,
+  combinePlot = FALSE,
   violin = TRUE,
   boxplot = FALSE,
-  combinePlot = FALSE,
   dots = TRUE,
   reducedDimName,
   xlab = NULL,
@@ -43,6 +43,9 @@ Default NULL.}
 \item{groupby}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
+
+\item{combinePlot}{Boolean. Will combine plots using `cowplot::plot_grid`.
+Default FALSE.}
 
 \item{violin}{Boolean. If TRUE, will plot the violin plot. Default TRUE.}
 

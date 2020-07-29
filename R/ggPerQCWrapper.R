@@ -10,6 +10,8 @@
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default FALSE.
@@ -34,6 +36,7 @@
 plotRunPerCellQCResults <- function(inSCE,
                                     sample=NULL,
                                     groupby=NULL,
+                                    combinePlot=FALSE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
@@ -93,8 +96,8 @@ plotRunPerCellQCResults <- function(inSCE,
       summary="median",
       titleSize=titleSize
     )
-    combined.plots <- list(combined.sum, combined.detected)
-    names(combined.plots) <- c("Sum", "Detected")
+    merged.plots <- list(combined.sum, combined.detected)
+    names(merged.plots) <- c("Sum", "Detected")
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -205,9 +208,12 @@ plotRunPerCellQCResults <- function(inSCE,
 
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -281,6 +287,8 @@ plotEmptyDropsResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -320,9 +328,9 @@ plotScrubletResults <- function(inSCE,
                                 sample=NULL,
                                 shape=NULL,
                                 groupby=NULL,
+                                combinePlot=FALSE,
                                 violin=TRUE,
                                 boxplot=FALSE,
-                                combinePlot = FALSE,
                                 dots=TRUE,
                                 reducedDimName,
                                 xlab=NULL,
@@ -353,7 +361,7 @@ plotScrubletResults <- function(inSCE,
   samples <- unique(sample)
 
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scrublet_score",
       groupby=sample,
@@ -371,8 +379,8 @@ plotScrubletResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "Scrublet_Score"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "Scrublet_Score"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -453,7 +461,6 @@ plotScrubletResults <- function(inSCE,
       binLabel=binLabel,
       dotSize=dotSize,
       transparency=transparency,
-      colorScale = c("lightgray","red"),
       defaultTheme=defaultTheme,
       title="Scrublet Doublet Assignment",
       titleSize=titleSize,
@@ -470,13 +477,13 @@ plotScrubletResults <- function(inSCE,
   })
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
   }
 
   if(combinePlot){
-      plotlist <- cowplot::plot_grid(plotlist = plotlist, ncol = sqrt(length(plotlist)))
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -494,6 +501,8 @@ plotScrubletResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -533,6 +542,7 @@ plotDoubletFinderResults <- function(inSCE,
                                      sample=NULL,
                                      shape=NULL,
                                      groupby=NULL,
+                                     combinePlot=FALSE,
                                      violin=TRUE,
                                      boxplot=FALSE,
                                      dots=TRUE,
@@ -572,7 +582,7 @@ plotDoubletFinderResults <- function(inSCE,
     names(colData(inSCE)), value=TRUE
   )
   if (length(samples) > 1) {
-    combined.plots <- lapply(df.scores, function(x) {
+    merged.plots <- lapply(df.scores, function(x) {
       plotSCEViolinColData(
         inSCE=inSCE,
         coldata=x,
@@ -598,14 +608,14 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(combined.plots) <- sapply(df.scores, function(x) {
+    names(merged.plots) <- sapply(df.scores, function(x) {
       paste0("Violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
     })
-    # combined.plots <- list(combined.plots)
-    names(combined.plots) <- "DoubletFinder_Score"
+    # merged.plots <- list(merged.plots)
+    names(merged.plots) <- "DoubletFinder_Score"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -734,10 +744,9 @@ plotDoubletFinderResults <- function(inSCE,
         binLabel=binLabel,
         dotSize=dotSize,
         transparency=transparency,
-        colorScale = c("red","lightgray"),
         defaultTheme=defaultTheme,
         title=paste(
-          "DoubletFinder Doublet Label Resolution",
+          "DoubletFinder Doublet Call Resolution",
           gsub(
             pattern="doubletFinder_doublet_label_Resolution_",
             "", x
@@ -747,7 +756,7 @@ plotDoubletFinderResults <- function(inSCE,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         labelClusters=FALSE,
-        legendTitle="Doublet Label",
+        legendTitle="Doublet Score",
         legendSize=legendSize,
         legendTitleSize=legendTitleSize
       )
@@ -765,9 +774,12 @@ plotDoubletFinderResults <- function(inSCE,
   })
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -785,6 +797,8 @@ plotDoubletFinderResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -825,6 +839,7 @@ plotDoubletCellsResults <- function(inSCE,
                                     sample=NULL,
                                     shape=NULL,
                                     groupby=NULL,
+                                    combinePlot=FALSE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
@@ -864,7 +879,7 @@ plotDoubletCellsResults <- function(inSCE,
 
   samples <- unique(sample)
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scran_doubletCells_Score",
       groupby=sample,
@@ -882,8 +897,8 @@ plotDoubletCellsResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "DoubletCells_Score"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "DoubletCells_Score"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -957,9 +972,12 @@ plotDoubletCellsResults <- function(inSCE,
   })
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -977,6 +995,8 @@ plotDoubletCellsResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -1016,6 +1036,7 @@ plotCxdsResults <- function(inSCE,
                             sample=NULL,
                             shape=NULL,
                             groupby=NULL,
+                            combinePlot=FALSE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
@@ -1047,7 +1068,7 @@ plotCxdsResults <- function(inSCE,
 
   samples <- unique(sample)
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scds_cxds_score",
       groupby=sample,
@@ -1065,8 +1086,8 @@ plotCxdsResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "CXDS_Score"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "CXDS_Score"
   }
 
 
@@ -1140,9 +1161,12 @@ plotCxdsResults <- function(inSCE,
   })
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -1160,6 +1184,8 @@ plotCxdsResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -1199,6 +1225,7 @@ plotBcdsResults <- function(inSCE,
                             sample=NULL,
                             shape=NULL,
                             groupby=NULL,
+                            combinePlot=FALSE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
@@ -1230,7 +1257,7 @@ plotBcdsResults <- function(inSCE,
 
   samples <- unique(sample)
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scds_bcds_score",
       groupby=sample,
@@ -1248,8 +1275,8 @@ plotBcdsResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "BCDS_Score"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "BCDS_Score"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -1322,9 +1349,12 @@ plotBcdsResults <- function(inSCE,
   })
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -1342,6 +1372,8 @@ plotBcdsResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -1381,6 +1413,7 @@ plotScdsHybridResults <- function(inSCE,
                                   sample=NULL,
                                   shape=NULL,
                                   groupby=NULL,
+                                  combinePlot=FALSE,
                                   violin=TRUE,
                                   boxplot=FALSE,
                                   dots=TRUE,
@@ -1412,7 +1445,7 @@ plotScdsHybridResults <- function(inSCE,
 
   samples <- unique(sample)
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scds_hybrid_score",
       groupby=sample,
@@ -1430,8 +1463,8 @@ plotScdsHybridResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "CXDS_BCDS_Score"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "CXDS_BCDS_Score"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -1505,9 +1538,12 @@ plotScdsHybridResults <- function(inSCE,
 
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
+  }
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
   }
   return(plotlist)
 }
@@ -1525,6 +1561,8 @@ plotScdsHybridResults <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
+#' @param combinePlot Boolean. Will combine plots using `cowplot::plot_grid`.
+#'  Default FALSE.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
 #' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
 #'  Default TRUE.
@@ -1564,6 +1602,7 @@ plotDecontXResults <- function(inSCE,
                                sample=NULL,
                                shape=NULL,
                                groupby=NULL,
+                               combinePlot=FALSE,
                                violin=TRUE,
                                boxplot=FALSE,
                                dots=TRUE,
@@ -1596,7 +1635,7 @@ plotDecontXResults <- function(inSCE,
   samples <- unique(sample)
 
   if (length(samples) > 1) {
-    combined.plots <- plotSCEViolinColData(
+    merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="decontX_contamination",
       groupby=sample,
@@ -1614,8 +1653,8 @@ plotDecontXResults <- function(inSCE,
       gridLine=TRUE,
       summary="median"
     )
-    combined.plots <- list(combined.plots)
-    names(combined.plots) <- "DecontX_Contamination"
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "DecontX_Contamination"
   }
 
   plotlist <- lapply(samples, function(x) {
@@ -1722,10 +1761,12 @@ plotDecontXResults <- function(inSCE,
 
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    plotlist <- c(combined.plots, plotlist)
+    plotlist <- c(merged.plots, plotlist)
   } else {
     plotlist <- unlist(plotlist, recursive=F)
   }
-
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
+  }
   return(plotlist)
 }
