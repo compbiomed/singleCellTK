@@ -273,6 +273,50 @@ plotEmptyDropsResults <- function(inSCE,
   return(res.list)
 }
 
+#' @title Plots for runEmptyDrops outputs.
+#' @description A wrapper function which visualizes outputs from the
+#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
+#'  object via plots.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results from
+#' \link{runScrublet}. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#'  Default NULL.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 10
+#'  when TRUE. Default TRUE.
+#' @param dotSize Size of dots. Default 1.
+#' @param titleSize Size of title of plot. Default 18.
+#' @param axisSize Size of x/y-axis ticks. Default 15.
+#' @param axisLabelSize Size of x/y-axis labels. Default 18.
+#' @param legendSize size of legend. Default 15.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- runBarcodeRankDrops(inSCE=sce)
+#' plotBarcodeRankDropsResults(inSCE=sce)
+#' @export
+plotBarcodeRankDropsResults <- function(inSCE,
+                                  sample=NULL,
+                                  defaultTheme=TRUE,
+                                  dotSize=1,
+                                  titleSize=18,
+                                  axisLabelSize=18,
+                                  axisSize=15,
+                                  legendSize=15) {
+    scatterBarcodeRank <- plotBarcodeRankScatter(inSCE,
+                                               sample=sample,
+                                               dotSize=dotSize,
+                                               title="BarcodeRanks Rank Plot",
+                                               titleSize=titleSize,
+                                               defaultTheme=TRUE,
+                                               axisLabelSize=axisLabelSize,
+                                               axisSize=axisSize,
+                                               legendSize=legendSize
+    )
+
+    res.list <- list(scatterBarcodeRank)
+    names(res.list) <- c("scatterBarcodeRank")
+    return(res.list)
+}
 
 #' @title Plots for runScrublet outputs.
 #' @description A wrapper function which visualizes outputs from the
