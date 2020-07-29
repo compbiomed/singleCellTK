@@ -187,10 +187,25 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "hmAssay", choices = currassays)
   }
 
-  observe({
-    vals$counts
+  observeEvent(vals$counts, {
+    # vals$counts
     if (!is.null(vals$counts)) {
       updateAssayInputs()
+    }
+  })
+  
+  observeEvent(vals$original, {
+    if (!is.null(vals$original)) {
+      if (!is.null(metadata(vals$original)$sctk$genesets)) {
+        newGSchoices <- sctkListGeneSetCollections(vals$original)
+        updateSelectInput(session, "gsExisting", choices = c("None", newGSchoices))
+        updateSelectInput(session, "QCMgeneSets", choices =c("None", newGSchoices))
+        shinyjs::show(id = "gsAddToExisting", anim = FALSE)
+      } else {
+        shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
+        updateSelectInput(session, "gsExisting", choices = c("None"), selected = "None")
+        updateSelectInput(session, "QCMgeneSets", choices =c("None"), selected = "None")
+      }
     }
   })
 
@@ -852,8 +867,11 @@ shinyServer(function(input, output, session) {
               STARsoloDirs = entry$base,
               samples = entry$name
             )
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            if(is.null(vals$original)) {
+              vals$original <- sce
+            } else {
+              vals$original <- cbind(vals$original, sce)
+            }
           }
           clearAllFiles(importSSFiles)
         } else if (input$algoChoice == "busTools") {
@@ -862,8 +880,11 @@ shinyServer(function(input, output, session) {
               BUStoolsDirs = substr(entry$base, 1, nchar(entry$base)-1),
               samples = entry$name,
             )
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            if(is.null(vals$original)) {
+              vals$original <- sce
+            } else {
+              vals$original <- cbind(vals$original, sce)
+            }
           }
           clearAllFiles(importBUSFiles)
         } else if (input$algoChoice == "seqc") {
@@ -873,8 +894,11 @@ shinyServer(function(input, output, session) {
               samples = entry$name,
               prefix = entry$sample,
             )
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            if(is.null(vals$original)) {
+              vals$original <- sce
+            } else {
+              vals$original <- cbind(vals$original, sce)
+            }
           }
           clearAllFiles(importSEQFiles)
         } else if (input$algoChoice == "optimus") {
@@ -883,8 +907,11 @@ shinyServer(function(input, output, session) {
               OptimusDirs = entry$base,
               samples = entry$name
             )
-            vals$original <- sce
-            # vals$original <- c(vals$original, list(sce))
+            if(is.null(vals$original)) {
+              vals$original <- sce
+            } else {
+              vals$original <- cbind(vals$original, sce)
+            }
           }
           clearAllFiles(importOptFiles)
         }
@@ -906,8 +933,7 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateSelectInput(session, "QCMgeneSets", choices = sctkListGeneSetCollections(vals$original))
-        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))))
+        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))), selected = "sample")
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -924,25 +950,32 @@ shinyServer(function(input, output, session) {
       vals$pcX <- NULL
       vals$pcY <- NULL
       vals$batchRes <- NULL
-      # print(rowData(getMSigDBTable()))
-      updateCheckboxGroupInput(session, 'geneSetDB', choices = getMSigDBTable()$ID)
+      dbList <- getMSigDBTable()
+      geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
+      updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
     })
   })
   
   #-----------#
   # Gene Sets #
   #-----------#
-  formatGeneSetList <- function(setListStr) {
-    setListArr <- strsplit(setListStr, "\n")
-    setListList <- list()
-    for (set in setListArr) {
-      setListList[[set]] <- set
+  handleGSPasteOption <- function() {
+    if (!nzchar(input$geneSetText)) {
+      shinyjs::show(id = "gsUploadError", anim = FALSE)
+    } else if ((!nzchar(input$gsCollectionNameText)) && (input$gsExisting == "None")) {
+      shinyjs::show(id = "gsUploadError", anim = FALSE)
+    } else {
+      shinyjs::hide(id = "gsUploadError", anim = FALSE)
+      setList <- formatGeneSetList(input$geneSetText)
+      if (!nzchar(input$gsCollectionNameText)) {
+        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+      } else if (input$gsExisting != "None") {
+        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsExisting)
+      }
     }
   }
   
   observeEvent(input$uploadGS, {
-    newGSchoices <- sctkListGeneSetCollections(vals$original)
-    print(S4Vectors::metadata(vals$original)$sctk)
     withBusyIndicatorServer("uploadGS", {
       if (input$geneSetSourceChoice == "gsGMTUpload") {
         if (is.null(input$geneSetGMT)) {
@@ -951,7 +984,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          importGeneSetsFromGMT(vals$original, input$geneSetGMT, collectionName = input$gsCollectionName)
+          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, collectionName = input$gsCollectionNameGMT)
         }
 
       } else if (input$geneSetSourceChoice == "gsDBUpload") {
@@ -959,25 +992,14 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
+          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
-        if (!nzchar(input$geneSetText)) {
-          shinyjs::show(id = "gsUploadError", anim = FALSE)
-        } else if (!nzchar(input$gsCollectionNameText)) {
-          shinyjs::show(id = "gsUploadError", anim = FALSE)
-        } else {
-          shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          # setList <- strsplit(input$geneSetText, "\n")
-          setList <- formatGeneSetList(input$geneSetText)
-          print(setList)
-          importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
-        }
+        handleGSPasteOption()
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
-      print(S4Vectors::metadata(vals$original)$sctk)
-      updateSelectInput(session, "QCMgeneSets", choices = newGSchoices)
+      print(S4Vectors::metadata(vals$original)$sctk$genesets)
     })
   })
 
@@ -1024,6 +1046,8 @@ shinyServer(function(input, output, session) {
   # Hide and show parameters for QC functions
   shinyjs::onclick("QCMetrics", shinyjs::toggle(id = "QCMetricsParams",
                                                    anim = FALSE), add = TRUE)
+  shinyjs::onclick("decontX", shinyjs::toggle(id = "decontXParams",
+                                                   anim = FALSE), add = TRUE)
   shinyjs::onclick("doubletCells", shinyjs::toggle(id = "doubletCellsParams",
                                                    anim = FALSE), add = TRUE)
   shinyjs::onclick("cxds", shinyjs::toggle(id = "cxdsParams",
@@ -1042,39 +1066,83 @@ shinyServer(function(input, output, session) {
                       "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
+                       
                        cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),
+                       
                        bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp"),
+                       
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
                                                bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
                                                verb="CXBCverb"),
-                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratPcs="DFseuratPcs", seuratRes="DFseuratRes", 
-                                            formationRate="DFformationRate", verbose="DFverbose"),
+                       
+                       decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
+                                      iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
+                       
+                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
+                       
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
                                        useApproxNeighbors="SuseApproxNeighbors", distanceMetric="SdistanceMetric", getDoubletNeighborParents="SgetDoubletNeighborParents", minCounts="SminCounts", 
                                        minCells="SminCells", minGeneVariabilityPctl="SminGeneVariabilityPctl", logTransform="SlogTransform", meanCenter="SmeanCenter", 
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
                       )
+  # to keep track of whether an algo has already been run
+  qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, 
+                        QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
-  findOverlapping <- function(arr1, arr2) {
-    filter <- vector()
-    for (x in arr1) {
-      if (x %in% arr2) {
-        filter <- c(filter, TRUE)
-      } else {
-        filter <- c(filter, FALSE)
-      }
+  
+  # format the parameters for decontX
+  prepDecontXParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["decontX"]]
+    dxParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      dxParams[[key]] = input[[inputIds[[key]]]]
     }
-    return(arr1[filter])
+    
+    # put in the delta params (c-bind the two priors)
+    dxParams[["delta"]] <- c(input$DXnativePrior, input$DXcontPrior)
+    
+    # logfile param
+    if (is.null(input$DXlogfile)) {
+      dxParams[["logfile"]] <- NULL
+    } else {
+      dxParams[["logfile"]] <- input$DXlogfile$datapath
+    }
+    
+    # labels
+    if (!nzchar(input$DXz)) {
+      dxParams[["z"]] <- NULL
+    } else {
+      dxParams[["z"]] <- strsplit(input$DXz, " ")[[1]]
+    }
+
+    if (!nzchar(input$DXbatch)) {
+      dxParams[["batch"]] <- NULL
+    } else {
+      dxParams[["batch"]] <- strsplit(input$DXbatch, " ")[[1]]
+    }
+  
+    # add to master params list
+    paramsList[["decontX"]] = dxParams
+    return(paramsList)
   }
   
-  qcInputExists <- function() {
-    for (algo in qc_choice_list) {
-      if (input[[algo]]) {
-        return(TRUE)
-      }
+  # format the parameters for doubletFinder
+  prepDoubletFinderParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["doubletFinder"]]
+    dfParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      dfParams[[key]] = input[[inputIds[[key]]]]
     }
-    return(FALSE)
+    
+    # put in the seuratPcs param (range from 1 to given value)
+    dfParams[["seuratPcs"]] <- 1:input$DFseuratPcs
+    
+    # add to master params list
+    paramsList[["doubletFinder"]] = dfParams
+    return(paramsList)
   }
 
   observeEvent(input$runQC, {
@@ -1105,7 +1173,7 @@ shinyServer(function(input, output, session) {
           selector = "#noQCAssay"
         )
         useAssay <- input$qcAssaySelect
-        qcSample <- input$qcSampleSelect
+        qcSample <- colData(vals$original)[,input$qcSampleSelect]
         if (qcSample == "None") {
           qcSample <- NULL
         }
@@ -1114,6 +1182,16 @@ shinyServer(function(input, output, session) {
         for (algo in qc_choice_list) {
           if (input[[algo]]) {
             algoList <- c(algoList, algo)
+            # use the specific prep functions for decontX and doubletFinder
+            if (algo == "decontX") {
+              paramsList <- prepDecontXParams(paramsList)
+              next
+            }
+            if (algo == "doubletFinder") {
+              paramsList <- prepDoubletFinderParams(paramsList)
+              next
+            }
+            # everything else can go through the rest of the loop
             inputIds <- qc_input_ids[[algo]]
             algoParams <- list()
             for (key in names(inputIds)) {
@@ -1124,78 +1202,33 @@ shinyServer(function(input, output, session) {
                 }
                 algoParams[[key]] = paramSubList
               } else {
-                algoParams[[key]] = input[[inputIds[[key]]]]
+                if (nzchar(input[[inputIds[[key]]]])) {
+                  algoParams[[key]] = NULL
+                } else {
+                  algoParams[[key]] = input[[inputIds[[key]]]]
+                }
               }
             }
             paramsList[[algo]] = algoParams
           }
         }
-        # print(input$qcAssaySelect)
-        print(paramsList[['cxds_bcds_hybrid']])
-        # print(vals$original)
-        runCellQC(inSCE = vals$original,
+        vals$original <- runCellQC(inSCE = vals$original,
                   algorithms = algoList,
                   sample = qcSample,
                   useAssay = input$qcAssaySelect,
                   paramsList = paramsList)
         print(vals$original)
+        if (!is.null(vals$original)) {
+          # show the tabs for the result plots
+          showQCResTabs(algoList, qc_algo_status)
+          for (a in algoList) {
+            qc_algo_status[[a]] <- "tab"
+          }
+        }
       }
     })
   })
 
-  # OLD IMPLEMENTATION
-  # observeEvent(input$modalRunQC, {
-  #   qcAlgosList <- strsplit(input$qcAlgos, " ")
-  #   currassays <- names(assays(vals$counts))
-  #   if (is.null(input$qcAssaySelect)) {
-  #     if ("QCMetrics" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
-  #     } else if ("scrublet" %in% qcAlgosList){
-  #       showModal(qcModal(assays = currassays, failed=TRUE))
-  #     } else if ("doubletCells" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, failed = TRUE))
-  #     } else if ("decontX" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, failed = TRUE))
-  #     }
-  #   } else {
-  #     removeModal()
-  #     runHandler(qcAlgosList)
-  #   }
-  # })
-  # 
-  # 
-  # runHandler <- function(qcAlgosList) {
-  #   print(input$qcAssaySelect)
-  #   if ("QCMetrics" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          geneSetList = input$geneSetList,
-  #                          geneSetListLocation = input$geneLocation,
-  #                          geneSetCollection = input$geneCollection,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("scrublet" %in% qcAlgosList){
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("doubletCells" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("decontX" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL)
-  #   }
-  #   print(afterQC)
-  # }
   
   #-----------#
   # FILTERING #
@@ -1274,36 +1307,13 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  addToFilterParams <- function(name, criteria, id, dimension='col') {
-    threshStr <- ""
-    if (is.numeric(criteria)) {
-      threshStr <- sprintf("%s > %.5f", name, criteria)
-    } else {
-      threshArr <- list()
-      for (c in criteria) {
-        threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
-      }
-      threshStr <- paste(threshArr, collapse = " | ")
-    }
-    
-    if (dimension == 'col') {
-      entry <- list(col=name, param=threshStr, id=id)
-      filteringParams$params <- c(filteringParams$params, list(entry))
-      filteringParams$id_count <- filteringParams$id_count + 1
-    } else {
-      entry <- list(row=name, param=threshStr, id=id)
-      rowFilteringParams$params <- c(rowFilteringParams$params, list(entry))
-      rowFilteringParams$id_count <- rowFilteringParams$id_count + 1
-    }
-  }
-  
   observeEvent(input$filtModalOK, {
     if ((!nzchar(input$filterThresh)) || (is.null(input$filterColSelect))) {
       showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
     } else {
       id <- paste0("filteringParam", filteringParams$id_count)
       # new row in parameters table
-      addToFilterParams(input$filterColSelect, input$filterThresh, id, dimension = 'col')
+      addToFilterParams(input$filterColSelect, input$filterThresh, id, filteringParams, dimension = 'col')
       threshStr <- ""
       if (is.numeric(input$filterThresh)) {
         threshStr <- sprintf("> %.5f", input$filterThresh)
@@ -1341,7 +1351,7 @@ shinyServer(function(input, output, session) {
       } else {
         threshStr <- paste(input$filterThresh, collapse = ', ')
       }
-      addToFilterParams(input$filterRowSelect, input$filterThresh, id, dimension = 'row')
+      addToFilterParams(input$filterRowSelect, input$filterThresh, id, rowFilteringParams, dimension = 'row')
       make3ColTableRow("#newRowFilteringParams", id, input$filterRowSelect, threshStr)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
@@ -1384,15 +1394,18 @@ shinyServer(function(input, output, session) {
   }
   
   observeEvent(input$filterSCE, {
-    colInput <- formatFilteringCriteria(filteringParams$params)
-    if (length(colInput) > 0) {
-      subsetSCECols(vals$original, colData = colInput)
-    }
-
-    rowInput <- formatFilteringCriteria(rowFilteringParams$params)
-    if (length(rowInput) > 0) {
-      subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
-    }
+    withBusyIndicatorServer("filterSCE", {
+      colInput <- formatFilteringCriteria(filteringParams$params)
+      if (length(colInput) > 0) {
+        vals$original <- subsetSCECols(vals$original, colData = colInput)
+      }
+      
+      rowInput <- formatFilteringCriteria(rowFilteringParams$params)
+      if (length(rowInput) > 0) {
+        vals$original <- subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
+      }
+      print(vals$original)
+    })
   })
   
   #Render data table if there are fewer than 50 samples
