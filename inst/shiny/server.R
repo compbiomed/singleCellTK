@@ -193,7 +193,7 @@ shinyServer(function(input, output, session) {
       updateAssayInputs()
     }
   })
-  
+
   observeEvent(vals$original, {
     if (!is.null(vals$original)) {
       if (!is.null(metadata(vals$original)$sctk$genesets)) {
@@ -1066,25 +1066,14 @@ shinyServer(function(input, output, session) {
                       "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
-                       
                        cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),
-                       
                        bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp"),
-                       
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
                                                bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
                                                verb="CXBCverb"),
-<<<<<<< HEAD
-                       doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratPcs="DFseuratPcs", seuratRes="DFseuratRes",
-                                            formationRate="DFformationRate", verbose="DFverbose"),
-=======
-                       
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
-                       
                        doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
-                       
->>>>>>> 0688ce5ddd24c73a79d81df86b0b1524260db0b9
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
                                        useApproxNeighbors="SuseApproxNeighbors", distanceMetric="SdistanceMetric", getDoubletNeighborParents="SgetDoubletNeighborParents", minCounts="SminCounts",
@@ -1092,10 +1081,10 @@ shinyServer(function(input, output, session) {
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
                       )
   # to keep track of whether an algo has already been run
-  qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, 
+  qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL,
                         QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
-  
+
   # format the parameters for decontX
   prepDecontXParams <- function(paramsList) {
     inputIds <- qc_input_ids[["decontX"]]
@@ -1104,17 +1093,17 @@ shinyServer(function(input, output, session) {
     for (key in names(inputIds)) {
       dxParams[[key]] = input[[inputIds[[key]]]]
     }
-    
+
     # put in the delta params (c-bind the two priors)
     dxParams[["delta"]] <- c(input$DXnativePrior, input$DXcontPrior)
-    
+
     # logfile param
     if (is.null(input$DXlogfile)) {
       dxParams[["logfile"]] <- NULL
     } else {
       dxParams[["logfile"]] <- input$DXlogfile$datapath
     }
-    
+
     # labels
     if (!nzchar(input$DXz)) {
       dxParams[["z"]] <- NULL
@@ -1127,20 +1116,12 @@ shinyServer(function(input, output, session) {
     } else {
       dxParams[["batch"]] <- strsplit(input$DXbatch, " ")[[1]]
     }
-  
+
     # add to master params list
     paramsList[["decontX"]] = dxParams
     return(paramsList)
   }
-<<<<<<< HEAD
 
-  qcInputExists <- function() {
-    for (algo in qc_choice_list) {
-      if (input[[algo]]) {
-        return(TRUE)
-      }
-=======
-  
   # format the parameters for doubletFinder
   prepDoubletFinderParams <- function(paramsList) {
     inputIds <- qc_input_ids[["doubletFinder"]]
@@ -1148,12 +1129,11 @@ shinyServer(function(input, output, session) {
     # put in all the params from the list (the straightforward ones)
     for (key in names(inputIds)) {
       dfParams[[key]] = input[[inputIds[[key]]]]
->>>>>>> 0688ce5ddd24c73a79d81df86b0b1524260db0b9
     }
-    
+
     # put in the seuratPcs param (range from 1 to given value)
     dfParams[["seuratPcs"]] <- 1:input$DFseuratPcs
-    
+
     # add to master params list
     paramsList[["doubletFinder"]] = dfParams
     return(paramsList)
@@ -1243,64 +1223,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-<<<<<<< HEAD
-  # OLD IMPLEMENTATION
-  # observeEvent(input$modalRunQC, {
-  #   qcAlgosList <- strsplit(input$qcAlgos, " ")
-  #   currassays <- names(assays(vals$counts))
-  #   if (is.null(input$qcAssaySelect)) {
-  #     if ("QCMetrics" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, geneSetList = TRUE, geneSetListLocation = TRUE, geneSetCollection = TRUE, failed= TRUE))
-  #     } else if ("scrublet" %in% qcAlgosList){
-  #       showModal(qcModal(assays = currassays, failed=TRUE))
-  #     } else if ("doubletCells" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, failed = TRUE))
-  #     } else if ("decontX" %in% qcAlgosList) {
-  #       showModal(qcModal(assays = currassays, failed = TRUE))
-  #     }
-  #   } else {
-  #     removeModal()
-  #     runHandler(qcAlgosList)
-  #   }
-  # })
-  #
-  #
-  # runHandler <- function(qcAlgosList) {
-  #   print(input$qcAssaySelect)
-  #   if ("QCMetrics" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          geneSetList = input$geneSetList,
-  #                          geneSetListLocation = input$geneLocation,
-  #                          geneSetCollection = input$geneCollection,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("scrublet" %in% qcAlgosList){
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("doubletCells" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else if ("decontX" %in% qcAlgosList) {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL,
-  #                          useAssay = input$qcAssaySelect)
-  #   } else {
-  #     afterQC <- runCellQC(inSCE = vals$original,
-  #                          algorithms = qcAlgosList,
-  #                          sample = NULL)
-  #   }
-  #   print(afterQC)
-  # }
-
-=======
-  
->>>>>>> 0688ce5ddd24c73a79d81df86b0b1524260db0b9
   #-----------#
   # FILTERING #
   #-----------#
@@ -1377,34 +1299,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-<<<<<<< HEAD
 
-  addToFilterParams <- function(name, criteria, id, dimension='col') {
-    threshStr <- ""
-    if (is.numeric(criteria)) {
-      threshStr <- sprintf("%s > %.5f", name, criteria)
-    } else {
-      threshArr <- list()
-      for (c in criteria) {
-        threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
-      }
-      threshStr <- paste(threshArr, collapse = " | ")
-    }
-
-    if (dimension == 'col') {
-      entry <- list(col=name, param=threshStr, id=id)
-      filteringParams$params <- c(filteringParams$params, list(entry))
-      filteringParams$id_count <- filteringParams$id_count + 1
-    } else {
-      entry <- list(row=name, param=threshStr, id=id)
-      rowFilteringParams$params <- c(rowFilteringParams$params, list(entry))
-      rowFilteringParams$id_count <- rowFilteringParams$id_count + 1
-    }
-  }
-
-=======
-  
->>>>>>> 0688ce5ddd24c73a79d81df86b0b1524260db0b9
   observeEvent(input$filtModalOK, {
     if ((!nzchar(input$filterThresh)) || (is.null(input$filterColSelect))) {
       showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
@@ -1497,7 +1392,7 @@ shinyServer(function(input, output, session) {
       if (length(colInput) > 0) {
         vals$original <- subsetSCECols(vals$original, colData = colInput)
       }
-      
+
       rowInput <- formatFilteringCriteria(rowFilteringParams$params)
       if (length(rowInput) > 0) {
         vals$original <- subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
@@ -3059,7 +2954,7 @@ shinyServer(function(input, output, session) {
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
           transparency = input$adjustalpha, dotSize = input$adjustsize)
-        ggplotly(a, tooltip = c("X_input", "Y_input"), height = "100%")
+        ggplotly(a, tooltip = c("X_input", "Y_input"))
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,

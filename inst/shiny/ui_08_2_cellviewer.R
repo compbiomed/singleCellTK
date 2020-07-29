@@ -3,6 +3,7 @@ shinyPanelCellViewer <- fluidPage(
     class = "container",
            h1("Cell Viewer"),
            fluidRow(
+           column(6,
            radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot"), selected = NULL),
                     wellPanel(style = "background: floralwhite",
                       conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
@@ -94,6 +95,7 @@ shinyPanelCellViewer <- fluidPage(
 
                                             #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL)
                               )
+                            )
 ),
                               #-+-+-+-+-+-group by###################################
                               tags$hr(),
@@ -114,33 +116,27 @@ shinyPanelCellViewer <- fluidPage(
                               ),
                               tags$hr(),
                               actionButton("runCellViewer", "Plot")
-             ),#sidebarPanel_end
+             ),
+             column(6,
+               wellPanel(style = "background: floralwhite",
+                 fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:")))),
+                   column(6,textInput("adjustlegendtitle", h5(strong("Legend title:")))),
+                   column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
+                   column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
+                   column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
+                   column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
+                 )
+               )#well_end
+               )
 ), #fluidrow_end
-fluidRow(
+      fluidRow(
              #-+-+-+-+-+-mainPanel#################################
              wellPanel(style = "background: floralwhite",
-                                plotlyOutput("scatter") %>% withSpinner(size = 3, color="#0dc5c1", type = 8),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
+                                plotlyOutput("scatter", height = "auto") %>% withSpinner(size = 3, color="#0dc5c1", type = 8)
+               )
                                 # conditionalPanel("$('#scatter').hasClass('recalculating')",
                                 #                  tags$div('Your plot is loading, due to large manipulation.
                                 #                           This message will disappear once the plot is generated.')),
-                                tags$hr(),
-                                fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:")))),
-                                  column(6,textInput("adjustlegendtitle", h5(strong("Legend title:")))),
-                                  column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
-                                  column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
-                                  column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
-                                  column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
-                                )
-               )#well_end
-)
+        )
 )#tag_end
 )#page_end
