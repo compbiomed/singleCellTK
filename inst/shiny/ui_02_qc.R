@@ -18,7 +18,7 @@ shinyPanelQC <- fluidPage(
           shinyjs::hidden(
             tags$style(HTML("#QCMetricsParams {margin-left:40px}")),
             tags$div(id = "QCMetricsParams",
-                     selectInput("QCMgeneSets", "Select a Gene Set", list()),
+                     selectInput("QCMgeneSets", "Select a Gene Set for Quality Control", c("None")),
             )
           ),
           tags$hr(),
@@ -28,8 +28,21 @@ shinyPanelQC <- fluidPage(
           shinyjs::hidden(
             tags$style(HTML("#decontXParams {margin-left:40px}")),
             tags$div(id = "decontXParams",
-                     numericInput("nNeighborsInput", "Number of nearest neighbors", 0),
-                     numericInput("simDoubletsInput", "Number of simulated doublets", 0)
+                     numericInput("DXmaxIter", "Maximum iterations of the EM algorithm (default 500)", 500),
+                     numericInput("DXnativePrior", "Prior for native counts (default 10)", 10),
+                     numericInput("DXcontPrior", "Prior for contamination counts (default 10)", 10),
+                     numericInput("DXconvergence", "Threshold difference between previous and current iterations (default 0.001)", 0.001),
+                     numericInput("DXiterLogLik", "Number of iterations after which to calculate the log likelihood (default 10)", 10),
+                     numericInput("DXvarGenes", "Number of variable genes to use in dimensionality reduction before clustering (default 5000)", 5000),
+                     numericInput("DXdbscanEps", "Clustering resolution parameter (if no cell cluster labels) (default 1)", 1),
+                     
+                     textInput("DXz", "Cell cluster labels (please enter space-separated values) (default NULL)"),
+                     textInput("DXbatch", "Batch labels (please enter space-separated values) (default NULL)"),
+                     
+                     checkboxInput("DXestDelta", "Estimate delta?"), # T/F input
+                     checkboxInput("DXverbose", "Print log messages?"), # T/F input
+                     
+                     fileInput('DXlogfile', 'Choose a file to write log messages to (otherwise messages will be printed to stdout)')
             )
           ),
           tags$hr(),
@@ -50,6 +63,7 @@ shinyPanelQC <- fluidPage(
             tags$div(id = "cxdsParams",
                      numericInput("CXntop", "Number of top variance genes (default 500)", 500),
                      numericInput("CXbinThresh", "Threshold to consider a gene 'present' (default 0)", 0),
+                     
                      checkboxInput("CXverb", "Output progress messages?"), # T/F input
                      checkboxInput("CXretRes", "Return gene pair scores and top-scoring gene pairs?"), # T/F input
             )
@@ -79,6 +93,7 @@ shinyPanelQC <- fluidPage(
                      numericInput("CX2ntop", "Number of top variance genes (default 500)", 500),
                      numericInput("CX2binThresh", "Threshold to consider a gene 'present' (default 0)", 0),
                      checkboxInput("CX2retRes", "Return gene pair scores and top-scoring gene pairs?"), # T/F input
+                    
                      tags$hr(),
                      tags$label("bcds Parameters:"),
                      numericInput("BC2ntop", "Number of top variance genes  (default 500)", 500),
@@ -127,8 +142,7 @@ shinyPanelQC <- fluidPage(
                      numericInput("DFseuratNfeatures", "Number of highly variable genes to use (default 2000)", 2000),
                      numericInput("DFseuratRes", "Seurat resolution (please enter comma-separated integers, default 1.5)", 1.5),
                      numericInput("DFformationRate", "Doublet formation rate (default 0.075)", 0.075),
-                     
-                     textInput("DFseuratPcs", "PCs to determine the number of clusters (please enter comma-separated integers, default 1:15)"),
+                     numericInput("DFseuratPcs", "PCs to determine the number of clusters (default 15)", 15),
                      
                      checkboxInput("DFverbose", "Output log messages?"), # T/F input
             )
@@ -143,6 +157,9 @@ shinyPanelQC <- fluidPage(
           
         ),
         mainPanel(
+          tabsetPanel(
+            id = "qcResPlotTabs"
+          )
         )
       )
     )
