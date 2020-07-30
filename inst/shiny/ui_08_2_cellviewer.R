@@ -3,7 +3,6 @@ shinyPanelCellViewer <- fluidPage(
     class = "container",
            h1("Cell Viewer"),
            fluidRow(
-           column(6,
            radioGroupButtons("viewertabs", choices = c("reducedDims Plot", "Bar Plot","Violin/Box Plot"), selected = NULL),
                     wellPanel(style = "background: floralwhite",
                       conditionalPanel(condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
@@ -94,7 +93,6 @@ shinyPanelCellViewer <- fluidPage(
 
 
                                             #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL)
-                              )
                             )
 ),
                               #-+-+-+-+-+-group by###################################
@@ -115,19 +113,15 @@ shinyPanelCellViewer <- fluidPage(
                                 #       )
                               ),
                               tags$hr(),
-                              actionButton("runCellViewer", "Plot")
-             ),
-             column(6,
-               wellPanel(style = "background: floralwhite",
+                              actionButton("runCellViewer", "Plot"),
                  fluidRow(column(6,textInput("adjusttitle", h5(strong("Title:")))),
                    column(6,textInput("adjustlegendtitle", h5(strong("Legend title:")))),
                    column(6,sliderInput("adjustalpha", h5(strong("Opacity:")), min = 0, max = 1, value = 1)),
                    column(6,sliderInput("adjustsize", h5(strong("Size:")), min = 0.1, max = 0.8, value = 0.45)),
                    column(6,textInput("adjustxlab", h5(strong("X-axis label:")))),
                    column(6,textInput("adjustylab", h5(strong("Y-axis label:"))))
-                 )
-               )#well_end
                )
+                    )
 ), #fluidrow_end
       fluidRow(
              #-+-+-+-+-+-mainPanel#################################
