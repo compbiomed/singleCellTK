@@ -55,6 +55,7 @@ Uses doubletFinder to determine cells within the dataset
 \examples{
 \donttest{
 data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runDoubletFinder(sce)
 }
 }

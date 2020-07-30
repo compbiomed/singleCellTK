@@ -11,6 +11,7 @@
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
+  axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
@@ -32,7 +33,9 @@ Default TRUE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dotSize}{Size of dots. Default 1.}
 

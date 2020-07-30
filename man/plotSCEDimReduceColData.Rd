@@ -14,12 +14,15 @@ plotSCEDimReduceColData(
   reducedDimName = NULL,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorScale = NULL,
   colorLow = "white",
   colorMid = "gray",
   colorHigh = "blue",
@@ -27,7 +30,10 @@ plotSCEDimReduceColData(
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
-  legendTitle = NULL
+  legendTitle = NULL,
+  legendTitleSize = 12,
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -55,6 +61,10 @@ original class. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 the index of the dimension to be plotted. Default is NULL.}
@@ -72,6 +82,10 @@ Default NULL.}
 \item{dotSize}{Size of dots. Default 2.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+
+\item{colorScale}{Vector. Needs to be same length as the
+number of unique levels of colorBy. Will be used only if
+conditionClass = "factor" or "character". Default NULL.}
 
 \item{colorLow}{Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
@@ -93,8 +107,16 @@ Default 'blue'.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
-\item{legendTitle}{title of legend. Default NULL.
+\item{legendTitle}{title of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{legendSize}{size of legend. Default 10.
 Default FALSE.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

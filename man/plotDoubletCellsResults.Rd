@@ -9,9 +9,11 @@ plotDoubletCellsResults(
   sample = NULL,
   shape = NULL,
   groupby = NULL,
+  combinePlot = FALSE,
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
+  logScore = TRUE,
   reducedDimName = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -19,10 +21,14 @@ plotDoubletCellsResults(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotSize = 0.5,
-  transparency = 1,
   defaultTheme = TRUE,
-  titleSize = 15
+  dotSize = 1,
+  transparency = 1,
+  titleSize = 18,
+  axisLabelSize = 18,
+  axisSize = 15,
+  legendSize = 15,
+  legendTitleSize = 16
 )
 }
 \arguments{
@@ -39,6 +45,9 @@ Default NULL.}
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
+\item{combinePlot}{Boolean. Will combine plots using `cowplot::plot_grid`.
+Default FALSE.}
+
 \item{violin}{Boolean. If TRUE, will plot the violin plot. Default TRUE.}
 
 \item{boxplot}{Boolean. If TRUE, will plot boxplots for each violin plot.
@@ -46,6 +55,8 @@ Default TRUE.}
 
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
+
+\item{logScore}{Boolean. If TRUE, the doublet score will be log normalized.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}
@@ -68,14 +79,22 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
+when TRUE. Default TRUE.}
+
 \item{dotSize}{Size of dots. Default 1.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
-when TRUE. Default TRUE.}
+\item{titleSize}{Size of title of plot. Default 18.}
 
-\item{titleSize}{Size of title of plot. Default 15.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default 18.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 15.}
+
+\item{legendSize}{size of legend. Default 15.}
+
+\item{legendTitleSize}{size of legend title. Default 16.}
 }
 \description{
 A wrapper function which visualizes outputs from the
@@ -83,9 +102,9 @@ A wrapper function which visualizes outputs from the
  SingleCellExperiment object via various plots.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+data(scExample, package="singleCellTK")
+sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runDoubletCells(sce)
-plotDoubletCellsResults(inSCE = sce, reducedDimName = "UMAP")
+plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
 }
