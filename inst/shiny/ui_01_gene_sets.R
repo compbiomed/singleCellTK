@@ -21,6 +21,7 @@ shinyPanelGeneSets <- fluidPage(
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsDBUpload'", "geneSetSourceChoice"),
       h3("Select from a database:"),
+      tags$style(HTML("#geneSetDB {width:100%}")),
       checkboxGroupInput('geneSetDB', 'Check the gene sets you want to import', 
                          choices = c()),
     ),

@@ -200,7 +200,6 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
     choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
   }
   
-  print(choices)
   return(choices)
 }
 
@@ -219,15 +218,6 @@ findOverlapping <- function(arr1, arr2) {
     }
   }
   return(arr1[filter])
-}
-
-qcInputExists <- function() {
-  for (algo in qc_choice_list) {
-    if (input[[algo]]) {
-      return(TRUE)
-    }
-  }
-  return(FALSE)
 }
 
 addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col') {
