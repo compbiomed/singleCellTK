@@ -22,7 +22,8 @@ plotSCEViolinColData(
   gridLine = FALSE,
   summary = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -69,6 +70,10 @@ violin plot. Options are "mean" or "median". Default NULL.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 Visualizes values stored in the colData slot of a
