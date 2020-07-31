@@ -22,6 +22,7 @@ plotSCEDimReduceColData(
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorScale = NULL,
   colorLow = "white",
   colorMid = "gray",
   colorHigh = "blue",
@@ -31,7 +32,8 @@ plotSCEDimReduceColData(
   labelClusters = TRUE,
   legendTitle = NULL,
   legendTitleSize = 12,
-  legendSize = 10
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -81,6 +83,10 @@ Default NULL.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
+\item{colorScale}{Vector. Needs to be same length as the
+number of unique levels of colorBy. Will be used only if
+conditionClass = "factor" or "character". Default NULL.}
+
 \item{colorLow}{Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
 Default 'white'.}
@@ -107,6 +113,10 @@ Default 'blue'.}
 
 \item{legendSize}{size of legend. Default 10.
 Default FALSE.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

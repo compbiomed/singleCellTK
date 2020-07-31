@@ -18,7 +18,8 @@ plotEmptyDropsScatter(
   axisLabelSize = 15,
   legendTitle = NULL,
   legendTitleSize = 12,
-  legendSize = 10
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -54,6 +55,10 @@ when TRUE. Default TRUE.}
 \item{legendTitleSize}{size of legend title. Default 12.}
 
 \item{legendSize}{size of legend. Default 10.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 A plotting function which visualizes outputs from the

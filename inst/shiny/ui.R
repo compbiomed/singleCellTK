@@ -176,11 +176,11 @@ shinyUI(
       theme = shinytheme(shinyTheme),
       navbarMenu(
         "Data",
-        tabPanel("Import SCE", shinyPanelImport),
+        tabPanel("Import Single Cell Data", shinyPanelImport),
         tabPanel("Import Gene Sets", shinyPanelGeneSets),
         tabPanel("Column Annotation", shinyPanelColumnAnnotation),
         tabPanel("Row Annotation", shinyPanelRowAnnotation),
-        tabPanel("Export", shinyPanelExport)
+        tabPanel("Export Single Cell Data", shinyPanelExport)
       ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
