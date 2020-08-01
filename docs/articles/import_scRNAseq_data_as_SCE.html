@@ -94,7 +94,7 @@
 
       
 
-      </header><script src="import_scRNAseq_data_as_SCE_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Importing scRNA-seq data into Single Cell ToolKit</h1>
@@ -117,7 +117,9 @@
 <li><a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a></li>
 </ul>
 <p>The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as a SingleCellExperiment object assay, with associated information in respective colData, rowData, reducedDims, and metadata fields.</p>
-<p><img src="./sctk_import_functions.png"></p>
+<div class="figure">
+<img src="./sctk_import_functions.png">
+</div>
 <p>Detailed information on function parameters and defaults are available in the reference section</p>
   </div>
 

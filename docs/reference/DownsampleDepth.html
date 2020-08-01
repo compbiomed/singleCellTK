@@ -144,7 +144,7 @@ genes, and median significant effect size" />
     <h1>Estimate numbers of detected genes, significantly differentially expressed
 genes, and median significant effect size</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/DownsampleMatrix.R'><code>R/DownsampleMatrix.R</code></a></small>
-    <div class="hidden name"><code>DownsampleDepth.Rd</code></div>
+    <div class="hidden name"><code>downSampleDepth.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -168,7 +168,7 @@ genes, and median significant effect size</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>originalData</th>
-      <td><p>SCtkExperiment. The SCtkExperiment object storing all
+      <td><p>SingleCellExperiment object storing all
 assay data from the shiny app.</p></td>
     </tr>
     <tr>
@@ -221,7 +221,7 @@ expressed, the median effect size defaults to infinity.</p>
 <span class='no'>subset</span> <span class='kw'>&lt;-</span> <span class='no'>mouseBrainSubsetSCE</span>[<span class='fl'>1</span>:<span class='fl'>1000</span>,]
 <span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>downSampleDepth</span>(<span class='no'>subset</span>,
                        <span class='kw'>realLabels</span> <span class='kw'>=</span> <span class='st'>"level1class"</span>,
-                       <span class='kw'>iterations</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='input'>
+                       <span class='kw'>iterations</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

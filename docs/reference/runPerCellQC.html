@@ -152,10 +152,15 @@
     <pre class="usage"><span class='fu'>runPerCellQC</span>(
   <span class='no'>inSCE</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+  <span class='kw'>collectionName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>geneSetList</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>geneSetListLocation</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>,
   <span class='kw'>geneSetCollection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
+  <span class='kw'>percent_top</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>50</span>, <span class='fl'>100</span>, <span class='fl'>200</span>, <span class='fl'>500</span>),
+  <span class='kw'>use_altexps</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>flatten</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>detection.limit</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>BPPARAM</span> <span class='kw'>=</span> <span class='kw pkg'>BiocParallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html'>SerialParam</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,11 +172,15 @@
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>A string specifying which assay in the SCE to use. Default 'counts'.</p></td>
+      <td><p>A string specifying which assay in the SCE to use. Default <code>"counts"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>collectionName</th>
+      <td><p>Character. Name of a <code>GeneSetCollection</code> obtained by using one of the importGeneSet* functions. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>geneSetList</th>
-      <td><p>List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on <code>geneSetListLocation</code>.</p></td>
+      <td><p>List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on <code>geneSetListLocation</code>. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>geneSetListLocation</th>
@@ -186,8 +195,33 @@ same notation as <code>geneSetListLocation</code>. The function <a href='https:/
 of the gene IDs in <code>inSCE</code>. These gene sets will be included with those from <code>geneSetList</code> if both parameters are provided.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional arguments to pass to <a href='https://rdrr.io/pkg/scater/man/addPerCellQC.html'>addPerCellQC</a>.</p></td>
+      <th>percent_top</th>
+      <td><p>An integer vector. Each element is treated as a 
+number of top genes to compute the percentage of library size occupied by 
+the most highly expressed genes in each cell.</p></td>
+    </tr>
+    <tr>
+      <th>use_altexps</th>
+      <td><p>Logical scalar indicating whether QC statistics should 
+be computed for alternative Experiments in x. If TRUE, statistics are computed 
+for all alternative experiments.
+Alternatively, an integer or character vector specifying the alternative 
+Experiments to use to compute QC statistics.
+Alternatively NULL, in which case alternative experiments are not used.</p></td>
+    </tr>
+    <tr>
+      <th>flatten</th>
+      <td><p>Logical scalar indicating whether the nested <a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame-class</a> 
+in the output should be flattened.</p></td>
+    </tr>
+    <tr>
+      <th>detection.limit</th>
+      <td><p>A numeric scalar specifying the lower detection limit for expression.</p></td>
+    </tr>
+    <tr>
+      <th>BPPARAM</th>
+      <td><p>A <a href='https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html'>BiocParallelParam</a> object specifying 
+whether the QC calculations should be parallelized.</p></td>
     </tr>
     </table>
 
@@ -197,9 +231,10 @@ of the gene IDs in <code>inSCE</code>. These gene sets will be included with tho
  cell QC metrics added to the <a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a> slot. If <code>geneSetList</code> or <code>geneSetCollection</code> are provided, then the rownames for each gene set will be saved in <code>metadata(inSCE)$scater$addPerCellQC$geneSets</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>qcSceExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set 'qcSceExample' not found</span></div><div class='input'><span class='no'>mito.ix</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"^MT-"</span>, <span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>feature_name</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
+<span class='no'>mito.ix</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"^MT-"</span>, <span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>feature_name</span>)
 <span class='no'>geneSet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"Mito"</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='no'>mito.ix</span>])
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runPerCellQC</span>(<span class='no'>sce</span>, <span class='kw'>geneSetList</span> <span class='kw'>=</span> <span class='no'>geneSet</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:59:11 2020 ... Running 'perCellQCMetrics'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runPerCellQC</span>(<span class='no'>sce</span>, <span class='kw'>geneSetList</span> <span class='kw'>=</span> <span class='no'>geneSet</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:41 2020 ... Running 'perCellQCMetrics'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

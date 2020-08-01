@@ -165,7 +165,7 @@ condition if it is given.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object. Required</p></td>
+      <td><p>Input SingleCellExperiment object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -198,7 +198,7 @@ batch+condition (if applicable).</p>
   <span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"bladderbatch"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
     <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>bladderbatch</span>)
     <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>bladderdata</span>)
-    <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as</span>(<span class='fu'>as</span>(<span class='no'>bladderEset</span>, <span class='st'>"SummarizedExperiment"</span>), <span class='st'>"SCtkExperiment"</span>)
+    <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'>as</span>(<span class='fu'>as</span>(<span class='no'>bladderEset</span>, <span class='st'>"SummarizedExperiment"</span>), <span class='st'>"SingleCellExperiment"</span>)
     <span class='fu'>plotBatchVariance</span>(<span class='no'>dat</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"exprs"</span>, <span class='kw'>batch</span><span class='kw'>=</span><span class='st'>"batch"</span>, <span class='kw'>condition</span> <span class='kw'>=</span> <span class='st'>"cancer"</span>)
   }
 }</div></pre>

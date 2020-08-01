@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a SingleCellExperiment Object from DropEst output — importDropEst • singleCellTK</title>
+<title>Create a SCE Object from DropEst output — importDropEst • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="Create a SingleCellExperiment Object from DropEst output — importDropEst" />
-<meta property="og:description" content="imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as
-SCE coldata, in addition to any metadata." />
+<meta property="og:title" content="Create a SCE Object from DropEst output — importDropEst" />
+<meta property="og:description" content="imports the RDS file created by DropEst and
+creates a SingleCellExperiment object from either the raw or filtered counts matrix." />
 
 
 
@@ -141,16 +139,14 @@ SCE coldata, in addition to any metadata." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a SingleCellExperiment Object from DropEst output</h1>
+    <h1>Create a SCE Object from DropEst output</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/importDropEst.R'><code>R/importDropEst.R</code></a></small>
     <div class="hidden name"><code>importDropEst.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as
-SCE coldata, in addition to any metadata.</p>
+    <p>imports the RDS file created by DropEst and
+creates a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object from either the raw or filtered counts matrix.</p>
     </div>
 
     <pre class="usage"><span class='fu'>importDropEst</span>(
@@ -166,7 +162,8 @@ SCE coldata, in addition to any metadata.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sampleDirs</th>
-      <td><p>A path to the directory containing the data files. Default "./".</p></td>
+      <td><p>a vector of paths to the sample directories containing the cell.counts.rds file. 
+Default is current working directory.</p></td>
     </tr>
     <tr>
       <th>dataType</th>
@@ -178,8 +175,8 @@ SCE coldata, in addition to any metadata.</p>
     </tr>
     <tr>
       <th>sampleNames</th>
-      <td><p>A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".</p></td>
+      <td><p>a vector of  sample names corresponding to the sample directories.
+Default "sample". The sample name will be prepended to cell barcode IDs.</p></td>
     </tr>
     <tr>
       <th>delayedArray</th>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds • singleCellTK</title>
+<title>Subset a SingleCellExperiment object by columns — subsetSCECols • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds" />
-<meta property="og:description" content="A wrapper function for bcds. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if estNdbl is TRUE." />
+<meta property="og:title" content="Subset a SingleCellExperiment object by columns — subsetSCECols" />
+<meta property="og:description" content="Used to peform subsetting of a
+SingleCellExperiment object using a variety of methods that
+indicate the correct columns to keep. The various methods,
+index, bool, and colData, can be used in conjunction
+with one another." />
 
 
 
@@ -141,97 +142,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/scds_doubletdetection.R'><code>R/scds_doubletdetection.R</code></a></small>
-    <div class="hidden name"><code>runBcds.Rd</code></div>
+    <h1>Subset a SingleCellExperiment object by columns</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/subsetSCE.R'><code>R/subsetSCE.R</code></a></small>
+    <div class="hidden name"><code>subsetSCECols.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper function for <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if <code>estNdbl</code> is <code>TRUE</code>.</p>
+    <p>Used to peform subsetting of a
+SingleCellExperiment object using a variety of methods that
+indicate the correct columns to keep. The various methods,
+<code>index</code>, <code>bool</code>, and <code>colData</code>, can be used in conjunction
+with one another.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runBcds</span>(
-  <span class='no'>inSCE</span>,
-  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
-  <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>srat</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verb</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>retRes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>nmax</span> <span class='kw'>=</span> <span class='st'>"tune"</span>,
-  <span class='kw'>varImp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>subsetSCECols</span>(<span class='no'>inSCE</span>, <span class='kw'>index</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bool</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>colData</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.
-Needs <code>counts</code> in assays slot.</p></td>
+      <td><p>Input SingleCellExperiment object.</p></td>
     </tr>
     <tr>
-      <th>sample</th>
-      <td><p>Character vector. Indicates which sample each cell belongs to.
-<a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.</p></td>
+      <th>index</th>
+      <td><p>Integer vector. Vector of indicies indicating which columns
+to keep. If <code>NULL</code>, this will not be used for subsetting.
+Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
-      <th>seed</th>
-      <td><p>Seed for the random number generator. Default 12345.</p></td>
+      <th>bool</th>
+      <td><p>Boolean vector. Vector of <code>TRUE</code> or <code>FALSE</code>
+indicating which columns should be kept. Needs to be the same length as the
+number of columns in <code>inSCE</code>. If <code>NULL</code>, this will not be used
+for subsetting. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
-      <th>ntop</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>500</code>.</p></td>
-    </tr>
-    <tr>
-      <th>srat</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>1</code>.</p></td>
-    </tr>
-    <tr>
-      <th>verb</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>retRes</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>nmax</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>"tune"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>varImp</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>estNdbl</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>useAssay</th>
-      <td><p>A string specifying which assay in the SCE to use.</p></td>
+      <th>colData</th>
+      <td><p>Character. An expression that will identify a subset of
+columns using variables found in the <code>colData</code> of <code>inSCE</code>.
+For example, if <code>x</code> is a numeric vector in <code>colData</code>,
+then <code>"x &lt; 5"</code> will return all columns with x less than 5.
+Single quotes should be used for character strings. For example,
+<code>"y == 'yes'"</code> will return all columns where y is "yes".
+Multiple expressions can be evaluated by placing them in a vector.
+For example <code><a href='https://rdrr.io/r/base/c.html'>c("x &lt; 5", "y =='yes'")</a></code> will apply both operations for 
+subsetting. If <code>NULL</code>, this will not be used for subsetting.
+Default <code>NULL</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
- <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> output appended to the
- <a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a> slot. The columns include
- <em>bcds_score</em> and optionally <em>bcds_call</em>.
- Please refer to the documentation of <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for details.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runBcds</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:18:40 2020 ... Running 'bcds'</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>subsetSCECols</span>(<span class='no'>sce</span>, <span class='kw'>colData</span> <span class='kw'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -23,7 +23,7 @@ runScrublet(
   logTransform = FALSE,
   meanCenter = TRUE,
   normalizeVariance = TRUE,
-  nPrinComps = 30L,
+  nPrinComps = 3L,
   tsneAngle = NULL,
   tsnePerplexity = NULL,
   verbose = TRUE,

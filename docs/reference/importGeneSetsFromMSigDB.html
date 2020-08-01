@@ -156,7 +156,8 @@ downstream quality control and analysis functions in <a href='singleCellTK.html'
   <span class='no'>categoryIDs</span>,
   <span class='kw'>species</span> <span class='kw'>=</span> <span class='st'>"Homo sapiens"</span>,
   <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"gene_symbol"</span>, <span class='st'>"human_gene_symbol"</span>, <span class='st'>"entrez_gene"</span>),
-  <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>
+  <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -195,6 +196,10 @@ gene identifies will be mapped to that column in the <code>rowData</code>
 of <code>inSCE</code>. See <a href='featureIndex.html'>featureIndex</a> for more information.
 Default <code>"rownames"</code>.</p></td>
     </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Boolean. Whether to display progress. Default <code>TRUE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -218,7 +223,7 @@ GeneSetCollection objects.</p></div>
                                 <span class='kw'>categoryIDs</span> <span class='kw'>=</span> <span class='st'>"H"</span>,
                                 <span class='kw'>species</span> <span class='kw'>=</span> <span class='st'>"Homo sapiens"</span>,
                                 <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='st'>"gene_symbol"</span>,
-                                <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"feature_name"</span>)</div></pre>
+                                <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"feature_name"</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:17:20 2020 .. Importing 'H' gene sets (n = 50)</span></div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:17:20 2020 .... Completed 50 gene sets for 1</span></div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:17:20 2020 .. Matching gene sets to 'feature_name'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

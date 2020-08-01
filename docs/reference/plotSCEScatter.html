@@ -208,8 +208,8 @@ object. Will be used only if "assays" slot is chosen. Default NULL.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>saved dimension reduction name in the SCtkExperiment
-object. Required.</p></td>
+      <td><p>saved dimension reduction name in the
+SingleCellExperiment object. Required.</p></td>
     </tr>
     <tr>
       <th>conditionClass</th>
@@ -301,11 +301,13 @@ Default 'blue'.</p></td>
     <p>a ggplot of the reduced dimensions.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>plotSCEScatter</span>(
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'>plotSCEScatter</span>(
   <span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>mouseBrainSubsetSCE</span>, <span class='kw'>legendTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>slot</span> <span class='kw'>=</span> <span class='st'>"assays"</span>, <span class='kw'>annotation</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>feature</span> <span class='kw'>=</span> <span class='st'>"Tspan12"</span>,
+  <span class='kw'>slot</span> <span class='kw'>=</span> <span class='st'>"assays"</span>, <span class='kw'>annotation</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>feature</span> <span class='kw'>=</span> <span class='st'>"Apoe"</span>,
   <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"TSNE_counts"</span>, <span class='kw'>labelClusters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</div><div class='img'><img src='plotSCEScatter-1.png' alt='' width='700' height='433' /></div></pre>
+)</div><div class='img'><img src='plotSCEScatter-1.png' alt='' width='700' height='433' /></div><div class='input'># }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds • singleCellTK</title>
+<title>Create a SingleCellExperiment Object from Python AnnData .h5ad files — importAnnData • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds" />
-<meta property="og:description" content="A wrapper function for bcds. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if estNdbl is TRUE." />
+<meta property="og:title" content="Create a SingleCellExperiment Object from Python AnnData .h5ad files — importAnnData" />
+<meta property="og:description" content="This function reads in one or more Python AnnData files in the .h5ad format 
+and returns a single SingleCellExperiment object containing all the 
+AnnData samples by concatenating their counts matrices and related information slots." />
 
 
 
@@ -141,97 +140,74 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/scds_doubletdetection.R'><code>R/scds_doubletdetection.R</code></a></small>
-    <div class="hidden name"><code>runBcds.Rd</code></div>
+    <h1>Create a SingleCellExperiment Object from Python AnnData .h5ad files</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/importAnnData.R'><code>R/importAnnData.R</code></a></small>
+    <div class="hidden name"><code>importAnnData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper function for <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if <code>estNdbl</code> is <code>TRUE</code>.</p>
+    <p>This function reads in one or more Python AnnData files in the .h5ad format 
+and returns a single <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing all the 
+AnnData samples by concatenating their counts matrices and related information slots.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runBcds</span>(
-  <span class='no'>inSCE</span>,
-  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
-  <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>srat</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verb</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>retRes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>nmax</span> <span class='kw'>=</span> <span class='st'>"tune"</span>,
-  <span class='kw'>varImp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>importAnnData</span>(<span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>delayedArray</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inSCE</th>
-      <td><p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.
-Needs <code>counts</code> in assays slot.</p></td>
+      <th>sampleDirs</th>
+      <td><p>Folder containing the .h5ad file. Can be one of -</p><ul>
+<li><p>Default <code>current working directory</code>.</p></li>
+<li><p>Full path to the directory containing the .h5ad file. 
+  E.g <code>sampleDirs = '/path/to/sample'</code></p></li>
+<li><p>A vector of folder paths for the samples to import. 
+  E.g. <code>sampleDirs = c('/path/to/sample1', '/path/to/sample2','/path/to/sample3')</code>
+  importAnnData will return a single SCE object containing all the samples 
+  with the sample name appended to each colname in colData</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>sample</th>
-      <td><p>Character vector. Indicates which sample each cell belongs to.
-<a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.</p></td>
+      <th>sampleNames</th>
+      <td><p>The prefix/name of the .h5ad file without the .h5ad extension 
+e.g. if 'sample.h5ad' is the filename, pass <code>sampleNames = 'sample'</code>.
+Can be one of -</p><ul>
+<li><p>Default <code>sample</code>.</p></li>
+<li><p>A vector of samples to import. Length of vector must be equal to length of sampleDirs vector
+  E.g. <code>sampleDirs = c('sample1', 'sample2','sample3')</code>
+  importAnnData will return a single SCE object containing all the samples 
+  with the sample name appended to each colname in colData</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>seed</th>
-      <td><p>Seed for the random number generator. Default 12345.</p></td>
-    </tr>
-    <tr>
-      <th>ntop</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>500</code>.</p></td>
-    </tr>
-    <tr>
-      <th>srat</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>1</code>.</p></td>
-    </tr>
-    <tr>
-      <th>verb</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>retRes</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>nmax</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>"tune"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>varImp</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>estNdbl</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>useAssay</th>
-      <td><p>A string specifying which assay in the SCE to use.</p></td>
+      <th>delayedArray</th>
+      <td><p>Boolean. Whether to read the expression matrix as
+<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object. Default <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
- <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> output appended to the
- <a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a> slot. The columns include
- <em>bcds_score</em> and optionally <em>bcds_call</em>.
- Please refer to the documentation of <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for details.</p>
+    <p>A <code>SingleCellExperiment</code> object.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>importAnnData</code> converts scRNA-seq data in the AnnData format to the
+<code>SingleCellExperiment</code> object. The .X slot in AnnData is transposed to the features x cells 
+format and becomes the 'counts' matrix in the assay slot. The .vars AnnData slot becomes the SCE rowData
+and the .obs AnnData slot becomes the SCE colData. Multidimensional data in the .obsm AnnData slot is
+ported over to the SCE reducedDims slot. Additionally, unstructured data in the .uns AnnData slot is 
+available through the SCE metadata slot. 
+There are 2 currently known minor issues - 
+Anndata python module depends on another python module h5pyto read hd5 format files.
+If there are errors reading the .h5ad files, such as "ValueError: invalid shape in fixed-type tuple."
+the user will need to do downgrade h5py by running <code>pip3 install --user h5py==2.9.0</code> 
+Additionally there might be errors in converting some python objects in the unstructured data slots.
+There are no known R solutions at present. Refer <a href='https://github.com/rstudio/reticulate/issues/209'>https://github.com/rstudio/reticulate/issues/209</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runBcds</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:18:40 2020 ... Running 'bcds'</span></div></pre>
+    <pre class="examples"><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>importAnnData</span>(<span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/annData_pbmc_3k"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>),
+                     <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='st'>'pbmc3k_20by20'</span>)</div><div class='output co'>#&gt; <span class='message'>Warning: unable to add unstructured data (.uns slot): 'rank_genes_groups' to SCE metadata. Skipping. </span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

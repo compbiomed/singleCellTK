@@ -162,7 +162,7 @@ conversion.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object. Required</p></td>
+      <td><p>Input SingleCellExperiment object.</p></td>
     </tr>
     <tr>
       <th>inSymbol</th>
@@ -180,7 +180,7 @@ conversion.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A SCtkExperiment with converted gene IDs.</p>
+    <p>A SingleCellExperiment object with converted gene IDs.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"org.Mm.eg.db"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
@@ -192,23 +192,23 @@ conversion.</p>
                                            <span class='kw'>outSymbol</span> <span class='kw'>=</span> <span class='st'>"ENSEMBL"</span>,
                                            <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Mm.eg.db"</span>)
   <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>mouseBrainSubsetSymbol</span>), <span class='fl'>50</span>)
-}</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>1924 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>39 ENSEMBL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>332 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>19972 SYMBOL originally, 18013 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000002058" "ENSMUSG00000034839" "ENSMUSG00000029344"
-#&gt;  [4] "ENSMUSG00000026873" "ENSMUSG00000035000" "ENSMUSG00000024011"
-#&gt;  [7] "ENSMUSG00000114469" "ENSMUSG00000053129" "ENSMUSG00000031023"
-#&gt; [10] "ENSMUSG00000037706" "ENSMUSG00000021745" "ENSMUSG00000066551"
-#&gt; [13] "ENSMUSG00000017418" "ENSMUSG00000049422" "ENSMUSG00000001473"
-#&gt; [16] "ENSMUSG00000051910" "ENSMUSG00000029110" "ENSMUSG00000061013"
-#&gt; [19] "ENSMUSG00000074345" "ENSMUSG00000019842" "ENSMUSG00000068252"
-#&gt; [22] "ENSMUSG00000025784" "ENSMUSG00000031875" "ENSMUSG00000102046"
-#&gt; [25] "ENSMUSG00000055780" "ENSMUSG00000021552" "ENSMUSG00000028291"
-#&gt; [28] "ENSMUSG00000024712" "ENSMUSG00000024966" "ENSMUSG00000042312"
-#&gt; [31] "ENSMUSG00000026283" "ENSMUSG00000048039" "ENSMUSG00000025464"
-#&gt; [34] "ENSMUSG00000054717" "ENSMUSG00000024049" "ENSMUSG00000073000"
-#&gt; [37] "ENSMUSG00000061136" "ENSMUSG00000041923" "ENSMUSG00000073103"
-#&gt; [40] "ENSMUSG00000030505" "ENSMUSG00000028687" "ENSMUSG00000029848"
-#&gt; [43] "ENSMUSG00000079262" "ENSMUSG00000053553" "ENSMUSG00000064307"
-#&gt; [46] "ENSMUSG00000031661" "ENSMUSG00000049456" "ENSMUSG00000009941"
-#&gt; [49] "ENSMUSG00000054537" "ENSMUSG00000029445"</div><div class='input'>
+}</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>109 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>34 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>2314 SYMBOL originally, 2205 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000028719" "ENSMUSG00000050854" "ENSMUSG00000026867"
+#&gt;  [4] "ENSMUSG00000026853" "ENSMUSG00000068039" "ENSMUSG00000026234"
+#&gt;  [7] "ENSMUSG00000030824" "ENSMUSG00000094870" "ENSMUSG00000033379"
+#&gt; [10] "ENSMUSG00000019362" "ENSMUSG00000094483" "ENSMUSG00000046985"
+#&gt; [13] "ENSMUSG00000039361" "ENSMUSG00000026204" "ENSMUSG00000024597"
+#&gt; [16] "ENSMUSG00000022337" "ENSMUSG00000021024" "ENSMUSG00000036402"
+#&gt; [19] "ENSMUSG00000050121" "ENSMUSG00000006800" "ENSMUSG00000033184"
+#&gt; [22] "ENSMUSG00000005312" "ENSMUSG00000037826" "ENSMUSG00000003974"
+#&gt; [25] "ENSMUSG00000073676" "ENSMUSG00000028568" "ENSMUSG00000040249"
+#&gt; [28] "ENSMUSG00000033004" "ENSMUSG00000015850" "ENSMUSG00000028484"
+#&gt; [31] "ENSMUSG00000029461" "ENSMUSG00000000131" "ENSMUSG00000063229"
+#&gt; [34] "ENSMUSG00000050708" "ENSMUSG00000032026" "ENSMUSG00000066551"
+#&gt; [37] "ENSMUSG00000006005" "ENSMUSG00000020831" "ENSMUSG00000004151"
+#&gt; [40] "ENSMUSG00000054162" "ENSMUSG00000027642" "ENSMUSG00000009013"
+#&gt; [43] "ENSMUSG00000047675" "ENSMUSG00000015961" "ENSMUSG00000022283"
+#&gt; [46] "ENSMUSG00000000346" "ENSMUSG00000037062" "ENSMUSG00000060703"
+#&gt; [49] "ENSMUSG00000029405" "ENSMUSG00000027523"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

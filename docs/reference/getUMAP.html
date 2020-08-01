@@ -171,7 +171,7 @@ dimension reduction.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object. Required</p></td>
+      <td><p>Input SingleCellExperiment object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -234,8 +234,8 @@ input in UMAP. Default 50.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a SCtkExperiment object with the reduced dimensions updated under
-reducedDimName specified.</p>
+    <p>A SingleCellExperiment object with the reduced
+dimensions updated under reducedDimName specified.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)

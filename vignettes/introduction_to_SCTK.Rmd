@@ -38,7 +38,7 @@ sce
 ```{r eval=FALSE}
 sce <- runCellQC(sce,
                 algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
-                "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX")
+                "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"))
 ```
 
 ### Droplet QC
@@ -49,12 +49,18 @@ sce <- runDropletQC(inSCE,
 ```
 ## Visualize Results 
 ```{r eval=FALSE}
-plotUMAP(sce, reducedDimName = "scrublet_UMAP", runUMAP = FALSE,useAssay = "logcounts")
+plotUMAP(sce, reducedDimName = "scrublet_UMAP", runUMAP = FALSE, useAssay = "logcounts")
 ```
 
 ## Export SCE as text file
+The SingleCellExperiment object which contains QC metrics can be exported as rds, h5 or text files. More information about output format can be found in [Quality Control](./run_qc.html). Also, refer documentation [exportSCEtoAnnData](./exportSCEtoAnnData.html) and [exportSCEtoFlatFile](./exportSCEtoFlatFile.html). 
 ```{r eval=FALSE}
-exportSCEtoFlatFile(sce, "example_sce")
+## TXT files
+exportSCEtoFlatFile(sce = sce, outputDir = "example_sce")
+## h5 files
+exportSCEtoAnnData(sce = sce, outputDir = "example_sce")
+## rds
+saveRDS(sce, file="example_sce/example_sce.rds")
 ```
 
 ## Vignettes

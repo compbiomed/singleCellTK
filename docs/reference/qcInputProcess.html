@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds • singleCellTK</title>
+<title>Create SingleCellExperiment object from command line input arguments — qcInputProcess • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,8 @@
 
 
 
-<meta property="og:title" content="Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. — runBcds" />
-<meta property="og:description" content="A wrapper function for bcds. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if estNdbl is TRUE." />
+<meta property="og:title" content="Create SingleCellExperiment object from command line input arguments — qcInputProcess" />
+<meta property="og:description" content="Create SingleCellExperiment object from command line input arguments" />
 
 
 
@@ -141,97 +138,73 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Find doublets/multiplets using <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/scds_doubletdetection.R'><code>R/scds_doubletdetection.R</code></a></small>
-    <div class="hidden name"><code>runBcds.Rd</code></div>
+    <h1>Create SingleCellExperiment object from command line input arguments</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/sctkQCUtils.R'><code>R/sctkQCUtils.R</code></a></small>
+    <div class="hidden name"><code>qcInputProcess.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A wrapper function for <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a>. Annotate
- doublets/multiplets using a binary classification approach to discriminate
- artificial doublets from original data. Generate a doublet
- score for each cell. Infer doublets if <code>estNdbl</code> is <code>TRUE</code>.</p>
+    <p>Create SingleCellExperiment object from command line input arguments</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runBcds</span>(
-  <span class='no'>inSCE</span>,
-  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
-  <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>srat</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verb</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>retRes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>nmax</span> <span class='kw'>=</span> <span class='st'>"tune"</span>,
-  <span class='kw'>varImp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>
+    <pre class="usage"><span class='fu'>qcInputProcess</span>(
+  <span class='no'>preproc</span>,
+  <span class='no'>samplename</span>,
+  <span class='no'>path</span>,
+  <span class='no'>raw</span>,
+  <span class='no'>fil</span>,
+  <span class='no'>ref</span>,
+  <span class='no'>rawFile</span>,
+  <span class='no'>filFile</span>,
+  <span class='no'>dataType</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inSCE</th>
-      <td><p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.
-Needs <code>counts</code> in assays slot.</p></td>
+      <th>preproc</th>
+      <td><p>Method used to preprocess the data. It's one of the path provided in --preproc argument.</p></td>
     </tr>
     <tr>
-      <th>sample</th>
-      <td><p>Character vector. Indicates which sample each cell belongs to.
-<a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.</p></td>
+      <th>samplename</th>
+      <td><p>The sample name of the data. It's one of the path provided in --sample argument.</p></td>
     </tr>
     <tr>
-      <th>seed</th>
-      <td><p>Seed for the random number generator. Default 12345.</p></td>
+      <th>path</th>
+      <td><p>Base path of the dataset. It's one of the path provided in --bash_path argument.</p></td>
     </tr>
     <tr>
-      <th>ntop</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>500</code>.</p></td>
+      <th>raw</th>
+      <td><p>The directory contains droplet matrix, gene and cell barcodes information. It's one of the path provided in --raw_data_path argument.</p></td>
     </tr>
     <tr>
-      <th>srat</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>1</code>.</p></td>
+      <th>fil</th>
+      <td><p>The directory contains cell matrix, gene and cell barcodes information. It's one of the path provided in --cell_data_path argument.</p></td>
     </tr>
     <tr>
-      <th>verb</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
+      <th>ref</th>
+      <td><p>The name of reference used by cellranger. Only need for CellrangerV2 data.</p></td>
     </tr>
     <tr>
-      <th>retRes</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
+      <th>rawFile</th>
+      <td><p>The full path of the RDS file or Matrix file of the raw gene count matrix. It's one of the path provided in --raw_data argument.</p></td>
     </tr>
     <tr>
-      <th>nmax</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>"tune"</code>.</p></td>
+      <th>filFile</th>
+      <td><p>The full path of the RDS file or Matrix file of the cell count matrix. It's one of the path provided in --cell_data argument.</p></td>
     </tr>
     <tr>
-      <th>varImp</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>estNdbl</th>
-      <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>useAssay</th>
-      <td><p>A string specifying which assay in the SCE to use.</p></td>
+      <th>dataType</th>
+      <td><p>Type of the input. It can be "Both", "Droplet" or "Cell". It's one of the path provided in --genome argument.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
- <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> output appended to the
- <a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a> slot. The columns include
- <em>bcds_score</em> and optionally <em>bcds_call</em>.
- Please refer to the documentation of <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for details.</p>
+    <p>A list of <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing
+the droplet or cell data or both,depending on the dataType that users provided.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runBcds</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:18:40 2020 ... Running 'bcds'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

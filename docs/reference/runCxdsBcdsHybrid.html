@@ -162,7 +162,8 @@
   <span class='kw'>bcdsArgs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
   <span class='kw'>verb</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>force</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -209,6 +210,10 @@ and <code>bcds</code>. Default <code>500</code>.</p></td>
       <th>force</th>
       <td><p>See <a href='https://rdrr.io/pkg/scds/man/cxds_bcds_hybrid.html'>cxds_bcds_hybrid</a> for more information. Default <code>FALSE</code>.</p></td>
     </tr>
+    <tr>
+      <th>useAssay</th>
+      <td><p>A string specifying which assay in the SCE to use.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -223,7 +228,7 @@ and <code>bcds</code>. Default <code>500</code>.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runCxdsBcdsHybrid</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:05 2020 ... Running 'cxds_bcds_hybrid'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runCxdsBcdsHybrid</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:07 2020 ... Running 'cxds_bcds_hybrid'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

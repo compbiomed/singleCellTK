@@ -156,9 +156,19 @@
   <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
   <span class='kw'>nNeighbors</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>simDoublets</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>simDoublets</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>10000</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>inSCE</span>)),
   <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
-  <span class='no'>...</span>
+  <span class='kw'>size.factors.norm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>size.factors.content</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>subset.row</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>block</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>d</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>force.match</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>force.k</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>force.ndist</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>BNPARAM</span> <span class='kw'>=</span> <span class='kw pkg'>BiocNeighbors</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocNeighbors/man/KmknnParam.html'>KmknnParam</a></span>(),
+  <span class='kw'>BSPARAM</span> <span class='kw'>=</span> <span class='kw pkg'>BiocSingular</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocSingular/man/BiocSingularParam.html'>bsparam</a></span>(),
+  <span class='kw'>BPPARAM</span> <span class='kw'>=</span> <span class='kw pkg'>BiocParallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html'>SerialParam</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -192,8 +202,60 @@ detection. Default 10000.</p></td>
       <td><p>Seed for the random number generator. Default 12345.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional arguments to pass to <a href='https://rdrr.io/pkg/scran/man/doubletCells.html'>doubletCells</a>.</p></td>
+      <th>size.factors.norm</th>
+      <td><p>A numeric vector of size factors for normalization 
+of <code>x</code> prior to PCA and distance calculations. If <code>NULL</code>, defaults 
+to size factors derived from the library sizes of <code>x</code>. For the SingleCellExperiment 
+method, the default values are taken from <code>sizeFactors(x)</code>, if they are available.</p></td>
+    </tr>
+    <tr>
+      <th>size.factors.content</th>
+      <td><p>A numeric vector of size factors for RNA content 
+normalization of <code>x</code> prior to simulating doublets. #' This is orthogonal to 
+the values in <code>size.factors.norm</code></p></td>
+    </tr>
+    <tr>
+      <th>subset.row</th>
+      <td><p>See <code>?"scran-gene-selection"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>block</th>
+      <td><p>An integer scalar controlling the rate of doublet generation, 
+to keep memory usage low.</p></td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td><p>An integer scalar specifying the number of components to retain after the PCA.</p></td>
+    </tr>
+    <tr>
+      <th>force.match</th>
+      <td><p>A logical scalar indicating whether remapping of simulated 
+doublets to original cells should be performed.</p></td>
+    </tr>
+    <tr>
+      <th>force.k</th>
+      <td><p>An integer scalar specifying the number of neighbours to use for 
+remapping if <code>force.match=TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>force.ndist</th>
+      <td><p>A numeric scalar specifying the bandwidth for remapping 
+if <code>force.match=TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>BNPARAM</th>
+      <td><p>A <code>BiocNeighborParam</code> object specifying the nearest neighbor algorithm.
+This should be an algorithm supported by <code><a href='https://rdrr.io/pkg/BiocNeighbors/man/findNeighbors.html'>findNeighbors</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>BSPARAM</th>
+      <td><p>A <code>BiocSingularParam</code> object specifying the algorithm to 
+use for PCA, if <code>d</code> is not <code>NA</code>.</p></td>
+    </tr>
+    <tr>
+      <th>BPPARAM</th>
+      <td><p>A <code><a href='https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html'>BiocParallelParam</a></code> object specifying whether the 
+neighbour searches should be parallelized.</p></td>
     </tr>
     </table>
 
@@ -212,7 +274,7 @@ detection. Default 10000.</p></td>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Lun ATL (2018). Detecting doublet cells with scran.
- <a href='https://ltla.github.io/SingleCellThoughts/software/doublet_detectio/bycell.html'>https://ltla.github.io/SingleCellThoughts/software/doublet_detectio/bycell.html</a></p>
+ <a href='https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html'>https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='https://rdrr.io/pkg/scran/man/doubletCells.html'>doubletCells</a></p></div>
@@ -220,7 +282,7 @@ detection. Default 10000.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:13 2020 ... Running 'doubletCells'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:14 2020 ... Running 'doubletCells'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
