@@ -11,7 +11,7 @@ Computes the significant principal components from an input sce object (must con
 \item{inSCE}{(sce) object with pca computed}
 }
 \value{
-max_components a numerical value indicating how many number of components are considered significant
+A numerical value indicating how many number of components are considered significant
 }
 \description{
 .computeSignificantPC

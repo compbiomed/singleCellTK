@@ -28,7 +28,10 @@ plotSCEScatter(
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
-  legendTitle = NULL
+  legendTitle = NULL,
+  legendTitleSize = 12,
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -98,6 +101,14 @@ Default 'blue'.}
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
 \item{legendTitle}{title of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{legendSize}{size of legend. Default 10.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

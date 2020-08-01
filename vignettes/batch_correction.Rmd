@@ -129,24 +129,24 @@ As we adopt [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/)
 Here we present an example dataset that is combined from "pbmc3k" and "pbmc4k" (Kasper D. Hansen *et al.*, 2017), which you can import by a function called `importExampleData()`.
 ```{r import, message=FALSE, warning=FALSE, eval=doEval, results='hold'}
 library(singleCellTK)
-pbmc3k <- importExampleData('pbmc3k')
-pbmc4k <- importExampleData('pbmc4k')
-print(paste(dim(pbmc3k), c('genes', 'cells')))
-print(paste(dim(pbmc4k), c('genes', 'cells')))
+pbmc6k <- importExampleData('pbmc6k')
+pbmc8k <- importExampleData('pbmc8k')
+print(paste(dim(pbmc6k), c('genes', 'cells')))
+print(paste(dim(pbmc8k), c('genes', 'cells')))
 ```
 There is a function called `combineSCE()`, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. `rowData`) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.
 ```{r combine, eval=doEval, message=FALSE, warning=FALSE}
 ## The strategy here is to only use the genes presented in both datasets.
 ## Get the intersection of both gene lists.
-isecGene <- intersect(rownames(pbmc3k), rownames(pbmc4k))
+isecGene <- intersect(rownames(pbmc6k), rownames(pbmc8k))
 ## Subset each dataset by the intersection.
-pbmc3k.isec <- pbmc3k[isecGene,]
-pbmc4k.isec <- pbmc4k[isecGene,]
+pbmc6k.isec <- pbmc6k[isecGene,]
+pbmc8k.isec <- pbmc8k[isecGene,]
 ## Overwrite the mismatches in rowData, a special case in this example.
-rowData(pbmc4k.isec) <- rowData(pbmc3k.isec)
+rowData(pbmc8k.isec) <- rowData(pbmc6k.isec)
 ## Apply combination function
-sce.combine <- combineSCE(list(pbmc3k = pbmc3k.isec, 
-                               pbmc4k = pbmc4k.isec))
+sce.combine <- combineSCE(list(pbmc6k = pbmc6k.isec,
+                               pbmc8k = pbmc8k.isec))
 ## Simply filter out the genes that are expressed in less than 1% of all cells.
 sce.filter <- sce.combine[rowSums(assay(sce.combine) > 0) >= 0.01 * ncol(sce.combine),]
 sce.filter
@@ -157,7 +157,7 @@ table(colData(sce.filter)$sample)
 ```
 Before trying out any batch correction function, we recommend to use a small subset of example so the effect can be quickly examined. Additionally, most of the batch correction methods provided require a log-normalized assay as input, so we have to make sure of this.
 ```{r subset, eval=doEval, message=FALSE, warning=FALSE}
-sce.small <- sce.filter[sample(nrow(sce.filter), 500), sample(ncol(sce.filter), 500)]
+sce.small <- sce.filter[sample(nrow(sce.filter), 800), sample(ncol(sce.filter), 800)]
 sce.small <- scater_logNormCounts(inSCE = sce.small,
                                   useAssay = 'counts',
                                   logAssayName = 'logcounts')
@@ -181,49 +181,50 @@ sce.small
 
 In this documentation, we provide three ways to examine the removal of batch effect, in terms of visualization. 
 
-1. Plot the batch variance associated with an additional covariate.  
+1. Plot the variation explained by the batch annotation and another condition.  
 
-This functionality is implemented in `plotBatchVariance()`. It plots a violin plot of the variance explained by the given batch annotation, an additional covariate, and the variance explained by combining these two conditions. However, the additional covariate does not necessarily exist when batch effect removal is wanted. It is useful when users combine already analyzed datasets.TODO.  
+This functionality is implemented in `plotBatchVariance()`. It plots a violin plot of the variation explained by the given batch annotation, an additional condition, and the variation explained by combining these two conditions.  
+This plot would be useful for examining whether the existing batch effect is different than another condition (e.g. subtype) or is confounded by that. However, the additional condition labels (e.g. cell types) do not necessarily exist when batch effect removal is wanted, so only plotting the variation explained by batches is also supported. 
+
+```{r batchVarBefore, message=FALSE, warning=FALSE, eval=doEval}
+plotBatchVariance(inSCE = sce.small, 
+                  useAssay = 'logcounts', 
+                  batch = 'sample',
+                  title = 'Variation Before Correction')
+```
+```{r batchVarAfter, message=FALSE, warning=FALSE, eval=doEval}
+plotBatchVariance(inSCE = sce.small, 
+                  useAssay = 'LIMMA', 
+                  batch = 'sample',
+                  title = 'Variation After Correction')
+```
 
 2. Plot the mean expression level of each gene separately for each batch.  
 
 This functionality is implemented in `plotSCEBatchFeatureMean()`. The methodology is straight forward, which plots violin plots for all the batches, and within each batch, the plot illustrates the distribution of the mean expression level of each gene. Thus the batch effect can be observed from the mean and standard deviation of each batch.
-
-```{r featureMeanBefore, message=FALSE, warning=FALSE, eval=doEval}
-plotSCEBatchFeatureMean(inSCE = sce.small, 
-                        useAssay = 'logcounts', 
-                        batch = 'sample', 
-                        title = 'Before Correction')
-```
-```{r featureMeanAfter, message=FALSE, warning=FALSE, eval=doEval}
-plotSCEBatchFeatureMean(inSCE = sce.small, 
-                        useAssay = 'LIMMA', 
-                        batch = 'sample', 
-                        title = 'After Correction')
-```
 
 3. Plot a dimension reduced components to see the grouping of cells  
 
 There is no function special for batch correction, but this can be achieved simply by using the dimension reduction calculation functions (e.g. `getPCA()`, `getUMAP()` and `getTSNE()`) and `plotSCEDimReduceColData()`.
 
 ```{r umapBefore, message=FALSE, warning=FALSE, eval=doEval}
-sce.small <- getUMAP(inSCE = sce.small,
+sce.small <- getPCA(inSCE = sce.small,
                      useAssay = 'logcounts', 
-                     reducedDimName = 'UMAP')
+                     reducedDimName = 'PCA')
 plotSCEDimReduceColData(inSCE = sce.small,
                         colorBy = 'sample',
-                        reducedDimName = 'UMAP', 
-                        title = 'Before Correction')
+                        reducedDimName = 'PCA', 
+                        title = 'PCA Before Correction')
 ```
 
 ```{r umapAfter, message=FALSE, warning=FALSE, eval=doEval}
-sce.small <- getUMAP(inSCE = sce.small,
+sce.small <- getPCA(inSCE = sce.small,
                      useAssay = 'LIMMA', 
-                     reducedDimName = 'UMAP_LIMMA')
+                     reducedDimName = 'PCA_LIMMA')
 plotSCEDimReduceColData(inSCE = sce.small,
                         colorBy = 'sample',
-                        reducedDimName = 'UMAP_LIMMA',
-                        title = 'After Correction')
+                        reducedDimName = 'PCA_LIMMA',
+                        title = 'PCA After Correction')
 ```
 
 ### UI usage

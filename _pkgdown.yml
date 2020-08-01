@@ -52,9 +52,13 @@ reference:
 navbar:
   title: "singleCellTK"
   left:
-    - text: "Introduction to SingleCellToolKit"
+    - text: "General Workflow"
       href: articles/introduction_to_SCTK.html
-    - text: "Command Line Analysis"
+    - text: "Shell Command Line Analysis"
+      menu:
+        - text: "Quality Control"
+          href: articles/run_qc.html
+    - text: "R Console Analysis"
       menu:
         - text: "Import data into SCTK"
           href: articles/import_scRNAseq_data_as_SCE.html
@@ -72,6 +76,12 @@ navbar:
           href: articles/differential_expression.html
         - text: "Visualize Results"
           href: articles/visualize_results.html
+    - text: "Shiny UI Analysis"
+      menu:
+        - text: "I am Place Holder 1"
+          href: articles/import_scRNAseq_data_as_SCE.html
+        - text: "I am Place Holder 2"
+          href: articles/import_scRNAseq_data_as_SCE.html
     - text: "Reference"
       href: reference/index.html
   right:

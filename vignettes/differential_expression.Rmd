@@ -1,0 +1,115 @@
+---
+title: "Differential Expression"
+author: "Yichen Wang"
+---
+
+```{r develSetting, include=FALSE}
+doEval = TRUE
+library(singleCellTK)
+```
+```{r useCache, include=FALSE, eval=doEval}
+pbmc3k <- readRDS("D:/BU_MS_BF/camplab/work/git/deg_doc_example.rds")
+```
+
+## Introduction
+
+For this section, we provide wrappers of four methods, listed in the table below. All functions takes an input `SingleCellExperiment` (SCE) object and other settings as arguments and returns the same SCE object with results updated in `metadata` slot.  
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Citation</th>
+    <th>Function</th>
+  </tr>
+  <tr>
+    <td>MAST</td>
+    <td>Greg Finak and et al., 2015</td>
+    <td>`runMAST()`</td>
+  </tr>
+  <tr>
+    <td>Limma</td>
+    <td>Gordon Smyth and et al., 2004</td>
+    <td>`runLimmaDE()`</td>
+  </tr>
+  <tr>
+    <td>DESeq2</td>
+    <td>Michael Love and et al., 2014</td>
+    <td>`runDESeq2()`</td>
+  </tr>
+  <tr>
+    <td>ANOVA</td>
+    <td>Jeffrey T. Leek and et al., 2020</td>
+    <td>`runANOVA()`</td>
+  </tr>
+</table>
+
+A generic wrapper of all four methods is also provided, called `runDEAnalysis()`.  
+
+## Workflow
+
+The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we will first introduce the workflow of using the generic wrapper `runDEAnalysis()` and then talk about the Shiny UI.  
+
+### R script commands
+
+The most basic parameters include:  
+
+- The input SCE object - `inSCE`.
+- The method listed in the table above to use - `method`.
+- The assay to perform the analysis on - `useAssay`
+
+Besides these, there are also a few other required parameter sets:  
+
+#### Conditions
+
+The R script functions we have allow users to perform differential expression analysis with relatively flexible condition setting. In terms of the condition of interests and the condition for control, comparison groups can be set by giving either one or more categories under a column in `colData`, or a prepared index vector as long as the indices are able to subset the input SCE object.  
+
+Additionally, only specifying the condition of interests is allowed and the control will then be set to all the other cells, which turns to a biomarker finding analysis.  
+
+Since the conditions can be set by using indices or annotations, we have two groups of parameters listed below. Note that only one way of setting can be used at one time.  
+
+- `index1` and `index2` for index style setting
+- Use `class` to specify the annotation vector by either directly giving a vector of proper length or giving a column name of `colData`. Then use `classGroup1`, `classGroup2` to specify which categories in `class` are of interests.  
+
+#### Namings
+
+Something that might be special in our workflow is that, users will be required to specify name strings for: 
+
+- The group of interests - `groupName1`.
+- The group of control `groupName2`.
+- The analysis run itself `analysisName`. 
+
+The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, they namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
+
+#### Example
+
+```{R runDE, eval=FALSE, warning=FALSE, message=FALSE}
+library(singleCellTK)
+pbmc3k <- importExampleData("pbmc3k")
+# Go through the Seurat curated workflow to get basic clusters
+pbmc3k <- seuratNormalizeData(inSCE = pbmc3k, useAssay = "counts")
+pbmc3k <- seuratFindHVG(inSCE = pbmc3k, useAssay = "seuratNormData")
+pbmc3k <- seuratScaleData(inSCE = pbmc3k, useAssay = "seuratNormData")
+pbmc3k <- seuratPCA(inSCE = pbmc3k, useAssay = "seuratScaledData")
+pbmc3k <- seuratFindClusters(inSCE = pbmc3k, useAssay = "seuratScaledData")
+# Not done yet
+pbmc3k <- runDEAnalysis(inSCE = pbmc3k, method = "MAST", useAssay = "logcounts",
+                        class = "Seurat_louvain_Resolution0.8", classGroup1 = c(1, 2), classGroup2 = 3,
+                        groupName1 = "c1_c2", groupName2 = "c3", analysisName = "c1_2_VS_c3")
+```
+
+To fetch the result as a table of the Top differential expressed genes and the statistics:  
+
+```{R getDE, eval=doEval, warning=FALSE, message=FALSE}
+DEG <- metadata(pbmc3k)$diffExp$c1_2_VS_c3$result
+head(DEG)
+```
+
+To visualize the result in heatmap:  
+
+```{R plotDE, eval=doEval, warning=FALSE, message=FALSE}
+plotDEGHeatmap(pbmc3k, useResult = "c1_2_VS_c3")
+```
+
+For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  
+
+

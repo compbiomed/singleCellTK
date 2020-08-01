@@ -18,17 +18,18 @@ plotSCEBatchFeatureMean(
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{The name of the assay that stores the value to plot. Use
-\code{useReddim} for dimension reduced matrix instead. Default \code{NULL}.}
+\item{useAssay}{A single character. The name of the assay that stores the
+value to plot. For \code{useReddim} and \code{useAltExp} also. Default
+\code{NULL}.}
 
-\item{useReddim}{The name of the dimension reduced matrix that stores the
-value to plot. Default \code{NULL}.}
+\item{useReddim}{A single character. The name of the dimension reduced
+matrix that stores the value to plot. Default \code{NULL}.}
 
-\item{useAltExp}{The name of the alternative experiment that stores an assay
-of the value to plot. Default \code{NULL}.}
+\item{useAltExp}{A single character. The name of the alternative experiment
+that stores an assay of the value to plot. Default \code{NULL}.}
 
-\item{batch}{The column name of \code{colData(inSCE)} that indicates the
-batch annotation. Default \code{"batch"}.}
+\item{batch}{A single character. The name of batch annotation column in
+\code{colData(inSCE)}. Default \code{"batch"}.}
 
 \item{xlab}{label for x-axis. Default \code{"batch"}.}
 
