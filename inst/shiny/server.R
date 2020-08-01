@@ -6010,7 +6010,7 @@ shinyServer(function(input, output, session) {
                  operator_term <- input$inputOperator_colData
                  
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
                  df <- data$df
                  
                  #perform operations
@@ -6037,7 +6037,7 @@ shinyServer(function(input, output, session) {
                  
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
@@ -6066,7 +6066,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonConfirmFill_colData,
                {
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
                  df <- data$df
                  
                  #perform operation
@@ -6087,7 +6087,7 @@ shinyServer(function(input, output, session) {
                  
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
@@ -6100,7 +6100,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonConfirmClean_colData,
                {
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$columnAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
                  df <- data$df
                  
                  #perform operation
@@ -6141,7 +6141,7 @@ shinyServer(function(input, output, session) {
                  
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$columnAnnotation <- data$df
                  
                  output$changesWarning_colData <- renderUI({
@@ -6197,7 +6197,6 @@ shinyServer(function(input, output, session) {
   #save changes to colData
   observeEvent(input$buttonSave_colData,{
       colData(vals$counts) <- DataFrame(vals$columnAnnotation)
-      print(head(colData(vals$counts)))
       output$changesWarning_colData <- NULL
       showNotification("Changes saved successfully.")
   })
@@ -6343,7 +6342,7 @@ shinyServer(function(input, output, session) {
                  operator_term <- input$inputOperator_rowData
 
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
                  df <- data$df
 
                  #operations
@@ -6370,7 +6369,7 @@ shinyServer(function(input, output, session) {
 
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
@@ -6399,7 +6398,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonConfirmFill_rowData,
                {
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
                  df <- data$df
 
                  #operations
@@ -6420,7 +6419,7 @@ shinyServer(function(input, output, session) {
 
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
@@ -6433,7 +6432,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonConfirmClean_rowData,
                {
                  #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- .manageDataTypes(vals$rowAnnotation, operation = "backup")
+                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
                  df <- data$df
 
                  #operations
@@ -6474,7 +6473,7 @@ shinyServer(function(input, output, session) {
 
                  #restore datatypes
                  data$df <- df
-                 data <- .manageDataTypes(data, operation = "restore")
+                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
                  vals$rowAnnotation <- data$df
 
                  output$changesWarning_rowData <- renderUI({
