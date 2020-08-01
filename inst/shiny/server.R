@@ -2090,18 +2090,19 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #Removed this as pcaVariances() no longer exists
   #TODO: this doesn't work with multiple pca dims
-  output$pctable <- renderTable({
-      if (!is.null(vals$counts)){
-       # HTML(tags$h4("PC Table:"))
-          if (any(grepl(pattern = "PC*", x = colnames(reducedDim(vals$counts, input$usingReducedDims))))) {
-            if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
-              data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
-                         Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
-            }
-          }
-        }
-    })
+  # output$pctable <- renderTable({
+  #     if (!is.null(vals$counts)){
+  #      # HTML(tags$h4("PC Table:"))
+  #         if (any(grepl(pattern = "PC*", x = colnames(reducedDim(vals$counts, input$usingReducedDims))))) {
+  #           if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
+  #             data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
+  #                        Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
+  #           }
+  #         }
+  #       }
+  #   })
 
   #Gene visualization
   output$visOptions <- renderUI({
