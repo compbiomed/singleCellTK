@@ -17,13 +17,15 @@ plotSCEViolin(
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
+  axisLabelSize = 10,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -57,7 +59,9 @@ Default TRUE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
@@ -75,6 +79,10 @@ violin plot. Options are "mean" or "median". Default NULL.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 Visualizes values stored in any slot of a

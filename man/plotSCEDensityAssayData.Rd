@@ -13,10 +13,12 @@ plotSCEDensityAssayData(
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
+  axisLabelSize = 10,
   defaultTheme = TRUE,
   cutoff = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = 18,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -38,7 +40,9 @@ object, or can be retrieved from the colData slot. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
@@ -49,6 +53,10 @@ if set. Default NULL.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 Visualizes values stored in the assay slot of a
