@@ -519,7 +519,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 }
 
 
-#' seuratInvalidate
+#' .seuratInvalidate
 #' Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
 #' @param inSCE Input \code{SingleCellExperiment} object to remove Seurat data from.
 #' @param scaleData Remove scaled data from seurat. Default \code{TRUE}.
@@ -530,9 +530,8 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @param UMAP Remove UMAP from seurat. Default \code{TRUE}.
 #' @param clusters Remove clusters from seurat. Default \code{TRUE}.
 #' @return Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
-#' @export
 #' @importFrom SummarizedExperiment assay<-
-seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
+.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
   if(scaleData){
     assay(inSCE, "seuratScaledData") <- NULL
   }
