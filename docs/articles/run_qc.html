@@ -38,11 +38,23 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -70,6 +82,21 @@
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+    </li>
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
     </li>
   </ul>
 </li>
@@ -120,14 +147,14 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The script will automatically try to install the “singleCellTK” package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK@devel"</span>)</pre></body></html></div>
 </div>
 <div id="running-the-pipeline" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-pipeline" class="anchor"></a>Running the pipeline</h2>
 <p>To run the pipeline script, users will need to download the ‘SCTK_runQC.R’ <a href="https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC.R">here</a> and run the following code:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb2"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P Preprocessing_Algorithm \
 -s SampleName \
@@ -135,7 +162,7 @@
 -S TRUE \
 -F R,Python,FlatFile,HTAN</pre></body></html></div>
 <p>or</p>
-<div class="sourceCode"><html><body><pre class="r">SCTK_runQC.R \
+<div class="sourceCode" id="cb3"><html><body><pre class="r">SCTK_runQC.R \
 -b /base/path/ \
 -P Preprocessing_Algorithm \
 -s SampleName \
@@ -143,7 +170,7 @@
 -S TRUE \
 -F R,Python,FlatFile,HTAN</pre></body></html></div>
 <p>if the Rscript executable can be found in your environment with the command</p>
-<div class="sourceCode"><html><body><pre class="r">/usr/bin/env Rscript --vanilla</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r">/usr/bin/env Rscript --vanilla</pre></body></html></div>
 </div>
 <div id="data-formats" class="section level2">
 <h2 class="hasAnchor">
@@ -199,7 +226,7 @@
 <li>If the cellranger data set is saved in the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can load the data by running following code:</li>
 </ol>
 <p>For CellRangerV3:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb7"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P CellRangerV3 \
 -s SampleName \
@@ -207,7 +234,7 @@
 -S TRUE \
 -F R,Python,FlatFile,HTAN</pre></body></html></div>
 <p>For CellRangerV2, the reference used by cellranger needs to be specified by -G/–genome:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb8"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P CellRangerV2 \
 -s SampleName \
@@ -218,7 +245,7 @@
 <ol start="2" style="list-style-type: decimal">
 <li>If the cellranger count output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can specified input using -R and -C:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb9"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P CellRangerV2 \
 -C /path/to/cell/matrix \
 -R /path/to/droplet/matrix \
@@ -234,7 +261,7 @@
 <ol style="list-style-type: decimal">
 <li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb10"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P SceRDS \
 -s Samplename \
 -o Output_Directory \
@@ -245,7 +272,7 @@
 <ol start="2" style="list-style-type: decimal">
 <li>If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb11"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P CountMatrix \
 -s Samplename \
 -o Output_Directory \
@@ -278,7 +305,7 @@ Params:   ### should not be omitted
 
   barcodeRanks:
     lower: 50</code></pre>
-<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="reference/index.html">reference</a> for detailed information about arguments in each QC function.</p>
+<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="../reference/index.html">reference</a> for detailed information about arguments in each QC function.</p>
 </div>
 <div id="analyzing-genes-sets" class="section level2">
 <h2 class="hasAnchor">

@@ -4,7 +4,7 @@ author: "Yichen Wang"
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = TRUE
+doEval = FALSE
 library(singleCellTK)
 ```
 ```{r useCache, include=FALSE, eval=doEval}

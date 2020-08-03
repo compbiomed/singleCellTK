@@ -121,7 +121,7 @@
 
       
 
-      </header><script src="differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Differential Expression</h1>
@@ -241,28 +241,21 @@ Jeffrey T. Leek and et al., 2020
 <a href="#example" class="anchor"></a>Example</h4>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
-<span class="co">## Do a clustering for group specification</span>
-<span class="co">## However I was unable to find a simple clustering function in SCTK?</span>
-<span class="co">## Temporarily use a random thing that works, will update later</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="kw">logAssayName</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)
-<span class="no">cluster</span> <span class="kw">&lt;-</span> <span class="kw pkg">scran</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/scran/man/quickCluster.html">quickCluster</a></span>(<span class="no">pbmc3k</span>, <span class="kw">assay.type</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)
-<span class="no">pbmc3k</span>$<span class="no">cluster</span> <span class="kw">&lt;-</span> <span class="no">cluster</span>
+<span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="co"># Not done yet</span>
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                        <span class="kw">class</span> <span class="kw">=</span> <span class="st">"cluster"</span>, <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fl">3</span>,
+                        <span class="kw">class</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fl">3</span>,
                         <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c1_c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c3"</span>, <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c1_2_VS_c3"</span>)</pre></body></html></div>
 <p>To fetch the result as a table of the Top differential expressed genes and the statistics:</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c1_2_VS_c3</span>$<span class="no">result</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">DEG</span>)</pre></body></html></div>
-<pre><code>##     Gene        Pvalue  Log2_FC           FDR
-## 1   FTH1  0.000000e+00 2.791868  0.000000e+00
-## 2    FTL  0.000000e+00 3.156510  0.000000e+00
-## 3 S100A4 2.167134e-289 3.587065 1.073237e-285
-## 4 TYROBP 1.366765e-276 3.395569 5.076505e-273
-## 5   CST3 2.155873e-275 3.587715 6.405961e-272
-## 6 S100A6 2.863629e-247 3.002143 7.090822e-244</code></pre>
 <p>To visualize the result in heatmap:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c1_2_VS_c3"</span>)</pre></body></html></div>
-<p><img src="differential_expression_files/figure-html/plotDE-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c1_2_VS_c3"</span>)</pre></body></html></div>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
 </div>
 </div>

@@ -38,11 +38,23 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -70,6 +82,21 @@
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+    </li>
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
     </li>
   </ul>
 </li>
@@ -117,9 +144,7 @@
 <li><a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a></li>
 </ul>
 <p>The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as a SingleCellExperiment object assay, with associated information in respective colData, rowData, reducedDims, and metadata fields.</p>
-<div class="figure">
-<img src="./sctk_import_functions.png">
-</div>
+<p><img src="./sctk_import_functions.png"></p>
 <p>Detailed information on function parameters and defaults are available in the reference section</p>
   </div>
 

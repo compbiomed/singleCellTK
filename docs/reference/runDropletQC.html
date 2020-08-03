@@ -80,11 +80,23 @@ empty droplets in single cell RNA-seq data" />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -112,6 +124,21 @@ empty droplets in single cell RNA-seq data" />
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+    </li>
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
     </li>
   </ul>
 </li>
@@ -195,7 +222,7 @@ of <code>inSCE</code>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDropletQC</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:28 2020 ... Running 'perCellQCMetrics'</span></div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:28 2020 ... Running 'emptyDrops'</span></div><div class='output co'>#&gt; <span class='message'>Tue Jul 28 14:19:33 2020 ... Running 'barcodeRanks'</span></div><div class='input'># }
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDropletQC</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 17:01:04 2020 ... Running 'perCellQCMetrics'</span></div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 17:01:04 2020 ... Running 'emptyDrops'</span></div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 17:01:09 2020 ... Running 'barcodeRanks'</span></div><div class='input'># }
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

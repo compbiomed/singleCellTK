@@ -78,11 +78,23 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -110,6 +122,21 @@
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+    </li>
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
     </li>
   </ul>
 </li>
@@ -504,6 +531,18 @@ Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'</p></td>
       <tr>
         
         <td>
+          <p><code><a href="plotBarcodeRankDropsResults.html">plotBarcodeRankDropsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runEmptyDrops outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotBarcodeRankScatter.html">plotBarcodeRankScatter()</a></code> </p>
+        </td>
+        <td><p>Plots for runBarcodeRankDrops outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotBatchVariance.html">plotBatchVariance()</a></code> </p>
         </td>
         <td><p>Plot the percent of the variation that is explained by batch and condition
@@ -565,6 +604,18 @@ identified by differential expression analysis</p></td>
           <p><code><a href="plotDoubletFinderResults.html">plotDoubletFinderResults()</a></code> </p>
         </td>
         <td><p>Plots for runDoubletFinder outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotEmptyDropsResults.html">plotEmptyDropsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runEmptyDrops outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotEmptyDropsScatter.html">plotEmptyDropsScatter()</a></code> </p>
+        </td>
+        <td><p>Plots for runEmptyDrops outputs.</p></td>
       </tr><tr>
         
         <td>

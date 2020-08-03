@@ -82,11 +82,23 @@ Runs the SCTransform function to transform/normalize the input data" />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -114,6 +126,21 @@ Runs the SCTransform function to transform/normalize the input data" />
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+    </li>
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
     </li>
   </ul>
 </li>
@@ -173,11 +200,11 @@ Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>inSCE Updated SingleCellExperiment object containing the transformed data</p>
+    <p>Updated SingleCellExperiment object containing the transformed data</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sce_chcl</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"scds"</span>)
-<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>seuratSCTransform</span>(<span class='no'>sce_chcl</span>, <span class='st'>"SCTCounts"</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='message'>Calculating cell attributes for input UMI matrix</span></div><div class='output co'>#&gt; <span class='message'>Variance stabilizing transformation of count matrix of size 1260 by 2000</span></div><div class='output co'>#&gt; <span class='message'>Model formula is y ~ log_umi</span></div><div class='output co'>#&gt; <span class='message'>Get Negative Binomial regression parameters per gene</span></div><div class='output co'>#&gt; <span class='message'>Using 1260 genes, 2000 cells</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Found 9 outliers - those will be ignored in fitting/regularization step</span></div><div class='output co'>#&gt; <span class='message'>Second step: Get residuals using fitted parameters for 1260 genes</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Calculating gene attributes</span></div><div class='output co'>#&gt; <span class='message'>Wall clock passed: Time difference of 21.80875 secs</span></div><div class='output co'>#&gt; <span class='message'>Determine variable features</span></div><div class='output co'>#&gt; <span class='message'>Set 1260 variable features</span></div><div class='output co'>#&gt; <span class='message'>Centering data matrix</span></div><div class='output co'>#&gt; <span class='message'>Set default assay to SCTransform</span></div></pre>
+<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>seuratSCTransform</span>(<span class='no'>sce_chcl</span>, <span class='st'>"SCTCounts"</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='message'>Calculating cell attributes for input UMI matrix</span></div><div class='output co'>#&gt; <span class='message'>Variance stabilizing transformation of count matrix of size 1260 by 2000</span></div><div class='output co'>#&gt; <span class='message'>Model formula is y ~ log_umi</span></div><div class='output co'>#&gt; <span class='message'>Get Negative Binomial regression parameters per gene</span></div><div class='output co'>#&gt; <span class='message'>Using 1260 genes, 2000 cells</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Found 9 outliers - those will be ignored in fitting/regularization step</span></div><div class='output co'>#&gt; <span class='message'>Second step: Get residuals using fitted parameters for 1260 genes</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Calculating gene attributes</span></div><div class='output co'>#&gt; <span class='message'>Wall clock passed: Time difference of 20.50986 secs</span></div><div class='output co'>#&gt; <span class='message'>Determine variable features</span></div><div class='output co'>#&gt; <span class='message'>Set 1260 variable features</span></div><div class='output co'>#&gt; <span class='message'>Centering data matrix</span></div><div class='output co'>#&gt; <span class='message'>Set default assay to SCTransform</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
