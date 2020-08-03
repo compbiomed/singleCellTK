@@ -48,7 +48,7 @@
   margin-top: 20px;
 }
 
-#violinConditional .form-group {
+#violinConditional .form-group, #binningConditional .form-group {
   float: right;
 }
 

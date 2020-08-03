@@ -177,10 +177,19 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c("Categorical", "Continuous")
           ),
           tags$hr(),
-          
           conditionalPanel(
+            id="binningConditional",
             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            checkboxInput("checkColorbinning", h5("Perform Binning"), value = FALSE)
+            # checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
+            h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
+            switchInput(
+              inputId = "checkColorbinning",
+              onLabel = "Yes",
+              offLabel = "No",
+              value=FALSE,
+              size="mini",
+              inline = TRUE
+            )
           ),
           
           conditionalPanel(
@@ -225,7 +234,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         id="violinConditional",
         condition = sprintf("input['%s'] == 'Violin/Box Plot'", "viewertabs"),
         # checkboxInput("vlnboxcheck", "Violin plot", value = FALSE),
-        h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Use violin plot"),
+        h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Use Violin Plot"),
         switchInput(
           inputId = "vlnboxcheck",
           onLabel = "Yes",
