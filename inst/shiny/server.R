@@ -2691,7 +2691,10 @@ shinyServer(function(input, output, session) {
       if (!is.null(input$ApproachSelect_Colorby) & len > 0){
         Df3 <- data.frame(SingleCellExperiment::reducedDim(vals$counts,input$ApproachSelect_Colorby))
         xs3 <- colnames(Df3)
-        updateSelectInput(session, "ColumnSelect_Colorby", choices = c(xs3))
+        prefix <- input$ApproachSelect_Colorby
+        suffix <- seq(1:length(xs3))
+        columns <- paste(prefix, suffix, sep = "_")
+        updateSelectInput(session, "ColumnSelect_Colorby", choices = c(columns))
         rm(Df3)
       }
     }
@@ -2968,6 +2971,11 @@ shinyServer(function(input, output, session) {
           colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin,
           transparency = input$adjustalpha, dotSize = input$adjustsize)
         ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
+      }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
+        a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
+          annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha,
+          groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
+          xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin)
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){

@@ -57,7 +57,7 @@ shinyPanelCellViewer <- fluidPage(
                             actionButton("cv_button2", h4(strong("Color")),style = "background: floralwhite"),
                             # open by default
                             tags$div(id = "cv_collapse2",
-                            radioGroupButtons(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Expression Assays","Cell Annotation"), direction = "horizontal"),
+                            radioGroupButtons(inputId = "TypeSelect_Colorby", label = h5(strong("Type of Data:")), choices = c("Pick a Color","Reduced Dimensions", "Expression Assays","Cell Annotation"), direction = "horizontal"),
                             #Reduced Dimensions condition
                             conditionalPanel(condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Colorby"),
                                             selectizeInput("ApproachSelect_Colorby", label = h5("-> Approach:"),
