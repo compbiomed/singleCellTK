@@ -30,9 +30,14 @@ on. Default \code{NULL}.}
 low-dimension representation (\code{\link[SingleCellExperiment]{reducedDim}})
 to perform the clustering algorithm on. Default \code{NULL}.}
 
-\item{useAltExp}{A single \code{character}, specifying the assay in which
-\code{\link[SingleCellExperiment]{altExp}} to perform the clustering algorithm
-on. Default \code{NULL}.}
+\item{useAltExp}{A single \code{character}, specifying the assay which
+\code{\link[SingleCellExperiment]{altExp}} to perform the clustering
+algorithm on. Default \code{NULL}.}
+
+\item{altExpAssay}{A single \code{character}, specifying which
+\code{\link[SummarizedExperiment]{assay}} in the chosen
+\code{\link[SingleCellExperiment]{altExp}} to work on. Only used when
+\code{useAltExp} is set. Default \code{"counts"}.}
 
 \item{clusterName}{A single \code{character}, specifying the name to store
 the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
