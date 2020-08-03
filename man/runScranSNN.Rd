@@ -9,6 +9,7 @@ runScranSNN(
   useAssay = NULL,
   useReducedDim = NULL,
   useAltExp = NULL,
+  altExpAssay = "counts",
   clusterName = "scranSNN_cluster",
   k = 10,
   nComp = 50,
