@@ -230,8 +230,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  # js$disableTabs()
-
   js$disableTabs()
   # Close app on quit
   # session$onSessionEnded(stopApp)

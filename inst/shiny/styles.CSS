@@ -43,3 +43,11 @@
   height: 150px; 
   margin-bottom: 0
 }
+
+.shiny-input-radiogroup {
+  margin-top: 20px;
+}
+
+#violinConditional .form-group.shiny-input-container.shiny-input-container-inline{
+  float: right;
+}
