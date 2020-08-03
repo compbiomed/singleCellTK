@@ -173,7 +173,6 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
-      selected="",
       # theme = shinytheme(shinyTheme),
       theme = shinytheme("yeti"),
       navbarMenu(

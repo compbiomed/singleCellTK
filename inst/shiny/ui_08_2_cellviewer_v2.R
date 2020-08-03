@@ -22,10 +22,10 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         #-+-+-+-+-+-X-Axis###################################
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Custom'", "QuickAccess"),
-          h5(strong("X-Axis:")),
+          h5(strong("X-Axis")),
           selectInput(
             "TypeSelect_Xaxis",
-            h5("Select data:"),
+            h5("Data"),
             choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation")
           ),
           #Reduced Dimensions condition
@@ -33,10 +33,10 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Xaxis"),
             selectizeInput(
               "ApproachSelect_Xaxis",
-              label = h5("Select Approach:"),
+              label = h5("Approach"),
               choices = c(approach_list)
             ),
-            selectInput("ColumnSelect_Xaxis", h5("Select Dimension:"), choices = NULL)
+            selectInput("ColumnSelect_Xaxis", h5("Dimension"), choices = NULL)
           ),
           
           #Expression Assays condition
@@ -44,12 +44,12 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
             selectizeInput(
               "AdvancedMethodSelect_Xaxis",
-              label = h5("Select Advanced Method:"),
+              label = h5("Advanced Method"),
               choices = c(method_list)
             ),
             selectizeInput(
               "GeneSelect_Assays_Xaxis",
-              label = h5("Select Feature:"),
+              label = h5("Feature"),
               choices = c(gene_list)
             )
           ),
@@ -59,16 +59,16 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Xaxis"),
             selectizeInput(
               "AnnotationSelect_Xaxis",
-              label = h5("Select Annotation:"),
+              label = h5("Annotation"),
               choices = c(annotation_list)
             )
           ),
           
           #-+-+-+-+-+-Y-Axis###################################
-          h5(strong("Y-Axis:")),
+          h5(strong("Y-Axis")),
           selectInput(
             "TypeSelect_Yaxis",
-            h5("Select Data:"),
+            h5("Data"),
             choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation")
           ),
           #Reduced Dimensions condition
@@ -76,10 +76,10 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Yaxis"),
             selectizeInput(
               "ApproachSelect_Yaxis",
-              label = h5("Select Approach:"),
+              label = h5("Approach"),
               choices = c(approach_list)
             ),
-            selectInput("ColumnSelect_Yaxis", h5("Select Dimension:"), choices = NULL)
+            selectInput("ColumnSelect_Yaxis", h5("Dimension"), choices = NULL)
           ),
           
           #Expression Assays condition
@@ -87,12 +87,12 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
             selectizeInput(
               "AdvancedMethodSelect_Yaxis",
-              label = h5("Select Advanced Method:"),
+              label = h5("Advanced Method"),
               choices = c(method_list)
             ),
             selectizeInput(
               "GeneSelect_Assays_Yaxis",
-              label = h5("Select Feature:"),
+              label = h5("Feature"),
               choices = c(gene_list)
             )
           ),
@@ -102,7 +102,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Yaxis"),
             selectizeInput(
               "AnnotationSelect_Yaxis",
-              label = h5("Select Annotation:"),
+              label = h5("Annotation"),
               choices = c(annotation_list)
             )
           )
@@ -120,8 +120,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
       tags$div(
         id = "cv_collapse2",
         selectInput(
-          'TypeSelect_Colorby', h5('Color by'), choices = c(
-            "Default color",
+          'TypeSelect_Colorby', h5(strong('Color By')), choices = c(
+            "Default Color",
             "Reduced Dimensions",
             "Expression Assays",
             "Cell Annotation"
@@ -129,18 +129,18 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         ),
         # Default color condition
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'Default color'", "TypeSelect_Colorby"),
-          colourInput("Col", h5("Select default color"), "purple", palette = 'limited')
+          condition = sprintf("input['%s'] == 'Default Color'", "TypeSelect_Colorby"),
+          colourInput("Col", "", "purple", palette = 'limited')
         ),
         #Reduced Dimensions condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Reduced Dimensions'", "TypeSelect_Colorby"),
           selectizeInput(
             "ApproachSelect_Colorby",
-            label = h5("Approach:"),
+            label = h5("Approach"),
             choices = c(approach_list)
           ),
-          selectInput("ColumnSelect_Colorby", h5("Dimension:"), choices = NULL)
+          selectInput("ColumnSelect_Colorby", h5("Dimension"), choices = NULL)
         ),
         
         #Expression Assays condition
@@ -148,12 +148,12 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
           selectizeInput(
             "AdvancedMethodSelect_Colorby",
-            label = h5("Advanced Method:"),
+            label = h5("Advanced Method"),
             choices = c(method_list)
           ),
           selectizeInput(
             "GeneSelect_Assays_Colorby",
-            label = h5("Feature:"),
+            label = h5("Feature"),
             choices = c(gene_list)
           )
         ),
@@ -163,14 +163,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Colorby"),
           selectizeInput(
             "AnnotationSelect_Colorby",
-            label = h5("Annotation:"),
+            label = h5("Annotation"),
             choices = c(annotation_list)
           )
         ),
         
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Default color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['%s'] != 'Default Color'", "TypeSelect_Colorby"),
           radioButtons(
             "SelectColorType",
             label = NULL,
@@ -180,14 +180,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            checkboxInput("checkColorbinning", h5("Perform Binning:"), value = FALSE)
+            checkboxInput("checkColorbinning", h5("Perform Binning"), value = FALSE)
           ),
           
           conditionalPanel(
             condition =  "input.checkColorbinning == 1",
             numericInput(
               "adjustColorbinning",
-              h5("Number of Bins:"),
+              h5("Number of Bins"),
               value = 2,
               min = 2
             )
@@ -195,14 +195,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #,
           
           
-          #selectizeInput("adjustbrewer", h5(strong("Color Palettes:")), choices = NULL)
+          #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL)
         )
       ),
       #-+-+-+-+-+-group by###################################
       tags$hr(),
       shinyjs::useShinyjs(),
       # Section 1 - Assay Settings
-      actionButton("cv_button3", h4(strong("Group by"))),
+      actionButton("cv_button3", h4(strong("Group By"))),
       # open by default
       tags$div(
         id = "cv_collapse3",

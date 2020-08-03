@@ -48,6 +48,11 @@
   margin-top: 20px;
 }
 
-#violinConditional .form-group.shiny-input-container.shiny-input-container-inline{
+#violinConditional .form-group {
   float: right;
+}
+
+label[for="Col"]
+{
+    display:none;
 }
