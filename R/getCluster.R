@@ -29,16 +29,20 @@ getCluster <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
   if (all(method == c("scranSNN", "KMeans"))) {
     method = "scranSNN"
   }
+  argsList = list(...)
   if (method == "scranSNN") {
     inSCE <- do.call(runScranSNN,
                      c(list(inSCE = inSCE,
                             useAssay = useAssay,
                             useReducedDim = useReducedDim,
                             useAltExp = useAltExp),
-                       list(...)))
+                       argsList))
   } else if (method == "KMeans") {
     if (!is.null(useAssay) || !is.null(useAltExp)){
       warning("KMeans does not work with assay or altExp. ")
+    }
+    if (!"nCenters" %in% names(argsList)) {
+      stop("'nCenters' has to be specified")
     }
     inSCE <- do.call(runKMeans,
                      c(list(inSCE = inSCE,
@@ -90,7 +94,8 @@ getCluster <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
 #' mouseBrainSubsetSCE <- runScranSNN(mouseBrainSubsetSCE,
 #'                                    useReducedDim = "PCA_logcounts")
 runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
-                        useAltExp = NULL, clusterName = "scranSNN_cluster",
+                        useAltExp = NULL, altExpAssay = "counts",
+                        clusterName = "scranSNN_cluster",
                         k = 10, nComp = 50,
                         weightType = c("rank", "number", "jaccard"),
                         algorithm = c("walktrap", "louvain", "infomap",
@@ -135,7 +140,10 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified altExp '", useAltExp, "' not found.")
     }
     ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    g <- scran::buildSNNGraph(x = ae, k = k, assay.type = useAltExp,
+    if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
+      stop("altExpAssay: '", altExpAssay, "' not in specified altExp.")
+    }
+    g <- scran::buildSNNGraph(x = ae, k = k, assay.type = altExpAssay,
                               d = nComp, type = weightType, use.dimred = NULL)
   }
 
@@ -182,6 +190,9 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
                       algorithm = c("Hartigan-Wong", "Lloyd", "MacQueen")){
   if (!inherits(inSCE, "SingleCellExperiment")) {
     stop("SCE")
+  }
+  if (is.null(useReducedDim)) {
+    stop("runKMeans requires 'useReducedDim' input.")
   }
   if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
     stop("Specified reducedDim '", useReducedDim, "' not found.")
