@@ -260,12 +260,6 @@
     }
     return(g)
   })
-<<<<<<< HEAD
-  return(plotly::subplot(plotlist = plotlist))
-}
-=======
->>>>>>> ba57d76f8200d4502dfc7b6dc3291724efc4e686
-
   ##Needs to be turned off for Shiny User Interface
   if(combinePlot){
       plotlist <- .ggSCTKCombinePlots(plotlist)
@@ -620,20 +614,14 @@ plotSCEScatter <- function(inSCE,
                            labelClusters = TRUE,
                            legendTitle = NULL,
                            legendTitleSize = 12,
-<<<<<<< HEAD
-                           legendSize = 10) {
+                           legendSize = 10,
+                           combinePlot = TRUE) {
   if (!is.null(slot)){
     if (slot == "reducedDims"){
       annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
       annotation <- substr(annotation, 1, str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
       stop("'slot' must be a slot within the SingleCellExperiment object.
-=======
-                           legendSize = 10,
-                           combinePlot = TRUE) {
-  if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
->>>>>>> ba57d76f8200d4502dfc7b6dc3291724efc4e686
              Please run 'methods::slotNames' if you are unsure the
 	     specified slot exists.")
     }

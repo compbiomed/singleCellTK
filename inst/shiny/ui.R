@@ -173,13 +173,9 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
-<<<<<<< HEAD
       id = "navbar",
-      theme = shinytheme(shinyTheme),
-=======
       # theme = shinytheme(shinyTheme),
       theme = shinytheme("yeti"),
->>>>>>> ba57d76f8200d4502dfc7b6dc3291724efc4e686
       navbarMenu(
         "Data",
         tabPanel("Import Single Cell Data", shinyPanelImport),
