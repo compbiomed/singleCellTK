@@ -28,15 +28,18 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorScale Vector. Needs to be same length as the
+#'  number of unique levels of `colorBy`. Will be used only if
+#'  conditionClass = "factor" or "character". Default NULL.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
-#'  Default 'white'.
+#'  Default 'white'. Will be used only if conditionClass = "numeric".
 #' @param colorMid Character. A color available from `colors()`.
 #'  The color will be used to signify the midpoint on the scale.
-#'  Default 'gray'.
+#'  Default 'gray'. Will be used only if conditionClass = "numeric".
 #' @param colorHigh Character. A color available from `colors()`.
 #'  The color will be used to signify the highest values on the scale.
-#'  Default 'blue'.
+#'  Default 'blue'. Will be used only if conditionClass = "numeric".
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -46,6 +49,9 @@
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
                        sample = NULL,
@@ -65,6 +71,7 @@
                        binLabel = NULL,
                        dotSize = 2,
                        transparency = 1,
+                       colorScale = NULL,
                        colorLow = "white",
                        colorMid = "gray",
                        colorHigh = "blue",
@@ -73,7 +80,8 @@
                        titleSize = 15,
                        legendTitle = NULL,
                        legendTitleSize = 12,
-                       legendSize = 10) {
+                       legendSize = 10,
+                       combinePlot = TRUE) {
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -172,7 +180,11 @@
         aesthetics = "colour",
         midpoint = mean(colorBySub))
     }else if (class(colorBySub) == "character" | class(colorBySub) == "factor"){
-      g <- g + ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
+      g <- g +
+          ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
+      if(all(!is.null(colorScale))){
+          g <- g+ ggplot2::scale_color_manual(values=c(colorScale))
+      }
     }
     if (!is.null(shape)) {
       g <- g + ggplot2::aes_string(shape = "shape") +
@@ -248,9 +260,18 @@
     }
     return(g)
   })
+<<<<<<< HEAD
   return(plotly::subplot(plotlist = plotlist))
 }
+=======
+>>>>>>> ba57d76f8200d4502dfc7b6dc3291724efc4e686
 
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+      plotlist <- .ggSCTKCombinePlots(plotlist)
+  }
+  return(plotlist)
+}
 
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
@@ -284,6 +305,9 @@
 #'  Default NULL.
 #' @param dotSize Size of dots. Default 2.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
+#' @param colorScale Vector. Needs to be same length as the
+#'  number of unique levels of colorBy. Will be used only if
+#'  conditionClass = "factor" or "character". Default NULL.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
 #'  Default 'white'.
@@ -301,6 +325,9 @@
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
 #'  Default FALSE.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @return a ggplot of the reduced dimensions.
 #' @export
 #' @examples
@@ -334,6 +361,7 @@ plotSCEDimReduceColData <- function(inSCE,
                                     binLabel = NULL,
                                     dotSize = 2,
                                     transparency = 1,
+                                    colorScale = NULL,
                                     colorLow = "white",
                                     colorMid = "gray",
                                     colorHigh = "blue",
@@ -343,7 +371,8 @@ plotSCEDimReduceColData <- function(inSCE,
                                     labelClusters = TRUE,
                                     legendTitle = NULL,
                                     legendTitleSize = 12,
-                                    legendSize = 10) {
+                                    legendSize = 10,
+                                    combinePlot = TRUE) {
   colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
 
   g <- .ggScatter(
@@ -364,6 +393,7 @@ plotSCEDimReduceColData <- function(inSCE,
     binLabel = binLabel,
     dotSize = dotSize,
     transparency = transparency,
+    colorScale = colorScale,
     colorLow = colorLow,
     colorMid = colorMid,
     colorHigh = colorHigh,
@@ -373,7 +403,8 @@ plotSCEDimReduceColData <- function(inSCE,
     labelClusters = labelClusters,
     legendTitle = legendTitle,
     legendTitleSize = legendTitleSize,
-    legendSize = legendSize
+    legendSize = legendSize,
+    combinePlot = combinePlot
   )
   return(g)
 }
@@ -423,6 +454,9 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param legendSize size of legend. Default 10.
 #' @param groupBy Facet wrap the scatterplot based on value.
 #' Default \code{NULL}.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' plotSCEDimReduceFeatures(
@@ -454,7 +488,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      legendTitle = NULL,
                                      legendSize = 10,
                                      legendTitleSize = 12,
-                                     groupBy = NULL) {
+                                     groupBy = NULL,
+                                     combinePlot = TRUE) {
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -487,7 +522,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
     legendTitle = legendTitle,
     legendTitleSize = legendTitleSize,
     legendSize = legendSize,
-    groupBy = groupBy
+    groupBy = groupBy,
+    combinePlot = combinePlot
   )
 
   return(g)
@@ -544,6 +580,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
 #' \donttest{
@@ -581,6 +620,7 @@ plotSCEScatter <- function(inSCE,
                            labelClusters = TRUE,
                            legendTitle = NULL,
                            legendTitleSize = 12,
+<<<<<<< HEAD
                            legendSize = 10) {
   if (!is.null(slot)){
     if (slot == "reducedDims"){
@@ -588,6 +628,12 @@ plotSCEScatter <- function(inSCE,
       annotation <- substr(annotation, 1, str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
       stop("'slot' must be a slot within the SingleCellExperiment object.
+=======
+                           legendSize = 10,
+                           combinePlot = TRUE) {
+  if (!slot %in% methods::slotNames(inSCE)) {
+    stop("'slot' must be a slot within the SingleCellExperiment object.
+>>>>>>> ba57d76f8200d4502dfc7b6dc3291724efc4e686
              Please run 'methods::slotNames' if you are unsure the
 	     specified slot exists.")
     }
@@ -642,11 +688,11 @@ plotSCEScatter <- function(inSCE,
     labelClusters = labelClusters,
     legendTitle = legendTitle,
     legendTitleSize = legendTitleSize,
-    legendSize = legendSize
+    legendSize = legendSize,
+    combinePlot = combinePlot
   )
   return(g)
 }
-
 
 #' @title Violin plot plotting tool.
 #' @description Visualizes specified values via a violin plot.
@@ -819,6 +865,9 @@ plotSCEScatter <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 
 #' @examples
 #' plotSCEViolinColData(
@@ -843,7 +892,8 @@ plotSCEViolinColData <- function(inSCE,
                                  gridLine = FALSE,
                                  summary = NULL,
                                  title = NULL,
-                                 titleSize = NULL) {
+                                 titleSize = NULL,
+                                 combinePlot = TRUE) {
     if (!is.null(coldata)) {
         if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
             stop("'", paste(coldata), "' is not found in ColData.")
@@ -912,14 +962,18 @@ plotSCEViolinColData <- function(inSCE,
         return(p)
     })
 
-    figNcol = NULL
-    if(!is.null(groupby)){
-        if(length(unique(groupby)) > 1){
-            figNcol = 1
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot){
+        figNcol = NULL
+        if(!is.null(groupby)){
+            if(length(unique(groupby)) > 1){
+                figNcol = 1
+            }
         }
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        ncols = figNcol)
     }
-    return(cowplot::plot_grid(plotlist = plotlist,
-                              ncol = figNcol))
+    return(plotlist)
 }
 
 #' @title Violin plot of assay data.
@@ -953,6 +1007,9 @@ plotSCEViolinColData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -977,7 +1034,8 @@ plotSCEViolinAssayData <- function(inSCE,
                                    gridLine = FALSE,
                                    summary = NULL,
                                    title = NULL,
-                                   titleSize = NULL) {
+                                   titleSize = NULL,
+                                   combinePlot = TRUE) {
     mat <- getBiomarker(
         inSCE = inSCE,
         useAssay = useAssay,
@@ -1040,14 +1098,18 @@ plotSCEViolinAssayData <- function(inSCE,
         return(p)
     })
 
-    figNcol = NULL
-    if(!is.null(groupby)){
-        if(length(unique(groupby)) > 1){
-            figNcol = 1
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot){
+        figNcol = NULL
+        if(!is.null(groupby)){
+            if(length(unique(groupby)) > 1){
+                figNcol = 1
+            }
         }
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        ncols = figNcol)
     }
-    return(cowplot::plot_grid(plotlist = plotlist,
-                              ncol = figNcol))
+    return(plotlist)
 }
 
 #' @title Violin plot of any data stored in the SingleCellExperiment object.
@@ -1084,6 +1146,9 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 
 #' @examples
 #' plotSCEViolin(
@@ -1110,7 +1175,8 @@ plotSCEViolin <- function(inSCE,
                           gridLine = FALSE,
                           summary = NULL,
                           title = NULL,
-                          titleSize = NULL) {
+                          titleSize = NULL,
+                          combinePlot = TRUE) {
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
@@ -1191,14 +1257,18 @@ plotSCEViolin <- function(inSCE,
       return(p)
   })
 
-  figNcol = NULL
-  if(!is.null(groupby)){
-      if(length(unique(groupby)) > 1){
-          figNcol = 1
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+      figNcol = NULL
+      if(!is.null(groupby)){
+          if(length(unique(groupby)) > 1){
+              figNcol = 1
+          }
       }
+      plotlist <- .ggSCTKCombinePlots(plotlist,
+                                      ncols = figNcol)
   }
-  return(cowplot::plot_grid(plotlist = plotlist,
-                            ncol = figNcol))
+  return(plotlist)
 }
 
 #' @title Density plot plotting tool.
@@ -1292,6 +1362,9 @@ plotSCEViolin <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' plotSCEDensityColData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1309,7 +1382,8 @@ plotSCEDensityColData <- function(inSCE,
                                   defaultTheme = TRUE,
                                   title = NULL,
                                   titleSize = 18,
-                                  cutoff = NULL) {
+                                  cutoff = NULL,
+                                  combinePlot = TRUE) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
       stop("'", paste(coldata), "' is not found in ColData.")
@@ -1373,17 +1447,18 @@ plotSCEDensityColData <- function(inSCE,
     )
     return(p)
   })
-  figNcol = NULL
-  if (!is.null(groupby)) {
-    if (length(unique(groupby)) > 1) {
-      figNcol <- 1
-    }
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+      figNcol = NULL
+      if(!is.null(groupby)){
+          if(length(unique(groupby)) > 1){
+              figNcol = 1
+          }
+      }
+      plotlist <- .ggSCTKCombinePlots(plotlist,
+                                      ncols = figNcol)
   }
-
-  return(cowplot::plot_grid(
-    plotlist = plotlist,
-    ncol = figNcol
-  ))
+  return(plotlist)
 }
 
 #' @title Density plot of assay data.
@@ -1408,6 +1483,9 @@ plotSCEDensityColData <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' plotSCEDensityAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1426,7 +1504,8 @@ plotSCEDensityAssayData <- function(inSCE,
                                     defaultTheme = TRUE,
                                     cutoff = NULL,
                                     title = NULL,
-                                    titleSize = 18) {
+                                    titleSize = 18,
+                                    combinePlot = TRUE) {
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -1491,18 +1570,18 @@ plotSCEDensityAssayData <- function(inSCE,
     return(p)
   })
 
-  figNcol = NULL
-  if (!is.null(groupby)) {
-    if (length(unique(groupby)) > 1) {
-      figNcol <- 1
-    }
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+      figNcol = NULL
+      if(!is.null(groupby)){
+          if(length(unique(groupby)) > 1){
+              figNcol = 1
+          }
+      }
+      plotlist <- .ggSCTKCombinePlots(plotlist,
+                                      ncols = figNcol)
   }
-
-  # return(plotlist)
-  return(cowplot::plot_grid(
-    plotlist = plotlist,
-    ncol = figNcol
-  ))
+  return(plotlist)
 }
 
 #' @title Density plot of any data stored in the SingleCellExperiment object.
@@ -1530,6 +1609,9 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' plotSCEDensity(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
@@ -1550,7 +1632,8 @@ plotSCEDensity <- function(inSCE,
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 18,
-                           cutoff = NULL) {
+                           cutoff = NULL,
+                           combinePlot = TRUE) {
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
@@ -1632,17 +1715,18 @@ plotSCEDensity <- function(inSCE,
     return(p)
   })
 
-  figNcol = NULL
-  if (!is.null(groupby)) {
-    if (length(unique(groupby)) > 1) {
-      figNcol <- 1
-    }
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+      figNcol = NULL
+      if(!is.null(groupby)){
+          if(length(unique(groupby)) > 1){
+              figNcol = 1
+          }
+      }
+      plotlist <- .ggSCTKCombinePlots(plotlist,
+                                      ncols = figNcol)
   }
-
-  return(cowplot::plot_grid(
-    plotlist = plotlist,
-    ncol = figNcol
-  ))
+  return(plotlist)
 }
 
 #' @title Plots for runEmptyDrops outputs.
@@ -1668,6 +1752,9 @@ plotSCEDensity <- function(inSCE,
 #' @param legendTitle Title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -1686,7 +1773,8 @@ plotEmptyDropsScatter <- function(inSCE,
                                   axisLabelSize = 15,
                                   legendTitle = NULL,
                                   legendTitleSize = 12,
-                                  legendSize = 10){
+                                  legendSize = 10,
+                                  combinePlot = TRUE){
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop(
@@ -1759,10 +1847,12 @@ plotEmptyDropsScatter <- function(inSCE,
         }
         return(p)
     })
-    return(cowplot::plot_grid(
-        plotlist = plotlist,
-        ncol = 1
-    ))
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot){
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        ncols = 1)
+    }
+    return(plotlist)
 }
 
 #' @title Plots for runBarcodeRankDrops outputs.
@@ -1784,6 +1874,9 @@ plotEmptyDropsScatter <- function(inSCE,
 #' @param axisSize Size of x/y-axis ticks. Default 12.
 #' @param axisLabelSize Size of x/y-axis labels. Default 15.
 #' @param legendSize size of legend. Default 10.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE=sce)
@@ -1799,7 +1892,8 @@ plotBarcodeRankScatter <- function(inSCE,
                                    ylab = NULL,
                                    axisSize = 12,
                                    axisLabelSize = 15,
-                                   legendSize = 10){
+                                   legendSize = 10,
+                                   combinePlot = TRUE){
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop(
@@ -1862,10 +1956,12 @@ plotBarcodeRankScatter <- function(inSCE,
         }
         return(p)
     })
-    return(cowplot::plot_grid(
-        plotlist = plotlist,
-        ncol = 1
-    ))
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot){
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        ncols = 1)
+    }
+    return(plotlist)
 
 }
 
@@ -2139,6 +2235,14 @@ plotSCEBarAssayData <- function(inSCE,
     }
     value.bin <- cut(x = value, breaks = bin, labels = binLabel)
     return(value.bin)
+}
+
+.ggSCTKCombinePlots <- function(plotlist, ncols = NULL){
+    if(is.null(ncols)){
+        ncols = sqrt(length(plotlist))
+    }
+    return(cowplot::plot_grid(plotlist = plotlist,
+                              ncol = ncols))
 }
 
 
