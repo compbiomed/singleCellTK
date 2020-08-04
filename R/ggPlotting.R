@@ -583,7 +583,10 @@ plotSCEScatter <- function(inSCE,
                            legendTitleSize = 12,
                            legendSize = 10) {
   if (!is.null(slot)){
-    if (!slot %in% methods::slotNames(inSCE)) {
+    if (slot == "reducedDims"){
+      annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
+      annotation <- substr(annotation, 1, str_length(annotation) - 2)
+    }else if (!slot %in% methods::slotNames(inSCE)) {
       stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
 	     specified slot exists.")
@@ -596,7 +599,7 @@ plotSCEScatter <- function(inSCE,
              slot of the SingleCellExperiment object.")
     }
 
-    annotation.ix <- match(annotation, names(sceSubset))
+    annotation.ix <- match(annotation, c(names(sceSubset)))
   }
 
   if (is.null(slot)){
@@ -610,6 +613,8 @@ plotSCEScatter <- function(inSCE,
     colorPlot <- sceSubset[, annotation.ix]
   } else if (slot == "metadata") {
     colorPlot <- sceSubset[[annotation.ix]]
+  } else if (slot == "reducedDims") {
+    colorPlot <- sceSubset[[annotation.ix]][, as.numeric(annotation_clm)]
   }
 
   g <- .ggScatter(
