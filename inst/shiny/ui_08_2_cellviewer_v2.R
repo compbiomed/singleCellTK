@@ -38,7 +38,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             ),
             selectInput("ColumnSelect_Xaxis", h5("Dimension"), choices = NULL)
           ),
-          
+
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
@@ -53,7 +53,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(gene_list)
             )
           ),
-          
+
           #Cell Annotation condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Xaxis"),
@@ -63,7 +63,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(annotation_list)
             )
           ),
-          
+
           #-+-+-+-+-+-Y-Axis###################################
           h5(strong("Y-Axis")),
           selectInput(
@@ -81,7 +81,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             ),
             selectInput("ColumnSelect_Yaxis", h5("Dimension"), choices = NULL)
           ),
-          
+
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
@@ -96,7 +96,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(gene_list)
             )
           ),
-          
+
           #Cell Annotation condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Yaxis"),
@@ -106,16 +106,16 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(annotation_list)
             )
           )
-          
+
         )
       ),
-      
+
       #-+-+-+-+-+-colorby part1###################################
       tags$hr(),
       #Select Color by Data
       # Section 1 - Assay Settings
       actionButton("cv_button2", h4(strong("Color"))),
-      
+
       # open by default
       tags$div(
         id = "cv_collapse2",
@@ -142,7 +142,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           ),
           selectInput("ColumnSelect_Colorby", h5("Dimension"), choices = NULL)
         ),
-        
+
         #Expression Assays condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
@@ -157,7 +157,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c(gene_list)
           )
         ),
-        
+
         #Cell Annotation condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Colorby"),
@@ -167,7 +167,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c(annotation_list)
           )
         ),
-        
+
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
           condition = sprintf("input['%s'] != 'Default Color'", "TypeSelect_Colorby"),
@@ -191,7 +191,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               inline = TRUE
             )
           ),
-          
+
           conditionalPanel(
             condition =  "input.checkColorbinning == 1",
             numericInput(
@@ -202,8 +202,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             )
           )
           #,
-          
-          
+
+
           #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL)
         )
       ),
@@ -251,15 +251,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   column(
     9,
     wellPanel(
-      plotlyOutput("scatter") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
+      plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.
