@@ -2951,29 +2951,30 @@ shinyServer(function(input, output, session) {
     }
 
     if(input$viewertabs == "reducedDims Plot"){
-      if(input$TypeSelect_Colorby == "Pick a Color"){
+      if(input$TypeSelect_Colorby == "Default Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-          transparency = input$adjustalpha, dotSize = input$adjustsize)
-        ggplotly(a, tooltip = c("X_input", "Y_input"))
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+        #ggplotly(a, tooltip = c("X_input", "Y_input"))
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
           groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
-          dotSize = input$adjustsize)
-        ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
+          dotSize = input$adjustsize, combinePlot = FALSE)
+        #ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
           colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin,
-          transparency = input$adjustalpha, dotSize = input$adjustsize)
-        ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+        #ggplotly(a, tooltip = c("X_input", "Y_input", "Color"), height = 600)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
           annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha,
           groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
-          xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin)
+          xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
+          combinePlot = FALSE)
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
@@ -3019,13 +3020,14 @@ shinyServer(function(input, output, session) {
         }
       }
     }
+    plotly::subplot(plotlist = a)
   })
     #else if(input$viewertabs == "Scatter Plot"){
     #  if(input$TypeSelect_Colorby == "Pick a Color"){
     #    a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
     #      xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
     #      transparency = input$adjustalpha, dotSize = input$adjustsize)
-    #    ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
+    #ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
     # }
           #  if(input$TypeSelect_Colorby == "Expression Assays"){
     #    a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
