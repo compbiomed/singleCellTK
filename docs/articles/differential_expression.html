@@ -140,71 +140,43 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>For this section, we provide wrappers of four methods, listed in the table below. All functions takes an input <code>SingleCellExperiment</code> (SCE) object and other settings as arguments and returns the same SCE object with results updated in <code>metadata</code> slot.</p>
 <table class="table">
-<tr>
-<th>
-Method
-</th>
-<th>
-Citation
-</th>
-<th>
-Function
-</th>
+<thead><tr class="header">
+<th align="center">Method</th>
+<th align="left">Citation</th>
+<th align="center">Function</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">MAST</td>
+<td align="left">Greg Finak and et al., 2015</td>
+<td align="center"><code><a href="../reference/runMAST.html">runMAST()</a></code></td>
 </tr>
-<tr>
-<td>
-MAST
-</td>
-<td>
-Greg Finak and et al., 2015
-</td>
-<td>
-<code><a href="../reference/runMAST.html">runMAST()</a></code>
-</td>
+<tr class="even">
+<td align="center">Limma</td>
+<td align="left">Gordon Smyth and et al., 2004</td>
+<td align="center"><code><a href="../reference/runLimmaDE.html">runLimmaDE()</a></code></td>
 </tr>
-<tr>
-<td>
-Limma
-</td>
-<td>
-Gordon Smyth and et al., 2004
-</td>
-<td>
-<code><a href="../reference/runLimmaDE.html">runLimmaDE()</a></code>
-</td>
+<tr class="odd">
+<td align="center">DESeq2</td>
+<td align="left">Michael Love and et al., 2014</td>
+<td align="center"><code><a href="../reference/runDESeq2.html">runDESeq2()</a></code></td>
 </tr>
-<tr>
-<td>
-DESeq2
-</td>
-<td>
-Michael Love and et al., 2014
-</td>
-<td>
-<code><a href="../reference/runDESeq2.html">runDESeq2()</a></code>
-</td>
+<tr class="even">
+<td align="center">ANOVA</td>
+<td align="left">Jeffrey T. Leek and et al., 2020</td>
+<td align="center"><code><a href="../reference/runANOVA.html">runANOVA()</a></code></td>
 </tr>
-<tr>
-<td>
-ANOVA
-</td>
-<td>
-Jeffrey T. Leek and et al., 2020
-</td>
-<td>
-<code><a href="../reference/runANOVA.html">runANOVA()</a></code>
-</td>
-</tr>
+</tbody>
 </table>
 <p>A generic wrapper of all four methods is also provided, called <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
 </div>
 <div id="workflow" class="section level2">
 <h2 class="hasAnchor">
 <a href="#workflow" class="anchor"></a>Workflow</h2>
-<p>The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we will first introduce the workflow of using the generic wrapper <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> and then talk about the Shiny UI.</p>
-<div id="r-script-commands" class="section level3">
+<p>The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
+<div id="parameters" class="section level3">
 <h3 class="hasAnchor">
-<a href="#r-script-commands" class="anchor"></a>R script commands</h3>
+<a href="#parameters" class="anchor"></a>Parameters</h3>
 <p>The most basic parameters include:</p>
 <ul>
 <li>The input SCE object - <code>inSCE</code>.</li>
@@ -220,8 +192,7 @@ Jeffrey T. Leek and et al., 2020
 <p>Additionally, only specifying the condition of interests is allowed and the control will then be set to all the other cells, which turns to a biomarker finding analysis.</p>
 <p>Since the conditions can be set by using indices or annotations, we have two groups of parameters listed below. Note that only one way of setting can be used at one time.</p>
 <ul>
-<li>
-<code>index1</code> and <code>index2</code> for index style setting</li>
+<li>Use <code>index1</code> and <code>index2</code> for index style setting</li>
 <li>Use <code>class</code> to specify the annotation vector by either directly giving a vector of proper length or giving a column name of <code>colData</code>. Then use <code>classGroup1</code>, <code>classGroup2</code> to specify which categories in <code>class</code> are of interests.</li>
 </ul>
 </div>
@@ -234,35 +205,133 @@ Jeffrey T. Leek and et al., 2020
 <li>The group of control <code>groupName2</code>.</li>
 <li>The analysis run itself <code>analysisName</code>.</li>
 </ul>
-<p>The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, they namings are also used by DE analysis related plotting functions, so that legends can be well annotated.</p>
+<p>The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.</p>
 </div>
-<div id="example" class="section level4">
+</div>
+<div id="example" class="section level3">
+<h3 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h3>
+<div id="preprocessing" class="section level4">
 <h4 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h4>
+<a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
+<p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
-<span class="co">## Do a clustering for group specification</span>
-<span class="co">## However I was unable to find a simple clustering function in SCTK?</span>
-<span class="co">## Temporarily use a random thing that works, will update later</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="kw">logAssayName</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)
-<span class="no">cluster</span> <span class="kw">&lt;-</span> <span class="kw pkg">scran</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/scran/man/quickCluster.html">quickCluster</a></span>(<span class="no">pbmc3k</span>, <span class="kw">assay.type</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)
-<span class="no">pbmc3k</span>$<span class="no">cluster</span> <span class="kw">&lt;-</span> <span class="no">cluster</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                        <span class="kw">class</span> <span class="kw">=</span> <span class="st">"cluster"</span>, <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fl">3</span>,
-                        <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c1_c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c3"</span>, <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c1_2_VS_c3"</span>)</pre></body></html></div>
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
+<span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span>(<span class="no">pbmc3k</span>)
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="co"># Optional visualization</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
+                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
+                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
+                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<center>
+<img src="de_umapVis.png" alt="Seurat UMAP"> 
+</center>
+</div>
+<div id="run-differential-expression-analysis" class="section level4">
+<h4 class="hasAnchor">
+<a href="#run-differential-expression-analysis" class="anchor"></a>Run Differential Expression Analysis</h4>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Condition chosen basing on the UMAP</span>
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
+                        <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
+                        <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
+                        <span class="kw">class</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
+                        <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>, <span class="fl">8</span>),
+                        <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c3_c8"</span>,
+                        <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c2_VS_c3_c8"</span>)</pre></body></html></div>
+</div>
+<div id="results" class="section level4">
+<h4 class="hasAnchor">
+<a href="#results" class="anchor"></a>Results</h4>
+<p>The results are saved in the <code>metadata</code> slot of the returned SCE object, following the structure below:</p>
+<pre><code>matadata(pbmc3k)
+          |- $info1
+          |- $info2
+          |- ...
+          |- $diffExp
+                  |-$AnalysisName1
+                  |-$AnalysisName2
+                  |-...
+                  |-$c2_VS_c3_c8
+                             |-$useAssay    = "logcounts"
+                             |-$groupNames  = c("c2", "c3_c8")
+                             |-$select
+                             |      |-$ix1  = c(FALSE, TRUE,  FALSE, ...)
+                             |      |-$ix2  = c(FALSE, FALSE, FALSE, ...)
+                             |
+                             |        (Two logical vectors both having `ncol(inSCE)` values,
+                             |         specifies which cells are selected for "c2" or "c3_c8")
+                             |
+                             |-$annotation  = "Seurat_louvain_Resolution0.8"
+                             |-$result      = (the `data.frame` of top DEG table, shown below)
+                             |-$method      = "MAST"</code></pre>
 <p>To fetch the result as a table of the Top differential expressed genes and the statistics:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c1_2_VS_c3</span>$<span class="no">result</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c2_VS_c3_c8</span>$<span class="no">result</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">DEG</span>)</pre></body></html></div>
-<pre><code>##     Gene        Pvalue  Log2_FC           FDR
-## 1   FTH1  0.000000e+00 2.791868  0.000000e+00
-## 2    FTL  0.000000e+00 3.156510  0.000000e+00
-## 3 S100A4 2.167134e-289 3.587065 1.073237e-285
-## 4 TYROBP 1.366765e-276 3.395569 5.076505e-273
-## 5   CST3 2.155873e-275 3.587715 6.405961e-272
-## 6 S100A6 2.863629e-247 3.002143 7.090822e-244</code></pre>
-<p>To visualize the result in heatmap:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c1_2_VS_c3"</span>)</pre></body></html></div>
-<p><img src="differential_expression_files/figure-html/plotDE-1.png" width="700"></p>
+<table class="table">
+<thead><tr class="header">
+<th align="right"></th>
+<th align="center">Gene</th>
+<th align="center">Pvalue</th>
+<th align="center">Log2_FC</th>
+<th align="center">FDR</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="center">CD74</td>
+<td align="center">7.410985e-323</td>
+<td align="center">3.776849</td>
+<td align="center">1.028496e-318</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="center">HLA-DRA</td>
+<td align="center">1.390933e-243</td>
+<td align="center">4.240744</td>
+<td align="center">9.651684e-240</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="center">NKG7</td>
+<td align="center">1.456080e-180</td>
+<td align="center">-3.628760</td>
+<td align="center">6.735828e-177</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="center">HLA-DPB1</td>
+<td align="center">7.820856e-167</td>
+<td align="center">2.730926</td>
+<td align="center">2.713446e-163</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="center">CD79A</td>
+<td align="center">3.799766e-162</td>
+<td align="center">2.202502</td>
+<td align="center">1.054663e-158</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="center">HLA-DRB1</td>
+<td align="center">9.544925e-155</td>
+<td align="center">2.498927</td>
+<td align="center">2.207741e-151</td>
+</tr>
+</tbody>
+</table>
+<p>To visualize the result ina heatmap:</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c2_VS_c3_c8"</span>)</pre></body></html></div>
+<center>
+<img src="de_heatmap.png" alt="DE Heatmap"> 
+</center>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
 </div>
 </div>
