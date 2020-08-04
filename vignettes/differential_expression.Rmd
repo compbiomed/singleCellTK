@@ -46,8 +46,8 @@ Since the conditions can be set by using indices or annotations, we have two gro
 Something that might be special in our workflow is that, users will be required to specify name strings for: 
 
 - The group of interests - `groupName1`.
-- The group of control `groupName2`.
-- The analysis run itself `analysisName`. 
+- The group of control - `groupName2`.
+- The analysis run itself - `analysisName`. 
 
 The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
 
