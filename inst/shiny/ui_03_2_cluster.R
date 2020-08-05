@@ -144,6 +144,24 @@ shinyPanelCluster <- fluidPage(
       useShinyjs(),
       uiOutput("clustNameUI"),
       withBusyIndicatorUI(actionButton("clustRun", "Run"))
+    ),
+    h3("Visualization"),
+    panel(
+      radioButtons("clustVisChoicesType", NULL,
+                   c("Select from Current Results:" = 1,
+                     "Select from All Present Annotation:" = 2),
+                   selected = 1, inline = TRUE, ),
+      conditionalPanel(
+        "input.clustVisChoicesType == 1",
+        selectInput("clustVisRes", NULL, "")
+      ),
+      conditionalPanel(
+        "input.clustVisChoicesType == 2",
+        selectInput("clustVisCol", NULL, clusterChoice)
+      ),
+      selectInput("clustVisReddim", "Use Reduction:", currreddim),
+      withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
+      plotOutput("clustVisPlot")
     )
   )
 )

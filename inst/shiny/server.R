@@ -103,6 +103,8 @@ shinyServer(function(input, output, session) {
                       choices = c("Row Names", pdataOptions))
     updateSelectInput(session, 'hmAddCellLabel',
                       choices = c("Default cell IDs", pdataOptions))
+    updateSelectInput(session, "clustVisCol",
+                      choices = c("", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -218,6 +220,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "clustScranSNNReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
     updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
+    updateSelectInput(session, "clustVisReddim", choices = currreddim)
   }
 
   updateAltExpInputs <- function(){
@@ -2039,11 +2042,6 @@ shinyServer(function(input, output, session) {
   # })
   # })
 
-  #output$clusterPlot <- renderPlotly({
-  #  req(vals$dimRedPlot)
-  #  plotly::ggplotly(vals$dimRedPlot)
-  #})
-
   #-----------------------------------------------------------------------------
   # Page 3: Clustering ####
   #-----------------------------------------------------------------------------
@@ -2078,6 +2076,8 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  clustResults <- reactiveValues(names = NULL)
+
   observeEvent(input$clustRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -2098,6 +2098,8 @@ shinyServer(function(input, output, session) {
             params$nComp = input$clustScranSNNd
           } else if (input$clustScranSNNInType == "ReducedDim") {
             params$useReducedDim = input$clustScranSNNReddim
+            updateSelectInput(session, "clustVisReddim",
+                              selected = input$clustScranSNNReddim)
           } else if (input$clustScranSNNInType == "AltExp") {
             params$useAltExp = input$clustScranSNNAltExp
             params$altExpAssay = input$clustScranSNNAltExpAssay
@@ -2106,6 +2108,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- do.call(runScranSNN, params)
         } else if (input$clustAlgo == 2) {
           # K-Means
+          updateSelectInput(session, "clustVisReddim", input$clustKMeansReddim)
           vals$counts <- runKMeans(inSCE = vals$counts,
                                    useReducedDim = input$clustKMeansReddim,
                                    nCenters = input$clustKMeansN,
@@ -2132,6 +2135,7 @@ shinyServer(function(input, output, session) {
             dims <- input$clustSeuratDims
           }
           useAssay <- assayNames(vals$counts)[1]
+          updateSelectInput(session, "clustVisReddim", input$clustSeuratReddim)
           vals$counts <- seuratFindClusters(inSCE = vals$counts,
                                             useAssay = useAssay,
                                             useReduction = "pca",
@@ -2142,10 +2146,49 @@ shinyServer(function(input, output, session) {
                                             resolution = input$clustSeuratRes)
         }
         updateColDataNames()
+        clustResults$names <- c(clustResults$names, saveClusterName)
+        updateSelectInput(session, "clustVisRes", choices = clustResults$names)
       })
     }
   })
 
+  observeEvent(input$clustPlot, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      choice <- NULL
+      if (input$clustVisChoicesType == 1) {
+        # Use result
+        if (is.null(input$clustVisRes) ||
+            input$clustVisRes == "") {
+          shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                                 type = "error")
+        }
+        choice <- input$clustVisRes
+      } else if (input$clustVisChoicesType == 2) {
+        # Use colData
+        if (is.null(input$clustVisCol) ||
+            input$clustVisCol == "") {
+          shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                                 type = "error")
+        }
+        choice <- input$clustVisCol
+      }
+      inSCE <- vals$counts
+      reducedDimName <- input$clustVisReddim
+      output$clustVisPlot <- renderPlot({
+        if (!is.null(choice) && choice != "") {
+          plotSCEDimReduceColData(inSCE = inSCE,
+                                  colorBy = choice,
+                                  conditionClass = "factor",
+                                  reducedDimName = reducedDimName,
+                                  labelClusters = TRUE,
+                                  dim1 = 1, dim2 = 2,
+                                  legendTitle = choice)
+        }
+      })
+    }
+  })
 
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda
