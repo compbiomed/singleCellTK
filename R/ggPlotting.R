@@ -1959,8 +1959,6 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
 #' object, or can be retrieved from the colData slot. Default NULL.
-#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
-#'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
@@ -1969,9 +1967,16 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr %>%
 .ggBar <- function(y,
   groupby = NULL,
   dots = TRUE,
@@ -1982,26 +1987,23 @@ plotBarcodeRankScatter <- function(inSCE,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
   titleSize = 15) {
   if (is.null(groupby)) {
     groupby <- rep("Sample", length(y))
   }
-  df <- data.frame(x = groupby, y = y)
+  df <- data.frame(groupby = groupby, y = y)
 
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
-      x = "x",
+      x = "groupby",
       y = "y"
     )
-  p <- p + ggplot2::geom_bar(stat = 'identity')
-  if (dots == TRUE) {
-    p <- p + ggplot2::geom_jitter(
-      height = 0,
-      size = dotSize,
-      alpha = transparency
-    )
-  }
+
+  p <- p + ggplot2::geom_bar(stat = "identity")
+
   if (defaultTheme == TRUE) {
     p <- .ggSCTKTheme(p)
   }
@@ -2012,6 +2014,24 @@ plotBarcodeRankScatter <- function(inSCE,
         size = titleSize
       ))
   }
+
+  ###
+  p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
+  ###
+
+  if(length(unique(df$groupby)) > 1){
+    p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
+      hjust = 1,
+      size = axisSize))
+  }else{
+    p <- p + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_blank())
+  }
+
+  if (gridLine == TRUE){
+    p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
+  }
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
       ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize))
@@ -2020,23 +2040,48 @@ plotBarcodeRankScatter <- function(inSCE,
     p <- p + ggplot2::ylab(ylab) +
       ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize))
   }
+  if (!is.null(summary)){
+    if(summary == "mean"){
+      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+      fun <- base::mean
+    }else if(summary == "median"){
+      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+      fun <- stats::median
+    }else{
+      stop("`summary`` must be either `mean` or `median`.")
+    }
+    summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.1
+    summary <- paste(toupper(substr(summary, 1, 1)),
+      substr(summary, 2, nchar(summary)), sep="")
+    summ$label <- paste0(summary,": ", round(summ$value, 5))
+
+    p <- p + ggplot2::geom_text(data = summ,
+      ggplot2::aes_string(x = "groupby",
+        y = "statY",
+        label = "label"),
+      size = 5)
+    p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
+      fun.max = fun,
+      geom = "crossbar",
+      color = "red",
+      linetype = "dashed")
+  }
 
   return(p)
 }
 
+
+
 #' @title Bar plot of colData.
 #' @description Visualizes values stored in the colData slot of a
-#'  SingleCellExperiment object via a violin plot.
+#'  SingleCellExperiment object via a bar plot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param coldata colData value that will be plotted.
 #' @param groupby Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
-#' @param violin Boolean. Whether to plot the violon densities for each group.
-#' Default \code{TRUE}.
-#' @param boxplot Boolean. Whether to plot the boxes for each group.
-#' Default \code{TRUE}.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -2047,8 +2092,15 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 
 #' @examples
 #' plotSCEBarColData(
@@ -2057,10 +2109,9 @@ plotBarcodeRankScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEBarColData <- function(inSCE,
+  sample = NULL,
   coldata,
   groupby = NULL,
-  violin = TRUE,
-  boxplot = TRUE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
@@ -2069,8 +2120,11 @@ plotSCEBarColData <- function(inSCE,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
-  titleSize = NULL) {
+  titleSize = NULL,
+  combinePlot = TRUE) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
       stop("'", paste(coldata), "' is not found in ColData.")
@@ -2095,30 +2149,68 @@ plotSCEBarColData <- function(inSCE,
     }
   }
 
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop("'sample' must be the same length as the number",
+        " of columns in 'inSCE'")
+    }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
-  p <- .ggBar(
-    y = coldata,
-    groupby = groupby,
-    dots = dots,
-    xlab = xlab,
-    ylab = ylab,
-    axisSize = axisSize,
-    axisLabelSize = axisLabelSize,
-    dotSize = dotSize,
-    transparency = transparency,
-    defaultTheme = defaultTheme,
-    title = title,
-    titleSize = titleSize
-  )
+  samples <- unique(sample)
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    coldataSub <- coldata[sampleInd]
+    if(!is.null(groupby)){
+      groupbySub <- groupby[sampleInd]
+    }else{
+      groupbySub <- NULL
+    }
 
-  return(p)
+    if(!is.null(title) && length(samples) > 1){
+      title = paste(title, x, sep = "_")
+    }
+
+    p <- .ggBar(
+      y = coldataSub,
+      groupby = groupbySub,
+      dots = dots,
+      xlab = xlab,
+      ylab = ylab,
+      axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
+      dotSize = dotSize,
+      transparency = transparency,
+      defaultTheme = defaultTheme,
+      gridLine = gridLine,
+      summary = summary,
+      title = title,
+      titleSize = titleSize
+    )
+    return(p)
+  })
+
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+    figNcol = NULL
+    if(!is.null(groupby)){
+      if(length(unique(groupby)) > 1){
+        figNcol = 1
+      }
+    }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+      ncols = figNcol)
+  }
+  return(plotlist)
 }
 
 #' @title Bar plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
-#'  SingleCellExperiment object via a violin plot.
+#'  SingleCellExperiment object via a bar plot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
@@ -2135,8 +2227,15 @@ plotSCEBarColData <- function(inSCE,
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
+#' @param gridLine Adds a horizontal grid line if TRUE. Will still be
+#'  drawn even if defaultTheme is TRUE. Default FALSE.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param combinePlot Boolean. If multiple plots are generated (multiple
+#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
+#'  Default TRUE.
 #' @examples
 #' plotSCEBarAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -2144,6 +2243,7 @@ plotSCEBarColData <- function(inSCE,
 #' )
 #' @export
 plotSCEBarAssayData <- function(inSCE,
+  sample = NULL,
   useAssay = "counts",
   feature,
   groupby = NULL,
@@ -2155,8 +2255,11 @@ plotSCEBarAssayData <- function(inSCE,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
-  titleSize = NULL) {
+  titleSize = NULL,
+  combinePlot = TRUE) {
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -2164,7 +2267,6 @@ plotSCEBarAssayData <- function(inSCE,
     binary = "Continuous"
   )
   counts <- mat[, 2]
-
   if (!is.null(groupby)) {
     if (length(groupby) > 1) {
       if (length(groupby) != length(counts)) {
@@ -2179,24 +2281,57 @@ plotSCEBarAssayData <- function(inSCE,
       groupby <- as.character(SummarizedExperiment::colData(inSCE)[, groupby])
     }
   }
+  if (!is.null(sample)) {
+    if (length(sample) != ncol(inSCE)) {
+      stop("'sample' must be the same length as the number",
+        " of columns in 'inSCE'")
+    }
+  } else {
+    sample <- rep(1, ncol(inSCE))
+  }
 
+  samples <- unique(sample)
 
-  p <- .ggBar(
-    y = counts,
-    groupby = groupby,
-    dots = dots,
-    xlab = xlab,
-    ylab = ylab,
-    axisSize = axisSize,
-    axisLabelSize = axisLabelSize,
-    dotSize = dotSize,
-    transparency = transparency,
-    defaultTheme = defaultTheme,
-    title = title,
-    titleSize = titleSize
-  )
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    countSub <- counts[sampleInd]
+    if(!is.null(groupby)){
+      groupbySub <- groupby[sampleInd]
+    }else{
+      groupbySub <- NULL
+    }
 
-  return(p)
+    p <- .ggBar(
+      y = countSub,
+      groupby = groupbySub,
+      dots = dots,
+      xlab = xlab,
+      ylab = ylab,
+      axisSize = axisSize,
+      axisLabelSize = axisLabelSize,
+      dotSize = dotSize,
+      transparency = transparency,
+      defaultTheme = defaultTheme,
+      gridLine = gridLine,
+      summary = summary,
+      title = title,
+      titleSize = titleSize
+    )
+    return(p)
+  })
+
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot){
+    figNcol = NULL
+    if(!is.null(groupby)){
+      if(length(unique(groupby)) > 1){
+        figNcol = 1
+      }
+    }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+      ncols = figNcol)
+  }
+  return(plotlist)
 }
 
 .ggSCTKTheme <- function(gg) {
