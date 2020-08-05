@@ -65,8 +65,8 @@
 #' @param nPrinComps Integer. Number of principal components used to embed
 #'  the transcriptomes prior to k-nearest-neighbor graph construction.
 #'  Default 30.
-#' @param tsneAngle Float. Determines angular size of a distant node as measured 
-#'  from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}. 
+#' @param tsneAngle Float. Determines angular size of a distant node as measured
+#'  from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}.
 #' @param tsnePerplexity Integer. The number of nearest neighbors that
 #'  is used in other manifold learning algorithms.
 #'  If default, it is set to 30. Default \code{NULL}.
@@ -138,7 +138,7 @@ runScrublet <- function(inSCE,
   }
 
   message(paste0(date(), " ... Running 'scrublet'"))
-  
+
   ##  Getting current arguments values
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -151,13 +151,23 @@ runScrublet <- function(inSCE,
   ## Loop through each sample and run scrublet
   error <- try({
     samples <- unique(sample)
+    umapDims <- matrix(ncol = 2,
+                       nrow = ncol(inSCE))
+    rownames(umapDims) = colnames(inSCE)
+    colnames(umapDims) = c("UMAP_1", "UMAP_2")
+
+    tsneDims <- matrix(ncol = 2,
+                       nrow = ncol(inSCE))
+    rownames(tsneDims) = colnames(inSCE)
+    colnames(tsneDims) = c("TSNE_1", "TSNE_2")
+
     for (i in seq_len(length(samples))) {
       sceSampleInd <- sample == samples[i]
       sceSample <- inSCE[, sceSampleInd]
 
       mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
       mat <- .convertToMatrix(mat)
-      
+
       scr <- scrublet$Scrublet(counts_matrix = t(mat),
         sim_doublet_ratio = simDoubletRatio,
         n_neighbors = nNeighbors,
@@ -180,27 +190,28 @@ runScrublet <- function(inSCE,
 
       output[sceSampleInd, "scrublet_score"] <- result[[1]]
       output[sceSampleInd, "scrublet_call"] <- result[[2]]
-      
-      ## Extract UMAP and TSNE coordinates 
+
+      ## Extract UMAP and TSNE coordinates
       if (is.null(nNeighbors) && is.null(minDist)){
         umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
       }else {
         umap_coordinates <- scrublet$get_umap(scr$manifold_obs_,
-                                              n_neighbors=as.integer(nNeighbors), 
+                                              n_neighbors=as.integer(nNeighbors),
                                               min_dist=minDist)
       }
-      reducedDim(inSCE,'scrublet_UMAP') <- umap_coordinates
-    
+      umapDims[sceSampleInd, ] <- umap_coordinates
+
     if (is.null(tsneAngle) && is.null(tsnePerplexity)){
       tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
     }else {
       tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_,
-                                            angle=tsneAngle, 
+                                            angle=tsneAngle,
                                             perplexity=as.integer(tsnePerplexity))
     }
-    reducedDim(inSCE,'scrublet_TSNE') <- tsne_coordinates
+    tsneDims[sceSampleInd, ] <- tsne_coordinates
+
   }
-    
+
     colData(inSCE) = cbind(colData(inSCE), output)
   }, silent = TRUE)
 
@@ -208,13 +219,15 @@ runScrublet <- function(inSCE,
     warning("Scrublet did not complete successfully. Returning SCE without",
       " making any changes. Error given by Scrublet: \n\n", error)
   }
-  
+
   inSCE@metadata$runScrublet <- argsList[-1]
-  
+
   ## add scrublet version to metadata
   version <- pkg_resources$require("scrublet")[[1]]
   inSCE@metadata$scrublet$packageVersion <- version
-  
+  reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
+  reducedDim(inSCE,'scrublet_UMAP') <- umapDims
+
   return(inSCE)
 }
 
