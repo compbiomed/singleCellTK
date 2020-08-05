@@ -10,7 +10,7 @@ shinyPanelCluster <- fluidPage(
         column(
           6,
           selectInput("clustAlgo", "Select Algorithm",
-                      c("Scran SNN"=1, "K-Means"=2),
+                      c("Scran SNN"=1, "K-Means"=2, "Seurat"=3),
                       selected = "Scran SNN")
         )
       ),
@@ -95,7 +95,7 @@ shinyPanelCluster <- fluidPage(
           column(
             4,
             numericInput("clustKMeansN", "Number of Centers (Clusters):", value = NULL),
-            selectInput("clustKMeansAlgo", "Algorithm",
+            selectInput("clustKMeansAlgo", "Algorithm:",
                         c("Hartigan-Wong", "Lloyd", "MacQueen"),
                         selected = "Hartigan-Wong")
           ),
@@ -109,8 +109,39 @@ shinyPanelCluster <- fluidPage(
             numericInput("clustKMeansNStart", "Number of Random Sets:",
                          1, min = 1, step = 1)
           )
+        ),
+
+        # Seurat ####
+        conditionalPanel(
+          "input.clustAlgo == 3",
+          column(
+            6,
+            selectInput("clustSeuratReddim", "Select A ReducedDim:", currreddim)
+          ),
+          column(6),
+          column(
+            12,
+            helpText("A 'reducedDim' contains low-dimension representation of an assay.\n Dimension reduction has to be run in advance.")
+          ),
+          column(
+            4,
+            numericInput("clustSeuratDims", "How Many Dimensions to Use:", 10,
+                         min = 2, step = 1),
+            numericInput("clustSeuratRes", "Resolution", 0.8, step = 0.05)
+          ),
+          column(
+            4,
+            selectInput("clustSeuratAlgo", "Algorithm:",
+                        c("louvain", "multilevel", "SLM"), selected = "louvain")
+          ),
+          column(
+            4,
+            checkboxInput("clustSeuratGrpSgltn", "Group Singletons",
+                          value = TRUE)
+          )
         )
       ), # fuildRow ends here
+      useShinyjs(),
       uiOutput("clustNameUI"),
       withBusyIndicatorUI(actionButton("clustRun", "Run"))
     )

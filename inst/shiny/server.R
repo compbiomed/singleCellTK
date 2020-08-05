@@ -217,6 +217,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
     updateSelectInput(session, "clustScranSNNReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
+    updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
   }
 
   updateAltExpInputs <- function(){
@@ -958,7 +959,6 @@ shinyServer(function(input, output, session) {
       vals$dendrogram <- NULL
       vals$pcX <- NULL
       vals$pcY <- NULL
-      vals$batchRes <- NULL
       dbList <- getMSigDBTable()
       geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
@@ -1008,7 +1008,7 @@ shinyServer(function(input, output, session) {
         handleGSPasteOption()
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
-      print(S4Vectors::metadata(vals$original)$sctk$genesets)
+      # print(S4Vectors::metadata(vals$original)$sctk$genesets)
     })
   })
 
@@ -2056,6 +2056,12 @@ shinyServer(function(input, output, session) {
       # K-Means
       textInput("clustName", "Name of Clustering Result:",
                 "kmeans_cluster")
+    } else if(input$clustAlgo == 3){
+      disabled(
+        textInput("clustName", "Name of Clustering Result:",
+                  paste0("Seurat", "_", input$clustSeuratAlgo, "_",
+                         "Resolution", input$clustSeuratRes))
+      )
     }
   })
 
@@ -2097,7 +2103,6 @@ shinyServer(function(input, output, session) {
             params$altExpAssay = input$clustScranSNNAltExpAssay
             params$nComp = input$clustScranSNNd
           }
-          print(params)
           vals$counts <- do.call(runScranSNN, params)
         } else if (input$clustAlgo == 2) {
           # K-Means
@@ -2108,6 +2113,33 @@ shinyServer(function(input, output, session) {
                                    nStart = input$clustKMeansNStart,
                                    algorithm = input$clustKMeansAlgo,
                                    clusterName = saveClusterName)
+        } else if (input$clustAlgo == 3) {
+          # Seurat
+          reddim <- reducedDim(vals$counts, input$clustSeuratReddim)
+          rownames(reddim) <- gsub("_", "-", rownames(reddim))
+          if ("percentVar" %in% names(attributes(reddim))) {
+            stdev <- as.numeric(attr(reddim, "percentVar"))
+            new_pca <- CreateDimReducObject(embeddings = reddim, assay = "RNA",
+                                            stdev = stdev, key = "PC_")
+          } else {
+            new_pca <- CreateDimReducObject(embeddings = reddim, assay = "RNA",
+                                            key = "PC_")
+          }
+          if (input$clustSeuratDims > ncol(reddim)) {
+            warning("More dimensions specified in dims than have been computed")
+            dims <- ncol(reddim)
+          } else {
+            dims <- input$clustSeuratDims
+          }
+          useAssay <- assayNames(vals$counts)[1]
+          vals$counts <- seuratFindClusters(inSCE = vals$counts,
+                                            useAssay = useAssay,
+                                            useReduction = "pca",
+                                            externalReduction = new_pca,
+                                            dims = dims,
+                                            algorithm = input$clustSeuratAlgo,
+                                            groupSingletons = input$clustSeuratGrpSgltn,
+                                            resolution = input$clustSeuratRes)
         }
         updateColDataNames()
       })
