@@ -133,7 +133,7 @@ source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
-source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
+source("ui_08_2_cellviewer_v2.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
@@ -173,7 +173,8 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
-      theme = shinytheme(shinyTheme),
+      # theme = shinytheme(shinyTheme),
+      theme = shinytheme("yeti"),
       navbarMenu(
         "Data",
         tabPanel("Import Single Cell Data", shinyPanelImport),
