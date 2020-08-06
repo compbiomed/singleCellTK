@@ -7,9 +7,10 @@ dimension reduction.}
 \usage{
 getUMAP(
   inSCE,
-  useAssay = "logcounts",
+  useAssay = "counts",
   sample = NULL,
   reducedDimName = "UMAP",
+  logNorm = TRUE,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
@@ -22,13 +23,16 @@ getUMAP(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Indicate which assay to use. The default is "logcounts".}
+\item{useAssay}{Indicate which assay to use. The default is "counts".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{reducedDimName}{a name to store the results of the dimension reduction
 coordinates obtained from this method. This is stored in the SingleCellExperiment
 object in the reducedDims slot. Default "UMAP".}
+
+\item{logNorm}{Whether the counts will need to be log-normalized prior to
+generating the UMAP via scater::logNormCounts. Default TRUE.}
 
 \item{nNeighbors}{The size of local neighborhood used for
 manifold approximation. Larger values result in more global
@@ -71,7 +75,8 @@ dimension reduction.
 data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
-                    reducedDimName = "UMAP", nNeighbors = 30, alpha = 1,
+                    reducedDimName = "UMAP", logNorm = TRUE,
+                    nNeighbors = 30, alpha = 1,
                     nIterations = 200, spread = 1, pca = TRUE,
                     initialDims = 50)
 reducedDims(umap_res)
