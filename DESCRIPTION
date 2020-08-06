@@ -52,6 +52,7 @@ Imports:
     GSVA (>= 1.26.0),
     GSVAdata,
     harmony,
+    igraph,
     liger,
     limma,
     MAST,
