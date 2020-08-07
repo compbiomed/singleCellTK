@@ -103,6 +103,8 @@ shinyServer(function(input, output, session) {
                       choices = c("Row Names", pdataOptions))
     updateSelectInput(session, 'hmAddCellLabel',
                       choices = c("Default cell IDs", pdataOptions))
+    updateSelectInput(session, "clustVisCol",
+                      choices = c("", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -217,6 +219,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
     updateSelectInput(session, "clustScranSNNReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
+    updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
+    updateSelectInput(session, "clustVisReddim", choices = currreddim)
   }
 
   updateAltExpInputs <- function(){
@@ -237,8 +241,6 @@ shinyServer(function(input, output, session) {
     toggle(id = "console")
   })
 
-
-  # js$disableTabs()
 
   js$disableTabs()
   # Close app on quit
@@ -958,7 +960,6 @@ shinyServer(function(input, output, session) {
       vals$dendrogram <- NULL
       vals$pcX <- NULL
       vals$pcY <- NULL
-      vals$batchRes <- NULL
       dbList <- getMSigDBTable()
       geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
@@ -1008,7 +1009,7 @@ shinyServer(function(input, output, session) {
         handleGSPasteOption()
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
-      print(S4Vectors::metadata(vals$original)$sctk$genesets)
+      # print(S4Vectors::metadata(vals$original)$sctk$genesets)
     })
   })
 
@@ -2039,81 +2040,225 @@ shinyServer(function(input, output, session) {
   # })
   # })
 
-  #output$clusterPlot <- renderPlotly({
-  #  req(vals$dimRedPlot)
-  #  plotly::ggplotly(vals$dimRedPlot)
-  #})
-
   #-----------------------------------------------------------------------------
   # Page 3: Clustering ####
   #-----------------------------------------------------------------------------
-  output$clustNameUI <- renderUI({
-    if(input$clustAlgo == 1){
-      # Scran SNN
-      textInput("clustName", "Name of Clustering Result:",
-                "scran_snn_cluster")
-    } else if(input$clustAlgo == 2){
-      # K-Means
-      textInput("clustName", "Name of Clustering Result:",
-                "kmeans_cluster")
+  scranSNNMats <- reactiveValues()
+  output$clustScranSNNMatUI <- renderUI({
+    if(!is.null(vals$counts)){
+      choices <- list()
+
+      nAssay <- length(assayNames(vals$counts))
+      assayId <- NULL
+      if (nAssay >= 1) {
+        assayValues <- list()
+        for (i in seq(nAssay)) {
+          assayValues[[assayNames(vals$counts)[i]]] <- i
+          assayId <- c(assayId, i)
+        }
+        choices[["Assays (full expression matrix)"]] <- assayValues
+      }
+
+      nReddim <- length(reducedDimNames(vals$counts))
+      reddimId <- NULL
+      if (nReddim >= 1) {
+        reddimValues <- list()
+        for (i in seq(nReddim)) {
+          reddimValues[[reducedDimNames(vals$counts)[i]]] <- nAssay + i
+          reddimId <- c(reddimId, nAssay + i)
+        }
+        choices[["ReducedDim (dimension reduction)"]] <- reddimValues
+      }
+
+      nAltExp <- length(altExpNames(vals$counts))
+      altExpId <- NULL
+      if (nAltExp >= 1) {
+        altExpValues <- list()
+        for (i in seq(nAltExp)) {
+          altExpValues[[altExpNames(vals$counts)[i]]] <- nAssay + nReddim + i
+          altExpId <- c(altExpId, nAssay + nReddim + i)
+        }
+        choices[["AltExp (subset of expression matrix)"]] <- altExpValues
+      }
+
+      scranSNNMats$allChoices <- list(assay = assayId, reducedDim = reddimId,
+                                      altExp = altExpId)
+      scranSNNMats$allNames <- c(assayNames(vals$counts),
+                                 reducedDimNames(vals$counts),
+                                 altExpNames(vals$counts))
+
+      selectInput("clustScranSNNMat", "Select Input Matrix:", choices)
+    } else {
+      selectInput("clustScranSNNMat", "Select Input Matrix:", NULL)
     }
   })
 
-  observeEvent(input$clustScranSNNInType, {
-    if(input$clustScranSNNInType == "AltExp") {
-      if (!is.null(input$clustScranSNNAltExp) &&
-          input$clustScranSNNAltExp != "") {
-        choices <- assayNames(altExp(vals$counts, input$clustScranSNNAltExp))
-        output$clustScranSNNAltExpAssayUI <- renderUI({
-          selectInput("clustScranSNNAltExpAssay", "Select the Assay in AltExp:",
-                      choices = choices)
-        })
-      }
+  output$clustNameUI <- renderUI({
+    if(input$clustAlgo %in% seq(6)){
+      # Scran SNN
+      textInput("clustName", "Name of Clustering Result:",
+                "scran_snn_cluster")
+    } else if(input$clustAlgo %in% seq(7, 9)){
+      # K-Means
+      textInput("clustName", "Name of Clustering Result:",
+                "kmeans_cluster")
+    } else if(input$clustAlgo %in% seq(10, 12)){
+      algoList <- list('10' = "louvain",
+                       '11' = "multilevel", '12' = "SLM")
+      algo <- algoList[[as.character(input$clustAlgo)]]
+      disabled(
+        textInput("clustName", "Name of Clustering Result:",
+                  paste0("Seurat", "_", algo, "_",
+                         "Resolution", input$clustSeuratRes))
+      )
     }
   })
+
+  observeEvent(input$clustScranSNNMat, {
+    output$clustScranSNNAltExpAssayUI <- renderUI({
+      if (input$clustScranSNNMat %in% scranSNNMats$allChoices$altExp) {
+        altExpName <- scranSNNMats$allNames[as.integer(input$clustScranSNNMat)]
+        choices <- assayNames(altExp(vals$counts, altExpName))
+        selectInput("clustScranSNNAltExpAssay", "Select the Assay in AltExp:",
+                    choices = choices)
+      }
+    })
+  })
+
+  clustResults <- reactiveValues(names = NULL)
 
   observeEvent(input$clustRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+      print(input$clustAlgo)
     } else if (input$clustName == "") {
       shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
     } else {
       withBusyIndicatorServer("clustRun", {
         saveClusterName = gsub(" ", "_", input$clustName)
-        if(input$clustAlgo == 1){
+        if(input$clustAlgo %in% seq(6)){
           # Scran SNN
+          algoList <- list('1' = "walktrap", '2' = "louvain", '3' = "infomap",
+                           '4' = "fastGreedy", '5' = "labelProp",
+                           '6' = "leadingEigen")
+          algo <- algoList[[as.character(input$clustAlgo)]]
           params = list(inSCE = vals$counts,
                         clusterName = saveClusterName,
                         k = input$clustScranSNNK,
                         weightType = input$clustScranSNNType,
-                        algorithm = input$clustScranSNNAlgo)
-          if (input$clustScranSNNInType == "Assay") {
-            params$useAssay = input$clustScranSNNAssay
+                        algorithm = algo)
+          matNum <- as.integer(input$clustScranSNNMat)
+          for (i in seq_along(names(scranSNNMats$allChoices))) {
+            range <- scranSNNMats$allChoices[[i]]
+            if (matNum %in% range) {
+              matType <- names(scranSNNMats$allChoices)[i]
+              break
+            }
+          }
+
+          if (matType == "assay") {
+            params$useAssay = scranSNNMats$allNames[matNum]
             params$nComp = input$clustScranSNNd
-          } else if (input$clustScranSNNInType == "ReducedDim") {
-            params$useReducedDim = input$clustScranSNNReddim
-          } else if (input$clustScranSNNInType == "AltExp") {
-            params$useAltExp = input$clustScranSNNAltExp
+          } else if (matType == "reducedDim") {
+            params$useReducedDim = scranSNNMats$allNames[matNum]
+            updateSelectInput(session, "clustVisReddim",
+                              selected = scranSNNMats$allNames[matNum])
+          } else if (matType == "altExp") {
+            params$useAltExp = scranSNNMats$allNames[matNum]
             params$altExpAssay = input$clustScranSNNAltExpAssay
             params$nComp = input$clustScranSNNd
           }
-          print(params)
           vals$counts <- do.call(runScranSNN, params)
-        } else if (input$clustAlgo == 2) {
+        } else if (input$clustAlgo %in% seq(7, 9)) {
           # K-Means
+
+          algoList <- list('7' = "Hartigan-Wong",
+                           '8' = "Lloyd", '9' = "MacQueen")
+          algo <- algoList[[as.character(input$clustAlgo)]]
           vals$counts <- runKMeans(inSCE = vals$counts,
                                    useReducedDim = input$clustKMeansReddim,
                                    nCenters = input$clustKMeansN,
                                    nIter = input$clustKMeansNIter,
                                    nStart = input$clustKMeansNStart,
-                                   algorithm = input$clustKMeansAlgo,
+                                   algorithm = algo,
                                    clusterName = saveClusterName)
+          updateSelectInput(session, "clustVisReddim", input$clustKMeansReddim)
+        } else if (input$clustAlgo %in% seq(10, 12)) {
+          # Seurat
+          reddim <- reducedDim(vals$counts, input$clustSeuratReddim)
+          rownames(reddim) <- gsub("_", "-", rownames(reddim))
+          if ("percentVar" %in% names(attributes(reddim))) {
+            stdev <- as.numeric(attr(reddim, "percentVar"))
+            new_pca <- CreateDimReducObject(embeddings = reddim, assay = "RNA",
+                                            stdev = stdev, key = "PC_")
+          } else {
+            new_pca <- CreateDimReducObject(embeddings = reddim, assay = "RNA",
+                                            key = "PC_")
+          }
+          if (input$clustSeuratDims > ncol(reddim)) {
+            warning("More dimensions specified in dims than have been computed")
+            dims <- ncol(reddim)
+          } else {
+            dims <- input$clustSeuratDims
+          }
+          useAssay <- assayNames(vals$counts)[1]
+          algoList <- list('10' = "louvain",
+                           '11' = "multilevel", '12' = "SLM")
+          algo <- algoList[[as.character(input$clustAlgo)]]
+          vals$counts <- seuratFindClusters(inSCE = vals$counts,
+                                            useAssay = useAssay,
+                                            useReduction = "pca",
+                                            externalReduction = new_pca,
+                                            dims = dims,
+                                            algorithm = algo,
+                                            groupSingletons = input$clustSeuratGrpSgltn,
+                                            resolution = input$clustSeuratRes)
+          updateSelectInput(session, "clustVisReddim", input$clustSeuratReddim)
         }
         updateColDataNames()
+        clustResults$names <- c(clustResults$names, saveClusterName)
+        updateSelectInput(session, "clustVisRes", choices = clustResults$names)
       })
     }
   })
 
+  observeEvent(input$clustPlot, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else {
+      choice <- NULL
+      if (input$clustVisChoicesType == 1) {
+        # Use result
+        if (is.null(input$clustVisRes) ||
+            input$clustVisRes == "") {
+          shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                                 type = "error")
+        }
+        choice <- input$clustVisRes
+      } else if (input$clustVisChoicesType == 2) {
+        # Use colData
+        if (is.null(input$clustVisCol) ||
+            input$clustVisCol == "") {
+          shinyalert::shinyalert("Error!", "Select the clusters to plot",
+                                 type = "error")
+        }
+        choice <- input$clustVisCol
+      }
+      inSCE <- vals$counts
+      reducedDimName <- input$clustVisReddim
+      output$clustVisPlot <- renderPlot({
+        if (!is.null(choice) && choice != "") {
+          plotSCEDimReduceColData(inSCE = inSCE,
+                                  colorBy = choice,
+                                  conditionClass = "factor",
+                                  reducedDimName = reducedDimName,
+                                  labelClusters = TRUE,
+                                  dim1 = 1, dim2 = 2,
+                                  legendTitle = choice)
+        }
+      })
+    }
+  })
 
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda

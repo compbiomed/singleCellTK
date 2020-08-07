@@ -2,9 +2,9 @@
 library(singleCellTK)
 context("Testing dimensionality reduction algorithms")
 data(scExample, package = "singleCellTK")
-sce@assays@data$logcounts=log10(sce@assays@data$counts + 1)
-sceres <- getUMAP(inSCE = sce, useAssay = "logcounts", sample = NULL, nNeighbors = 30, reducedDimName = "UMAP",
-                nIterations = 20, alpha = 1, minDist = 0.01, pca = TRUE, initialDims = 50)
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sceres <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, sample = NULL, nNeighbors = 10, reducedDimName = "UMAP",
+                nIterations = 20, alpha = 1, minDist = 0.01, pca = TRUE, initialDims = 20)
 
 test_that(desc = "Testing getUMAP", {
         expect_equal(names(reducedDims(sceres)), "UMAP")
@@ -45,7 +45,7 @@ test_that(desc = "Testing plotResults functions", {
   sceres <- runCellQC(sceres, algorithms = c("QCMetrics", "cxds", "bcds", "cxds_bcds_hybrid",
                                              "scrublet", "doubletFinder", "decontX"))
   sceres <- runDoubletCells(sceres, size.factors.norm = rep(1, ncol(sceres)))
-  
+
   r1 <- plotRunPerCellQCResults(inSCE = sceres)
     expect_is(r1, "list")
   r2 <- plotScrubletResults(inSCE = sceres, reducedDimName="UMAP")
