@@ -180,6 +180,7 @@ plotRunPerCellQCResults <- function(inSCE,
           groupby=groupby,
           violin=violin,
           boxplot=boxplot,
+          summary="median",
           dots=dots,
           transparency=transparency,
           axisSize=axisSize,
@@ -617,12 +618,12 @@ plotDoubletFinderResults <- function(inSCE,
   }
   samples <- unique(sample)
   df.scores <- grep(
-    pattern="doubletFinder_doublet_score_Resolution_",
+    pattern="doubletFinder_doublet_score_resolution_",
     names(colData(inSCE)), value=TRUE
   )
 
   df.labels <- grep(
-    pattern="doubletFinder_doublet_label_Resolution_",
+    pattern="doubletFinder_doublet_label_resolution_",
     names(colData(inSCE)), value=TRUE
   )
   if (length(samples) > 1) {
@@ -644,7 +645,7 @@ plotDoubletFinderResults <- function(inSCE,
         title=paste(
           "DoubletFinder Score Resolution",
           gsub(
-            pattern="doubletFinder_doublet_score_Resolution_",
+            pattern="doubletFinder_doublet_score_resolution_",
             "", x
           )
         ),
@@ -702,7 +703,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
 
     names(scatterScore) <- sapply(df.scores, function(x) {
-      paste0("Scatter_Score_", gsub(
+      paste0("scatter_score_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
@@ -766,7 +767,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
 
     names(violinScore) <- sapply(df.scores, function(x) {
-      paste0("Violin_", gsub(
+      paste0("violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
@@ -800,7 +801,7 @@ plotDoubletFinderResults <- function(inSCE,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         labelClusters=FALSE,
-        legendTitle="Doublet Score",
+        legendTitle="Doublet Label",
         legendSize=legendSize,
         legendTitleSize=legendTitleSize
       )
@@ -915,7 +916,7 @@ plotDoubletCellsResults <- function(inSCE,
   }
 
   if (logScore) {
-    colData(inSCE)$scran_doubletCells_Score <- log10(colData(inSCE)$scran_doubletCells_Score + 1)
+    colData(inSCE)$scran_doubletCells_score <- log10(colData(inSCE)$scran_doubletCells_score + 1)
     titleDoubletCells <- "DoubletCells Doublet Score, log10"
   } else {
     titleDoubletCells <- "DoubletCells Doublet Score"
@@ -925,7 +926,7 @@ plotDoubletCellsResults <- function(inSCE,
   if (length(samples) > 1) {
     merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="scran_doubletCells_Score",
+      coldata="scran_doubletCells_score",
       groupby=sample,
       xlab="",
       ylab="Doublet Score",
@@ -952,7 +953,7 @@ plotDoubletCellsResults <- function(inSCE,
     scatterScore <- plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="scran_doubletCells_Score",
+      colorBy="scran_doubletCells_score",
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,
@@ -980,7 +981,7 @@ plotDoubletCellsResults <- function(inSCE,
     densityScore <- plotSCEDensityColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      coldata="scran_doubletCells_Score",
+      coldata="scran_doubletCells_score",
       groupby=groupby,
       xlab="Score",
       ylab="Density",
@@ -992,7 +993,7 @@ plotDoubletCellsResults <- function(inSCE,
 
     violinScore <- plotSCEViolinColData(
       inSCE=inSCESub,
-      coldata="scran_doubletCells_Score",
+      coldata="scran_doubletCells_score",
       sample=sampleSub,
       xlab="",
       ylab="Doublet Score",
@@ -1745,25 +1746,6 @@ plotDecontXResults <- function(inSCE,
       titleSize=titleSize
     )
 
-    violinContamination <- plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="decontX_contamination",
-      sample=sampleSub,
-      xlab="", ylab="DecontX Contamination",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="DecontX Contamination Score",
-      titleSize=titleSize,
-      defaultTheme=defaultTheme,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      dotSize=dotSize,
-      summary="median"
-    )
-
     scatterCluster <- plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
@@ -1792,12 +1774,11 @@ plotDecontXResults <- function(inSCE,
 
     res.list <- list(
       scatterDecon, densityContamination,
-      violinContamination, scatterCluster
+      scatterCluster
     )
     names(res.list) <- c(
       "scatterDecon",
       "densityContamination",
-      "violinContamination",
       "scatterCluster"
     )
     return(res.list)
