@@ -92,6 +92,7 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         toRemove <- which(deg.gix)[-toKeep]
         degFull <- degFull[-toRemove,]
     }
+    degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
     inSCE <- inSCE[degFull$Gene,]
     clusterName <- colnames(degFull)[5]
     z <- SummarizedExperiment::colData(inSCE)[[clusterName]]
