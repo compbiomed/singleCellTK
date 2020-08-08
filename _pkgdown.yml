@@ -6,7 +6,7 @@ reference:
 - contents:
   - starts_with("import")
 - title: "Quality Control & Preprocessing"
-- contents: 
+- contents:
   - runCellQC
   - runDropletQC
 - title: "Doublet/Empty Droplet Detection"
@@ -44,10 +44,10 @@ reference:
   - runLimmaDE
   - runANOVA
 - title: "Visualization"
-- contents: 
+- contents:
   - starts_with("plot")
 - title: "Exporting Results"
-- contents: 
+- contents:
   - starts_with("export")
 navbar:
   title: "singleCellTK"
@@ -74,6 +74,8 @@ navbar:
           href: articles/feature_selection.html
         - text: "Differential Expression"
           href: articles/differential_expression.html
+        - text: "Find Marker via DE"
+          href: articles/find_marker.html
         - text: "Visualize Results"
           href: articles/visualize_results.html
     - text: "Shiny UI Analysis"

@@ -134,7 +134,7 @@ head(DEG)
 | 5    | CD79A    | 3.799766e-162 | 2.202502  | 1.054663e-158 |
 | 6    | HLA-DRB1 | 9.544925e-155 | 2.498927  | 2.207741e-151 |
 
-To visualize the result ina heatmap:  
+To visualize the result in a heatmap:  
 
 ```{R plotDE, eval=FALSE}
 plotDEGHeatmap(pbmc3k, useResult = "c2_VS_c3_c8")
