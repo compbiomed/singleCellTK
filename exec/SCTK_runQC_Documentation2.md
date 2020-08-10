@@ -124,7 +124,7 @@ Rscript SCTK_runQC.R \
 ```
 In this case, you must skip -b arguments and you can also skip -G argument for CellRangerV2 data.
 
-### Methods to run pipeline on data set stored in RDS file or txt file (matrix)
+### Methods to run pipeline on data set stored in RDS file or matrix(txt or mtx)
 1. If you data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:
 ```
 Rscript SCTK_runQC.R \
@@ -177,6 +177,12 @@ Rscript SCTK_runQC.R \
 -m EmptyDrops
 ```
 
+-d argument is used to specify which count matrix to used in the QC pipeline. Default is "Both", which means take both droplet and cell count data as input. 
+
+If -d argument is set as "Droplet", the QC pipeline will only take droplet count matrix as input and perform quality control. You can choose whether to detect cells from the droplet matrix by setting -D as TRUE. If yes, cell count matrix will be detected and the pipeline will also perform quality control on this matrix and output the result. You could further define the method used to detect cells from droplet matrix by setting -m argument. -m could be one of "EmptyDrops", "Knee" or "Inflection". "EmptyDrops" will keep cells that pass the "runEmptyDrops" function test. "Knee" and "Inflection" will keep cells that pass the knee or inflection point returned from "runBarcodeRankDrops" function. 
+
+If -d argument is set as "Cell", the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:
+
 ![](/exec/Single_Input.png)
 
 ### Specify parameters for QC algorithms
@@ -186,10 +192,10 @@ User can specify parameters for QC algorithms in this pipeline with a yaml file 
 An example of QC parameters yaml file is shown below:
 ```
 Params:   ### should not be omitted
-  emptyDrops: ### Name of the QC functions in the pipeline
-    lower: 50 ### Parameter for this function
-    niters: 5000 ### Parameter for this function
-    testAmbient: True ### Parameter for this function
+  emptyDrops:           ### Name of the QC functions in the pipeline
+    lower: 50           ### Parameter for this function
+    niters: 5000        ### Parameter for this function
+    testAmbient: True   ### Parameter for this function
 
   barcodeRanks: 
     lower: 50
