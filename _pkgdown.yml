@@ -78,6 +78,8 @@ navbar:
           href: articles/find_marker.html
         - text: "Visualize Results"
           href: articles/visualize_results.html
+        - text: "Heatmap Visualization"
+          href: articles/heatmap.html
     - text: "Shiny UI Analysis"
       menu:
         - text: "I am Place Holder 1"
