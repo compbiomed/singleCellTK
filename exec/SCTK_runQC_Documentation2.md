@@ -8,8 +8,23 @@ This pipeline is focused on single cell data generated from microfluidic devices
 
 * The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
 * For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python on the system.
+* The pipeline depends on some Python package for Python > 3.0.0. User will need to install Python 3.6.3 (or higher) in order to install the proper version of Python packages. 
 
 ## Installation
+### Docker users
+If you are using docker image to run the pipeline, please skip this section and refer sections *Running the pipeline* and *Docker and Singularity Images*. Docker image has all dependencies installed properly so that you can use it directly on any machine. 
+
+### Install Python packages and dependencies
+This pipeline depends on Python package described below. If these packages is not installed or not at the proper version, please install them by running the following code:
+
+```
+pip3 install --user h5py==2.9.0
+pip3 install --user Scrublet
+pip3 install --user virtualenv
+pip3 install --user scanpy
+```
+
+### Install R packages and dependencies
 The script will automatically try to install the "singleCellTK" package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:
 
 ```
@@ -311,6 +326,7 @@ The code above assumed that the dataset is in your current directory, which is a
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
 * [emptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) from the package [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
+* [barcodeRanks](https://rdrr.io/github/MarioniLab/DropletUtils/man/barcodeRanks.html) from the package [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
 
 #### Doublet Detection
 * [doubletCells](https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html) from the package [scran](http://bioconductor.org/packages/release/bioc/html/scran.html)
