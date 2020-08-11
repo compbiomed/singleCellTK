@@ -2244,10 +2244,15 @@ shinyServer(function(input, output, session) {
         }
         choice <- input$clustVisCol
       }
+      if (is.null(input$clustVisReddim) || input$clustVisReddim == "") {
+        shinyalert::shinyalert("Error!", "No reduction selected. Select one or run dimension reduction first",
+                               type = "error")
+      }
       inSCE <- vals$counts
       reducedDimName <- input$clustVisReddim
       output$clustVisPlot <- renderPlot({
-        if (!is.null(choice) && choice != "") {
+        if (!is.null(choice) && choice != "" &&
+            !is.null(reducedDimName) && reducedDimName != "") {
           plotSCEDimReduceColData(inSCE = inSCE,
                                   colorBy = choice,
                                   conditionClass = "factor",
@@ -3164,7 +3169,7 @@ shinyServer(function(input, output, session) {
     rowColorPresets = list()
   )
 
-  observe({
+  observeEvent(vals$counts, {
     if(!is.null(vals$counts)){
       hmTemp$sce <- vals$counts
     }
@@ -3329,7 +3334,7 @@ shinyServer(function(input, output, session) {
     hmTemp$cellIndex <- NULL
   })
 
-  observe({
+  observeEvent(input$hmCellCol, {
     hmTemp$cellTableCol <- input$hmCellCol
   })
 
@@ -3440,7 +3445,7 @@ shinyServer(function(input, output, session) {
     hmTemp$geneIndex <- NULL
   })
 
-  observe({
+  observeEvent(input$hmGeneCol, {
     hmTemp$geneTableCol <- input$hmGeneCol
   })
 
@@ -3516,10 +3521,10 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observe({
+  observeEvent(input$hmCellAnn, {
     hmTemp$colDataName <- input$hmCellAnn
   })
-  observe({
+  observeEvent(input$hmGeneAnn, {
     hmTemp$rowDataName <- input$hmGeneAnn
   })
 
@@ -3527,7 +3532,7 @@ shinyServer(function(input, output, session) {
     col = NULL,
     row = NULL
   )
-  observe({
+  observeEvent(vals$counts, {
     if(!is.null(vals$counts)){
       hmAnnAllColors$col <- singleCellTK:::dataAnnotationColor(hmTemp$sce, 'col')
       hmAnnAllColors$row <- singleCellTK:::dataAnnotationColor(hmTemp$sce, 'row')
@@ -3630,7 +3635,7 @@ shinyServer(function(input, output, session) {
     }
   }
 
-  observe({
+  observeEvent(input$hmCellAnn, {
     if(!is.null(input$hmCellAnn)){
       output$hmCellAnnAssUI <- renderUI({
         panel(
@@ -3640,7 +3645,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observe({
+  observeEvent(input$hmGeneAnn, {
     if(!is.null(input$hmGeneAnn)){
       output$hmGeneAnnAssUI <- renderUI({
         panel(
@@ -3690,10 +3695,10 @@ shinyServer(function(input, output, session) {
     )
   })
 
-  observe({
+  observeEvent(input$hmColSplit, {
     hmTemp$colSplitBy <- input$hmColSplit
   })
-  observe({
+  observeEvent(input$hmRowSplit, {
     hmTemp$rowSplitBy <- input$hmRowSplit
   })
 
@@ -3754,21 +3759,15 @@ shinyServer(function(input, output, session) {
     )
   })
 
-  observe({
+  observeEvent(input$hmCSPalette, {
     if(!input$hmCSPalette == ""){
       lowColor <- vals$hmCSPresets[[input$hmCSPalette]][1]
       colourpicker::updateColourInput(session, 'hmCSLow', value = lowColor)
     }
-  })
-
-  observe({
     if(!input$hmCSPalette == ""){
       mediumColor <- vals$hmCSPresets[[input$hmCSPalette]][2]
       colourpicker::updateColourInput(session, 'hmCSMedium', value = mediumColor)
     }
-  })
-
-  observe({
     if(!input$hmCSPalette == ""){
       highColor <- vals$hmCSPresets[[input$hmCSPalette]][3]
       colourpicker::updateColourInput(session, 'hmCSHigh', value = highColor)
@@ -4744,7 +4743,7 @@ shinyServer(function(input, output, session) {
     }
   }, filter = 'top')
 
-  observe({
+  observeEvent(input$deResSel, {
     if (is.null(input$deResSel) ||
         input$deResSel == "") {
       shinyjs::disable("deDownload")
