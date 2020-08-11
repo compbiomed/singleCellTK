@@ -61,7 +61,7 @@ pretty_code = function (f) {
 #' 
 simpleLog <- decorator %@% function(f) {
   function(...) {
-    print(match.call())
+    message(deparse(match.call()))
     f(...)
   }
 }

@@ -26,7 +26,10 @@ plotSCEDimReduceFeatures(
   title = NULL,
   titleSize = 15,
   legendTitle = NULL,
-  groupBy = NULL
+  legendSize = 10,
+  legendTitleSize = 12,
+  groupBy = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -88,8 +91,16 @@ Default 'blue'.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 
-\item{groupBy}{Facet wrap the scatterplot based on value. 
+\item{legendSize}{size of legend. Default 10.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{groupBy}{Facet wrap the scatterplot based on value.
 Default \code{NULL}.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

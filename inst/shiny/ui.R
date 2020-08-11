@@ -40,6 +40,7 @@ library(shinyWidgets)
 library(stringr)
 library(Hmisc)
 
+
 source("helpers.R")
 source("colourGroupInput.R")
 data("c2BroadSets")
@@ -56,6 +57,7 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+curraltExps <- ""
 #from SCE
 cell_list <- ""
 gene_list <- ""
@@ -88,6 +90,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
+  curraltExps <- names(altExp(getShinyOption("inputSCEset")))
   ###############################################################
   #from sce
   cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
@@ -116,9 +119,13 @@ if (is.null(getShinyOption("theme"))){
   shinyTheme <- getShinyOption("theme")
 }
 
-source("ui_01_data.R", local = TRUE) #creates shinyPanelData variable
+source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
+source("ui_01_gene_sets.R", local = TRUE) #creates shinyPanelGeneSets variable
+source("ui_01_columnAnnotation.R", local = TRUE) #creates shinyPanelColumnAnnotation variable
+source("ui_01_rowAnnotation.R", local = TRUE) #creates shinyPanelRowAnnotation variable
+source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
-source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
+source("ui_03_2_cluster.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
@@ -128,7 +135,7 @@ source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
-source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
+source("ui_08_2_cellviewer_v2.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
@@ -168,8 +175,16 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
-      theme = shinytheme(shinyTheme),
-      tabPanel("Data", shinyPanelData),
+      # theme = shinytheme(shinyTheme),
+      theme = shinytheme("yeti"),
+      navbarMenu(
+        "Data",
+        tabPanel("Import Single Cell Data", shinyPanelImport),
+        tabPanel("Import Gene Sets", shinyPanelGeneSets),
+        tabPanel("Column Annotation", shinyPanelColumnAnnotation),
+        tabPanel("Row Annotation", shinyPanelRowAnnotation),
+        tabPanel("Export Single Cell Data", shinyPanelExport)
+      ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
@@ -201,8 +216,6 @@ shinyUI(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
                hidden(verbatimTextOutput(outputId="console")),
-               tags$head(tags$style("#console {height: 150px; margin-bottom: 0}")),
-               tags$head(tags$style("#consoleDiv {position: fixed; bottom: 0; z-index: 3; padding: 0px"))
         )
       ),
       useShinyjs(),

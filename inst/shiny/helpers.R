@@ -147,16 +147,117 @@ allSections <- function(action, collapseList) {
   }
 }
 
-# Code snippet from https://gist.github.com/jcheng5/3830244757f8ca25d4b00ce389ea41b3
 withConsoleRedirect <- function(expr) {
-  # Change type="output" to type="message" to catch stderr
-  # (messages, warnings, and errors) instead of stdout.
-  txt <- capture.output(results <- expr, type = "output")
-  if (length(txt) > 0) {
+  options(warn = 1)
+  tmpSinkfileName <- tempfile()
+  tmpFD <- file(tmpSinkfileName, open = "wt")
+  sink(tmpFD, type="output", split = TRUE)
+  sink(tmpFD, type = "message")
+  
+  result <- expr
+  
+  sink(type = "message")
+  sink()
+  console.out <- readChar(tmpSinkfileName, file.info(tmpSinkfileName)$size)
+  unlink(tmpSinkfileName)
+  if (length(console.out) > 0) {
     insertUI(paste0("#", "console"), where = "beforeEnd",
-             ui = tags$p(paste0(txt, "\n", collapse = ""))
+             ui = tags$p(paste0(console.out, "\n", collapse = ""))
     )
   }
-  results
+  result
 }
+
+withConsoleMsgRedirect <- function(expr) {
+  withCallingHandlers({
+    result <- expr
+  },
+  message = function(m) {
+    shinyjs::html(id = "console", html = m$message, add = TRUE)
+  })
+  result
+}
+
+
+#-----------#
+# Gene Sets #
+#-----------#
+formatGeneSetList <- function(setListStr) {
+  setListArr <- strsplit(setListStr, "\n")[[1]]
+  setListList <- list()
+  for (set in setListArr) {
+    setListList[[set]] <- set
+  }
+  return(setListList)
+}
+
+formatGeneSetDBChoices <- function(dbIDs, dbCats) {
+  splitIds = strsplit(dbIDs, " ")
+  choices <- list()
+  
+  for (i in seq_along(splitIds)) {
+    entry <- splitIds[i][[1]]
+    choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
+  }
+  
+  print(choices)
+  return(choices)
+}
+
+
+#--------------#
+# QC/Filtering #
+#--------------#
+
+findOverlapping <- function(arr1, arr2) {
+  filter <- vector()
+  for (x in arr1) {
+    if (x %in% arr2) {
+      filter <- c(filter, TRUE)
+    } else {
+      filter <- c(filter, FALSE)
+    }
+  }
+  return(arr1[filter])
+}
+
+qcInputExists <- function() {
+  for (algo in qc_choice_list) {
+    if (input[[algo]]) {
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
+
+addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col') {
+  threshStr <- ""
+  if (is.numeric(criteria)) {
+    threshStr <- sprintf("%s > %.5f", name, criteria)
+  } else {
+    threshArr <- list()
+    for (c in criteria) {
+      threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
+    }
+    threshStr <- paste(threshArr, collapse = " | ")
+  }
+  
+  if (dimension == 'col') {
+    entry <- list(col=name, param=threshStr, id=id)
+    paramsReactive$params <- c(paramsReactive$params, list(entry))
+    paramsReactive$id_count <- paramsReactive$id_count + 1
+  } else {
+    entry <- list(row=name, param=threshStr, id=id)
+    paramsReactive$params <- c(paramsReactive$params, list(entry))
+    paramsReactive$id_count <- paramsReactive$id_count + 1
+  }
+}
+
+
+
+
+
+
+
+
 

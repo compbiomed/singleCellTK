@@ -15,19 +15,25 @@
   labelClusters = FALSE,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
   dotSize = 2,
   transparency = 1,
+  colorScale = NULL,
   colorLow = "white",
   colorMid = "gray",
   colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 15,
-  legendTitle = NULL
+  legendTitle = NULL,
+  legendTitleSize = 12,
+  legendSize = 10,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -56,6 +62,10 @@ Default FALSE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 the index of the dimension to be plotted. Default is NULL.}
@@ -74,17 +84,21 @@ Default NULL.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
+\item{colorScale}{Vector. Needs to be same length as the
+number of unique levels of `colorBy`. Will be used only if
+conditionClass = "factor" or "character". Default NULL.}
+
 \item{colorLow}{Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
-Default 'white'.}
+Default 'white'. Will be used only if conditionClass = "numeric".}
 
 \item{colorMid}{Character. A color available from `colors()`.
 The color will be used to signify the midpoint on the scale.
-Default 'gray'.}
+Default 'gray'. Will be used only if conditionClass = "numeric".}
 
 \item{colorHigh}{Character. A color available from `colors()`.
 The color will be used to signify the highest values on the scale.
-Default 'blue'.}
+Default 'blue'. Will be used only if conditionClass = "numeric".}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
@@ -94,6 +108,14 @@ when TRUE. Default TRUE.}
 \item{titleSize}{Size of title of plot. Default 15.}
 
 \item{legendTitle}{title of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default 12.}
+
+\item{legendSize}{size of legend. Default 10.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.

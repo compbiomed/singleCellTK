@@ -1,5 +1,5 @@
 shinyPanelBatchcorrect <- fluidPage(
-  includeCSS('styles.css'),
+  includeCSS('styles.CSS'),
   tabsetPanel(
   tabPanel(
     "Normalization", fluid = TRUE,

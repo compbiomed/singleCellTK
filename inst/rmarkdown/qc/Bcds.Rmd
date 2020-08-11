@@ -16,8 +16,8 @@ require(umap)
 require(ggplot2)
 ```
 
-```{r, "Bcds", results="asis"}
-   plotBcds<- plotBcdsResults(sce.qc, reducedDimName = "UMAP")
+```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+   plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "UMAP"))
     i="Bcds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
@@ -33,8 +33,8 @@ require(ggplot2)
     sce.qc@metadata$runBcds
 ```
 
-```{r, "Bcds-desc", include=FALSE}
-descriprion_BcdsResults<- .descriptionBCDS()
+```{r, "Bcds-desc", include=FALSE, warning=FALSE, message=FALSE}
+descriprion_BcdsResults<- descriptionBCDS()
 ```
 
 # {.unlisted .unnumbered .toc-ignore}
