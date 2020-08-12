@@ -10,16 +10,12 @@ Single Cell ToolKit enables importing data from the following pre-processing too
 - [BUStools](https://github.com/BUStools/bustools)
 - [Seqc](https://github.com/ambrosejcarr/seqc)
 - [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md)
+- [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object saved in RDS file
+- [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object saved in [AnnData](https://github.com/theislab/anndata) hdf5 file
 
-The following table describes how SingleCellTK expects the inputs to be structured and passed for each
-import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. 
-All the import functions return the imported counts matrix as a SingleCellExperiment object assay, 
-with associated information in respective colData, rowData, reducedDims, and metadata fields. 
+The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as a SingleCellExperiment object assay, with associated information in respective colData, rowData, reducedDims, and metadata fields. 
 
-![](./sctk_import_functions.png)
-
-
-
+<center> ![QC data format](qc_inputShell.png)\ </center>
 
 Detailed information on function parameters and defaults are available in the reference section
 

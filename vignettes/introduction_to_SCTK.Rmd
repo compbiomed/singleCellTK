@@ -69,6 +69,6 @@ Detailed vignettes are available under the "Command Line Analysis" tab.
 
 # Session info {.unnumbered}
 
-```{r sessionInfo, echo=FALSE}
+```{r sessionInfo, echo=TRUE}
 sessionInfo()
 ```
