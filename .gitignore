@@ -7,3 +7,4 @@ singleCellTK.Rproj
 .DS_Store
 .Rprofile
 renv/
+vignettes/*_cache/*
