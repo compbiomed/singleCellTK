@@ -6,13 +6,13 @@ This pipeline is focused on single cell data generated from microfluidic devices
 
 ## Specifications
 
-* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
+* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. The pipeline script "SCTK_runQC.R" can be download [here](https://github.com/rz2333/singleCellTK/blob/devel/exec/SCTK_runQC.R).
 * For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python on the system.
 * The pipeline depends on some Python package for Python > 3.0.0. User will need to install Python 3.6.3 (or higher) in order to install the proper version of Python packages. 
 
 ## Installation
 ### Docker users
-If you are using docker image to run the pipeline, please skip this section and refer sections *Running the pipeline* and *Docker and Singularity Images*. Docker image has all dependencies installed properly so that you can use it directly on any machine. 
+If you are using docker image to run the pipeline, please skip this section and refer sections **Running the pipeline** and **Docker and Singularity Images**. Docker image has all dependencies installed properly so that you can use it directly on any machine. 
 
 ### Install Python packages and dependencies
 This pipeline depends on Python package described below. If these packages is not installed or not at the proper version, please install them by running the following code:
@@ -110,7 +110,7 @@ This pipeline enables different ways to import CellrangerV2/CellrangerV3 for fle
 For CellRangerV3:
 ```
 Rscript SCTK_runQC.R \
--b /base/path \
+-b /basepath \
 -P CellRangerV3 \
 -s SampleName \
 -o Output_Directory \
@@ -121,13 +121,30 @@ Rscript SCTK_runQC.R \
 For CellRangerV2, the reference used by cellranger needs to be specified by -G/--genome:
 ```
 Rscript SCTK_runQC.R \
--b /base/path \
+-b /basepath \
 -P CellRangerV2 \
 -s SampleName \
 -o Output_Directory \
 -S TRUE \
 -G hg19 \
 -F R,Python,FlatFile,HTAN
+```
+
+As shown in the **Data formats**, -b specify the base path and usually it's the folder where you ran 10x cellranger count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:
+
+```
+├── BasePath
+└── SampleName 
+    ├── outs
+    |   ├── filtered_feature_bc_matrix
+    |   |   ├── barcodes.tsv.gz
+    |   |   ├── features.tsv.gz
+    |   |   └── matrix.mtx.gz
+    |   ├── raw_feature_bc_matrix
+    |   |   ├── barcodes.tsv.gz
+    |   |   ├── features.tsv.gz
+    |   |   └── matrix.mtx.gz
+        ...
 ```
 
 2. If the cellranger count output have been moved out of the default [cellranger output directory](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview), you can specified input using -R and -C:
