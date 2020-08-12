@@ -109,7 +109,7 @@ reduction, unless \code{meanCenter} is \code{TRUE}. Default \code{TRUE}.}
 the transcriptomes prior to k-nearest-neighbor graph construction.
 Default 30.}
 
-\item{tsneAngle}{Float. Determines angular size of a distant node as measured 
+\item{tsneAngle}{Float. Determines angular size of a distant node as measured
 from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}.}
 
 \item{tsnePerplexity}{Integer. The number of nearest neighbors that

@@ -3,53 +3,24 @@ title: "Differential Expression"
 author: "Yichen Wang"
 ---
 
-```{r develSetting, include=FALSE}
-doEval = FALSE
-library(singleCellTK)
-```
-```{r useCache, include=FALSE, eval=doEval}
-pbmc3k <- readRDS("D:/BU_MS_BF/camplab/work/git/deg_doc_example.rds")
-```
-
 ## Introduction
 
 For this section, we provide wrappers of four methods, listed in the table below. All functions takes an input `SingleCellExperiment` (SCE) object and other settings as arguments and returns the same SCE object with results updated in `metadata` slot.  
 
-<table>
-  <tr>
-    <th>Method</th>
-    <th>Citation</th>
-    <th>Function</th>
-  </tr>
-  <tr>
-    <td>MAST</td>
-    <td>Greg Finak and et al., 2015</td>
-    <td>`runMAST()`</td>
-  </tr>
-  <tr>
-    <td>Limma</td>
-    <td>Gordon Smyth and et al., 2004</td>
-    <td>`runLimmaDE()`</td>
-  </tr>
-  <tr>
-    <td>DESeq2</td>
-    <td>Michael Love and et al., 2014</td>
-    <td>`runDESeq2()`</td>
-  </tr>
-  <tr>
-    <td>ANOVA</td>
-    <td>Jeffrey T. Leek and et al., 2020</td>
-    <td>`runANOVA()`</td>
-  </tr>
-</table>
+| Method |             Citation             |    Function    |
+| :----: | :---                             |     :----:     |
+| MAST   | Greg Finak and et al., 2015      | `runMAST()`    |
+| Limma  | Gordon Smyth and et al., 2004    | `runLimmaDE()` |
+| DESeq2 | Michael Love and et al., 2014    | `runDESeq2()`  |
+| ANOVA  | Jeffrey T. Leek and et al., 2020 | `runANOVA()`   |
 
 A generic wrapper of all four methods is also provided, called `runDEAnalysis()`.  
 
 ## Workflow
 
-The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we will first introduce the workflow of using the generic wrapper `runDEAnalysis()` and then talk about the Shiny UI.  
+The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper `runDEAnalysis()`.  
 
-### R script commands
+### Parameters
 
 The most basic parameters include:  
 
@@ -67,7 +38,7 @@ Additionally, only specifying the condition of interests is allowed and the cont
 
 Since the conditions can be set by using indices or annotations, we have two groups of parameters listed below. Note that only one way of setting can be used at one time.  
 
-- `index1` and `index2` for index style setting
+- Use `index1` and `index2` for index style setting
 - Use `class` to specify the annotation vector by either directly giving a vector of proper length or giving a column name of `colData`. Then use `classGroup1`, `classGroup2` to specify which categories in `class` are of interests.  
 
 #### Namings
@@ -75,40 +46,101 @@ Since the conditions can be set by using indices or annotations, we have two gro
 Something that might be special in our workflow is that, users will be required to specify name strings for: 
 
 - The group of interests - `groupName1`.
-- The group of control `groupName2`.
-- The analysis run itself `analysisName`. 
+- The group of control - `groupName2`.
+- The analysis run itself - `analysisName`. 
 
-The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, they namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
+The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
 
-#### Example
+### Example
 
-```{R runDE, eval=FALSE, warning=FALSE, message=FALSE}
+#### Preprocessing
+
+To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
+
+```{R de_prep, eval=FALSE}
 library(singleCellTK)
 pbmc3k <- importExampleData("pbmc3k")
+pbmc3k <- scater_logNormCounts(pbmc3k, "logcounts")
 # Go through the Seurat curated workflow to get basic clusters
 pbmc3k <- seuratNormalizeData(inSCE = pbmc3k, useAssay = "counts")
 pbmc3k <- seuratFindHVG(inSCE = pbmc3k, useAssay = "seuratNormData")
 pbmc3k <- seuratScaleData(inSCE = pbmc3k, useAssay = "seuratNormData")
 pbmc3k <- seuratPCA(inSCE = pbmc3k, useAssay = "seuratScaledData")
+pbmc3k <- seuratRunUMAP(pbmc3k)
 pbmc3k <- seuratFindClusters(inSCE = pbmc3k, useAssay = "seuratScaledData")
-# Not done yet
-pbmc3k <- runDEAnalysis(inSCE = pbmc3k, method = "MAST", useAssay = "logcounts",
-                        class = "Seurat_louvain_Resolution0.8", classGroup1 = c(1, 2), classGroup2 = 3,
-                        groupName1 = "c1_c2", groupName2 = "c3", analysisName = "c1_2_VS_c3")
+# Optional visualization
+plotSCEDimReduceColData(inSCE = pbmc3k, 
+                        colorBy = "Seurat_louvain_Resolution0.8", 
+                        conditionClass = "factor", 
+                        reducedDimName = "seuratUMAP")
+```
+
+<center> ![Seurat UMAP](de_umapVis.png)\ </center>
+
+#### Run Differential Expression Analysis
+
+```{R runDE, eval=FALSE}
+# Condition chosen basing on the UMAP
+pbmc3k <- runDEAnalysis(inSCE = pbmc3k, 
+                        method = "MAST", 
+                        useAssay = "logcounts",
+                        class = "Seurat_louvain_Resolution0.8", 
+                        classGroup1 = c(2), classGroup2 = c(3, 8),
+                        groupName1 = "c2", groupName2 = "c3_c8", 
+                        analysisName = "c2_VS_c3_c8")
+```
+
+#### Results
+
+The results are saved in the `metadata` slot of the returned SCE object, following the structure below:
+
+```{}
+matadata(pbmc3k)
+          |- $info1
+          |- $info2
+          |- ...
+          |- $diffExp
+                  |-$AnalysisName1
+                  |-$AnalysisName2
+                  |-...
+                  |-$c2_VS_c3_c8
+                             |-$useAssay    = "logcounts"
+                             |-$groupNames  = c("c2", "c3_c8")
+                             |-$select
+                             |      |-$ix1  = c(FALSE, TRUE,  FALSE, ...)
+                             |      |-$ix2  = c(FALSE, FALSE, FALSE, ...)
+                             |
+                             |        (Two logical vectors both having `ncol(inSCE)` values,
+                             |         specifies which cells are selected for "c2" or "c3_c8")
+                             |
+                             |-$annotation  = "Seurat_louvain_Resolution0.8"
+                             |-$result      = (the `data.frame` of top DEG table, shown below)
+                             |-$method      = "MAST"
 ```
 
 To fetch the result as a table of the Top differential expressed genes and the statistics:  
 
-```{R getDE, eval=doEval, warning=FALSE, message=FALSE}
-DEG <- metadata(pbmc3k)$diffExp$c1_2_VS_c3$result
+```{R getDE, eval=FALSE}
+DEG <- metadata(pbmc3k)$diffExp$c2_VS_c3_c8$result
 head(DEG)
 ```
 
-To visualize the result in heatmap:  
+|      |   Gene   |     Pvalue    |  Log2_FC  |      FDR      |
+| ---: |  :----:  |     :----:    |   :----:  |     :----:    |
+| 1    | CD74     | 7.410985e-323 | 3.776849  | 1.028496e-318 |
+| 2    | HLA-DRA  | 1.390933e-243 | 4.240744  | 9.651684e-240 |
+| 3    | NKG7     | 1.456080e-180 | -3.628760 | 6.735828e-177 |
+| 4    | HLA-DPB1 | 7.820856e-167 | 2.730926  | 2.713446e-163 |
+| 5    | CD79A    | 3.799766e-162 | 2.202502  | 1.054663e-158 |
+| 6    | HLA-DRB1 | 9.544925e-155 | 2.498927  | 2.207741e-151 |
 
-```{R plotDE, eval=doEval, warning=FALSE, message=FALSE}
-plotDEGHeatmap(pbmc3k, useResult = "c1_2_VS_c3")
+To visualize the result in a heatmap:  
+
+```{R plotDE, eval=FALSE}
+plotDEGHeatmap(pbmc3k, useResult = "c2_VS_c3_c8")
 ```
+
+<center> ![DE Heatmap](de_heatmap.png)\ </center>
 
 For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  
 

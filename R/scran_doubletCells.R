@@ -1,4 +1,4 @@
-.runDoubletCells <- function(cell.matrix = cell.matrix, 
+.runDoubletCells <- function(cell.matrix = cell.matrix,
                               k = k,
                               nIters = nIters,
                               size.factors.norm = NULL,
@@ -9,15 +9,15 @@
                               force.match=FALSE,
                               force.k=20,
                               force.ndist=3,
-                              BNPARAM=BNPARAM, 
-                              BSPARAM=BSPARAM, 
+                              BNPARAM=BNPARAM,
+                              BSPARAM=BSPARAM,
                               BPPARAM=BPPARAM
                               ) {
 
   cell.matrix <- .convertToMatrix(cell.matrix)
 
   scores <- matrix(scran::doubletCells(cell.matrix, k = k,
-                                       niters = nIters, 
+                                       niters = nIters,
                                        size.factors.norm = NULL,
                                        size.factors.content = NULL,
                                        subset.row = NULL,
@@ -26,8 +26,8 @@
                                        force.match=FALSE,
                                        force.k=20,
                                        force.ndist=3,
-                                       BNPARAM=BNPARAM, 
-                                       BSPARAM=BSPARAM, 
+                                       BNPARAM=BNPARAM,
+                                       BSPARAM=BSPARAM,
                                        BPPARAM=BPPARAM
                                        ), ncol=1)
   colnames(scores) <- "scran_doubletCells_score"
@@ -49,28 +49,28 @@
 #' @param simDoublets Number of simulated doublets created for doublet
 #'  detection. Default 10000.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param size.factors.norm A numeric vector of size factors for normalization 
-#'  of \code{x} prior to PCA and distance calculations. If \code{NULL}, defaults 
-#'  to size factors derived from the library sizes of \code{x}. For the SingleCellExperiment 
+#' @param size.factors.norm A numeric vector of size factors for normalization
+#'  of \code{x} prior to PCA and distance calculations. If \code{NULL}, defaults
+#'  to size factors derived from the library sizes of \code{x}. For the SingleCellExperiment
 #'  method, the default values are taken from \code{\link{sizeFactors}(x)}, if they are available.
-#' @param size.factors.content A numeric vector of size factors for RNA content 
-#'  normalization of \code{x} prior to simulating doublets. #' This is orthogonal to 
+#' @param size.factors.content A numeric vector of size factors for RNA content
+#'  normalization of \code{x} prior to simulating doublets. #' This is orthogonal to
 #'  the values in \code{size.factors.norm}
 #' @param subset.row See \code{?"\link{scran-gene-selection}"}.
-#' @param block An integer scalar controlling the rate of doublet generation, 
+#' @param block An integer scalar controlling the rate of doublet generation,
 #'  to keep memory usage low.
 #' @param d An integer scalar specifying the number of components to retain after the PCA.
-#' @param force.match A logical scalar indicating whether remapping of simulated 
+#' @param force.match A logical scalar indicating whether remapping of simulated
 #'  doublets to original cells should be performed.
-#' @param force.k An integer scalar specifying the number of neighbours to use for 
+#' @param force.k An integer scalar specifying the number of neighbours to use for
 #'  remapping if \code{force.match=TRUE}.
-#' @param force.ndist A numeric scalar specifying the bandwidth for remapping 
+#' @param force.ndist A numeric scalar specifying the bandwidth for remapping
 #'  if \code{force.match=TRUE}.
 #' @param BNPARAM A \code{\link[BiocNeighbors]{BiocNeighborParam}} object specifying the nearest neighbor algorithm.
 #' This should be an algorithm supported by \code{\link[BiocNeighbors]{findNeighbors}}.
-#' @param BSPARAM A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to 
+#' @param BSPARAM A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to
 #'  use for PCA, if \code{d} is not \code{NA}.
-#' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam}} object specifying whether the 
+#' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam}} object specifying whether the
 #'  neighbour searches should be parallelized.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
 #'  \code{runDoubletCells} runs \link[scran]{doubletCells} for each
@@ -103,8 +103,8 @@ runDoubletCells <- function(inSCE,
     force.match=FALSE,
     force.k=20,
     force.ndist=3,
-    BNPARAM=BiocNeighbors::KmknnParam(), 
-    BSPARAM=BiocSingular::bsparam(), 
+    BNPARAM=BiocNeighbors::KmknnParam(),
+    BSPARAM=BiocSingular::bsparam(),
     BPPARAM=BiocParallel::SerialParam()
 ) {
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
@@ -122,7 +122,7 @@ runDoubletCells <- function(inSCE,
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
-            scran_doubletCells_Score = numeric(ncol(inSCE)))
+            scran_doubletCells_score = numeric(ncol(inSCE)))
 
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)
@@ -133,7 +133,7 @@ runDoubletCells <- function(inSCE,
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
 
     result <- withr::with_seed(seed,
-              .runDoubletCells(cell.matrix = mat, 
+              .runDoubletCells(cell.matrix = mat,
                                k = nNeighbors,
                                nIters = simDoublets,
                                size.factors.norm = NULL,
@@ -144,8 +144,8 @@ runDoubletCells <- function(inSCE,
                                force.match=FALSE,
                                force.k=20,
                                force.ndist=3,
-                               BNPARAM=BNPARAM, 
-                               BSPARAM=BSPARAM, 
+                               BNPARAM=BNPARAM,
+                               BSPARAM=BSPARAM,
                                BPPARAM=BPPARAM
                                ))
 

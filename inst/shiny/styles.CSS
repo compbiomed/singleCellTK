@@ -43,3 +43,16 @@
   height: 150px; 
   margin-bottom: 0
 }
+
+.shiny-input-radiogroup {
+  margin-top: 20px;
+}
+
+#violinConditional .form-group, #binningConditional .form-group {
+  float: right;
+}
+
+label[for="Col"]
+{
+    display:none;
+}
