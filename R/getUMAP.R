@@ -11,6 +11,8 @@
 #' @param n_iterations number of iterations performed during layout optimization.
 #' Default is 200.
 #' @param alpha initial value of "learning rate" of layout optimization. Default is 1.
+#' @param metric distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.
+#' @param run_pca run UMAP on PCA components? Default is TRUE.
 #'
 #' @return a SCtkExperiment object with the reduced dimensions updated under
 #' reducedDimName specified.
@@ -19,11 +21,12 @@
 #' @examples
 #' umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
 #'                     reducedDimName = "UMAP", n_neighbors = 3, n_iterations = 200,
-#'                     alpha = 1)
+#'                     alpha = 1, metric = "euclidean",  run_pca = TRUE)
 #' reducedDims(umap_res)
 #'
 getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-                    n_neighbors = 5, n_iterations = 200, alpha = 1) {
+                    n_neighbors = 5, n_iterations = 200, alpha = 1, metric="euclidean",
+                    run_pca = TRUE) {
   if (!(class(inSCE) %in% c("SingleCellExperiment", "SCtkExperiment", "SummarizedExperiment"))){
     stop("Please use a SingleCellExperiment or a SCtkExperiment object")
   }
@@ -32,15 +35,25 @@ getUMAP <- function(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
     stop("assay '", useAssay, "' does not exist.")
   }
   matColData <- SummarizedExperiment::assay(inSCE, useAssay)
-  custom.config <- umap::umap.defaults
-  custom.config$n_neighbors <- n_neighbors
-  custom.config$alpha <- alpha
-  custom.config$n_epochs <- n_iterations
-  umap_results <- umap::umap(t(matColData), config = custom.config)
-  if (is.null(rownames(inSCE))) {
-    rownames(umap_results$layout) <- colnames(inSCE)
+  data <- as.data.frame(t(matColData))
+  if(run_pca == TRUE) {
+    umap_results <- uwot::umap(data,
+                               pca = min(50, nrow(data)),
+                               n_neighbors = n_neighbors,
+                               metric = metric,
+                               learning_rate = alpha,
+                               n_epochs = n_iterations
+                               )
+  } else {
+    umap_results <- uwot::umap(data,
+                               n_neighbors = n_neighbors,
+                               metric = metric,
+                               learning_rate = alpha,
+                               n_epochs = n_iterations)
   }
-  umap_results <- umap_results$layout
+  if (is.null(rownames(inSCE))) {
+    rownames(umap_results) <- colnames(inSCE)
+  }
   colnames(umap_results) <- c("UMAP1", "UMAP2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umap_results
   return(inSCE)

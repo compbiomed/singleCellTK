@@ -5,8 +5,16 @@
 \title{Uniform Manifold Approximation and Projection(UMAP) algorithm for
 dimension reduction.}
 \usage{
-getUMAP(inSCE, useAssay = "logcounts", reducedDimName = "UMAP",
-  n_neighbors = 5, n_iterations = 200, alpha = 1)
+getUMAP(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "UMAP",
+  n_neighbors = 5,
+  n_iterations = 200,
+  alpha = 1,
+  metric = "euclidean",
+  run_pca = TRUE
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -23,6 +31,10 @@ object in the reducedDims slot. Required.}
 Default is 200.}
 
 \item{alpha}{initial value of "learning rate" of layout optimization. Default is 1.}
+
+\item{metric}{distance metric. Default is euclidean, other options are 'manhattan', 'cosine', 'pearson'.}
+
+\item{run_pca}{run UMAP on PCA components? Default is TRUE.}
 }
 \value{
 a SCtkExperiment object with the reduced dimensions updated under
@@ -35,7 +47,7 @@ dimension reduction.
 \examples{
 umap_res <- getUMAP(inSCE = mouseBrainSubsetSCE, useAssay = "counts",
                     reducedDimName = "UMAP", n_neighbors = 3, n_iterations = 200,
-                    alpha = 1)
+                    alpha = 1, metric = "euclidean",  run_pca = TRUE)
 reducedDims(umap_res)
 
 }

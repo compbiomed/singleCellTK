@@ -17,12 +17,12 @@ summarizeTable <- function(inSCE, useAssay="counts", expressionCutoff=1700){
   return(
     data.frame(
       "Metric" = c(
-        "Number of Samples",
+        "Number of Cells",
         "Number of Genes",
         "Average number of reads per cell",
         "Average number of genes per cell",
-        paste0("Samples with <", expressionCutoff, " detected genes"),
-        "Genes with no expression across all samples"
+        paste0("Cells with <", expressionCutoff, " detected genes"),
+        "Genes with no expression across all cells"
       ),
       "Value" = c(
         ncol(inSCE),

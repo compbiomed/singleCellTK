@@ -4,8 +4,14 @@
 \alias{getTSNE}
 \title{Run t-SNE dimensionality reduction method on the assay data.}
 \usage{
-getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
-  n_iterations = 1000, perplexity = NULL)
+getTSNE(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "TSNE",
+  n_iterations = 1000,
+  perplexity = NULL,
+  run_pca = TRUE
+)
 }
 \arguments{
 \item{inSCE}{Input SCtkExperiment object. Required}
@@ -16,7 +22,9 @@ getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
 
 \item{n_iterations}{maximum iterations. Default is 1000}
 
-\item{perplexity}{perplexity parameter. Default is 5}
+\item{perplexity}{perplexity parameter.}
+
+\item{run_pca}{run tSNE on PCA components? Default is TRUE.}
 }
 \value{
 A SCtkE object with the specified reducedDim and

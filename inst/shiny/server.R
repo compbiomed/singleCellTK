@@ -18,7 +18,8 @@ shinyServer(function(input, output, session) {
     diffexgenelist = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
-    visplotobject = NULL,
+    visplotobject1 = NULL,
+    visplotobject2 = NULL,
     enrichRes = NULL,
     diffexheatmapplot = NULL,
     diffexBmName = NULL,
@@ -87,6 +88,8 @@ shinyServer(function(input, output, session) {
                          choices = selectthegenes, server = TRUE)
     updateSelectizeInput(session, "enrichGenes",
                          choices = selectthegenes, server = TRUE)
+    updateSelectizeInput(session, "hypgenes",
+                         choices = selectthegenes, server = TRUE)
   }
 
   updateFeatureAnnots <- function(){
@@ -113,6 +116,8 @@ shinyServer(function(input, output, session) {
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInput(session, "libSizeNormAssaySelect", choices = currassays)
+    updateSelectInput(session, "deconvoAssaySelect", choices = currassays)
     updateSelectInput(session, "combatAssay", choices = currassays)
     updateSelectInput(session, "diffexAssay", choices = currassays)
     updateSelectInput(session, "mastAssay", choices = currassays)
@@ -165,6 +170,9 @@ shinyServer(function(input, output, session) {
                                    createLogCounts = input$createLogcounts)
       } else if (input$uploadChoice == "example"){
         if (input$selectExampleData == "mouseBrainSubset"){
+          data(list = paste0(input$selectExampleData, "SCE"))
+          vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
+        } else if (input$selectExampleData == "campBrainSubset"){
           data(list = paste0(input$selectExampleData, "SCE"))
           vals$original <- base::eval(parse(text = paste0(input$selectExampleData, "SCE")))
         } else if (input$selectExampleData == "maits"){
@@ -227,7 +235,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
@@ -329,7 +338,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -368,7 +378,8 @@ shinyServer(function(input, output, session) {
         vals$diffexgenelist <- NULL
         vals$gsvaRes <- NULL
         vals$gsvaLimma <- NULL
-        vals$visplotobject <- NULL
+        vals$visplotobject1 <- NULL
+        vals$visplotobject2 <- NULL
         vals$enrichRes <- NULL
         vals$diffexBmName <- NULL
         diffExValues$diffExList <- NULL
@@ -402,7 +413,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$gsvaLimma <- NULL
-      vals$visplotobject <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$enrichRes <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -463,7 +475,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$diffexheatmapplot <- NULL
       vals$combatstatus <- ""
       vals$gsvaLimma <- NULL
@@ -522,7 +535,8 @@ shinyServer(function(input, output, session) {
       vals$diffexgenelist <- NULL
       vals$gsvaRes <- NULL
       vals$enrichRes <- NULL
-      vals$visplotobject <- NULL
+      vals$visplotobject1 <- NULL
+      vals$visplotobject2 <- NULL
       vals$diffexheatmapplot <- NULL
       vals$diffexBmName <- NULL
       diffExValues$diffExList <- NULL
@@ -542,7 +556,8 @@ shinyServer(function(input, output, session) {
     vals$diffexgenelist <- NULL
     vals$gsvaRes <- NULL
     vals$enrichRes <- NULL
-    vals$visplotobject <- NULL
+    vals$visplotobject1 <- NULL
+    vals$visplotobject2 <- NULL
     vals$diffexheatmapplot <- NULL
     vals$diffexBmName <- NULL
     diffExValues$diffExList <- NULL
@@ -568,6 +583,7 @@ shinyServer(function(input, output, session) {
       paste("SCE-", Sys.Date(), ".rds", sep = "")
     },
     content <- function(file) {
+      #saveRDS(as(vals$counts, "SingleCellExperiment"), file)
       saveRDS(vals$counts, file)
     })
 
@@ -584,7 +600,63 @@ shinyServer(function(input, output, session) {
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
   })
-
+  
+  shinyjs::onclick("Norm_hideAllSections", allSections(
+    "hide", c(paste("nm", 1:2, sep = ""))), add = TRUE)
+  shinyjs::onclick("Norm_showAllSections", allSections(
+    "show", c(paste("nm", 1:2, sep = ""))), add = TRUE)
+  
+  shinyjs::onclick("norm1", shinyjs::toggle(id = "nm1",
+                                   anim = TRUE), add = TRUE)
+  shinyjs::onclick("norm2", shinyjs::toggle(id = "nm2",
+                                   anim = TRUE), add = TRUE)
+  
+  shinyjs::addClass(id = "norm1", class = "btn-block")
+  shinyjs::addClass(id = "norm2", class = "btn-block")
+  
+  observeEvent(input$modifyNorm,{
+    req(vals$counts)
+    withBusyIndicatorServer("modifyNorm", {
+      if (input$normalizeAssay == 'libSizeNorm') {
+        if (input$libSizeAssayName %in% names(assays(vals$counts))){
+          shinyalert::shinyalert("Error!", "Assay name exists, enter a different name",
+                                 type = "error")
+        } else if (input$libSizeAssayName == "") {
+          shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else {
+          vals$counts <- scater::logNormCounts(vals$counts,
+                                               exprs_values = input$libSizeNormAssaySelect,
+                                               size_factors = NULL,
+                                               name = input$libSizeAssayName)
+          updateAssayInputs()
+        }
+          
+      } else if (input$normalizeAssay == 'deconvoNorm') {
+        if (input$deconvoAssayName %in% names(assays(vals$counts))){
+          shinyalert::shinyalert("Error!", "Assay name exists, enter a different name",
+                                 type = "error")
+        } else if (input$deconvoAssayName == "") {
+          shinyalert::shinyalert("Error!", "Invalid output name!",
+                                 type = "error")
+        } else {
+          clustSCE <- scran::quickCluster(vals$counts,
+                                          assay.type = input$deconvoAssaySelect,
+                                          min.size=input$clusterMin)
+          cSF <- scran::calculateSumFactors(vals$counts,
+                                          assay.type = input$deconvoAssaySelect,
+                                          cluster = clustSCE,
+                                          min.mean = 0.1)
+          vals$counts <- scater::logNormCounts(vals$counts,
+                                               size_factors = cSF,
+                                               exprs_values = input$deconvoAssaySelect,
+                                               name = input$deconvoAssayName)
+          updateAssayInputs()
+        }
+      }
+    })
+  })
+  
   observeEvent(input$modifyAssay, {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
@@ -645,7 +717,7 @@ shinyServer(function(input, output, session) {
       }
     })
   })
-
+  
   output$colDataDataFrame <- DT::renderDataTable({
     if (!is.null(vals$counts)){
       data.frame(colData(vals$counts))
@@ -755,29 +827,32 @@ shinyServer(function(input, output, session) {
             shinyalert::shinyalert("Error", "Name already exists!", type = "error")
           } else {
             if (input$dimRedPlotMethod == "PCA"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = input$dimRedNameInput)
                 updateReddimInputs()
               }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
                                        perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
+                                       n_iterations = input$iterTSNE,
+                                       run_pca = input$pca_dimred)
                 updateReddimInputs()
               }
             } else {
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput))) {
+              if (!input$dimRedNameInput %in% names(SingleCellExperiment::reducedDims(vals$counts))) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
+                                       run_pca = input$pca_dimred,
                                        n_neighbors = input$neighborsUMAP,
                                        n_iterations = input$iterUMAP,
-                                       alpha = input$alphaUMAP
+                                       alpha = input$alphaUMAP,
+                                       metric = input$metricUMAP
                 )
                 updateReddimInputs()
               }
@@ -936,15 +1011,24 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # observe({
+  #   req(vals$counts)
+  #   if(methods::is(vals$counts, "SCtkExperiment")) {
+  #     shinyjs::show(id = "pcVar")
+  #   }
+  # })
+  # 
   #TODO: this doesn't work with multiple pca dims
   output$pctable <- renderTable({
       if (!is.null(vals$counts)){
-       # HTML(tags$h4("PC Table:"))
+        if(any(reducedDim(vals$counts))){
+          #HTML(tags$h4("PC Table:"))
           if (any(grepl(pattern = "PC*", x = colnames(reducedDim(vals$counts, input$usingReducedDims))))) {
             if (nrow(pcaVariances(vals$counts)) == ncol(vals$counts)){
               data.frame(PC = paste("PC", seq_len(ncol(vals$counts)), sep = ""),
                          Variances = pcaVariances(vals$counts)$percentVar * 100)[1:10, ]
             }
+          }
           }
         }
     })
@@ -991,13 +1075,24 @@ shinyServer(function(input, output, session) {
               visGList <- visGList[1:25]
             }
           }
-          vals$visplotobject <- visPlot(inSCE = vals$counts,
-                                        useAssay = input$visAssaySelect,
-                                        method =  input$visPlotMethod,
-                                        condition = incondition,
-                                        glist =  visGList,
-                                        facetWrap = input$visFWrap,
-                                        scaleHMap = input$visScaleHMap)
+          if(input$visPlotMethod != "heatmap") {
+            vals$visplotobject1 <- visPlot(inSCE = vals$counts,
+                                           useAssay = input$visAssaySelect,
+                                           method =  input$visPlotMethod,
+                                           condition = incondition,
+                                           glist =  visGList,
+                                           facetWrap = input$visFWrap,
+                                           scaleHMap = input$visScaleHMap)
+          } else {
+            vals$visplotobject2 <- visPlot(inSCE = vals$counts,
+                                           useAssay = input$visAssaySelect,
+                                           method =  input$visPlotMethod,
+                                           condition = incondition,
+                                           glist =  visGList,
+                                           facetWrap = input$visFWrap,
+                                           scaleHMap = input$visScaleHMap)
+          }
+          
         },
         error = function(e){
           shinyalert::shinyalert("Error!", e$message, type = "error")
@@ -1005,11 +1100,16 @@ shinyServer(function(input, output, session) {
       })
     }
   })
-
-  output$visPlot <- renderPlot({
-    req(vals$visplotobject)
-    vals$visplotobject
-  }, height = 600)
+  output$visPlot1 <- renderPlotly({
+    req(vals$visplotobject1)
+    plotly::ggplotly(vals$visplotobject1)
+  })
+  
+  output$visPlot2 <- renderPlot({
+      req(vals$visplotobject2)
+      vals$visplotobject2
+    }, height = 600)
+ 
 
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda
@@ -2491,7 +2591,50 @@ shinyServer(function(input, output, session) {
     },
     contentType = "text/csv"
   )
-
+  
+  #-----------------------------------------------------------------------------
+  # Page 6.3 : Enrichment Analysis - hypeR
+  #-----------------------------------------------------------------------------
+  
+  genesets <- hypeR::genesets_Server("genesets")
+  
+  reactive_hyp <- eventReactive(input$enrichment, {
+    # Here are the fetched genesets
+    gsets <- genesets()
+    
+    # Process the signature into a character vector
+    signature <- toupper(input$hypgenes) %>%
+      stringr::str_split(pattern=",", simplify=TRUE) %>%
+      as.vector() 
+    
+    # Run hypeR
+    hyp <- hypeR::hypeR(signature, gsets, test="hypergeometric")
+  })
+  
+  # Your custom downstream functions
+  reactive_plot <- eventReactive(input$enrichment, {
+    req(reactive_hyp())
+    p <- hypeR::hyp_dots(reactive_hyp(), top=10, fdr=0.25)
+    
+    # These are just ggplot objects you could customize
+    p + theme(axis.text=element_text(size=12, face="bold"))
+    
+  })
+  
+  reactive_table <- eventReactive(input$enrichment, {
+    req(reactive_hyp())
+    tab <- hypeR::hyp_show(reactive_hyp())
+    tab
+  })
+  
+  output$plot <- renderPlot({
+    reactive_plot()
+  })
+  
+  output$hyptab <- reactable::renderReactable({
+    reactive_table()
+  })
+  
   #-----------------------------------------------------------------------------
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------

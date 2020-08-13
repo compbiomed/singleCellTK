@@ -1,4 +1,4 @@
-exampleDatasets <- c("mouseBrainSubset", "maits")
+exampleDatasets <- c("mouseBrainSubset", "maits", "campBrainSubset")
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
@@ -30,7 +30,7 @@ shinyPanelUpload <- fluidPage(
     tags$div(id = "uploadAlert", alertText),
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Upload files" = "files",
-                                                 "Upload SCtkExperiment RDS File" = "rds",
+                                                 "Upload SummarizedExperiment/SCExperiment RDS File" = "rds",
                                                  "Use example data" = "example")
     ),
     tags$hr(),
@@ -135,6 +135,13 @@ shinyPanelUpload <- fluidPage(
         tags$br()
       ),
       conditionalPanel(
+        condition = sprintf("input['%s'] == 'campBrainSubset'", "selectExampleData"),
+        h3(tags$a(href = "https://doi.org/10.1038/nn.4495", "500 cells from Campbell et. al, 2017, Mouse Brain Subset", target = "_blank")),
+        "A subset of 500 cells from a single cell RNA-Seq experiment from Campbell, et al. Nature Neuroscience 2017 using droplet-based sequencing technology. This study was perfomed to identify various hypothalamic arcuate–median eminence complex (Arc-ME) cell types. This contains information such as the diet of the mice, sex and proposed cell type for each cell. ",
+        tags$br(),
+        tags$br()
+      ),
+      conditionalPanel(
         condition = sprintf("input['%s'] == 'maits'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1186/s13059-015-0844-5", "MAITs data from MAST package", target = "_blank")),
         "96 Single-cell transcriptome profiling from Mucosal Associated Invariant T cells (MAITs), measured on the Fluidigm C1.",
@@ -165,9 +172,9 @@ shinyPanelUpload <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
-      h3("Choose an RDS file that contains a SCtkExperiment Object:"),
+      h3("Choose an RDS file that contains a SummarizedExperiment/SCExperiment Object:"),
       fileInput(
-        "rdsFile", "SCtkExperiment RDS file:", accept = c(".rds", ".RDS")
+        "rdsFile", "SCExperiment RDS file:", accept = c(".rds", ".RDS")
       )
     ),
     withBusyIndicatorUI(
