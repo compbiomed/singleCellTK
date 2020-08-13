@@ -610,7 +610,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   
   #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
-  assay(altExp(inSCE, newAssayName), newAssayName) <- counts 
+  assay(altExp(inSCE, newAssayName), newAssayName) <- counts
   
   return(inSCE)
 }
