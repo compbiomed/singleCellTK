@@ -411,7 +411,7 @@ runDoubletFinder <- function(inSCE,
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
 
-    colnames(output) <- paste0(colnames(output), "_Resolution_", res)
+    colnames(output) <- paste0(colnames(output), "_resolution_", res)
 
     argsList <- argsList[!names(argsList) %in% ("...")]
     inSCE@metadata$runDoubletFinder <- argsList[-1]

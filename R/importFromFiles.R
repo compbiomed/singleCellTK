@@ -1,3 +1,16 @@
+.checkGzip <- function(path, gzipped){
+    if (gzipped == "auto") {
+      ext <- tools::file_ext(path)
+      if (ext == "gz") {
+            path <- gzfile(path)
+        }
+    } else if (isTRUE(gzipped)) {
+        path <- gzfile(path)
+    }
+
+    return(path)
+}
+
 #' Create a SingleCellExperiment object from files
 #'
 #' Creates a SingleCellExperiment object from a counts file in various formats.
@@ -20,13 +33,25 @@
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link[Matrix]{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param annotFileHeader Whether there's a header (colnames) in the cell annotation file. Default is FALSE  
+#' @param annotFileRowName Which column is used as the rownames for the cell annotation file. Default is 1 (first column). 
+#' @param annotFileSep Separater used for the cell annotation file. Default is "\\t". 
+#' @param featureHeader Whether there's a header (colnames) in the feature annotation file. Default is FALSE  
+#' @param featureRowName Which column is used as the rownames for the feature annotation file. Default is 1 (first column).
+#' @param featureSep Separater used for the feature annotation file. Default is "\\t".
+#' @param gzipped Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE. 
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
 #' @return a SingleCellExperiment object
 #' @export
+
 importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
                             assayName = "counts", inputDataFrames = FALSE,
-                            class = c("Matrix", "matrix"), delayedArray = FALSE){
+                            class = c("Matrix", "matrix"), delayedArray = FALSE,
+                            annotFileHeader = FALSE, annotFileRowName = 1, 
+                            annotFileSep = "\t", featureHeader = FALSE,
+                            featureRowName = 1, featureSep = "\t", gzipped = "auto"
+                            ){
   
   class <- match.arg(class)
   
@@ -37,12 +62,14 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
   } else{
     countsin <- readSingleCellMatrix(assayFile, class = class, delayedArray = delayedArray)
     if (!is.null(annotFile)){
-      annotin <- utils::read.table(annotFile, sep = "\t", header = TRUE,
-                                   row.names = 1)
+      annotFile <- .checkGzip(annotFile, gzipped = gzipped)
+      annotin <- utils::read.table(annotFile, sep = annotFileSep, header = annotFileHeader,
+                                   row.names = annotFileRowName, stringsAsFactors = FALSE)
     }
     if (!is.null(featureFile)){
-      featurein <- utils::read.table(featureFile, sep = "\t", header = TRUE,
-                                     row.names = 1)
+      featureFile <- .checkGzip(featureFile, gzipped = gzipped)
+      featurein <- utils::read.table(featureFile, sep = featureSep, header = featureHeader,
+                                     row.names = featureRowName, stringsAsFactors = FALSE)
     }
   }
   if (is.null(annotFile)){
@@ -55,6 +82,7 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
     rownames(featurein) <- featurein$Gene
     featurein <- S4Vectors::DataFrame(featurein)
   }
+
   if (nrow(annotin) != ncol(countsin)){
     stop("Different number of samples in input matrix and annotations: annot: ",
          nrow(annotin), ", counts: ", ncol(countsin))
@@ -71,8 +99,17 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
   if (any(rownames(featurein) != rownames(countsin))){
     stop("Sample names in input matrix and feature annotation do not match!")
   }
+
   assaylist <- list()
-  assaylist[[assayName]] <- methods::as(countsin, "dgCMatrix")
+  if (is.null(rownames(countsin))){
+    rownames(countsin) <- rownames(featurein)
+  }
+  if (is.null(colnames(countsin))){
+    colnames(countsin) <- rownames(annotin)
+  }
+  #assaylist[[assayName]] <- methods::as(countsin, "dgCMatrix")
+  assaylist[[assayName]] <- .convertToMatrix(countsin)
+
   newassay <- SingleCellExperiment::SingleCellExperiment(assays = assaylist,
                                                          colData = annotin,
                                                          rowData = featurein)

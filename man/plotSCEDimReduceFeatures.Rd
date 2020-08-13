@@ -28,7 +28,8 @@ plotSCEDimReduceFeatures(
   legendTitle = NULL,
   legendSize = 10,
   legendTitleSize = 12,
-  groupBy = NULL
+  groupBy = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
@@ -96,6 +97,10 @@ Default 'blue'.}
 
 \item{groupBy}{Facet wrap the scatterplot based on value.
 Default \code{NULL}.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \value{
 a ggplot of the reduced dimensions.
