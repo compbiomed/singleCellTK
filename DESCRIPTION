@@ -64,7 +64,7 @@ Imports:
     umap,
     scater,
     scran,
-    hypeR,
+    hypeR (>= 1.5.1),
     reactable,
     uwot
 RoxygenNote: 7.1.1
