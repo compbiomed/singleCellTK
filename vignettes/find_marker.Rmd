@@ -41,7 +41,7 @@ The returned SCE object will contain the updated information of the markers iden
 
 To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
 
-```{R de_prep, eval=FALSE}
+```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE, fig.align="center"}
 library(singleCellTK)
 pbmc3k <- importExampleData("pbmc3k")
 pbmc3k <- scater_logNormCounts(pbmc3k, "logcounts")
@@ -59,13 +59,11 @@ plotSCEDimReduceColData(inSCE = pbmc3k,
                         reducedDimName = "seuratUMAP")
 ```
 
-<center> ![Seurat UMAP](de_umapVis.png)\ </center>
-
 #### Get Markers
 
 Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annotation just attached, which by default named with `"Seurat_louvain_Resolution0.8"`.  
 
-```{R runFM, eval=FALSE}
+```{R runFM, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE}
 pbmc3k <- findMarkerDiffExp(inSCE = pbmc3k, 
                             useAssay = "logcounts",
                             method = "Limma", # Runs fastest
@@ -75,25 +73,21 @@ pbmc3k <- findMarkerDiffExp(inSCE = pbmc3k,
 After this, the marker genes, together with their statistics, of each cluster will be concatenated in one table. This table can be extracted with:  
 
 ```{R getMarkerTable, eval=FALSE}
-markerTable <- matadata(pbmc3k)$findMarker
+markerTable <- metadata(pbmc3k)$findMarker
 head(markerTable)
 ```
 
-|        |  Gene  |  Log2_FC  |    Pvalue     |      FDR      | Seurat_louvain_Resolution0.8 |
-| :----: | :----: | :---      | :---          | :----         |            :----:            |
-|   1    |   LTB  | 1.3795012 | 1.722068e-105 | 5.637705e-101 |              0               |
-|   2    |  IL32  | 1.1497180 | 2.186766e-96  | 3.579517e-92  |              0               |
-|   3    |  LDHB  | 0.9442271 | 4.087189e-94  | 4.460214e-90  |              0               |
-|   4    |  CD3D  | 0.8880507 | 2.197867e-77  | 1.798844e-73  |              0               |
-|   5    |  IL7R  | 0.7243084 | 4.776582e-74  | 3.127515e-70  |              0               |
-|   9    |  CD3E  | 0.6925999 | 4.833070e-65  | 1.758056e-61  |              0               |
+```{R getMarkerTable_kable, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+library(kableExtra)
+library(knitr)
+markerTable <- metadata(pbmc3k)$findMarker
+kable_styling(kable(head(markerTable)), bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
 
 Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:  
 
-```{R plotMarkers, eval=FALSE}
+```{R plotMarkers, eval=TRUE, cache=TRUE, fig.align="center", fig.width=9, fig.height=6}
 plotMarkerDiffExp(pbmc3k)
 ```
-
-<center> ![Marker Heatmap](fm_markerHeatmap.png)\ </center>
 
 Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in `metadata`. 

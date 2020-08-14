@@ -1,0 +1,61 @@
+---
+title: "Differential Expression - UI"
+author: "Yichen Wang"
+---
+
+## Introduction
+
+This section describes the usage of the user interface (UI) for singleCellTK (SCTK) differential expression (DE) analysis workflow. The underneath process is wrapped by R function `runDEAnalysis()`. For the help of R console workflow, also refer to [the help page for R console](differential_analysis.html).  
+
+## UI Layout
+
+### Entry of The Panel
+
+From anywhere of the UI, the panel for DE can be accessed from the top navigation panel at the circled tab shown below.  
+
+![Entry](de_ui_entry.png)\
+
+The UI is constructed with mainly four parts: **1.** Assay input; **2.** Condition selection; **3.** Parameter settings; **4.** Result and other visualization.  
+
+### Assay Input
+
+A SingleCellExperiment (SCE) object, which stores all the expression, reduction, and metadata, is active behind the interface. The assay needed here is a matrix that contains the expression information for all cells and all features (genes), and is saved in the `assay` slot of the SCE object. The selection for this should be made at the top of the panel, as shown in the screenshot below.  
+
+<img src="de_ui_assay.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+### Condition Selection
+
+Usually in terms of a DE analysis, we have two necessary conditions that have to be defined. One is the condition of interests and the other one is the condition of control. The condition of interests will then be compared to the condition of control via computational methods and statistical result will then be returned. The selection for a condition here means deciding which cells should be grouped together as one condition.  
+
+SCTK provides reasonably flexible approaches to setting the conditions: 
+
+1. Select cells by categorical annotations stored in background (the `colData` of SCE object). 
+2. Select cells by filtering multiple classes of annotations in data tables. 
+3. Select cells by pasting the cell identifiers directly into text boxes. 
+
+> NOTE that the "Name of Condition" fields, which will be shown later, are always required, though default text is placed. It is **highly recommanded** that users put easily understandable namings there, in order to avoid the confusion when multiple batches of analysis are performed, and to keep the automatic legends on DE specific plottings clean as well. 
+
+#### Categorical Selection
+
+The first approach is designed for the fastest use, where conditions of interests and of control can be simply defined by categorical variables of the same class in the cell annotation (i.e. within one single column on `colData` of the background SCE object).  
+
+<img src="de_ui_condMeth1.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+**TODO detail descriptions**
+
+#### Data Table Firtering Selection
+
+The second approach allows users to make the most use of all the cell annotations available. Meanwhile, single selection on each cell is also enabled to ensure the highest flexibility, though can be relatively ineffective.  
+
+**TODO Screenshot**
+
+**TODO detail description**
+
+#### Select by Pasting a list
+
+The final way allows users without any useful annotation but still know which cells are interesting to perform the analysis.  
+
+**TODO Screenshot**
+
+**TODO detail description**
+

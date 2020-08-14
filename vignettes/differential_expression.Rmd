@@ -57,7 +57,7 @@ The reason is we assume that users are likely to perform multiple batches of ana
 
 To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
 
-```{R de_prep, eval=FALSE}
+```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE}
 library(singleCellTK)
 pbmc3k <- importExampleData("pbmc3k")
 pbmc3k <- scater_logNormCounts(pbmc3k, "logcounts")
@@ -75,19 +75,17 @@ plotSCEDimReduceColData(inSCE = pbmc3k,
                         reducedDimName = "seuratUMAP")
 ```
 
-<center> ![Seurat UMAP](de_umapVis.png)\ </center>
-
 #### Run Differential Expression Analysis
 
-```{R runDE, eval=FALSE}
+```{R runDE, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE}
 # Condition chosen basing on the UMAP
 pbmc3k <- runDEAnalysis(inSCE = pbmc3k, 
                         method = "MAST", 
                         useAssay = "logcounts",
                         class = "Seurat_louvain_Resolution0.8", 
-                        classGroup1 = c(2), classGroup2 = c(3, 8),
-                        groupName1 = "c2", groupName2 = "c3_c8", 
-                        analysisName = "c2_VS_c3_c8")
+                        classGroup1 = c(2), classGroup2 = c(4, 5),
+                        groupName1 = "c2", groupName2 = "c4_c5", 
+                        analysisName = "c2_VS_c4_c5")
 ```
 
 #### Results
@@ -121,26 +119,23 @@ matadata(pbmc3k)
 To fetch the result as a table of the Top differential expressed genes and the statistics:  
 
 ```{R getDE, eval=FALSE}
-DEG <- metadata(pbmc3k)$diffExp$c2_VS_c3_c8$result
+DEG <- metadata(pbmc3k)$diffExp$c2_VS_c4_c5$result
 head(DEG)
 ```
 
-|      |   Gene   |     Pvalue    |  Log2_FC  |      FDR      |
-| ---: |  :----:  |     :----:    |   :----:  |     :----:    |
-| 1    | CD74     | 7.410985e-323 | 3.776849  | 1.028496e-318 |
-| 2    | HLA-DRA  | 1.390933e-243 | 4.240744  | 9.651684e-240 |
-| 3    | NKG7     | 1.456080e-180 | -3.628760 | 6.735828e-177 |
-| 4    | HLA-DPB1 | 7.820856e-167 | 2.730926  | 2.713446e-163 |
-| 5    | CD79A    | 3.799766e-162 | 2.202502  | 1.054663e-158 |
-| 6    | HLA-DRB1 | 9.544925e-155 | 2.498927  | 2.207741e-151 |
+```{R getDE_kable, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+library(kableExtra)
+library(knitr)
+DEG <- metadata(pbmc3k)$diffExp$c2_VS_c4_c5$result
+kable_styling(kable(head(DEG)), bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
 
 To visualize the result in a heatmap:  
 
-```{R plotDE, eval=FALSE}
-plotDEGHeatmap(pbmc3k, useResult = "c2_VS_c3_c8")
+```{R plotDE, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE, fig.width=9, fig.height=6, fig.align="center"}
+plotDEGHeatmap(pbmc3k, useResult = "c2_VS_c4_c5", log2fcThreshold = 1)
 ```
-
-<center> ![DE Heatmap](de_heatmap.png)\ </center>
 
 For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  
 
