@@ -41,7 +41,7 @@ The returned SCE object will contain the updated information of the markers iden
 
 To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
 
-```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE, fig.align="center"}
+```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE, fig.align="center", results='hide'}
 library(singleCellTK)
 pbmc3k <- importExampleData("pbmc3k")
 pbmc3k <- scater_logNormCounts(pbmc3k, "logcounts")
@@ -65,8 +65,8 @@ Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annot
 
 ```{R runFM, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE}
 pbmc3k <- findMarkerDiffExp(inSCE = pbmc3k, 
-                            useAssay = "logcounts",
                             method = "Limma", # Runs fastest
+                            useAssay = "counts", # Recommanded for Limma, "logcounts" for the others
                             cluster = "Seurat_louvain_Resolution0.8")
 ```
 
@@ -86,7 +86,7 @@ kable_styling(kable(head(markerTable)), bootstrap_options = c("striped", "hover"
 
 Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:  
 
-```{R plotMarkers, eval=TRUE, cache=TRUE, fig.align="center", fig.width=9, fig.height=6}
+```{R plotMarkers, eval=TRUE, cache=TRUE, fig.align="center", fig.width=9, fig.height=6, warning=FALSE, message=FALSE}
 plotMarkerDiffExp(pbmc3k)
 ```
 
