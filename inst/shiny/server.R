@@ -809,8 +809,14 @@ shinyServer(function(input, output, session) {
                                          annotFile = input$annotFile$datapath,
                                          featureFile = input$featureFile$datapath,
                                          assayName = input$inputAssayType)
+        
       } else if (input$uploadChoice == "example"){
-        vals$original <- withConsoleMsgRedirect(importExampleData(dataset = input$selectExampleData))
+        newSce <- withConsoleMsgRedirect(importExampleData(dataset = input$selectExampleData))
+        if(is.null(vals$original)) {
+          vals$original <- newSce
+        } else {
+          vals$original <- cbind(vals$original, newSce)
+        }
       } else if (input$uploadChoice == "rds") {
         importedrds <- readRDS(input$rdsFile$datapath)
         if (base::inherits(importedrds, "SummarizedExperiment")) {
@@ -1100,6 +1106,9 @@ shinyServer(function(input, output, session) {
   # to keep track of whether an algo has already been run
   qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, 
                                   QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
+
+  qc_plot_ids = reactiveValues(doubletCells="DCplots", cxds="CXplots", bcds="BCplots", cxds_bcds_hybrid="CXBCplots", decontX="DXplots", 
+                                  QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
   
   
   # format the parameters for decontX
@@ -1193,9 +1202,17 @@ shinyServer(function(input, output, session) {
           selector = "#noQCAssay"
         )
         useAssay <- input$qcAssaySelect
-        qcSample <- colData(vals$original)[,input$qcSampleSelect]
+        qcSample <- input$qcSampleSelect
+        gsColName <- input$QCMgeneSets
+        # if the sample input is None, set it to NULL
         if (qcSample == "None") {
           qcSample <- NULL
+        } else {
+          qcSample <- colData(vals$original)[,input$qcSampleSelect]
+        }
+        # if the gene set input is None, set it to NULL
+        if (gsColName == "None") {
+          gsColName <- NULL
         }
         algoList = list()
         paramsList <- list()
@@ -1232,19 +1249,88 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
+        # run selected cell QC algorithms
         vals$original <- runCellQC(inSCE = vals$original,
                                    algorithms = algoList,
                                    sample = qcSample,
+                                   collectionName = gsColName,
                                    useAssay = input$qcAssaySelect,
+                                   seed = input$qcSeed,
                                    paramsList = paramsList)
-        print(vals$original)
-        if (!is.null(vals$original)) {
-          # show the tabs for the result plots
-          showQCResTabs(algoList, qc_algo_status)
-          for (a in algoList) {
-            qc_algo_status[[a]] <- "tab"
-          }
+        redDimList <- strsplit(reducedDimNames(vals$original), " ")
+        if(length(redDimList) == 0) {
+          updateSelectInput(session, "qcPlotRedDim", choices = c("UMAP"))
+        } else if ("UMAP" %in% redDimList){
+          updateSelectInput(session, "qcPlotRedDim", choices = redDimList)
+        } else {
+          updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
         }
+        shinyjs::show(id = "qcPlotSection", anim = FALSE)
+        # print(vals$original)
+        # print(unique(colData(vals$original)[,"sample"]))
+      }
+    })
+  })
+  
+  observeEvent(input$plotQC, {
+    withBusyIndicatorServer("plotQC", {
+      # get selected sample from run QC section
+      qcSample <- input$qcSampleSelect
+      if (qcSample == "None") {
+        qcSample <- NULL
+      } else {
+        qcSample <- colData(vals$original)[,input$qcSampleSelect]
+      }
+      # build list of selected algos
+      algoList = list()
+      for (algo in qc_choice_list) {
+        if (input[[algo]]) {
+          algoList <- c(algoList, algo)
+        }
+      }
+      # only run getUMAP if there are no reducedDimNames
+      redDimName <- input$qcPlotRedDim
+      if((redDimName == "UMAP") && (identical(reducedDimNames(vals$original), character(0)))) {
+        vals$original <- getUMAP(inSCE = vals$original,
+                                 sample = qcSample,
+                                 useAssay = input$qcAssaySelect,
+        )
+      }
+      # print("after UMAP")
+      if (!is.null(vals$original)) {
+        # show the tabs for the result plots  output[[qc_plot_ids[[a]]]] 
+        showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
+        arrangeQCPlots(vals$original, output, algoList, colData(vals$original)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
+        # for (a in algoList) {
+        #   qc_algo_status[[a]] <- "tab"
+        #   if (a == "doubletCells") {
+        #     dcPlots <- renderPlot({plotDoubletCellsResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   } else if (a == "cxds") {
+        #     cxPlots <- renderPlot({plotCxdsResults(vals$original, combinePlot = T, sample = colData(vals$original)[,"sample"], reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   } else if (a == "bcds") {
+        #     bcPlots <- renderPlot({plotBcdsResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   } else if (a == "cxds_bcds_hybrid") {
+        #     cxbcPlots <- renderPlot({plotScdsHybridResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   } else if (a == "decontX") {
+        #     dxPlots <- renderPlot({plotDecontXResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   } else if (a == "QCMetrics") {
+        #     qcmPlots <- renderPlot({plotRunPerCellQCResults(vals$original, combinePlot = T)},
+        #                                              height = 800)
+        #   } else if (a == "scrublet") {
+        #     sPlots <- renderPlot({plotScrubletResults(vals$original, combinePlot = F, sample = colData(vals$original)[,"sample"], reducedDimName = redDimName)},
+        #                                              height = 800)
+        #     
+        #     print(length(sPlots[[1]]))
+        #   } else if (a == "doubletFinder") {
+        #     dfPlots <- renderPlot({plotDoubletFinderResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
+        #                                              height = 800)
+        #   }
+        # }
       }
     })
   })

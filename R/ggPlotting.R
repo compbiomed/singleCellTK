@@ -2213,6 +2213,27 @@ plotSCEBarAssayData <- function(inSCE,
     return(value.bin)
 }
 
+#' @export
+ggSCTKCombinePlots <- function(plotlist, ncols = NULL){
+  list.ix = which(lapply(plotlist, class) == "list")
+  if(length(list.ix) > 0){
+    plotlist.sub = plotlist[list.ix]
+    plotlist.sub = do.call(c, plotlist.sub)
+    plotlist.sub = list(cowplot::plot_grid(plotlist = plotlist.sub,
+                                           nrow = length(list.ix)))
+
+    plotlist[list.ix] <- NULL
+    plotlist = c(plotlist, plotlist.sub)
+    ncols = 1
+  }
+
+  if(is.null(ncols)){
+    ncols = round(sqrt(length(plotlist)))
+  }
+  return(cowplot::plot_grid(plotlist = plotlist,
+                            ncol = ncols))
+}
+
 .ggSCTKCombinePlots <- function(plotlist, ncols = NULL){
   list.ix = which(lapply(plotlist, class) == "list")
   if(length(list.ix) > 0){
