@@ -304,12 +304,12 @@ qcInputProcess <- function(preproc,
     if (preproc == "CellRangerV3") {
         if (!is.null(path)) {
             if (dataType == "Both") {
-                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
-                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
+                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
+                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
             } else if (dataType == "Cell") {
-                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
+                cellSCE <- importCellRangerV3(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, dataType="filtered", class = "Matrix", delayedArray=FALSE)
             } else if (dataType == "Droplet") {
-                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
+                dropletSCE <- importCellRangerV3(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, dataType="raw", class = "Matrix", delayedArray=FALSE)
             }
         } else {
             if (dataType == "Both") {
@@ -327,12 +327,12 @@ qcInputProcess <- function(preproc,
     if (preproc == "CellRangerV2") {
         if (!is.null(path)) {
             if (dataType == "Both") {
-                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
-                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
+                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
+                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
             } else if (dataType == "Cell") {
-                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
+                cellSCE <- importCellRangerV2(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="filtered")
             } else if (dataType == "Droplet") {
-                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
+                dropletSCE <- importCellRangerV2(cellRangerDirs = path, sampleDirs = samplename, sampleNames = samplename, class="Matrix", delayedArray = FALSE, reference = ref, dataTypeV2="raw")
             }
         } else {
             if (dataType == "Both") {
