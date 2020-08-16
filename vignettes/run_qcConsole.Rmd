@@ -1,0 +1,254 @@
+---
+title: "Quality Control in R console"
+author: "Rui Hong"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data.
+
+The package can be loaded using the `library` command.
+
+```{r load_package, eval=TRUE, message=FALSE}
+library(singleCellTK)
+```
+
+
+## Import data as `SingleCellExperiment` (SCE) object
+
+### Load PBMC4k data from 10X
+
+singleCellTK takes in a `SingleCellExperiment` object from the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the `BiocFileCache`(https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html) package.
+
+To load your own input data, please refer [Import data into SCTK](./import_scRNAseq_data_as_SCE_Console.html) for deailed instruction. 
+```{r, message=FALSE}
+# Install BiocFileCache if is it not already
+if (!requireNamespace("BiocFileCache", quietly = TRUE)) {
+  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("BiocFileCache")
+}
+
+library("BiocFileCache")
+bfc <- BiocFileCache::BiocFileCache("raw_data", ask = FALSE)
+raw.path <- bfcrpath(bfc, file.path(
+  "http://cf.10xgenomics.com/samples",
+  "cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz"
+))
+untar(raw.path, exdir = file.path(tempdir(), "pbmc4k"))
+
+fname <- file.path(tempdir(), "pbmc4k/raw_gene_bc_matrices/GRCh38")
+pbmc4k.droplet <- DropletUtils::read10xCounts(fname, col.names = TRUE)
+```
+
+## runDropletQC
+
+Description of droplet QC. 
+
+```{r rundropletqc, eval=TRUE, message = FALSE}
+pbmc4k.droplet <- runDropletQC(pbmc4k.droplet)
+```
+
+When quality control functions are run in singleCellTK, the output of the function is stored in the `colData` slot of the `SingleCellExperiment` object.
+
+```{r, coldata_drop, echo=TRUE, eval=FALSE}
+df.matrix <- head(colData(pbmc4k.droplet), 2)
+df.matrix %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+
+The outputs of runDropletQC are described in detail as follows:
+
+### Detection of empty droplets
+
+#### EmptyDrops
+
+It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the [EmptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) algorithm from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package to test for empty droplets. In runEmptyDrops, the lower parameter is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets. The niters parameter is the number of iterations the function will run for the calculation. testAmbient indicates whether results should be returned for barcodes that have a total UMI count below what is specified in lower.
+
+```{r run_emptydrops, message=FALSE}
+emptyDropsResults <- plotEmptyDropsResults(
+  inSCE = pbmc4k.droplet,
+  axisLabelSize = 20,
+  sample = NULL,
+  fdrCutoff = 0.01,
+  dotSize = 0.5,
+  defaultTheme = TRUE
+)
+```
+
+To visualize the empty droplet, we will plot the total UMI counts against the log probability for each barcode.
+
+```{r scatter_emptydrops}
+emptyDropsResults$scatterEmptyDrops
+```
+
+`r description_runEmptyDrops$runEmptyDrops`
+`r description_runEmptyDrops$parameter`
+
+```{r runemptydrops, eval = FALSE}
+pbmc4k.droplet <- runEmptyDrops(
+  inSCE = pbmc4k.droplet,
+  useAssay = "counts",
+  lower = 100,
+  niters = 10000
+)
+```
+
+#### BarcodeRanks
+
+[BarcodeRanks](https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html) from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The lower parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.
+
+```{r run_kneeplot_barcoderank}
+plotBarcodeRankScatter(
+  inSCE = pbmc4k.droplet,
+  title = "BarcodeRanks Rank Plot",
+  legendSize = 14
+)
+```
+
+The total UMI count of each barcode is plotted against its rank, where we see a steep dropoff of UMI counts around the inflection point, where we see a separation between cell containing and empty droplets.
+
+`r description_runBarcodeRank$runBarcodeRankDrops`
+
+`r description_runBarcodeRank$parameter`
+
+```{r run_barcoderanks, message=FALSE}
+pbmc4k.droplet <- runBarcodeRankDrops(
+  inSCE = pbmc4k.droplet,
+  useAssay = "counts",
+  fitBounds = NULL, df = 20
+)
+```
+
+
+## runCellQC
+
+### Load PBMC data from 10X
+
+We will use a filtered form of the PBMC 3K and 6K dataset from the package [TENxPBMCData](http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html), which is available from the `importExampleData` function. We will combine these datasets together into a single SingleCellExperiment object.
+
+To load your own input data, please refer [Import data into SCTK](./import_scRNAseq_data_as_SCE_Console.html) for deailed instruction. 
+
+```{r load_data2, eval=TRUE, message=FALSE}
+pbmc3k <- importExampleData(dataset = "pbmc3k")
+pbmc6k <- importExampleData(dataset = "pbmc6k")
+
+pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
+
+sample.vector = colData(pbmc.combined)$sample
+```
+
+### Run Dimensionality Reduction
+
+SCTK utilizes dimensionality reduction techniques such as TSNE and UMAP for visualizing single-cell data. The user can modify the dimensions by adjusting the parameters within the function. The `logNorm` parameter should be set to TRUE for normalization prior to running dimensionality reduction.
+
+```{r dimensionalityreduction, eval=TRUE, warning=FALSE, message=FALSE}
+# UMAP:
+pbmc.combined <- getUMAP(inSCE = pbmc.combined, useAssay = "counts", logNorm = TRUE, sample = sample.vector)
+
+```
+
+### runCellQC 
+
+`r description_runCellQC$introduction`
+
+Users may set a `sample` parameter if you would like to compare between multiple samples.
+
+`r description_runPerCellQC$geneSet`
+
+```{r load_geneset, eval=TRUE,  message = FALSE}
+pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = "~/Git/singleCellTK/inst/extdata/mito_subset.gmt")
+
+pbmc.combined <- runCellQC(pbmc.combined, sample = sample.vector, collectionName = "mito")
+```
+
+`r description_runCellQC$algorithms`
+
+When quality control functions are run in singleCellTK, the output of the function is stored in the `colData` slot of the `SingleCellExperiment` object.
+
+```{r, eval=TRUE, echo = FALSE}
+df.matrix <- head(colData(pbmc.combined), 2)
+df.matrix %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+
+A summary of all outputs is shown below:
+```{r table2, fig.wide = TRUE, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "
+| QC output                              | Description                                                   | Methods           | Package/Tool  |
+|----------------------------------------|:-------------------------------------------------------------:|------------------:|--------------:|
+| sum                                    | Total counts                                                  | runPerCellQC      | scater        |
+| detected                               | Total features                                                | runPerCellQC      | scater        |
+| percent_top                            | % Expression coming from top features                         | runPerCellQC      | scater        |
+| subsets_                               | sum, detected, percent_top calculated on specified gene list  | runPerCellQC      | scater        |
+| scrublet_score                         | Doublet score                                                 | runScrublet       | scrublet      |
+| scrublet_call                          | Doublet classification based on threshold                     | runScrublet       | scrublet      |
+| scran_doubletCells_score               | Doublet score                                                 | runDoubletCells   | scran         |
+| doubletFinder_doublet_score            | Doublet score                                                 | runDoubletFinder  | DoubletFinder |
+| doubletFinder_doublet_label_resolution | Doublet classification based on threshold                     | runDoubletFinder  | DoubletFinder |
+| scds_cxds_score                        | Doublet score                                                 | runCxds           | SCDS          |
+| scds_cxds_call                         | Doublet classification based on threshold                     | runCxds           | SCDS          |
+| scds_bcds_score                        | Doublet score                                                 | runBcds           | SCDS          |
+| scds_bcds_call                         | Doublet classification based on threshold                     | runBcds           | SCDS          |
+| scds_hybrid_score                      | Doublet score                                                 | runCxdsBcdsHybrid | SCDS          |
+| scds_hybrid_call                       | Doublet classification based on threshold                     | runCxdsBcdsHybrid | SCDS          |
+| decontX_contamination                  | Ambient RNA contamination                                     | runDecontX        | celda         |
+| decontX_clusters                       | Clusters determined in dataset based on underlying algorithm  | runDecontX        | celda         |
+"
+cat(tabl)
+```
+
+The names of the reducedDims of the `SingleCellExperiment` object are stored in the `reducedDims` slot.
+
+```{r, reduceddimnames_cell}
+reducedDims(pbmc.combined)
+```
+
+The outputs of runDropletQC, as well as the parameters to individual QC functions are described in detail as follows:
+
+#### General QC metrics: runPerCellQC
+
+`r description_runPerCellQC$introduction`
+
+`r description_runPerCellQC$output`
+`r description_runPerCellQC$plotRunPerCellQCResults`
+
+```{r plot_percellqc}
+runpercellqc.results <- plotRunPerCellQCResults(inSCE = pbmc.combined, sample = sample.vector, combinePlot = TRUE)
+```
+
+`r description_runPerCellQC$sum`
+
+`r description_runPerCellQC$detected`
+
+`r description_runPerCellQC$percentTop`
+
+`r description_runPerCellQC$subsets`
+
+```{r fig.wide = TRUE, fig.height = 21, fig.width = 15}
+runpercellqc.results
+```
+
+`r description_runPerCellQC$runPerCellQC`
+
+`r description_runPerCellQC$parameter`
+
+`r description_runPerCellQC$geneSet`
+
+```{r, eval=FALSE, message=FALSE}
+pbmc.combined <- runPerCellQC(
+  inSCE = pbmc.combined,
+  useAssay = "counts",
+  collectionName = "mito")
+```
+
+
+#### Doublet detection
+

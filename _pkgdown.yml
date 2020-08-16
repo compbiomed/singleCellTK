@@ -57,7 +57,7 @@ navbar:
     - text: "Shell Command Line Analysis"
       menu:
         - text: "Import data into SCTK"
-          href: articles/import_scRNAseq_data_as_SCE.html
+          href: articles/import_scRNAseq_data_as_SCE_Commandline.html
         - text: "Quality Control"
           href: articles/run_qc.html
     - text: "R Console Analysis"
