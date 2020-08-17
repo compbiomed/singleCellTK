@@ -937,7 +937,7 @@ plotDoubletCellsResults <- function(inSCE,
   }
 
   if (logScore) {
-    colData(inSCE)$scran_doubletCells_Score <- log10(colData(inSCE)$scran_doubletCells_Score + 1)
+    colData(inSCE)$scran_doubletCells_score <- log10(colData(inSCE)$scran_doubletCells_score + 1)
     titleDoubletCells <- "DoubletCells Doublet Score, log10"
   } else {
     titleDoubletCells <- "DoubletCells Doublet Score"
@@ -989,7 +989,7 @@ plotDoubletCellsResults <- function(inSCE,
     scatterScore <- list(scatter_doubletScore = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="scran_doubletCells_Score",
+      colorBy="scran_doubletCells_score",
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,
@@ -1232,32 +1232,34 @@ plotCxdsResults <- function(inSCE,
         res.list = c(res.list, violinScore)
     }
 
-    scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
-        inSCE=inSCESub,
-        sample=sampleSub,
-        colorBy="scds_cxds_call",
-        conditionClass="factor",
-        shape=shape,
-        reducedDimName=reducedDimName,
-        xlab=xlab,
-        ylab=ylab,
-        dim1=dim1,
-        dim2=dim2,
-        bin=bin,
-        binLabel=binLabel,
-        dotSize=dotSize,
-        transparency=transparency,
-        colorScale = c("lightgray","red"),
-        defaultTheme=defaultTheme,
-        title="CXDS Doublet Assignment",
-        titleSize=titleSize,
-        axisSize=axisSize, axisLabelSize=axisLabelSize,
-        labelClusters=FALSE,
-        legendTitle="Doublet \nAssignment",
-        legendTitleSize=16,
-        legendSize=15
-    ))
-    res.list <- c(res.list, scatterCall)
+    if("scds_cxds_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+          inSCE=inSCESub,
+          sample=sampleSub,
+          colorBy="scds_cxds_call",
+          conditionClass="factor",
+          shape=shape,
+          reducedDimName=reducedDimName,
+          xlab=xlab,
+          ylab=ylab,
+          dim1=dim1,
+          dim2=dim2,
+          bin=bin,
+          binLabel=binLabel,
+          dotSize=dotSize,
+          transparency=transparency,
+          colorScale = c("lightgray","red"),
+          defaultTheme=defaultTheme,
+          title="CXDS Doublet Assignment",
+          titleSize=titleSize,
+          axisSize=axisSize, axisLabelSize=axisLabelSize,
+          labelClusters=FALSE,
+          legendTitle="Doublet \nAssignment",
+          legendTitleSize=16,
+          legendSize=15
+      ))
+      res.list <- c(res.list, scatterCall)
+    }
     return(res.list)
   })
   if (length(unique(samples)) > 1) {
@@ -1451,32 +1453,34 @@ plotBcdsResults <- function(inSCE,
         res.list <- c(res.list, violinScore)
     }
 
-    scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
-        inSCE=inSCESub,
-        sample=sampleSub,
-        colorBy="scds_bcds_call",
-        conditionClass="factor",
-        shape=shape,
-        reducedDimName=reducedDimName,
-        xlab=xlab,
-        ylab=ylab,
-        dim1=dim1,
-        dim2=dim2,
-        bin=bin,
-        binLabel=binLabel,
-        dotSize=dotSize,
-        transparency=transparency,
-        colorScale = c("lightgray","red"),
-        defaultTheme=defaultTheme,
-        title="BCDS Doublet Assignment",
-        titleSize=titleSize,
-        axisSize=axisSize, axisLabelSize=axisLabelSize,
-        labelClusters=FALSE,
-        legendTitle="Doublet \nAssignment",
-        legendTitleSize=16,
-        legendSize=15
-    ))
-    res.list <- c(res.list, scatterCall)
+    if("scds_bcds_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+          inSCE=inSCESub,
+          sample=sampleSub,
+          colorBy="scds_bcds_call",
+          conditionClass="factor",
+          shape=shape,
+          reducedDimName=reducedDimName,
+          xlab=xlab,
+          ylab=ylab,
+          dim1=dim1,
+          dim2=dim2,
+          bin=bin,
+          binLabel=binLabel,
+          dotSize=dotSize,
+          transparency=transparency,
+          colorScale = c("lightgray","red"),
+          defaultTheme=defaultTheme,
+          title="BCDS Doublet Assignment",
+          titleSize=titleSize,
+          axisSize=axisSize, axisLabelSize=axisLabelSize,
+          labelClusters=FALSE,
+          legendTitle="Doublet \nAssignment",
+          legendTitleSize=16,
+          legendSize=15
+      ))
+      res.list <- c(res.list, scatterCall)
+    }
 
     return(res.list)
   })
@@ -1671,7 +1675,8 @@ plotScdsHybridResults <- function(inSCE,
         res.list = c(res.list, violinScore)
     }
 
-    scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+    if("scds_hybrid_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
         inSCE=inSCESub,
         sample=sampleSub,
         colorBy="scds_hybrid_call",
@@ -1695,8 +1700,10 @@ plotScdsHybridResults <- function(inSCE,
         legendTitle="Doublet \nAssignment",
         legendTitleSize=16,
         legendSize=15
-    ))
-    res.list <- c(res.list, scatterCall)
+      ))
+      res.list <- c(res.list, scatterCall)
+    }
+
     return(res.list)
   })
 
