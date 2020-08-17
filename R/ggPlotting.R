@@ -2213,14 +2213,19 @@ plotSCEBarAssayData <- function(inSCE,
     return(value.bin)
 }
 
-.ggSCTKCombinePlots <- function(plotlist, ncols = NULL){
+.ggSCTKCombinePlots <- function(plotlist, ncols = NULL,
+                                relHeights = 1, relWidths = 1, labels = NULL){
   list.ix = which(lapply(plotlist, class) == "list")
   if(length(list.ix) > 0){
-    plotlist.sub = plotlist[list.ix]
-    plotlist.sub = do.call(c, plotlist.sub)
-    plotlist.sub = list(cowplot::plot_grid(plotlist = plotlist.sub,
-                                           nrow = length(list.ix)))
-
+    plotlist.sub <- lapply(list.ix, function(x){
+        return(cowplot::plot_grid(plotlist = plotlist[[x]],
+                                 align = "h", nrow = 1,
+                                 labels = names(list.ix[list.ix == x]),
+                                 label_size = 20,
+                                 vjust = 0
+                                 #label_x = -0.5
+                                 ))
+    })
     plotlist[list.ix] <- NULL
     plotlist = c(plotlist, plotlist.sub)
     ncols = 1
@@ -2230,5 +2235,8 @@ plotSCEBarAssayData <- function(inSCE,
     ncols = round(sqrt(length(plotlist)))
   }
   return(cowplot::plot_grid(plotlist = plotlist,
-                            ncol = ncols))
+                            ncol = ncols,
+                            rel_heights = relHeights,
+                            rel_widths = relWidths
+                            ))
 }
