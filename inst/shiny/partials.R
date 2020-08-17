@@ -169,11 +169,16 @@ importCRBDir <- function(failed = FALSE) {
 # }
 
 # creates tabs for results from QC
-showQCResTabs <- function(algoList, statuses) {
-  for (algo in algoList) {
+showQCResTabs <- function(obj, algoList, statuses, plotIds) {
+  for (i in seq_along(algoList)) {
+    algo <- algoList[[i]]
     id <- paste0(algo, "Tab")
     if (is.null(statuses[[algo]])) {
-      appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id)))
+      if (i == 1) {
+        appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id, plotOutput(outputId = plotIds[[algo]]))), select = TRUE)
+      } else {
+        appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id, plotOutput(outputId = plotIds[[algo]]))), select = FALSE)
+      }
     }
   }
 }

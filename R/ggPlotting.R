@@ -2223,7 +2223,6 @@ plotSCEBarAssayData <- function(inSCE,
                                  labels = names(list.ix[list.ix == x]),
                                  label_size = 20,
                                  vjust = 0
-                                 #label_x = -0.5
                                  ))
     })
     plotlist[list.ix] <- NULL

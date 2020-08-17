@@ -189,7 +189,6 @@ plotRunPerCellQCResults <- function(inSCE,
           groupby=groupby,
           violin=violin,
           boxplot=boxplot,
-          summary="median",
           dots=dots,
           transparency=transparency,
           axisSize=axisSize,
@@ -632,12 +631,12 @@ plotDoubletFinderResults <- function(inSCE,
   }
   samples <- unique(sample)
   df.scores <- grep(
-    pattern="doubletFinder_doublet_score_resolution_",
+    pattern="doubletFinder_doublet_score_Resolution_",
     names(colData(inSCE)), value=TRUE
   )
 
   df.labels <- grep(
-    pattern="doubletFinder_doublet_label_resolution_",
+    pattern="doubletFinder_doublet_label_Resolution_",
     names(colData(inSCE)), value=TRUE
   )
   if (length(samples) > 1) {
@@ -660,7 +659,7 @@ plotDoubletFinderResults <- function(inSCE,
         title=paste(
           "DoubletFinder Score Resolution",
           gsub(
-            pattern="doubletFinder_doublet_score_resolution_",
+            pattern="doubletFinder_doublet_score_Resolution_",
             "", x
           )
         ),
@@ -749,7 +748,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
 
     names(scatterScore) <- sapply(df.scores, function(x) {
-      paste0("scatter_score_", gsub(
+      paste0("Scatter_Score_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
@@ -823,7 +822,7 @@ plotDoubletFinderResults <- function(inSCE,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         labelClusters=FALSE,
-        legendTitle="Doublet Label",
+        legendTitle="Doublet Score",
         legendSize=legendSize,
         legendTitleSize=legendTitleSize
       )
@@ -938,7 +937,7 @@ plotDoubletCellsResults <- function(inSCE,
   }
 
   if (logScore) {
-    colData(inSCE)$scran_doubletCells_score <- log10(colData(inSCE)$scran_doubletCells_score + 1)
+    colData(inSCE)$scran_doubletCells_Score <- log10(colData(inSCE)$scran_doubletCells_Score + 1)
     titleDoubletCells <- "DoubletCells Doublet Score, log10"
   } else {
     titleDoubletCells <- "DoubletCells Doublet Score"
@@ -948,7 +947,7 @@ plotDoubletCellsResults <- function(inSCE,
   if (length(samples) > 1) {
     merged.plots <- plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="scran_doubletCells_score",
+      coldata="scran_doubletCells_Score",
       groupby=sample,
       xlab="",
       ylab="Doublet Score",
@@ -990,7 +989,7 @@ plotDoubletCellsResults <- function(inSCE,
     scatterScore <- list(scatter_doubletScore = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="scran_doubletCells_score",
+      colorBy="scran_doubletCells_Score",
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,

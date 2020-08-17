@@ -230,13 +230,21 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @param algorithm selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use \code{louvain} for "original Louvain algorithm" and \code{multilevel} for "Louvain algorithm with multilevel refinement". Default \code{louvain}.
 #' @param groupSingletons boolean if singletons should be grouped together or not. Default \code{TRUE}.
 #' @param resolution Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
 #' @return Updated sce object which now contains the computed clusters
 #' @export
-seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8) {
+seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8, externalReduction = NULL) {
+    
+  
     algorithm <- match.arg(algorithm)
     useReduction <- match.arg(useReduction)
     
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+    
+    if(!is.null(externalReduction)){
+      seuratObject@reductions <- list(pca = externalReduction)
+    }
+    
     seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction, dims = seq(dims))
     no_algorithm <- 1
     if (algorithm == "louvain") {
@@ -602,7 +610,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   
   #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
-  assay(altExp(inSCE, newAssayName), newAssayName) <- counts 
+  assay(altExp(inSCE, newAssayName), newAssayName) <- counts
   
   return(inSCE)
 }

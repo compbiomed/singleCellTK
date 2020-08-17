@@ -151,10 +151,19 @@ shinyPanelQC <- fluidPage(
           h4("General Paramters"),
           selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select a Sample", list()),
+          numericInput("qcSeed", "Enter a seed value (default 12345)", 12345),
           
           withBusyIndicatorUI(actionButton("runQC", "Run")),
           tags$div(id = "qcPageErrors"),
           
+          shinyjs::hidden(
+            tags$div(id = "qcPlotSection",
+                     tags$hr(), # start plot subsection
+                     h4("Plot Parameters"),
+                     selectInput("qcPlotRedDim", "Select an ReducedDim obejct", list()),
+                     withBusyIndicatorUI(actionButton("plotQC", "Plot")),
+            )
+          ),
         ),
         mainPanel(
           tabsetPanel(
