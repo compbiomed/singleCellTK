@@ -57,7 +57,7 @@ The reason is we assume that users are likely to perform multiple batches of ana
 
 To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
 
-```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE}
+```{R de_prep, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 library(singleCellTK)
 pbmc3k <- importExampleData("pbmc3k")
 pbmc3k <- scater_logNormCounts(pbmc3k, "logcounts")

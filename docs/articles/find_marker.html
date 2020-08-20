@@ -197,17 +197,8 @@
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span>(<span class="no">pbmc3k</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)</pre></body></html></div>
-<pre><code>## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-## 
-## Number of nodes: 2700
-## Number of edges: 98240
-## 
-## Running Louvain algorithm...
-## Maximum modularity in 10 random starts: 0.8279
-## Number of communities: 11
-## Elapsed time: 0 seconds</code></pre>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Optional visualization</span>
+<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="co"># Optional visualization</span>
 <span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
                         <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
                         <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
@@ -218,12 +209,12 @@
 <h4 class="hasAnchor">
 <a href="#get-markers" class="anchor"></a>Get Markers</h4>
 <p>Then we call <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code> on the clustered data, with the cluster annotation just attached, which by default named with <code>"Seurat_louvain_Resolution0.8"</code>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
                             <span class="kw">method</span> <span class="kw">=</span> <span class="st">"Limma"</span>, <span class="co"># Runs fastest</span>
                             <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>, <span class="co"># Recommanded for Limma, "logcounts" for the others</span>
                             <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>)</pre></body></html></div>
 <p>After this, the marker genes, together with their statistics, of each cluster will be concatenated in one table. This table can be extracted with:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">markerTable</span>)</pre></body></html></div>
 <table class="table table table-striped table-hover">
 <thead><tr>
@@ -369,35 +360,7 @@ CD3E
 </tbody>
 </table>
 <p>Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=9' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=9' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=7' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=7' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=5' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=5' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=1' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=1' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=13' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=13' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=1' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=1' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=6, height=18' are unlikely values in pixels</code></pre>
-<pre><code>## Warning in (function (filename = "Rplot%03d.png", width = 480, height = 480, :
-## 'width=2, height=18' are unlikely values in pixels</code></pre>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
 <p><img src="find_marker_files/figure-html/plotMarkers-1.png" width="864" style="display: block; margin: auto;"></p>
 <p>Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in <code>metadata</code>.</p>
 </div>
