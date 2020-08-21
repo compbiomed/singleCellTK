@@ -82,10 +82,8 @@ navbar:
           href: articles/heatmap.html
     - text: "Shiny UI Analysis"
       menu:
-        - text: "I am Place Holder 1"
-          href: articles/import_scRNAseq_data_as_SCE.html
-        - text: "I am Place Holder 2"
-          href: articles/import_scRNAseq_data_as_SCE.html
+        - text: "Differential Expression"
+          href: articles/ui_differential_expression.html
     - text: "Reference"
       href: reference/index.html
   right:
