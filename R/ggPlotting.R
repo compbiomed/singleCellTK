@@ -1731,6 +1731,17 @@ plotSCEDensity <- function(inSCE,
 #' @param combinePlot Boolean. If multiple plots are generated (multiple
 #'  samples, etc.), will combined plots using `cowplot::plot_grid`.
 #'  Default TRUE.
+#' @param relHeights Relative heights of plots when combine is set.
+#' @param relWidths Relative widths of plots when combine is set.
+#' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
+#'  as the labels. If set to "none", no label will be plotted.
+#' @param plotLabelSize size of labels
+#' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
+#'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
+#' @param sampleRelHeights If there are multiple samples and combining by "all",
+#'  the relative heights for each plot.
+#' @param sampleRelWidths If there are multiple samples and combining by "all",
+#'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -1750,7 +1761,15 @@ plotEmptyDropsScatter <- function(inSCE,
                                   legendTitle = NULL,
                                   legendTitleSize = 12,
                                   legendSize = 10,
-                                  combinePlot = TRUE){
+                                  combinePlot = TRUE,
+                                  relHeights=1,
+                                  relWidths=1,
+                                  plotLabels = "default",
+                                  plotLabelSize = 20,
+                                  samplePerColumn = TRUE,
+                                  sampleRelHeights = 1,
+                                  sampleRelWidths = 1
+                                  ){
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop(
@@ -1824,9 +1843,18 @@ plotEmptyDropsScatter <- function(inSCE,
         return(p)
     })
     ##Needs to be turned off for Shiny User Interface
-    if(combinePlot){
-        plotlist <- .ggSCTKCombinePlots(plotlist,
-                                        ncols = 1)
+    if(!is.null(combinePlot)){
+      if(combinePlot %in% c("all", "sample")){
+          plotlist <- .ggSCTKCombinePlots(plotlist,
+                                          combinePlot = combinePlot,
+                                          relHeights = relHeights,
+                                          relWidths = relWidths,
+                                          labels = plotLabels,
+                                          labelSize = plotLabelSize,
+                                          samplePerColumn = samplePerColumn,
+                                          sampleRelHeights = sampleRelHeights,
+                                          sampleRelWidths = sampleRelWidths)
+      }
     }
     return(plotlist)
 }
@@ -2213,29 +2241,60 @@ plotSCEBarAssayData <- function(inSCE,
     return(value.bin)
 }
 
-.ggSCTKCombinePlots <- function(plotlist, ncols = NULL,
-                                relHeights = 1, relWidths = 1, labels = NULL){
-  list.ix = which(lapply(plotlist, class) == "list")
-  if(length(list.ix) > 0){
-    plotlist.sub <- lapply(list.ix, function(x){
-        return(cowplot::plot_grid(plotlist = plotlist[[x]],
-                                 align = "h", nrow = 1,
-                                 labels = names(list.ix[list.ix == x]),
-                                 label_size = 20,
-                                 vjust = 0
-                                 ))
-    })
-    plotlist[list.ix] <- NULL
-    plotlist = c(plotlist, plotlist.sub)
-    ncols = 1
-  }
+.ggSCTKCombinePlots <- function(plotlist,
+                                ncols = NULL,
+                                nrows = NULL,
+                                combinePlot = "all",
+                                relHeights = 1,
+                                relWidths = 1,
+                                labels = "default",
+                                labelSize = 20,
+                                samplePerColumn = TRUE,
+                                sampleRelHeights = 1,
+                                sampleRelWidths = 1){
+    if("Sample" %in% names(plotlist)){
+        plotlistSample <- plotlist$Sample
+        plotlistViolin <- plotlist$Violin
+        if(samplePerColumn){
+            ncols = 1
+            nrowSub = 1
+            sampleRelHeights = 1
+        }
+        plotlistSample <- lapply(plotlistSample, function(x){
+            return(cowplot::plot_grid(plotlist = x,
+                                      align = "h",
+                                      nrow = nrowSub,
+                                      vjust = 0,
+                                      rel_heights = sampleRelHeights,
+                                      rel_widths = sampleRelWidths))
+        })
+    }
 
-  if(is.null(ncols)){
-    ncols = round(sqrt(length(plotlist)))
-  }
-  return(cowplot::plot_grid(plotlist = plotlist,
-                            ncol = ncols,
-                            rel_heights = relHeights,
-                            rel_widths = relWidths
-                            ))
+    #To make the resulting plot close to a square as possible
+    if(is.null(ncols)){
+        ncols = round(sqrt(length(plotlist)))
+    }
+
+    if(combinePlot == "all"){
+        if("Sample" %in% names(plotlist)){
+            plotlist = c(plotlistViolin, plotlistSample)
+        }
+
+        if(labels == "default"){
+            labels = names(plotlist)
+        }else if(labels == "none"){
+            labels = NULL
+        }
+
+        return(cowplot::plot_grid(plotlist = plotlist,
+                                  ncol = ncols,
+                                  nrow = nrows,
+                                  rel_heights = relHeights,
+                                  rel_widths = relWidths,
+                                  labels = labels,
+                                  label_size = labelSize
+        ))
+    }else if(combinePlot == "sample"){
+        return(list(Violin = plotlistViolin, Sample = plotlistSample))
+    }
 }
