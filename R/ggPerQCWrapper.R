@@ -725,16 +725,16 @@ plotDoubletFinderResults <- function(inSCE,
   }
   samples <- unique(sample)
   df.scores <- grep(
-    pattern="doubletFinder_doublet_score_Resolution_",
+    pattern="doubletFinder_doublet_score_resolution_",
     names(colData(inSCE)), value=TRUE
   )
 
   df.labels <- grep(
-    pattern="doubletFinder_doublet_label_Resolution_",
+    pattern="doubletFinder_doublet_label_resolution_",
     names(colData(inSCE)), value=TRUE
   )
   if (length(samples) > 1) {
-    merged.plots <- list(Score = lapply(df.scores, function(x) {
+    merged.plots <- lapply(df.scores, function(x) {
       plotSCEViolinColData(
         inSCE=inSCE,
         coldata=x,
@@ -760,7 +760,7 @@ plotDoubletFinderResults <- function(inSCE,
         dotSize=dotSize,
         summary="median"
       )
-    }))
+    })
 
     names(merged.plots) <- sapply(df.scores, function(x) {
       paste0("Violin_", gsub(
@@ -769,7 +769,7 @@ plotDoubletFinderResults <- function(inSCE,
       ))
     })
     # merged.plots <- list(merged.plots)
-    names(merged.plots) <- "Violin"
+    merged.plots <- list(Violin = merged.plots)
   }
 
   res.list <- list()
