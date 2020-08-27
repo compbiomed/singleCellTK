@@ -78,7 +78,7 @@
 #'  resulting doublet scores for all cells will be appended to the
 #'  \link[SummarizedExperiment]{colData} of \code{inSCE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
-#'  'scran_doubletCell_Score' column added to the
+#'  'scran_doubletCells_score' column added to the
 #'  \link[SummarizedExperiment]{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
 #'  \url{https://ltla.github.io/SingleCellThoughts/software/
