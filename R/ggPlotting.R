@@ -347,8 +347,8 @@ plotSCEDimReduceColData <- function(inSCE,
                                     reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
-                                    axisSize = 10,
-                                    axisLabelSize = 10,
+                                    axisSize = NULL,
+                                    axisLabelSize = NULL,
                                     dim1 = NULL,
                                     dim2 = NULL,
                                     bin = NULL,
@@ -418,6 +418,8 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
@@ -467,6 +469,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      useAssay = "logcounts",
                                      xlab = NULL,
                                      ylab = NULL,
+                                     axisSize = NULL,
+                                     axisLabelSize = NULL,
                                      dim1 = NULL,
                                      dim2 = NULL,
                                      bin = NULL,
@@ -505,6 +509,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
     reducedDimName = reducedDimName,
     xlab = xlab,
     ylab = ylab,
+    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
     dim1 = dim1,
     dim2 = dim2,
     bin = bin,
@@ -526,7 +532,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @title Dimension reduction plot tool for all types of data
 #' @description Plot results of reduced dimensions data of counts stored in any
 #' slot in the SingleCellExperiment object.
-#'
 #' @param inSCE Input SingleCellExperiment object with saved dimension reduction
 #'  components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -545,6 +550,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  class. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default 10.
+#' @param axisLabelSize Size of x/y-axis labels. Default 10.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
@@ -599,6 +606,8 @@ plotSCEScatter <- function(inSCE,
                            conditionClass = NULL,
                            xlab = NULL,
                            ylab = NULL,
+                           axisSize = NULL,
+                           axisLabelSize = NULL,
                            dim1 = NULL,
                            dim2 = NULL,
                            bin = NULL,
@@ -661,6 +670,8 @@ plotSCEScatter <- function(inSCE,
     reducedDimName = reducedDimName,
     xlab = xlab,
     ylab = ylab,
+    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
     dim1 = dim1,
     dim2 = dim2,
     bin = bin,

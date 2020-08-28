@@ -2623,7 +2623,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)) {
       if(!is.null(reducedDims(vals$counts))) {
         approach_list <- names(reducedDims(vals$counts))
-        if(input$viewertabs == "reducedDims Plot"){
+        if(input$viewertabs == "Scatter Plot"){
           updateSelectInput(session, "QuickAccess",
                             choices = c("", approach_list))
           shinyjs::delay(5,shinyjs::enable("QuickAccess"))
@@ -2698,77 +2698,104 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  hide_TypeSelect <- reactiveVal()
+
   #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
-  observeEvent(input$TypeSelect_Colorby, {
-    if (!is.null(vals$counts)){
-      if (input$TypeSelect_Colorby != 'Pick a Color'){
-        ###If Cell Annotation###############################################################
-        if(input$TypeSelect_Colorby == 'Cell Annotation'){
-          ###If Cell Annotation numeric
-          if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
-            &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::enable("SelectColorType")
-          }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+  observeEvent(input$AnnotationSelect_Colorby, {
+    if(input$TypeSelect_Colorby == 'Cell Annotation'){
+      ###If Cell Annotation numeric
+      if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+          choices = c("Categorical", "Continuous"),
+          selected = "Categorical")
+        #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+        hide_TypeSelect("hide")
+      }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
+        &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+          choices = c("Categorical", "Continuous"),
+          selected = "Categorical")
+        #shinyjs::enable("SelectColorType")
+        hide_TypeSelect("show")
+      }else{
+        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+          choices = c("Categorical", "Continuous"),
+          selected = "Continuous")
+        #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+        hide_TypeSelect("hide")
+      }
+
+    }
+  })
+
+  observeEvent(input$ApproachSelect_Colorby, {
+    if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
+      Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+      if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+        Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+        ###If ReducedData numeric
+        if(!is.numeric(Dfcolor[,1])){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+            choices = c("Categorical", "Continuous"),
+            selected = "Categorical")
+          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+          hide_TypeSelect("hide")
+        }else if(is.integer(Dfcolor[,1])
+          &length(levels(as.factor(Dfcolor[,1])))<=25){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+            choices = c("Categorical", "Continuous"),
+            selected = "Categorical")
+          #shinyjs::enable("SelectColorType")
+          hide_TypeSelect("show")
+        }else{
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
             choices = c("Categorical", "Continuous"),
             selected = "Continuous")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-          ###If ReducedData##########################################################
-        }else if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-          Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
-          if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
-            Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-            ###If ReducedData numeric
-            if(!is.numeric(Dfcolor[,1])){
-              updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-                choices = c("Categorical", "Continuous"),
-                selected = "Categorical")
-              shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-            }else if(is.integer(Dfcolor[,1])
-              &length(levels(as.factor(Dfcolor[,1])))<=25){
-              updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-                choices = c("Categorical", "Continuous"),
-                selected = "Categorical")
-              shinyjs::enable("SelectColorType")
-            }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Continuous")
-              shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-          }
-          ###If Expression Assays###########################################################
-        }else{Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
-        if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
-          Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-          if(!is.numeric(Dfassay[,1])){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          }else if(is.integer(Dfassay[,1])
-            &length(levels(as.factor(Dfassay[,1])))<=25){
-            updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-              choices = c("Categorical", "Continuous"),
-              selected = "Categorical")
-            shinyjs::enable("SelectColorType")
-          }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-            shinyjs::delay(5,shinyjs::disable("SelectColorType"))}
-        }
+          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+          hide_TypeSelect("hide")
         }
       }
     }
-  })###observe_end
+  })
+
+
+  observeEvent(input$GeneSelect_Assays_Colorby, {
+    if(input$TypeSelect_Colorby == "Expression Assays"){
+      Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+      if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+        Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+        if(!is.numeric(Dfassay[,1])){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+            choices = c("Categorical", "Continuous"),
+            selected = "Categorical")
+          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+          hide_TypeSelect("hide")
+        }else if(is.integer(Dfassay[,1])
+          &length(levels(as.factor(Dfassay[,1])))<=25){
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+            choices = c("Categorical", "Continuous"),
+            selected = "Categorical")
+          #shinyjs::enable("SelectColorType")
+          hide_TypeSelect("show")
+        }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+          choices = c("Categorical", "Continuous"),
+          selected = "Continuous")
+          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
+          hide_TypeSelect("hide")
+        }
+      }
+    }
+  })
+
+  output$hide_typebtns <- renderText({
+    hide_TypeSelect()
+  })
+
+  outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
+
   ###Observe Check Box Check Binning & Text Input Number of Bins:
-  observeEvent(input$checkColorbinning, {
+  observeEvent(input$SelectColorType, {
     if (!is.null(vals$counts)){
       ###If Cell Annotation###############################################################
       if(input$TypeSelect_Colorby != 'Pick a Color'){
@@ -2949,40 +2976,58 @@ shinyServer(function(input, output, session) {
     }else{
       pltVars$bin <- NULL
     }
+    if (input$SelectColorType == "Categorical"){
+      pltVars$class <- "factor"
+    }else{
+      pltVars$class <- "numeric"
+    }
 
-    if(input$viewertabs == "reducedDims Plot"){
-      if(input$TypeSelect_Colorby == "Default Color"){
+    if(input$viewertabs == "Scatter Plot"){
+      if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
+          conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
           reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
           groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
-          dotSize = input$adjustsize, combinePlot = FALSE)
+          dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+          axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
+          legendTitleSize = input$adjustlegendtitlesize)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
         a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
           colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin,
-          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
+          conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
           annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha,
           groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
           xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
-          combinePlot = FALSE)
+          combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
         a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
           useAssay = input$AdvancedMethodSelect_Yaxis, groupby = pltVars$groupby,
           feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
-          dotSize = input$adjustsize, combinePlot = FALSE)
+          dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+          axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
+          legendTitleSize = input$adjustlegendtitlesize, conditionClass = pltVars$class)
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
           coldata = input$AnnotationSelect_Yaxis, groupby = pltVars$groupby,
-          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
@@ -2990,52 +3035,33 @@ shinyServer(function(input, output, session) {
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
-            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+            axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
             box = TRUE, groupby = pltVars$groupby, transparency = input$adjustalpha,
-            dotSize = input$adjustsize, combinePlot = FALSE)
+            dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+            axisLabelSize = input$adjustaxislabelsize)
         }
       }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
             feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
-            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE)
+            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+            axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
             box = FALSE, groupby = pltVars$groupby, transparency = input$adjustalpha,
-            dotSize = input$adjustsize, combinePlot = FALSE)
+            dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+            axisLabelSize = input$adjustaxislabelsize)
         }
       }
     }
     plotly::subplot(plotlist = a)
   })
-    #else if(input$viewertabs == "Scatter Plot"){
-    #  if(input$TypeSelect_Colorby == "Pick a Color"){
-    #    a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
-    #      xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-    #      transparency = input$adjustalpha, dotSize = input$adjustsize)
-    #ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-    # }
-          #  if(input$TypeSelect_Colorby == "Expression Assays"){
-    #    a <- plotSCEScatter(vals$counts, slot = "assays", xlab = xname, ylab = yname,
-    #      feature = input$GeneSelect_Assays_Colorby, reducedDimName = input$QuickAccess,
-    #      annotation = input$AdvancedMethodSelect_Colorby, legendTitle = legendname,
-    #      title = input$adjusttitle, bin = pltVars$bin)
-    #    ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-    #  }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-    #    a <- plotSCEScatter(vals$counts, slot = "colData", xlab = xname, ylab = yname,
-    #      annotation = input$AnnotationSelect_Colorby, reducedDimName = input$QuickAccess,
-    #      legendTitle = legendname, title = input$adjusttitle, bin = pltVars$bin)
-    #    ggplotly(a, tooltip = c("X_input", "Y_input"), height = 600)
-    #  }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
-    #  }else if(input$TypeSelect_Colorby == "Pick a Color"){
-    #  }
-
-  #})#Cellviewer_end
   output$scatter <- renderPlotly({cellviewer()})
   #
   #

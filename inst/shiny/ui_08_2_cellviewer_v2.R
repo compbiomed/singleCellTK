@@ -3,7 +3,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   h1("Cell Viewer"),
   radioGroupButtons(
     "viewertabs",
-    choices = c("reducedDims Plot", "Bar Plot", "Violin/Box Plot"),
+    choices = c("Scatter Plot", "Bar Plot", "Violin/Box Plot"),
     selected = NULL
   ),
   fluidRow(column(
@@ -121,15 +121,15 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         id = "cv_collapse2",
         selectInput(
           'TypeSelect_Colorby', h5(strong('Color By')), choices = c(
-            "Default Color",
+            "Single Color",
             "Reduced Dimensions",
             "Expression Assays",
             "Cell Annotation"
           ),
         ),
-        # Default color condition
+        # Single Color condition
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'Default Color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['%s'] == 'Single Color'", "TypeSelect_Colorby"),
           colourInput("Col", "", "purple", palette = 'limited')
         ),
         #Reduced Dimensions condition
@@ -170,7 +170,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
 
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Default Color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
           radioButtons(
             "SelectColorType",
             label = NULL,
@@ -180,7 +180,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           conditionalPanel(
             id="binningConditional",
             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            # checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
+            #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE),
             h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
             switchInput(
               inputId = "checkColorbinning",
@@ -265,6 +265,20 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           strong("Legend title:")
         ))),
         column(6, sliderInput(
+          "adjustlegendtitlesize",
+          h5(strong("Legend title size:")),
+          min = 1,
+          max = 20,
+          value = 12
+        )),
+        column(6, sliderInput(
+          "adjustlegendsize",
+          h5(strong("Legend size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(6, sliderInput(
           "adjustalpha",
           h5(strong("Opacity:")),
           min = 0,
@@ -273,7 +287,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         )),
         column(6, sliderInput(
           "adjustsize",
-          h5(strong("Size:")),
+          h5(strong("Dot size:")),
           min = 0.1,
           max = 0.8,
           value = 0.45
@@ -283,7 +297,21 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         ))),
         column(6, textInput("adjustylab", h5(
           strong("Y-axis label:")
-        )))
+        ))),
+        column(6, sliderInput(
+          "adjustaxissize",
+          h5(strong("Axis size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(6, sliderInput(
+          "adjustaxislabelsize",
+          h5(strong("Axis label size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        ))
       )
     )
   ))
