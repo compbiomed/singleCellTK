@@ -23,11 +23,11 @@
 #' al. Nat. Neuroscience 2017. This contains information such as the diet of the mice, 
 #' sex and proposed cell type for each cell.
 #'
-#' @name campBrainSubsetSCE
+#' @name campbellBrainSubset
 #' @docType data
 #' @format SCtkExperiment
 #' @source DOI: 10.1038/nn.4495
 #' @keywords datasets
 #' @examples
 #' data("campBrainSubsetSCE")
-"campBrainSubsetSCE"
+"campbellBrainSubset"

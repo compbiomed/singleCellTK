@@ -1,4 +1,4 @@
-exampleDatasets <- c("mouseBrainSubset", "maits", "campBrainSubset")
+exampleDatasets <- c("mouseBrainSubset", "maits", "campbellBrainSubset")
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets, "fluidigm_pollen_et_al",
                        "th2_mahata_et_al", "allen_tasic_et_al")
@@ -135,9 +135,9 @@ shinyPanelUpload <- fluidPage(
         tags$br()
       ),
       conditionalPanel(
-        condition = sprintf("input['%s'] == 'campBrainSubset'", "selectExampleData"),
-        h3(tags$a(href = "https://doi.org/10.1038/nn.4495", "500 cells from Campbell et. al, 2017, Mouse Brain Subset", target = "_blank")),
-        "A subset of 500 cells from a single cell RNA-Seq experiment from Campbell, et al. Nature Neuroscience 2017 using droplet-based sequencing technology. This study was perfomed to identify various hypothalamic arcuate–median eminence complex (Arc-ME) cell types. This contains information such as the diet of the mice, sex and proposed cell type for each cell. ",
+        condition = sprintf("input['%s'] == 'campbellBrainSubset'", "selectExampleData"),
+        h3(tags$a(href = "https://doi.org/10.1038/nn.4495", "200 cells from Campbell et. al, 2017, Mouse Brain Subset", target = "_blank")),
+        "A subset of 200 cells from a single cell RNA-Seq experiment from Campbell, et al. Nature Neuroscience 2017 using droplet-based sequencing technology. This study was perfomed to identify various hypothalamic arcuate–median eminence complex (Arc-ME) cell types. This contains information such as the diet of the mice, sex and proposed cell type for each cell. ",
         tags$br(),
         tags$br()
       ),
