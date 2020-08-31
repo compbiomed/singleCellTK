@@ -200,7 +200,6 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
     choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
   }
   
-  print(choices)
   return(choices)
 }
 
@@ -208,6 +207,81 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 # QC/Filtering #
 #--------------#
+
+combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds) {
+  if (combineP) {
+    output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
+  } else {
+    # print("in ELSE")
+    pageID <- paste0(algo, "Tab") # for the fluid page within a tab
+    tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
+    # print(plotIds[[algo]])
+    removeUI(selector = paste0("#", plotIds[[algo]]))
+    insertUI(
+      selector = paste0("#", pageID),
+      ui = tabsetPanel(id = tabsetID)
+    )
+    for (i in seq_along(sampleList)) {
+      s <- sampleList[[i]]
+      sID <- paste(c(algo, s, "Tab"), collapse = "")
+      subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
+      # print(tabsetID)
+      if (i == 1) {
+        appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
+      } else {
+        appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
+      }
+      # print(c("subPlot", subPlotID))
+      output[[subPlotID]] <- renderPlot(ggSCTKCombinePlots(plots[[s]]), height = 800)
+    }
+  }
+}
+
+arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
+  uniqueSampleNames <- unique(sampleList)
+  combineP <- T
+  if (length(uniqueSampleNames) > 1) {
+    combineP <- F
+  }
+  for (a in algoList) {
+    statuses[[a]] <- "tab"
+    if (a == "doubletCells") {
+      dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                     reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs)
+    } else if (a == "cxds") {
+      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                             reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs)
+    } else if (a == "bcds") {
+      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                             reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs)
+    } else if (a == "cxds_bcds_hybrid") {
+      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                     reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs)
+    } else if (a == "decontX") {
+      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs)
+    } else if (a == "QCMetrics") {
+      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs)
+      
+    } else if (a == "scrublet") {
+      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs)
+      
+    } else if (a == "doubletFinder") {
+      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                      reducedDimName = redDimName)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs)
+    }
+  }
+}
+
 
 findOverlapping <- function(arr1, arr2) {
   filter <- vector()
@@ -219,15 +293,6 @@ findOverlapping <- function(arr1, arr2) {
     }
   }
   return(arr1[filter])
-}
-
-qcInputExists <- function() {
-  for (algo in qc_choice_list) {
-    if (input[[algo]]) {
-      return(TRUE)
-    }
-  }
-  return(FALSE)
 }
 
 addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col') {

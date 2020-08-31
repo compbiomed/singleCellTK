@@ -80,17 +80,25 @@ getUMAP <- function(inSCE, useAssay = "counts",
         sceSample <- inSCE[, sceSampleInd]
         if(logNorm){
 	    sceSample <- scater_logNormCounts(sceSample, useAssay = useAssay)
-            useAssayTemp = "ScaterLogNormCounts"            
+            useAssayTemp = "ScaterLogNormCounts"
         }
 
         matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
         matColData <- as.matrix(matColData)
 
         if (isTRUE(pca)) {
+          if(initialDims > ncol(matColData)){
+            doPCA <- ncol(matColData)
+          }else{
             doPCA <- initialDims
+          }
         } else {
             doPCA <- NULL
         }
+        if(nNeighbors > ncol(matColData)){
+          nNeighbors <- ncol(matColData)
+        }
+
         umapRes <- uwot::umap(t(matColData), n_neighbors = nNeighbors,
                               learning_rate = alpha,
                               min_dist = minDist, spread = spread,
