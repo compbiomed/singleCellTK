@@ -329,7 +329,9 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
         cellAnnotationColor <- list(condition = kCol)
     }
     if(!is.null(colDataName)){
-        colDataName <- colDataName[-which(colDataName %in% result$annotation)]
+        if (length(which(colDataName %in% result$annotation)) > 0) {
+          colDataName <- colDataName[-which(colDataName %in% result$annotation)]
+        }
         colDataName <- c(colDataName, result$annotation)
     } else {
         colDataName <- result$annotation
