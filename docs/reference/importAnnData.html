@@ -91,7 +91,10 @@ AnnData samples by concatenating their counts matrices and related information s
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@ AnnData samples by concatenating their counts matrices and related information s
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -124,7 +127,13 @@ AnnData samples by concatenating their counts matrices and related information s
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -234,17 +243,7 @@ There are no known R solutions at present. Refer <a href='https://github.com/rst
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>importAnnData</span>(<span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/annData_pbmc_3k"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>),
-                     <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='st'>'pbmc3k_20by20'</span>)</div><div class='output co'>#&gt; <span class='error'>Error: Python module anndata was not found.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detected Python configuration:</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>python:         /Users/rz2333/Library/r-miniconda/envs/r-reticulate/bin/python</span>
-#&gt; <span class='error'>libpython:      /Users/rz2333/Library/r-miniconda/envs/r-reticulate/lib/libpython3.6m.dylib</span>
-#&gt; <span class='error'>pythonhome:     /Users/rz2333/Library/r-miniconda/envs/r-reticulate:/Users/rz2333/Library/r-miniconda/envs/r-reticulate</span>
-#&gt; <span class='error'>version:        3.6.10 |Anaconda, Inc.| (default, May  7 2020, 23:06:31)  [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]</span>
-#&gt; <span class='error'>numpy:          /Users/rz2333/Library/r-miniconda/envs/r-reticulate/lib/python3.6/site-packages/numpy</span>
-#&gt; <span class='error'>numpy_version:  1.18.5</span>
-#&gt; <span class='error'></span></div></pre>
+                     <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='st'>'pbmc3k_20by20'</span>)</div><div class='output co'>#&gt; <span class='message'>Warning: unable to add unstructured data (.uns slot): 'rank_genes_groups' to SCE metadata. Skipping. </span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

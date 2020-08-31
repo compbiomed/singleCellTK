@@ -1,11 +1,15 @@
-pandoc: '2.3'
+pandoc: 1.19.2.1
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   batch_correction: batch_correction.html
   differential_expression: differential_expression.html
-  import_scRNAseq_data_as_SCE: import_scRNAseq_data_as_SCE.html
+  find_marker: find_marker.html
+  heatmap: heatmap.html
+  import_scRNAseq_data_as_SCE_Commandline: import_scRNAseq_data_as_SCE_Commandline.html
+  import_scRNAseq_data_as_SCE_Console: import_scRNAseq_data_as_SCE_Console.html
   introduction_to_SCTK: introduction_to_SCTK.html
-  run_qc: run_qc.html
-last_built: 2020-08-01T20:58Z
+  run_qcCommandline: run_qcCommandline.html
+  run_qcConsole: run_qcConsole.html
+last_built: 2020-08-26T16:41Z
 

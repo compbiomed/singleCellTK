@@ -48,7 +48,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -63,7 +66,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -127,7 +130,7 @@
 
       
 
-      </header><script src="heatmap_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Heatmap Visualization</h1>
@@ -150,8 +153,9 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>To present the usage of <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code>, we would like to use a small example provided with SCTK.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"scExample"</span>) <span class="co"># This imports SCE object "sce"</span>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)</pre></body></html></div>
+<pre><code>## Warning: package 'SummarizedExperiment' was built under R version 3.6.2</code></pre>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"scExample"</span>) <span class="co"># This imports SCE object "sce"</span>
 <span class="no">sce</span></pre></body></html></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 200 390 
@@ -167,13 +171,13 @@
 ## spikeNames(0):
 ## altExpNames(0):</code></pre>
 <p>The minimum setting for <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input SCE object and the data matrix to plot (default <code>"logcounts"</code> though). In this way, all cells and features will be presented while no annotation or legend (except the main color scheme) will be shown.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)</pre></body></html></div>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)</pre></body></html></div>
 <p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"></p>
 <div id="subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#subsetting" class="anchor"></a>Subsetting</h3>
 <p>The first way to subset the heatmap is to directly use an index vector that can subset the input SCE object to <code>featureIndex</code> and <code>cellIndex</code>, including <code>numeric</code>, and <code>logical</code> vectors, which are widely used, and <code>character</code> vector containing the row/col names. Of course, user can directly use a subsetted SCE object as input.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Make up random downsampling numeric vector</span>
+<div class="sourceCode"><html><body><pre class="r"><span class="co"># Make up random downsampling numeric vector</span>
 <span class="no">featureSubset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">sce</span>), <span class="fl">50</span>)
 <span class="no">cellSubset</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">sce</span>), <span class="fl">50</span>)
 
@@ -181,7 +185,7 @@
                <span class="kw">featureIndex</span> <span class="kw">=</span> <span class="no">featureSubset</span>, <span class="kw">cellIndex</span> <span class="kw">=</span> <span class="no">cellSubset</span>)</pre></body></html></div>
 <p><img src="heatmap_files/figure-html/idxSubset-1.png" width="700"></p>
 <p>In a more complexed situation, where users might only have a set of identifiers which are not inside the row/col names (i.e. unable to directly subset the SCE object), we provide another approach. The subset, in this situation, can be accessed via specifying a vector that contains the identifiers users have, to <code>featureIndexBy</code> or <code>cellIndexBy</code>. This specification allows directly giving one column name of <code>rowData</code> or <code>colData</code>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">subsetFeatureName</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu">rowData</span>(<span class="no">sce</span>)$<span class="no">feature_name</span>, <span class="fl">50</span>)
+<div class="sourceCode"><html><body><pre class="r"><span class="no">subsetFeatureName</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu">rowData</span>(<span class="no">sce</span>)$<span class="no">feature_name</span>, <span class="fl">50</span>)
 <span class="no">subsetCellBarcode</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="no">sce</span>$<span class="no">cell_barcode</span>, <span class="fl">50</span>)
 <span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
                <span class="kw">featureIndex</span> <span class="kw">=</span> <span class="no">subsetFeatureName</span>, <span class="kw">featureIndexBy</span> <span class="kw">=</span> <span class="st">"feature_name"</span>,
@@ -192,7 +196,7 @@
 <h3 class="hasAnchor">
 <a href="#annotation" class="anchor"></a>Annotation</h3>
 <p>As introduced before, we allow directly using column names of <code>rowData</code> or <code>colData</code> to attach color bar annotations. To make use of this functionality, pass a <code>character</code> vector to <code>rowDataName</code> or <code>colDataName</code>.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Make up arbitrary annotation, </span>
+<div class="sourceCode"><html><body><pre class="r"><span class="co"># Make up arbitrary annotation, </span>
 <span class="no">rowRandLabel</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">'aa'</span>, <span class="fl">100</span>), <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">'bb'</span>, <span class="fl">100</span>))
 <span class="fu">rowData</span>(<span class="no">sce</span>)$<span class="no">randLabel</span> <span class="kw">&lt;-</span> <span class="no">rowRandLabel</span>
 <span class="no">colRandLabel</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">'cc'</span>, <span class="fl">195</span>), <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">'dd'</span>, <span class="fl">195</span>))
@@ -223,7 +227,7 @@
 <h3 class="hasAnchor">
 <a href="#others" class="anchor"></a>Others</h3>
 <p>In some cases, it might be better to do a semi-heatmap (i.e. split the rows/columns first and cluster them within each group) to visualize some expression pattern, such as evaluating the differential expression. For this need, use <code>rowSplitBy</code> or <code>colSplitBy</code>. Argument must be a <code>character</code> vector included inside what are annotated.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
                <span class="kw">featureIndex</span> <span class="kw">=</span> <span class="no">featureSubset</span>, <span class="kw">cellIndex</span> <span class="kw">=</span> <span class="no">cellSubset</span>,
                <span class="kw">rowDataName</span> <span class="kw">=</span> <span class="st">"randLabel"</span>, <span class="kw">colDataName</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"type"</span>, <span class="st">"randLabel"</span>),
                <span class="kw">rowSplitBy</span> <span class="kw">=</span> <span class="st">"randLabel"</span>, <span class="kw">colSplitBy</span> <span class="kw">=</span> <span class="st">"type"</span>)</pre></body></html></div>
@@ -231,7 +235,7 @@
 <p>Text labels of features or cells can be added via <code>rowLabel</code> or <code>colLabel</code>. Use <code>TRUE</code> or <code>FALSE</code> to specify whether to show the <code>rownames</code> or <code>colnames</code> of the subsetted SCE object. Additionally, giving a single string of a column name of <code>rowData</code> or <code>colData</code> can enable the labeling of the annotation. Furthermore, users can directly throw a character vector to the parameter, with the same length of either the full SCE object or the subsetted.</p>
 <p>The dendrograms for features or cells can be removed by passing <code>FALSE</code> to <code>rowDend</code> or <code>colDend</code>.</p>
 <p>The row title (<code>"Genes"</code>) and column title (<code>"Cells"</code>) can be changed or removed by passing a string or <code>NULL</code> to <code>rowTitle</code> or <code>colTitle</code>, respectively.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
                <span class="kw">featureIndex</span> <span class="kw">=</span> <span class="no">featureSubset</span>, <span class="kw">cellIndex</span> <span class="kw">=</span> <span class="no">cellSubset</span>,
                <span class="kw">rowLabel</span> <span class="kw">=</span> <span class="st">"feature_name"</span>, <span class="kw">colLabel</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="fl">1</span>:<span class="fl">50</span>),
                <span class="kw">colDend</span> <span class="kw">=</span> <span class="fl">FALSE</span>,

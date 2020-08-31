@@ -91,7 +91,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -124,7 +127,13 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -271,7 +280,7 @@ Default TRUE.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runEmptyDrops.html'>runEmptyDrops</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 16:59:37 2020 ... Running 'emptyDrops'</span></div><div class='input'><span class='fu'>plotEmptyDropsScatter</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>)</div><div class='img'><img src='plotEmptyDropsScatter-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runEmptyDrops.html'>runEmptyDrops</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:43:22 2020 ... Running 'emptyDrops'</span></div><div class='input'><span class='fu'>plotEmptyDropsScatter</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>)</div><div class='img'><img src='plotEmptyDropsScatter-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

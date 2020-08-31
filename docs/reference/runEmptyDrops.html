@@ -92,7 +92,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -107,7 +110,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -125,7 +128,13 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -266,7 +275,7 @@ If NULL, then all cells will be processed together. Default NULL.</p></td>
 <span class='co'># run the function. The results should not be</span>
 <span class='co'># used for drawing scientific conclusions.</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runEmptyDrops</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 17:01:10 2020 ... Running 'emptyDrops'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runEmptyDrops</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:44:53 2020 ... Running 'emptyDrops'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

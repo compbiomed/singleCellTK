@@ -91,7 +91,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -124,7 +127,13 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -230,15 +239,15 @@ detection. Default 10000.</p></td>
     </tr>
     <tr>
       <th>size.factors.norm</th>
-      <td><p>A numeric vector of size factors for normalization 
-of <code>x</code> prior to PCA and distance calculations. If <code>NULL</code>, defaults 
-to size factors derived from the library sizes of <code>x</code>. For the SingleCellExperiment 
+      <td><p>A numeric vector of size factors for normalization
+of <code>x</code> prior to PCA and distance calculations. If <code>NULL</code>, defaults
+to size factors derived from the library sizes of <code>x</code>. For the SingleCellExperiment
 method, the default values are taken from <code>sizeFactors(x)</code>, if they are available.</p></td>
     </tr>
     <tr>
       <th>size.factors.content</th>
-      <td><p>A numeric vector of size factors for RNA content 
-normalization of <code>x</code> prior to simulating doublets. #' This is orthogonal to 
+      <td><p>A numeric vector of size factors for RNA content
+normalization of <code>x</code> prior to simulating doublets. #' This is orthogonal to
 the values in <code>size.factors.norm</code></p></td>
     </tr>
     <tr>
@@ -247,7 +256,7 @@ the values in <code>size.factors.norm</code></p></td>
     </tr>
     <tr>
       <th>block</th>
-      <td><p>An integer scalar controlling the rate of doublet generation, 
+      <td><p>An integer scalar controlling the rate of doublet generation,
 to keep memory usage low.</p></td>
     </tr>
     <tr>
@@ -256,17 +265,17 @@ to keep memory usage low.</p></td>
     </tr>
     <tr>
       <th>force.match</th>
-      <td><p>A logical scalar indicating whether remapping of simulated 
+      <td><p>A logical scalar indicating whether remapping of simulated
 doublets to original cells should be performed.</p></td>
     </tr>
     <tr>
       <th>force.k</th>
-      <td><p>An integer scalar specifying the number of neighbours to use for 
+      <td><p>An integer scalar specifying the number of neighbours to use for
 remapping if <code>force.match=TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>force.ndist</th>
-      <td><p>A numeric scalar specifying the bandwidth for remapping 
+      <td><p>A numeric scalar specifying the bandwidth for remapping
 if <code>force.match=TRUE</code>.</p></td>
     </tr>
     <tr>
@@ -276,12 +285,12 @@ This should be an algorithm supported by <code><a href='https://rdrr.io/pkg/Bioc
     </tr>
     <tr>
       <th>BSPARAM</th>
-      <td><p>A <code>BiocSingularParam</code> object specifying the algorithm to 
+      <td><p>A <code>BiocSingularParam</code> object specifying the algorithm to
 use for PCA, if <code>d</code> is not <code>NA</code>.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html'>BiocParallelParam</a></code> object specifying whether the 
+      <td><p>A <code><a href='https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html'>BiocParallelParam</a></code> object specifying whether the
 neighbour searches should be parallelized.</p></td>
     </tr>
     </table>
@@ -309,7 +318,7 @@ neighbour searches should be parallelized.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 17:00:45 2020 ... Running 'doubletCells'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDoubletCells</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:44:32 2020 ... Running 'doubletCells'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

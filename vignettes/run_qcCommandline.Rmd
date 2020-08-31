@@ -298,7 +298,7 @@ The Docker image can be obtained by running:
 docker pull campbio/sctk_qc
 ```
 
-Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. In the below example, mount volumn is enabled for accessing input and output directory using argument -v. To learn more about mounted volumes, please check out [this post](https://docs.docker.com/storage/volumes/). 
+Docker image will not access files in your host file system by default. To get access to the files on your machine, you can properly set up a mount volume.  Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. In the below example, mount volumn is enabled for accessing input and output directory using argument -v. The transcriptome and GMT files inside */path/to/data* is now available in */SCTK_docker* folder inside the docker. To learn more about mounted volumes, please check out [this post](https://docs.docker.com/storage/volumes/). 
 
 The usage of each argument is the same as running command line analysis. Here is an example code to perform quanlity control of CellRangerV3 data singleCellTK docker:
 
@@ -333,7 +333,32 @@ singularity run sctk_qc_1.7.5.sif \
 -g ./mitochondrial_human_symbol.gmt
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
+The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. 
+
+If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Singularity will mount '~' by default on BU SCC, which contains your personal R library folder. If we don't re-set the home to mount, singularity will try to load R libraries which are not compiled inside the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from '~' on SCC, using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). 
+
+Also, you might want to specify cpu architecture when run the Singularity image on BU SCC using '#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake' command. Because the python packages are compiled by SIMD instructions that are only compatible on these cpu architectures. One of the example is shown below:
+
+```
+#!/bin/bash
+#$ -cwd
+#$ -j y
+#$ -P camplab
+#$ -pe omp 16
+#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
+
+singularity run --home=/PathToSanitizedHome \
+--bind /PathToData:/data sctk_qc_1.7.5.sif \
+-P CellRangerV3 \
+-s gencodev34_pbmc_1k_v3 \
+-b /data/gencodev34_pbmc_1k_v3
+-o /data/result/gencodev34_pbmc_1k_v3 \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-n 15 \
+-T MulticoreParam
+```
+
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:

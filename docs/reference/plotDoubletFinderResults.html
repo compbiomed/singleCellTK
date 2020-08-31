@@ -91,7 +91,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -124,7 +127,13 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -322,7 +331,10 @@ when TRUE. Default TRUE.</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>"EmptyDroplet"</span>]
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDoubletFinder.html'>runDoubletFinder</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 16:59:16 2020 ... Running 'doubletFinder'</span></div><div class='output co'>#&gt; <span class='error'>Error in RunUMAP.default(object = data.use, assay = assay, umap.method = umap.method,     n.neighbors = n.neighbors, n.components = n.components, metric = metric,     n.epochs = n.epochs, learning.rate = learning.rate, min.dist = min.dist,     spread = spread, set.op.mix.ratio = set.op.mix.ratio, local.connectivity = local.connectivity,     repulsion.strength = repulsion.strength, negative.sample.rate = negative.sample.rate,     a = a, b = b, uwot.sgd = uwot.sgd, seed.use = seed.use, metric.kwds = metric.kwds,     angular.rp.forest = angular.rp.forest, reduction.key = reduction.key,     verbose = verbose): Cannot find UMAP, please install through pip (e.g. pip install umap-learn).</span></div><div class='input'><span class='fu'>plotDoubletFinderResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; list()</div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDoubletFinder.html'>runDoubletFinder</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:53 2020 ... Running 'doubletFinder'</span></div><div class='input'><span class='fu'>plotDoubletFinderResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $scatter_score_resolution_1.5</div><div class='img'><img src='plotDoubletFinderResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $Density_resolution_1.5</div><div class='img'><img src='plotDoubletFinderResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $violin_resolution_1.5</div><div class='img'><img src='plotDoubletFinderResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $Scatter_Call_resolution_1.5</div><div class='img'><img src='plotDoubletFinderResults-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

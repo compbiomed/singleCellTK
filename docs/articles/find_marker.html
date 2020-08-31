@@ -48,7 +48,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -63,7 +66,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -85,6 +88,9 @@
     </li>
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -124,7 +130,7 @@
 
       
 
-      </header><script src="find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Markers by Differential Expression</h1>
@@ -171,7 +177,7 @@
 <h3 class="hasAnchor">
 <a href="#parameters" class="anchor"></a>Parameters</h3>
 <p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>,
+<div class="sourceCode"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>,
                          <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
                          <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
                          <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"cluster"</span>,
@@ -188,7 +194,7 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
@@ -211,12 +217,12 @@
 <h4 class="hasAnchor">
 <a href="#get-markers" class="anchor"></a>Get Markers</h4>
 <p>Then we call <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code> on the clustered data, with the cluster annotation just attached, which by default named with <code>"Seurat_louvain_Resolution0.8"</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
+<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
                             <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
                             <span class="kw">method</span> <span class="kw">=</span> <span class="st">"Limma"</span>, <span class="co"># Runs fastest</span>
                             <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>)</pre></body></html></div>
 <p>After this, the marker genes, together with their statistics, of each cluster will be concatenated in one table. This table can be extracted with:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">matadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
+<div class="sourceCode"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">matadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">markerTable</span>)</pre></body></html></div>
 <table class="table">
 <thead><tr class="header">
@@ -279,7 +285,7 @@
 </tbody>
 </table>
 <p>Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
+<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
 <center>
 <img src="fm_markerHeatmap.png" alt="Marker Heatmap"> 
 </center>

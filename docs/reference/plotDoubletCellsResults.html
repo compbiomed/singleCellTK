@@ -91,7 +91,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,7 +109,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -124,7 +127,13 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -327,7 +336,7 @@ when TRUE. Default TRUE.</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>"EmptyDroplet"</span>]
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDoubletCells.html'>runDoubletCells</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Sat Aug  1 16:59:10 2020 ... Running 'doubletCells'</span></div><div class='input'><span class='fu'>plotDoubletCellsResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $scatterScore</div><div class='img'><img src='plotDoubletCellsResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDoubletCells.html'>runDoubletCells</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:48 2020 ... Running 'doubletCells'</span></div><div class='input'><span class='fu'>plotDoubletCellsResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $scatterScore</div><div class='img'><img src='plotDoubletCellsResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
 #&gt; $densityScore</div><div class='img'><img src='plotDoubletCellsResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
 #&gt; $violinScore</div><div class='img'><img src='plotDoubletCellsResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
