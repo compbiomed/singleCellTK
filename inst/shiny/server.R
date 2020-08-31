@@ -4869,7 +4869,7 @@ shinyServer(function(input, output, session) {
   )
   # Violin plot
   output$deVioTotalUI <- renderUI({
-    topN <- input$deVioNrow * input$deVioNcol
+    topN <- input$deVioNRow * input$deVioNCol
     p(as.character(topN))
   })
 
@@ -4894,7 +4894,7 @@ shinyServer(function(input, output, session) {
   })
   # Linear Regression Plot
   output$deRegTotalUI <- renderUI({
-    topN <- input$deRegNrow * input$deRegNcol
+    topN <- input$deRegNRow * input$deRegNCol
     p(as.character(topN))
   })
 
@@ -5005,6 +5005,14 @@ shinyServer(function(input, output, session) {
   )
 
   # findMarker Heatmap ####
+  observeEvent(input$fmUseTopN, {
+    if (!isTRUE(input$fmUseTopN)) {
+      shinyjs::disable("fmTopN")
+    } else {
+      shinyjs::enable("fmTopN")
+    }
+  })
+
   output$fmHMAssayUI <- renderUI({
     if(!is.null(vals$counts)){
       allAssay <- assayNames(vals$counts)
@@ -5025,11 +5033,16 @@ shinyServer(function(input, output, session) {
       decreasing <- input$fmHMdec
       rowDataName <- input$fmHMrowData
       colDataName <- input$fmHMcolData
+      if(!isTRUE(input$fmUseTopN)) {
+        topN <- NULL
+      } else {
+        topN <- input$fmTopN
+      }
       # Take value before rendering plot, so that the plot doesnt auto re-render
       # while we tweak the parameter
       output$fmHeatmap <- renderPlot({
         plotMarkerDiffExp(inSCE = inSCE, useAssay = useAssay, orderBy = orderBy,
-                          log2fcThreshold = log2fcThreshold,
+                          log2fcThreshold = log2fcThreshold, topN = topN,
                           fdrThreshold = fdrThreshold, decreasing = decreasing,
                           rowDataName = rowDataName, colDataName = colDataName)
       })
