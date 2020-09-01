@@ -174,11 +174,20 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
     algo <- algoList[[i]]
     id <- paste0(algo, "Tab")
     if (is.null(statuses[[algo]])) {
+      selectTab <- F
       if (i == 1) {
-        appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id, plotOutput(outputId = plotIds[[algo]]))), select = TRUE)
-      } else {
-        appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id, plotOutput(outputId = plotIds[[algo]]))), select = FALSE)
-      }
+        selectTab <- T
+      } 
+      appendTab("qcResPlotTabs", tabPanel(algo, 
+                                          fluidPage(id = id, 
+                                                    plotOutput(outputId = plotIds[[algo]]),
+                                                    tabsetPanel(
+                                                      id = paste0(algo, "Tabs")
+                                                    )
+                                          ), 
+                                 ),
+                select = selectTab
+      )
     }
   }
 }
@@ -199,10 +208,10 @@ filteringModal <- function(failed=FALSE, colNames) {
   )
 }
 
-rowFilteringModal <- function(failed=FALSE, rowNames) {
+rowFilteringModal <- function(failed=FALSE, assayInput) {
   modalDialog(
     h3("Select a Column"),
-    selectInput("filterRowSelect", "", rowNames),
+    selectInput("filterAssaySelect", "", assayInput),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
     tags$div(id = "rowFilterCriteria"),
@@ -213,3 +222,18 @@ rowFilteringModal <- function(failed=FALSE, rowNames) {
     )
   )
 }
+
+# rowFilteringModal <- function(failed=FALSE, rowNames) {
+#   modalDialog(
+#     h3("Select a Column"),
+#     selectInput("filterRowSelect", "", rowNames),
+#     if (failed)
+#       div(tags$b("Please fill out all the required fields", style = "color: red;")),
+#     tags$div(id = "rowFilterCriteria"),
+#     
+#     footer = tagList(
+#       modalButton("Cancel"),
+#       actionButton("rowFiltModalOK", "OK")
+#     )
+#   )
+# }

@@ -1290,47 +1290,16 @@ shinyServer(function(input, output, session) {
       }
       # only run getUMAP if there are no reducedDimNames
       redDimName <- input$qcPlotRedDim
-      if((redDimName == "UMAP") && (identical(reducedDimNames(vals$original), character(0)))) {
+      if((redDimName == "UMAP") && !("UMAP" %in% reducedDimNames(vals$original))) {
         vals$original <- getUMAP(inSCE = vals$original,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
         )
       }
-      # print("after UMAP")
       if (!is.null(vals$original)) {
         # show the tabs for the result plots  output[[qc_plot_ids[[a]]]] 
         showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
         arrangeQCPlots(vals$original, output, algoList, colData(vals$original)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
-        # for (a in algoList) {
-        #   qc_algo_status[[a]] <- "tab"
-        #   if (a == "doubletCells") {
-        #     dcPlots <- renderPlot({plotDoubletCellsResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   } else if (a == "cxds") {
-        #     cxPlots <- renderPlot({plotCxdsResults(vals$original, combinePlot = T, sample = colData(vals$original)[,"sample"], reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   } else if (a == "bcds") {
-        #     bcPlots <- renderPlot({plotBcdsResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   } else if (a == "cxds_bcds_hybrid") {
-        #     cxbcPlots <- renderPlot({plotScdsHybridResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   } else if (a == "decontX") {
-        #     dxPlots <- renderPlot({plotDecontXResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   } else if (a == "QCMetrics") {
-        #     qcmPlots <- renderPlot({plotRunPerCellQCResults(vals$original, combinePlot = T)},
-        #                                              height = 800)
-        #   } else if (a == "scrublet") {
-        #     sPlots <- renderPlot({plotScrubletResults(vals$original, combinePlot = F, sample = colData(vals$original)[,"sample"], reducedDimName = redDimName)},
-        #                                              height = 800)
-        #     
-        #     print(length(sPlots[[1]]))
-        #   } else if (a == "doubletFinder") {
-        #     dfPlots <- renderPlot({plotDoubletFinderResults(vals$original, combinePlot = T, reducedDimName = redDimName)},
-        #                                              height = 800)
-        #   }
-        # }
       }
     })
   })
@@ -1343,11 +1312,13 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    showModal(filteringModal(colNames = names(colData(vals$counts))))
+    showModal(filteringModal(colNames = names(colData(vals$original))))
   })
 
   observeEvent(input$addRowFilteringParam, {
-    showModal(rowFilteringModal(rowNames = names(rowData(vals$counts))))
+    if (!is.null(names(assays(vals$original)))) {
+      showModal(rowFilteringModal(assayInput = names(assays(vals$original))))
+    }
   })
 
   observeEvent(input$filterColSelect, {
@@ -1381,35 +1352,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$filterRowSelect, {
+  
+  observeEvent(input$filterAssaySelect, {
     removeUI(selector = "#newThresh")
-    isNum <- is.numeric(vals$counts[[input$filterRowSelect]][0])
-    if (length(vals$counts[[input$filterRowSelect]]) > 0) {
-      if (isNum) {
-        minRow <- min(vals$counts[[input$filterRowSelect]])
-        maxRow <- max(vals$counts[[input$filterRowSelect]])
-        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minRow, maxRow)
-        insertUI(
-          selector = "#rowFilterCriteria",
-          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minRow, min = minRow, max = maxRow))
-        )
-      } else {
-        insertUI(
-          selector = "#rowFilterCriteria",
-          ui = tags$div(id="newThresh",
-                        checkboxGroupInput("filterThresh", "Please select which columns to filter out:",
-                                           choiceNames = as.vector(unique(vals$counts[[input$filterRowSelect]])),
-                                           choiceValues = as.vector(unique(vals$counts[[input$filterRowSelect]]))
-                        ),
-          )
-        )
-      }
-    } else {
-      insertUI(
-        selector = "#rowFilterCriteria",
-        ui = tags$div(id="newThresh", tags$b("This row does not have any filtering criteria", style = "color: red;"))
-      )
-    }
+    insertUI(
+      selector = "#rowFilterCriteria",
+      ui = tags$div(id="newThresh", 
+                    numericInput("filterThreshX", "Number of counts per cell", 0),
+                    numericInput("filterThreshY", "Number of cells", 0),
+           )
+    )
+    
   })
 
   observeEvent(input$filtModalOK, {
@@ -1418,7 +1371,7 @@ shinyServer(function(input, output, session) {
     } else {
       id <- paste0("filteringParam", filteringParams$id_count)
       # new row in parameters table
-      addToFilterParams(input$filterColSelect, input$filterThresh, id, filteringParams, dimension = 'col')
+      addToColFilterParams(input$filterColSelect, input$filterThresh, id, filteringParams)
       threshStr <- ""
       if (is.numeric(input$filterThresh)) {
         threshStr <- sprintf("> %.5f", input$filterThresh)
@@ -1446,18 +1399,15 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$rowFiltModalOK, {
-    if ((!nzchar(input$filterThresh)) || (is.null(input$filterRowSelect))) {
-      showModal(rowFilteringModal(failed=TRUE, rowNames = names(rowData(vals$counts))))
+    if ((is.null(input$filterThreshX)) || (is.null(input$filterThreshY)) || (is.null(input$filterAssaySelect))) {
+      showModal(rowFilteringModal(failed=TRUE, assayInput = names(assays(vals$counts))))
     } else {
       id <- paste0("rowFilteringParam", rowFilteringParams$id_count)
       # new row in parameters table
-      if (is.numeric(input$filterThresh)) {
-        threshStr <- sprintf("> %.5f", input$filterThresh)
-      } else {
-        threshStr <- paste(input$filterThresh, collapse = ', ')
-      }
-      addToFilterParams(input$filterRowSelect, input$filterThresh, id, rowFilteringParams, dimension = 'row')
-      make3ColTableRow("#newRowFilteringParams", id, input$filterRowSelect, threshStr)
+      threshStr <- sprintf("> %i counts in > %i cells", input$filterThreshX, input$filterThreshY)
+      
+      addToRowFilterParams(input$filterAssaySelect, input$filterThreshX, input$filterThreshY, id, rowFilteringParams)
+      make3ColTableRow("#newRowFilteringParams", id, input$filterAssaySelect, threshStr)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
           selector = paste0("#", id)
@@ -1475,41 +1425,35 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-
-  observeEvent(input$clearAllParams, {
+  
+  observeEvent(input$clearAllFilters, {
     for (entry in filteringParams$params) {
       removeUI(selector = paste0("#", entry$id))
     }
     filteringParams$params <- list()
   })
 
-  observeEvent(input$clearAllRowParams, {
+  observeEvent(input$clearAllRowFilters, {
     for (entry in rowFilteringParams$params) {
       removeUI(selector = paste0("#", entry$id))
     }
     rowFilteringParams$params <- list()
   })
 
-  formatFilteringCriteria <- function(paramsReactive) {
-    criteria = list()
-    for (entry in paramsReactive) {
-      criteria <- c(criteria, entry$param)
-    }
-    return(criteria)
-  }
-
   observeEvent(input$filterSCE, {
     withBusyIndicatorServer("filterSCE", {
+      # handle column filtering (pull out the criteria strings first)
       colInput <- formatFilteringCriteria(filteringParams$params)
       if (length(colInput) > 0) {
         vals$original <- subsetSCECols(vals$original, colData = colInput)
       }
 
+      # handle row filtering (enter information as rows first, then pull out criteria strings)
+      vals$original <- addRowFiltersToSCE(vals$original, rowFilteringParams)
       rowInput <- formatFilteringCriteria(rowFilteringParams$params)
       if (length(rowInput) > 0) {
         vals$original <- subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
       }
-      print(vals$original)
     })
   })
 
