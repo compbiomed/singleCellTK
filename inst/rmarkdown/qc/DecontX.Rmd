@@ -25,16 +25,16 @@ sce.qc<- params$object
     i="DecontX"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotDecontX$scatterDecon
+    plotDecontX$scatter_decontXContamination
+    
+    cat(paste0('## Scatter Clusters \n\n'))
+    plotDecontX$scatter_decontXClusters
    
     cat(paste0('## Density Score \n\n'))
-    plotDecontX$densityContamination
+    plotDecontX$density_decontXContamination
 
     cat(paste0('## Violin Score \n\n'))
-    plotDecontX$violinContamination
-    
-    cat(paste0('## Violin Score \n\n'))
-    plotDecontX$scatterCluster
+    plotDecontX$violin_decontXContamination
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDecontX

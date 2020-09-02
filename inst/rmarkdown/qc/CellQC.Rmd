@@ -36,7 +36,7 @@ sce.qc <- params$object
     cat(paste0('## Subsets mito percent \n\n'))
     plotsQCMetrics$subsets_mito_percent
     cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$scater
+    sce.qc@metadata$scater$addPerCellQC
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
@@ -50,17 +50,17 @@ description_runPerCellQC <- descriptionRunPerCellQC()
     i="Scrublet"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotsScrublet$scatterScore
+    plotsScrublet$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotsScrublet$scatter_doubletCall
    
     cat(paste0('## Density Score \n\n'))
-    plotsScrublet$densityScore
+    plotsScrublet$density_doubletScore
    
     cat(paste0('## Violin Score \n\n'))
-    plotsScrublet$violinScore
+    plotsScrublet$violin_doubletScore
  
-    cat(paste0('## Scatter Call \n\n'))
-    plotsScrublet$scatterCall
-  
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runScrublet
 ```
@@ -75,54 +75,18 @@ description_Scrublet <- descriptionScrublet()
     plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
     i="DoubletFinder"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_0.5
-   
-    cat(paste0('## Scatter Score Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_1
-   
     cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
     plotDoubletFinder$Scatter_Score_Resolution_1.5
- 
-    cat(paste0('## Scatter Score Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_2
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_0.5
-    
-    cat(paste0('## Density Resolution 1 \n\n'))
-    plotDoubletFinder$Density_Resolution_1
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_1.5
- 
-    cat(paste0('## Density Resolution 2 \n\n'))
-    plotDoubletFinder$Density_Resolution_2
-  
-    cat(paste0('## Violin Resolution 0.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_0.5
-    
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1
-    
-    cat(paste0('## Violin Resolution 1.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1.5
- 
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_2
-    
-    cat(paste0('## Scatter Call Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_0.5
-    
-    cat(paste0('## Scatter Call Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_1
     
     cat(paste0('## Scatter Call Resolution 1.5 \n\n'))
     plotDoubletFinder$Scatter_Call_Resolution_1.5
- 
-    cat(paste0('## Scatter Call Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_2
     
+    cat(paste0('## Density Resolution 1.5 \n\n'))
+    plotDoubletFinder$Density_Resolution_1.5
+   
+    cat(paste0('## Violin Resolution 1.5 \n\n'))
+    plotDoubletFinder$violin_Resolution_1.5
+ 
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDoubletFinder
 ```
@@ -141,13 +105,13 @@ description_DoubletFinder <- descriptionDoubletFinder()
     i="DoubletCells"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotDoubletCells$scatterScore
+    plotDoubletCells$scatter_doubletScore
    
     cat(paste0('## Density Score \n\n'))
-    plotDoubletCells$densityScore
+    plotDoubletCells$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotDoubletCells$violinScore
+    plotDoubletCells$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDoubletCells
@@ -166,13 +130,16 @@ description_DoubletCells<- descriptionDoubletCells()
     i="Cxds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotCxds$scatterScore
+    plotCxds$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotCxds$scatter_doubletCall
    
     cat(paste0('## Density Score \n\n'))
-    plotCxds$densityScore
+    plotCxds$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotCxds$violinScore
+    plotCxds$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runCxds
@@ -190,13 +157,16 @@ descriprion_CxdsResults<- descriptionCXDS()
     i="Bcds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotBcds$scatterScore
+    plotBcds$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotBcds$scatter_doubletCall
    
     cat(paste0('## Density Score \n\n'))
-    plotBcds$densityScore
+    plotBcds$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotBcds$violinScore
+    plotBcds$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runBcds
@@ -215,13 +185,13 @@ descriprion_BcdsResults<- descriptionBCDS()
     i="ScdsHybrid"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotScdsHybrid$scatterScore
+    plotScdsHybrid$scatter_doubletScore
    
     cat(paste0('## Density Score \n\n'))
-    plotScdsHybrid$densityScore
+    plotScdsHybrid$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotScdsHybrid$violinScore
+    plotScdsHybrid$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runCxdsBcdsHybrid
@@ -239,16 +209,16 @@ description_ScdsHybrid<- descriptionScdsHybrid()
     i="DecontX"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotDecontX$scatterDecon
+    plotDecontX$scatter_decontXContamination
+    
+    cat(paste0('## Scatter Clusters \n\n'))
+    plotDecontX$scatter_decontXClusters
    
     cat(paste0('## Density Score \n\n'))
-    plotDecontX$densityContamination
+    plotDecontX$density_decontXContamination
 
     cat(paste0('## Violin Score \n\n'))
-    plotDecontX$violinContamination
-    
-    cat(paste0('## Violin Score \n\n'))
-    plotDecontX$scatterCluster
+    plotDecontX$violin_decontXContamination
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDecontX
@@ -261,7 +231,7 @@ description_DecontX<- suppressWarnings(descriptionDecontX())
 # {.unlisted .unnumbered .toc-ignore}
 `r description_DecontX`
 
-# Session info
+# SessionInfo
 ```{r "CellQC-session-info"}
 sessionInfo()
 ```

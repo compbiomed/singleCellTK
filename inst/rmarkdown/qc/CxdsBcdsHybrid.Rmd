@@ -25,13 +25,13 @@ sce.qc<- params$object
     i="ScdsHybrid"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotScdsHybrid$scatterScore
+    plotScdsHybrid$scatter_doubletScore
    
     cat(paste0('## Density Score \n\n'))
-    plotScdsHybrid$densityScore
+    plotScdsHybrid$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotScdsHybrid$violinScore
+    plotScdsHybrid$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runCxdsBcdsHybrid
