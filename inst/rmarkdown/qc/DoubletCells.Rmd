@@ -1,5 +1,5 @@
 ---
-title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ell"
+title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ells"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
@@ -25,13 +25,13 @@ sce.qc<- params$object
     i="DoubletCells"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotDoubletCells$scatterScore
+    plotDoubletCells$scatter_doubletScore
    
     cat(paste0('## Density Score \n\n'))
-    plotDoubletCells$densityScore
+    plotDoubletCells$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotDoubletCells$violinScore
+    plotDoubletCells$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDoubletCells
