@@ -176,6 +176,7 @@ shinyUI(
     navbarPage(
       tooltitle,
       id = "navbar",
+      # selected="CellViewer",
       # theme = shinytheme(shinyTheme),
       theme = shinytheme("yeti"),
       navbarMenu(
@@ -383,16 +384,23 @@ shinyUI(
                          #-+-+-+-+-+-colorby part2###################################
                          conditionalPanel(
                            condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
+                           # condition = sprintf("input['%s'] != 'Single Color'", "TypeSelect_Colorby"),
                            radioButtons(
                              "SelectColorType",
                              label = NULL,
                              choices = c("Categorical", "Continuous")
                            ),
-                           tags$hr(),
+                           conditionalPanel(
+                             id = "continuousColorConditional",
+                             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+                             colourInput("highColor", "High Color", "blue", "background", "limited"),
+                             colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+                             colourInput("lowColor", "Low Color", "white", "background", "limited")
+                           ), 
                            conditionalPanel(
                              id="binningConditional",
                              condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-                             #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE),
+                             tags$hr(),
                              h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
                              switchInput(
                                inputId = "checkColorbinning",

@@ -2569,7 +2569,7 @@ shinyServer(function(input, output, session) {
     if (input$navbar == "CellViewer"){
       # is there an error or not
       if (is.null(vals$counts)){
-        shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+        # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       }else{
         cell_list <- BiocGenerics::colnames(vals$counts)
         gene_list <- BiocGenerics::rownames(vals$counts)
@@ -2704,7 +2704,7 @@ shinyServer(function(input, output, session) {
   ###Observe Radio Button Select Value Type
   observeEvent(input$AnnotationSelect_Colorby, {
     if(input$TypeSelect_Colorby == 'Cell Annotation'){
-      ###If Cell Annotation numeric
+      ###If Cell Annotation is not numeric
       if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
         updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
                            choices = c("Categorical", "Continuous"),
@@ -2712,8 +2712,8 @@ shinyServer(function(input, output, session) {
         #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
         hide_TypeSelect("hide")
       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
-               &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
-        updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+              &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25) {
+          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
                            choices = c("Categorical", "Continuous"),
                            selected = "Categorical")
         #shinyjs::enable("SelectColorType")
@@ -2791,7 +2791,7 @@ shinyServer(function(input, output, session) {
   output$hide_typebtns <- renderText({
     hide_TypeSelect()
   })
-  
+
   outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
   
   ###Observe Check Box Check Binning & Text Input Number of Bins:
@@ -2986,7 +2986,8 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
                             xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-                            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+                            transparency = input$adjustalpha, colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
+                            dotSize = input$adjustsize, combinePlot = FALSE,
                             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
                             conditionClass = pltVars$class)
@@ -2995,21 +2996,38 @@ shinyServer(function(input, output, session) {
                                       reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
                                       xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
                                       groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
+                                      colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
                                       dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
                                       axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
                                       legendTitleSize = input$adjustlegendtitlesize)
       }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-        a <- plotSCEDimReduceColData(vals$counts, reducedDimName = input$QuickAccess,
-                                     xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
-                                     colorBy = input$AnnotationSelect_Colorby, groupBy = pltVars$groupby, bin = pltVars$bin,
-                                     transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                                     axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                                     legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
-                                     conditionClass = pltVars$class)
+        a <-plotSCEDimReduceColData(
+            vals$counts,
+            reducedDimName = input$QuickAccess,
+            xlab = xname,
+            ylab = yname,
+            legendTitle = legendname,
+            title = input$adjusttitle,
+            colorBy = input$AnnotationSelect_Colorby,
+            groupBy = pltVars$groupby,
+            bin = pltVars$bin,
+            transparency = input$adjustalpha,
+            colorScale = NULL, # cvtodo
+            colorLow = input$lowColor,
+            colorMid = input$midColor,
+            colorHigh = input$highColor,
+            dotSize = input$adjustsize,
+            combinePlot = FALSE,
+            axisSize = input$adjustaxissize,
+            axisLabelSize = input$adjustaxislabelsize,
+            legendSize = input$adjustlegendsize,
+            legendTitleSize = input$adjustlegendtitlesize,
+            conditionClass = pltVars$class
+          )
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
-                            annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha,
-                            groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
+                            annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha, colorLow = input$lowColor, 
+                            colorMid = input$midColor, colorHigh = input$highColor, groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
                             xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
                             combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
