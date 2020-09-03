@@ -4904,7 +4904,7 @@ shinyServer(function(input, output, session) {
       sce <- vals$counts
       useResult <- input$deResSel
       nrow <- input$deRegNRow
-      ncol <- input$deRegNcol
+      ncol <- input$deRegNCol
       if(input$deRegLabel == "Default ID"){
         labelBy = NULL
       } else {
