@@ -1,0 +1,72 @@
+---
+title: "Clustering - UI"
+author: "Yichen Wang"
+---
+
+## Introduction
+
+This section describes the usage of the user interface (UI) for singleCellTK (SCTK) clustering workflow. The underneath process is wrapped by R function for clustering, including `runScranSNN()`, `runKMeans()` and `seuratFindClusters()`. For the help of R console workflow, also refer to [the help page for R console](clustering.html).  
+
+## UI Layout
+
+### Entry of The Panel
+
+From anywhere of the UI, the panel for marker finding can be accessed from the top navigation panel at the circled tab shown below.  
+
+![Entry](clst_ui_entry.png)\
+
+The UI is includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results. 
+
+### Run Clustering
+
+#### Choose An Algorithm
+
+<img src="clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm the belongs to different groups, the parameter settings will change.
+
+#### Parameter Settings
+
+##### Scran SNN
+
+![scran](clst_ui_scran.png)\
+
+When the selected algorithm belongs to "Scran SNN" group, the parameter settings will look like the figure above.  
+
+- Data matrix selection - selection input **"Select Input Matrix"**. 
+- Resolution setting - numeric input **"K value"**.
+- Algorithm detail setting - selection input **"Edge Weight Type"**.
+- Component number setting (Only when the chosen data matrix is an "assay") - numeric input **"Number of Components"**.
+
+##### K-Means
+
+![kmeans](clst_ui_kmeans.png)\
+
+When the selected algorithm belongs to "K-Means" group, the parameter settings will look like the figure above.  
+
+- Data matrix selection - selection input **"Select a ReducedDim"**.
+- Cluster number determining - numeric input **"Number of Centers (Clusters)"**.
+- Iteration limit setting - numeric input **"Max Number of Iterations"**.
+- Algorithm detail setting - numeric input **"Number of Random Sets"**.
+
+##### Seurat
+
+![seurat](clst_ui_seurat.png)\
+
+When the selected algorithm belongs to "Seurat" group, the parameter settings will look like the figure above.  
+
+- Data matrix selection - selection input **"Select a ReducedDim"**.
+- Component number setting - numeric input **"How Many Dimensions to Use"**.
+- Algorithm detail setting - checkbox input **"Group Singletons"**.
+- Resolution setting - numeric input **"Resolution"**.
+
+### Visualization
+
+<img src="clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+The visualization is implemented with a plotting of a chosen dimension reduction, colored with a chosen cluster assignment.  
+
+- Cluster annotation selection. radio button selection **"Select from Current Results"** and **"Select from All Present Annotation"**. And a selection input follows.
+- Dimension Reduction selection - selection input **"Use Reduction"**. 
+
+

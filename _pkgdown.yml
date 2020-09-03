@@ -82,8 +82,12 @@ navbar:
           href: articles/heatmap.html
     - text: "Shiny UI Analysis"
       menu:
+        - text: "Clustering"
+          href: articles/ui_clustering.html
         - text: "Differential Expression"
           href: articles/ui_differential_expression.html
+        - text: "Find Marker"
+          href: articles/ui_find_marker.html
     - text: "Reference"
       href: reference/index.html
   right:

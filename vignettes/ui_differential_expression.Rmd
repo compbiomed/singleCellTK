@@ -85,13 +85,13 @@ In this tab, there will be a table with all the genes that are thought to be dif
 
 <img src="de_ui_res2.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-**TODO: description. Fix BUG in dynamic UI**
+**TODO: description**
 
 #### Linear Modeling Plot
 
 <img src="de_ui_res3.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-**TODO: description. Fix BUG in dynamic UI**
+**TODO: description**
 
 #### Heatmap
 
@@ -104,7 +104,3 @@ This tab enables a limited heatmap visualization for the DE analysis selected. H
 - The heatmap is by default splitted by the grouping "condition" and "regulation", mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs **"Split columns by"** and **"Split rows by"**, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish. 
 
 Furthermore, if more sophisticated settings on the DE heatmap are needed, users can move to the [generic heatmap viewer](ui_heatmap.html) and make use of the "import from analysis" functionality.  
-
-**TODO: Fix BUG that additional colData annotation cannot be added.**
-
-
