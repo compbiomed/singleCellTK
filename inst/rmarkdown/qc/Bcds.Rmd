@@ -17,17 +17,20 @@ require(ggplot2)
 ```
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-   plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "UMAP"))
+  plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "UMAP"))
     i="Bcds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotBcds$scatterScore
+    plotBcds$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotBcds$scatter_doubletCall
    
     cat(paste0('## Density Score \n\n'))
-    plotBcds$densityScore
+    plotBcds$density_doubletScore
 
     cat(paste0('## Violin Score \n\n'))
-    plotBcds$violinScore
+    plotBcds$violin_doubletScore
     
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runBcds
