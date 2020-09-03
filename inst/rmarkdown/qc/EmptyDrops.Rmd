@@ -23,8 +23,8 @@ sce<- params$object
     plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce))
     i="EmptyDrops"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Log-Probability \n\n'))
-    plotsEmptyDrops$scatterEmptyDrops
+    cat(paste0('## EmptyDrops, Total UMI counts vs Log-Probability \n\n'))
+    plotsEmptyDrops$scatterEmptyDrops[[1]]
     cat(paste0('## Session info \n\n'))
     sce@metadata$runEmptyDrops
 ```

@@ -393,6 +393,7 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
     if(!is.matrix(expres)){
         expres <- as.matrix(expres)
     }
+    expres <- featureNameDedup(expres)
     fdata <- data.frame(Gene = rownames(expres))
     rownames(fdata) <- fdata$Gene
     SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
