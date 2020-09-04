@@ -25,7 +25,7 @@ sce<-params$object
     plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce))
     i="EmptyDrops"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Log-Probability \n\n'))
+    cat(paste0('## EmptyDrops, Total UMI counts vs Log-Probability \n\n'))
     plotsEmptyDrops$scatterEmptyDrops
     cat(paste0('## Session info \n\n'))
     sce@metadata$runEmptyDrops
@@ -38,11 +38,11 @@ description_runEmptyDrops <- descriptionEmptyDrops()
 `r description_runEmptyDrops`
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce))
+    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
     i="BarcodeRanks"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Rank \n\n'))
-    plotsBarcodeRank$scatterBarcodeRank
+    cat(paste0('## BarcodeRanks, Total UMI counts vs Rank \n\n'))
+    plotsBarcodeRank
     cat(paste0('## Session info \n\n'))
     sce@metadata$runBarcodeRankDrops
 ```
@@ -53,7 +53,7 @@ description_runBarcodeRank <- descriptionBarcodeRank()
 # {.unlisted .unnumbered .toc-ignore}
 `r description_runBarcodeRank`
 
-## SessionInfo
+# SessionInfo
 ```{r "DropletQC-session-info", include=TRUE}
 sessionInfo()
 ```

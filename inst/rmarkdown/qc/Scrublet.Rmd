@@ -25,17 +25,17 @@ sce.qc<- params$object
     i="Scrublet"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
-    plotsScrublet$scatterScore
+    plotsScrublet$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotsScrublet$scatter_doubletCall
    
     cat(paste0('## Density Score \n\n'))
-    plotsScrublet$densityScore
+    plotsScrublet$density_doubletScore
    
     cat(paste0('## Violin Score \n\n'))
-    plotsScrublet$violinScore
+    plotsScrublet$violin_doubletScore
  
-    cat(paste0('## Scatter Call \n\n'))
-    plotsScrublet$scatterCall
-  
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runScrublet
 ```
