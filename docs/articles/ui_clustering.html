@@ -166,7 +166,7 @@
 <h4 class="hasAnchor">
 <a href="#choose-an-algorithm" class="anchor"></a>Choose An Algorithm</h4>
 <p><img src="clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm the belongs to different groups, the parameter settings will change.</p>
+<p>User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.</p>
 </div>
 <div id="parameter-settings" class="section level4">
 <h4 class="hasAnchor">
@@ -175,12 +175,12 @@
 <h5 class="hasAnchor">
 <a href="#scran-snn" class="anchor"></a>Scran SNN</h5>
 <p><img src="clst_ui_scran.png" alt="scran"><br></p>
-<p>When the selected algorithm belongs to “Scran SNN” group, the parameter settings will look like the figure above.</p>
+<p>When the selected algorithm belongs to “Scran SNN” group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to <code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html">igraph::cluster_walktrap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html">igraph::cluster_louvain()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html">igraph::cluster_infomap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html">igraph::cluster_fast_greedy()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html">igraph::cluster_label_prop()</a></code>, and <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html">igraph::cluster_leading_eigen()</a></code>.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>.</li>
-<li>Resolution setting - numeric input <strong>“K value”</strong>.</li>
-<li>Algorithm detail setting - selection input <strong>“Edge Weight Type”</strong>.</li>
-<li>Component number setting (Only when the chosen data matrix is an “assay”) - numeric input <strong>“Number of Components”</strong>.</li>
+<li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various type of data matrix. Either A full-sized or subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a dimension reduction, technically <code>reducedDim</code>, is allowed.</li>
+<li>Resolution setting - numeric input <strong>“K value”</strong>. <code>K</code> is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter <code>k</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code>)</li>
+<li>Algorithm detail setting - selection input <strong>“Edge Weight Type”</strong>. User can specify the type of weighting scheme to use for shared neighbors. (See parameter <code>type</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code>)</li>
+<li>Component number setting (Only used when the chosen data matrix is an <code>assay</code> or <code>altExp</code>) - numeric input <strong>“Number of Components”</strong>. When an <code>assay</code> or <code>altExp</code> is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here.</li>
 </ul>
 </div>
 <div id="k-means" class="section level5">
@@ -189,10 +189,10 @@
 <p><img src="clst_ui_kmeans.png" alt="kmeans"><br></p>
 <p>When the selected algorithm belongs to “K-Means” group, the parameter settings will look like the figure above.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>.</li>
-<li>Cluster number determining - numeric input <strong>“Number of Centers (Clusters)”</strong>.</li>
-<li>Iteration limit setting - numeric input <strong>“Max Number of Iterations”</strong>.</li>
-<li>Algorithm detail setting - numeric input <strong>“Number of Random Sets”</strong>.</li>
+<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
+<li>Cluster number determining - numeric input <strong>“Number of Centers (Clusters)”</strong>. User will decide the exact number of clusters here. In term of K-means algorithm, the number of cluster centroids.</li>
+<li>Iteration limit setting - numeric input <strong>“Max Number of Iterations”</strong>. User will here decide the maximum number of iterations to run.</li>
+<li>Algorithm detail setting - numeric input <strong>“Number of Random Sets”</strong>. Kmeans attempts multiple initial configurations and reports on the best one. Here users will set the number of initial configurations to use.</li>
 </ul>
 </div>
 <div id="seurat" class="section level5">
@@ -201,7 +201,7 @@
 <p><img src="clst_ui_seurat.png" alt="seurat"><br></p>
 <p>When the selected algorithm belongs to “Seurat” group, the parameter settings will look like the figure above.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>.</li>
+<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
 <li>Component number setting - numeric input <strong>“How Many Dimensions to Use”</strong>.</li>
 <li>Algorithm detail setting - checkbox input <strong>“Group Singletons”</strong>.</li>
 <li>Resolution setting - numeric input <strong>“Resolution”</strong>.</li>
@@ -215,8 +215,8 @@
 <p><img src="clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>The visualization is implemented with a plotting of a chosen dimension reduction, colored with a chosen cluster assignment.</p>
 <ul>
-<li>Cluster annotation selection. radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. And a selection input follows.</li>
-<li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>.</li>
+<li>Cluster annotation selection. radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. And a selection input follows. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results”, while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
+<li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
 </ul>
 </div>
 </div>
