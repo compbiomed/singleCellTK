@@ -745,7 +745,22 @@ shinyServer(function(input, output, session) {
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
     
-    addToGeneralSampleTable("files", id, "", input$inputAssayType)
+    assayFileCol <- ""
+    annotFileCol <- ""
+    featureFileCol <- ""
+    if (!is.null(input$countsfile$datapath)) {
+      assayFileCol <- paste0("Assay: ", input$countsfile$datapath)
+    }
+    if (!is.null(input$annotFile$datapath)) {
+      annotFileCol <- paste0("Annotation: ", input$annotFile$datapath)
+    }
+    if (!is.null(input$featureFile$datapath)) {
+      featureFileCol <- paste0("Features: ", input$featureFile$datapath)
+    }
+    
+    locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol), collapse = "\n")
+    
+    addToGeneralSampleTable("files", id, locCol, input$inputAssayType)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -770,7 +785,16 @@ shinyServer(function(input, output, session) {
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
     
-    addToGeneralSampleTable("example", id, "", input$selectExampleData)
+    scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
+    tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
+    locCol <- ""
+    if (input$selectExampleData %in% scRNAseqDatasets) {
+      locCol <- "scRNA"
+    } else {
+      locCol <- "TENx"
+    }
+    
+    addToGeneralSampleTable("example", id, locCol, input$selectExampleData)
     
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
