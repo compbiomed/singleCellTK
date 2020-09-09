@@ -2702,89 +2702,89 @@ shinyServer(function(input, output, session) {
 
   #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
-  observeEvent(input$AnnotationSelect_Colorby, {
+  # input$AnnotationSelect_Colorby,
+  observeEvent(input$AnnotationSelect_Colorby,{
     if(input$TypeSelect_Colorby == 'Cell Annotation'){
       ###If Cell Annotation numeric
       if(!is.numeric(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])){
         updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
           choices = c("Categorical", "Continuous"),
           selected = "Categorical")
-        #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
         hide_TypeSelect("hide")
       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
         &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25){
         updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
           choices = c("Categorical", "Continuous"),
           selected = "Categorical")
-        #shinyjs::enable("SelectColorType")
         hide_TypeSelect("show")
       }else{
         updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
           choices = c("Categorical", "Continuous"),
           selected = "Continuous")
-        #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
         hide_TypeSelect("hide")
       }
-
     }
   })
 
-  observeEvent(input$ApproachSelect_Colorby, {
+  # input$ApproachSelect_Colorby,
+  observeEvent(input$ApproachSelect_Colorby,{
     if(input$TypeSelect_Colorby == 'Reduced Dimensions'){
-      Dfcolor <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
-      if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
-        Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
-        ###If ReducedData numeric
-        if(!is.numeric(Dfcolor[,1])){
-          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          hide_TypeSelect("hide")
-        }else if(is.integer(Dfcolor[,1])
-          &length(levels(as.factor(Dfcolor[,1])))<=25){
-          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          #shinyjs::enable("SelectColorType")
-          hide_TypeSelect("show")
-        }else{
-          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Continuous")
-          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          hide_TypeSelect("hide")
-        }
-      }
+      # <- data.frame(reducedDims(vals$counts)@listData[[input$ApproachSelect_Colorby]])
+      #if(input$ColumnSelect_Colorby %in% colnames(Dfcolor)){
+      #  Dfcolor <- Dfcolor[which(colnames(Dfcolor) == input$ColumnSelect_Colorby)]
+      #  ###If ReducedData numeric
+      #  if(!is.numeric(Dfcolor[,1])){
+      #    updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #      choices = c("Categorical", "Continuous"),
+      #      selected = "Categorical")
+      #    hide_TypeSelect("hide")
+      #  }else if(is.integer(Dfcolor[,1])
+      #    &length(levels(as.factor(Dfcolor[,1])))<=25){
+      #    updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #      choices = c("Categorical", "Continuous"),
+      #      selected = "Categorical")
+      #    hide_TypeSelect("show")
+      #  }else{
+      #    updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #      choices = c("Categorical", "Continuous"),
+      #      selected = "Continuous")
+      #    hide_TypeSelect("hide")
+      #  }
+      #}
+      updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+        choices = c("Categorical", "Continuous"),
+        selected = "Continuous")
+      hide_TypeSelect("hide")
     }
   })
 
-
-  observeEvent(input$GeneSelect_Assays_Colorby, {
+  # input$GeneSelect_Assays_Colorby,
+  observeEvent(input$GeneSelect_Assays_Colorby,{
     if(input$TypeSelect_Colorby == "Expression Assays"){
-      Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
-      if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
-        Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
-        if(!is.numeric(Dfassay[,1])){
-          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          hide_TypeSelect("hide")
-        }else if(is.integer(Dfassay[,1])
-          &length(levels(as.factor(Dfassay[,1])))<=25){
-          updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-            choices = c("Categorical", "Continuous"),
-            selected = "Categorical")
-          #shinyjs::enable("SelectColorType")
-          hide_TypeSelect("show")
-        }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
-          choices = c("Categorical", "Continuous"),
-          selected = "Continuous")
-          #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-          hide_TypeSelect("hide")
-        }
-      }
+      #Dfassay <- assay(vals$counts, input$AdvancedMethodSelect_Colorby)
+      #if(input$GeneSelect_Assays_Colorby %in% rownames(Dfassay)){
+      #  Dfassay <- data.frame(Dfassay[which(rownames(Dfassay)== input$GeneSelect_Assays_Colorby),])
+      #  if(!is.numeric(Dfassay[,1])){
+      #    updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #      choices = c("Categorical", "Continuous"),
+      #      selected = "Categorical")
+      #    hide_TypeSelect("hide")
+      #  }else if(is.integer(Dfassay[,1])
+      #    &length(levels(as.factor(Dfassay[,1])))<=25){
+      #    updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #      choices = c("Categorical", "Continuous"),
+      #      selected = "Categorical")
+      #    hide_TypeSelect("show")
+      #  }else{updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+      #    choices = c("Categorical", "Continuous"),
+      #    selected = "Continuous")
+      #    hide_TypeSelect("hide")
+      #  }
+      #}
+      updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+        choices = c("Categorical", "Continuous"),
+        selected = "Continuous")
+      hide_TypeSelect("hide")
     }
   })
 
@@ -2981,6 +2981,7 @@ shinyServer(function(input, output, session) {
     }else{
       pltVars$class <- "numeric"
     }
+
 
     if(input$viewertabs == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Single Color"){
