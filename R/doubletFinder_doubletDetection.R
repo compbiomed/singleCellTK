@@ -11,7 +11,7 @@
         print(paste("Creating artificial doublets for pN = ",
                     pN[n] * 100, "%", sep = ""))
     }
-    n_doublets <- round(n.real.cells / (1 - pN[n]) - n.real.cells)
+    n_doublets <- ceiling(n.real.cells / (1 - pN[n]) - n.real.cells)
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2]) / 2
@@ -385,6 +385,10 @@ runDoubletFinder <- function(inSCE,
       sceSampleInd <- sample == samples[i]
       sceSample <- inSCE[, sceSampleInd]
       mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
+      if(length(seuratPcs) > ncol(mat)){
+        seuratPcs <- 1:ncol(mat)
+      }
+
       result <- suppressMessages(withr::with_seed(
         seed,
         .runDoubletFinder(
@@ -411,7 +415,7 @@ runDoubletFinder <- function(inSCE,
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
 
-    colnames(output) <- paste0(colnames(output), "_Resolution_", res)
+    colnames(output) <- paste0(colnames(output), "_resolution_", res)
 
     argsList <- argsList[!names(argsList) %in% ("...")]
     inSCE@metadata$runDoubletFinder <- argsList[-1]

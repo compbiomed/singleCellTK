@@ -7,6 +7,7 @@
 plotEmptyDropsResults(
   inSCE,
   sample = NULL,
+  combinePlot = NULL,
   fdrCutoff = 0.01,
   defaultTheme = TRUE,
   dotSize = 1,
@@ -14,7 +15,14 @@ plotEmptyDropsResults(
   axisLabelSize = 18,
   axisSize = 15,
   legendSize = 15,
-  legendTitleSize = 16
+  legendTitleSize = 16,
+  relHeights = 1,
+  relWidths = 1,
+  plotLabels = "default",
+  plotLabelSize = 20,
+  samplePerColumn = TRUE,
+  sampleRelHeights = 1,
+  sampleRelWidths = 1
 )
 }
 \arguments{
@@ -24,6 +32,9 @@ dimension reduction components or a variable with saved results from
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}
+
+\item{combinePlot}{Must be either "all" or "sample". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "all".}
 
 \item{fdrCutoff}{Numeric. Thresholds barcodes based on the FDR values from
 runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.}
@@ -42,6 +53,24 @@ when TRUE. Default TRUE.}
 \item{legendSize}{size of legend. Default 15.}
 
 \item{legendTitleSize}{size of legend title. Default 16.}
+
+\item{relHeights}{Relative heights of plots when combine is set.}
+
+\item{relWidths}{Relative widths of plots when combine is set.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
+
+\item{plotLabelSize}{size of labels}
+
+\item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
+the output .ggplot will have plots from each sample on a single column. Default TRUE.}
+
+\item{sampleRelHeights}{If there are multiple samples and combining by "all",
+the relative heights for each plot.}
+
+\item{sampleRelWidths}{If there are multiple samples and combining by "all",
+the relative widths for each plot.}
 }
 \description{
 A wrapper function which visualizes outputs from the

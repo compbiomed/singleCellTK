@@ -57,6 +57,7 @@ pcComponents <- ""
 numClusters <- ""
 currassays <- ""
 currreddim <- ""
+curraltExps <- ""
 #from SCE
 cell_list <- ""
 gene_list <- ""
@@ -89,6 +90,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   numClusters <- 1:numSamples
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
+  curraltExps <- names(altExp(getShinyOption("inputSCEset")))
   ###############################################################
   #from sce
   cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
@@ -123,7 +125,7 @@ source("ui_01_columnAnnotation.R", local = TRUE) #creates shinyPanelColumnAnnota
 source("ui_01_rowAnnotation.R", local = TRUE) #creates shinyPanelRowAnnotation variable
 source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
-source("ui_03_2_samplewise_vis.R", local = TRUE) #creates shinyPanelCluster variable
+source("ui_03_2_cluster.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable

@@ -17,11 +17,48 @@ make3ColTableRow <- function(selector, id, col1, col2) {
   )
 }
 
-make4ColTableRow <- function(selector, id, col1, col2, col3) {
+# make4ColTableRow <- function(selector, id, col1, col2, col3) {
+#   fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+#   removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
+#   insertUI(
+#     selector = selector,
+#     ui = fluidRow(
+#       id = id,
+#       tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
+#       column(3, col1),
+#       column(3, col2),
+#       column(3, col3),
+#       column(3, actionButton(paste0("remove", id), "X"))
+#     )
+#   )
+# }
+
+addToGeneralSampleTable <- function(inputID, id, col2, col3) {
+  col1 <- ""
+  if (inputID == "files") {
+    col1 <- "Files"
+  } else if (inputID == "example") {
+    col1 <- "Example"
+  } else if (inputID == "rds") {
+    col1 <- "RDS"
+  } else if (inputID == "cellRanger2") {
+    col1 <- "Cell Ranger 2"
+  } else if (inputID == "cellRanger3") {
+    col1 <- "Cell Ranger 3"
+  } else if (inputID == "starSolo") {
+    col1 <- "STARsolo"
+  } else if (inputID == "busTools") {
+    col1 <- "BUStools"
+  } else if (inputID == "seqc") {
+    col1 <- "SEQC"
+  } else if (inputID == "optimus") {
+    col1 <- "Optimus"
+  }
+  
   fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
   removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
   insertUI(
-    selector = selector,
+    selector = "#newSampleImport",
     ui = fluidRow(
       id = id,
       tags$style(HTML(paste0(fluidRowStyle, removeBtnStyle))),
@@ -169,11 +206,25 @@ importCRBDir <- function(failed = FALSE) {
 # }
 
 # creates tabs for results from QC
-showQCResTabs <- function(algoList, statuses) {
-  for (algo in algoList) {
+showQCResTabs <- function(obj, algoList, statuses, plotIds) {
+  for (i in seq_along(algoList)) {
+    algo <- algoList[[i]]
     id <- paste0(algo, "Tab")
     if (is.null(statuses[[algo]])) {
-      appendTab("qcResPlotTabs", tabPanel(algo, fluidPage(id = id)))
+      selectTab <- F
+      if (i == 1) {
+        selectTab <- T
+      } 
+      appendTab("qcResPlotTabs", tabPanel(algo, 
+                                          fluidPage(id = id, 
+                                                    plotOutput(outputId = plotIds[[algo]]),
+                                                    tabsetPanel(
+                                                      id = paste0(algo, "Tabs")
+                                                    )
+                                          ), 
+                                 ),
+                select = selectTab
+      )
     }
   }
 }
@@ -194,10 +245,10 @@ filteringModal <- function(failed=FALSE, colNames) {
   )
 }
 
-rowFilteringModal <- function(failed=FALSE, rowNames) {
+rowFilteringModal <- function(failed=FALSE, assayInput) {
   modalDialog(
     h3("Select a Column"),
-    selectInput("filterRowSelect", "", rowNames),
+    selectInput("filterAssaySelect", "", assayInput),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
     tags$div(id = "rowFilterCriteria"),
@@ -208,3 +259,18 @@ rowFilteringModal <- function(failed=FALSE, rowNames) {
     )
   )
 }
+
+# rowFilteringModal <- function(failed=FALSE, rowNames) {
+#   modalDialog(
+#     h3("Select a Column"),
+#     selectInput("filterRowSelect", "", rowNames),
+#     if (failed)
+#       div(tags$b("Please fill out all the required fields", style = "color: red;")),
+#     tags$div(id = "rowFilterCriteria"),
+#     
+#     footer = tagList(
+#       modalButton("Cancel"),
+#       actionButton("rowFiltModalOK", "OK")
+#     )
+#   )
+# }

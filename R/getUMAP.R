@@ -2,11 +2,13 @@
 #' dimension reduction.
 #'
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param useAssay Indicate which assay to use. The default is "logcounts".
+#' @param useAssay Indicate which assay to use. The default is "counts".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param reducedDimName a name to store the results of the dimension reduction
 #' coordinates obtained from this method. This is stored in the SingleCellExperiment
 #' object in the reducedDims slot. Default "UMAP".
+#' @param logNorm Whether the counts will need to be log-normalized prior to
+#' generating the UMAP via scater::logNormCounts. Default TRUE.
 #' @param nNeighbors The size of local neighborhood used for
 #'   manifold approximation. Larger values result in more global
 #'   views of the manifold, while smaller values result in more
@@ -38,14 +40,16 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
-#'                     reducedDimName = "UMAP", nNeighbors = 30, alpha = 1,
+#'                     reducedDimName = "UMAP", logNorm = TRUE,
+#'                     nNeighbors = 30, alpha = 1,
 #'                     nIterations = 200, spread = 1, pca = TRUE,
 #'                     initialDims = 50)
 #' reducedDims(umap_res)
 
-getUMAP <- function(inSCE, useAssay = "logcounts",
+getUMAP <- function(inSCE, useAssay = "counts",
                     sample = NULL,
                     reducedDimName = "UMAP",
+                    logNorm = TRUE,
                     nNeighbors = 30,
                     nIterations = 200,
                     alpha = 1,
@@ -71,17 +75,30 @@ getUMAP <- function(inSCE, useAssay = "logcounts",
     samples <- unique(sample)
     umapDims = matrix(nrow = ncol(inSCE), ncol = 2)
     for (i in seq_len(length(samples))){
-        sceSampleInd <- sample == samples[i]
+        useAssayTemp = useAssay
+	sceSampleInd <- sample == samples[i]
         sceSample <- inSCE[, sceSampleInd]
+        if(logNorm){
+	    sceSample <- scater_logNormCounts(sceSample, useAssay = useAssay)
+            useAssayTemp = "ScaterLogNormCounts"
+        }
 
-        matColData <- SummarizedExperiment::assay(sceSample, useAssay)
+        matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
         matColData <- as.matrix(matColData)
 
         if (isTRUE(pca)) {
+          if(initialDims > ncol(matColData)){
+            doPCA <- ncol(matColData)
+          }else{
             doPCA <- initialDims
+          }
         } else {
             doPCA <- NULL
         }
+        if(nNeighbors > ncol(matColData)){
+          nNeighbors <- ncol(matColData)
+        }
+
         umapRes <- uwot::umap(t(matColData), n_neighbors = nNeighbors,
                               learning_rate = alpha,
                               min_dist = minDist, spread = spread,
