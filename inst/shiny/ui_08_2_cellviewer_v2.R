@@ -168,6 +168,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           )
         ),
 
+        # && output.hide_typebtns == 'show'
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
           condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
@@ -175,37 +176,58 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             "SelectColorType",
             label = NULL,
             choices = c("Categorical", "Continuous")
-          ),
-          tags$hr(),
-          conditionalPanel(
-            id="binningConditional",
-            condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE),
-            h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
-            switchInput(
-              inputId = "checkColorbinning",
-              onLabel = "Yes",
-              offLabel = "No",
-              value=FALSE,
-              size="mini",
-              inline = TRUE
-            )
-          ),
-
-          conditionalPanel(
-            condition =  "input.checkColorbinning == 1",
-            numericInput(
-              "adjustColorbinning",
-              h5("Number of Bins"),
-              value = 2,
-              min = 2
-            )
           )
-          #,
-
-
-          #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL)
+        ),
+        tags$hr(),
+        conditionalPanel(
+          id="binningConditional",
+          condition = "input['SelectColorType'] == 'Continuous' && output.hide_typebtns == 'show'",
+            #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+          #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
+          h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
+          prettyToggle(
+            inputId = "checkColorbinning",
+            label_on = "Yes",
+            label_off = "No",
+            value = FALSE,
+            inline = TRUE,
+            shape = "curve",
+            width = "100%"
+          )
+          #switchInput(
+          #  inputId = "checkColorbinning",
+          #  onLabel = "Yes",
+          #  offLabel = "No",
+          #  value=FALSE,
+          #  inline = TRUE,
+          #  #shape = "curve"
+          #  labelWidth = "50px",
+          #  width = "auto"
+          #)
+        ),
+        conditionalPanel(
+          condition =  "input.checkColorbinning == 1",
+          numericInput(
+            "adjustColorbinning",
+            h5("Number of Bins"),
+            value = 2,
+            min = 2
+          )
         )
+        #,
+        #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL),
+        #conditionalPanel(
+        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+        #  colourInput("colhigh", "Select high color", value = "blue")
+        #),
+        #conditionalPanel(
+        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+        #  colourInput("colmid", "Select mid color", value = "gray")
+        #),
+        #conditionalPanel(
+        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+        #  colourInput("collow", "Select low color", value = "white")
+        #)
       ),
       #-+-+-+-+-+-group by###################################
       tags$hr(),
@@ -258,6 +280,20 @@ shinyPanelCellViewer <- fluidPage(tags$div(
       #                           This message will disappear once the plot is generated.')),
       tags$hr(),
       fluidRow(
+        column(6, sliderInput(
+          "adjustalpha",
+          h5(strong("Opacity:")),
+          min = 0,
+          max = 1,
+          value = 1
+        )),
+        column(6, sliderInput(
+          "adjustsize",
+          h5(strong("Dot size:")),
+          min = 0.1,
+          max = 0.8,
+          value = 0.45
+        )),
         column(6, textInput("adjusttitle", h5(strong(
           "Title:"
         )))),
@@ -277,20 +313,6 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           min = 1,
           max = 20,
           value = 10
-        )),
-        column(6, sliderInput(
-          "adjustalpha",
-          h5(strong("Opacity:")),
-          min = 0,
-          max = 1,
-          value = 1
-        )),
-        column(6, sliderInput(
-          "adjustsize",
-          h5(strong("Dot size:")),
-          min = 0.1,
-          max = 0.8,
-          value = 0.45
         )),
         column(6, textInput("adjustxlab", h5(
           strong("X-axis label:")
