@@ -212,7 +212,8 @@ plotRunPerCellQCResults <- function(inSCE,
           axisLabelSize=axisLabelSize,
           title=paste0(x, " per cell"),
           dotSize=dotSize,
-          titleSize=titleSize
+          titleSize=titleSize,
+	  summary="median"
         )
       })
       names(violin.subset) <- subsets
