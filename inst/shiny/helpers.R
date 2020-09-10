@@ -209,39 +209,32 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 
 combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds) {
-  if (combineP) {
+  if (combineP=="all") {
     output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
   } else {
-    # print("in ELSE")
-    pageID <- paste0(algo, "Tab") # for the fluid page within a tab
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
-    # print(plotIds[[algo]])
     removeUI(selector = paste0("#", plotIds[[algo]]))
-    insertUI(
-      selector = paste0("#", pageID),
-      ui = tabsetPanel(id = tabsetID)
-    )
+    
     for (i in seq_along(sampleList)) {
       s <- sampleList[[i]]
       sID <- paste(c(algo, s, "Tab"), collapse = "")
       subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
-      # print(tabsetID)
       if (i == 1) {
         appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
       } else {
         appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
       }
-      # print(c("subPlot", subPlotID))
-      output[[subPlotID]] <- renderPlot(ggSCTKCombinePlots(plots[[s]]), height = 800)
+      output[[subPlotID]] <- renderPlot(plots[[s]])
     }
+    
   }
 }
 
 arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
   uniqueSampleNames <- unique(sampleList)
-  combineP <- T
+  combineP <- "all"
   if (length(uniqueSampleNames) > 1) {
-    combineP <- F
+    combineP <- "sample"
   }
   for (a in algoList) {
     statuses[[a]] <- "tab"
@@ -295,7 +288,7 @@ findOverlapping <- function(arr1, arr2) {
   return(arr1[filter])
 }
 
-addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col') {
+addToFilterColParams <- function(name, criteria, id, paramsReactive) {
   threshStr <- ""
   if (is.numeric(criteria)) {
     threshStr <- sprintf("%s > %.5f", name, criteria)
@@ -307,21 +300,37 @@ addToFilterParams <- function(name, criteria, id, paramsReactive, dimension='col
     threshStr <- paste(threshArr, collapse = " | ")
   }
   
-  if (dimension == 'col') {
-    entry <- list(col=name, param=threshStr, id=id)
-    paramsReactive$params <- c(paramsReactive$params, list(entry))
-    paramsReactive$id_count <- paramsReactive$id_count + 1
-  } else {
-    entry <- list(row=name, param=threshStr, id=id)
-    paramsReactive$params <- c(paramsReactive$params, list(entry))
-    paramsReactive$id_count <- paramsReactive$id_count + 1
-  }
+  entry <- list(col=name, param=threshStr, id=id)
+  paramsReactive$params <- c(paramsReactive$params, list(entry))
+  paramsReactive$id_count <- paramsReactive$id_count + 1
+}
+
+addToRowFilterParams <- function(name, X, Y, id, paramsReactive) {
+  entry <- list(row=name, X=X, Y=Y, id=id)
+  paramsReactive$params <- c(paramsReactive$params, list(entry))
+  paramsReactive$id_count <- paramsReactive$id_count + 1
 }
 
 
+formatFilteringCriteria <- function(paramsReactive) {
+  criteria = list()
+  for (entry in paramsReactive) {
+    criteria <- c(criteria, entry$param)
+  }
+  return(criteria)
+}
 
 
-
+addRowFiltersToSCE <- function(inSCE, paramsReactive) {
+  for (entry in paramsReactive$params) {
+    rowName <- paste0(entry$row, "_filter")
+    a <- assay(inSCE, entry$row)
+    vec <- rowSums(a > entry$X) > entry$Y
+    rowData(inSCE)[[rowName]] <- vec
+    entry$param <- sprintf("%s == T", rowName)
+  }
+  return(inSCE)
+}
 
 
 

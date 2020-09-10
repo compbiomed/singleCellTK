@@ -622,6 +622,7 @@ plotScrubletResults <- function(inSCE,
                                       sampleRelWidths = sampleRelWidths)
     }
   }
+
   return(plotlist)
 }
 
