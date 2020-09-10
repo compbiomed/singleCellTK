@@ -9,7 +9,7 @@ exportSCE(
   samplename = "sample",
   directory = "./",
   type = "Cells",
-  format = c("R", "Python", "FlatFile", "HTAN")
+  format = c("SCE", "AnnData", "FlatFile", "HTAN")
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ and the prefix of flat file output. Default is 'sample'.}
 It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).}
 
 \item{format}{The format of output. It currently supports flat files, rds files
-and python h5 files. It can output multiple formats. Default: c('R', 'Python', 'Flatfile').}
+and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").}
 }
 \description{
 Export data in SingleCellExperiment object
