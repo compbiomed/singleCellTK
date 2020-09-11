@@ -52,7 +52,8 @@ study <- params$study
 subtitle: "`r study`"
 ---
 
-singleCellTK-QC (SCTK-QC) is a streamlined quality control(QC) pipeline for single cell RNA sequencing data. SCTK-QC performs comprehensive quality control on droplet count data, including general QC metrics and empty droplet detection. This report contains information for the output of each QC function, visualization of QC metrics and parameters used to run each QC function. 
+# Introduction
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://www.bioconductor.org/packages/release/bioc/html/singleCellTK.html) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
 <br />
 <br />
 
