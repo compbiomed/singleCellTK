@@ -55,7 +55,7 @@ studyDesign <- params$studyDesign
 ```
 
 ---
-subtitle: "`r study`"
+subtitle: "`r subTitle`"
 ---
 `r studyDesign`
 <br />
