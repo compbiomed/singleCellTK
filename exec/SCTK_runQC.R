@@ -111,7 +111,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-i", "--studyDesign"),
         type="character",
         default=NULL,
-        help="The desrciption of the study. Default is None. This would be shown in the html report of cell and droplet QC. Default is NULL"),
+        help="The txt file containing the desrciption of the study design. Default is NULL. This would be shown at the begining the html report of cell and droplet QC."),
     optparse::make_option(c("-L", "--subTitle"),
         type="character",
         default=NULL,
@@ -159,6 +159,8 @@ if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) } 
 
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
+
+if (!is.null(studyDesign)) { studyDesign <- base::readLine(studyDesign, n=-1) }
 
 if (is.null(subTitles)) { 
     subTitles <- paste("SCTK QC HTML report for sample", sample)
@@ -389,7 +391,7 @@ for(i in seq_along(process)) {
     ref <- Reference[i]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
-    subTitle <- subTitles
+    subTitle <- subTitles[i]
     INPUT <- qcInputProcess(preproc,
                             samplename,
                             path,
