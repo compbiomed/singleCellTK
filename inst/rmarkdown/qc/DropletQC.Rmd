@@ -3,7 +3,8 @@ title: "SCTK Droplet QC Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
-  study: study
+  subTitle: subTitle
+  studyDesign: studyDesign
 output:
   html_document:
     number_sections: yes
@@ -45,12 +46,16 @@ preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
 
 ```{r, "DropletQC-import", include=FALSE, include=FALSE, warning=FALSE}
 sce<-params$object
-study <- params$study
+subTitle <- params$subTitle
+studyDesign <- params$studyDesign
 ```
 
 ---
-subtitle: "`r study`"
+subtitle: "`r subTitle`"
 ---
+
+`r studyDesign`
+<br />
 
 # Introduction
 Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
@@ -85,8 +90,8 @@ description_runEmptyDrops <- descriptionEmptyDrops()
 ```{r echo=TRUE, message=FALSE, warning=FALSE} 
  # sce@metadata$runEmptyDrops[names(sce@metadata$runEmptyDrops) != 'sample']
 x <- preprocessMeta(sce@metadata$runEmptyDrops)
-as.data.frame(x) %>%
-  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+as.data.frame(t(as.matrix(x))) %>%
+   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
 ```
 <br />
@@ -119,7 +124,7 @@ description_runBarcodeRank <- descriptionBarcodeRank()
 ### Parameters \n\n
 ```{r echo=TRUE, message=FALSE, warning=FALSE} 
 x <- preprocessMeta(sce@metadata$runBarcodeRankDrops)
-as.data.frame(x) %>%
+as.data.frame(t(as.matrix(x))) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
 ```    

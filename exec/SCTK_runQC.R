@@ -108,6 +108,14 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type="character",
         default='EmptyDrops',
         help="Methods to detect cells. Default is 'EmptyDrops'. Other options could be 'Knee' or 'Inflection'. More information is provided in the documentation. "),
+    optparse::make_option(c("-i", "--studyDesign"),
+        type="character",
+        default=NULL,
+        help="The desrciption of the study. Default is None. This would be shown in the html report of cell and droplet QC. Default is NULL"),
+    optparse::make_option(c("-L", "--subTitle"),
+        type="character",
+        default=NULL,
+        help="The subtitle used in the cell and droplet QC HTML report. Default is None. The subtitle can contain information of the sample, like sample name, etc. The length of subsitle should be the same as the length of samples, if -S is set as TRUE. if -S is set as FALSE, the length of subtitle should be one or NULL"),
     optparse::make_option(c("-T", "--parallelType"),
         type="character",
         default="MulticoreParam",
@@ -135,6 +143,8 @@ detectCell <- opt[["detectCells"]]
 numCores <- opt[["numCores"]]
 parallelType <- opt[["parallelType"]] 
 cellCalling <- opt[["cellDetectMethod"]]
+studyDesign <- opt[["studyDesign"]]
+subTitles <- opt[["subTitle"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
 
@@ -149,6 +159,12 @@ if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
 if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) } 
 
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
+
+if (is.null(subTitles)) { 
+    subTitles <- paste("SCTK QC HTML report for sample", sample)
+} else {
+    subTitles <- unlist(strsplit(opt[["subTitles"]], ","))
+}
 
 ## Parse parameters for QC algorithms
 if (!is.null(yamlFile)) {
@@ -237,14 +253,16 @@ if (dataType == "Both") {
             }
             if (length(basepath) != length(sample)) {
                 stop('The length of "--basePath" should be the same as ',
-                         'the length of "--sample"!')    
+                         'the length of "--sample"!')   
+
+            if (length(Reference) != sum(process == 'CellRangerV2')) {
+                stop('The length of "--ref" should be the same as ',
+                        'the number of "CellRangerV2" in the "--preproc"!')        
+        }  
             }
         }
 
-        if (length(Reference) != sum(process == 'CellRangerV2')) {
-            stop('The length of "--ref" should be the same as ',
-                     'the number of "CellRangerV2" in the "--preproc"!')        
-        }        
+       
     }
 
     if (!is.null(RawFile) | !is.null(FilterFile)) {
@@ -285,12 +303,12 @@ if (dataType == "Cell") {
                 stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')    
             }
+            if (length(Reference) != sum(process == 'CellRangerV2')) {
+                stop('The length of "--ref" should be the same as ',
+                        'the number of "CellRangerV2" in the "--preproc"!')        
+            }
         }
 
-        if (length(Reference) != sum(process == 'CellRangerV2')) {
-            stop('The length of "--ref" should be the same as ',
-                     'the number of "CellRangerV2" in the "--preproc"!')        
-        }       
     }
 
     if (!is.null(FilterFile)) {
@@ -328,11 +346,10 @@ if (dataType == "Droplet") {
                 stop('The length of "--basePath" should be the same as ',
                          'the length of "--sample"!')    
             }
-        }
-
-        if (length(Reference) != sum(process == 'CellRangerV2')) {
-            stop('The length of "--ref" should be the same as ',
-                     'the number of "CellRangerV2" in the "--preproc"!')        
+            if (length(Reference) != sum(process == 'CellRangerV2')) {
+                stop('The length of "--ref" should be the same as ',
+                        'the number of "CellRangerV2" in the "--preproc"!')        
+            }
         }       
     }
 
@@ -372,6 +389,7 @@ for(i in seq_along(process)) {
     ref <- Reference[i]
     rawFile <- RawFile[i]
     filFile <- FilterFile[i]
+    subTitle <- subTitles
     INPUT <- qcInputProcess(preproc,
                             samplename,
                             path,
@@ -466,6 +484,7 @@ for(i in seq_along(process)) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
             
+
             ## Get parameters of QC functions
             getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
                          samplename = samplename, writeYAML = TRUE,
@@ -487,14 +506,22 @@ for(i in seq_along(process)) {
             } else {
                 warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
             }
+
+            ## generate html report
+            reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+
         }
 
         if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+            reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         }
 
         if (dataType == "Cell") {
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+            reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+
             getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
                          samplename = samplename, writeYAML = TRUE,
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
@@ -515,6 +542,10 @@ if (!isTRUE(split)) {
         cellSCE <- combineSCE(cellSCE_list) 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+
+        ## html report
+        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
 
         ## Get parameters of QC functions
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
@@ -540,11 +571,13 @@ if (!isTRUE(split)) {
     if (dataType == "Cell") {
         cellSCE <- combineSCE(cellSCE_list)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+        reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
     }
 
     if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
         dropletSCE <- combineSCE(dropletSCE_list)
+        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
     }
 }

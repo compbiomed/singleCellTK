@@ -3,7 +3,8 @@ title: "SCTK Cell QC Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
-  study: study
+  subTitle: subTitle
+  studyDesign: studyDesign
 output:
   html_document:
     number_sections: yes
@@ -49,13 +50,15 @@ preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
 
 ```{r, "CellQC-import", eval = TRUE, include=FALSE}
 sce.qc <- params$object
-study <- params$study
+subTitle <- params$subTitle
+studyDesign <- params$studyDesign
 ```
 
 ---
 subtitle: "`r study`"
 ---
-
+`r studyDesign`
+<br />
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_runPerCellQC <- descriptionRunPerCellQC()

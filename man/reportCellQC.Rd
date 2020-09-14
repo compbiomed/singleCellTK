@@ -4,7 +4,13 @@
 \alias{reportCellQC}
 \title{Get runCellQC .html report}
 \usage{
-reportCellQC(inSCE, output_file = NULL, output_dir = NULL, study = NULL)
+reportCellQC(
+  inSCE,
+  output_file = NULL,
+  output_dir = NULL,
+  subTitle = NULL,
+  studyDesign = NULL
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing

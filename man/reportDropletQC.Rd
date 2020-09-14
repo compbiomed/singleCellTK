@@ -4,7 +4,13 @@
 \alias{reportDropletQC}
 \title{Get runDropletQC .html report}
 \usage{
-reportDropletQC(inSCE, output_file = NULL, output_dir = NULL, study = NULL)
+reportDropletQC(
+  inSCE,
+  output_file = NULL,
+  output_dir = NULL,
+  subTitle = NULL,
+  studyDesign = NULL
+)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing

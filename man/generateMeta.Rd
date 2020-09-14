@@ -4,7 +4,14 @@
 \alias{generateMeta}
 \title{Generate manifest file for droplet and cell count data}
 \usage{
-generateMeta(dropletSCE, cellSCE, samplename, dir, HTAN = TRUE)
+generateMeta(
+  dropletSCE = NULL,
+  cellSCE = NULL,
+  samplename,
+  dir,
+  HTAN = TRUE,
+  dataType = c("Droplet", "Cell", "Both")
+)
 }
 \arguments{
 \item{dropletSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing

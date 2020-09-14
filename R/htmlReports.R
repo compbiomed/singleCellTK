@@ -15,14 +15,15 @@
 #' @export
 reportDropletQC <- function(inSCE, output_file = NULL,
                                    output_dir = NULL,
-                                   study = NULL) {
+                                   subTitle = NULL, 
+                                   studyDesign = NULL) {
   
   if (is.null(output_dir)){
     output_dir<- getwd()
     }
  
   rmarkdown::render(system.file("rmarkdown/qc/DropletQC.Rmd", package="singleCellTK"), 
-    params = list(object=inSCE, study=study), output_file = output_file, 
+    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign), output_file = output_file, 
     output_dir = output_dir )
  }
 
@@ -45,12 +46,13 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @export
 reportCellQC <- function(inSCE, output_file = NULL,
                                 output_dir = NULL,
-                                study = NULL) {
+                                subTitle = NULL, 
+                                studyDesign = NULL) {
   if (is.null(output_dir)){
     output_dir<- getwd()
   }
-  rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package="singleCellTK"), 
-    params = list(object=inSCE, study=study), output_file = output_file, 
+  rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), 
+    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign), output_file = output_file, 
     output_dir = output_dir)
 }
 
