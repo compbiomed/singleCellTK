@@ -1,0 +1,12 @@
+---
+title: Using the UI to generate QC metrics
+---
+
+This section of the toolkit will allow users to generate quality control (QC) metrics for the single-cell data that they have imported.  Below is a guide on how to navigate the page.
+
+## Select which algorithms to run
+
+The user must check off which algorithms they would like to run in order to see their parameters. After filling out the parameters for each checked algorithm, the user must click "Run" to see the results.
+
+## Plot the results
+Once the QC algorithms have finished running, a new panel will appear below the QC panel which will ask for plotting parameters.  The user must select which reducedDimName to use for the plots and then click "Plot."  The plots will appear on the right-hand side of the page.  Each algorithm's plots will be under its own tab, and if there are multiple samples in the SCE, their plots will be separated into sub-tabs.
