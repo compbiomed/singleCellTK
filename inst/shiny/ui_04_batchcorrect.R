@@ -32,14 +32,15 @@ shinyPanelBatchcorrect <- fluidPage(
                                 value = "10000"
                                     )
                             ),
-                            conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'cpm'",
-                                conditionalPanel(
-                                    condition = "input.assayModifyAction != 'delete'",
-                                    textInput("normalizeAssayOutname", "Assay Name", "",
-                                    placeholder = "What should the assay be called?")
-                                    ),
-                                ),
+                            # conditionalPanel(
+                            #     condition = "input.normalizeLibrarySelect == 'cpm'",
+                            #     conditionalPanel(
+                            #         condition = "input.assayModifyAction != 'delete'",
+                            #         
+                            #         ),
+                            #     ),
+                            textInput("normalizeAssayOutname", "Assay Name", "",
+                                      placeholder = "What should the assay be called?"),
                             withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
                         )
                     )
