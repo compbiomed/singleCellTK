@@ -87,7 +87,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-F", "--outputFormat"),
         type="character",
         default=NULL,
-        help="The output format of this QC pipeline. Currently, it supports RDS, Flatfile, Python AnnData and HTAN."),
+        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -191,20 +191,20 @@ if (numCores > 1) {
 }
 
 ### checking output formats
-if (!all(formats %in% c("R", "Python", "FlatFile", "HTAN"))) {
-    warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
-         " is not supported now. ") #             "Only output the supported formats in the provided options. "
+if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
+    warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
+         paste(formats[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+         " is not supported now. ")
 }
 
-formats <- formats[formats %in% c("R", "Python", "FlatFile", "HTAN")]
+formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
 message("The output format is [", 
         paste(formats, collapse = ","), "]. ")
 
 if (length(formats) == 0) {
     warning("None of the provided format is supported now. Therefore, the output ", 
-        "will be R, Python, FlatFile and HTAN. ")
-    formats <- c("R", "Python", "FlatFile", "HTAN")
+        "will be SCE, AnnData, FlatFile and HTAN. ")
+    formats <- c("SCE", "AnnData", "FlatFile", "HTAN")
 }
 
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
@@ -348,7 +348,7 @@ if (dataType == "Droplet") {
 }
 
 if (!cellCalling %in% c("Knee", "Inflection", "EmptyDrops")) {
-    step("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
+    stop("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
 }
 
 ## Prepare for QC
