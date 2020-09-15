@@ -2698,7 +2698,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  hide_TypeSelect <- reactiveVal()
+  hide_TypeSelect <- reactiveVal("show")
   
   #-+-+-+-+-+-Observe Color by###################################################
   ###Observe Radio Button Select Value Type
@@ -2710,7 +2710,7 @@ shinyServer(function(input, output, session) {
                            choices = c("Categorical", "Continuous"),
                            selected = "Categorical")
         #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-        hide_TypeSelect("hide")
+        # hide_TypeSelect("hide")
       }else if(is.integer(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])
               &length(levels(as.factor(colData(vals$counts)@listData[[input$AnnotationSelect_Colorby]])))<=25) {
           updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
@@ -2723,7 +2723,7 @@ shinyServer(function(input, output, session) {
                            choices = c("Categorical", "Continuous"),
                            selected = "Continuous")
         #shinyjs::delay(5,shinyjs::disable("SelectColorType"))
-        hide_TypeSelect("hide")
+        # hide_TypeSelect("hide")
       }
       
     }
@@ -2793,6 +2793,26 @@ shinyServer(function(input, output, session) {
   })
 
   outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
+  
+  defaultColors = NULL
+  numColors <- NULL
+  colorLabels <- NULL
+  ### Observe Categorical radio button selection and add in color selection panel.
+  observeEvent(c(input$SelectColorType, input$AnnotationSelect_Colorby), {
+    if (input$SelectColorType == "Categorical") {
+      if(input$TypeSelect_Colorby == "Cell Annotation") {
+        req(vals$counts, input$AnnotationSelect_Colorby)
+        labels = unique(SingleCellExperiment::colData(vals$counts)[, input$AnnotationSelect_Colorby])
+        colorLabels <<- labels
+        numColors <<- length(labels)
+        output$categoricalColorUI <- renderUI({
+          lapply(1:numColors, function(i){
+            colourInput(inputId=paste0(i, "_color"), label=labels[i], value="green", showColour="background", palette="limited")
+          })
+        })
+      }
+    }
+  })
   
   ###Observe Check Box Check Binning & Text Input Number of Bins:
   observeEvent(input$SelectColorType, {
@@ -2913,7 +2933,11 @@ shinyServer(function(input, output, session) {
   
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
-    
+    colors <- c()
+    for (i in 1: numColors) {
+      colors[i] <- input[[ paste0(i,"_color")]]
+    }
+    names(colors) = colorLabels
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
@@ -3006,13 +3030,13 @@ shinyServer(function(input, output, session) {
             reducedDimName = input$QuickAccess,
             xlab = xname,
             ylab = yname,
-            legendTitle = legendname,
-            title = input$adjusttitle,
             colorBy = input$AnnotationSelect_Colorby,
             groupBy = pltVars$groupby,
+            legendTitle = legendname,
+            title = input$adjusttitle,
             bin = pltVars$bin,
             transparency = input$adjustalpha,
-            colorScale = NULL, # cvtodo
+            colorScale = colors,
             colorLow = input$lowColor,
             colorMid = input$midColor,
             colorHigh = input$highColor,

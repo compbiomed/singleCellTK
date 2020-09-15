@@ -383,8 +383,8 @@ shinyUI(
                          
                          #-+-+-+-+-+-colorby part2###################################
                          conditionalPanel(
-                           condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
-                           # condition = sprintf("input['%s'] != 'Single Color'", "TypeSelect_Colorby"),
+                           # condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
+                           condition = sprintf("input['%s'] != 'Single Color'", "TypeSelect_Colorby"),
                            radioButtons(
                              "SelectColorType",
                              label = NULL,
@@ -397,6 +397,11 @@ shinyUI(
                              colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
                              colourInput("lowColor", "Low Color", "white", "background", "limited")
                            ), 
+                           conditionalPanel(
+                             id = "categoricalColorConditional",
+                             condition = sprintf("input['%s'] == 'Categorical'", "SelectColorType"),
+                             uiOutput("categoricalColorUI")
+                           ),
                            conditionalPanel(
                              id="binningConditional",
                              condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
