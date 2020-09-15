@@ -2569,7 +2569,7 @@ shinyServer(function(input, output, session) {
     if (input$navbar == "CellViewer"){
       # is there an error or not
       if (is.null(vals$counts)){
-        # shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+        shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       }else{
         cell_list <- BiocGenerics::colnames(vals$counts)
         gene_list <- BiocGenerics::rownames(vals$counts)

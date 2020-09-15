@@ -52,6 +52,10 @@
   float: right;
 }
 
+.btn {
+  white-space: normal;
+}
+
 label[for="Col"]
 {
     display:none;
