@@ -2794,7 +2794,6 @@ shinyServer(function(input, output, session) {
 
   outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
   
-  defaultColors = NULL
   numColors <- NULL
   colorLabels <- NULL
   ### Observe Categorical radio button selection and add in color selection panel.
@@ -2802,12 +2801,13 @@ shinyServer(function(input, output, session) {
     if (input$SelectColorType == "Categorical") {
       if(input$TypeSelect_Colorby == "Cell Annotation") {
         req(vals$counts, input$AnnotationSelect_Colorby)
-        labels = unique(SingleCellExperiment::colData(vals$counts)[, input$AnnotationSelect_Colorby])
+        labels = sort(unique(SingleCellExperiment::colData(vals$counts)[, input$AnnotationSelect_Colorby]))
         colorLabels <<- labels
         numColors <<- length(labels)
+        defaultColors <- randomcoloR::distinctColorPalette(numColors)
         output$categoricalColorUI <- renderUI({
           lapply(1:numColors, function(i){
-            colourInput(inputId=paste0(i, "_color"), label=labels[i], value="green", showColour="background", palette="limited")
+            colourInput(inputId=paste0(i, "_color"), label=labels[i], value=defaultColors[i], showColour="background")
           })
         })
       }
