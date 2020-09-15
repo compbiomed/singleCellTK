@@ -60,3 +60,7 @@ label[for="Col"]
 {
     display:none;
 }
+
+.colourpicker .colourpicker-input {
+  max-height: 20px;
+}
