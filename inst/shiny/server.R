@@ -1258,7 +1258,7 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        vals$original <- runCellQC(inSCE = vals$original,
+        vals$counts <- runCellQC(inSCE = vals$original,
                                    algorithms = algoList,
                                    sample = qcSample,
                                    collectionName = gsColName,
@@ -1320,12 +1320,12 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    showModal(filteringModal(colNames = names(colData(vals$original))))
+    showModal(filteringModal(colNames = names(colData(vals$counts))))
   })
 
   observeEvent(input$addRowFilteringParam, {
     if (!is.null(names(assays(vals$original)))) {
-      showModal(rowFilteringModal(assayInput = names(assays(vals$original))))
+      showModal(rowFilteringModal(assayInput = names(assays(vals$counts))))
     }
   })
 
