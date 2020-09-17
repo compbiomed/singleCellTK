@@ -842,103 +842,73 @@ shinyServer(function(input, output, session) {
       for (entry in allImportEntries$samples) {
         if (entry$type == "cellRanger2") {
           if (is.null(entry$params$cellRangerDirs)) {
-            sce <- importCellRangerV2Sample(
+            newSce <- importCellRangerV2Sample(
               sampleDir = entry$params$sampleDir,
               sampleName = entry$params$sampleName,
             )
           } else {
-            sce <- importCellRangerV2(
+            newSce <- importCellRangerV2(
               cellRangerDirs = entry$params$cellRangerDirs,
               sampleDirs = entry$params$sampleDirs,
               sampleNames = entry$params$sampleNames,
             )
-          }
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
           }
           
         } else if (entry$type == "cellRanger3") {
           if (is.null(entry$params$cellRangerDirs)) {
-            sce <- importCellRangerV3Sample(
+            newSce <- importCellRangerV3Sample(
               sampleDir = entry$params$sampleDir,
               sampleName = entry$params$sampleName,
             )
           } else {
-            sce <- importCellRangerV3(
+            newSce <- importCellRangerV3(
               cellRangerDirs = entry$params$cellRangerDirs,
               sampleDirs = entry$params$sampleDirs,
               sampleNames = entry$params$sampleNames,
             )
           }
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
-          }
         } else if (entry$type == "starSolo") {
-          sce <- importSTARsolo(
+          newSce <- importSTARsolo(
             STARsoloDirs = entry$params$STARsoloDirs,
             samples = entry$params$amples
           )
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
-          }
         } else if (entry$type == "busTools") {
-          sce <- importBUStools(
+          newSce <- importBUStools(
             BUStoolsDirs = entry$params$BUStoolsDirs,
             samples = entry$params$samples,
           )
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
-          }
         } else if (entry$type == "seqc") {
-          sce <- importSEQC(
+          newSce <- importSEQC(
             seqcDirs = entry$params$seqcDirs,
             samples = entry$params$samples,
             prefix = entry$params$prefix,
           )
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
-          }
         } else if (entry$type == "optimus") {
-          sce <- importOptimus(
+          newSce <- importOptimus(
             OptimusDirs = entry$params$OptimusDirs,
             samples = entry$params$samples
           )
-          if(is.null(vals$original)) {
-            vals$original <- sce
-          } else {
-            vals$original <- cbind(vals$original, sce)
-          }
         } else if (entry$type == "files") {
-          vals$original <- importFromFiles(assayFile = entry$params$assayFile,
+          newSce <- importFromFiles(assayFile = entry$params$assayFile,
                                            annotFile = entry$params$annotFile,
                                            featureFile = entry$params$featureFile,
                                            assayName = entry$params$assayName)
         } else if (entry$type == "example") {
           newSce <- withConsoleMsgRedirect(importExampleData(dataset = entry$params$dataset))
-          if(is.null(vals$original)) {
-            vals$original <- newSce
-          } else {
-            vals$original <- cbind(vals$original, newSce)
-          }
         } else if (entry$type == "rds") {
           importedrds <- readRDS(entry$params$rdsFile)
           if (base::inherits(importedrds, "SummarizedExperiment")) {
-            vals$original <- importedrds
+            newSce <- importedrds
           } else if (base::inherits(importedrds, "Seurat")) {
-            vals$original <- convertSeuratToSCE(importedrds)
+            newSce <- convertSeuratToSCE(importedrds)
           } else {
             showNotification("The '.rds' file should contain a 'SingleCellExperiment' or 'Seurat' object.", type = "error")
           }
+        }
+        if(is.null(vals$original)) {
+          vals$original <- newSce
+        } else {
+          vals$original <- cbind(vals$original, newSce)
         }
       }
       
@@ -1258,14 +1228,14 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        vals$original <- runCellQC(inSCE = vals$original,
+        vals$counts <- runCellQC(inSCE = vals$original,
                                    algorithms = algoList,
                                    sample = qcSample,
                                    collectionName = gsColName,
                                    useAssay = input$qcAssaySelect,
                                    seed = input$qcSeed,
                                    paramsList = paramsList)
-        redDimList <- strsplit(reducedDimNames(vals$original), " ")
+        redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         if(length(redDimList) == 0) {
           updateSelectInput(session, "qcPlotRedDim", choices = c("UMAP"))
         } else if ("UMAP" %in% redDimList){
@@ -1287,7 +1257,7 @@ shinyServer(function(input, output, session) {
       if (qcSample == "None") {
         qcSample <- NULL
       } else {
-        qcSample <- colData(vals$original)[,input$qcSampleSelect]
+        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
       }
       # build list of selected algos
       algoList = list()
@@ -1298,16 +1268,16 @@ shinyServer(function(input, output, session) {
       }
       # only run getUMAP if there are no reducedDimNames
       redDimName <- input$qcPlotRedDim
-      if((redDimName == "UMAP") && !("UMAP" %in% reducedDimNames(vals$original))) {
-        vals$original <- getUMAP(inSCE = vals$original,
+      if((redDimName == "UMAP") && !("UMAP" %in% reducedDimNames(vals$counts))) {
+        vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
         )
       }
-      if (!is.null(vals$original)) {
+      if (!is.null(vals$counts)) {
         # show the tabs for the result plots  output[[qc_plot_ids[[a]]]] 
         showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-        arrangeQCPlots(vals$original, output, algoList, colData(vals$original)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
+        arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
       }
     })
   })
@@ -1320,12 +1290,12 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    showModal(filteringModal(colNames = names(colData(vals$original))))
+    showModal(filteringModal(colNames = names(colData(vals$counts))))
   })
 
   observeEvent(input$addRowFilteringParam, {
-    if (!is.null(names(assays(vals$original)))) {
-      showModal(rowFilteringModal(assayInput = names(assays(vals$original))))
+    if (!is.null(names(assays(vals$counts)))) {
+      showModal(rowFilteringModal(assayInput = names(assays(vals$counts))))
     }
   })
 
@@ -1453,14 +1423,14 @@ shinyServer(function(input, output, session) {
       # handle column filtering (pull out the criteria strings first)
       colInput <- formatFilteringCriteria(filteringParams$params)
       if (length(colInput) > 0) {
-        vals$original <- subsetSCECols(vals$original, colData = colInput)
+        vals$counts <- subsetSCECols(vals$counts, colData = colInput)
       }
 
       # handle row filtering (enter information as rows first, then pull out criteria strings)
-      vals$original <- addRowFiltersToSCE(vals$original, rowFilteringParams)
+      vals$counts <- addRowFiltersToSCE(vals$counts, rowFilteringParams)
       rowInput <- formatFilteringCriteria(rowFilteringParams$params)
       if (length(rowInput) > 0) {
-        vals$original <- subsetSCERows(vals$original, rowData = rowInput, returnAsAltExp = FALSE)
+        vals$counts <- subsetSCERows(vals$counts, rowData = rowInput, returnAsAltExp = FALSE)
       }
     })
   })
