@@ -170,7 +170,6 @@
                                                                                                  alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
-
     }
     if (class(colorBySub) == "numeric"){
       g <- g + ggplot2::scale_color_gradient2(
@@ -617,6 +616,7 @@ plotSCEScatter <- function(inSCE,
                            colorLow = "white",
                            colorMid = "gray",
                            colorHigh = "blue",
+                           singleColor = NULL,
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 15,
@@ -646,7 +646,13 @@ plotSCEScatter <- function(inSCE,
   }
 
   if (is.null(slot)){
-    colorPlot <- NULL
+    if (is.null(singleColor)){
+      colorPlot <- NULL
+    }else{
+      colorPlot <- rep(singleColor, length(rownames(inSCE)))
+      labelClusters <- FALSE
+      #legendSize <- 0
+    }
   } else if (slot == "assays" && !is.null(feature)) {
     counts <- sceSubset[[annotation.ix]]
     if (feature %in% rownames(counts)) {

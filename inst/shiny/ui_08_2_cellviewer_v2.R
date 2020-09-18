@@ -178,7 +178,6 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c("Categorical", "Continuous")
           )
         ),
-        tags$hr(),
         conditionalPanel(
           id="binningConditional",
           condition = "input['SelectColorType'] == 'Continuous' && output.hide_typebtns == 'show'",
@@ -206,7 +205,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #)
         ),
         conditionalPanel(
-          condition =  "input.checkColorbinning == 1",
+          condition =  "input.checkColorbinning == 1 && output.hide_bins == 'show'",
           numericInput(
             "adjustColorbinning",
             h5("Number of Bins"),
@@ -280,59 +279,64 @@ shinyPanelCellViewer <- fluidPage(tags$div(
       #                           This message will disappear once the plot is generated.')),
       tags$hr(),
       fluidRow(
-        column(6, sliderInput(
-          "adjustalpha",
-          h5(strong("Opacity:")),
-          min = 0,
-          max = 1,
-          value = 1
-        )),
-        column(6, sliderInput(
-          "adjustsize",
-          h5(strong("Dot size:")),
-          min = 0.1,
-          max = 0.8,
-          value = 0.45
-        )),
         column(6, textInput("adjusttitle", h5(strong(
           "Title:"
         )))),
         column(6, textInput("adjustlegendtitle", h5(
           strong("Legend title:")
         ))),
-        column(6, sliderInput(
-          "adjustlegendtitlesize",
-          h5(strong("Legend title size:")),
-          min = 1,
-          max = 20,
-          value = 12
-        )),
-        column(6, sliderInput(
-          "adjustlegendsize",
-          h5(strong("Legend size:")),
-          min = 1,
-          max = 20,
-          value = 10
-        )),
         column(6, textInput("adjustxlab", h5(
           strong("X-axis label:")
         ))),
         column(6, textInput("adjustylab", h5(
           strong("Y-axis label:")
         ))),
-        column(6, sliderInput(
+        column(3, numericInput(
+          "adjustlegendtitlesize",
+          h5(strong("Legend title size:")),
+          min = 1,
+          max = 20,
+          value = 12
+        )),
+        column(3, numericInput(
+          "adjustlegendsize",
+          h5(strong("Legend size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(3, numericInput(
           "adjustaxissize",
           h5(strong("Axis size:")),
           min = 1,
           max = 20,
           value = 10
         )),
-        column(6, sliderInput(
+        column(3, numericInput(
           "adjustaxislabelsize",
           h5(strong("Axis label size:")),
           min = 1,
           max = 20,
           value = 10
+        )),
+        column(3, numericInput(
+          "adjustalpha",
+          h5(strong("Opacity:")),
+          min = 0,
+          max = 1,
+          value = 1
+        )),
+        column(3, numericInput(
+          "adjustsize",
+          h5(strong("Dot size:")),
+          min = 0.1,
+          max = 0.8,
+          value = 0.45
+        )),
+        column(3, checkboxInput(
+          "adjustgridlines",
+          h5(strong("Add gridlines")),
+          value = FALSE,
         ))
       )
     )
