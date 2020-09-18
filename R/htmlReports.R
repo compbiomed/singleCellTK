@@ -21,10 +21,14 @@ reportDropletQC <- function(inSCE, output_file = NULL,
   if (is.null(output_dir)){
     output_dir<- getwd()
     }
- 
-  rmarkdown::render(system.file("rmarkdown/qc/DropletQC.Rmd", package="singleCellTK"), 
+  
+  report_path <- tempfile(fileext = ".Rmd")
+  file.copy(system.file("rmarkdown/qc/DropletQC.Rmd", package = "singleCellTK"), report_path, overwrite = TRUE)
+
+  ## create temp Rmd file to bypass permission issue on server
+  rmarkdown::render(report_path, 
     params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign), output_file = output_file, 
-    output_dir = output_dir )
+    output_dir = output_dir)
  }
 
 
@@ -51,7 +55,10 @@ reportCellQC <- function(inSCE, output_file = NULL,
   if (is.null(output_dir)){
     output_dir<- getwd()
   }
-  rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), 
+  report_path <- tempfile(fileext = ".Rmd")
+  file.copy(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), report_path, overwrite = TRUE)
+  
+  rmarkdown::render(report_path, 
     params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign), output_file = output_file, 
     output_dir = output_dir)
 }
