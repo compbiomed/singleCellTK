@@ -11,7 +11,7 @@ This section describes the usage of the user interface (UI) for singleCellTK (SC
 
 ### Entry of The Panel
 
-From anywhere of the UI, the panel for marker finding can be accessed from the top navigation panel at the circled tab shown below.  
+From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.  
 
 ![Entry](clst_ui_entry.png)\
 
