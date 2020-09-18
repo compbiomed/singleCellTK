@@ -276,10 +276,10 @@ shinyServer(function(input, output, session) {
   importBUSFiles <- reactiveValues(files = list(), id_count = 0)
   importSEQFiles <- reactiveValues(files = list(), id_count = 0)
   importOptFiles <- reactiveValues(files = list(), id_count = 0)
-  
+
   allImportEntries <- reactiveValues(samples=list(), id_count=0)
-  
-  
+
+
   # modal to import all preprocessed data except for CellRanger data
   importModal <- function(failed=FALSE, needsDir=FALSE) {
 
@@ -736,17 +736,17 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   # Event handler to import a file input
   observeEvent(input$addFilesImport, {
     id <- paste0("newSampleFiles", allImportEntries$id_count)
-    entry <- list(type="files", id = id, params=list(assayFile = input$countsfile$datapath, annotFile = input$annotFile$datapath, 
+    entry <- list(type="files", id = id, params=list(assayFile = input$countsfile$datapath, annotFile = input$annotFile$datapath,
                                                      featureFile = input$featureFile$datapath, assayName = input$inputAssayType))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    
+
     addToGeneralSampleTable("files", id, "", input$inputAssayType)
-    
+
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
         selector = paste0("#", id)
@@ -769,9 +769,9 @@ shinyServer(function(input, output, session) {
     entry <- list(type="example", id = id, params=list(dataset = input$selectExampleData))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    
+
     addToGeneralSampleTable("example", id, "", input$selectExampleData)
-    
+
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
         selector = paste0("#", id)
@@ -794,9 +794,9 @@ shinyServer(function(input, output, session) {
     entry <- list(type="rds", id = id, params=list(rdsFile=input$rdsFile$datapath))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    
+
     addToGeneralSampleTable("rds", id, input$rdsFile$datapath, "")
-    
+
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
         selector = paste0("#", id)
@@ -812,7 +812,7 @@ shinyServer(function(input, output, session) {
       allImportEntries$samples <- allImportEntries$samples[toRemove]
     })
   })
-  
+
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
       for (entry in allImportEntries$samples) {
@@ -834,7 +834,7 @@ shinyServer(function(input, output, session) {
           } else {
             vals$original <- cbind(vals$original, sce)
           }
-          
+
         } else if (entry$type == "cellRanger3") {
           if (is.null(entry$params$cellRangerDirs)) {
             sce <- importCellRangerV3Sample(
@@ -956,7 +956,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
     })
   })
-  
+
 
   #-----------#
   # Gene Sets #
@@ -1336,17 +1336,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  
+
   observeEvent(input$filterAssaySelect, {
     removeUI(selector = "#newThresh")
     insertUI(
       selector = "#rowFilterCriteria",
-      ui = tags$div(id="newThresh", 
+      ui = tags$div(id="newThresh",
                     numericInput("filterThreshX", "Number of counts per cell", 0),
                     numericInput("filterThreshY", "Number of cells", 0),
            )
     )
-    
+
   })
 
   observeEvent(input$filtModalOK, {
@@ -1389,7 +1389,7 @@ shinyServer(function(input, output, session) {
       id <- paste0("rowFilteringParam", rowFilteringParams$id_count)
       # new row in parameters table
       threshStr <- sprintf("> %i counts in > %i cells", input$filterThreshX, input$filterThreshY)
-      
+
       addToRowFilterParams(input$filterAssaySelect, input$filterThreshX, input$filterThreshY, id, rowFilteringParams)
       make3ColTableRow("#newRowFilteringParams", id, input$filterAssaySelect, threshStr)
       observeEvent(input[[paste0("remove", id)]],{
@@ -1409,7 +1409,7 @@ shinyServer(function(input, output, session) {
       removeModal()
     }
   })
-  
+
   observeEvent(input$clearAllFilters, {
     for (entry in filteringParams$params) {
       removeUI(selector = paste0("#", entry$id))
@@ -1928,7 +1928,43 @@ shinyServer(function(input, output, session) {
         } #check for named entered and if its a duplicate
         else if (!is.null(input$dimRedNameInput)){
           if (input$dimRedNameInput %in% names(reducedDims(vals$counts))){
-            shinyalert::shinyalert("Error", "Name already exists!", type = "error")
+            shinyalert(
+              "Warning",
+              "Name already exits. Overwrite?",
+              "warning", showCancelButton = TRUE,
+              confirmButtonText = "Overwrite",
+              callbackR = function(x){if(isTRUE(x)){
+                if (input$dimRedPlotMethod == "PCA"){
+                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAssaySelect,
+                                          reducedDimName = input$dimRedNameInput)
+                    updateReddimInputs()
+                  }
+                } else if (input$dimRedPlotMethod == "tSNE"){
+                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = input$dimRedNameInput,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                    updateReddimInputs()
+                  }
+                } else {
+                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = input$dimRedNameInput,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP
+                    )
+                    updateReddimInputs()
+                  }
+                }
+              }}
+            )
           } else {
             if (input$dimRedPlotMethod == "PCA"){
               if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
@@ -3984,6 +4020,7 @@ shinyServer(function(input, output, session) {
         # Get "input" outside "renderPlot" expression so the plots aren't update
         # automatically but after pressing "Plot" button.
         ## Generals
+        print(1)
         useAssay <- input$batchCheckOrigAssay
         batch <- input$batchCheckVar
         if(input$batchCheckCond == "None"){
@@ -3993,6 +4030,7 @@ shinyServer(function(input, output, session) {
         }
         ## Original assay PCA
         oriAssayPCAName <- paste0(input$batchCheckOrigAssay, "_PCA")
+        print(2)
         if(!oriAssayPCAName %in% names(reducedDims(vals$counts))){
           # TODO: Think about whether to perform this only on temp SCE
           # instead of vals$counts
@@ -4001,13 +4039,20 @@ shinyServer(function(input, output, session) {
                                 reducedDimName = oriAssayPCAName)
           updateReddimInputs()
         }
+        print(3)
         resName <- input$batchCheckCorrName
         ## Corrected assay/altExp PCA
         if (vals$batchRes[[resName]] == 'assay'){
           corrAssayPCAName = paste0(resName, "_PCA")
+          # Here the bug comes
+          print(vals$counts)
+          print(resName)
+          print(corrAssayPCAName)
           vals$counts <- getPCA(vals$counts, useAssay = resName,
                                 reducedDimName = corrAssayPCAName)
+          print(3.3)
           updateReddimInputs()
+          print(3.4)
         } else if (vals$batchRes[[resName]] == 'altExp'){
           ae <- altExp(vals$counts, resName)
           corrAltExpPCAName <- paste0(resName, "_PCA")
@@ -4019,10 +4064,14 @@ shinyServer(function(input, output, session) {
         }
         inSCE <- vals$counts
         ## Update plots
+        print(inSCE)
+        print(useAssay)
+        print(batch)
+        print(shapeBy)
+        print(oriAssayPCAName)
         output$batchOriVars <- renderPlot({
-          plotSCEBatchFeatureMean(inSCE = inSCE,
-                                  useAssay = useAssay,
-                                  batch = batch)
+          plotBatchVariance(inSCE = inSCE, useAssay = useAssay, batch = batch,
+                            condition = shapeBy)
         })
         output$batchOriPCA <- renderPlot({
           plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
@@ -4031,14 +4080,14 @@ shinyServer(function(input, output, session) {
         })
         output$batchCorrVars <- renderPlot({
           if (vals$batchRes[[resName]] == 'reddim'){
-            plotSCEBatchFeatureMean(inSCE = inSCE, useReddim = resName,
-                                    batch = batch)
+            plotBatchVariance(inSCE = inSCE, useReddim = resName, batch = batch,
+                              condition = shapeBy)
           } else if (vals$batchRes[[resName]] == 'assay'){
-            plotSCEBatchFeatureMean(inSCE = inSCE, useAssay = resName,
-                                    batch = batch)
+            plotBatchVariance(inSCE = inSCE, useAssay = resName, batch = batch,
+                              condition = shapeBy)
           } else if (vals$batchRes[[resName]] == 'altExp'){
-            plotSCEBatchFeatureMean(inSCE = inSCE, useAltExp = resName,
-                                    batch = batch)
+            plotBatchVariance(inSCE = inSCE, useAltExp = resName, batch = batch,
+                              condition = shapeBy)
           }
         })
         output$batchCorrReddim <- renderPlot({
@@ -4106,8 +4155,10 @@ shinyServer(function(input, output, session) {
           } else {
             cov <- input$combatCond
           }
+          print(input$combatParametric)
           par.prior <- ifelse(input$combatParametric == "Parametric",
                               TRUE, FALSE)
+          print(par.prior)
           vals$counts <- runComBat(inSCE = vals$counts,
                                    batch = input$batchCorrVar,
                                    useAssay = input$batchCorrAssay,
