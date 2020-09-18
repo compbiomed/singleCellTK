@@ -23,6 +23,7 @@ text-align: justify}
 require(singleCellTK)
 require(ggplot2)
 require(umap)
+require(dplyr)
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
   meta <- meta[!names(meta) %in% ignore]

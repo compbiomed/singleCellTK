@@ -19,6 +19,7 @@ require(umap)
 require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)
+require(dplyr)
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
   meta <- meta[!names(meta) %in% ignore]
