@@ -160,7 +160,7 @@ if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ","
 
 if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
 
-if (!is.null(studyDesign)) { studyDesign <- base::readLine(studyDesign, n=-1) }
+if (!is.null(studyDesign)) { studyDesign <- base::readLines(studyDesign, n=-1) }
 
 if (is.null(subTitles)) { 
     subTitles <- paste("SCTK QC HTML report for sample", sample)
@@ -495,15 +495,15 @@ for(i in seq_along(process)) {
             ## generate meta data
             if ("FlatFile" %in% formats) {
                 if ("HTAN" %in% formats) {
-                    meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                        dir = directory, HTAN=TRUE)
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename, 
+                                        dir = directory, HTAN=TRUE, dataType = "Both")
                 } else {
-                    meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                        dir = directory, HTAN=FALSE)  
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename, 
+                                        dir = directory, HTAN=FALSE, dataType = "Both")  
                 }
 
-            level3Meta[[i]] <- meta[[1]]
-            level4Meta[[i]] <- meta[[2]]
+                level3Meta[[i]] <- meta[[1]]
+                level4Meta[[i]] <- meta[[2]]
 
             } else {
                 warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
@@ -517,11 +517,43 @@ for(i in seq_along(process)) {
 
         if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+            if ("FlatFile" %in% formats) {
+                if ("HTAN" %in% formats) {
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename, 
+                                        dir = directory, HTAN=TRUE, dataType = "Droplet")
+                } else {
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename, 
+                                        dir = directory, HTAN=FALSE, dataType = "Droplet")  
+                }
+
+                level3Meta[[i]] <- meta[[1]]
+                level4Meta[[i]] <- meta[[2]]
+
+            } else {
+                warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+            }
+
             reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         }
 
         if (dataType == "Cell") {
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+            if ("FlatFile" %in% formats) {
+                if ("HTAN" %in% formats) {
+                    meta <- generateMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename, 
+                                        dir = directory, HTAN=TRUE, dataType = "Cell")
+                } else {
+                    meta <- generateMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename, 
+                                        dir = directory, HTAN=FALSE, dataType = "Cell")  
+                }
+
+                level3Meta[[i]] <- meta[[1]]
+                level4Meta[[i]] <- meta[[2]]
+
+            } else {
+                warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+            }
+
             reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
 
             getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
@@ -537,6 +569,7 @@ for(i in seq_along(process)) {
 if (!isTRUE(split)) {
     if (length(sample) > 1) {
         samplename <- paste(sample, collapse="-")
+        subTitle <- paste("SCTK QC HTML report for sample", samplename)
     }
 
     if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
@@ -556,10 +589,10 @@ if (!isTRUE(split)) {
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
                 meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=TRUE)
+                                    dir = directory, HTAN=TRUE, dataType = "Both")
             } else {
                 meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=FALSE)            
+                                    dir = directory, HTAN=FALSE, dataType = "Both")            
             }
 
             level3Meta <- list(meta[[1]])
@@ -573,22 +606,56 @@ if (!isTRUE(split)) {
     if (dataType == "Cell") {
         cellSCE <- combineSCE(cellSCE_list)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
+        if ("FlatFile" %in% formats) {
+            if ("HTAN" %in% formats) {
+                meta <- generateMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=TRUE, dataType = "Cell")
+            } else {
+                meta <- generateMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename, 
+                                    dir = directory, HTAN=FALSE, dataType = "Cell")  
+            }
+
+            level3Meta[[i]] <- meta[[1]]
+            level4Meta[[i]] <- meta[[2]]
+
+        } else {
+            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+        }
+
         reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
     }
 
     if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
         dropletSCE <- combineSCE(dropletSCE_list)
-        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
+        if ("FlatFile" %in% formats) {
+            if ("HTAN" %in% formats) {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename, 
+                                    dir = directory, HTAN=TRUE, dataType = "Droplet")
+            } else {
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename, 
+                                    dir = directory, HTAN=FALSE, dataType = "Droplet")  
+            }
+
+            level3Meta[[i]] <- meta[[1]]
+            level4Meta[[i]] <- meta[[2]]
+
+        } else {
+            warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
+        }
+
+        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+    
     }
 }
 
 if (("FlatFile" %in% formats)) {
-    if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
-        HTANLevel3 <- do.call(base::rbind, level3Meta)
-        HTANLevel4 <- do.call(base::rbind, level4Meta)
-        write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+    HTANLevel3 <- do.call(base::rbind, level3Meta)
+    HTANLevel4 <- do.call(base::rbind, level4Meta)
+    write.csv(HTANLevel3, file = file.path(directory, "level3Meta.csv"))
+    #if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
+    if ( !(dataType == "Droplet" & !isTRUE(detectCell)) ) {
         write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
     }
 }
