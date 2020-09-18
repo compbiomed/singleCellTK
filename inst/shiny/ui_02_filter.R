@@ -13,7 +13,7 @@ orgpkgs <- c("Anopheles" = "org.Ag.eg.db", "Arabidopsis" = "org.At.tair.db",
 shinyPanelFilter <- fluidPage(
   useShinyalert(),
   wellPanel(
-    h4("Column Filtering Paramters:"),
+    h4("Select Column Filtering Criteria:"),
     fluidRow(
       column(4, tags$b("Column Name")),
       column(4, tags$b("Filter Condition")),
@@ -22,24 +22,24 @@ shinyPanelFilter <- fluidPage(
     tags$div(id = "newFilteringParams"),
     tags$br(),
     tags$br(),
-    actionButton("addFilteringParam", "Add a Parameter"),
-    actionButton("clearAllParams", "Clear Parameters"),
+    actionButton("addFilteringParam", "Add a Filter"),
+    actionButton("clearAllFilters", "Clear Filters"),
   ),
   
   # *** Uncomment when row filtering is finalized ***
-  # wellPanel(
-  #   h4("Row Filtering Paramters:"),
-  #   fluidRow(
-  #     column(4, tags$b("Row Name")),
-  #     column(4, tags$b("Filter Condition")),
-  #     column(4, tags$b("Remove"))
-  #   ),
-  #   tags$div(id = "newRowFilteringParams"),
-  #   tags$br(),
-  #   tags$br(),
-  #   actionButton("addRowFilteringParam", "Add a Parameter"),
-  #   actionButton("clearAllRowParams", "Clear Parameters"),
-  # ),
+  wellPanel(
+    h4("Select Row Filtering Criteria:"),
+    fluidRow(
+      column(4, tags$b("Assay Name")),
+      column(4, tags$b("Filter Condition")),
+      column(4, tags$b("Remove"))
+    ),
+    tags$div(id = "newRowFilteringParams"),
+    tags$br(),
+    tags$br(),
+    actionButton("addRowFilteringParam", "Add a Filter"),
+    actionButton("clearAllRowFilters", "Clear Filters"),
+  ),
   withBusyIndicatorUI(
     actionButton("filterSCE", "Filter")
   )
