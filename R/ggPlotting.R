@@ -2241,6 +2241,7 @@ plotSCEBarAssayData <- function(inSCE,
     return(value.bin)
 }
 
+
 .ggSCTKCombinePlots <- function(plotlist,
                                 ncols = NULL,
                                 nrows = NULL,
@@ -2248,6 +2249,8 @@ plotSCEBarAssayData <- function(inSCE,
                                 relHeights = 1,
                                 relWidths = 1,
                                 labels = "default",
+                                labelPositionX = NULL,
+                                labelPositionY = NULL,
                                 labelSize = 20,
                                 samplePerColumn = TRUE,
                                 sampleRelHeights = 1,
@@ -2276,24 +2279,39 @@ plotSCEBarAssayData <- function(inSCE,
     }
 
     if(combinePlot == "all"){
+      #Get sample name
         if("Sample" %in% names(plotlist)){
             plotlist = c(plotlistViolin, plotlistSample)
         }
 
-        if(labels == "default"){
-            labels = names(plotlist)
-        }else if(labels == "none"){
-            labels = NULL
-        }
+        plotRes <- cowplot::plot_grid(plotlist = plotlist,
+                                      ncol = ncols,
+                                      nrow = nrows,
+                                      rel_heights = relHeights,
+                                      rel_widths = relWidths
+        )
+        #If default, sample name will be used as labels
+          if(labels == "default"){
+              labels = names(plotlist)
+          }else if(labels == "none"){
+              labels = NULL
+          }
 
-        return(cowplot::plot_grid(plotlist = plotlist,
-                                  ncol = ncols,
-                                  nrow = nrows,
-                                  rel_heights = relHeights,
-                                  rel_widths = relWidths,
-                                  labels = labels,
-                                  label_size = labelSize
-        ))
+        #label position
+        if(!is.null(labels)){
+          if(is.null(labelPositionX)){
+            labelPositionX <- rep(0, length(plotlist))
+          }
+          if(is.null(labelPositionY)){
+            labelPositionY <- rep(0, length(plotlist))
+          }
+
+          plotRes <- plotRes + cowplot::draw_plot_label(labels,
+                                               labelPositionX,
+                                               labelPositionY
+          )
+        }
+	return(plotRes)
     }else if(combinePlot == "sample"){
         return(list(Violin = plotlistViolin, Sample = plotlistSample))
     }
