@@ -28,10 +28,14 @@ shinyPanelfindMarker <- fluidPage(
             sidebarLayout(
               position = 'right',
               sidebarPanel(
+                shinyjs::useShinyjs(),
                 uiOutput('fmHMAssayUI'),
                 radioButtons('fmHMOrder', "Order blocks by",
                              c("size", "name")),
                 checkboxInput("fmHMdec", "Decreasing", TRUE),
+                checkboxInput("fmUseTopN", "Plot Top N markers of each cluster",
+                              TRUE),
+                numericInput("fmTopN", NULL, 10, min = 1, step = 1),
                 numericInput("fmHMFC", "Plot Log2FC greater than",
                              value = 0.25, min = 0, step = 0.05),
                 numericInput("fmHMFDR", "Plot FDR less than",
