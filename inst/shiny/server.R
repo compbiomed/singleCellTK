@@ -3040,6 +3040,9 @@ shinyServer(function(input, output, session) {
         }
       }
     }
+    if (input$TypeSelect_Colorby == "Single Color"){
+      a[[1]]$layers[[1]]$aes_params$colour <- input$Col
+    }
     if (input$adjustgridlines == TRUE){
       a <- a[[1]] + ggplot2::theme_bw()
       a <- plotly::ggplotly(a)

@@ -213,20 +213,6 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             min = 2
           )
         )
-        #,
-        #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL),
-        #conditionalPanel(
-        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-        #  colourInput("colhigh", "Select high color", value = "blue")
-        #),
-        #conditionalPanel(
-        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-        #  colourInput("colmid", "Select mid color", value = "gray")
-        #),
-        #conditionalPanel(
-        #  condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-        #  colourInput("collow", "Select low color", value = "white")
-        #)
       ),
       #-+-+-+-+-+-group by###################################
       tags$hr(),
@@ -273,6 +259,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
     9,
     wellPanel(
       plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.

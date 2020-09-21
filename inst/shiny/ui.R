@@ -220,6 +220,6 @@ shinyUI(
         )
       ),
       useShinyjs(),
-      extendShinyjs(text = jsCode)
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
     )
 )
