@@ -4,7 +4,7 @@
 \alias{reportCellQC}
 \title{Get runCellQC .html report}
 \usage{
-reportCellQC(inSCE, output_file = NULL, output_dir = NULL)
+reportCellQC(inSCE, output_file = NULL, output_dir = NULL, study = NULL)
 }
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
@@ -13,10 +13,10 @@ the filtered count matrix with the output from runCellQC function}
 \item{output_file}{name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.}
 
 \item{output_dir}{name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory}
+
+\item{study}{description of the data set and experiment design. Default is NULL.}
 }
 \value{
-.html file
-
 .html file
 }
 \description{

@@ -10,6 +10,7 @@ plotMarkerDiffExp(
   orderBy = "size",
   log2fcThreshold = 1,
   fdrThreshold = 0.05,
+  topN = 10,
   decreasing = TRUE,
   rowDataName = NULL,
   colDataName = NULL,
@@ -38,6 +39,10 @@ larger than this value. Default \code{1}}
 
 \item{fdrThreshold}{Only use DEGs with FDR value smaller than this value.
 Default \code{0.05}}
+
+\item{topN}{An integer. Only to plot this number of top markers for each
+cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
+top N subscription. Default \code{10}.}
 
 \item{decreasing}{Order the cluster decreasingly. Default \code{TRUE}.}
 

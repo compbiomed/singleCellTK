@@ -24,54 +24,18 @@ sce.qc<- params$object
     plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
     i="DoubletFinder"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_0.5
-   
-    cat(paste0('## Scatter Score Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_1
-   
     cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
     plotDoubletFinder$Scatter_Score_Resolution_1.5
- 
-    cat(paste0('## Scatter Score Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_2
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_0.5
-    
-    cat(paste0('## Density Resolution 1 \n\n'))
-    plotDoubletFinder$Density_Resolution_1
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_1.5
- 
-    cat(paste0('## Density Resolution 2 \n\n'))
-    plotDoubletFinder$Density_Resolution_2
-  
-    cat(paste0('## Violin Resolution 0.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_0.5
-    
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1
-    
-    cat(paste0('## Violin Resolution 1.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1.5
- 
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_2
-    
-    cat(paste0('## Scatter Call Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_0.5
-    
-    cat(paste0('## Scatter Call Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_1
     
     cat(paste0('## Scatter Call Resolution 1.5 \n\n'))
     plotDoubletFinder$Scatter_Call_Resolution_1.5
- 
-    cat(paste0('## Scatter Call Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_2
     
+    cat(paste0('## Density Resolution 1.5 \n\n'))
+    plotDoubletFinder$Density_Resolution_1.5
+   
+    cat(paste0('## Violin Resolution 1.5 \n\n'))
+    plotDoubletFinder$violin_Resolution_1.5
+ 
     cat(paste0('## Session info \n\n'))
     sce.qc@metadata$runDoubletFinder
 ```

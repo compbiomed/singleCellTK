@@ -35,7 +35,7 @@ sce.qc<- params$object
     cat(paste0('## Subsets mito percent \n\n'))
     plotsQCMetrics$subsets_mito_percent
     cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$scater
+    sce.qc@metadata$scater$addPerCellQC
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}

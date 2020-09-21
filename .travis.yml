@@ -4,7 +4,6 @@ cache:
   - pip
 r:
   - oldrel
-dist: trusty
 sudo: false
 warnings_are_errors: true
 bioc_required: true

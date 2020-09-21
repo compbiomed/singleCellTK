@@ -11,7 +11,14 @@ importFromFiles(
   assayName = "counts",
   inputDataFrames = FALSE,
   class = c("Matrix", "matrix"),
-  delayedArray = FALSE
+  delayedArray = FALSE,
+  annotFileHeader = FALSE,
+  annotFileRowName = 1,
+  annotFileSep = "\\t",
+  featureHeader = FALSE,
+  featureRowName = 1,
+  featureSep = "\\t",
+  gzipped = "auto"
 )
 }
 \arguments{
@@ -40,6 +47,20 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+
+\item{annotFileHeader}{Whether there's a header (colnames) in the cell annotation file. Default is FALSE}
+
+\item{annotFileRowName}{Which column is used as the rownames for the cell annotation file. Default is 1 (first column).}
+
+\item{annotFileSep}{Separater used for the cell annotation file. Default is "\\t".}
+
+\item{featureHeader}{Whether there's a header (colnames) in the feature annotation file. Default is FALSE}
+
+\item{featureRowName}{Which column is used as the rownames for the feature annotation file. Default is 1 (first column).}
+
+\item{featureSep}{Separater used for the feature annotation file. Default is "\\t".}
+
+\item{gzipped}{Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE.}
 }
 \value{
 a SingleCellExperiment object

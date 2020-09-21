@@ -133,7 +133,8 @@ shinyPanelImport <- fluidPage(
                                 )
                               )
                        )
-                     )
+                     ),
+        actionButton("addFilesImport", "Add To Sample List")
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
@@ -194,14 +195,16 @@ shinyPanelImport <- fluidPage(
         "Data was loaded with the 'TENxPBMCData' package.",
         tags$br(),
         tags$br()
-      )
+      ),
+      actionButton("addExampleImport", "Add To Sample List")
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
       h3("Choose an RDS file that contains a SingleCellExperiment or Seurat object:"),
       fileInput(
         "rdsFile", "SingleCellExperiment RDS file:", accept = c(".rds", ".RDS")
-      )
+      ),
+      actionButton("addRDSImport", "Add To Sample List")
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'directory'", "uploadChoice"),
@@ -221,126 +224,147 @@ shinyPanelImport <- fluidPage(
       tags$br(),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger2'", "algoChoice"),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample Directory")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove")),
-          ),
-          tags$div(id = "newSampleCR2"),
-          tags$br(),
-          tags$br(),
-          actionButton("addCR2Sample", "Add a Sample"),
-          actionButton("clearAllCR2", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample Directory")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove")),
+        #   ),
+        #   tags$div(id = "newSampleCR2"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addCR2Sample", "Add a Sample"),
+        #   actionButton("clearAllCR2", "Clear Samples")
+        # ),
+        actionButton("addCR2Sample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "algoChoice"),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample Directory")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove")),
-          ),
-          tags$div(id = "newSampleCR3"),
-          tags$br(),
-          tags$br(),
-          actionButton("addCR3Sample", "Add a Sample"),
-          actionButton("clearAllCR3", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample Directory")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove")),
+        #   ),
+        #   tags$div(id = "newSampleCR3"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addCR3Sample", "Add a Sample"),
+        #   actionButton("clearAllCR3", "Clear Samples")
+        # ),
+        actionButton("addCR3Sample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "algoChoice"),
         wellPanel(
           h5("Please select the directory that contains your /Gene directory as your base directory. ")
         ),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample ID")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove"))
-          ),
-          tags$div(id = "newSampleSS"),
-          tags$br(),
-          tags$br(),
-          actionButton("addSSSample", "Add a Sample"),
-          actionButton("clearAllSS", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample ID")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove"))
+        #   ),
+        #   tags$div(id = "newSampleSS"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addSSSample", "Add a Sample"),
+        #   actionButton("clearAllSS", "Clear Samples")
+        # ),
+        actionButton("addSSSample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "algoChoice"),
         wellPanel(
           h5("Please select your /genecount directory as your base directory.")
         ),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample ID")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove"))
-          ),
-          tags$div(id = "newSampleBUS"),
-          tags$br(),
-          tags$br(),
-          actionButton("addBUSSample", "Add a Sample"),
-          actionButton("clearAllBUS", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample ID")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove"))
+        #   ),
+        #   tags$div(id = "newSampleBUS"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addBUSSample", "Add a Sample"),
+        #   actionButton("clearAllBUS", "Clear Samples")
+        # ),
+        actionButton("addBUSSample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'seqc'", "algoChoice"),
         wellPanel(
           h5("Please select the directory that contains your sample files as your base directory.")
         ),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample ID")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove"))
-          ),
-          tags$div(id = "newSampleSEQ"),
-          tags$br(),
-          tags$br(),
-          actionButton("addSEQSample", "Add a Sample"),
-          actionButton("clearAllSEQ", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample ID")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove"))
+        #   ),
+        #   tags$div(id = "newSampleSEQ"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addSEQSample", "Add a Sample"),
+        #   actionButton("clearAllSEQ", "Clear Samples")
+        # ),
+        actionButton("addSEQSample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'optimus'", "algoChoice"),
         wellPanel(
           h5("Please select the directory that contains the following four directories - call-MergeCountFiles, call-MergeCellMetrics, call-MergeGeneMetrics, call-RunEmptyDrops - as your base directory.")
         ),
-        wellPanel(
-          h4("Current Samples:"),
-          fluidRow(
-            column(3, tags$b("Base Directory")),
-            column(3, tags$b("Sample ID")),
-            column(3, tags$b("Sample Name")),
-            column(3, tags$b("Remove"))
-          ),
-          tags$div(id = "newSampleOpt"),
-          tags$br(),
-          tags$br(),
-          actionButton("addOptSample", "Add a Sample"),
-          actionButton("clearAllOpt", "Clear Samples")
-        ),
+        # wellPanel(
+        #   h4("Current Samples:"),
+        #   fluidRow(
+        #     column(3, tags$b("Base Directory")),
+        #     column(3, tags$b("Sample ID")),
+        #     column(3, tags$b("Sample Name")),
+        #     column(3, tags$b("Remove"))
+        #   ),
+        #   tags$div(id = "newSampleOpt"),
+        #   tags$br(),
+        #   tags$br(),
+        #   actionButton("addOptSample", "Add a Sample"),
+        #   actionButton("clearAllOpt", "Clear Samples")
+        # ),
+        actionButton("addOptSample", "Add a Sample"),
       ),
       
-      tags$br(),
-      tags$br(),
+      # actionButton("addDirImport", "Add To Sample List"),
+      # tags$br(),
+      # tags$br(),
     ),
-    
+    tags$hr(),
+    wellPanel(
+      h4("Current Samples:"),
+      fluidRow(
+        column(3, tags$b("Type")),
+        column(3, tags$b("Path")),
+        column(3, tags$b("Sample Name")),
+        column(3, tags$b("Remove"))
+      ),
+      tags$div(id = "newSampleImport"),
+      tags$br(),
+      tags$br(),
+      actionButton("clearAllImport", "Clear Samples")
+    ),
     withBusyIndicatorUI(
       actionButton("uploadData", "Upload")
     ),
+    
     tags$div(
       class = "container",
       p("")
