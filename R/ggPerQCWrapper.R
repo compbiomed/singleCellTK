@@ -125,6 +125,7 @@ plotRunPerCellQCResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
 
+    if(combinePlot == "sample"){
     violin.sum <- list(sum = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="sum",
@@ -164,7 +165,7 @@ plotRunPerCellQCResults <- function(inSCE,
       titleSize=titleSize
     ))
     res.list <- c(res.list, violin.detected)
-
+    }
 
     violin.toppercent <- list(toppercent = plotSCEViolinColData(
       inSCE=inSCESub,
@@ -552,7 +553,8 @@ plotScrubletResults <- function(inSCE,
     ))
     res.list <- c(res.list, scatterScore)
 
-    violinScore <- list(violin_doubletScore = plotSCEViolinColData(
+    if(combinePlot == "sample"){
+      violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub, coldata="scrublet_score",
       sample=sampleSub,
       xlab="",
@@ -570,6 +572,7 @@ plotScrubletResults <- function(inSCE,
       summary="median"
     ))
     res.list <- c(res.list, violinScore)
+    }
 
     scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
       inSCE=inSCESub,
@@ -851,6 +854,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
     res.list <- c(res.list, scatterScore)
 
+    if(combinePlot == "sample"){
     violinScore <- lapply(df.scores, function(x) {
       plotSCEViolinColData(
         inSCE=inSCESub,
@@ -886,6 +890,7 @@ plotDoubletFinderResults <- function(inSCE,
       ))
     })
     res.list <- c(res.list, violinScore)
+    }
 
 
     scatterCall <- lapply(df.labels, function(x) {
@@ -1136,6 +1141,7 @@ plotDoubletCellsResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
+    if(combinePlot == "sample"){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="scran_doubletCells_score",
@@ -1156,7 +1162,7 @@ plotDoubletCellsResults <- function(inSCE,
       summary="median"
     ))
     res.list = c(res.list, violinScore)
-
+    }
 
     return(res.list)
   })
@@ -1355,6 +1361,7 @@ plotCxdsResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
+    if(combinePlot == "sample"){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="scds_cxds_score",
@@ -1375,7 +1382,7 @@ plotCxdsResults <- function(inSCE,
       summary="median"
     ))
     res.list = c(res.list, violinScore)
-
+  }
 
     if("scds_cxds_call" %in% names(SingleCellExperiment::colData(inSCE))){
       scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
@@ -1601,6 +1608,7 @@ plotBcdsResults <- function(inSCE,
         ))
         res.list <- c(res.list, scatterScore)
 
+        if(combinePlot == "sample"){
         violinScore <- list(violin_doubletScore = plotSCEViolinColData(
             inSCE=inSCESub,
             coldata="scds_bcds_score",
@@ -1621,6 +1629,7 @@ plotBcdsResults <- function(inSCE,
             summary="median"
         ))
         res.list <- c(res.list, violinScore)
+        }
 
         if("scds_bcds_call" %in% names(SingleCellExperiment::colData(inSCE))){
             scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
@@ -1847,6 +1856,7 @@ plotScdsHybridResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
+    if(combinePlot == "sample"){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="scds_hybrid_score",
@@ -1867,6 +1877,7 @@ plotScdsHybridResults <- function(inSCE,
       summary="median"
     ))
     res.list = c(res.list, violinScore)
+    }
 
     if("scds_hybrid_call" %in% names(SingleCellExperiment::colData(inSCE))){
       scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
@@ -2095,6 +2106,7 @@ plotDecontXResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterContamination)
 
+    if(combinePlot == "sample"){
     violinContamination <- list(violin_decontXContamination = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="decontX_contamination",
@@ -2114,6 +2126,7 @@ plotDecontXResults <- function(inSCE,
         summary="median"
     ))
     res.list = c(res.list, violinContamination)
+    }
 
 
     scatterCluster <- list(scatter_decontXClusters = plotSCEDimReduceColData(
