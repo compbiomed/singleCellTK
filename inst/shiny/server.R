@@ -3047,7 +3047,7 @@ shinyServer(function(input, output, session) {
       a <- a[[1]] + ggplot2::theme_bw()
       a <- plotly::ggplotly(a)
     }
-    plotly::subplot(plotlist = a)
+    plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
   output$scatter <- renderPlotly({cellviewer()})
   #
