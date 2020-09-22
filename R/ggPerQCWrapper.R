@@ -78,7 +78,7 @@ plotRunPerCellQCResults <- function(inSCE,
 
     samples <- unique(sample)
 
-    if (length(samples) > 1) {
+    if (length(samples) >= 1) {
         combined.sum <- plotSCEViolinColData(
             inSCE=inSCE,
             coldata="sum",
@@ -264,7 +264,7 @@ plotRunPerCellQCResults <- function(inSCE,
         return(res.list)
     })
 
-    if (length(unique(samples)) > 1) {
+    if (length(unique(samples)) >= 1) {
         names(plotlist) <- samples
         plotlist <- c(merged.plots, list(Sample = plotlist))
     } else {

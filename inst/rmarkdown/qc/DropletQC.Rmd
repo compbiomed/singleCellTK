@@ -71,10 +71,10 @@ description_runEmptyDrops <- descriptionEmptyDrops()
 ```
 
 ```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
-    plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce, 
-                                                             sample = colData(sce)$sample))
-    i="EmptyDrops"
-    cat(paste0('## ', i, ' \n'))
+plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce, 
+                                                         sample = colData(sce)$sample))
+i="EmptyDrops"
+cat(paste0('## ', i, ' \n'))
 ```
 <br />
 `r description_runEmptyDrops$introduction`
@@ -113,15 +113,15 @@ description_runBarcodeRank <- descriptionBarcodeRank()
 ```
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    # plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce,
-    #                                                                 sample = colData(sce)$sample)
-    plotsBarcodeRank <- suppressWarnings(plotBarcodeRankScatter(sce,
-                                                                sample = colData(sce)$sample,
-                                                                title="BarcodeRanks Rank Plot",
-                                                                combinePlot = FALSE))
-    names(plotsBarcodeRank) <- samples
-    i="BarcodeRanks"
-    cat(paste0('## ', i, ' \n'))
+# plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce,
+#                                                                 sample = colData(sce)$sample)
+plotsBarcodeRank <- suppressWarnings(plotBarcodeRankScatter(sce,
+                                                            sample = colData(sce)$sample,
+                                                            title="BarcodeRanks Rank Plot",
+                                                            combinePlot = FALSE))
+names(plotsBarcodeRank) <- samples
+i="BarcodeRanks"
+cat(paste0('## ', i, ' \n'))
 ```
 <br />
 `r description_runBarcodeRank$introduction`

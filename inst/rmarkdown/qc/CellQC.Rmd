@@ -47,6 +47,17 @@ preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
     return(y)
   })
 }
+
+formatPlotList <- function(plotlist, samples) {
+  if (length(samples) > 1) {
+    return(plotlist)
+  }
+  
+  plotlist <- list(Sample = list(plotlist))
+  names(plotlist$Sample) <- samples
+  return(plotlist)
+}
+
 ```
 
 ```{r, "CellQC-import", eval = TRUE, include=FALSE}
@@ -73,11 +84,12 @@ description_runPerCellQC <- descriptionRunPerCellQC()
 ```
 
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
-    plotsQCMetrics<-plotRunPerCellQCResults(sce.qc, 
-                                            sample = colData(sce.qc)$sample, 
-                                            combinePlot="sample")
-    i="General quality control metrics"
-    cat(paste0('# ', i, ' \n'))
+plotsQCMetrics<-plotRunPerCellQCResults(sce.qc, 
+                                        sample = colData(sce.qc)$sample, 
+                                        combinePlot="sample")
+#plotsQCMetrics <- formatPlotList(plotsQCMetrics, samples)
+i="General quality control metrics"
+cat(paste0('# ', i, ' \n'))
 ```
 <br />
 `r description_runPerCellQC$introduction`
@@ -128,6 +140,7 @@ description_Scrublet <- descriptionScrublet()
 plotsScrublet<- suppressWarnings(plotScrubletResults(sce.qc, 
                                                      reducedDimName=reduceDimUsed,
                                                      sample = colData(sce.qc)$sample))
+plotsScrublet <- formatPlotList(plotsScrublet, samples)
 i="Scrublet"
 cat(paste0('## ', i, ' \n'))
 ```
@@ -185,6 +198,7 @@ description_DoubletFinder <- descriptionDoubletFinder()
 plotDoubletFinder <- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, 
                                                               reducedDimName=reduceDimUsed,
                                                               sample = colData(sce.qc)[['sample']]))
+plotDoubletFinder <- formatPlotList(plotDoubletFinder, samples)
 
 resolutions <- grep("doubletFinder_doublet_score_resolution_", colnames(colData(sce.qc)), value = TRUE)
 resolutions <- gsub("doubletFinder_doublet_score_resolution_", "", resolutions)
@@ -257,6 +271,8 @@ description_DoubletCells<- descriptionDoubletCells()
 plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, 
                                                             reducedDimName=reduceDimUsed,
                                                             sample = colData(sce.qc)[['sample']]))
+plotDoubletCells <- formatPlotList(plotDoubletCells, samples)
+
 i="DoubletCells"
 cat(paste0('## ', i, ' \n'))
 ```
@@ -307,6 +323,7 @@ descriprion_CxdsResults<- descriptionCXDS()
 plotCxds<- suppressWarnings(plotCxdsResults(sce.qc, 
                                             reducedDimName=reduceDimUsed,
                                             sample = colData(sce.qc)[['sample']]))
+plotCxds <- formatPlotList(plotCxds, samples)
 i="Cxds"
 cat(paste0('## ', i, ' \n'))
 ```
@@ -365,11 +382,12 @@ descriprion_BcdsResults<- descriptionBCDS()
 ```
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
-   plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, 
-                                               reducedDimName=reduceDimUsed,
-                                               sample = colData(sce.qc)[['sample']]))
-    i="Bcds"
-    cat(paste0('## ', i, ' \n'))
+plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, 
+                                           reducedDimName=reduceDimUsed,
+                                           sample = colData(sce.qc)[['sample']]))
+plotBcds <- formatPlotList(plotBcds, samples)
+i="Bcds"
+cat(paste0('## ', i, ' \n'))
 ```
 <br />
 `r descriprion_BcdsResults$introduction`
@@ -427,11 +445,12 @@ description_ScdsHybrid<- descriptionScdsHybrid()
 
 
 ```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
-    plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, 
-                                                            reducedDimName=reduceDimUsed,
-                                                            sample = colData(sce.qc)[['sample']]))
-    i="ScdsHybrid"
-    cat(paste0('## ', i, ' \n'))
+plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, 
+                                                        reducedDimName=reduceDimUsed,
+                                                        sample = colData(sce.qc)[['sample']]))
+plotScdsHybrid <- formatPlotList(plotScdsHybrid, samples)
+i="ScdsHybrid"
+cat(paste0('## ', i, ' \n'))
 ```
 <br />
 `r description_ScdsHybrid$introduction`
@@ -484,11 +503,13 @@ description_DecontX<- suppressWarnings(descriptionDecontX())
 ```
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
-    plotDecontX<- suppressWarnings(plotDecontXResults(sce.qc, 
-                                                      reducedDimName=reduceDimUsed,
-                                                      sample = colData(sce.qc)[['sample']]))
-    i="DecontX"
-    cat(paste0('## ', i, ' \n'))
+plotDecontX<- suppressWarnings(plotDecontXResults(sce.qc, 
+                                                  reducedDimName=reduceDimUsed,
+                                                  sample = colData(sce.qc)[['sample']]))
+plotDecontX <- formatPlotList(plotDecontX, samples)
+
+i="DecontX"
+cat(paste0('## ', i, ' \n'))
 ```
 <br />
 `r description_DecontX$introduction`
