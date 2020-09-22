@@ -168,43 +168,62 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           )
         ),
 
+        # && output.hide_typebtns == 'show'
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
+          condition = sprintf("input['%s'] != 'Single Color'", "TypeSelect_Colorby"),
           radioButtons(
             "SelectColorType",
             label = NULL,
             choices = c("Categorical", "Continuous")
-          ),
-          tags$hr(),
-          conditionalPanel(
-            id="binningConditional",
-            condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE),
-            h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
-            switchInput(
-              inputId = "checkColorbinning",
-              onLabel = "Yes",
-              offLabel = "No",
-              value=FALSE,
-              size="mini",
-              inline = TRUE
-            )
-          ),
-
-          conditionalPanel(
-            condition =  "input.checkColorbinning == 1",
-            numericInput(
-              "adjustColorbinning",
-              h5("Number of Bins"),
-              value = 2,
-              min = 2
-            )
           )
-          #,
-
-
-          #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL)
+        ),
+        conditionalPanel(
+                             id = "continuousColorConditional",
+                             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+                             colourInput("highColor", "High Color", "blue", "background", "limited"),
+                             colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+                             colourInput("lowColor", "Low Color", "white", "background", "limited")
+                           ), 
+                           conditionalPanel(
+                             id = "categoricalColorConditional",
+                             condition = sprintf("input['%s'] == 'Categorical'", "SelectColorType"),
+                             uiOutput("categoricalColorUI")
+                           ),
+        conditionalPanel(
+          id="binningConditional",
+          condition = "input['SelectColorType'] == 'Continuous' && output.hide_typebtns == 'show'",
+            #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+          #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
+          h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
+          prettyToggle(
+            inputId = "checkColorbinning",
+            label_on = "Yes",
+            label_off = "No",
+            value = FALSE,
+            inline = TRUE,
+            shape = "curve",
+            width = "100%"
+          )
+          #switchInput(
+          #  inputId = "checkColorbinning",
+          #  onLabel = "Yes",
+          #  offLabel = "No",
+          #  value=FALSE,
+          #  inline = TRUE,
+          #  #shape = "curve"
+          #  labelWidth = "50px",
+          #  width = "auto"
+          #)
+        ),
+        conditionalPanel(
+          condition =  "input.checkColorbinning == 1 && output.hide_bins == 'show'",
+          numericInput(
+            "adjustColorbinning",
+            h5("Number of Bins"),
+            value = 2,
+            min = 2
+          )
         )
       ),
       #-+-+-+-+-+-group by###################################
@@ -252,6 +271,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
     9,
     wellPanel(
       plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.
@@ -264,53 +284,58 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         column(6, textInput("adjustlegendtitle", h5(
           strong("Legend title:")
         ))),
-        column(6, sliderInput(
-          "adjustlegendtitlesize",
-          h5(strong("Legend title size:")),
-          min = 1,
-          max = 20,
-          value = 12
-        )),
-        column(6, sliderInput(
-          "adjustlegendsize",
-          h5(strong("Legend size:")),
-          min = 1,
-          max = 20,
-          value = 10
-        )),
-        column(6, sliderInput(
-          "adjustalpha",
-          h5(strong("Opacity:")),
-          min = 0,
-          max = 1,
-          value = 1
-        )),
-        column(6, sliderInput(
-          "adjustsize",
-          h5(strong("Dot size:")),
-          min = 0.1,
-          max = 0.8,
-          value = 0.45
-        )),
         column(6, textInput("adjustxlab", h5(
           strong("X-axis label:")
         ))),
         column(6, textInput("adjustylab", h5(
           strong("Y-axis label:")
         ))),
-        column(6, sliderInput(
+        column(3, numericInput(
+          "adjustlegendtitlesize",
+          h5(strong("Legend title size:")),
+          min = 1,
+          max = 20,
+          value = 12
+        )),
+        column(3, numericInput(
+          "adjustlegendsize",
+          h5(strong("Legend size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(3, numericInput(
           "adjustaxissize",
           h5(strong("Axis size:")),
           min = 1,
           max = 20,
           value = 10
         )),
-        column(6, sliderInput(
+        column(3, numericInput(
           "adjustaxislabelsize",
           h5(strong("Axis label size:")),
           min = 1,
           max = 20,
           value = 10
+        )),
+        column(3, numericInput(
+          "adjustalpha",
+          h5(strong("Opacity:")),
+          min = 0,
+          max = 1,
+          value = 1
+        )),
+        column(3, numericInput(
+          "adjustsize",
+          h5(strong("Dot size:")),
+          min = 0.1,
+          max = 0.8,
+          value = 0.45
+        )),
+        column(3, checkboxInput(
+          "adjustgridlines",
+          h5(strong("Add gridlines")),
+          value = FALSE,
         ))
       )
     )

@@ -23,12 +23,11 @@ sce<-params$object
 ```
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
+   plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
     i="BarcodeRanks"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Rank \n\n'))
+    cat(paste0('## BarcodeRanks, Total UMI counts vs Rank \n\n'))
     plotsBarcodeRank
-    title(main="Total UMI counts vs Rank")
     cat(paste0('## Session info \n\n'))
     sce@metadata$runBarcodeRankDrops
 ```
