@@ -84,7 +84,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified reducedDim '", useReducedDim, "' not found.")
     }
     g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
-                              type = weightType, assay.type = NULL)
+                              type = weightType)
   } else if (!is.null(useAltExp)) {
     if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
       stop("Specified altExp '", useAltExp, "' not found.")

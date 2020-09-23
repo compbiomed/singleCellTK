@@ -9,6 +9,7 @@ output:
     number_sections: yes
     toc: yes
     toc_float: true
+    collapsed: true
     code_folding: hide
     html_notebook: default
 ---

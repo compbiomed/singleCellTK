@@ -7,7 +7,7 @@
 plotSCEBarColData(
   inSCE,
   coldata,
-  groupby = NULL,
+  groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
@@ -28,7 +28,7 @@ dimension reduction components or a variable with saved results. Required.}
 
 \item{coldata}{colData value that will be plotted.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -67,6 +67,6 @@ Visualizes values stored in the colData slot of a
 \examples{
 plotSCEBarColData(
   inSCE = mouseBrainSubsetSCE,
-  coldata = "age", groupby = "sex"
+  coldata = "age", groupBy = "sex"
 )
 }

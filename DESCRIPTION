@@ -101,7 +101,9 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-    rmarkdown
+    rmarkdown,
+    magrittr,
+    kableExtra
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
