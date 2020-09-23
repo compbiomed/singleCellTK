@@ -29,7 +29,8 @@ plotSCEDimReduceFeatures(
   legendSize = 10,
   legendTitleSize = 12,
   groupBy = NULL,
-  combinePlot = TRUE
+  combinePlot = NULL,
+  plotLabels = NULL
 )
 }
 \arguments{
@@ -101,6 +102,9 @@ Default \code{NULL}.}
 \item{combinePlot}{Boolean. If multiple plots are generated (multiple
 samples, etc.), will combined plots using `cowplot::plot_grid`.
 Default TRUE.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
 }
 \value{
 a ggplot of the reduced dimensions.
