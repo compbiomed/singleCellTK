@@ -6,7 +6,7 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, mean(inSCE$sum), median(inSCE$sum))
+        values <- c(values, mean(inSCE$sum), stats::median(inSCE$sum))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -14,7 +14,7 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, mean(inSCE$detected), median(inSCE$detected))
+        values <- c(values, mean(inSCE$detected), stats::median(inSCE$detected))
     }
 
     if(simple != TRUE){
@@ -81,7 +81,7 @@
             metrics <- c(metrics, "DecontX - Mean contamination",
                          "DecontX - Median contamination")
             values <- c(values, mean(inSCE$decontX_contamination),
-                        median(inSCE$decontX_contamination))
+                        stats::median(inSCE$decontX_contamination))
         }
     }
 
@@ -96,6 +96,8 @@
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param useAssay  A string specifying which assay in the SCE to use. Default
+#'  'counts'.
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
@@ -169,7 +171,7 @@ sampleSummaryStats <- function(inSCE,
             knitr::kable(format = "html", align = rep('c', ncol(dfTableRes) + 1),
                          row.names = TRUE) %>% kableExtra::kable_styling()
     }else if(output == "csv"){
-        write.csv(dfTableRes, file = fileName)
+        utils::write.csv(dfTableRes, file = fileName)
     }else if(output == "dataframe"){
         return(dfTableRes)
     }
