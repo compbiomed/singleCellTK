@@ -10,8 +10,8 @@ plotSCEDensity(
   annotation,
   sample = NULL,
   useAssay = "counts",
-  feature,
-  groupby = NULL,
+  feature = NULL,
+  groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -20,7 +20,8 @@ plotSCEDensity(
   title = NULL,
   titleSize = 18,
   cutoff = NULL,
-  combinePlot = TRUE
+  combinePlot = NULL,
+  plotLabels = NULL
 )
 }
 \arguments{
@@ -39,7 +40,7 @@ options: "assays", "colData", "metadata"}
 \item{feature}{name of feature stored in assay of SingleCellExperiment
 object. Will be used only if "assays" slot is chosen. Default NULL.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -64,6 +65,9 @@ if set. Default NULL.}
 \item{combinePlot}{Boolean. If multiple plots are generated (multiple
 samples, etc.), will combined plots using `cowplot::plot_grid`.
 Default TRUE.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
 }
 \description{
 Visualizes values stored in any slot of a
@@ -72,6 +76,6 @@ Visualizes values stored in any slot of a
 \examples{
 plotSCEDensity(
   inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Apoe", groupby = "sex"
+  annotation = "counts", feature = "Apoe", groupBy = "sex"
 )
 }

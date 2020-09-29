@@ -76,7 +76,7 @@ neighbour searches should be parallelized.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with the
- 'scran_doubletCell_Score' column added to the
+ 'scran_doubletCells_score' column added to the
  \link[SummarizedExperiment]{colData} slot.
 }
 \description{

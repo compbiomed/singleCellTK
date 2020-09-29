@@ -8,8 +8,8 @@ plotDoubletCellsResults(
   inSCE,
   sample = NULL,
   shape = NULL,
-  groupby = NULL,
-  combinePlot = NULL,
+  groupBy = NULL,
+  combinePlot = "all",
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
@@ -33,6 +33,8 @@ plotDoubletCellsResults(
   relWidths = c(1, 1, 1),
   plotLabels = "default",
   plotLabelSize = 20,
+  plotLabelPositionX = NULL,
+  plotLabelPositionY = NULL,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -48,7 +50,7 @@ Default NULL.}
 
 \item{shape}{If provided, add shapes based on the value.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -63,7 +65,7 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
-\item{logScore}{Boolean. If TRUE, the doublet score will be log normalized.}
+\item{logScore}{Boolean. If TRUE, the log normalized doublet score will be used.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}
@@ -111,6 +113,10 @@ when TRUE. Default TRUE.}
 as the labels. If set to "none", no label will be plotted.}
 
 \item{plotLabelSize}{size of labels}
+
+\item{plotLabelPositionX}{Numeric vector. The X position of the plot label.}
+
+\item{plotLabelPositionY}{Numeric vector. The Y position of the plot label.}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}
