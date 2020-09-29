@@ -91,6 +91,7 @@ Imports:
     DropletUtils,
     scds (>= 1.2.0),
     reticulate (>= 1.14),
+    randomcoloR,
     tools,
     withr,
     GSEABase,
