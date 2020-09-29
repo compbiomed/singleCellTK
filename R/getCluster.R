@@ -62,7 +62,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
   graphClustAlgoList = list(walktrap = igraph::cluster_walktrap,
                             louvain = igraph::cluster_louvain,
                             infomap = igraph::cluster_infomap,
-                            fastGreedy = igraph::cluster_fast_greedy,
+                            fastGreedy = igraph::cluster_infomap,
                             labelProp = igraph::cluster_label_prop,
                             leadingEigen = igraph::cluster_leading_eigen)
   if (all(algorithm == c("walktrap", "louvain", "infomap", "fastGreedy",
@@ -84,7 +84,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified reducedDim '", useReducedDim, "' not found.")
     }
     g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
-                              type = weightType)
+                              type = weightType, assay.type = NULL)
   } else if (!is.null(useAltExp)) {
     if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
       stop("Specified altExp '", useAltExp, "' not found.")

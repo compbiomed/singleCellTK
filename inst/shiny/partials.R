@@ -247,7 +247,7 @@ filteringModal <- function(failed=FALSE, colNames) {
 
 rowFilteringModal <- function(failed=FALSE, assayInput) {
   modalDialog(
-    h3("Select an Assay"),
+    h3("Select a Column"),
     selectInput("filterAssaySelect", "", assayInput),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),

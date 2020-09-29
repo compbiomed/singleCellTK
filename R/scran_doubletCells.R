@@ -30,9 +30,7 @@
                                        BSPARAM=BSPARAM,
                                        BPPARAM=BPPARAM
                                        ), ncol=1)
-  scores <- cbind(scores,log10(scores[,1]+1))
-  colnames(scores) <- c("scran_doubletCells_score", "scran_doubletCells_score_log10")
-
+  colnames(scores) <- "scran_doubletCells_score"
 
   return(scores)
 }
@@ -125,8 +123,7 @@ runDoubletCells <- function(inSCE,
 
   ## Define result matrix for all samples
   output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
-            scran_doubletCells_score = numeric(ncol(inSCE)),
-            scran_doubletCells_score_log10 = numeric(ncol(inSCE)))
+            scran_doubletCells_score = numeric(ncol(inSCE)))
 
   ## Loop through each sample and run barcodeRank
   samples <- unique(sample)

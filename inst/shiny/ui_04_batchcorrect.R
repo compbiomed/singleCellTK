@@ -157,7 +157,7 @@ shinyPanelBatchcorrect <- fluidPage(
           selectInput("combatCond", "Select Condition of Covariance:",
                       clusterChoice),
           radioButtons("combatParametric", "Adjustments:",
-                       c("Parametric", "Non-parametric"),
+                       c("Parametric" = TRUE, "Non-parametric" = FALSE),
                        selected = "Parametric"),
           checkboxInput("combatMeanOnly",
                         "Correct mean of the batch effect only",

@@ -7,7 +7,7 @@
 plotEmptyDropsResults(
   inSCE,
   sample = NULL,
-  combinePlot = "all",
+  combinePlot = NULL,
   fdrCutoff = 0.01,
   defaultTheme = TRUE,
   dotSize = 1,
@@ -18,6 +18,8 @@ plotEmptyDropsResults(
   legendTitleSize = 16,
   relHeights = 1,
   relWidths = 1,
+  plotLabels = "default",
+  plotLabelSize = 20,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -55,6 +57,11 @@ when TRUE. Default TRUE.}
 \item{relHeights}{Relative heights of plots when combine is set.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
+
+\item{plotLabelSize}{size of labels}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}

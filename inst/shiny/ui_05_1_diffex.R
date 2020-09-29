@@ -189,19 +189,19 @@ shinyPanelDiffex <- fluidPage(
           "Violin Plot",
           panel(
             fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
                   p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
                   numericInput('deVioNRow', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 12px;",
                   p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
                   numericInput('deVioNCol', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 10px;",
                   p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 30px;",
+              div(style="display: inline-block;vertical-align:center; width: 20px;",
                   uiOutput('deVioTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 50px;",
+              div(style="display: inline-block;vertical-align:center; width: 40px;",
                   p('genes'))
             ),
             fluidRow(
@@ -225,19 +225,19 @@ shinyPanelDiffex <- fluidPage(
           "Linear Model",
           panel(
             fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
                   p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
                   numericInput('deRegNRow', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 12px;",
                   p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
-                  numericInput('deRegNCol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 70px;",
+                  numericInput('deRegNcol', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 10px;",
                   p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 30px;",
+              div(style="display: inline-block;vertical-align:center; width: 20px;",
                   uiOutput('deRegTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 50px;",
+              div(style="display: inline-block;vertical-align:center; width: 40px;",
                   p('genes'))
             ),
             fluidRow(
@@ -276,7 +276,7 @@ shinyPanelDiffex <- fluidPage(
               withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
             ),
             mainPanel(
-              plotOutput("deHeatmap", height = "600px")
+              plotOutput("deHeatmap", height = "800px")
             )
           )
         )

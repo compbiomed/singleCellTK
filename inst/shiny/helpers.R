@@ -288,7 +288,7 @@ findOverlapping <- function(arr1, arr2) {
   return(arr1[filter])
 }
 
-addToColFilterParams <- function(name, criteria, id, paramsReactive) {
+addToFilterColParams <- function(name, criteria, id, paramsReactive) {
   threshStr <- ""
   if (is.numeric(criteria)) {
     threshStr <- sprintf("%s > %.5f", name, criteria)

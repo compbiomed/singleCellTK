@@ -16,35 +16,29 @@ test_that(desc = "Testing getUMAP", {
 test_that(desc = "Testing plotSCEScatter functions", {
     p1 <- plotSCEScatter(inSCE = sceres, legendTitle = NULL,
         slot = "assays", annotation = "counts", feature = "ENSG00000251562",
-        reducedDimName = "UMAP", labelClusters = FALSE,
-        sample = sampleVector, combinePlot = "all")
-    expect_is(p1, c("gg","ggplot"))
+        reducedDimName = "UMAP", labelClusters = FALSE, sample = sampleVector)
+    expect_is(p1, "ggplot")
     p2 <- plotSCEDimReduceFeatures(inSCE = sceres, feature = "ENSG00000251562",
         shape = NULL, reducedDimName = "UMAP",
-        useAssay = "counts", xlab = "UMAP1", ylab = "UMAP2",
-        sample = sampleVector, combinePlot = "all")
-    expect_is(p2, c("gg","ggplot"))
+        useAssay = "counts", xlab = "UMAP1", ylab = "UMAP2", sample = sampleVector)
+    expect_is(p2, "ggplot")
     p3 <- plotSCEDimReduceColData(inSCE = sceres, colorBy = "type",
         shape = NULL, conditionClass = "factor",
         reducedDimName = "UMAP",
-        xlab = "UMAP1", ylab = "UMAP2", labelClusters = TRUE,
-        sample = sampleVector, combinePlot = "all")
-    expect_is(p3, c("gg","ggplot"))
+        xlab = "UMAP1", ylab = "UMAP2", labelClusters = TRUE, sample = sampleVector)
+    expect_is(p3, "ggplot")
 })
 
 test_that(desc = "Testing plotSCEViolin functions", {
     p1 <- plotSCEViolin(inSCE = sceres, slot = "assays",
-        annotation = "counts", feature = "ENSG00000251562",
-        groupBy = "type", sample = sampleVector, combinePlot = "all")
-    expect_is(p1, c("gg","ggplot"))
+        annotation = "counts", feature = "ENSG00000251562", groupby = "type", sample = sampleVector)
+    expect_is(p1, "ggplot")
     p2 <- plotSCEViolinAssayData(inSCE = sceres,
-        feature = "ENSG00000251562", groupBy = "type",
-        sample = sampleVector,combinePlot = "all")
-    expect_is(p2, c("gg","ggplot"))
+        feature = "ENSG00000251562", groupby = "type", sample = sampleVector)
+    expect_is(p2, "ggplot")
     p3 <- plotSCEViolinColData(inSCE = sceres,
-        coldata = "type", groupBy = "sample",
-        sample = sampleVector)
-    expect_is(p3, "list")
+        coldata = "type", groupby = "sample", sample = sampleVector)
+    expect_is(p3, "ggplot")
 })
 
 
@@ -70,8 +64,9 @@ test_that(desc = "Testing plotResults functions", {
     expect_is(r7,  c("gg","ggplot"))
   r8 <- plotDecontXResults(inSCE = sceres, reducedDimName="UMAP", sample = sampleVector, combinePlot = "all")
     expect_is(r8, c("gg","ggplot"))
-
+  
   sceDroplet <- runDropletQC(sceDroplet)
   r9 <- plotEmptyDropsResults(inSCE = sceDroplet, sample = c(rep("Sample1", 100), rep("Sample2", 290)))
     expect_is(r9, "list")
 })
+
