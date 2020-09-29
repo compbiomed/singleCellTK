@@ -30,6 +30,8 @@ plotCxdsResults(
   legendTitleSize = 16,
   relHeights = c(1.5, 1, 1),
   relWidths = c(1, 1, 1),
+  plotNCols = NULL,
+  plotNRows = NULL,
   plotLabels = "default",
   plotLabelSize = 20,
   plotLabelPositionX = NULL,
