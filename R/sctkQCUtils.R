@@ -69,6 +69,7 @@ exportSCE <- function(inSCE,
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects
 #' @param dir The output directory of the SCTK QC pipeline. 
 #' @param HTAN Whether generate manifest file with the format required by HTAN. Default is TRUE. 
+#' @param dataType Type of the input data. It can be one of "Droplet", "Cell" or "Both".
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
 #' objects in sceList. The colData is merged.  
 #' @export

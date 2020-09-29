@@ -48,7 +48,7 @@ This pipeline can currently import data from the following tools:
 For each tool, the pipeline expect the data in a certain format within a specific directory structure. For example, data generated with CellRanger V3 is expected to be under a sample folder (specified with the "-s" flag) and a base folder (specified with the "-b" flag).
 Some tools prepend the sample name onto the output files instead of making a separate subdirectory (e.g. BUStools and SEQC). The combination of --base_path ("-b") and --sample ("-s") should specify the location of the data files:
 
-![](/exec/SCTK_QC.png)
+![](/exec/png/SCTK_QC.png)
 
 ## Arguments
 
@@ -220,11 +220,11 @@ If -d argument is set as "Droplet", the QC pipeline will only take droplet count
 
 If -d argument is set as "Cell", the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:
 
-![](/exec/Single_Input.png)
+![](/exec/png/Single_Input.png)
 
 ### Specify parameters for QC algorithms
 User can specify parameters for QC algorithms in this pipeline with a yaml file (supplied with -y/--yamlFile argument). The current supported QC algorithms including doublet dection (bcds, cxds, cxds_bcds_hybrid, doubletFinder, doubletCells and scrublet), decontamination (decontX), emptyDrop detection (emptyDrops) and barcodeRankDrops (barcodeRanks). A summary of each function is shown below:
-![](/exec/QC_yaml.png)
+![](/exec/png/QC_yaml.png)
 
 An example of QC parameters yaml file is shown below:
 ```

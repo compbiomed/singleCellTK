@@ -11,12 +11,12 @@
 
 If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
 
-![](/exec/32bit-R.png)
+![](/exec/png/32bit-R.png)
 
 #### Window's user
 For window's users, please install [rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) based on your R version. Make sure to click 'Edit the system PATH' box when you see this window:
 
-![](/exec/rtools.png)
+![](/exec/png/rtools.png)
 
 After installing rtools, install 'devtools' package with the following command. If it asks whether install the package that requires compilation, type 'y'. 
 ```

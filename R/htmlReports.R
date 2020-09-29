@@ -2,7 +2,8 @@
 #' @description A  function to generate .html Rmarkdown report containing the visualizations of the runDropletQC function output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the full droplet count matrix with the output from runDropletQC function
-#' @param study description of the data set and experiment design. Default is NULL. 
+#' @param subTitle subtitle of the QC HTML report. Default is NULL. 
+#' @param studyDesign description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL. 
 #' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template 
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
@@ -39,7 +40,8 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @description A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the filtered count matrix with the output from runCellQC function
-#' @param study description of the data set and experiment design. Default is NULL. 
+#' @param subTitle subtitle of the QC HTML report. Default is NULL. 
+#' @param studyDesign description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL. 
 #' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template. 
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file

@@ -25,6 +25,8 @@ cell count matrix data}
 \item{dir}{The output directory of the SCTK QC pipeline.}
 
 \item{HTAN}{Whether generate manifest file with the format required by HTAN. Default is TRUE.}
+
+\item{dataType}{Type of the input data. It can be one of "Droplet", "Cell" or "Both".}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
