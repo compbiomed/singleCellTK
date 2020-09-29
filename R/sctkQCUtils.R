@@ -61,34 +61,6 @@ exportSCE <- function(inSCE,
 }
 
 
-#' Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
-#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects 
-#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
-#' objects in sceList. The colData is merged.  
-#' @export
-#' @importFrom SummarizedExperiment colData colData<-
-combineSCE <- function(sceList) {
-    qcList <- sapply(sceList, function(x) {colnames(x@colData)})
-    qcMetNum <- sapply(qcList, length)
-  
-    if (stats::var(qcMetNum) != 1) { ##some QC alrorithms failed for some samples
-        qcMetrics <- base::Reduce(union, qcList)
-    
-    for (i in seq_along(sceList)) {
-        sce <- sceList[[i]]
-        missQC <- qcMetrics[!qcMetrics %in% colnames(sce@colData)]
-  
-        if (length(missQC) != 0) {
-            missColDat <- S4Vectors::DataFrame(sapply(missQC, function(x){rep(NA, ncol(sce))}))
-            colData(sce) <- cbind(colData(sce), missColDat)
-            sceList[[i]] <- sce      
-        }
-    }
-  }
-    sce <- do.call(BiocGenerics::cbind, sceList)
-    return(sce)
-}
-
 #' Generate manifest file for droplet and cell count data
 #' @param dropletSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' droplet count matrix data

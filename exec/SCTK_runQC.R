@@ -573,8 +573,17 @@ if (!isTRUE(split)) {
     }
 
     if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
-        dropletSCE <- combineSCE(dropletSCE_list)
-        cellSCE <- combineSCE(cellSCE_list) 
+        by.r <- NULL
+        by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
+        dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
+        names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
+
+        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+        for (name in names(metadata(cellSCE))) {
+            names(metadata(cellSCE)[[name]]) <- sample
+        }
+
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
@@ -604,7 +613,14 @@ if (!isTRUE(split)) {
     }
 
     if (dataType == "Cell") {
-        cellSCE <- combineSCE(cellSCE_list)
+        by.r <- NULL
+        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+
+        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+        for (name in names(metadata(cellSCE))) {
+            names(metadata(cellSCE)[[name]]) <- sample
+        }
+
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
@@ -627,7 +643,11 @@ if (!isTRUE(split)) {
     }
 
     if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
-        dropletSCE <- combineSCE(dropletSCE_list)
+        by.r <- NULL
+        by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
+        dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
+        names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
+        
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {

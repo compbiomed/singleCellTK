@@ -95,7 +95,7 @@ for (i in seq_along(samples)) {
   cat("\n\n")
   
   cat("#### Parameters \n\n")
-  x <- preprocessMeta(sce@metadata$runEmptyDrops)
+  x <- preprocessMeta(sce@metadata$runEmptyDrops[[i]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -141,7 +141,7 @@ for (i in seq_along(samples)) {
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce@metadata$runBarcodeRankDrops)
+  x <- preprocessMeta(sce@metadata$runBarcodeRankDrops[[i]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))

@@ -65,6 +65,18 @@ sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
 samples <- unique(colData(sce.qc)$sample)
+
+reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = T)
+if (length(reduceDims) != 0) {
+  reduceDimUsed <- reduceDims[1]
+} else {
+  reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = T)
+  if (length(reduceDims) == 0) {
+    stop("No reduced dimension are available for QC visualization!")
+  } else {
+    reduceDimUsed <- reduceDims[1]
+  }
+}
 ```
 
 ---
@@ -120,7 +132,7 @@ cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
 cat("\n\n")
 cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
-x <- preprocessMeta(sce.qc@metadata$scater$addPerCellQC)
+x <- preprocessMeta(sce.qc@metadata$scater[[1]]$addPerCellQC)
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
@@ -175,7 +187,7 @@ for (sample in samples) {
   cat("\n\n")  
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runScrublet)
+  x <- preprocessMeta(sce.qc@metadata$runScrublet[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -240,7 +252,7 @@ for (sample in samples) {
     cat("\n\n")
     
     cat("##### Parameters {.tabset .tabset-fade} \n\n")
-    x <- preprocessMeta(sce.qc@metadata$runDoubletFinder)
+    x <- preprocessMeta(sce.qc@metadata$runDoubletFinder[[sample]])
     cat(t(as.data.frame(x)) %>%
       knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
       kableExtra::scroll_box(width = "80%"))
@@ -302,7 +314,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runDoubletCells)
+  x <- preprocessMeta(sce.qc@metadata$runDoubletCells[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -358,7 +370,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runCxds)
+  x <- preprocessMeta(sce.qc@metadata$runCxds[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -420,7 +432,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runBcds)
+  x <- preprocessMeta(sce.qc@metadata$runBcds[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -483,7 +495,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runCxdsBcdsHybrid)
+  x <- preprocessMeta(sce.qc@metadata$runCxdsBcdsHybrid[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -544,7 +556,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runDecontX)
+  x <- preprocessMeta(sce.qc@metadata$runDecontX[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
