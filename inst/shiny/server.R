@@ -2596,7 +2596,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  hide_TypeSelect <- reactiveVal()
+  hide_TypeSelect <- reactiveVal("hide")
   hide_bins <- reactiveVal()
 
   observeEvent(input$viewertabs, {
@@ -2747,23 +2747,27 @@ shinyServer(function(input, output, session) {
   })
 
   outputOptions(output, "hide_bins", suspendWhenHidden = FALSE)
+  outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
+
 
   numColors <- NULL
   colorLabels <- NULL
-  ### Observe Categorical radio button selection and add in color selection panel.
-  observeEvent(c(input$SelectColorType, input$AnnotationSelect_Colorby), {
+  ### Observe Categorical radio button selection and add in color selection panel for "color by annotation".
+  observeEvent(c(input$SelectColorType, input$TypeSelect_Colorby, input$AnnotationSelect_Colorby), {
     if (input$SelectColorType == "Categorical") {
       if(input$TypeSelect_Colorby == "Cell Annotation") {
         req(vals$counts, input$AnnotationSelect_Colorby)
         labels = sort(unique(SingleCellExperiment::colData(vals$counts)[, input$AnnotationSelect_Colorby]))
-        colorLabels <<- labels
-        numColors <<- length(labels)
-        defaultColors <- randomcoloR::distinctColorPalette(numColors)
-        output$categoricalColorUI <- renderUI({
-          lapply(1:numColors, function(i){
-            colourInput(inputId=paste0(i, "_color"), label=labels[i], value=defaultColors[i], showColour="background")
+        if (length(labels) <=25 ) {
+          colorLabels <<- labels
+          numColors <<- length(labels)
+          defaultColors <- randomcoloR::distinctColorPalette(numColors)
+          output$categoricalColorUI <- renderUI({
+            lapply(1:numColors, function(i){
+              colourInput(inputId=paste0(i, "_color"), label=labels[i], value=defaultColors[i], showColour="background")
+            })
           })
-        })
+        }
       }
     }
   })
@@ -2772,10 +2776,12 @@ shinyServer(function(input, output, session) {
   cellviewer <- eventReactive(input$runCellViewer,{
     
     colors <- c()
-    for (i in 1: numColors) {
-      colors[i] <- input[[ paste0(i,"_color")]]
+    if (!is.null(numColors) && input$SelectColorType == 'Categorical') {
+      for (i in 1: numColors) {
+        colors[i] <- input[[ paste0(i,"_color")]]
+      }
+      names(colors) = colorLabels
     }
-    names(colors) = colorLabels
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
@@ -2868,30 +2874,13 @@ shinyServer(function(input, output, session) {
                                       dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
                                       axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
                                       legendTitleSize = input$adjustlegendtitlesize)
-      }else if(input$TypeSelect_Colorby == "Cell Annotation"){
-        a <-plotSCEDimReduceColData(
-            vals$counts,
-            reducedDimName = input$QuickAccess,
-            xlab = xname,
-            ylab = yname,
-            colorBy = input$AnnotationSelect_Colorby,
-            groupBy = pltVars$groupby,
-            legendTitle = legendname,
-            title = input$adjusttitle,
-            bin = pltVars$bin,
-            transparency = input$adjustalpha,
-            colorScale = colors,
-            colorLow = input$lowColor,
-            colorMid = input$midColor,
-            colorHigh = input$highColor,
-            dotSize = input$adjustsize,
-            combinePlot = FALSE,
-            axisSize = input$adjustaxissize,
-            axisLabelSize = input$adjustaxislabelsize,
-            legendSize = input$adjustlegendsize,
-            legendTitleSize = input$adjustlegendtitlesize,
-            conditionClass = pltVars$class
-          )
+      } else if (input$TypeSelect_Colorby == "Cell Annotation") {
+        a <- plotSCEDimReduceColData(vals$counts,reducedDimName = input$QuickAccess,xlab = xname,ylab = yname,
+                                    colorBy = input$AnnotationSelect_Colorby,groupBy = pltVars$groupby,legendTitle = legendname,
+                                    title = input$adjusttitle,bin = pltVars$bin,transparency = input$adjustalpha,colorScale = colors,
+                                    colorLow = input$lowColor,colorMid = input$midColor,colorHigh = input$highColor,dotSize = input$adjustsize,
+                                    combinePlot = FALSE,axisSize = input$adjustaxissize,axisLabelSize = input$adjustaxislabelsize,
+                                    legendSize = input$adjustlegendsize,legendTitleSize = input$adjustlegendtitlesize,conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
                             annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha, colorLow = input$lowColor, 

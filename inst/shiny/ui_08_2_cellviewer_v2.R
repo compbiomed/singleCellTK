@@ -171,28 +171,29 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         # && output.hide_typebtns == 'show'
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Single Color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['TypeSelect_Colorby'] != 'Single Color' && output.hide_typebtns == 'show'"),
           radioButtons(
             "SelectColorType",
             label = NULL,
             choices = c("Categorical", "Continuous")
-          )
+          ),
+          
         ),
         conditionalPanel(
-                             id = "continuousColorConditional",
-                             condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-                             colourInput("highColor", "High Color", "blue", "background", "limited"),
-                             colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
-                             colourInput("lowColor", "Low Color", "white", "background", "limited")
-                           ), 
-                           conditionalPanel(
-                             id = "categoricalColorConditional",
-                             condition = sprintf("input['%s'] == 'Categorical'", "SelectColorType"),
-                             uiOutput("categoricalColorUI")
-                           ),
+          id = "continuousColorConditional",
+          condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+          colourInput("highColor", "High Color", "blue", "background", "limited"),
+          colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+          colourInput("lowColor", "Low Color", "white", "background", "limited")
+        ), 
+        (conditionalPanel(
+          id = "categoricalColorConditional",
+          condition = sprintf("input['%s'] == 'Categorical'", "SelectColorType"),
+          uiOutput("categoricalColorUI")
+        )),
         conditionalPanel(
           id="binningConditional",
-          condition = "input['SelectColorType'] == 'Continuous' && output.hide_typebtns == 'show'",
+          condition = sprintf("input['%s'] == 'Continuous' && output.hide_bins == 'show'", "SelectColorType"),
             #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
           #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
           h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
