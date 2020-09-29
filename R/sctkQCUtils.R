@@ -185,10 +185,10 @@ generateMeta <- function(dropletSCE = NULL,
 #' return character object.   
 #' @export
 getSceParams <- function(inSCE, 
-                         skip = c("scrublet", "runDecontX"), 
+                         skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"), 
                          ignore = c("algorithms", "estimates","contamination",
                                     "z","sample","rank","BPPARAM","batch","geneSetCollection",
-                                    "runBarcodeRanksMetaOutput"), 
+                                    "barcodeArgs"), 
                          directory = './', 
                          samplename = '',
                          writeYAML = TRUE) {
@@ -200,12 +200,12 @@ getSceParams <- function(inSCE,
   dir <- file.path(directory, samplename)
   
   for (algo in algos) {
-    params <- meta[[algo]]
+    params <- meta[[algo]][[1]]
     if (length(params) == 1) {params <- params[[1]]} ### extract params from sublist
     params <- params[which(!names(params) %in% ignore)]
     parList[[algo]] <- params
   }
-
+  
   outputs <- paste(outputs, yaml::as.yaml(parList), sep='\n')
   if (isTRUE(writeYAML)) {
     filename <- paste0(samplename, '_QCParameters.yaml')

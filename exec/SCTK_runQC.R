@@ -480,8 +480,21 @@ for(i in seq_along(process)) {
             mergedDropletSCE <- dropletSCE
         }
     }
+    
 
     if (isTRUE(split)) {
+        ### assign sample to every runBarcodeRanksMetaOutput metadata slot
+        if (!is.null(mergedDropletSCE)) {
+            names(metadata(mergedDropletSCE)$runBarcodeRanksMetaOutput) <- samplename   
+        }
+
+        if (!is.null(mergedFilteredSCE)) {
+            for (name in names(metadata(mergedFilteredSCE))) {
+                metadata(mergedFilteredSCE)[[name]] <- list(metadata(mergedFilteredSCE)[[name]])
+                names(metadata(mergedFilteredSCE)[[name]]) <- samplename
+            }
+        }
+        
         if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
@@ -588,8 +601,8 @@ if (!isTRUE(split)) {
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
         ## html report
-        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-        reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
 
         ## Get parameters of QC functions
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
@@ -638,7 +651,7 @@ if (!isTRUE(split)) {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
 
-        reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
     }
 
@@ -665,7 +678,7 @@ if (!isTRUE(split)) {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
 
-        reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
     
     }
 }

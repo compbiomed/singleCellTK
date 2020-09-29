@@ -6,8 +6,8 @@
   reducedDims) {
   
   sce <- SingleCellExperiment::SingleCellExperiment(assays = matrices)
-  SummarizedExperiment::rowData(sce) <- features
-  SummarizedExperiment::colData(sce) <- barcodes
+  SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(features)
+  SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(barcodes)
   S4Vectors::metadata(sce) <- metadata
   SingleCellExperiment::reducedDims(sce) <- reducedDims
   return(sce)

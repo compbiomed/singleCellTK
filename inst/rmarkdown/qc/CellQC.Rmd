@@ -132,7 +132,11 @@ cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
 cat("\n\n")
 cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
-x <- preprocessMeta(sce.qc@metadata$scater[[1]]$addPerCellQC)
+
+runPerCellMeta <- sce.qc@metadata$scater
+# if(length(samples) == 1) {runPerCellMeta <- list(runPerCellMeta)}
+# x <- preprocessMeta(runPerCellMeta[[1]]$addPerCellQC)
+x <- preprocessMeta(runPerCellMeta[[samples[1]]]$addPerCellQC)
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
@@ -187,7 +191,13 @@ for (sample in samples) {
   cat("\n\n")  
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runScrublet[[sample]])
+  runScrubletMeta <- sce.qc@metadata$runScrublet
+  # if(length(samples) == 1) {
+  #   runScrubletMeta <- list(runScrubletMeta)
+  #   names(runScrubletMeta) <- sample
+  # }
+    
+  x <- preprocessMeta(runScrubletMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -252,7 +262,13 @@ for (sample in samples) {
     cat("\n\n")
     
     cat("##### Parameters {.tabset .tabset-fade} \n\n")
-    x <- preprocessMeta(sce.qc@metadata$runDoubletFinder[[sample]])
+    DoubletFinderMeta <- sce.qc@metadata$runDoubletFinder
+    # if(length(samples) == 1) {
+    #   DoubletFinderMeta <- list(DoubletFinderMeta)
+    #   names(DoubletFinderMeta) <- sample
+    # }
+    
+    x <- preprocessMeta(DoubletFinderMeta[[sample]])
     cat(t(as.data.frame(x)) %>%
       knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
       kableExtra::scroll_box(width = "80%"))
@@ -314,7 +330,13 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runDoubletCells[[sample]])
+  DoubletCellMeta <- sce.qc@metadata$runDoubletCell
+  # if(length(samples) == 1) {
+  #   DoubletCellMeta <- list(DoubletCellMeta)
+  #   names(DoubletCellMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(DoubletCellMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -370,7 +392,13 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runCxds[[sample]])
+  CxdsMeta <- sce.qc@metadata$runCxds
+  # if(length(samples) == 1) {
+  #   CxdsMeta <- list(CxdsMeta)
+  #   names(CxdsMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(CxdsMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -432,7 +460,13 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runBcds[[sample]])
+  BcdsMeta <- sce.qc@metadata$runBcds
+  # if(length(samples) == 1) {
+  #   BcdsMeta <- list(BcdsMeta)
+  #   names(BcdsMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(BcdsMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -495,7 +529,13 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runCxdsBcdsHybrid[[sample]])
+  HybridMeta <- sce.qc@metadata$runCxdsBcdsHybrid
+  # if(length(samples) == 1) {
+  #   HybridMeta <- list(HybridMeta)
+  #   names(HybridMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(HybridMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -556,7 +596,13 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  x <- preprocessMeta(sce.qc@metadata$runDecontX[[sample]])
+  DecontXMeta <- sce.qc@metadata$runDecontX
+  # if(length(samples) == 1) {
+  #   DecontXMeta <- list(DecontXMeta)
+  #   names(DecontXMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(DecontXMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
