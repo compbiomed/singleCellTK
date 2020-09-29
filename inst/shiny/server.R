@@ -2284,15 +2284,59 @@ shinyServer(function(input, output, session) {
   #     anim = TRUE), add = TRUE)
   # shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
 
+  modsplit <- eventReactive(input$celdamodsplit, {
+    celda_sce <- selectFeatures(as.matrix(counts(vals$counts)))
+    updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
+    return(recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax))
+  })
+  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
+
+  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
+    return(plotGridSearchPerplexityDiff(modsplit()))
+  })
+  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
+
+  observeEvent(input$celdaLbtn, {
+    modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
+    showNotification("Celda L Selected.")
+  })
+
+  cellsplit <- eventReactive(input$celdacellsplit, {
+    updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
+    return(recursiveSplitCell(modsplit(), initialK = input$celdaKinit, maxK = input$celdaKmax))
+  })
+
+  output$cellsplitplot <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
+
+  observeEvent(input$celdaKbtn, {
+    cellsplit <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
+    showNotification("Celda K Selected.")
+  })
+
+  observeEvent(input$celdaUmap, {
+    celda <- celdaUmap(cellsplit())
+  })
+
+  observeEvent(input$celdaTsne, {
+    celda <- celdaTsne(celda)
+  })
+
+  observeEvent(input$celdafactorize,{
+    factorized <- factorizeMatrix(vals$counts)
+  })
+
+  #observeEvent(input$runCelda, {
+
+  #})
 
   # celda clustering tab
-  observeEvent(input$runCelda, {
+  observeEvent(input$runCelda2, {
     # is there an error or not
-    if (is.null(vals$counts)) {
+    if (is.null(cellsplit)) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       # selected count matrix
-      cm <- assay(vals$counts, input$celdaAssay)
+      cm <- assay(cellsplit(), input$celdaAssay)
     }
 
     # And each row/column of the count matrix must have at least one count

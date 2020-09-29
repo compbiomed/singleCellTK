@@ -1,4 +1,4 @@
-shinyPanelCelda <- fluidPage(
+shinyPanelCelda2 <- fluidPage(
   useShinyalert(),
   tags$div(
     class = "container",
@@ -502,5 +502,3 @@ shinyPanelCelda <- fluidPage(
     )
   )
 )
-
-
