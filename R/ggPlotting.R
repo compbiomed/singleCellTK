@@ -649,7 +649,7 @@ plotSCEScatter <- function(inSCE,
                            legendTitleSize = 12,
                            legendSize = 10,
                            combinePlot = NULL,
-                           plotLabels = NULL) {
+                           plotLabels = NULL){
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
@@ -664,28 +664,17 @@ plotSCEScatter <- function(inSCE,
     }
 
     annotation.ix <- match(annotation, c(names(sceSubset)))
-  }
 
-  if (is.null(slot)){
-    if (is.null(singleColor)){
-      colorPlot <- NULL
-    }else{
-      colorPlot <- rep(singleColor, length(rownames(inSCE)))
-      labelClusters <- FALSE
-      #legendSize <- 0
+    if (slot == "assays" && !is.null(feature)) {
+      counts <- sceSubset[[annotation.ix]]
+      if (feature %in% rownames(counts)) {
+        colorPlot <- counts[feature, ]
+      }
+    } else if (slot == "colData") {
+      colorPlot <- sceSubset[, annotation.ix]
+    } else if (slot == "metadata") {
+      colorPlot <- sceSubset[[annotation.ix]]
     }
-  } else if (slot == "assays" && !is.null(feature)) {
-    counts <- sceSubset[[annotation.ix]]
-    if (feature %in% rownames(counts)) {
-      colorPlot <- counts[feature, ]
-    }
-  } else if (slot == "colData") {
-    colorPlot <- sceSubset[, annotation.ix]
-  } else if (slot == "metadata") {
-    colorPlot <- sceSubset[[annotation.ix]]
-  } else if (slot == "reducedDims") {
-    colorPlot <- sceSubset[[annotation.ix]][, as.numeric(annotation_clm)]
-  }
 
   g <- .ggScatter(
     inSCE = inSCE,
@@ -2316,7 +2305,6 @@ plotSCEBarColData <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
-=======
   p <- .ggBar(
     y = coldata,
     groupBy = groupBy,
@@ -2331,7 +2319,7 @@ plotSCEBarColData <- function(inSCE,
     title = title,
     titleSize = titleSize
   )
-  
+
   return(p)
 }
 
