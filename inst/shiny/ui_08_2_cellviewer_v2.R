@@ -175,25 +175,29 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           radioButtons(
             "SelectColorType",
             label = NULL,
-            choices = c("Categorical", "Continuous")
+            choices = c("Categorical", "Continuous"),
           ),
-          
         ),
-        conditionalPanel(
-          id = "continuousColorConditional",
-          condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-          colourInput("highColor", "High Color", "blue", "background", "limited"),
-          colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
-          colourInput("lowColor", "Low Color", "white", "background", "limited")
-        ), 
-        (conditionalPanel(
+        hidden(
+          tags$div(
+            id = "continuousColorConditional",
+            colourInput("highColor", "High Color", "blue", "background", "limited"),
+            colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+            colourInput("lowColor", "Low Color", "white", "background", "limited")
+          )
+        ),
+        hidden(tags$div(
           id = "categoricalColorConditional",
-          condition = sprintf("input['%s'] == 'Categorical'", "SelectColorType"),
+          selectizeInput(
+            "colorTheme",
+            label = h5("Color Scheme"),
+            c("ggplot", "celda", "random")
+          ),
           uiOutput("categoricalColorUI")
-        )),
+        )), 
         conditionalPanel(
           id="binningConditional",
-          condition = sprintf("input['%s'] == 'Continuous' && output.hide_bins == 'show'", "SelectColorType"),
+          condition = sprintf("input['%s'] == 'Continuous' && input['%s'] != 'Single Color'", "SelectColorType", "TypeSelect_Colorby"),
             #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
           #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
           h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),

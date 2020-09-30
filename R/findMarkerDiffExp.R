@@ -80,11 +80,13 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
     for(c in uniqClust){
         degTable <-
             S4Vectors::metadata(inSCE)$diffExp[[paste0('findMarker', c)]]$result
-        degTable[[clusterName]] <- c
-        if(is.null(degFull)){
+        if (nrow(degTable) > 0) {
+          degTable[[clusterName]] <- c
+          if(is.null(degFull)){
             degFull <- degTable
-        } else {
+          } else {
             degFull <- rbind(degFull, degTable)
+          }
         }
     }
     S4Vectors::metadata(inSCE)$diffExp[paste0('findMarker', uniqClust)] <- NULL

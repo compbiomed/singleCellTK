@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.7.5
+Version: 1.7.6
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
@@ -92,6 +92,7 @@ Imports:
     DropletUtils,
     scds (>= 1.2.0),
     reticulate (>= 1.14),
+    randomcoloR,
     tools,
     withr,
     GSEABase,
@@ -102,7 +103,9 @@ Imports:
     scRNAseq (>= 2.0.2),
     TENxPBMCData,
     yaml,
-    rmarkdown
+    rmarkdown,
+    magrittr,
+    kableExtra
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
