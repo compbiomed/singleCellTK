@@ -13,7 +13,6 @@ plotSCEBarColData(
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
