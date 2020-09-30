@@ -6,7 +6,8 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, mean(inSCE$sum), stats::median(inSCE$sum))
+        values <- c(values, signif(mean(inSCE$sum), 3),
+                    signif(stats::median(inSCE$sum), 3))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -14,7 +15,8 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, mean(inSCE$detected), stats::median(inSCE$detected))
+        values <- c(values, signif(mean(inSCE$detected), 3),
+                    signif(stats::median(inSCE$detected), 3))
     }
 
     if(simple != TRUE){
@@ -23,17 +25,16 @@
                 metrics, "Scrublet - Number of doublets",
                 "Scrublet - Percentage of doublets"
             )
-            values <- c(
-                values, sum(inSCE$scrublet_call == TRUE),
-                sum(inSCE$scrublet_call == TRUE) / length(inSCE$scrublet_call) * 100
+            values <- c(values, sum(inSCE$scrublet_call == TRUE),
+                        signif(sum(inSCE$scrublet_call == TRUE) / length(inSCE$scrublet_call) * 100, 3)
             )
         }
 
         if ("scran_doubletCells_score_log10" %in% colnames(SummarizedExperiment::colData(inSCE))) {
             metrics <- c(metrics, "DoubletCells - Doublet score outliers")
-            values <- c(values, scater::isOutlier(inSCE$scran_doubletCells_logscore,
+            values <- c(values, sum(scater::isOutlier(inSCE$scran_doubletCells_score_log10,
                                                   type = "higher"
-            ))
+            )))
 
         }
 
@@ -52,7 +53,7 @@
                                         "",
                                         colnames(SummarizedExperiment::colData(inSCE))[ix])))
                 values <- c(values,sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet"),
-                            sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet") / length(SummarizedExperiment::colData(inSCE)[, ix]) * 100)
+                            signif(sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet") / length(SummarizedExperiment::colData(inSCE)[, ix]) * 100), 3)
             }
         }
 
@@ -60,28 +61,28 @@
             metrics <- c(metrics, "CXDS - Number of doublets",
                          "CXDS - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_cxds_call == TRUE),
-                        sum(inSCE$scds_cxds_call == TRUE)/length(inSCE$scds_cxds_call) * 100)
+                        signif(sum(inSCE$scds_cxds_call == TRUE)/length(inSCE$scds_cxds_call) * 100), 3)
         }
 
         if("scds_bcds_call" %in% colnames(SummarizedExperiment::colData(inSCE))){
             metrics <- c(metrics, "BCDS - Number of doublets",
                          "BCDS - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_bcds_call == TRUE),
-                        sum(inSCE$scds_bcds_call == TRUE)/length(inSCE$scds_bcds_call) * 100)
+                        signif(sum(inSCE$scds_bcds_call == TRUE)/length(inSCE$scds_bcds_call) * 100), 3)
         }
 
         if("scds_hybrid_call" %in% colnames(SummarizedExperiment::colData(inSCE))){
             metrics <- c(metrics, "SCDS Hybrid - Number of doublets",
                          "SCDS Hybrid - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_hybrid_call == TRUE),
-                        sum(inSCE$scds_hybrid_call == TRUE)/length(inSCE$scds_hybrid_call) * 100)
+                        signif(sum(inSCE$scds_hybrid_call == TRUE)/length(inSCE$scds_hybrid_call) * 100), 3)
         }
 
         if("decontX_clusters" %in% colnames(SummarizedExperiment::colData(inSCE))){
             metrics <- c(metrics, "DecontX - Mean contamination",
                          "DecontX - Median contamination")
-            values <- c(values, mean(inSCE$decontX_contamination),
-                        stats::median(inSCE$decontX_contamination))
+            values <- c(values, signif(mean(inSCE$decontX_contamination), 3),
+                        signif(stats::median(inSCE$decontX_contamination), 3))
         }
     }
 
@@ -101,23 +102,16 @@
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
-#' @param output Character vector. Options are "kable",
-#' which a table will be generated via kable to an html file,
-#' "csv", which a csv file will be generated, or "dataframe",
-#' which outputs a dataframe.
-#' @param fileName String. File name if output set to "csv".
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sampleSummaryStats(sce, simple = TRUE, output = "dataframe")
+#' sampleSummaryStats(sce, simple = TRUE)
 #' @importFrom magrittr %>%
 #' @export
 sampleSummaryStats <- function(inSCE,
                                sample = NULL,
                                useAssay = "counts",
-                               simple = TRUE,
-                               output = "kable",
-                               fileName = "sctkSummaryStats.csv"){
+                               simple = TRUE){
 
     if (!is.null(sample)) {
         if(length(sample) == 1){
@@ -164,16 +158,16 @@ sampleSummaryStats <- function(inSCE,
         dfTableRes <- dfTableAll
     }
 
+    dfTableRes <- as.data.frame(dfTableRes)
+    dfTableRes <- apply(dfTableRes, 1:2, function(x){
+        if(grepl(as.character(x), "\\.0000")){
+            return(as.integer(x))
+        }else{
+            return(as.numeric(x))
+        }
+    })
+
     dfTableRes <- formatC(dfTableRes, drop0trailing = TRUE)
 
-    if(output == "kable"){
-        dfTableRes %>%
-            knitr::kable(format = "html", align = rep('c', ncol(dfTableRes) + 1),
-                         row.names = TRUE) %>% kableExtra::kable_styling()
-    }else if(output == "csv"){
-        utils::write.csv(dfTableRes, file = fileName)
-    }else if(output == "dataframe"){
-        return(dfTableRes)
-    }
-
+    return(dfTableRes)
 }

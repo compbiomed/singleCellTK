@@ -15,6 +15,8 @@
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
   titleSize = 15
 )
@@ -25,9 +27,6 @@
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
-
-\item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
@@ -43,6 +42,12 @@ Default TRUE.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
+
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{title}{Title of plot. Default NULL.}
 
