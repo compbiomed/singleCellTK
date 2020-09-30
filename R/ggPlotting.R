@@ -2462,6 +2462,8 @@ plotSCEBarAssayData <- function(inSCE,
       ncols <- 1
       nrowSub <- 1
       sampleRelHeights <- 1
+    }else{
+      nrowSub = NULL
     }
     plotlistSample <- lapply(plotlistSample, function(x) {
       return(cowplot::plot_grid(

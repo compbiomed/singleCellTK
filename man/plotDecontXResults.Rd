@@ -30,6 +30,8 @@ plotDecontXResults(
   legendTitleSize = 16,
   relHeights = c(1.5, 1, 1),
   relWidths = c(1, 1, 1),
+  plotNCols = NULL,
+  plotNRows = NULL,
   plotLabels = "default",
   plotLabelSize = 20,
   plotLabelPositionX = NULL,
@@ -105,6 +107,10 @@ when TRUE. Default TRUE.}
 \item{relHeights}{Relative heights of plots when combine is set.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
+
+\item{plotNCols}{Number of columns when plots are combined in a grid.}
+
+\item{plotNRows}{Number of rows when plots are combined in a grid.}
 
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
