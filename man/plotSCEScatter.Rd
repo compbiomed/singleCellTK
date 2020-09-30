@@ -6,15 +6,18 @@
 \usage{
 plotSCEScatter(
   inSCE,
-  slot,
+  slot = NULL,
   sample = NULL,
   annotation,
   feature = NULL,
+  groupBy = NULL,
   shape = NULL,
   reducedDimName = NULL,
   conditionClass = NULL,
   xlab = NULL,
   ylab = NULL,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -40,14 +43,17 @@ plotSCEScatter(
 components or a variable with saved results. Required}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
-options: "assays", "colData", "metadata"}
+options: "assays", "colData", "metadata". Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{annotation}{Desired vector within the slot used for plotting.}
+\item{annotation}{Desired vector within the slot used for plotting. Default NULL.}
 
 \item{feature}{name of feature stored in assay of SingleCellExperiment
 object. Will be used only if "assays" slot is chosen. Default NULL.}
+
+\item{groupBy}{Group by a condition(any column of the annotation data).
+Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
@@ -61,6 +67,10 @@ class. Default NULL.}
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies

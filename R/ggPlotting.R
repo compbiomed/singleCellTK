@@ -2109,8 +2109,6 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param gridLine Adds a horizontal grid line if TRUE. Will still be
@@ -2125,13 +2123,10 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @importFrom dplyr %>%
 .ggBar <- function(y,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
-  transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
@@ -2145,7 +2140,7 @@ plotBarcodeRankScatter <- function(inSCE,
 
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
-      x = "groupby",
+      x = "groupBy",
       y = "y"
     )
 
@@ -2166,7 +2161,7 @@ plotBarcodeRankScatter <- function(inSCE,
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
   ###
 
-  if(length(unique(df$groupby)) > 1){
+  if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
       hjust = 1,
       size = axisSize))
@@ -2189,10 +2184,10 @@ plotBarcodeRankScatter <- function(inSCE,
   }
   if (!is.null(summary)){
     if(summary == "mean"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = base::mean(y))
       fun <- base::mean
     }else if(summary == "median"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = stats::median(y))
       fun <- stats::median
     }else{
       stop("`summary`` must be either `mean` or `median`.")
@@ -2203,7 +2198,7 @@ plotBarcodeRankScatter <- function(inSCE,
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
     p <- p + ggplot2::geom_text(data = summ,
-      ggplot2::aes_string(x = "groupby",
+      ggplot2::aes_string(x = "groupBy",
         y = "statY",
         label = "label"),
       size = 5)
@@ -2229,14 +2224,10 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
-#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
-#'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param gridLine Adds a horizontal grid line if TRUE. Will still be
@@ -2259,14 +2250,10 @@ plotSCEBarColData <- function(inSCE,
   sample = NULL,
   coldata,
   groupBy = NULL,
-  violin = TRUE,
-  boxplot = TRUE,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
@@ -2310,13 +2297,10 @@ plotSCEBarColData <- function(inSCE,
   p <- .ggBar(
     y = coldata,
     groupBy = groupBy,
-    dots = dots,
     xlab = xlab,
     ylab = ylab,
     axisSize = axisSize,
     axisLabelSize = axisLabelSize,
-    dotSize = dotSize,
-    transparency = transparency,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize
@@ -2337,14 +2321,10 @@ plotSCEBarColData <- function(inSCE,
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
-#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
-#'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param gridLine Adds a horizontal grid line if TRUE. Will still be
@@ -2367,13 +2347,10 @@ plotSCEBarAssayData <- function(inSCE,
   useAssay = "counts",
   feature,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
-  transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
@@ -2406,13 +2383,10 @@ plotSCEBarAssayData <- function(inSCE,
   p <- .ggBar(
     y = counts,
     groupBy = groupBy,
-    dots = dots,
     xlab = xlab,
     ylab = ylab,
     axisSize = axisSize,
     axisLabelSize = axisLabelSize,
-    dotSize = dotSize,
-    transparency = transparency,
     defaultTheme = defaultTheme,
     title = title,
     titleSize = titleSize

@@ -13,6 +13,8 @@ plotSCEDimReduceFeatures(
   useAssay = "logcounts",
   xlab = NULL,
   ylab = NULL,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -52,6 +54,10 @@ object. Plot will be colored based on feature value.}
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
