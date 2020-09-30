@@ -2144,7 +2144,7 @@ plotBarcodeRankScatter <- function(inSCE,
 
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
-      x = "groupby",
+      x = "groupBy",
       y = "y"
     )
 

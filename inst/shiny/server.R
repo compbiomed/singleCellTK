@@ -3151,12 +3151,14 @@ shinyServer(function(input, output, session) {
           feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
           dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
           axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
+        a <- a[[1]]
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
           coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
           transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
           axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
           defaultTheme = as.logical(pltVars$defTheme))
+        a <- a[[1]]
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
@@ -3167,12 +3169,14 @@ shinyServer(function(input, output, session) {
             transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
+          a <- a[[1]]
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
             box = TRUE, groupBy = pltVars$groupby, transparency = input$adjustalpha,
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
+          a <- a[[1]]
         }
       }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Yaxis == "Expression Assays"){
@@ -3182,16 +3186,18 @@ shinyServer(function(input, output, session) {
             transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
+          a <- a[[1]]
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
             box = FALSE, groupBy = pltVars$groupBy, transparency = input$adjustalpha,
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
+          a <- a[[1]]
         }
       }
     }
-    if (input$TypeSelect_Colorby == "Single Color"){
+    if (input$TypeSelect_Colorby == "Single Color" && input$viewertabs == "Scatter Plot"){
       a[[1]]$layers[[1]]$aes_params$colour <- input$Col
     }
     if (input$adjustgridlines == TRUE){
