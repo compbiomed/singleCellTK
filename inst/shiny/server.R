@@ -743,7 +743,7 @@ shinyServer(function(input, output, session) {
                                                      featureFile = input$featureFile$datapath, assayName = input$inputAssayType))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    
+
     assayFileCol <- ""
     annotFileCol <- ""
     featureFileCol <- ""
@@ -756,9 +756,9 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$featureFile$datapath)) {
       featureFileCol <- paste0("Features: ", input$featureFile$datapath)
     }
-    
+
     locCol <- paste(c(assayFileCol, annotFileCol, featureFileCol), collapse = "\n")
-    
+
     addToGeneralSampleTable("files", id, locCol, input$inputAssayType)
 
     observeEvent(input[[paste0("remove", id)]],{
@@ -783,7 +783,7 @@ shinyServer(function(input, output, session) {
     entry <- list(type="example", id = id, params=list(dataset = input$selectExampleData))
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
-    
+
     scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
     tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
     locCol <- ""
@@ -792,9 +792,9 @@ shinyServer(function(input, output, session) {
     } else {
       locCol <- "TENx"
     }
-    
+
     addToGeneralSampleTable("example", id, locCol, input$selectExampleData)
-    
+
 
     observeEvent(input[[paste0("remove", id)]],{
       removeUI(
@@ -912,7 +912,7 @@ shinyServer(function(input, output, session) {
           sceObj <- cbind(sceObj, newSce)
         }
       }
-      
+
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
           vals$original <- cbind(vals$original, sceObj)
@@ -922,7 +922,7 @@ shinyServer(function(input, output, session) {
       } else {
         vals$original <- sceObj
       }
-      
+
       # clear table and empty reactive
       for (entry in allImportEntries$samples) {
         removeUI(selector = paste0("#", entry$id))
@@ -1091,7 +1091,7 @@ shinyServer(function(input, output, session) {
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
-                       
+
                        doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
@@ -1132,8 +1132,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$QCMhelp, {
     showModal(QCMHelpModal())
   })
-  
-  
+
+
   # format the parameters for decontX
   prepDecontXParams <- function(paramsList) {
     inputIds <- qc_input_ids[["decontX"]]
@@ -1304,7 +1304,7 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
 
   #-----------#
   # FILTERING #
@@ -2416,11 +2416,11 @@ shinyServer(function(input, output, session) {
     showNotification("Celda K Selected.")
   })
 
-  observeEvent(input$celdaUmap, {
+  observeEvent(input$CeldaUmap, {
     celda <- celdaUmap(cellsplit())
   })
 
-  observeEvent(input$celdaTsne, {
+  observeEvent(input$CeldaTsne, {
     celda <- celdaTsne(celda)
   })
 
@@ -2878,7 +2878,6 @@ shinyServer(function(input, output, session) {
   hide_TypeSelect <- reactiveVal()
   hide_bins <- reactiveVal()
 
-
   observeEvent(input$viewertabs, {
     if(!is.null(vals$counts)) {
       if(!is.null(reducedDims(vals$counts))) {
@@ -2887,6 +2886,10 @@ shinyServer(function(input, output, session) {
           updateSelectInput(session, "QuickAccess",
                             choices = c("Custom"))
           shinyjs::delay(5,shinyjs::disable("QuickAccess"))
+        }else{
+          updateSelectInput(session, "QuickAccess",
+            choices = c("", approach_list, "Custom"))
+          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
         }
         if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
           updateSelectInput(session, "TypeSelect_Xaxis",
@@ -3144,13 +3147,13 @@ shinyServer(function(input, output, session) {
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
         a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
-          useAssay = input$AdvancedMethodSelect_Yaxis, groupby = pltVars$groupby,
+          useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
           feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
           dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
           axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
-          coldata = input$AnnotationSelect_Yaxis, groupby = pltVars$groupby,
+          coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
           transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
           axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
           defaultTheme = as.logical(pltVars$defTheme))
@@ -3160,14 +3163,14 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
+            feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
             transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
-            box = TRUE, groupby = pltVars$groupby, transparency = input$adjustalpha,
+            box = TRUE, groupBy = pltVars$groupby, transparency = input$adjustalpha,
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
         }
@@ -3175,14 +3178,14 @@ shinyServer(function(input, output, session) {
         if(input$TypeSelect_Yaxis == "Expression Assays"){
           a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
             useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-            feature = input$GeneSelect_Assays_Yaxis, groupby = pltVars$groupby,
+            feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
             transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
-            box = FALSE, groupby = pltVars$groupby, transparency = input$adjustalpha,
+            box = FALSE, groupBy = pltVars$groupBy, transparency = input$adjustalpha,
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
         }
@@ -3687,7 +3690,7 @@ shinyServer(function(input, output, session) {
       )
     }
   }
-    
+
   observeEvent(input$hmCellAnn, {
     if(!is.null(input$hmCellAnn)){
       output$hmCellAnnAssUI <- renderUI({
@@ -3747,7 +3750,7 @@ shinyServer(function(input, output, session) {
       hmTemp$rowDataName, multiple = TRUE, selected = hmTemp$rowSplitBy
     )
   })
- 
+
   observeEvent(input$hmColSplit, {
     hmTemp$colSplitBy <- input$hmColSplit
   })
