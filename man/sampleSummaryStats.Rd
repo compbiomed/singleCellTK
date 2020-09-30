@@ -18,16 +18,6 @@ dimension reduction components or a variable with saved results. Required}
 \item{simple}{Boolean. Indicates whether to generate a table of only
 basic QC stats (ex. library size), or to generate a summary table of all
 QC stats stored in the inSCE.}
-<<<<<<< HEAD
-=======
-
-\item{output}{Character vector. Options are "kable",
-which a table will be generated via kable to an html file,
-"csv", which a csv file will be generated, or "dataframe",
-which outputs a dataframe.}
-
-\item{fileName}{String. File name if output set to "csv".}
->>>>>>> 4795c329a5a1dd59f19847f5f25ee3bff2ac3ec8
 }
 \description{
 Plot QC metrics generated from QC algorithms via either kable or csv file.
