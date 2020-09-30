@@ -640,7 +640,6 @@ plotSCEScatter <- function(inSCE,
                            colorLow = "white",
                            colorMid = "gray",
                            colorHigh = "blue",
-                           singleColor = NULL,
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 15,
@@ -650,22 +649,25 @@ plotSCEScatter <- function(inSCE,
                            legendSize = 10,
                            combinePlot = NULL,
                            plotLabels = NULL){
-  if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
+    if (!is.null(slot)){
+      if (!slot %in% methods::slotNames(inSCE)) {
+        stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
-	     specified slot exists.")
-    }
+	       specified slot exists.")
+      }
 
-    sceSubset <- do.call(slot, args = list(inSCE))
+      sceSubset <- do.call(slot, args = list(inSCE))
 
-    if (!annotation %in% names(sceSubset)) {
-      stop("'annotation' must be an annotation stored within the specified
+      if (!annotation %in% names(sceSubset)) {
+        stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
+      }
+      annotation.ix <- match(annotation, c(names(sceSubset)))
     }
 
-    annotation.ix <- match(annotation, c(names(sceSubset)))
-
-    if (slot == "assays" && !is.null(feature)) {
+    if (is.null(slot)){
+      colorPlot <- NULL
+    }else if (slot == "assays" && !is.null(feature)) {
       counts <- sceSubset[[annotation.ix]]
       if (feature %in% rownames(counts)) {
         colorPlot <- counts[feature, ]
