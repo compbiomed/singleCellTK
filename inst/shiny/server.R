@@ -5,6 +5,14 @@ options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
+# R.utils::sourceDirectory("qc_help_pages")
+source("qc_help_pages/ui_decontX_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_cxds_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_bcds_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_cxds_bcds_hybrid_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_doubletFinder_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_scrublet_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several smaller UI components
 # source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
@@ -495,15 +503,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  # function to clear all uploaded files from vectors and UI
-  clearAllFiles <- function(fileReactive) {
-    for (entry in fileReactive$files) {
-
-      removeUI(selector = paste0("#", entry$id))
-    }
-    fileReactive$files <- list()
-  }
-
   # event listener for "Remove Sample" buttons
   observeEvent(input$clearAllImport, {
     for (entry in allImportEntries$samples) {
@@ -839,6 +838,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
+      sceObj <- NULL
       for (entry in allImportEntries$samples) {
         if (entry$type == "cellRanger2") {
           if (is.null(entry$params$cellRangerDirs)) {
@@ -904,12 +904,28 @@ shinyServer(function(input, output, session) {
             showNotification("The '.rds' file should contain a 'SingleCellExperiment' or 'Seurat' object.", type = "error")
           }
         }
-        if(is.null(vals$original)) {
-          vals$original <- newSce
+        if(is.null(sceObj)) {
+          sceObj <- newSce
         } else {
-          vals$original <- cbind(vals$original, newSce)
+          sceObj <- cbind(sceObj, newSce)
         }
       }
+      
+      if (input$combineSCEChoice == "addToExistingSCE") {
+        if(!is.null(vals$original)) {
+          vals$original <- cbind(vals$original, sceObj)
+        } else {
+          vals$original <- sceObj
+        }
+      } else {
+        vals$original <- sceObj
+      }
+      
+      # clear table and empty reactive
+      for (entry in allImportEntries$samples) {
+        removeUI(selector = paste0("#", entry$id))
+      }
+      allImportEntries$samples <- list()
 
       # Add sample variable if it was not included
       if(is.null(colData(vals$original)$sample)) {
@@ -994,7 +1010,6 @@ shinyServer(function(input, output, session) {
         handleGSPasteOption()
       }
       newGSchoices <- sctkListGeneSetCollections(vals$original)
-      # print(S4Vectors::metadata(vals$original)$sctk$genesets)
     })
   })
 
@@ -1061,17 +1076,17 @@ shinyServer(function(input, output, session) {
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
-                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),
+                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes", estNdbl="CXestNdbl"),
 
-                       bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp"),
+                       bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp", estNdbl="BCestNdbl"),
 
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
                                                bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
-                                               verb="CXBCverb"),
+                                               verb="CXBCverb", estNdbl="CXBCestNdbl"),
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
-
+                       
                        doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
 
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
@@ -1088,6 +1103,33 @@ shinyServer(function(input, output, session) {
                                   QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
 
 
+  # event handlers to open help pages for each qc algorithm
+  observeEvent(input$DXhelp, {
+    showModal(decontXHelpModal())
+  })
+  observeEvent(input$CXhelp, {
+    showModal(cxdsHelpModal())
+  })
+  observeEvent(input$BChelp, {
+    showModal(bcdsHelpModal())
+  })
+  observeEvent(input$CXBChelp, {
+    showModal(cxdsBcdsHybridHelpModal())
+  })
+  observeEvent(input$DFhelp, {
+    showModal(doubletFinderHelpModal())
+  })
+  observeEvent(input$Shelp, {
+    showModal(scrubletHelpModal())
+  })
+  observeEvent(input$DChelp, {
+    showModal(doubletCellsHelpModal())
+  })
+  observeEvent(input$QCMhelp, {
+    showModal(QCMHelpModal())
+  })
+  
+  
   # format the parameters for decontX
   prepDecontXParams <- function(paramsList) {
     inputIds <- qc_input_ids[["decontX"]]
@@ -1099,26 +1141,6 @@ shinyServer(function(input, output, session) {
 
     # put in the delta params (c-bind the two priors)
     dxParams[["delta"]] <- c(input$DXnativePrior, input$DXcontPrior)
-
-    # logfile param
-    if (is.null(input$DXlogfile)) {
-      dxParams[["logfile"]] <- NULL
-    } else {
-      dxParams[["logfile"]] <- input$DXlogfile$datapath
-    }
-
-    # labels
-    if (!nzchar(input$DXz)) {
-      dxParams[["z"]] <- NULL
-    } else {
-      dxParams[["z"]] <- strsplit(input$DXz, " ")[[1]]
-    }
-
-    if (!nzchar(input$DXbatch)) {
-      dxParams[["batch"]] <- NULL
-    } else {
-      dxParams[["batch"]] <- strsplit(input$DXbatch, " ")[[1]]
-    }
 
     # add to master params list
     paramsList[["decontX"]] = dxParams
@@ -1151,7 +1173,7 @@ shinyServer(function(input, output, session) {
     return(FALSE)
   }
 
-  observeEvent(input$runQC, {
+  observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
@@ -1234,24 +1256,21 @@ shinyServer(function(input, output, session) {
                                    useAssay = input$qcAssaySelect,
                                    seed = input$qcSeed,
                                    paramsList = paramsList)
+        # run getUMAP by default
+        vals$counts <- getUMAP(inSCE = vals$counts,
+                               sample = qcSample,
+                               useAssay = input$qcAssaySelect,
+        )
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        if(length(redDimList) == 0) {
-          updateSelectInput(session, "qcPlotRedDim", choices = c("UMAP"))
-        } else if ("UMAP" %in% redDimList){
-          updateSelectInput(session, "qcPlotRedDim", choices = redDimList)
-        } else {
-          updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
-        }
+        updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
         shinyjs::show(id = "qcPlotSection", anim = FALSE)
-        # print(vals$original)
-        # print(unique(colData(vals$original)[,"sample"]))
       }
     })
-  })
+  }))
 
-  observeEvent(input$plotQC, {
-    withBusyIndicatorServer("plotQC", {
-      # get selected sample from run QC section
+  observeEvent(input$qcPlotRedDim, {
+    # get selected sample from run QC section
+    if (!is.null(vals$counts)) {
       qcSample <- input$qcSampleSelect
       if (qcSample == "None") {
         qcSample <- NULL
@@ -1267,19 +1286,21 @@ shinyServer(function(input, output, session) {
       }
       # only run getUMAP if there are no reducedDimNames
       redDimName <- input$qcPlotRedDim
-      if((redDimName == "UMAP") && !("UMAP" %in% reducedDimNames(vals$counts))) {
-        vals$counts <- getUMAP(inSCE = vals$counts,
-                                 sample = qcSample,
-                                 useAssay = input$qcAssaySelect,
-        )
+      # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
+      showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
+      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
+      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
+      for (algo in algoList) {
+        qc_algo_status[[algo]] <- list(self="done")
+        if (length(uniqueSampleNames) > 1) {
+          for (s in uniqueSampleNames) {
+            qc_algo_status[[algo]][[s]] = T
+          }
+        }
       }
-      if (!is.null(vals$counts)) {
-        # show the tabs for the result plots  output[[qc_plot_ids[[a]]]] 
-        showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-        arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
-      }
-    })
+    }
   })
+  
 
   #-----------#
   # FILTERING #
