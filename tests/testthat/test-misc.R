@@ -8,6 +8,11 @@ test_that("summarizeSCE", {
   expect_is(ta, "data.frame")
 })
 
+test_that(desc = "Testing sampleSummaryStats", {
+  data(scExample)
+  stats <- sampleSummaryStats(sce)
+  expect_true(class(stats) == "matrix")
+})
 
 
 test_that(desc = "Testing subsetSCECols", {
@@ -22,3 +27,4 @@ test_that(desc = "Testing subsetSCERows", {
   sce <- subsetSCERows(sce, rowData = "isMito == 'yes'")                        
   expect_true(length(altExps(sce)) == 1)
 })
+
