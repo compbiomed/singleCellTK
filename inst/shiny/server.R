@@ -2325,9 +2325,9 @@ shinyServer(function(input, output, session) {
     factorized <- factorizeMatrix(vals$counts)
   })
 
-  observeEvent(input$runCelda, {
+  #observeEvent(input$runCelda, {
 
-  })
+  #})
 
   # celda clustering tab
   observeEvent(input$runCelda2, {
