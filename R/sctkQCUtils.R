@@ -8,34 +8,34 @@
 #' It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix). 
 #' @param directory Output directory. Default is './'.
 #' @param format The format of output. It currently supports flat files, rds files
-#' and python h5 files. It can output multiple formats. Default: c('R', 'Python', 'Flatfile'). 
+#' and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN"). 
 #' @export
 exportSCE <- function(inSCE, 
                       samplename = "sample", 
                       directory = "./", 
                       type = "Cells",
-                      format = c("R", "Python", "FlatFile", "HTAN")) {
+                      format = c("SCE", "AnnData", "FlatFile", "HTAN")) {
   
-    if (any(!format %in% c("R", "Python", "FlatFile", "HTAN"))) {
-        warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
-             paste(format[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
+    if (any(!format %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
+        warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
+             paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
              " is not supported now. ") #             "Only output the supported formats in the provided options. "
     }
 
-    format <- format[format %in% c("R", "Python", "FlatFile", "HTAN")]
+    format <- format[format %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
     message("The output format is [", 
             paste(format, collapse = ","), "]. ")
 
     if (length(format) == 0) {
         warning("None of the provided format is supported now. Therefore, the output ", 
-            "will be R, Python, FlatFile and HTAN. ")
-        format <- c("R", "Python", "FlatFile", "HTAN")
+            "will be SCE, AnnData, FlatFile and HTAN. ")
+        format <- c("SCE", "AnnData", "FlatFile", "HTAN")
     }
 
     ## Create directories and save objects
     dir.create(file.path(directory, samplename), showWarnings = TRUE, recursive = TRUE)
   
-    if ("R" %in% format) {
+    if ("SCE" %in% format) {
         ## Export to R
         fp <- file.path(directory, samplename, "R")
         dir.create(fp, showWarnings = TRUE, recursive = TRUE)
@@ -51,7 +51,7 @@ exportSCE <- function(inSCE,
         exportSCEtoFlatFile(inSCE, outputDir = fn, sample=samplename)
     }
 
-    if ("Python" %in% format) {
+    if ("AnnData" %in% format) {
         ## Export to Python AnnData
         fp <- file.path(directory, samplename, "Python")
         dir.create(fp, showWarnings = TRUE, recursive = TRUE)
