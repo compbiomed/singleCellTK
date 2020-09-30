@@ -208,7 +208,7 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 # QC/Filtering #
 #--------------#
 
-combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds) {
+combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
   if (combineP=="all") {
     output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
   } else {
@@ -219,16 +219,18 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
       s <- sampleList[[i]]
       sID <- paste(c(algo, s, "Tab"), collapse = "")
       subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
-      if (i == 1) {
-        appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
-      } else {
-        appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
+      if (is.null(statuses[[algo]][[s]])) {
+        if (i == 1) {
+          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
+        } else {
+          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
+        }
       }
       output[[subPlotID]] <- renderPlot(plots[[s]])
     }
-    
   }
 }
+
 
 arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
   uniqueSampleNames <- unique(sampleList)
@@ -237,40 +239,39 @@ arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuse
     combineP <- "sample"
   }
   for (a in algoList) {
-    statuses[[a]] <- "tab"
     if (a == "doubletCells") {
       dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                                      reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {
       cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                              reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
     } else if (a == "bcds") {
       bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                              reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
     } else if (a == "cxds_bcds_hybrid") {
       cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                                      reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
     } else if (a == "decontX") {
       dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                                 reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs, statuses)
       
     } else if (a == "scrublet") {
       sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                                 reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
       
     } else if (a == "doubletFinder") {
       dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
                                                       reducedDimName = redDimName)
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
     }
   }
 }
@@ -288,7 +289,7 @@ findOverlapping <- function(arr1, arr2) {
   return(arr1[filter])
 }
 
-addToFilterColParams <- function(name, criteria, id, paramsReactive) {
+addToColFilterParams <- function(name, criteria, id, paramsReactive) {
   threshStr <- ""
   if (is.numeric(criteria)) {
     threshStr <- sprintf("%s > %.5f", name, criteria)
