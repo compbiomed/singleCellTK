@@ -3151,14 +3151,14 @@ shinyServer(function(input, output, session) {
           feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
           dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
           axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-        a <- a[[1]]
+        a <- plotly::ggplotly(a)
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
           coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
           transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
           axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
           defaultTheme = as.logical(pltVars$defTheme))
-        a <- a[[1]]
+        a <- plotly::ggplotly(a)
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
       if(input$vlnboxcheck == FALSE){
@@ -3170,6 +3170,7 @@ shinyServer(function(input, output, session) {
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
           a <- a[[1]]
+          a <- plotly::ggplotly(a)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
@@ -3177,6 +3178,7 @@ shinyServer(function(input, output, session) {
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
           a <- a[[1]]
+          a <- plotly::ggplotly(a)
         }
       }else if(input$vlnboxcheck == TRUE){
         if(input$TypeSelect_Yaxis == "Expression Assays"){
@@ -3187,6 +3189,7 @@ shinyServer(function(input, output, session) {
             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
             defaultTheme = as.logical(pltVars$defTheme))
           a <- a[[1]]
+          a <- plotly::ggplotly(a)
         }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
           a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
             coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
@@ -3194,6 +3197,7 @@ shinyServer(function(input, output, session) {
             dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
             axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
           a <- a[[1]]
+          a <- plotly::ggplotly(a)
         }
       }
     }
