@@ -6,7 +6,7 @@
 \usage{
 .ggViolin(
   y,
-  groupby = NULL,
+  groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
@@ -26,7 +26,7 @@
 \arguments{
 \item{y}{Numeric values to be plotted on y-axis.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 

@@ -8,7 +8,7 @@ plotSCEBarAssayData(
   inSCE,
   useAssay = "counts",
   feature,
-  groupby = NULL,
+  groupBy = NULL,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
@@ -30,7 +30,7 @@ dimension reduction components or a variable with saved results. Required.}
 \item{feature}{Name of feature stored in assay of SingleCellExperiment
 object.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -63,6 +63,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEBarAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Apoe", groupby = "sex"
+  feature = "Apoe", groupBy = "sex"
 )
 }

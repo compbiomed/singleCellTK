@@ -7,7 +7,7 @@
 #' runPerCellQC. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -29,6 +29,8 @@
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -46,8 +48,8 @@
 #' @export
 plotRunPerCellQCResults <- function(inSCE,
                                     sample=NULL,
-                                    groupby=NULL,
-                                    combinePlot=NULL,
+                                    groupBy=NULL,
+                                    combinePlot="all",
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
@@ -59,8 +61,10 @@ plotRunPerCellQCResults <- function(inSCE,
                                     titleSize=18,
                                     relHeights=c(1.5, 1.5, 1, 1),
                                     relWidths=c(1, 1, 1, 1),
-                                    plotLabels = "default",
+                                    plotLabels = "none",
                                     plotLabelSize = 20,
+                                    plotLabelPositionX = NULL,
+                                    plotLabelPositionY = NULL,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
@@ -74,14 +78,21 @@ plotRunPerCellQCResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
+  sampleVector <- sample
 
   samples <- unique(sample)
+
+  if(combinePlot == "sample" && length(samples) == 1){
+    warning("'combinePlot' was set to 'sample' but the sample was not set,
+            or there is only one type of sample specified.")
+    combinePlot = "all"
+  }
 
   if (length(samples) > 1) {
     combined.sum <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="sum",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="Counts",
       violin=violin,
@@ -94,12 +105,15 @@ plotRunPerCellQCResults <- function(inSCE,
       axisLabelSize=axisLabelSize,
       gridLine=TRUE,
       summary="median",
-      titleSize=titleSize
+      titleSize=titleSize,
+      combinePlot = "all",
+      plotLabels = "none"
     )
+
     combined.detected <- plotSCEViolinColData(
       inSCE=inSCE,
       coldata="detected",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="Features",
       violin=violin,
@@ -112,68 +126,16 @@ plotRunPerCellQCResults <- function(inSCE,
       axisLabelSize=axisLabelSize,
       gridLine=TRUE,
       summary="median",
-      titleSize=titleSize
+      titleSize=titleSize,
+      combinePlot = "all",
+      plotLabels = "none"
     )
-    merged.plots <- list(combined.sum, combined.detected)
-    names(merged.plots) <- c("Sum", "Detected")
-    merged.plots <- list(Violin = merged.plots)
-  }
-
-  res.list <- c()
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    sampleSub <- sample[sampleInd]
-    inSCESub <- inSCE[, sampleInd]
-
-    if(combinePlot == "sample"){
-    violin.sum <- list(sum = plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="sum",
-      sample=sampleSub,
-      xlab="",
-      ylab="Counts",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total counts per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.sum)
-
-    violin.detected <- list(detected = plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="detected",
-      sample=sampleSub,
-      xlab="",
-      ylab="Features",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total features detected per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.detected)
-    }
-
-    violin.toppercent <- list(toppercent = plotSCEViolinColData(
-      inSCE=inSCESub,
+    combined.toppercent <- plotSCEViolinColData(
+      inSCE=inSCE,
       coldata="percent_top_50",
-      sample=sampleSub,
+      groupBy=sampleVector,
       xlab="",
       ylab="Gene expression percentage (%)",
-      groupby=groupby,
       violin=violin,
       boxplot=boxplot,
       dots=dots,
@@ -182,28 +144,32 @@ plotRunPerCellQCResults <- function(inSCE,
       dotSize=dotSize,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
       summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.toppercent)
+      titleSize=titleSize,
+      combinePlot = "all",
+      plotLabels = "none"
+    )
+
+    merged.plots <- list(combined.sum, combined.detected, combined.toppercent)
+    names(merged.plots) <- c("Sum", "Detected", "TopPercent")
 
     if (any(grepl(
       pattern="subsets_",
-      names(colData(inSCESub))
+      names(colData(inSCE))
     ))) {
       subsets <- grep(
         pattern="subsets_",
-        names(colData(inSCESub)), value=TRUE
+        names(colData(inSCE)), value=TRUE
       )
 
-      violin.subset <- lapply(subsets, function(x) {
+      combined.subset <- lapply(subsets, function(x) {
         plotSCEViolinColData(
-          inSCE=inSCESub,
+          inSCE=inSCE,
           coldata=x,
-          sample=sampleSub,
+          groupBy = sampleVector,
           xlab="",
           ylab=x,
-          groupby=groupby,
           violin=violin,
           boxplot=boxplot,
           dots=dots,
@@ -213,26 +179,146 @@ plotRunPerCellQCResults <- function(inSCE,
           title=paste0(x, " per cell"),
           dotSize=dotSize,
           titleSize=titleSize,
-          summary="median"
+          summary="median",
+          combinePlot = "all",
+          plotLabels = "none"
         )
       })
-      names(violin.subset) <- subsets
+      names(combined.subset) <- c("Gene_Subset_Sum",
+                                  "Gene_Subset_Features",
+                                  "Gene_Subset_Top50_Percent")
+      merged.plots <- c(merged.plots, combined.subset)
     } else {
-      violin.subset <- NULL
+      combined.subset <- NULL
     }
 
-    if (!is.null(violin.subset)) {
-      res.list <- c(res.list, violin.subset)
+    merged.plots <- list(Violin = merged.plots)
+  }
+
+  res.list <- c()
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+
+    if(combinePlot == "sample" | length(samples) == 1){
+      violin.sum <- list(sum = plotSCEViolinColData(
+        inSCE=inSCESub,
+        coldata="sum",
+        sample=sampleSub,
+        xlab="",
+        ylab="Counts",
+        groupBy=groupBy,
+        violin=violin,
+        boxplot=boxplot,
+        dots=dots,
+        transparency=transparency,
+        title="Total counts per cell",
+        dotSize=dotSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        summary="median",
+        titleSize=titleSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, violin.sum)
+
+      violin.detected <- list(detected = plotSCEViolinColData(
+        inSCE=inSCESub,
+        coldata="detected",
+        sample=sampleSub,
+        xlab="",
+        ylab="Features",
+        groupBy=groupBy,
+        violin=violin,
+        boxplot=boxplot,
+        dots=dots,
+        transparency=transparency,
+        title="Total features detected per cell",
+        dotSize=dotSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        summary="median",
+        titleSize=titleSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, violin.detected)
+
+      violin.toppercent <- list(toppercent = plotSCEViolinColData(
+        inSCE=inSCESub,
+        coldata="percent_top_50",
+        sample=sampleSub,
+        xlab="",
+        ylab="Gene expression percentage (%)",
+        groupBy=groupBy,
+        violin=violin,
+        boxplot=boxplot,
+        dots=dots,
+        transparency=transparency,
+        title="Top 50 gene expression percentage",
+        dotSize=dotSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        summary="median",
+        titleSize=titleSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, violin.toppercent)
+
+      if (any(grepl(
+        pattern="subsets_",
+        names(colData(inSCESub))
+      ))) {
+        subsets <- grep(
+          pattern="subsets_",
+          names(colData(inSCESub)), value=TRUE
+        )
+
+        violin.subset <- lapply(subsets, function(x) {
+          plotSCEViolinColData(
+            inSCE=inSCESub,
+            coldata=x,
+            sample=sampleSub,
+            xlab="",
+            ylab=x,
+            groupBy=groupBy,
+            violin=violin,
+            boxplot=boxplot,
+            dots=dots,
+            transparency=transparency,
+            axisSize=axisSize,
+            axisLabelSize=axisLabelSize,
+            title=paste0(x, " per cell"),
+            dotSize=dotSize,
+            titleSize=titleSize,
+            summary="median",
+            combinePlot="all"
+          )
+        })
+        names(violin.subset) <- subsets
+      } else {
+        violin.subset <- NULL
+      }
+
+      if (!is.null(violin.subset)) {
+        res.list <- c(res.list, violin.subset)
+      }
     }
+
     return(res.list)
   })
 
   if (length(unique(samples)) > 1) {
-      names(plotlist) <- samples
+    names(plotlist) <- samples
+    if(combinePlot == "all"){
+      plotlist <- c(merged.plots)
+    }else{
       plotlist <- c(merged.plots, list(Sample = plotlist))
+    }
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+    plotlist <- unlist(plotlist, recursive=F)
   }
+
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
@@ -240,6 +326,8 @@ plotRunPerCellQCResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -247,7 +335,6 @@ plotRunPerCellQCResults <- function(inSCE,
   }
   return(plotlist)
 }
-
 #' @title Plots for runEmptyDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
 #'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
@@ -271,9 +358,6 @@ plotRunPerCellQCResults <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
-#' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
-#'  as the labels. If set to "none", no label will be plotted.
-#' @param plotLabelSize size of labels
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -287,7 +371,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @export
 plotEmptyDropsResults <- function(inSCE,
                                   sample=NULL,
-                                  combinePlot=NULL,
+                                  combinePlot="all",
                                   fdrCutoff=0.01,
                                   defaultTheme=TRUE,
                                   dotSize=1,
@@ -298,8 +382,6 @@ plotEmptyDropsResults <- function(inSCE,
                                   legendTitleSize=16,
                                   relHeights=1,
                                   relWidths=1,
-                                  plotLabels = "default",
-                                  plotLabelSize = 20,
                                   samplePerColumn = TRUE,
                                   sampleRelHeights = 1,
                                   sampleRelWidths = 1) {
@@ -320,8 +402,6 @@ plotEmptyDropsResults <- function(inSCE,
     legendSize=legendSize,
     relHeights = relHeights,
     relWidths = relWidths,
-    plotLabels = plotLabels,
-    plotLabelSize = plotLabelSize,
     samplePerColumn = samplePerColumn,
     sampleRelHeights = sampleRelHeights,
     sampleRelWidths = sampleRelWidths
@@ -387,7 +467,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -425,6 +505,8 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -441,8 +523,8 @@ plotBarcodeRankDropsResults <- function(inSCE,
 plotScrubletResults <- function(inSCE,
                                 sample=NULL,
                                 shape=NULL,
-                                groupby=NULL,
-                                combinePlot=NULL,
+                                groupBy=NULL,
+                                combinePlot="all",
                                 violin=TRUE,
                                 boxplot=FALSE,
                                 dots=TRUE,
@@ -465,6 +547,8 @@ plotScrubletResults <- function(inSCE,
                                 relWidths=c(1, 1, 1),
                                 plotLabels = "default",
                                 plotLabelSize = 20,
+                                plotLabelPositionX = NULL,
+                                plotLabelPositionY = NULL,
                                 samplePerColumn = TRUE,
                                 sampleRelHeights = 1,
                                 sampleRelWidths = 1) {
@@ -478,14 +562,14 @@ plotScrubletResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-
+  sampleVector <- sample
   samples <- unique(sample)
 
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scrublet_score",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="Doublet Score",
       violin=violin,
@@ -498,7 +582,9 @@ plotScrubletResults <- function(inSCE,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
       gridLine=TRUE,
-      summary="median"
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
     ))
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
@@ -514,7 +600,7 @@ plotScrubletResults <- function(inSCE,
         inSCE=inSCESub,
         sample=sampleSub,
         coldata="scrublet_score",
-        groupby=groupby,
+        groupBy=groupBy,
         xlab="Score",
         ylab="Density",
         axisSize=15,
@@ -522,7 +608,8 @@ plotScrubletResults <- function(inSCE,
         defaultTheme=defaultTheme,
         cutoff=0.5,
         title="Density, Scrublet Score",
-        titleSize=titleSize
+        titleSize=titleSize,
+        combinePlot="all"
     ))
     res.list <- c(res.list, densityScore)
 
@@ -549,7 +636,8 @@ plotScrubletResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
       legendSize=legendSize,
-      legendTitleSize=legendTitleSize
+      legendTitleSize=legendTitleSize,
+      combinePlot="all"
     ))
     res.list <- c(res.list, scatterScore)
 
@@ -559,7 +647,7 @@ plotScrubletResults <- function(inSCE,
       sample=sampleSub,
       xlab="",
       ylab="Doublet Score",
-      groupby=groupby,
+      groupBy=groupBy,
       violin=violin,
       boxplot=boxplot,
       dots=dots,
@@ -569,7 +657,8 @@ plotScrubletResults <- function(inSCE,
       titleSize=titleSize,
       dotSize=dotSize,
       axisSize=axisSize, axisLabelSize=axisLabelSize,
-      summary="median"
+      summary="median",
+      combinePlot="all"
     ))
     res.list <- c(res.list, violinScore)
     }
@@ -597,7 +686,8 @@ plotScrubletResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Doublet \nAssignment",
       legendTitleSize=legendTitleSize,
-      legendSize=legendSize
+      legendSize=legendSize,
+      combinePlot="all"
     ))
     res.list <- c(res.list, scatterCall)
 
@@ -618,6 +708,8 @@ plotScrubletResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -637,7 +729,7 @@ plotScrubletResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -675,6 +767,8 @@ plotScrubletResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -691,8 +785,8 @@ plotScrubletResults <- function(inSCE,
 plotDoubletFinderResults <- function(inSCE,
                                      sample=NULL,
                                      shape=NULL,
-                                     groupby=NULL,
-                                     combinePlot=NULL,
+                                     groupBy=NULL,
+                                     combinePlot="all",
                                      violin=TRUE,
                                      boxplot=FALSE,
                                      dots=TRUE,
@@ -715,6 +809,8 @@ plotDoubletFinderResults <- function(inSCE,
                                      relWidths=c(1, 1, 1),
                                      plotLabels = "default",
                                      plotLabelSize = 20,
+                                     plotLabelPositionX = NULL,
+                                     plotLabelPositionY = NULL,
                                      samplePerColumn = TRUE,
                                      sampleRelHeights = 1,
                                      sampleRelWidths = 1) {
@@ -728,6 +824,7 @@ plotDoubletFinderResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
+  sampleVector <- sample
   samples <- unique(sample)
   df.scores <- grep(
     pattern="doubletFinder_doublet_score_resolution_",
@@ -746,7 +843,7 @@ plotDoubletFinderResults <- function(inSCE,
         sample=NULL,
         xlab="",
         ylab="Doublet Score",
-        groupby=sample,
+        groupBy=sampleVector,
         violin=violin,
         boxplot=boxplot,
         dots=TRUE,
@@ -763,7 +860,9 @@ plotDoubletFinderResults <- function(inSCE,
           )
         ),
         dotSize=dotSize,
-        summary="median"
+        summary="median",
+        combinePlot = "all",
+        plotLabels = "none"
       )
     })
 
@@ -788,12 +887,13 @@ plotDoubletFinderResults <- function(inSCE,
             inSCE=inSCESub,
             sample=sampleSub,
             coldata=x,
-            groupby=groupby,
+            groupBy=groupBy,
             xlab="Score",
             ylab="Density",
             axisSize=axisSize, axisLabelSize=axisLabelSize,
             defaultTheme=defaultTheme,
             cutoff=0.5,
+            combinePlot="all",
             titleSize=titleSize,
             title=paste(
                 "Density, Doublet Score Resolution",
@@ -842,7 +942,8 @@ plotDoubletFinderResults <- function(inSCE,
         labelClusters=FALSE,
         legendTitle="Doublet \nScore",
         legendSize=legendSize,
-        legendTitleSize=legendTitleSize
+        legendTitleSize=legendTitleSize,
+        combinePlot="all"
       )
     })
 
@@ -862,7 +963,7 @@ plotDoubletFinderResults <- function(inSCE,
         sample=sampleSub,
         xlab="",
         ylab="Doublet Score",
-        groupby=groupby,
+        groupBy=groupBy,
         violin=violin,
         boxplot=boxplot,
         dots=dots,
@@ -879,7 +980,8 @@ plotDoubletFinderResults <- function(inSCE,
         titleSize=titleSize,
         dotSize=dotSize,
         axisSize=axisSize,
-        axisLabelSize=axisLabelSize
+        axisLabelSize=axisLabelSize,
+        combinePlot="all"
       )
     })
 
@@ -924,7 +1026,8 @@ plotDoubletFinderResults <- function(inSCE,
         labelClusters=FALSE,
         legendTitle="Doublet Score",
         legendSize=legendSize,
-        legendTitleSize=legendTitleSize
+        legendTitleSize=legendTitleSize,
+        combinePlot="all"
       )
     })
 
@@ -950,6 +1053,8 @@ plotDoubletFinderResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -968,7 +1073,7 @@ plotDoubletFinderResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -976,7 +1081,7 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param logScore Boolean. If TRUE, the doublet score will be log normalized.
+#' @param logScore Boolean. If TRUE, the log normalized doublet score will be used.
 #' @param reducedDimName Saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -1007,6 +1112,8 @@ plotDoubletFinderResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -1023,8 +1130,8 @@ plotDoubletFinderResults <- function(inSCE,
 plotDoubletCellsResults <- function(inSCE,
                                     sample=NULL,
                                     shape=NULL,
-                                    groupby=NULL,
-                                    combinePlot=NULL,
+                                    groupBy=NULL,
+                                    combinePlot="all",
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
@@ -1048,6 +1155,8 @@ plotDoubletCellsResults <- function(inSCE,
                                     relWidths=c(1, 1, 1),
                                     plotLabels = "default",
                                     plotLabelSize = 20,
+                                    plotLabelPositionX = NULL,
+                                    plotLabelPositionY = NULL,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
@@ -1061,11 +1170,13 @@ plotDoubletCellsResults <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
+  sampleVector <- sample
 
   if (logScore) {
-    colData(inSCE)$scran_doubletCells_score <- log10(colData(inSCE)$scran_doubletCells_score + 1)
+    coldata = "scran_doubletCells_score_log10"
     titleDoubletCells <- "DoubletCells Doublet Score, log10"
   } else {
+    coldata = "scran_doubletCells_score"
     titleDoubletCells <- "DoubletCells Doublet Score"
   }
 
@@ -1073,8 +1184,8 @@ plotDoubletCellsResults <- function(inSCE,
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="scran_doubletCells_score",
-      groupby=sample,
+      coldata=coldata,
+      groupBy=sampleVector,
       xlab="",
       ylab="Doublet Score",
       violin=violin,
@@ -1087,7 +1198,9 @@ plotDoubletCellsResults <- function(inSCE,
       titleSize=titleSize,
       dotSize=dotSize,
       gridLine=TRUE,
-      summary="median"
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
     ))
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
@@ -1101,21 +1214,22 @@ plotDoubletCellsResults <- function(inSCE,
     densityScore <- list(density_doubletScore = plotSCEDensityColData(
         inSCE=inSCESub,
         sample=sampleSub,
-        coldata="scran_doubletCells_score",
-        groupby=groupby,
+        coldata=coldata,
+        groupBy=groupBy,
         xlab="Score",
         ylab="Density",
         axisSize=axisSize, axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
         title=paste0("Density, ", titleDoubletCells),
-        titleSize=titleSize
+        titleSize=titleSize,
+        combinePlot="all"
     ))
     res.list = c(res.list, densityScore)
 
     scatterScore <- list(scatter_doubletScore = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="scran_doubletCells_score",
+      colorBy=coldata,
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,
@@ -1137,18 +1251,19 @@ plotDoubletCellsResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
       legendSize=legendSize,
-      legendTitleSize=legendTitleSize
+      legendTitleSize=legendTitleSize,
+      combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
 
     if(combinePlot == "sample"){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
-      coldata="scran_doubletCells_score",
+      coldata=coldata,
       sample=sampleSub,
       xlab="",
       ylab="Doublet Score",
-      groupby=groupby,
+      groupBy=groupBy,
       violin=violin,
       boxplot=boxplot,
       dots=dots,
@@ -1159,7 +1274,8 @@ plotDoubletCellsResults <- function(inSCE,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
       dotSize=dotSize,
-      summary="median"
+      summary="median",
+      combinePlot="all"
     ))
     res.list = c(res.list, violinScore)
     }
@@ -1179,6 +1295,8 @@ plotDoubletCellsResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -1197,7 +1315,7 @@ plotDoubletCellsResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -1235,6 +1353,8 @@ plotDoubletCellsResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -1251,8 +1371,8 @@ plotDoubletCellsResults <- function(inSCE,
 plotCxdsResults <- function(inSCE,
                             sample=NULL,
                             shape=NULL,
-                            groupby=NULL,
-                            combinePlot=NULL,
+                            groupBy=NULL,
+                            combinePlot="all",
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
@@ -1275,6 +1395,8 @@ plotCxdsResults <- function(inSCE,
                             relWidths=c(1, 1, 1),
                             plotLabels = "default",
                             plotLabelSize = 20,
+                            plotLabelPositionX = NULL,
+                            plotLabelPositionY = NULL,
                             samplePerColumn = TRUE,
                             sampleRelHeights = 1,
                             sampleRelWidths = 1) {
@@ -1290,11 +1412,12 @@ plotCxdsResults <- function(inSCE,
   }
 
   samples <- unique(sample)
+  sampleVector <- sample
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scds_cxds_score",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="Doublet Score",
       violin=violin,
@@ -1307,7 +1430,9 @@ plotCxdsResults <- function(inSCE,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
       gridLine=TRUE,
-      summary="median"
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
     ))
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
@@ -1323,14 +1448,16 @@ plotCxdsResults <- function(inSCE,
         inSCE=inSCESub,
         sample=sampleSub,
         coldata="scds_cxds_score",
-        groupby=groupby,
+        groupBy=groupBy,
         xlab="Score",
         ylab="Density",
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
         title="Density, CXDS Score",
-        titleSize=titleSize
+        titleSize=titleSize,
+        plotLabels = NULL,
+        combinePlot="all"
     ))
     res.list = c(res.list, densityScore)
 
@@ -1357,7 +1484,9 @@ plotCxdsResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
       legendSize=legendSize,
-      legendTitleSize=legendTitleSize
+      legendTitleSize=legendTitleSize,
+      plotLabels = NULL,
+      combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
 
@@ -1368,7 +1497,7 @@ plotCxdsResults <- function(inSCE,
       sample=sampleSub,
       xlab="",
       ylab="Doublet Score",
-      groupby=groupby,
+      groupBy=groupBy,
       violin=violin,
       boxplot=boxplot,
       dots=dots,
@@ -1379,7 +1508,8 @@ plotCxdsResults <- function(inSCE,
       dotSize=dotSize,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      summary="median"
+      summary="median",
+      combinePlot="all"
     ))
     res.list = c(res.list, violinScore)
   }
@@ -1408,7 +1538,8 @@ plotCxdsResults <- function(inSCE,
           labelClusters=FALSE,
           legendTitle="Doublet \nAssignment",
           legendTitleSize=legendTitleSize,
-          legendSize=legendSize
+          legendSize=legendSize,
+          combinePlot="all"
       ))
       res.list <- c(res.list, scatterCall)
     }
@@ -1427,6 +1558,8 @@ plotCxdsResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -1445,7 +1578,7 @@ plotCxdsResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -1483,6 +1616,8 @@ plotCxdsResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -1499,8 +1634,8 @@ plotCxdsResults <- function(inSCE,
 plotBcdsResults <- function(inSCE,
                             sample=NULL,
                             shape=NULL,
-                            groupby=NULL,
-                            combinePlot=NULL,
+                            groupBy=NULL,
+                            combinePlot="all",
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
@@ -1523,6 +1658,8 @@ plotBcdsResults <- function(inSCE,
                             relWidths=c(1, 1, 1),
                             plotLabels = "default",
                             plotLabelSize = 20,
+                            plotLabelPositionX = NULL,
+                            plotLabelPositionY = NULL,
                             samplePerColumn = TRUE,
                             sampleRelHeights = 1,
                             sampleRelWidths = 1) {
@@ -1537,137 +1674,146 @@ plotBcdsResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
-    samples <- unique(sample)
-    if (length(samples) > 1) {
-        merged.plots <- list(Score = plotSCEViolinColData(
-            inSCE=inSCE,
-            coldata="scds_bcds_score",
-            groupby=sample,
-            xlab="",
-            ylab="Doublet Score",
-            violin=violin,
-            boxplot=boxplot,
-            dots=dots,
-            transparency=transparency,
-            title="BCDS Doublet Score",
-            titleSize=titleSize,
-            dotSize=dotSize,
-            axisSize=axisSize,
-            axisLabelSize=axisLabelSize,
-            gridLine=TRUE,
-            summary="median"
-        ))
-        merged.plots <- list(merged.plots)
-        names(merged.plots) <- "Violin"
+  samples <- unique(sample)
+  sampleVector <- sample
+  if (length(samples) > 1) {
+    merged.plots <- list(Score = plotSCEViolinColData(
+      inSCE=inSCE,
+      coldata="scds_bcds_score",
+      groupBy=sampleVector,
+      xlab="",
+      ylab="Doublet Score",
+      violin=violin,
+      boxplot=boxplot,
+      dots=dots,
+      transparency=transparency,
+      title="BCDS Doublet Score",
+      titleSize=titleSize,
+      dotSize=dotSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      gridLine=TRUE,
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
+    ))
+    merged.plots <- list(merged.plots)
+    names(merged.plots) <- "Violin"
+  }
+
+  res.list <- list()
+  plotlist <- lapply(samples, function(x) {
+    sampleInd <- which(sample == x)
+    sampleSub <- sample[sampleInd]
+    inSCESub <- inSCE[, sampleInd]
+
+    densityScore <- list(density_doubletScore = plotSCEDensityColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      coldata="scds_bcds_score",
+      groupBy=groupBy,
+      xlab="Score",
+      ylab="Density",
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      defaultTheme=defaultTheme,
+      title="Density, BCDS Score",
+      titleSize=titleSize,
+      plotLabels = NULL,
+      combinePlot="all"
+    ))
+    res.list = c(res.list, densityScore)
+
+    scatterScore <- list(scatter_doubletScore = plotSCEDimReduceColData(
+      inSCE=inSCESub,
+      sample=sampleSub,
+      colorBy="scds_bcds_score",
+      conditionClass="numeric",
+      shape=shape,
+      reducedDimName=reducedDimName,
+      xlab=xlab,
+      ylab=ylab,
+      dim1=dim1,
+      dim2=dim2,
+      bin=bin,
+      binLabel=binLabel,
+      dotSize=dotSize,
+      transparency=transparency,
+      defaultTheme=defaultTheme,
+      title="BCDS Doublet Score",
+      titleSize=titleSize,
+      axisSize=axisSize,
+      axisLabelSize=axisLabelSize,
+      labelClusters=FALSE,
+      legendTitle="Doublet \nScore",
+      legendSize=legendSize,
+      legendTitleSize=legendTitleSize,
+      plotLabels = NULL,
+      combinePlot="all"
+    ))
+    res.list = c(res.list, scatterScore)
+
+    if(combinePlot == "sample"){
+      violinScore <- list(violin_doubletScore = plotSCEViolinColData(
+        inSCE=inSCESub,
+        coldata="scds_bcds_score",
+        sample=sampleSub,
+        xlab="",
+        ylab="Doublet Score",
+        groupBy=groupBy,
+        violin=violin,
+        boxplot=boxplot,
+        dots=dots,
+        transparency=transparency,
+        title="BCDS Doublet Score",
+        titleSize=titleSize,
+        defaultTheme=defaultTheme,
+        dotSize=dotSize,
+        axisSize=axisSize,
+        axisLabelSize=axisLabelSize,
+        summary="median",
+        combinePlot="all"
+      ))
+      res.list = c(res.list, violinScore)
     }
 
-    res.list <- c()
-    plotlist <- lapply(samples, function(x) {
-        sampleInd <- which(sample == x)
-        sampleSub <- sample[sampleInd]
-        inSCESub <- inSCE[, sampleInd]
-
-        densityScore <- list(density_doubletScore = plotSCEDensityColData(
-            inSCE=inSCESub,
-            sample=sampleSub,
-            coldata="scds_bcds_score",
-            groupby=groupby,
-            xlab="Score",
-            ylab="Density",
-            axisSize=axisSize,
-            axisLabelSize=axisLabelSize,
-            defaultTheme=defaultTheme,
-            title="Density, BCDS Score"
-        ))
-        res.list <- c(res.list, densityScore)
-
-        scatterScore <- list(scatter_doubletScore = plotSCEDimReduceColData(
-            inSCE=inSCESub,
-            sample=sampleSub,
-            colorBy="scds_bcds_score",
-            conditionClass="numeric",
-            shape=shape,
-            reducedDimName=reducedDimName,
-            xlab=xlab,
-            ylab=ylab,
-            dim1=dim1,
-            dim2=dim2,
-            bin=bin,
-            binLabel=binLabel,
-            dotSize=dotSize,
-            transparency=transparency,
-            defaultTheme=defaultTheme,
-            title="BCDS Doublet Score",
-            titleSize=titleSize,
-            axisSize=axisSize,
-            axisLabelSize=axisLabelSize,
-            labelClusters=FALSE,
-            legendTitle="Doublet \nScore",
-            legendSize=legendSize,
-            legendTitleSize=legendTitleSize
-        ))
-        res.list <- c(res.list, scatterScore)
-
-        if(combinePlot == "sample"){
-        violinScore <- list(violin_doubletScore = plotSCEViolinColData(
-            inSCE=inSCESub,
-            coldata="scds_bcds_score",
-            sample=sampleSub,
-            xlab="",
-            ylab="Doublet Score",
-            groupby=groupby,
-            violin=violin,
-            boxplot=boxplot,
-            dots=dots,
-            transparency=transparency,
-            defaultTheme=defaultTheme,
-            title="BCDS Doublet Score",
-            titleSize=titleSize,
-            dotSize=dotSize,
-            axisSize=axisSize,
-            axisLabelSize=axisLabelSize,
-            summary="median"
-        ))
-        res.list <- c(res.list, violinScore)
-        }
-
-        if("scds_bcds_call" %in% names(SingleCellExperiment::colData(inSCE))){
-            scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
-                inSCE=inSCESub,
-                sample=sampleSub,
-                colorBy="scds_bcds_call",
-                conditionClass="factor",
-                shape=shape,
-                reducedDimName=reducedDimName,
-                xlab=xlab,
-                ylab=ylab,
-                dim1=dim1,
-                dim2=dim2,
-                bin=bin,
-                binLabel=binLabel,
-                dotSize=dotSize,
-                transparency=transparency,
-                colorScale = c("lightgray","red"),
-                defaultTheme=defaultTheme,
-                title="BCDS Doublet Assignment",
-                titleSize=titleSize,
-                axisSize=axisSize, axisLabelSize=axisLabelSize,
-                labelClusters=FALSE,
-                legendTitle="Doublet \nAssignment",
-                legendTitleSize=legendTitleSize,
-                legendSize=legendSize
-            ))
-            res.list <- c(res.list, scatterCall)
-        }
-
-        return(res.list)
-    })
-    if (length(unique(samples)) > 1) {
-        names(plotlist) <- samples
-        plotlist <- c(merged.plots, list(Sample = plotlist))
-    } else {
-        plotlist <- unlist(plotlist, recursive=F)
+    if("scds_bcds_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        colorBy="scds_bcds_call",
+        conditionClass="factor",
+        shape=shape,
+        reducedDimName=reducedDimName,
+        xlab=xlab,
+        ylab=ylab,
+        dim1=dim1,
+        dim2=dim2,
+        bin=bin,
+        binLabel=binLabel,
+        dotSize=dotSize,
+        transparency=transparency,
+        colorScale = c("lightgray","red"),
+        defaultTheme=defaultTheme,
+        title="BCDS Doublet Assignment",
+        titleSize=titleSize,
+        axisSize=axisSize, axisLabelSize=axisLabelSize,
+        labelClusters=FALSE,
+        legendTitle="Doublet \nAssignment",
+        legendTitleSize=legendTitleSize,
+        legendSize=legendSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, scatterCall)
     }
+    return(res.list)
+  })
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- c(merged.plots, list(Sample = plotlist))
+  } else {
+    plotlist <- unlist(plotlist, recursive=F)
+  }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
@@ -1675,6 +1821,8 @@ plotBcdsResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -1682,6 +1830,7 @@ plotBcdsResults <- function(inSCE,
   }
   return(plotlist)
 }
+
 
 #' @title Plots for runCxdsBcdsHybrid outputs.
 #' @description A wrapper function which visualizes outputs from the
@@ -1693,7 +1842,7 @@ plotBcdsResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -1731,6 +1880,8 @@ plotBcdsResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -1747,8 +1898,8 @@ plotBcdsResults <- function(inSCE,
 plotScdsHybridResults <- function(inSCE,
                                   sample=NULL,
                                   shape=NULL,
-                                  groupby=NULL,
-                                  combinePlot=NULL,
+                                  groupBy=NULL,
+                                  combinePlot="all",
                                   violin=TRUE,
                                   boxplot=FALSE,
                                   dots=TRUE,
@@ -1771,6 +1922,8 @@ plotScdsHybridResults <- function(inSCE,
                                   relWidths=c(1, 1, 1),
                                   plotLabels = "default",
                                   plotLabelSize = 20,
+                                  plotLabelPositionX = NULL,
+                                  plotLabelPositionY = NULL,
                                   samplePerColumn = TRUE,
                                   sampleRelHeights = 1,
                                   sampleRelWidths = 1) {
@@ -1786,11 +1939,12 @@ plotScdsHybridResults <- function(inSCE,
   }
 
   samples <- unique(sample)
+  sampleVector <- sample
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
       coldata="scds_hybrid_score",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="Doublet Score",
       violin=violin,
@@ -1803,7 +1957,9 @@ plotScdsHybridResults <- function(inSCE,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
       gridLine=TRUE,
-      summary="median"
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
     ))
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
@@ -1818,14 +1974,15 @@ plotScdsHybridResults <- function(inSCE,
         inSCE=inSCESub,
         sample=sampleSub,
         coldata="scds_hybrid_score",
-        groupby=groupby,
+        groupBy=groupBy,
         xlab="Score",
         ylab="Density",
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
         title="Density, CXDS BCDS Hybrid Score",
-        titleSize=titleSize
+        titleSize=titleSize,
+        combinePlot="all"
     ))
     res.list = c(res.list, densityScore)
 
@@ -1852,7 +2009,8 @@ plotScdsHybridResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
       legendTitleSize=legendTitleSize,
-      legendSize=legendSize
+      legendSize=legendSize,
+      combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
 
@@ -1863,7 +2021,7 @@ plotScdsHybridResults <- function(inSCE,
       sample=sampleSub,
       xlab="",
       ylab="Doublet Score",
-      groupby=groupby,
+      groupBy=groupBy,
       violin=violin,
       boxplot=boxplot,
       dots=dots,
@@ -1874,7 +2032,8 @@ plotScdsHybridResults <- function(inSCE,
       dotSize=dotSize,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      summary="median"
+      summary="median",
+      combinePlot="all"
     ))
     res.list = c(res.list, violinScore)
     }
@@ -1903,7 +2062,8 @@ plotScdsHybridResults <- function(inSCE,
         labelClusters=FALSE,
         legendTitle="Doublet \nAssignment",
         legendTitleSize=legendTitleSize,
-        legendSize=legendSize
+        legendSize=legendSize,
+        combinePlot="all"
       ))
       res.list <- c(res.list, scatterCall)
     }
@@ -1924,6 +2084,8 @@ plotScdsHybridResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -1942,7 +2104,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
-#' @param groupby Groupings for each numeric value. A user may input a vector
+#' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
@@ -1980,6 +2142,8 @@ plotScdsHybridResults <- function(inSCE,
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
+#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
+#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -1996,8 +2160,8 @@ plotScdsHybridResults <- function(inSCE,
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
                                shape=NULL,
-                               groupby=NULL,
-                               combinePlot=NULL,
+                               groupBy=NULL,
+                               combinePlot="all",
                                violin=TRUE,
                                boxplot=FALSE,
                                dots=TRUE,
@@ -2020,6 +2184,8 @@ plotDecontXResults <- function(inSCE,
                                relWidths=c(1, 1, 1),
                                plotLabels = "default",
                                plotLabelSize = 20,
+                               plotLabelPositionX = NULL,
+                               plotLabelPositionY = NULL,
                                samplePerColumn = TRUE,
                                sampleRelHeights = 1,
                                sampleRelWidths = 1) {
@@ -2035,12 +2201,12 @@ plotDecontXResults <- function(inSCE,
   }
 
   samples <- unique(sample)
-
+  sampleVector <- sample
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
       coldata="decontX_contamination",
-      groupby=sample,
+      groupBy=sampleVector,
       xlab="",
       ylab="DecontX Contamination",
       violin=violin,
@@ -2053,7 +2219,9 @@ plotDecontXResults <- function(inSCE,
       titleSize=titleSize,
       dotSize=dotSize,
       gridLine=TRUE,
-      summary="median"
+      summary="median",
+      combinePlot = "all",
+      plotLabels = "none"
     ))
     merged.plots <- list(merged.plots)
     names(merged.plots) <- "Violin"
@@ -2068,14 +2236,15 @@ plotDecontXResults <- function(inSCE,
         inSCE=inSCESub,
         sample=sampleSub,
         coldata="decontX_contamination",
-        groupby=groupby,
+        groupBy=groupBy,
         xlab="Score",
         ylab="Density",
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
         title="Density, DecontX Contamination Score",
-        titleSize=titleSize
+        titleSize=titleSize,
+        combinePlot="all"
     ))
     res.list = c(res.list, densityContamination)
 
@@ -2102,7 +2271,8 @@ plotDecontXResults <- function(inSCE,
       labelClusters=FALSE,
       legendTitle="Contamination",
       legendTitleSize=legendTitleSize,
-      legendSize=legendSize
+      legendSize=legendSize,
+      combinePlot="all"
     ))
     res.list = c(res.list, scatterContamination)
 
@@ -2112,7 +2282,7 @@ plotDecontXResults <- function(inSCE,
         coldata="decontX_contamination",
         sample=sampleSub,
         xlab="", ylab="DecontX Contamination",
-        groupby=groupby,
+        groupBy=groupBy,
         violin=violin,
         boxplot=boxplot,
         dots=dots,
@@ -2123,7 +2293,8 @@ plotDecontXResults <- function(inSCE,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         dotSize=dotSize,
-        summary="median"
+        summary="median",
+        combinePlot="all"
     ))
     res.list = c(res.list, violinContamination)
     }
@@ -2152,7 +2323,8 @@ plotDecontXResults <- function(inSCE,
         labelClusters=TRUE,
         legendTitle="Clusters",
         legendSize=legendSize,
-        legendTitleSize=legendTitleSize
+        legendTitleSize=legendTitleSize,
+        combinePlot="all"
     ))
     res.list = c(res.list, scatterCluster)
 
@@ -2172,6 +2344,8 @@ plotDecontXResults <- function(inSCE,
                                       relWidths = relWidths,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
+                                      labelPositionX = plotLabelPositionX,
+                                      labelPositionY = plotLabelPositionY,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
