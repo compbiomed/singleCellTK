@@ -5,11 +5,11 @@
 \alias{SEG}
 \title{Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.}
 \format{
-list, with two entries `"human"` and `"mouse"`, each is a charactor
-array.
+list, with two entries \code{"human"} and \code{"mouse"}, each is a
+charactor vector.
 }
 \source{
-`data('segList', package='scMerge')``
+\code{data('segList', package='scMerge')}
 }
 \usage{
 SEG

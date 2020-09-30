@@ -18,8 +18,8 @@ discreteColorPalette(
 options are \code{"ggplot"}, \code{"celda"} and \code{"random"}. Default
 \code{"random"}.}
 
-\item{seed}{An integer. Set the seed for random process. Default
-\code{12345}.}
+\item{seed}{An integer. Set the seed for random process that happens only in
+"random" generation. Default \code{12345}.}
 
 \item{...}{Other arguments that are passed to the internal function,
 according to the method selected.}

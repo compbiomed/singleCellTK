@@ -178,15 +178,14 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' @param palette A single character string. Select the method, available
 #' options are \code{"ggplot"}, \code{"celda"} and \code{"random"}. Default
 #' \code{"random"}.
-#' @param seed An integer. Set the seed for random process. Default
-#' \code{12345}.
+#' @param seed An integer. Set the seed for random process that happens only in
+#' "random" generation. Default \code{12345}.
 #' @param ... Other arguments that are passed to the internal function,
 #' according to the method selected.
 #' @return A character vector of \code{n} hex color codes.
 #' @export
-discreteColorPalette <- function(n,
-                                  palette = c("ggplot", "celda", "random"),
-                                  seed = 12345, ...) {
+discreteColorPalette <- function(n, palette = c("ggplot", "celda", "random"),
+                                 seed = 12345, ...) {
   # Setting "random" as default
   if (length(palette) == 3 &&
       all(palette == c("ggplot", "celda", "random"))) {
@@ -198,7 +197,9 @@ discreteColorPalette <- function(n,
   # Generate the colors
   if (palette == "random") {
     withr::with_seed(seed, {
-      colors <- randomcoloR::distinctColorPalette(n, ...)
+      # Using randomcoloR original codes here
+      km <- stats::kmeans(colorSpace, n, iter.max = 20)
+      colors <- unname(colorspace::hex(colorspace::LAB(km$centers)))
       colors <- colors[order(colors)]
     })
   } else if (palette == "ggplot") {
@@ -210,6 +211,7 @@ discreteColorPalette <- function(n,
     stop("Given palette '", palette, "' is not supported. Please choose from ",
          "'ggplot', 'celda' or 'random'.")
   }
+  return(colors)
 }
 
 #test shiny functions

@@ -11,9 +11,9 @@ A data.frame.
 msigdb_table
 }
 \description{
-A table of gene set categories that can be download from MSigDB. The 
+A table of gene set categories that can be download from MSigDB. The
 categories and descriptions can be found here:
-https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp. The IDs in the 
+https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp. The IDs in the
 first column can be used to retrieve the gene sets for these categories
 using the \link{importGeneSetsFromMSigDB} function.
 }
