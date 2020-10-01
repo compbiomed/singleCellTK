@@ -1260,12 +1260,14 @@ shinyServer(function(input, output, session) {
                                    useAssay = input$qcAssaySelect,
                                    seed = input$qcSeed,
                                    paramsList = paramsList)
-        # run getUMAP by default
-        vals$counts <- getUMAP(inSCE = vals$counts,
-                               sample = qcSample,
-                               useAssay = input$qcAssaySelect,
-        )
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
+        # run getUMAP if no UMAP
+        if (!("UMAP" %in% redDimList)) {
+          vals$counts <- getUMAP(inSCE = vals$counts,
+                                 sample = qcSample,
+                                 useAssay = input$qcAssaySelect,
+          )
+        }
         updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
         shinyjs::show(id = "qcPlotSection", anim = FALSE)
       }
