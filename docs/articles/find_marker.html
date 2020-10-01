@@ -102,10 +102,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -130,7 +139,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="find_marker_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Markers by Differential Expression</h1>
@@ -177,7 +186,7 @@
 <h3 class="hasAnchor">
 <a href="#parameters" class="anchor"></a>Parameters</h3>
 <p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>,
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>,
                          <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
                          <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
                          <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"cluster"</span>,
@@ -194,7 +203,7 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
@@ -209,86 +218,165 @@
                         <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
                         <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
                         <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
-<center>
-<img src="de_umapVis.png" alt="Seurat UMAP"> 
-</center>
+<p><img src="find_marker_files/figure-html/de_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="get-markers" class="section level4">
 <h4 class="hasAnchor">
 <a href="#get-markers" class="anchor"></a>Get Markers</h4>
 <p>Then we call <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code> on the clustered data, with the cluster annotation just attached, which by default named with <code>"Seurat_louvain_Resolution0.8"</code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                            <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
                             <span class="kw">method</span> <span class="kw">=</span> <span class="st">"Limma"</span>, <span class="co"># Runs fastest</span>
+                            <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>, <span class="co"># Recommanded for Limma, "logcounts" for the others</span>
                             <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>)</pre></body></html></div>
 <p>After this, the marker genes, together with their statistics, of each cluster will be concatenated in one table. This table can be extracted with:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">matadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">markerTable</span>)</pre></body></html></div>
-<table class="table">
-<thead><tr class="header">
-<th align="center"></th>
-<th align="center">Gene</th>
-<th align="left">Log2_FC</th>
-<th align="left">Pvalue</th>
-<th align="left">FDR</th>
-<th align="center">Seurat_louvain_Resolution0.8</th>
+<table class="table table table-striped table-hover">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Gene
+</th>
+<th style="text-align:right;">
+Log2_FC
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:right;">
+FDR
+</th>
+<th style="text-align:left;">
+Seurat_louvain_Resolution0.8
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="center">1</td>
-<td align="center">LTB</td>
-<td align="left">1.3795012</td>
-<td align="left">1.722068e-105</td>
-<td align="left">5.637705e-101</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+LTB
+</td>
+<td style="text-align:right;">
+1.3795012
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="center">2</td>
-<td align="center">IL32</td>
-<td align="left">1.1497180</td>
-<td align="left">2.186766e-96</td>
-<td align="left">3.579517e-92</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+IL32
+</td>
+<td style="text-align:right;">
+1.1497180
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="center">3</td>
-<td align="center">LDHB</td>
-<td align="left">0.9442271</td>
-<td align="left">4.087189e-94</td>
-<td align="left">4.460214e-90</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+LDHB
+</td>
+<td style="text-align:right;">
+0.9442271
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="center">4</td>
-<td align="center">CD3D</td>
-<td align="left">0.8880507</td>
-<td align="left">2.197867e-77</td>
-<td align="left">1.798844e-73</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+CD3D
+</td>
+<td style="text-align:right;">
+0.8880507
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="center">5</td>
-<td align="center">IL7R</td>
-<td align="left">0.7243084</td>
-<td align="left">4.776582e-74</td>
-<td align="left">3.127515e-70</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+IL7R
+</td>
+<td style="text-align:right;">
+0.7243084
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="center">9</td>
-<td align="center">CD3E</td>
-<td align="left">0.6925999</td>
-<td align="left">4.833070e-65</td>
-<td align="left">1.758056e-61</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+CD3E
+</td>
+<td style="text-align:right;">
+0.6925999
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
 </tr>
 </tbody>
 </table>
 <p>Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
-<center>
-<img src="fm_markerHeatmap.png" alt="Marker Heatmap"> 
-</center>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
+<p><img src="find_marker_files/figure-html/plotMarkers-1.png" width="864" style="display: block; margin: auto;"></p>
 <p>Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in <code>metadata</code>.</p>
 </div>
 </div>

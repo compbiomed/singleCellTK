@@ -7,7 +7,7 @@ doEval = TRUE
 ```
 ## Introduction
 
-For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.  
+For this section, we wrapped 12 methods into functions that perform batch effect correction on an [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object and return the input SCE object with a corrected matrix updated in-place.  
 
 Here is a table for the method names, citations, corresponding wrapper functions and where the results are updated:
 

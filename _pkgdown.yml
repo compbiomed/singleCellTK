@@ -36,6 +36,11 @@ reference:
 - title: "Decontamination"
 - contents:
   - runDecontX
+- title: "Clustering"
+- contents:
+  - runScranSNN
+  - seuratFindClusters
+  - runKMeans
 - title: "Differential Expression"
 - contents:
   - runDEAnalysis
@@ -43,6 +48,13 @@ reference:
   - runDESeq2
   - runLimmaDE
   - runANOVA
+  - plotDEGViolin
+  - plotDEGRegression
+  - plotDEGHeatmap
+- title: "Find Marker"
+- contents:
+  - findMarkerDiffExp
+  - plotMarkerDiffExp
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -84,10 +96,16 @@ navbar:
           href: articles/heatmap.html
     - text: "Shiny UI Analysis"
       menu:
-        - text: "I am Place Holder 1"
-          href: articles/import_scRNAseq_data_as_SCE.html
-        - text: "I am Place Holder 2"
-          href: articles/import_scRNAseq_data_as_SCE.html
+        - text: "Batch Correction"
+          href: articles/ui_batch_correction.html
+        - text: "Clustering"
+          href: articles/ui_clustering.html
+        - text: "Differential Expression"
+          href: articles/ui_differential_expression.html
+        - text: "Find Marker"
+          href: articles/ui_find_marker.html
+        - text: "Generic Heatmap"
+          href: articles/ui_heatmap.html
     - text: "Reference"
       href: reference/index.html
   right:
