@@ -4,14 +4,7 @@
 \alias{sampleSummaryStats}
 \title{Plot table of SCTK QC outputs.}
 \usage{
-sampleSummaryStats(
-  inSCE,
-  sample = NULL,
-  useAssay = "counts",
-  simple = TRUE,
-  output = "kable",
-  fileName = "sctkSummaryStats.csv"
-)
+sampleSummaryStats(inSCE, sample = NULL, useAssay = "counts", simple = TRUE)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
@@ -25,13 +18,6 @@ dimension reduction components or a variable with saved results. Required}
 \item{simple}{Boolean. Indicates whether to generate a table of only
 basic QC stats (ex. library size), or to generate a summary table of all
 QC stats stored in the inSCE.}
-
-\item{output}{Character vector. Options are "kable",
-which a table will be generated via kable to an html file,
-"csv", which a csv file will be generated, or "dataframe",
-which outputs a dataframe.}
-
-\item{fileName}{String. File name if output set to "csv".}
 }
 \description{
 Plot QC metrics generated from QC algorithms via either kable or csv file.
@@ -39,5 +25,5 @@ Plot QC metrics generated from QC algorithms via either kable or csv file.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-sampleSummaryStats(sce, simple = TRUE, output = "dataframe")
+sampleSummaryStats(sce, simple = TRUE)
 }

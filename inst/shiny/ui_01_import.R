@@ -273,6 +273,9 @@ shinyPanelImport <- fluidPage(
       tags$br(),
       actionButton("clearAllImport", "Clear Samples")
     ),
+    radioButtons("combineSCEChoice", label = NULL, c("Add to existing SCE object" = 'addToExistingSCE',
+                                                 "Overwrite existing SCE object" = "overwriteSCE")
+    ),
     withBusyIndicatorUI(
       actionButton("uploadData", "Upload")
     ),

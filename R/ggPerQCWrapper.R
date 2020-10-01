@@ -26,6 +26,8 @@
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -61,6 +63,8 @@ plotRunPerCellQCResults <- function(inSCE,
                                     titleSize=18,
                                     relHeights=c(1.5, 1.5, 1, 1),
                                     relWidths=c(1, 1, 1, 1),
+                                    plotNCols = NULL,
+                                    plotNRows = NULL,
                                     plotLabels = "none",
                                     plotLabelSize = 20,
                                     plotLabelPositionX = NULL,
@@ -502,6 +506,8 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -545,6 +551,8 @@ plotScrubletResults <- function(inSCE,
                                 legendTitleSize=16,
                                 relHeights=c(1.5, 1, 1),
                                 relWidths=c(1, 1, 1),
+                                plotNCols = NULL,
+                                plotNRows = NULL,
                                 plotLabels = "default",
                                 plotLabelSize = 20,
                                 plotLabelPositionX = NULL,
@@ -764,6 +772,8 @@ plotScrubletResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -807,6 +817,8 @@ plotDoubletFinderResults <- function(inSCE,
                                      legendTitleSize=16,
                                      relHeights=c(1.5, 1, 1),
                                      relWidths=c(1, 1, 1),
+                                     plotNCols = NULL,
+                                     plotNRows = NULL,
                                      plotLabels = "default",
                                      plotLabelSize = 20,
                                      plotLabelPositionX = NULL,
@@ -1109,6 +1121,8 @@ plotDoubletFinderResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -1153,6 +1167,8 @@ plotDoubletCellsResults <- function(inSCE,
                                     legendTitleSize=16,
                                     relHeights=c(1.5, 1, 1),
                                     relWidths=c(1, 1, 1),
+                                    plotNCols = NULL,
+                                    plotNRows = NULL,
                                     plotLabels = "default",
                                     plotLabelSize = 20,
                                     plotLabelPositionX = NULL,
@@ -1350,6 +1366,8 @@ plotDoubletCellsResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -1393,6 +1411,8 @@ plotCxdsResults <- function(inSCE,
                             legendTitleSize=16,
                             relHeights=c(1.5, 1, 1),
                             relWidths=c(1, 1, 1),
+                            plotNCols = NULL,
+                            plotNRows = NULL,
                             plotLabels = "default",
                             plotLabelSize = 20,
                             plotLabelPositionX = NULL,
@@ -1554,6 +1574,8 @@ plotCxdsResults <- function(inSCE,
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
                                       labels = plotLabels,
@@ -1613,6 +1635,8 @@ plotCxdsResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -1656,6 +1680,8 @@ plotBcdsResults <- function(inSCE,
                             legendTitleSize=16,
                             relHeights=c(1.5, 1, 1),
                             relWidths=c(1, 1, 1),
+                            plotNCols = NULL,
+                            plotNRows = NULL,
                             plotLabels = "default",
                             plotLabelSize = 20,
                             plotLabelPositionX = NULL,
@@ -1877,6 +1903,8 @@ plotBcdsResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -1920,6 +1948,8 @@ plotScdsHybridResults <- function(inSCE,
                                   legendTitleSize=16,
                                   relHeights=c(1.5, 1, 1),
                                   relWidths=c(1, 1, 1),
+                                  plotNCols = NULL,
+                                  plotNRows = NULL,
                                   plotLabels = "default",
                                   plotLabelSize = 20,
                                   plotLabelPositionX = NULL,
@@ -2139,6 +2169,8 @@ plotScdsHybridResults <- function(inSCE,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @param plotLabelSize size of labels
@@ -2182,6 +2214,8 @@ plotDecontXResults <- function(inSCE,
                                legendTitleSize=16,
                                relHeights=c(1.5, 1, 1),
                                relWidths=c(1, 1, 1),
+                               plotNCols = NULL,
+                               plotNRows = NULL,
                                plotLabels = "default",
                                plotLabelSize = 20,
                                plotLabelPositionX = NULL,

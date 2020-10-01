@@ -362,8 +362,8 @@ plotSCEDimReduceColData <- function(inSCE,
                                     reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
-                                    axisSize = NULL,
-                                    axisLabelSize = NULL,
+                                    axisSize = 10,
+                                    axisLabelSize = 10,
                                     dim1 = NULL,
                                     dim2 = NULL,
                                     bin = NULL,
@@ -488,8 +488,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      useAssay = "logcounts",
                                      xlab = NULL,
                                      ylab = NULL,
-                                     axisSize = NULL,
-                                     axisLabelSize = NULL,
+                                     axisSize = 10,
+                                     axisLabelSize = 10,
                                      dim1 = NULL,
                                      dim2 = NULL,
                                      bin = NULL,
@@ -629,8 +629,8 @@ plotSCEScatter <- function(inSCE,
                            conditionClass = NULL,
                            xlab = NULL,
                            ylab = NULL,
-                           axisSize = NULL,
-                           axisLabelSize = NULL,
+                           axisSize = 10,
+                           axisLabelSize = 10,
                            dim1 = NULL,
                            dim2 = NULL,
                            bin = NULL,
@@ -640,7 +640,6 @@ plotSCEScatter <- function(inSCE,
                            colorLow = "white",
                            colorMid = "gray",
                            colorHigh = "blue",
-                           singleColor = NULL,
                            defaultTheme = TRUE,
                            title = NULL,
                            titleSize = 15,
@@ -648,48 +647,37 @@ plotSCEScatter <- function(inSCE,
                            legendTitle = NULL,
                            legendTitleSize = 12,
                            legendSize = 10,
-                           combinePlot = TRUE) {
-  if (!is.null(slot)){
-    if (slot == "reducedDims"){
-      annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
-      annotation <- substr(annotation, 1, str_length(annotation) - 2)
-    }else if (!slot %in% methods::slotNames(inSCE)) {
-      stop("'slot' must be a slot within the SingleCellExperiment object.
+                           combinePlot = NULL,
+                           plotLabels = NULL){
+    if (!is.null(slot)){
+      if (!slot %in% methods::slotNames(inSCE)) {
+        stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
-	     specified slot exists.")
-    }
-    
-    sceSubset <- do.call(slot, args = list(inSCE))
-    
-    if (!annotation %in% names(sceSubset)) {
-      stop("'annotation' must be an annotation stored within the specified
+	       specified slot exists.")
+      }
+
+      sceSubset <- do.call(slot, args = list(inSCE))
+
+      if (!annotation %in% names(sceSubset)) {
+        stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
+      }
+      annotation.ix <- match(annotation, c(names(sceSubset)))
     }
-    
-    annotation.ix <- match(annotation, c(names(sceSubset)))
-  }
-  
-  if (is.null(slot)){
-    if (is.null(singleColor)){
+
+    if (is.null(slot)){
       colorPlot <- NULL
-    }else{
-      colorPlot <- rep(singleColor, length(rownames(inSCE)))
-      labelClusters <- FALSE
-      #legendSize <- 0
+    }else if (slot == "assays" && !is.null(feature)) {
+      counts <- sceSubset[[annotation.ix]]
+      if (feature %in% rownames(counts)) {
+        colorPlot <- counts[feature, ]
+      }
+    } else if (slot == "colData") {
+      colorPlot <- sceSubset[, annotation.ix]
+    } else if (slot == "metadata") {
+      colorPlot <- sceSubset[[annotation.ix]]
     }
-  } else if (slot == "assays" && !is.null(feature)) {
-    counts <- sceSubset[[annotation.ix]]
-    if (feature %in% rownames(counts)) {
-      colorPlot <- counts[feature, ]
-    }
-  } else if (slot == "colData") {
-    colorPlot <- sceSubset[, annotation.ix]
-  } else if (slot == "metadata") {
-    colorPlot <- sceSubset[[annotation.ix]]
-  } else if (slot == "reducedDims") {
-    colorPlot <- sceSubset[[annotation.ix]][, as.numeric(annotation_clm)]
-  }
-  
+
   g <- .ggScatter(
     inSCE = inSCE,
     sample = sample,
@@ -2137,7 +2125,6 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @importFrom dplyr %>%
 .ggBar <- function(y,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -2152,11 +2139,12 @@ plotBarcodeRankScatter <- function(inSCE,
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
+
   df <- data.frame(x = groupBy, y = y)
 
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
-      x = "groupby",
+      x = "groupBy",
       y = "y"
     )
 
@@ -2267,22 +2255,22 @@ plotBarcodeRankScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEBarColData <- function(inSCE,
-                              sample = NULL,
-                              coldata,
-                              groupby = NULL,
-                              dots = TRUE,
-                              xlab = NULL,
-                              ylab = NULL,
-                              axisSize = 10,
-                              axisLabelSize = 10,
-                              dotSize = 1,
-                              transparency = 1,
-                              defaultTheme = TRUE,
-                              gridLine = FALSE,
-                              summary = NULL,
-                              title = NULL,
-                              titleSize = NULL,
-                              combinePlot = TRUE) {
+  sample = NULL,
+  coldata,
+  groupBy = NULL,
+  dots = TRUE,
+  xlab = NULL,
+  ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
+  dotSize = 1,
+  transparency = 1,
+  defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
+  title = NULL,
+  titleSize = NULL,
+  combinePlot = TRUE) {
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
       stop("'", paste(coldata), "' is not found in ColData.")
@@ -2315,52 +2303,21 @@ plotSCEBarColData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
-  samples <- unique(sample)
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    coldataSub <- coldata[sampleInd]
-    if(!is.null(groupby)){
-      groupbySub <- groupby[sampleInd]
-    }else{
-      groupbySub <- NULL
-    }
-    
-    if(!is.null(title) && length(samples) > 1){
-      title = paste(title, x, sep = "_")
-    }
-    
-    p <- .ggBar(
-      y = coldataSub,
-      groupby = groupbySub,
-      dots = dots,
-      xlab = xlab,
-      ylab = ylab,
-      axisSize = axisSize,
-      axisLabelSize = axisLabelSize,
-      dotSize = dotSize,
-      transparency = transparency,
-      defaultTheme = defaultTheme,
-      gridLine = gridLine,
-      summary = summary,
-      title = title,
-      titleSize = titleSize
-    )
-    return(p)
-  })
-  
-  ##Needs to be turned off for Shiny User Interface
-  if(combinePlot){
-    figNcol = NULL
-    if(!is.null(groupby)){
-      if(length(unique(groupby)) > 1){
-        figNcol = 1
-      }
-    }
-    plotlist <- .ggSCTKCombinePlots(plotlist,
-                                    ncols = figNcol)
-  }
-  return(plotlist)
+  p <- .ggBar(
+    y = coldata,
+    groupBy = groupBy,
+    xlab = xlab,
+    ylab = ylab,
+    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
+    dotSize = dotSize,
+    transparency = transparency,
+    defaultTheme = defaultTheme,
+    title = title,
+    titleSize = titleSize
+  )
+
+  return(p)
 }
 
 #' @title Bar plot of assay data.
@@ -2375,8 +2332,6 @@ plotSCEBarColData <- function(inSCE,
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
-#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
-#'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
@@ -2405,7 +2360,6 @@ plotSCEBarAssayData <- function(inSCE,
   useAssay = "counts",
   feature,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -2425,10 +2379,11 @@ plotSCEBarAssayData <- function(inSCE,
     binary = "Continuous"
   )
   counts <- mat[, 2]
-  if (!is.null(groupby)) {
-    if (length(groupby) > 1) {
-      if (length(groupby) != length(counts)) {
-        stop("The input vector for 'groupby' needs to be the same
+
+  if (!is.null(groupBy)) {
+    if (length(groupBy) > 1) {
+      if (length(groupBy) != length(counts)) {
+        stop("The input vector for 'groupBy' needs to be the same
                      length as the number of samples in your
                      SingleCellExperiment object.")
       }
@@ -2439,67 +2394,22 @@ plotSCEBarAssayData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop("'sample' must be the same length as the number",
-        " of columns in 'inSCE'")
-    }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
 
-  samples <- unique(sample)
+  p <- .ggBar(
+    y = counts,
+    groupBy = groupBy,
+    xlab = xlab,
+    ylab = ylab,
+    axisSize = axisSize,
+    axisLabelSize = axisLabelSize,
+    dotSize = dotSize,
+    transparency = transparency,
+    defaultTheme = defaultTheme,
+    title = title,
+    titleSize = titleSize
+  )
 
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    countSub <- counts[sampleInd]
-    if(!is.null(groupby)){
-      groupbySub <- groupby[sampleInd]
-    }else{
-      groupbySub <- NULL
-    }
-
-    p <- .ggBar(
-      y = countSub,
-      groupby = groupbySub,
-      dots = dots,
-      xlab = xlab,
-      ylab = ylab,
-      axisSize = axisSize,
-      axisLabelSize = axisLabelSize,
-      dotSize = dotSize,
-      transparency = transparency,
-      defaultTheme = defaultTheme,
-      gridLine = gridLine,
-      summary = summary,
-      title = title,
-      titleSize = titleSize
-    )
     return(p)
-  })
-
-  ##Needs to be turned off for Shiny User Interface
-  if(combinePlot){
-    figNcol = NULL
-    if(!is.null(groupby)){
-      if(length(unique(groupby)) > 1){
-        figNcol = 1
-      }
-    }
-    plotlist <- .ggSCTKCombinePlots(plotlist,
-      ncols = figNcol)
-  }
-  return(plotlist)
-}
-
-.ggSCTKTheme <- function(gg) {
-    return(gg + ggplot2::theme_bw() +
-               ggplot2::theme(
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank(),
-                   axis.text = ggplot2::element_text(size = 10),
-                   axis.title = ggplot2::element_text(size = 10)
-               ))
 }
 
 .binSCTK <- function(value, bin, binLabel = NULL) {
@@ -2543,6 +2453,8 @@ plotSCEBarAssayData <- function(inSCE,
       ncols <- 1
       nrowSub <- 1
       sampleRelHeights <- 1
+    }else{
+      nrowSub = NULL
     }
     plotlistSample <- lapply(plotlistSample, function(x) {
       return(cowplot::plot_grid(
@@ -2616,4 +2528,14 @@ plotSCEBarAssayData <- function(inSCE,
       return(plotlist)
     }
   }
+}
+
+.ggSCTKTheme <- function(gg) {
+  return(gg + ggplot2::theme_bw() +
+      ggplot2::theme(
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        axis.text = ggplot2::element_text(size = 10),
+        axis.title = ggplot2::element_text(size = 10)
+      ))
 }
