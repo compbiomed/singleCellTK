@@ -38,11 +38,23 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/run_qc.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -69,7 +81,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -94,7 +136,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="batch_correction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Batch Correction on SingleCellExperiment Object</h1>
@@ -111,73 +153,177 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>For this section, we wrapped 12 methods into functions that perform batch effect correction on an SingleCellExperiment (SCE) object and return the input SCE object with a corrected matrix updated in-place.</p>
+<p>For this section, we wrapped 12 methods into functions that perform batch effect correction on an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html"><code>SingleCellExperiment</code></a> (SCE) object and return the input SCE object with a corrected matrix updated in-place.</p>
 <p>Here is a table for the method names, citations, corresponding wrapper functions and where the results are updated:</p>
 <table class="table">
-<tr>
-<pre><code>&lt;th&gt;Method&lt;/th&gt;
-&lt;th&gt;Citation&lt;/th&gt;
-&lt;th&gt;Function&lt;/th&gt;
+<th>
+Method
+</th>
+<th>
+Citation
+</th>
+<th>
+Function
+</th>
+<th>
+Result Slots
+</th>
 &lt;th&gt;Result Slots&lt;/th&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;BBKNN&lt;/td&gt;
-&lt;td&gt;Polański, Krzysztof and et al., 2019&lt;/td&gt;
+<td>
+BBKNN
+</td>
+<td>
+Polański, Krzysztof and et al., 2019
+</td>
+<td>
+<a href="../reference/runBBKNN.html">runBBKNN()</a>
+</td>
+<td>
+<code>reducedDim</code>
+</td>
 &lt;td&gt;&lt;a href="../reference/runBBKNN.html"&gt;runBBKNN()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;reducedDim&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;ComBat&lt;/td&gt;
+<td>
+ComBat
+</td>
+<td>
+Yuqing Zhang and et al., 2018
+</td>
+<td>
+<a href="../reference/runComBat.html">runComBat()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
 &lt;td&gt;Yuqing Zhang and et al., 2018&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runComBat.html"&gt;runComBat()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
+<td>
+FastMNN
+</td>
+<td>
+Aaron Lun, 2018
+</td>
+<td>
+<a href="../reference/runFastMNN.html">runFastMNN()</a>
+</td>
+<td>
+<code>reducedDim</code>
+</td>
 <pre><code>&lt;td&gt;FastMNN&lt;/td&gt;
-&lt;td&gt;Aaron Lun, 2018&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runFastMNN.html"&gt;runFastMNN()&lt;/a&gt;&lt;/td&gt;
+<td>
+MNN
+</td>
+<td>
+Laleh Haghverdi, 2018
+</td>
+<td>
+<a href="../reference/runMNNCorrect.html">runMNNCorrect()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
+<tr>
+<td>
+Harmony
+</td>
+<td>
+Ilya Korsunsky and et al., 2019
+</td>
+<td>
+<a href="../reference/runHarmony.html">runHarmony()</a>
+</td>
+<td>
+<code>reducedDim</code>
+</td>
+</tr>
+<td>
+LIGER
+</td>
+<td>
+Joshua Welch, et al., 2018
+</td>
+<td>
+<a href="../reference/runLIGER.html">runLIGER()</a>
+</td>
+<td>
+<code>reducedDim</code>
+</td>
 &lt;td&gt;&lt;code&gt;reducedDim&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;MNN&lt;/td&gt;
-&lt;td&gt;Laleh Haghverdi, 2018&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runMNNCorrect.html"&gt;runMNNCorrect()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;Harmony&lt;/td&gt;
-&lt;td&gt;Ilya Korsunsky and et al., 2019&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runHarmony.html"&gt;runHarmony()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;reducedDim&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;LIGER&lt;/td&gt;
-&lt;td&gt;Joshua Welch, et al., 2018&lt;/td&gt;
+<td>
+Limma
+</td>
+<td>
+Gordon K Smyth, et al., 2003
+</td>
+<td>
+<a href="../reference/runLimmaBC.html">runLimmaBC()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
 &lt;td&gt;&lt;a href="../reference/runLIGER.html"&gt;runLIGER()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;reducedDim&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
-<pre><code>&lt;td&gt;Limma&lt;/td&gt;
+<td>
+Scanorama
+</td>
+<td>
+Brian Hie et al, 2019
+</td>
+<td>
+<a href="../reference/runSCANORAMA.html">runSCANORAMA()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
 &lt;td&gt;Gordon K Smyth, et al., 2003&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runLimmaBC.html"&gt;runLimmaBC()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
-<tr>
+<td>
+scGen
+</td>
+<td>
+Mohammad Lotfollah et al., 2019
+</td>
+<td>
+<a href="../reference/runSCGEN.html">runSCGEN()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
 <pre><code>&lt;td&gt;Scanorama&lt;/td&gt;
-&lt;td&gt;Brian Hie et al, 2019&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runSCANORAMA.html"&gt;runSCANORAMA()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
-</tr>
+<td>
+scMerge
+</td>
+<td>
+Yingxin Lin et al., 2019
+</td>
+<td>
+<a href="../reference/runSCMerge.html">runSCMerge()</a>
+</td>
+<td>
+<code>assay</code>
+</td>
 <tr>
-<pre><code>&lt;td&gt;scGen&lt;/td&gt;
-&lt;td&gt;Mohammad Lotfollah et al., 2019&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runSCGEN.html"&gt;runSCGEN()&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
+<td>
+Seurat Integration
+</td>
+<td>
+Tim Stuart et al., 2019
+</td>
+<td>
+<a href="../reference/runSeurat3Integration.html">runSeurat3Integration()</a>
+</td>
+<td>
+<code>altExp</code>
+</td>
 </tr>
-<tr>
-<pre><code>&lt;td&gt;scMerge&lt;/td&gt;
-&lt;td&gt;Yingxin Lin et al., 2019&lt;/td&gt;
-&lt;td&gt;&lt;a href="../reference/runSCMerge.html"&gt;runSCMerge()&lt;/a&gt;&lt;/td&gt;
+<td>
+ZINBWaVE
+</td>
+<td>
+Davide Risso et al., 2018
+</td>
+<td>
+<a href="../reference/runZINBWaVE.html">runZINBWaVE()</a>
+</td>
+<td>
+<code>reducedDim</code>
+</td>
 &lt;td&gt;&lt;code&gt;assay&lt;/code&gt;&lt;/td&gt;</code></pre>
 </tr>
 <tr>
@@ -188,13 +334,13 @@
 </tr>
 <tr>
 <pre><code>&lt;td&gt;ZINBWaVE&lt;/td&gt;
-&lt;td&gt;Davide Risso et al., 2018&lt;/td&gt;
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">pip</span> install scanpy bbknn scanorama scgen</span></code></pre></div>
 &lt;td&gt;&lt;a href="../reference/runZINBWaVE.html"&gt;runZINBWaVE()&lt;/a&gt;&lt;/td&gt;
 &lt;td&gt;&lt;code&gt;reducedDim&lt;/code&gt;&lt;/td&gt;</code></pre>
 </tr>
 </table>
-<p>For a result returned in <code>reducedDim</code>, it means that some sorts of dimension reduction method, such as PCA and UMAP, is performed during the correction. For a result returned in <code>assay</code>, all of the original features (i.e. genes) remain the same, thus it is a full-sized assay. For a result returned in <code>altExp</code>, it means that the values in the corrected assay still stand for the expression level of the original features, instead of any low-dimension embedding, but the number of these features are less than original due to potential subsetting steps in the calculation.</p>
-</div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
+<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK@devel"</span>)</pre></body></html></div>
 <div id="specifications" class="section level2">
 <h2 class="hasAnchor">
 <a href="#specifications" class="anchor"></a>Specifications</h2>
@@ -230,36 +376,36 @@
 <h4 class="hasAnchor">
 <a href="#prepare-an-sce-object-with-multiple-batches" class="anchor"></a>Prepare an SCE object with multiple batches</h4>
 <p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k” (Kasper D. Hansen <em>et al.</em>, 2017), which you can import by a function called <code><a href="../reference/importExampleData.html">importExampleData()</a></code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">'pbmc3k'</span>)
-<span class="no">pbmc4k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">'pbmc4k'</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc3k</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'genes'</span>, <span class="st">'cells'</span>)))
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc4k</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'genes'</span>, <span class="st">'cells'</span>)))</pre></body></html></div>
-<pre><code>## [1] "32738 genes" "2700 cells" 
-## [1] "33694 genes" "4340 cells"</code></pre>
-<p>There is a function called <code><a href="../reference/combineSCE.html">combineSCE()</a></code>, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. <code>rowData</code>) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">## The strategy here is to only use the genes presented in both datasets.</span>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
+<span class="no">pbmc6k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">'pbmc6k'</span>)
+<span class="no">pbmc8k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">'pbmc8k'</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc6k</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'genes'</span>, <span class="st">'cells'</span>)))
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc8k</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'genes'</span>, <span class="st">'cells'</span>)))</pre></body></html></div>
+<pre><code>## [1] "32738 genes" "5419 cells" 
+## [1] "33694 genes" "8381 cells"</code></pre>
+<p>There is a function called <code><a href="../reference/combineSCE.html">combineSCE()</a></code>, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. <code>rowData</code>) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">## The strategy here is to only use the genes presented in both datasets.</span>
 <span class="co">## Get the intersection of both gene lists.</span>
-<span class="no">isecGene</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">intersect</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pbmc3k</span>), <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pbmc4k</span>))
+<span class="no">isecGene</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">intersect</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pbmc6k</span>), <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pbmc8k</span>))
 <span class="co">## Subset each dataset by the intersection.</span>
-<span class="no">pbmc3k.isec</span> <span class="kw">&lt;-</span> <span class="no">pbmc3k</span>[<span class="no">isecGene</span>,]
-<span class="no">pbmc4k.isec</span> <span class="kw">&lt;-</span> <span class="no">pbmc4k</span>[<span class="no">isecGene</span>,]
+<span class="no">pbmc6k.isec</span> <span class="kw">&lt;-</span> <span class="no">pbmc6k</span>[<span class="no">isecGene</span>,]
+<span class="no">pbmc8k.isec</span> <span class="kw">&lt;-</span> <span class="no">pbmc8k</span>[<span class="no">isecGene</span>,]
 <span class="co">## Overwrite the mismatches in rowData, a special case in this example.</span>
-<span class="fu">rowData</span>(<span class="no">pbmc4k.isec</span>) <span class="kw">&lt;-</span> <span class="fu">rowData</span>(<span class="no">pbmc3k.isec</span>)
+<span class="fu">rowData</span>(<span class="no">pbmc8k.isec</span>) <span class="kw">&lt;-</span> <span class="fu">rowData</span>(<span class="no">pbmc6k.isec</span>)
 <span class="co">## Apply combination function</span>
-<span class="no">sce.combine</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/combineSCE.html">combineSCE</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">pbmc3k</span> <span class="kw">=</span> <span class="no">pbmc3k.isec</span>,
-                               <span class="kw">pbmc4k</span> <span class="kw">=</span> <span class="no">pbmc4k.isec</span>))
+<span class="no">sce.combine</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/combineSCE.html">combineSCE</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">pbmc6k</span> <span class="kw">=</span> <span class="no">pbmc6k.isec</span>,
+                               <span class="kw">pbmc8k</span> <span class="kw">=</span> <span class="no">pbmc8k.isec</span>))
 <span class="co">## Simply filter out the genes that are expressed in less than 1% of all cells.</span>
-<span class="no">sce.filter</span> <span class="kw">&lt;-</span> <span class="no">sce.combine</span>[<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="fu">assay</span>(<span class="no">sce.combine</span>) <span class="kw">&gt;</span> <span class="fl">0</span>) <span class="kw">&gt;=</span> <span class="fl">0.01</span> * <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">sce.combine</span>),]
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="fu">colData</span>(<span class="no">sce.filter</span>)$<span class="no">sample</span>)</pre></body></html></div>
 <span class="no">sce.filter</span></pre></body></html></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 9979 7040 
+## dim: 10020 13800 
 ## metadata(0):
 ## assays(1): counts
-## rownames(9979): AP006222.2 RP11-206L10.9 ... MT-CYB AL592183.1
+## rownames(10020): AP006222.2 RP11-206L10.9 ... MT-CYB AL592183.1
 ## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
-## colnames(7040): pbmc3k_AAACATACAACCAC-1 pbmc3k_AAACATTGAGCTAC-1 ...
-##   pbmc4k_TTTGTCAGTTAAGACA-1 pbmc4k_TTTGTCATCCCAAGAT-1
+## colnames(13800): pbmc6k_AAACATACAACCAC-1 pbmc6k_AAACATACACCAGT-1 ...
+##   pbmc8k_TTTGTCATCTCGAGTA-1 pbmc8k_TTTGTCATCTGCTTGC-1
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## spikeNames(0):
@@ -267,22 +413,22 @@
 <p>The batch annotation now is stored at <code>colData(sce.filter)$sample</code>. The summary can be checked by running:</p>
 <div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="fu">colData</span>(<span class="no">sce.filter</span>)$<span class="no">sample</span>)</pre></body></html></div>
 <pre><code>## 
-## pbmc3k pbmc4k 
-##   2700   4340</code></pre>
+## pbmc6k pbmc8k 
+##   5419   8381</code></pre>
 <p>Before trying out any batch correction function, we recommend to use a small subset of example so the effect can be quickly examined. Additionally, most of the batch correction methods provided require a log-normalized assay as input, so we have to make sure of this.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="no">sce.filter</span>[<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">sce.filter</span>), <span class="fl">500</span>), <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">sce.filter</span>), <span class="fl">500</span>)]
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="no">sce.filter</span>[<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">sce.filter</span>), <span class="fl">800</span>), <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">sce.filter</span>), <span class="fl">800</span>)]
 <span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
                                   <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'counts'</span>,
                                   <span class="kw">logAssayName</span> <span class="kw">=</span> <span class="st">'logcounts'</span>)
 <span class="no">sce.small</span></pre></body></html></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 500 500 
-## metadata(0):
+## dim: 800 800 
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runLimmaBC.html">runLimmaBC</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
 ## assays(2): counts logcounts
-## rownames(500): FAM118B THOC1 ... OSGEP MLH1
+## rownames(800): RNF130 CERS4 ... ILF3 HEXB
 ## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
-## colnames(500): pbmc3k_GGAATCTGCTTGTT-1 pbmc3k_GGCGCATGTGGAAA-1 ...
-##   pbmc3k_GTTCAACTTATGCG-1 pbmc4k_GCGACCAAGAAGCCCA-1
+## colnames(800): pbmc8k_CGGACACCAAATTGCC-1 pbmc6k_CACTTTGACAGGAG-1 ...
+##   pbmc8k_GCTTGAAGTCTTGTCC-1 pbmc6k_ATGATATGGACTAC-1
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## spikeNames(0):
@@ -299,13 +445,13 @@
                         <span class="kw">assayName</span> <span class="kw">=</span> <span class="st">'LIMMA'</span>)
 <span class="no">sce.small</span></pre></body></html></div>
 <pre><code>## class: SingleCellExperiment 
-## dim: 500 500 
+## dim: 800 800 
 ## metadata(0):
 ## assays(3): counts logcounts LIMMA
-## rownames(500): FAM118B THOC1 ... OSGEP MLH1
+## rownames(800): RNF130 CERS4 ... ILF3 HEXB
 ## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
-## colnames(500): pbmc3k_GGAATCTGCTTGTT-1 pbmc3k_GGCGCATGTGGAAA-1 ...
-##   pbmc3k_GTTCAACTTATGCG-1 pbmc4k_GCGACCAAGAAGCCCA-1
+## colnames(800): pbmc8k_CGGACACCAAATTGCC-1 pbmc6k_CACTTTGACAGGAG-1 ...
+##   pbmc8k_GCTTGAAGTCTTGTCC-1 pbmc6k_ATGATATGGACTAC-1
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## spikeNames(0):
@@ -316,42 +462,41 @@
 <a href="#visualization" class="anchor"></a>Visualization</h4>
 <p>In this documentation, we provide three ways to examine the removal of batch effect, in terms of visualization.</p>
 <ol style="list-style-type: decimal">
-<li>Plot the batch variance associated with an additional covariate.</li>
+<li>Plot the variation explained by the batch annotation and another condition.</li>
 </ol>
-<p>This functionality is implemented in <code><a href="../reference/plotBatchVariance.html">plotBatchVariance()</a></code>. It plots a violin plot of the variance explained by the given batch annotation, an additional covariate, and the variance explained by combining these two conditions. However, the additional covariate does not necessarily exist when batch effect removal is wanted. It is useful when users combine already analyzed datasets.TODO.</p>
+<p>This functionality is implemented in <code><a href="../reference/plotBatchVariance.html">plotBatchVariance()</a></code>. It plots a violin plot of the variation explained by the given batch annotation, an additional condition, and the variation explained by combining these two conditions.<br>
+This plot would be useful for examining whether the existing batch effect is different than another condition (e.g. subtype) or is confounded by that. However, the additional condition labels (e.g. cell types) do not necessarily exist when batch effect removal is wanted, so only plotting the variation explained by batches is also supported.</p>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="../reference/plotBatchVariance.html">plotBatchVariance</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
+                  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'logcounts'</span>,
+                  <span class="kw">batch</span> <span class="kw">=</span> <span class="st">'sample'</span>,
+                  <span class="kw">title</span> <span class="kw">=</span> <span class="st">'Variation Before Correction'</span>)</pre></body></html></div>
+<p><img src="batch_correction_files/figure-html/batchVarBefore-1.png" width="700"></p>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="../reference/plotBatchVariance.html">plotBatchVariance</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
+                  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'LIMMA'</span>,
+                  <span class="kw">batch</span> <span class="kw">=</span> <span class="st">'sample'</span>,
+                  <span class="kw">title</span> <span class="kw">=</span> <span class="st">'Variation After Correction'</span>)</pre></body></html></div>
+<p><img src="batch_correction_files/figure-html/batchVarAfter-1.png" width="700"></p>
 <ol start="2" style="list-style-type: decimal">
 <li>Plot the mean expression level of each gene separately for each batch.</li>
 </ol>
 <p>This functionality is implemented in <code><a href="../reference/plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean()</a></code>. The methodology is straight forward, which plots violin plots for all the batches, and within each batch, the plot illustrates the distribution of the mean expression level of each gene. Thus the batch effect can be observed from the mean and standard deviation of each batch.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
-                        <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'logcounts'</span>,
-                        <span class="kw">batch</span> <span class="kw">=</span> <span class="st">'sample'</span>,
-                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'Before Correction'</span>)</pre></body></html></div>
-<p><img src="batch_correction_files/figure-html/featureMeanBefore-1.png" width="700"></p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
-                        <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'LIMMA'</span>,
-                        <span class="kw">batch</span> <span class="kw">=</span> <span class="st">'sample'</span>,
-                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'After Correction'</span>)</pre></body></html></div>
-<p><img src="batch_correction_files/figure-html/featureMeanAfter-1.png" width="700"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Plot a dimension reduced components to see the grouping of cells</li>
 </ol>
-<p>There is no function special for batch correction, but this can be achieved simply by using the dimension reduction calculation functions (e.g. <code><a href="../reference/getPCA.html">getPCA()</a></code>, <code><a href="../reference/getUMAP.html">getUMAP()</a></code> and <code><a href="../reference/getTSNE.html">getTSNE()</a></code>) and <code><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
+<p>There is no function special for batch correction, but this can be achieved simply by using the dimension reduction calculation functions (e.g. <code><a href="../reference/getPCA.html">getPCA()</a></code>, <code><a href="../reference/getUMAP.html">getUMAP()</a></code> and <code><a href="../reference/getTSNE.html">getTSNE()</a></code>) and <code><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code>.</p>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getPCA.html">getPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
                      <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'logcounts'</span>,
-                     <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'UMAP'</span>)
+                     <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'PCA'</span>)
 <span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
                         <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">'sample'</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'UMAP'</span>,
-                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'Before Correction'</span>)</pre></body></html></div>
+                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'PCA'</span>,
+                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'PCA Before Correction'</span>)</pre></body></html></div>
 <p><img src="batch_correction_files/figure-html/umapBefore-1.png" width="700"></p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce.small</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
-                     <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">'LIMMA'</span>,
-                     <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'UMAP_LIMMA'</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce.small</span>,
+<p><img src="./batchCorrectionPanel.png"></p>
+                     <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'PCA_LIMMA'</span>)
                         <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">'sample'</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'UMAP_LIMMA'</span>,
-                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'After Correction'</span>)</pre></body></html></div>
+                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">'PCA_LIMMA'</span>,
+                        <span class="kw">title</span> <span class="kw">=</span> <span class="st">'PCA After Correction'</span>)</pre></body></html></div>
 <p><img src="batch_correction_files/figure-html/umapAfter-1.png" width="700"></p>
 </div>
 </div>

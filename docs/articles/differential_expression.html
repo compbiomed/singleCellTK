@@ -86,6 +86,9 @@
     <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
     </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -96,10 +99,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -124,7 +136,7 @@
 
       
 
-      </header><script src="differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="differential_expression_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Differential Expression</h1>
@@ -233,9 +245,7 @@
                         <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
                         <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
                         <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
-<center>
-<img src="de_umapVis.png" alt="Seurat UMAP"> 
-</center>
+<p><img src="differential_expression_files/figure-html/de_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="run-differential-expression-analysis" class="section level4">
 <h4 class="hasAnchor">
@@ -245,9 +255,9 @@
                         <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
                         <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
                         <span class="kw">class</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>, <span class="fl">8</span>),
-                        <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c3_c8"</span>,
-                        <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c2_VS_c3_c8"</span>)</pre></body></html></div>
+                        <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">4</span>, <span class="fl">5</span>),
+                        <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c4_c5"</span>,
+                        <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c2_VS_c4_c5"</span>)</pre></body></html></div>
 </div>
 <div id="results" class="section level4">
 <h4 class="hasAnchor">
@@ -275,66 +285,113 @@
                              |-$result      = (the `data.frame` of top DEG table, shown below)
                              |-$method      = "MAST"</code></pre>
 <p>To fetch the result as a table of the Top differential expressed genes and the statistics:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c2_VS_c3_c8</span>$<span class="no">result</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c2_VS_c4_c5</span>$<span class="no">result</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">DEG</span>)</pre></body></html></div>
-<table class="table">
-<thead><tr class="header">
-<th align="right"></th>
-<th align="center">Gene</th>
-<th align="center">Pvalue</th>
-<th align="center">Log2_FC</th>
-<th align="center">FDR</th>
+<table class="table table table-striped table-hover">
+<thead><tr>
+<th style="text-align:left;">
+Gene
+</th>
+<th style="text-align:right;">
+Pvalue
+</th>
+<th style="text-align:right;">
+Log2_FC
+</th>
+<th style="text-align:right;">
+FDR
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="center">CD74</td>
-<td align="center">7.410985e-323</td>
-<td align="center">3.776849</td>
-<td align="center">1.028496e-318</td>
+<tr>
+<td style="text-align:left;">
+FTL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-3.202606
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="right">2</td>
-<td align="center">HLA-DRA</td>
-<td align="center">1.390933e-243</td>
-<td align="center">4.240744</td>
-<td align="center">9.651684e-240</td>
+<tr>
+<td style="text-align:left;">
+LYZ
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-4.896037
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="center">NKG7</td>
-<td align="center">1.456080e-180</td>
-<td align="center">-3.628760</td>
-<td align="center">6.735828e-177</td>
+<tr>
+<td style="text-align:left;">
+FTH1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-2.750537
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="center">HLA-DPB1</td>
-<td align="center">7.820856e-167</td>
-<td align="center">2.730926</td>
-<td align="center">2.713446e-163</td>
+<tr>
+<td style="text-align:left;">
+S100A4
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-3.673227
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="right">5</td>
-<td align="center">CD79A</td>
-<td align="center">3.799766e-162</td>
-<td align="center">2.202502</td>
-<td align="center">1.054663e-158</td>
+<tr>
+<td style="text-align:left;">
+TYROBP
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-3.532855
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="right">6</td>
-<td align="center">HLA-DRB1</td>
-<td align="center">9.544925e-155</td>
-<td align="center">2.498927</td>
-<td align="center">2.207741e-151</td>
+<tr>
+<td style="text-align:left;">
+CST3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-3.612471
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
 </tbody>
 </table>
 <p>To visualize the result in a heatmap:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c2_VS_c3_c8"</span>)</pre></body></html></div>
-<center>
-<img src="de_heatmap.png" alt="DE Heatmap"> 
-</center>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c2_VS_c4_c5"</span>, <span class="kw">log2fcThreshold</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+<p><img src="differential_expression_files/figure-html/plotDE-1.png" width="864" style="display: block; margin: auto;"></p>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
 </div>
 </div>

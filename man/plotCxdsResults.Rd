@@ -9,7 +9,7 @@ plotCxdsResults(
   sample = NULL,
   shape = NULL,
   groupby = NULL,
-  combinePlot = FALSE,
+  combinePlot = NULL,
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
@@ -27,7 +27,14 @@ plotCxdsResults(
   axisLabelSize = 18,
   axisSize = 15,
   legendSize = 15,
-  legendTitleSize = 16
+  legendTitleSize = 16,
+  relHeights = c(1.5, 1, 1),
+  relWidths = c(1, 1, 1),
+  plotLabels = "default",
+  plotLabelSize = 20,
+  samplePerColumn = TRUE,
+  sampleRelHeights = 1,
+  sampleRelWidths = 1
 )
 }
 \arguments{
@@ -44,8 +51,8 @@ Default NULL.}
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
-\item{combinePlot}{Boolean. Will combine plots using `cowplot::plot_grid`.
-Default FALSE.}
+\item{combinePlot}{Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+while "sample" will output a list of plots separated by sample. Default "all".}
 
 \item{violin}{Boolean. If TRUE, will plot the violin plot. Default TRUE.}
 
@@ -92,6 +99,24 @@ when TRUE. Default TRUE.}
 \item{legendSize}{size of legend. Default 15.}
 
 \item{legendTitleSize}{size of legend title. Default 16.}
+
+\item{relHeights}{Relative heights of plots when combine is set.}
+
+\item{relWidths}{Relative widths of plots when combine is set.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
+
+\item{plotLabelSize}{size of labels}
+
+\item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
+the output .ggplot will have plots from each sample on a single column. Default TRUE.}
+
+\item{sampleRelHeights}{If there are multiple samples and combining by "all",
+the relative heights for each plot.}
+
+\item{sampleRelWidths}{If there are multiple samples and combining by "all",
+the relative widths for each plot.}
 }
 \description{
 A wrapper function which visualizes outputs from the

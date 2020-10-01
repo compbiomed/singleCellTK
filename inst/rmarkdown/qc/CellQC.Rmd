@@ -1,270 +1,494 @@
 ---
-title: "Comprehensive reporting of QC metrics"
+title: "SCTK Cell QC Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
+  study: study
 output:
   html_document:
     number_sections: yes
     toc: yes
+    toc_float: true
     code_folding: hide
     html_notebook: default
 ---
+
+<style>
+body {
+text-align: justify}
+</style>
 
 ```{r "CellQC-lib", warning=FALSE, include=FALSE}
 require(singleCellTK)
 require(ggplot2)
 require(umap)
+
+preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
+  meta <- meta[!names(meta) %in% ignore]
+  lapply(meta, function(y){
+    while(is.list(y)) {
+      if (length(y) != 0){
+       y <- y[[1]]  
+      } else {
+       y <- "NULL"
+      }
+    }
+      
+    if(is.vector(y)) {
+      y <- paste(y,collapse=' ')
+    }
+      
+    if(is.null(y)) {
+      y <- "NULL"
+    }
+      
+    return(y)
+  })
+}
 ```
 
-```{r, "CellQC-import", eval = FALSE, include=FALSE}
+```{r, "CellQC-import", eval = TRUE, include=FALSE}
 sce.qc <- params$object
+study <- params$study
 ```
 
-```{r, "QCMetrics", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsQCMetrics<- suppressWarnings(plotRunPerCellQCResults(sce.qc))
-    i="QCMetrics"
-    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Sum \n\n'))
-    plotsQCMetrics$sum
-    cat(paste0('## Total \n\n'))
-    plotsQCMetrics$detected
-    cat(paste0('## Subsets mito sum \n\n'))
-    plotsQCMetrics$subsets_mito_sum
-    cat(paste0('## Subsets mito detected \n\n'))
-    plotsQCMetrics$subsets_mito_detected
-    cat(paste0('## Subsets mito percent \n\n'))
-    plotsQCMetrics$subsets_mito_percent
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$scater
-```
+---
+subtitle: "`r study`"
+---
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_runPerCellQC <- descriptionRunPerCellQC()
 ```
-# {.unlisted .unnumbered .toc-ignore}
-`r description_runPerCellQC`
 
-```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsScrublet<- suppressWarnings(plotScrubletResults(sce.qc, reducedDimName="UMAP"))
-    i="Scrublet"
-    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotsScrublet$scatterScore
-   
-    cat(paste0('## Density Score \n\n'))
-    plotsScrublet$densityScore
-   
-    cat(paste0('## Violin Score \n\n'))
-    plotsScrublet$violinScore
- 
-    cat(paste0('## Scatter Call \n\n'))
-    plotsScrublet$scatterCall
-  
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runScrublet
+# Introduction
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://www.bioconductor.org/packages/release/bioc/html/singleCellTK.html) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+<br />
+<br />
+
+
+```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotsQCMetrics<- suppressWarnings(plotRunPerCellQCResults(sce.qc))
+    i="General quality control metrics"
+    cat(paste0('# ', i, ' \n'))
+```
+<br />
+`r description_runPerCellQC$introduction`
+`r description_runPerCellQC$runPerCellQC`
+`r description_runPerCellQC$plotRunPerCellQCResults`
+`r description_runPerCellQC$output`
+`r description_runPerCellQC$sum`
+`r description_runPerCellQC$detected`
+`r description_runPerCellQC$percentTop`
+`r description_runPerCellQC$subsets`
+
+# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+## Number of Counts \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotsQCMetrics$sum
 ```
 
+## Total Features Detected \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotsQCMetrics$detected
+```
+
+## Subsets mito sum \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotsQCMetrics$subsets_mito_sum
+```
+
+## Subsets mito detected \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotsQCMetrics$subsets_mito_detected
+```
+
+## Subsets mito percent \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotsQCMetrics$subsets_mito_percent
+```
+
+## Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+x <- preprocessMeta(sce.qc@metadata$scater$addPerCellQC)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r description_runPerCellQC$parameter`
+<br />
+
+
+# Doublet Detection
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_Scrublet <- descriptionScrublet()
 ```
-# {.unlisted .unnumbered .toc-ignore}
-`r description_Scrublet`
 
-```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
-    i="DoubletFinder"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_0.5
-   
-    cat(paste0('## Scatter Score Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_1
-   
-    cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_1.5
- 
-    cat(paste0('## Scatter Score Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Score_Resolution_2
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_0.5
-    
-    cat(paste0('## Density Resolution 1 \n\n'))
-    plotDoubletFinder$Density_Resolution_1
-    
-    cat(paste0('## Density Resolution 0.5 \n\n'))
-    plotDoubletFinder$Density_Resolution_1.5
- 
-    cat(paste0('## Density Resolution 2 \n\n'))
-    plotDoubletFinder$Density_Resolution_2
-  
-    cat(paste0('## Violin Resolution 0.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_0.5
-    
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1
-    
-    cat(paste0('## Violin Resolution 1.5 \n\n'))
-    plotDoubletFinder$Violin_Resolution_1.5
- 
-    cat(paste0('## Violin Resolution 1 \n\n'))
-    plotDoubletFinder$Violin_Resolution_2
-    
-    cat(paste0('## Scatter Call Resolution 0.5 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_0.5
-    
-    cat(paste0('## Scatter Call Resolution 1 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_1
-    
-    cat(paste0('## Scatter Call Resolution 1.5 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_1.5
- 
-    cat(paste0('## Scatter Call Resolution 2 \n\n'))
-    plotDoubletFinder$Scatter_Call_Resolution_2
-    
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runDoubletFinder
+```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
+    plotsScrublet<- suppressWarnings(plotScrubletResults(sce.qc, reducedDimName="scrublet_UMAP"))
+    i="Scrublet"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r description_Scrublet$introduction`
+`r description_Scrublet$runScrublet`
+`r description_Scrublet$plotScrubletResults`
+`r description_Scrublet$output`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Scrublet Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}
+ plotsScrublet$scatter_doubletScore
+```
+   
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}
+ plotsScrublet$density_doubletScore
+```
+   
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}
+ plotsScrublet$violin_doubletScore
+```
+ 
+### Scrublet Doublet Assignment \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}
+ plotsScrublet$scatter_doubletCall
+```
+  
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+x <- preprocessMeta(sce.qc@metadata$runScrublet)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />   
+`r description_Scrublet$additionalParam`
+<br />
+
+
 
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_DoubletFinder <- descriptionDoubletFinder()
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r description_DoubletFinder`
+```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "scrublet_UMAP"))
 
-
-```{r, "DoubletCells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, reducedDimName = "UMAP"))
-    i="DoubletCells"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotDoubletCells$scatterScore
-   
-    cat(paste0('## Density Score \n\n'))
-    plotDoubletCells$densityScore
-
-    cat(paste0('## Violin Score \n\n'))
-    plotDoubletCells$violinScore
+    resolution <- grep("doubletFinder_doublet_score_resolution_", colnames(colData(sce.qc)), value = TRUE)
+    resolution <- gsub("doubletFinder_doublet_score_resolution_", "", resolution)
     
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runDoubletCells
+    i="DoubletFinder"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r description_DoubletFinder$introduction`
+`r description_DoubletFinder$runDoubletFinder`
+`r description_DoubletFinder$plotDoubletFinderResults`
+`r description_DoubletFinder$output`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Resolution 1.5 {.tabset}
+#### DoubletFinder Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+ plotDoubletFinder$Scatter_Score_resolution_1.5
+```
+
+#### Density of Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+ plotDoubletFinder$Density_resolution_1.5
+```
+
+#### Violin of Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+ plotDoubletFinder$violin_resolution_1.5
+```
+
+#### DoubletFinder Doublet Assignment \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+ plotDoubletFinder$Scatter_Call_resolution_1.5
+```    
+
+#### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+ x <- preprocessMeta(sce.qc@metadata$runDoubletFinder)
+ as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r description_DoubletFinder$seuratRes`
+`r description_DoubletFinder$seuratNfeatures`
+`r description_DoubletFinder$seuratPCs`
+`r description_DoubletFinder$seuratFormationRate`
+<br />
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_DoubletCells<- descriptionDoubletCells()
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r description_DoubletCells`
-
-
-```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotCxds<- suppressWarnings(plotCxdsResults( sce.qc, reducedDimName = "UMAP"))
-    i="Cxds"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotCxds$scatterScore
-   
-    cat(paste0('## Density Score \n\n'))
-    plotCxds$densityScore
-
-    cat(paste0('## Violin Score \n\n'))
-    plotCxds$violinScore
-    
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runCxds
+```{r, "DoubletCells", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, reducedDimName = "scrublet_UMAP"))
+    i="DoubletCells"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r description_DoubletCells$introduction`
+`r description_DoubletCells$runDoubletCells`
+`r description_DoubletCells$plotDoubletCellsResults`
+`r description_DoubletCells$output`
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### DoubletCells Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotDoubletCells$scatter_doubletScore
+```
+
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotDoubletCells$density_doubletScore
+```
+
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotDoubletCells$violin_doubletScore
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+x <- preprocessMeta(sce.qc@metadata$runDoubletCells)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r description_DoubletCells$parameter`
+<br />
+
+
+
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 descriprion_CxdsResults<- descriptionCXDS()
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r descriprion_CxdsResults`
-
-```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-   plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "UMAP"))
-    i="Bcds"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotBcds$scatterScore
-   
-    cat(paste0('## Density Score \n\n'))
-    plotBcds$densityScore
-
-    cat(paste0('## Violin Score \n\n'))
-    plotBcds$violinScore
-    
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runBcds
+```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotCxds<- suppressWarnings(plotCxdsResults(sce.qc, reducedDimName = "scrublet_UMAP"))
+    i="Cxds"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r descriprion_CxdsResults$introduction`
+`r descriprion_CxdsResults$runCxds`
+`r descriprion_CxdsResults$plotCxdsResults`
+`r descriprion_CxdsResults$output`
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Cxds Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotCxds$scatter_doubletScore
+```
+
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotCxds$density_doubletScore
+```
+
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotCxds$violin_doubletScore
+```
+
+### Cxds Doublet Assignment \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotCxds$scatter_doubletCall
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+x <- preprocessMeta(sce.qc@metadata$runCxds)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r descriprion_CxdsResults$nTop`
+`r descriprion_CxdsResults$binThresh`
+`r descriprion_CxdsResults$verb`
+`r descriprion_CxdsResults$retRes`
+`r descriprion_CxdsResults$estNdbl`
+<br />
+
+
+
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 descriprion_BcdsResults<- descriptionBCDS()
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r descriprion_BcdsResults`
-
-
-```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, reducedDimName = "UMAP"))
-    i="ScdsHybrid"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotScdsHybrid$scatterScore
-   
-    cat(paste0('## Density Score \n\n'))
-    plotScdsHybrid$densityScore
-
-    cat(paste0('## Violin Score \n\n'))
-    plotScdsHybrid$violinScore
-    
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runCxdsBcdsHybrid
+```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+   plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "scrublet_UMAP"))
+    i="Bcds"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r descriprion_BcdsResults$introduction`
+`r descriprion_BcdsResults$runBcds`
+`r descriprion_BcdsResults$plotBcdsResults`
+`r descriprion_BcdsResults$output`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Bcds Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotBcds$scatter_doubletScore
+```
+
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotBcds$density_doubletScore
+```
+
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotBcds$violin_doubletScore
+```
+
+### Bcds Doublet Assignment \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotBcds$scatter_doubletCall
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+# sce.qc@metadata$runBcds[names(sce.qc@metadata$runBcds) != 'sample']
+x <- preprocessMeta(sce.qc@metadata$runBcds)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r descriprion_BcdsResults$nTop`
+`r descriprion_BcdsResults$srat`
+`r descriprion_BcdsResults$nmax`
+`r descriprion_BcdsResults$varImp`
+<br />
+
+
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_ScdsHybrid<- descriptionScdsHybrid()
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r description_ScdsHybrid`
 
-```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDecontX<- suppressWarnings(plotDecontXResults(sce.qc, reducedDimName = "UMAP"))
-    i="DecontX"
-    cat(paste0('# ', i, ' {.tabset} \n\n'))
-    cat(paste0('## Scatter Score \n\n'))
-    plotDecontX$scatterDecon
-   
-    cat(paste0('## Density Score \n\n'))
-    plotDecontX$densityContamination
+```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, reducedDimName = "scrublet_UMAP"))
+    i="ScdsHybrid"
+    cat(paste0('## ', i, ' \n'))
+```
+<br />
+`r description_ScdsHybrid$introduction`
+`r description_ScdsHybrid$runCxdsBcdsHybrid`
+`r description_ScdsHybrid$plotScdsHybridResults`
+`r description_ScdsHybrid$output`
 
-    cat(paste0('## Violin Score \n\n'))
-    plotDecontX$violinContamination
-    
-    cat(paste0('## Violin Score \n\n'))
-    plotDecontX$scatterCluster
-    
-    cat(paste0('## Session info \n\n'))
-    sce.qc@metadata$runDecontX
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### ScdsHybrid Doublet Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotScdsHybrid$scatter_doubletScore
 ```
 
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotScdsHybrid$density_doubletScore
+```
+
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotScdsHybrid$violin_doubletScore
+```
+
+### ScdsHybrid Doublet Assignment \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotScdsHybrid$scatter_doubletCall
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+# sce.qc@metadata$runCxdsBcdsHybrid[names(sce.qc@metadata$runCxdsBcdsHybrid) != 'sample']
+x <- preprocessMeta(sce.qc@metadata$runCxdsBcdsHybrid)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r description_ScdsHybrid$parameters`
+<br />
+
+# Ambient RNA Detection
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_DecontX<- suppressWarnings(descriptionDecontX())
 ```
 
-# {.unlisted .unnumbered .toc-ignore}
-`r description_DecontX`
+```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+    plotDecontX<- suppressWarnings(plotDecontXResults(sce.qc, reducedDimName = "scrublet_UMAP"))
+    i="DecontX"
+    cat(paste0('## ', i, ' \n'))
+```
+<br />
+`r description_DecontX$introduction`
+`r description_DecontX$runDecontX`
+`r description_DecontX$plotDecontXResults`
+`r description_DecontX$output`
+`r description_DecontX$contamination`
+`r description_DecontX$clustering`
 
-# Session info
-```{r "CellQC-session-info"}
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### DecontX Contamination Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}  
+ plotDecontX$scatter_decontXContamination
+```
+
+### Density Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}  
+ plotDecontX$density_decontXContamination
+```
+
+### Violin Score \n\n
+```{r echo=TRUE,results="asis", fig.align="center"}  
+ plotDecontX$violin_decontXContamination
+```
+
+### DecontX Clusters \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+plotDecontX$scatter_decontXClusters
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+# sce.qc@metadata$runDecontX[names(sce.qc@metadata$runDecontX) != 'sample']
+x <- preprocessMeta(sce.qc@metadata$runDecontX)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+
+# Session Info
+```{r "CellQC-session-info", echo=FALSE}
 sessionInfo()
 ```
+
 
 
 

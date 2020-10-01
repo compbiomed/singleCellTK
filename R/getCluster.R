@@ -62,7 +62,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
   graphClustAlgoList = list(walktrap = igraph::cluster_walktrap,
                             louvain = igraph::cluster_louvain,
                             infomap = igraph::cluster_infomap,
-                            fastGreedy = igraph::cluster_infomap,
+                            fastGreedy = igraph::cluster_fast_greedy,
                             labelProp = igraph::cluster_label_prop,
                             leadingEigen = igraph::cluster_leading_eigen)
   if (all(algorithm == c("walktrap", "louvain", "infomap", "fastGreedy",

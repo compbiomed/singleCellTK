@@ -44,7 +44,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-P", "--preproc"),
         type = "character",
         default=NULL,
-        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix'"),
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
         help="Name of the sample. This will be prepended to the cell barcodes."),
@@ -87,7 +87,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-F", "--outputFormat"),
         type="character",
         default=NULL,
-        help="The output format of this QC pipeline. Currently, it supports RDS, Flatfile, Python AnnData and HTAN."),
+        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -103,12 +103,12 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-D", "--detectCells"),
         type="logical",
         default=FALSE,
-        help="Detect cells from droplet matrix. Default is FALSE. This argument is only eavluated when -d is 'Droplet'. If set as TRUE, quality control will be performed on both the droplet and the detected cell matrix."),
+        help="Detect cells from droplet matrix. Default is FALSE. This argument is only eavluated when -d is 'Droplet'. If set as TRUE, cells will be detected and cell matrixed will be subset from the droplet matrix. Also, quality control will be performed on the detected cell matrix."),
     optparse::make_option(c("-m", "--cellDetectMethod"),
         type="character",
         default='EmptyDrops',
         help="Methods to detect cells. Default is 'EmptyDrops'. Other options could be 'Knee' or 'Inflection'. More information is provided in the documentation. "),
-    optparse::make_option(c("-T", "--clusterType"),
+    optparse::make_option(c("-T", "--parallelType"),
         type="character",
         default="MulticoreParam",
         help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1.")
@@ -133,7 +133,7 @@ formats <- opt[["outputFormat"]]
 dataType <- opt[["dataType"]]
 detectCell <- opt[["detectCells"]]
 numCores <- opt[["numCores"]]
-clusterType <- opt[["clusterType"]] 
+parallelType <- opt[["parallelType"]] 
 cellCalling <- opt[["cellDetectMethod"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
@@ -170,18 +170,18 @@ if (numCores > 1) {
     numCores <- min(numCores, parallel::detectCores())
     message(as.character(numCores), " cores are used for parallel computation.")
 
-    if (clusterType == "MulticoreParam") {
+    if (parallelType == "MulticoreParam") {
         parallelParam <- MulticoreParam(workers = numCores)
 
         if (isTRUE(isWindows)) {
-            warning("'MulticoreParam' is not supported for Windows system. Setting 'clusterType' as 'SnowParam'. ")
+            warning("'MulticoreParam' is not supported for Windows system. Setting 'parallelType' as 'SnowParam'. ")
             parallelParam <- SnowParam(workers = numCores)            
         }
 
-    } else if (clusterType == "SnowParam") {
+    } else if (parallelType == "SnowParam") {
         parallelParam <- SnowParam(workers = numCores)
     } else {
-        stop("'--clusterType' should be 'MulticoreParam' or 'SnowParam'.")
+        stop("'--parallelType' should be 'MulticoreParam' or 'SnowParam'.")
     }
 
     Params$QCMetrics$BPPARAM <- parallelParam
@@ -191,20 +191,20 @@ if (numCores > 1) {
 }
 
 ### checking output formats
-if (!all(formats %in% c("R", "Python", "FlatFile", "HTAN"))) {
-    warning("Output format must be 'R', 'Python', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!format %in% c("R", "Python", "FlatFile", "HTAN")], sep = ","),
-         " is not supported now. ") #             "Only output the supported formats in the provided options. "
+if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
+    warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
+         paste(formats[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+         " is not supported now. ")
 }
 
-formats <- formats[formats %in% c("R", "Python", "FlatFile", "HTAN")]
+formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
 message("The output format is [", 
         paste(formats, collapse = ","), "]. ")
 
 if (length(formats) == 0) {
     warning("None of the provided format is supported now. Therefore, the output ", 
-        "will be R, Python, FlatFile and HTAN. ")
-    formats <- c("R", "Python", "FlatFile", "HTAN")
+        "will be SCE, AnnData, FlatFile and HTAN. ")
+    formats <- c("SCE", "AnnData", "FlatFile", "HTAN")
 }
 
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
@@ -348,7 +348,7 @@ if (dataType == "Droplet") {
 }
 
 if (!cellCalling %in% c("Knee", "Inflection", "EmptyDrops")) {
-    step("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
+    stop("The --cellDetectMethod must be 'Knee', 'Inflection' or 'Emptydrops'.")
 }
 
 ## Prepare for QC
@@ -408,6 +408,7 @@ for(i in seq_along(process)) {
                 ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
             }
             cellSCE <- dropletSCE[,ix]
+            message(paste0(date(), " .. Running cell QC"))
             cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
         }
     }
@@ -556,3 +557,5 @@ if (("FlatFile" %in% formats)) {
         write.csv(HTANLevel4, file = file.path(directory, "level4Meta.csv"))
     }
 }
+
+sessionInfo()
