@@ -9,15 +9,10 @@ plotSCEBarColData(
   sample = NULL,
   coldata,
   groupBy = NULL,
-  violin = TRUE,
-  boxplot = TRUE,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
-  transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
@@ -38,9 +33,6 @@ dimension reduction components or a variable with saved results. Required.}
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
-\item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.}
-
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
@@ -48,10 +40,6 @@ Default TRUE.}
 \item{axisSize}{Size of x/y-axis ticks. Default 10.}
 
 \item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
-
-\item{dotSize}{Size of dots. Default 1.}
-
-\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
