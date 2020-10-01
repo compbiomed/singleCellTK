@@ -2884,6 +2884,9 @@ shinyServer(function(input, output, session) {
       hide_TypeSelect("hide")
     } else { 
       # single color
+      updateRadioButtons(session, "SelectColorType", "Categorical or Continuous",
+                         choices = c("Categorical", "Continuous"),
+                         selected = "Categorical")
       hide_TypeSelect("hide")
     }
   })
@@ -2901,7 +2904,13 @@ shinyServer(function(input, output, session) {
   })
 
   outputOptions(output, "hide_typebtns", suspendWhenHidden = FALSE)
-
+  
+  output$hide_bins <- renderText({
+    hide_bins()
+  })
+  
+  outputOptions(output, "hide_bins", suspendWhenHidden = FALSE)
+  
   numColors <- NULL
   colorLabels <- NULL
   ### Observe input changes that should trigger categorical color generator
@@ -2932,8 +2941,6 @@ shinyServer(function(input, output, session) {
       shinyjs::show("continuousColorConditional")
     }
   })
-
-  outputOptions(output, "hide_bins", suspendWhenHidden = FALSE)
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   cellviewer <- eventReactive(input$runCellViewer,{
@@ -3002,7 +3009,7 @@ shinyServer(function(input, output, session) {
     }else{
       pltVars$groupby <- NULL
     }
-    if (input$checkColorbinning == TRUE){
+    if (input$checkColorbinning == TRUE && input$SelectColorType == "Continuous"){
       pltVars$bin <- input$adjustColorbinning
     }else{
       pltVars$bin <- NULL
@@ -3023,8 +3030,8 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
           xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-          transparency = input$adjustalpha, colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
-          dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE, 
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
           legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
           conditionClass = pltVars$class, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
@@ -3045,8 +3052,9 @@ shinyServer(function(input, output, session) {
                                     legendSize = input$adjustlegendsize,legendTitleSize = input$adjustlegendtitlesize,conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
-                            annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha, colorLow = input$lowColor, 
-                            colorMid = input$midColor, colorHigh = input$highColor, groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
+                            annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha, 
+                            colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor, 
+                            groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
                             xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
                             combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
