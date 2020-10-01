@@ -48,6 +48,7 @@
 #' plotRunPerCellQCResults(inSCE=sce)
 #' }
 #' @export
+
 plotRunPerCellQCResults <- function(inSCE,
                                     sample=NULL,
                                     groupBy=NULL,
@@ -72,12 +73,15 @@ plotRunPerCellQCResults <- function(inSCE,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
     }
   } else {
     sample <- rep(1, ncol(inSCE))

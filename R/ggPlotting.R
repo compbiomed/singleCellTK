@@ -2025,78 +2025,73 @@ plotBarcodeRankScatter <- function(inSCE,
     }
 
     samples <- unique(sample)
-    plotlist <- lapply(samples, function(x){
-        sceSampleInd <- which(sample == x)
-        meta = S4Vectors::metadata(inSCE)
+    meta <- S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput
+  plotlist <- lapply(samples, function(x){
 
-        df = data.frame(rank = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank[sceSampleInd],
-                        umi = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_total[sceSampleInd])
-        df = df[which(df$umi != 0),]
-
-        p <- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
-            ggplot2::geom_point(size=dotSize, shape=20) +
-            ggplot2::scale_x_log10() +
-            ggplot2::scale_y_log10()
-
-        p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$knee, linetype = "Knee"), colour = 'red') +
-            ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$inflection, linetype = "Inflection"), colour= 'blue') +
-            ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
-                                           guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
-                                                                         override.aes = list(color = c("blue", "red"))))
-
-        if (defaultTheme == TRUE) {
-            p <- .ggSCTKTheme(p)
-        }
-        if (!is.null(title)) {
-            p <- p + ggplot2::ggtitle(label = title) +
-                ggplot2::theme(plot.title = ggplot2::element_text(
-                    hjust = 0.5,
-                    size = titleSize
-                ))
-        }
-        if (!is.null(xlab)) {
-            p <- p + ggplot2::xlab(xlab) +
-                ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
-                               axis.text.x = ggplot2::element_text(size = axisSize))
-        }else{
-            p <- p + ggplot2::xlab("Rank") +
-                ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
-                               axis.text.x = ggplot2::element_text(size = axisSize))
-        }
-
-        if (!is.null(ylab)) {
-            p <- p + ggplot2::ylab(ylab) +
-                ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
-                               axis.text.y = ggplot2::element_text(size = axisSize))
-        }else{
-            p <- p + ggplot2::ylab("Total UMI Counts") +
-                ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
-                               axis.text.y = ggplot2::element_text(size = axisSize))
-        }
-        return(p)
-    })
-    if (length(unique(samples)) > 1) {
-      names(plotlist) <- samples
-      plotlist <- list(Sample = plotlist)
-    } else {
-      plotlist <- plotlist[[1]]
+    sampleMeta <- meta[[x]]
+    knee <- sampleMeta$dropletUtils_barcodeRank_knee
+    inflection <- sampleMeta$dropletUtils_barcodeRank_inflection
+    df <- data.frame(rank = sampleMeta$dropletUtils_barcodeRank_rank,
+                     umi = sampleMeta$dropletUtils_barcodeRank_total)
+    
+    
+    p <- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
+      ggplot2::geom_point(size=dotSize, shape=20) +
+      ggplot2::scale_x_log10() +
+      ggplot2::scale_y_log10()
+    
+    p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=knee, linetype = "Knee"), colour = 'red') +
+      ggplot2::geom_hline(ggplot2::aes(yintercept=inflection, linetype = "Inflection"), colour= 'blue') +
+      ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
+                                     guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
+                                                                   override.aes = list(color = c("blue", "red"))))
+    
+    if (defaultTheme == TRUE) {
+      p <- .ggSCTKTheme(p)
     }
-
-    ##Needs to be turned off for Shiny User Interface
-    if(!is.null(combinePlot)){
+    if (!is.null(title)) {
+      p <- p + ggplot2::ggtitle(label = title) +
+        ggplot2::theme(plot.title = ggplot2::element_text(
+          hjust = 0.5,
+          size = titleSize
+        ))
+    }
+    if (!is.null(xlab)) {
+      p <- p + ggplot2::xlab(xlab) +
+        ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
+                       axis.text.x = ggplot2::element_text(size = axisSize))
+    }else{
+      p <- p + ggplot2::xlab("Rank") +
+        ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
+                       axis.text.x = ggplot2::element_text(size = axisSize))
+    }
+    
+    if (!is.null(ylab)) {
+      p <- p + ggplot2::ylab(ylab) +
+        ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
+                       axis.text.y = ggplot2::element_text(size = axisSize))
+    }else{
+      p <- p + ggplot2::ylab("Total UMI Counts") +
+        ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
+                       axis.text.y = ggplot2::element_text(size = axisSize))
+    }
+    return(p)
+  })
+  ##Needs to be turned off for Shiny User Interface
+  if(!is.null(combinePlot)){
       if(combinePlot %in% c("all") && length(unique(sample)) > 1){
-        return(cowplot::plot_grid(plotlist = unlist(plotlist,
-                                                    recursive = FALSE),
-                                  align = "h",
-                                  vjust = 0,
-                                  rel_heights = sampleRelHeights,
-                                  rel_widths = sampleRelWidths))
+          return(cowplot::plot_grid(plotlist = unlist(plotlist,
+          recursive = FALSE),
+          align = "h",
+          vjust = 0,
+          rel_heights = sampleRelHeights,
+          rel_widths = sampleRelWidths))
       }else if(combinePlot == "sample"){
-        return(plotlist)
+          return(plotlist)
       }
-    }
-    return(plotlist)
-
+  }
+  return(plotlist)
+  
 }
 
 #' @title Bar plot plotting tool.
