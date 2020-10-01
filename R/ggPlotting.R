@@ -557,7 +557,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
-#'  options: "assays", "colData", "metadata". Default NULL.
+#'  options: "assays", "colData", "metadata", "reducedDims". Default NULL.
 #' @param annotation Desired vector within the slot used for plotting. Default NULL.
 #' @param feature name of feature stored in assay of SingleCellExperiment
 #'  object. Will be used only if "assays" slot is chosen. Default NULL.
@@ -650,10 +650,13 @@ plotSCEScatter <- function(inSCE,
                            combinePlot = NULL,
                            plotLabels = NULL){
     if (!is.null(slot)){
-      if (!slot %in% methods::slotNames(inSCE)) {
+      if (slot == "reducedDims"){
+        annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
+        annotation <- substr(annotation, 1, str_length(annotation) - 2)
+      }else if (!slot %in% methods::slotNames(inSCE)) {
         stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
-	       specified slot exists.")
+	     specified slot exists.")
       }
 
       sceSubset <- do.call(slot, args = list(inSCE))
@@ -676,6 +679,8 @@ plotSCEScatter <- function(inSCE,
       colorPlot <- sceSubset[, annotation.ix]
     } else if (slot == "metadata") {
       colorPlot <- sceSubset[[annotation.ix]]
+    } else if (slot == "reducedDims") {
+      colorPlot <- sceSubset[[annotation.ix]][, as.numeric(annotation_clm)]
     }
 
   g <- .ggScatter(
