@@ -10,7 +10,6 @@ plotSCEBarAssayData(
   useAssay = "counts",
   feature,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -39,9 +38,6 @@ object.}
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
-
-\item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
