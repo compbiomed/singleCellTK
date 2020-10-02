@@ -43,7 +43,7 @@ plotSCEScatter(
 components or a variable with saved results. Required}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
-options: "assays", "colData", "metadata". Default NULL.}
+options: "assays", "colData", "metadata", "reducedDims". Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
