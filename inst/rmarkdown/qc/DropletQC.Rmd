@@ -1,13 +1,16 @@
 ---
-title: "Comprehensive reporting of droplet QC metrics"
+title: "SCTK Droplet QC Report"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
+  study: study
 output:
   html_document:
     number_sections: yes
     toc: yes
+    toc_float: true
     code_folding: hide
+    html_notebook: default
 ---
 
 ```{r "DropletQC-lib", include=FALSE, warning=FALSE}
@@ -15,45 +18,146 @@ require(umap)
 require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)
+
+preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
+  meta <- meta[!names(meta) %in% ignore]
+  lapply(meta, function(y){
+    while(is.list(y)) {
+      if (length(y) != 0){
+       y <- y[[1]]  
+      } else {
+       y <- "NULL"
+      }
+    }
+      
+    if(is.vector(y)) {
+      y <- paste(y,collapse=' ')
+    }
+      
+    if(is.null(y)) {
+      y <- "NULL"
+    }
+      
+    return(y)
+  })
+}
 ```
 
 ```{r, "DropletQC-import", include=FALSE, include=FALSE, warning=FALSE}
 sce<-params$object
+study <- params$study
 ```
 
-```{r, "EmptyDrops", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce))
-    i="EmptyDrops"
-    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Log-Probability \n\n'))
-    plotsEmptyDrops$scatterEmptyDrops
-    cat(paste0('## Session info \n\n'))
-    sce@metadata$runEmptyDrops
-```
+---
+subtitle: "`r study`"
+---
 
+# Introduction
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://www.bioconductor.org/packages/release/bioc/html/singleCellTK.html) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+<br />
+<br />
+
+
+# Empty Drops Detection
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_runEmptyDrops <- descriptionEmptyDrops()
 ```
-# {.unlisted .unnumbered .toc-ignore}
-`r description_runEmptyDrops`
 
-```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce))
-    i="BarcodeRanks"
-    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
-    cat(paste0('## Total UMI counts vs Rank \n\n'))
-    plotsBarcodeRank$scatterBarcodeRank
-    cat(paste0('## Session info \n\n'))
-    sce@metadata$runBarcodeRankDrops
+```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
+    plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce))
+    i="EmptyDrops"
+    cat(paste0('## ', i, ' \n'))
 ```
+<br />
+`r description_runEmptyDrops$introduction`
+`r description_runEmptyDrops$runEmptyDrops`
+`r description_runEmptyDrops$plotEmptyDropsResults`
+`r description_runEmptyDrops$plot2`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Total UMI counts vs Log-Probability \n
+```{r echo=TRUE,results="asis",fig.align="center"} 
+ print(plotsEmptyDrops$scatterEmptyDrops[[1]])
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+ # sce@metadata$runEmptyDrops[names(sce@metadata$runEmptyDrops) != 'sample']
+x <- preprocessMeta(sce@metadata$runEmptyDrops)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+`r description_runEmptyDrops$parameter`
+
+
+
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
 description_runBarcodeRank <- descriptionBarcodeRank()
 ```
-# {.unlisted .unnumbered .toc-ignore}
-`r description_runBarcodeRank`
 
-## SessionInfo
-```{r "DropletQC-session-info", include=TRUE}
-sessionInfo()
+```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce))
+    i="BarcodeRanks"
+    cat(paste0('## ', i, ' \n'))
+```
+<br />
+`r description_runBarcodeRank$introduction`
+`r description_runBarcodeRank$runBarcodeRankDrops`
+`r description_runBarcodeRank$plotBarcodeRankDropsResults`
+`r description_runBarcodeRank$plot`
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+### Total UMI counts vs Rank \n\n
+```{r echo=TRUE,results="asis", fig.align="center"} 
+ plotsBarcodeRank$scatterBarcodeRank
+```
+
+### Parameters \n\n
+```{r echo=TRUE, message=FALSE, warning=FALSE} 
+x <- preprocessMeta(sce@metadata$runBarcodeRankDrops)
+as.data.frame(x) %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```    
+<br />
+`r description_runBarcodeRank$parameter`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+
+```{r, echo = FALSE, "Summary of valid cells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    sceColData <- colData(sce) %>% as.data.frame()
+
+    idx <- list(
+            'Knee'= sceColData$dropletUtils_BarcodeRank_Knee == 1,
+            'Inflection'= sceColData$dropletUtils_BarcodeRank_Inflection == 1, 
+            'EmptyDrops' = !is.na(sceColData$dropletUtils_emptyDrops_fdr) &
+             (sceColData$dropletUtils_emptyDrops_fdr < 0.01))
+
+    SummaryTable <- lapply(idx, function(x){
+    sceColData[x,] %>% 
+      dplyr::summarise('Number of cells' = n(), 'Median UMI' = median(sum), 
+                       'Median Genes' = median(detected))
+    })
+    i="Summary Statistics"
+    cat(paste0('## ', i, ' \n'))
+    
+    do.call(base::rbind, SummaryTable) %>% 
+      knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%")
+    
+    summary <- "The summary statistics table summarizes QC metrics of droplets that passed different cell detection cutoff. Here it summarizes number of cells passing the cutoff, median of UMI count and median of genes detected per cell."
+    
+```
+<br />
+`r summary`
+
+
+# SessionInfo
+```{r "DropletQC-session-info"}
+    sessionInfo()
 ```

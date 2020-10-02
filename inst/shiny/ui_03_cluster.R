@@ -241,42 +241,43 @@ shinyPanelCluster <- fluidPage(
 
 
 
-#Dendrogram
-output$dendroRedDim <- renderUI({
-  selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
-})
-
-observeEvent(input$dendroPlot, {
-  withBusyIndicatorServer(input$dendroPlot, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
-        comp <- "PCA Components"
-      } else  if (grepl(pattern = "TSNE_", x = input$usingReducedDims)) {
-        comp <- "TSNE Components"
-      } else {
-        comp <- "UMAP Components"
-      }
-      data <- getClusterInputData(inSCE = vals$counts,
-                                  inputData = comp,
-                                  useAssay = input$dimRedAssaySelect,
-                                  reducedDimName = input$usingReducedDims)
-      d <- stats::dist(data)
-      h <- stats::hclust(d, input$dendroDistanceMetric)
-      if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
-        vals$dendrogram <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
-      } else if (input$clusteringAlgorithmD == "Hierarchical") {
-        vals$dendrogram <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
-      } else {
-        stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
-      }
-      vals$dendrogram
-    }
-  })
-})
-output$treePlot <- renderPlot({
-  req(vals$dendrogram)
-  vals$dendrogram
-}, height = 600)
-
+# #Server Code (Commenting it out for now) #Irzam
+# #Dendrogram
+# output$dendroRedDim <- renderUI({
+#   selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
+# })
+# 
+# observeEvent(input$dendroPlot, {
+#   withBusyIndicatorServer(input$dendroPlot, {
+#     if (is.null(vals$counts)){
+#       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+#     } else {
+#       if (grepl(pattern = "PCA_", x = input$usingReducedDims)) {
+#         comp <- "PCA Components"
+#       } else  if (grepl(pattern = "TSNE_", x = input$usingReducedDims)) {
+#         comp <- "TSNE Components"
+#       } else {
+#         comp <- "UMAP Components"
+#       }
+#       data <- getClusterInputData(inSCE = vals$counts,
+#                                   inputData = comp,
+#                                   useAssay = input$dimRedAssaySelect,
+#                                   reducedDimName = input$usingReducedDims)
+#       d <- stats::dist(data)
+#       h <- stats::hclust(d, input$dendroDistanceMetric)
+#       if (input$clusteringAlgorithmD == "Phylogenetic Tree") {
+#         vals$dendrogram <- ggtree::ggtree(as.phylo(h), layout = "circular", open.angle = 360) + ggtree::geom_tiplab2(size = 2)
+#       } else if (input$clusteringAlgorithmD == "Hierarchical") {
+#         vals$dendrogram <- ggtree::ggtree(as.phylo(h)) + ggtree::theme_tree2() + ggtree::geom_tiplab(size = 2)
+#       } else {
+#         stop("Input clustering algorithm not found ", input$clusteringAlgorithmD)
+#       }
+#       vals$dendrogram
+#     }
+#   })
+# })
+# output$treePlot <- renderPlot({
+#   req(vals$dendrogram)
+#   vals$dendrogram
+# }, height = 600)
+# 

@@ -18,6 +18,9 @@
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.
 #' Default \code{0.05}
+#' @param topN An integer. Only to plot this number of top markers for each
+#' cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
+#' top N subscription. Default \code{10}.
 #' @param orderBy The ordering method of the clusters on the splitted heatmap.
 #' Can be chosen from \code{"size"} or \code{"name"}, specified with vector of
 #' ordered unique cluster labels, or set as \code{NULL} for unsplitted heatmap.
@@ -55,7 +58,7 @@
 #' @author Yichen Wang
 #' @export
 plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
-    log2fcThreshold = 1, fdrThreshold = 0.05, decreasing = TRUE,
+    log2fcThreshold = 1, fdrThreshold = 0.05, topN = 10, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
     cellAnnotations = NULL, featureAnnotationColor = NULL,
     cellAnnotationColor = NULL,
@@ -87,6 +90,10 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
         stop('"findMarker" result cannot be interpreted properly')
     }
+    if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
+      # Remove genes happen in deg table but not in sce. Weird.
+      degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
+    }
     if(!is.null(log2fcThreshold)){
         degFull <- degFull[degFull$Log2_FC > log2fcThreshold,]
     }
@@ -105,11 +112,23 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         toRemove <- which(deg.gix)[-toKeep]
         degFull <- degFull[-toRemove,]
     }
-    if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
-      degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
-    }
-    inSCE <- inSCE[degFull$Gene,]
     clusterName <- colnames(degFull)[5]
+    selected <- character()
+    if (!is.null(topN)) {
+      for (c in unique(degFull[[clusterName]])) {
+        deg.cluster <- degFull[degFull[[clusterName]] == c,]
+        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC, decreasing = TRUE),]
+        if (dim(deg.cluster)[1] > topN) {
+          deg.cluster <- deg.cluster[1:topN,]
+        }
+        selected <- c(selected, deg.cluster$Gene)
+      }
+    } else {
+      selected <- degFull$Gene
+    }
+    degFull <- degFull[degFull$Gene %in% selected,]
+    inSCE <- inSCE[degFull$Gene,]
+
     z <- SummarizedExperiment::colData(inSCE)[[clusterName]]
     if(is.factor(z)){
         z.order <- levels(z)
