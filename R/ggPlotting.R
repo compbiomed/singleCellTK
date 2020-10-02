@@ -651,8 +651,8 @@ plotSCEScatter <- function(inSCE,
                            plotLabels = NULL){
   if (!is.null(slot)){
     if (slot == "reducedDims"){
-      annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
-      annotation <- substr(annotation, 1, str_length(annotation) - 2)
+      annotation_clm <- substr(annotation, stringr::str_length(annotation), stringr::str_length(annotation))
+      annotation <- substr(annotation, 1, stringr::str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
       stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
@@ -2018,33 +2018,35 @@ plotBarcodeRankScatter <- function(inSCE,
                                    combinePlot = NULL,
                                    sampleRelHeights = 1,
                                    sampleRelWidths = 1){
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
+    } else {
+        sample <- rep(1, ncol(inSCE))
     }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
-  
-  samples <- unique(sample)
+
+    samples <- unique(sample)
+    meta <- S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput
   plotlist <- lapply(samples, function(x){
-    sceSampleInd <- which(sample == x)
-    meta = S4Vectors::metadata(inSCE)
+
+    sampleMeta <- meta[[x]]
+    knee <- sampleMeta$dropletUtils_barcodeRank_knee
+    inflection <- sampleMeta$dropletUtils_barcodeRank_inflection
+    df <- data.frame(rank = sampleMeta$dropletUtils_barcodeRank_rank,
+                     umi = sampleMeta$dropletUtils_barcodeRank_total)
     
-    df = data.frame(rank = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_rank[sceSampleInd],
-                    umi = meta$runBarcodeRanksMetaOutput$dropletUtils_barcodeRank_total[sceSampleInd])
-    df = df[which(df$umi != 0),]
     
     p <- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
       ggplot2::geom_point(size=dotSize, shape=20) +
       ggplot2::scale_x_log10() +
       ggplot2::scale_y_log10()
     
-    p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$knee, linetype = "Knee"), colour = 'red') +
-      ggplot2::geom_hline(ggplot2::aes(yintercept=meta$runBarcodeRankDrops$inflection, linetype = "Inflection"), colour= 'blue') +
+    p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=knee, linetype = "Knee"), colour = 'red') +
+      ggplot2::geom_hline(ggplot2::aes(yintercept=inflection, linetype = "Inflection"), colour= 'blue') +
       ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
                                      guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
                                                                    override.aes = list(color = c("blue", "red"))))
@@ -2081,24 +2083,24 @@ plotBarcodeRankScatter <- function(inSCE,
     return(p)
   })
   if (length(unique(samples)) > 1) {
-    names(plotlist) <- samples
-    plotlist <- list(Sample = plotlist)
+      names(plotlist) <- samples
+      plotlist <- list(Sample = plotlist)
   } else {
-    plotlist <- plotlist[[1]]
+      plotlist <- plotlist[[1]]
   }
   
   ##Needs to be turned off for Shiny User Interface
   if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all") && length(unique(sample)) > 1){
-      return(cowplot::plot_grid(plotlist = unlist(plotlist,
-                                                  recursive = FALSE),
-                                align = "h",
-                                vjust = 0,
-                                rel_heights = sampleRelHeights,
-                                rel_widths = sampleRelWidths))
-    }else if(combinePlot == "sample"){
-      return(plotlist)
-    }
+      if(combinePlot %in% c("all") && length(unique(sample)) > 1){
+          return(cowplot::plot_grid(plotlist = unlist(plotlist,
+          recursive = FALSE),
+          align = "h",
+          vjust = 0,
+          rel_heights = sampleRelHeights,
+          rel_widths = sampleRelWidths))
+      }else if(combinePlot == "sample"){
+          return(plotlist)
+      }
   }
   return(plotlist)
   
@@ -2169,8 +2171,8 @@ plotBarcodeRankScatter <- function(inSCE,
   ###
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
   ###
-  
-  if(length(unique(df$groupby)) > 1){
+
+  if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
                                                                 hjust = 1,
                                                                 size = axisSize))
@@ -2193,10 +2195,10 @@ plotBarcodeRankScatter <- function(inSCE,
   }
   if (!is.null(summary)){
     if(summary == "mean"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = base::mean(y))
       fun <- base::mean
     }else if(summary == "median"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = stats::median(y))
       fun <- stats::median
     }else{
       stop("`summary`` must be either `mean` or `median`.")
@@ -2207,10 +2209,10 @@ plotBarcodeRankScatter <- function(inSCE,
     summ$label <- paste0(summary,": ", round(summ$value, 5))
     
     p <- p + ggplot2::geom_text(data = summ,
-                                ggplot2::aes_string(x = "groupby",
-                                                    y = "statY",
-                                                    label = "label"),
-                                size = 5)
+      ggplot2::aes_string(x = "groupBy",
+        y = "statY",
+        label = "label"),
+      size = 5)
     p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
                                    fun.max = fun,
                                    geom = "crossbar",

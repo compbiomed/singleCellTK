@@ -73,15 +73,15 @@ plotRunPerCellQCResults <- function(inSCE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
   if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
+      if (length(sample) != ncol(inSCE)) {
+          stop(
+              "'sample' must be the same length as the number",
+              " of columns in 'inSCE'"
+          )
+      }
+    } else {
+        sample <- rep(1, ncol(inSCE))
     }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
   sampleVector <- sample
 
   samples <- unique(sample)
