@@ -651,8 +651,8 @@ plotSCEScatter <- function(inSCE,
                            plotLabels = NULL){
   if (!is.null(slot)){
     if (slot == "reducedDims"){
-      annotation_clm <- substr(annotation, str_length(annotation), str_length(annotation))
-      annotation <- substr(annotation, 1, str_length(annotation) - 2)
+      annotation_clm <- substr(annotation, string::str_length(annotation), string::str_length(annotation))
+      annotation <- substr(annotation, 1, string::str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
       stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
