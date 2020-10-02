@@ -65,6 +65,7 @@ Imports:
     multtest,
     plotly,
     RColorBrewer,
+    randomcoloR,
     Rtsne,
     S4Vectors,
     scater,

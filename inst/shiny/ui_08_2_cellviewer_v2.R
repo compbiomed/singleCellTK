@@ -171,16 +171,33 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         # && output.hide_typebtns == 'show'
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Single Color' && output.hide_typebtns == 'show'", "TypeSelect_Colorby"),
+          condition = sprintf("input['TypeSelect_Colorby'] != 'Single Color' && output.hide_typebtns == 'show'"),
           radioButtons(
             "SelectColorType",
             label = NULL,
-            choices = c("Categorical", "Continuous")
+            choices = c("Categorical", "Continuous"),
+          ),
+        ),
+        hidden(
+          tags$div(
+            id = "continuousColorConditional",
+            colourInput("highColor", "High Color", "blue", "background", "limited"),
+            colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+            colourInput("lowColor", "Low Color", "white", "background", "limited")
           )
         ),
+        hidden(tags$div(
+          id = "categoricalColorConditional",
+          selectizeInput(
+            "colorTheme",
+            label = h5("Color Scheme"),
+            c("ggplot", "celda", "random")
+          ),
+          uiOutput("categoricalColorUI")
+        )), 
         conditionalPanel(
           id="binningConditional",
-          condition = "input['SelectColorType'] == 'Continuous' && output.hide_typebtns == 'show'",
+          condition = sprintf("input['%s'] == 'Continuous' && input['%s'] != 'Single Color'", "SelectColorType", "TypeSelect_Colorby"),
             #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
           #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
           h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
