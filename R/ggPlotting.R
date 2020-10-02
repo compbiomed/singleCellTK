@@ -2120,7 +2120,6 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @importFrom dplyr %>%
 .ggBar <- function(y,
   groupBy = NULL,
-  dots = TRUE,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -2140,7 +2139,7 @@ plotBarcodeRankScatter <- function(inSCE,
 
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
-      x = "groupby",
+      x = "groupBy",
       y = "y"
     )
 
@@ -2161,7 +2160,7 @@ plotBarcodeRankScatter <- function(inSCE,
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
   ###
 
-  if(length(unique(df$groupby)) > 1){
+  if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
       hjust = 1,
       size = axisSize))
@@ -2184,10 +2183,10 @@ plotBarcodeRankScatter <- function(inSCE,
   }
   if (!is.null(summary)){
     if(summary == "mean"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = base::mean(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = base::mean(y))
       fun <- base::mean
     }else if(summary == "median"){
-      summ <- df %>% dplyr::group_by(groupby) %>% dplyr::summarize(value = stats::median(y))
+      summ <- df %>% dplyr::group_by(groupBy) %>% dplyr::summarize(value = stats::median(y))
       fun <- stats::median
     }else{
       stop("`summary`` must be either `mean` or `median`.")
@@ -2198,7 +2197,7 @@ plotBarcodeRankScatter <- function(inSCE,
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
     p <- p + ggplot2::geom_text(data = summ,
-      ggplot2::aes_string(x = "groupby",
+      ggplot2::aes_string(x = "groupBy",
         y = "statY",
         label = "label"),
       size = 5)
@@ -2254,8 +2253,6 @@ plotSCEBarColData <- function(inSCE,
   sample = NULL,
   coldata,
   groupBy = NULL,
-  violin = TRUE,
-  boxplot = TRUE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
@@ -2305,7 +2302,6 @@ plotSCEBarColData <- function(inSCE,
   p <- .ggBar(
     y = coldata,
     groupBy = groupBy,
-    dots = dots,
     xlab = xlab,
     ylab = ylab,
     axisSize = axisSize,
@@ -2401,7 +2397,6 @@ plotSCEBarAssayData <- function(inSCE,
   p <- .ggBar(
     y = counts,
     groupBy = groupBy,
-    dots = dots,
     xlab = xlab,
     ylab = ylab,
     axisSize = axisSize,

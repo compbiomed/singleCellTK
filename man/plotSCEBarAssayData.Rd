@@ -6,6 +6,7 @@
 \usage{
 plotSCEBarAssayData(
   inSCE,
+  sample = NULL,
   useAssay = "counts",
   feature,
   groupBy = NULL,
@@ -17,13 +18,18 @@ plotSCEBarAssayData(
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{useAssay}{Indicate which assay to use. Default "counts".}
 
@@ -52,13 +58,23 @@ Default TRUE.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 Visualizes values stored in the assay slot of a
- SingleCellExperiment object via a violin plot.
+ SingleCellExperiment object via a bar plot.
 }
 \examples{
 plotSCEBarAssayData(
