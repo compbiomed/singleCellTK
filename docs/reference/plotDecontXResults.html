@@ -94,7 +94,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -145,10 +145,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -192,7 +201,7 @@
   <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>shape</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>violin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>boxplot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>dots</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -210,7 +219,14 @@
   <span class='kw'>axisLabelSize</span> <span class='kw'>=</span> <span class='fl'>18</span>,
   <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
   <span class='kw'>legendSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
-  <span class='kw'>legendTitleSize</span> <span class='kw'>=</span> <span class='fl'>16</span>
+  <span class='kw'>legendTitleSize</span> <span class='kw'>=</span> <span class='fl'>16</span>,
+  <span class='kw'>relHeights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>relWidths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>plotLabels</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>plotLabelSize</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>samplePerColumn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sampleRelHeights</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sampleRelWidths</span> <span class='kw'>=</span> <span class='fl'>1</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -239,8 +255,8 @@ object, or can be retrieved from the colData slot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>combinePlot</th>
-      <td><p>Boolean. Will combine plots using `cowplot::plot_grid`.
-Default FALSE.</p></td>
+      <td><p>Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+while "sample" will output a list of plots separated by sample. Default "all".</p></td>
     </tr>
     <tr>
       <th>violin</th>
@@ -324,6 +340,38 @@ when TRUE. Default TRUE.</p></td>
       <th>legendTitleSize</th>
       <td><p>size of legend title. Default 16.</p></td>
     </tr>
+    <tr>
+      <th>relHeights</th>
+      <td><p>Relative heights of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>relWidths</th>
+      <td><p>Relative widths of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabels</th>
+      <td><p>labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabelSize</th>
+      <td><p>size of labels</p></td>
+    </tr>
+    <tr>
+      <th>samplePerColumn</th>
+      <td><p>If TRUE, when there are multiple samples and combining by "all",
+the output .ggplot will have plots from each sample on a single column. Default TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelHeights</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative heights for each plot.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelWidths</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative widths for each plot.</p></td>
+    </tr>
     </table>
 
 
@@ -331,9 +379,10 @@ when TRUE. Default TRUE.</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>"EmptyDroplet"</span>]
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDecontX.html'>runDecontX</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:41 2020 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:41 2020 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:41 2020 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:42:44 2020 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 2.758711 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='input'><span class='fu'>plotDecontXResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; $scatterDecon</div><div class='img'><img src='plotDecontXResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; $densityContamination</div><div class='img'><img src='plotDecontXResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; $scatterCluster</div><div class='img'><img src='plotDecontXResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runDecontX.html'>runDecontX</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:20 2020 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:21 2020 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:21 2020 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:11:23 2020 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 2.726222 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='input'><span class='fu'>plotDecontXResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $density_decontXContamination</div><div class='img'><img src='plotDecontXResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $scatter_decontXContamination</div><div class='img'><img src='plotDecontXResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $violin_decontXContamination</div><div class='img'><img src='plotDecontXResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+#&gt; $scatter_decontXClusters</div><div class='img'><img src='plotDecontXResults-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

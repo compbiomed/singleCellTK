@@ -93,7 +93,7 @@ and a file of annotation information, ." />
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -144,10 +144,19 @@ and a file of annotation information, ." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -192,7 +201,14 @@ and a file of annotation information, .</p>
   <span class='kw'>assayName</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
   <span class='kw'>inputDataFrames</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>class</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span>),
-  <span class='kw'>delayedArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>delayedArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>annotFileHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>annotFileRowName</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>annotFileSep</span> <span class='kw'>=</span> <span class='st'>"\t"</span>,
+  <span class='kw'>featureHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>featureRowName</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>featureSep</span> <span class='kw'>=</span> <span class='st'>"\t"</span>,
+  <span class='kw'>gzipped</span> <span class='kw'>=</span> <span class='st'>"auto"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -237,6 +253,34 @@ object. Can be one of "Matrix" (as returned by
       <th>delayedArray</th>
       <td><p>Boolean. Whether to read the expression matrix as
 <a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>annotFileHeader</th>
+      <td><p>Whether there's a header (colnames) in the cell annotation file. Default is FALSE</p></td>
+    </tr>
+    <tr>
+      <th>annotFileRowName</th>
+      <td><p>Which column is used as the rownames for the cell annotation file. Default is 1 (first column).</p></td>
+    </tr>
+    <tr>
+      <th>annotFileSep</th>
+      <td><p>Separater used for the cell annotation file. Default is "\t".</p></td>
+    </tr>
+    <tr>
+      <th>featureHeader</th>
+      <td><p>Whether there's a header (colnames) in the feature annotation file. Default is FALSE</p></td>
+    </tr>
+    <tr>
+      <th>featureRowName</th>
+      <td><p>Which column is used as the rownames for the feature annotation file. Default is 1 (first column).</p></td>
+    </tr>
+    <tr>
+      <th>featureSep</th>
+      <td><p>Separater used for the feature annotation file. Default is "\t".</p></td>
+    </tr>
+    <tr>
+      <th>gzipped</th>
+      <td><p>Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE.</p></td>
     </tr>
     </table>
 

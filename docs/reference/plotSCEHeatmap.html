@@ -92,7 +92,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -143,10 +143,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -207,6 +216,9 @@
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='st'>"SCE Heatmap"</span>,
   <span class='kw'>rowTitle</span> <span class='kw'>=</span> <span class='st'>"Genes"</span>,
   <span class='kw'>colTitle</span> <span class='kw'>=</span> <span class='st'>"Cells"</span>,
+  <span class='kw'>rowGap</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>0</span>, <span class='st'>"mm"</span>),
+  <span class='kw'>colGap</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>0</span>, <span class='st'>"mm"</span>),
+  <span class='kw'>border</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>colorScheme</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='no'>...</span>
 )</pre>
@@ -339,6 +351,23 @@ trimmed to their nearst bound. Default <code><a href='https://rdrr.io/r/base/c.h
     <tr>
       <th>colTitle</th>
       <td><p>The subtitle for the columns. Default <code>"Cells"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>rowGap</th>
+      <td><p>A numeric value or a <code><a href='https://rdrr.io/r/grid/unit.html'>unit</a></code> object. For the
+gap size between rows of the splitted heatmap. Default
+<code><a href='https://rdrr.io/r/grid/unit.html'>grid::unit(0, 'mm')</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>colGap</th>
+      <td><p>A numeric value or a <code><a href='https://rdrr.io/r/grid/unit.html'>unit</a></code> object. For the
+gap size between columns of the splitted heatmap. Default
+<code><a href='https://rdrr.io/r/grid/unit.html'>grid::unit(0, 'mm')</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>border</th>
+      <td><p>A logical scalar. Whether to show the border of the heatmap or
+splitted heatmaps. Default <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>colorScheme</th>

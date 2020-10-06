@@ -51,7 +51,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -102,10 +102,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -130,7 +139,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="run_qcCommandline_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Generation of comprehensive quality control metrics with SCTK</h1>
@@ -165,7 +174,7 @@
 <h3 class="hasAnchor">
 <a href="#install-python-packages-and-dependencies" class="anchor"></a>Install Python packages and dependencies</h3>
 <p>This pipeline depends on Python package described below. If these packages is not installed or not at the proper version, please install them by running the following code:</p>
-<div class="sourceCode"><html><body><pre class="r">pip3 install --user h5py==2.9.0
+<div class="sourceCode" id="cb1"><html><body><pre class="r">pip3 install --user h5py==2.9.0
 pip3 install --user Scrublet
 pip3 install --user virtualenv
 pip3 install --user scanpy</pre></body></html></div>
@@ -174,7 +183,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <h3 class="hasAnchor">
 <a href="#install-r-packages-and-dependencies" class="anchor"></a>Install R packages and dependencies</h3>
 <p>The script will automatically try to install the “singleCellTK” package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK@devel"</span>)</pre></body></html></div>
 </div>
 </div>
@@ -245,7 +254,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <li>If the cellranger data set is saved in the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can load the data by running following code:</li>
 </ol>
 <p>For CellRangerV3:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb5"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P CellRangerV3 \
 -s SampleName \
@@ -253,7 +262,7 @@ pip3 install --user scanpy</pre></body></html></div>
 -S TRUE \
 -F R,Python,FlatFile,HTAN</pre></body></html></div>
 <p>For CellRangerV2, the reference used by cellranger needs to be specified by -G/–genome:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb6"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P CellRangerV2 \
 -s SampleName \
@@ -264,7 +273,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <ol start="2" style="list-style-type: decimal">
 <li>If the cellranger count output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can specified input using -R and -C:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb7"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P CellRangerV2 \
 -C /path/to/cell/matrix \
 -R /path/to/droplet/matrix \
@@ -280,7 +289,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <ol style="list-style-type: decimal">
 <li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb8"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P SceRDS \
 -s Samplename \
 -o Output_Directory \
@@ -291,7 +300,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <ol start="2" style="list-style-type: decimal">
 <li>If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb9"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -P CountMatrix \
 -s Samplename \
 -o Output_Directory \
@@ -303,7 +312,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <h3 class="hasAnchor">
 <a href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms" class="anchor"></a>Methods to run pipeline on data set generated by other algorithms</h3>
 <p>If your data is preprocessed by other algorithms, you can load the data as shown in the figure above. Basically, the templated is shown below:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb10"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P Preprocessing_Algorithm \
 -s SampleName \
@@ -315,7 +324,7 @@ pip3 install --user scanpy</pre></body></html></div>
 <h3 class="hasAnchor">
 <a href="#methods-to-run-pipeline-on-only-droplet-count-or-cell-count-data" class="anchor"></a>Methods to run pipeline on only droplet count or cell count data</h3>
 <p>User can choose to run QC pipeline on only one of the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take single input and perform quality control on it. One of the example is shown below:</p>
-<div class="sourceCode"><html><body><pre class="r">Rscript SCTK_runQC.R \
+<div class="sourceCode" id="cb11"><html><body><pre class="r">Rscript SCTK_runQC.R \
 -b /base/path \
 -P Preprocessing_Algorithm \
 -s SampleName \

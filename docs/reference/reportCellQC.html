@@ -92,7 +92,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -143,10 +143,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -183,7 +192,7 @@
     <p>A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reportCellQC</span>(<span class='no'>inSCE</span>, <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>output_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>reportCellQC</span>(<span class='no'>inSCE</span>, <span class='kw'>output_file</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>output_dir</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>study</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,12 +210,15 @@ the filtered count matrix with the output from runCellQC function</p></td>
       <th>output_dir</th>
       <td><p>name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory</p></td>
     </tr>
+    <tr>
+      <th>study</th>
+      <td><p>description of the data set and experiment design. Default is NULL.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>.html file</p>
-<p>.html file</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {

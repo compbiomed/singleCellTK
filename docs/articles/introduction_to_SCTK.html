@@ -51,7 +51,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -102,10 +102,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -130,7 +139,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="introduction_to_SCTK_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to singleCellTK - Basic Analysis Workflow</h1>
@@ -147,20 +156,20 @@
 <div id="load-sctk" class="section level2">
 <h2 class="hasAnchor">
 <a href="#load-sctk" class="anchor"></a>Load SCTK</h2>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)</pre></body></html></div>
 </div>
 <div id="example-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-data" class="anchor"></a>Example Data</h2>
 <p>To list available example data from the SCTK package, run</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="kw">package</span> <span class="kw">=</span> <span class="st">'singleCellTK'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="kw">package</span> <span class="kw">=</span> <span class="st">'singleCellTK'</span>)</pre></body></html></div>
 <p>Example datasets from other upstream tools are included in the extdata directory</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"singleCellTK"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"singleCellTK"</span>))</pre></body></html></div>
 </div>
 <div id="import-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-data" class="anchor"></a>Import Data</h2>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importCellRanger.html">importCellRanger</a></span>(<span class="kw">cellRangerDirs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"singleCellTK"</span>),
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importCellRanger.html">importCellRanger</a></span>(<span class="kw">cellRangerDirs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"singleCellTK"</span>),
 <span class="kw">sampleDirs</span> <span class="kw">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,<span class="kw">sampleNames</span> <span class="kw">=</span> <span class="st">"hgmm1kv3"</span>, <span class="kw">dataType</span> <span class="kw">=</span> <span class="st">"filtered"</span>)
 
 <span class="no">sce</span></pre></body></html></div>
@@ -171,27 +180,27 @@
 <div id="cell-qc" class="section level3">
 <h3 class="hasAnchor">
 <a href="#cell-qc" class="anchor"></a>Cell QC</h3>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span>(<span class="no">sce</span>,
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span>(<span class="no">sce</span>,
                 <span class="kw">algorithms</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"QCMetrics"</span>, <span class="st">"doubletCells"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>,
                 <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"scrublet"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>))</pre></body></html></div>
 </div>
 <div id="droplet-qc" class="section level3">
 <h3 class="hasAnchor">
 <a href="#droplet-qc" class="anchor"></a>Droplet QC</h3>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span>(<span class="no">inSCE</span>,
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span>(<span class="no">inSCE</span>,
                     <span class="kw">algorithms</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"QCMetrics"</span>, <span class="st">"emptyDrops"</span>, <span class="st">"barcodeRanks"</span>))</pre></body></html></div>
 </div>
 </div>
 <div id="visualize-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualize-results" class="anchor"></a>Visualize Results</h2>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotUMAP.html">plotUMAP</a></span>(<span class="no">sce</span>, <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"scrublet_UMAP"</span>, <span class="kw">runUMAP</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plotUMAP.html">plotUMAP</a></span>(<span class="no">sce</span>, <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"scrublet_UMAP"</span>, <span class="kw">runUMAP</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)</pre></body></html></div>
 </div>
 <div id="export-sce-as-text-file" class="section level2">
 <h2 class="hasAnchor">
 <a href="#export-sce-as-text-file" class="anchor"></a>Export SCE as text file</h2>
 <p>The SingleCellExperiment object which contains QC metrics can be exported as rds, h5 or text files. More information about output format can be found in <a href="./run_qc.html">Quality Control</a>. Also, refer documentation <a href="./exportSCEtoAnnData.html">exportSCEtoAnnData</a> and <a href="./exportSCEtoFlatFile.html">exportSCEtoFlatFile</a>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">## TXT files</span>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co">## TXT files</span>
 <span class="fu"><a href="../reference/exportSCEtoFlatFile.html">exportSCEtoFlatFile</a></span>(<span class="kw">sce</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">outputDir</span> <span class="kw">=</span> <span class="st">"example_sce"</span>)
 <span class="co">## h5 files</span>
 <span class="fu"><a href="../reference/exportSCEtoAnnData.html">exportSCEtoAnnData</a></span>(<span class="kw">sce</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">outputDir</span> <span class="kw">=</span> <span class="st">"example_sce"</span>)
@@ -206,7 +215,7 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
 <pre><code>## R version 3.6.1 (2019-07-05)
 ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
 ## Running under: macOS Sierra 10.12.6
@@ -224,11 +233,11 @@
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.3       rprojroot_1.3-2  crayon_1.3.4     digest_0.6.23   
 ##  [5] assertthat_0.2.1 MASS_7.3-51.5    R6_2.4.1         backports_1.1.5 
-##  [9] magrittr_1.5     evaluate_0.14    stringi_1.4.3    rlang_0.4.2     
-## [13] rstudioapi_0.10  fs_1.3.1         rmarkdown_2.1    pkgdown_1.5.1   
+##  [9] magrittr_1.5     evaluate_0.14    stringi_1.4.3    rlang_0.4.7     
+## [13] rstudioapi_0.10  fs_1.3.1         rmarkdown_2.3    pkgdown_1.5.1   
 ## [17] desc_1.2.0       tools_3.6.1      stringr_1.4.0    yaml_2.2.1      
-## [21] xfun_0.11        compiler_3.6.1   memoise_1.1.0    htmltools_0.4.0 
-## [25] knitr_1.26</code></pre>
+## [21] xfun_0.16        compiler_3.6.1   memoise_1.1.0    htmltools_0.4.0 
+## [25] knitr_1.29</code></pre>
 </div>
   </div>
 

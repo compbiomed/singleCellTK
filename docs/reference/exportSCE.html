@@ -92,7 +92,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -143,10 +143,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -188,7 +197,7 @@
   <span class='kw'>samplename</span> <span class='kw'>=</span> <span class='st'>"sample"</span>,
   <span class='kw'>directory</span> <span class='kw'>=</span> <span class='st'>"./"</span>,
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"Cells"</span>,
-  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"R"</span>, <span class='st'>"Python"</span>, <span class='st'>"FlatFile"</span>, <span class='st'>"HTAN"</span>)
+  <span class='kw'>format</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SCE"</span>, <span class='st'>"AnnData"</span>, <span class='st'>"FlatFile"</span>, <span class='st'>"HTAN"</span>)
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -217,7 +226,7 @@ It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).</p></td>
     <tr>
       <th>format</th>
       <td><p>The format of output. It currently supports flat files, rds files
-and python h5 files. It can output multiple formats. Default: c('R', 'Python', 'Flatfile').</p></td>
+and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").</p></td>
     </tr>
     </table>
 

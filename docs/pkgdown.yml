@@ -1,8 +1,9 @@
-pandoc: 1.19.2.1
+pandoc: 2.10.1
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   batch_correction: batch_correction.html
+  clustering: clustering.html
   differential_expression: differential_expression.html
   find_marker: find_marker.html
   heatmap: heatmap.html
@@ -11,5 +12,10 @@ articles:
   introduction_to_SCTK: introduction_to_SCTK.html
   run_qcCommandline: run_qcCommandline.html
   run_qcConsole: run_qcConsole.html
-last_built: 2020-08-26T16:41Z
+  ui_batch_correction: ui_batch_correction.html
+  ui_clustering: ui_clustering.html
+  ui_differential_expression: ui_differential_expression.html
+  ui_find_marker: ui_find_marker.html
+  ui_heatmap: ui_heatmap.html
+last_built: 2020-10-05T14:10Z
 

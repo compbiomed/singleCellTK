@@ -94,7 +94,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -145,10 +145,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 1</a>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">I am Place Holder 2</a>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -192,7 +201,7 @@
   <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>shape</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>violin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>boxplot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>dots</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -210,7 +219,14 @@
   <span class='kw'>axisLabelSize</span> <span class='kw'>=</span> <span class='fl'>18</span>,
   <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
   <span class='kw'>legendSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
-  <span class='kw'>legendTitleSize</span> <span class='kw'>=</span> <span class='fl'>16</span>
+  <span class='kw'>legendTitleSize</span> <span class='kw'>=</span> <span class='fl'>16</span>,
+  <span class='kw'>relHeights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>relWidths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>plotLabels</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>plotLabelSize</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>samplePerColumn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sampleRelHeights</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sampleRelWidths</span> <span class='kw'>=</span> <span class='fl'>1</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -239,8 +255,8 @@ object, or can be retrieved from the colData slot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>combinePlot</th>
-      <td><p>Boolean. Will combine plots using `cowplot::plot_grid`.
-Default FALSE.</p></td>
+      <td><p>Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+while "sample" will output a list of plots separated by sample. Default "all".</p></td>
     </tr>
     <tr>
       <th>violin</th>
@@ -324,16 +340,45 @@ when TRUE. Default TRUE.</p></td>
       <th>legendTitleSize</th>
       <td><p>size of legend title. Default 16.</p></td>
     </tr>
+    <tr>
+      <th>relHeights</th>
+      <td><p>Relative heights of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>relWidths</th>
+      <td><p>Relative widths of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabels</th>
+      <td><p>labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabelSize</th>
+      <td><p>size of labels</p></td>
+    </tr>
+    <tr>
+      <th>samplePerColumn</th>
+      <td><p>If TRUE, when there are multiple samples and combining by "all",
+the output .ggplot will have plots from each sample on a single column. Default TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelHeights</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative heights for each plot.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelWidths</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative widths for each plot.</p></td>
+    </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>"EmptyDroplet"</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runScrublet.html'>runScrublet</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Wed Aug 26 12:43:46 2020 ... Running 'scrublet'</span></div><div class='input'><span class='fu'>plotScrubletResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $scatterScore</div><div class='img'><img src='plotScrubletResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; $densityScore</div><div class='img'><img src='plotScrubletResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; $violinScore</div><div class='img'><img src='plotScrubletResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
-#&gt; $scatterCall</div><div class='img'><img src='plotScrubletResults-4.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runScrublet.html'>runScrublet</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Cannot find python module 'scrublet', please install Conda and run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().If one of these have been previously run to install the modules,make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been restarted since the module installation. Alternatively, Scrublet can be installed on the local machinewith pip (e.g. pip install scrublet) and then the 'use_python()' function from the 'reticulate' package can be used to select the correct Python environment.</span></div><div class='input'><span class='fu'>plotScrubletResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plotSCEDensityColData(inSCE = inSCESub, sample = sampleSub, coldata = "scrublet_score",     groupby = groupby, xlab = "Score", ylab = "Density", axisSize = 15,     axisLabelSize = 18, defaultTheme = defaultTheme, cutoff = 0.5,     title = "Density, Scrublet Score", titleSize = titleSize): 'scrublet_score' is not found in ColData.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -51,7 +51,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.Rmd">Quality Control</a>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -139,7 +139,7 @@
 
       
 
-      </header><script src="differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="differential_expression_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="differential_expression_files/header-attrs-2.3/header-attrs.js"></script><script src="differential_expression_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Differential Expression</h1>
@@ -233,7 +233,7 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
 <span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
