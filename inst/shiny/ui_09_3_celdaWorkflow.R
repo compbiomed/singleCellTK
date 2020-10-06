@@ -7,9 +7,11 @@ shinyPanelCelda <- fluidPage(
                 numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
                 numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
                 actionButton("celdamodsplit", "Recursive Module Split"),
-                actionButton("celdamodsplitdiff", "Plot Perplexity Difference"),
-                numericInput("celdaLselect", "Select Number of Feature Modules:", min = 1, max = 100, value = 25),
-                actionButton("celdaLbtn", "Subset Celda List")
+                #actionButton("celdamodsplitdiff", "Plot Perplexity Difference"),
+                hidden(
+                    numericInput("celdaLselect", "Select Number of Feature Modules:", min = 1, max = 100, value = 25),
+                    actionButton("celdaLbtn", "Select # of Modules")
+                )
             ),
             mainPanel(
                 plotlyOutput("modsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
@@ -20,20 +22,23 @@ shinyPanelCelda <- fluidPage(
             sidebarPanel(
                 numericInput("celdaKinit", "Select Number of Initial Cell Modules:", min = 1, max = 10, value = 5),
                 numericInput("celdaKmax", "Select Number of Maximum Cell Modules:", min = 15, max = 40, value = 25),
-                actionButton("celdacellsplit", "Subset Celda Model"),
-                numericInput("celdaKselect", "Select Number of Cell Modules:", min = 2, max = 20, value = 10),
-                actionButton("celdaKbtn", "Subset Celda List")
+                actionButton("celdacellsplit", "Recursive Cell Split"),
+                hidden(
+                    numericInput("celdaKselect", "Select Number of Cell Clusters:", min = 2, max = 20, value = 10),
+                    actionButton("celdaKbtn", "Select # of Clusters")
+                )
             ),
             mainPanel(
                 plotlyOutput("cellsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
             )
         ),
 
-        bsCollapsePanel("Dimensionality Reduction",
-            panel(
+        bsCollapsePanel("Umap/Tsne",
+            sidebarPanel(
                 actionButton("CeldaUmap", "Run UMAP"),
                 actionButton("CeldaTsne", "Run tSNE")
-            )
+            ),
+            mainPanel()
         ),
 
         bsCollapsePanel("Cluster Data",

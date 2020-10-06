@@ -2389,48 +2389,65 @@ shinyServer(function(input, output, session) {
 
   modsplit <- eventReactive(input$celdamodsplit, {
     celda_sce <- selectFeatures(as.matrix(counts(vals$counts)))
+    #celda_alt <- SingleCellExperiment::altExp(celda_sce, "featureSubset")
+    #factorized <- factorizeMatrix(celda_sce)
     updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
-    return(recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax))
+    withProgress(message = "Clustering Features", max = 1, value = 1, {
+      modsplitting <- recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax)
+    })
+    return(modsplitting)
+    showNotification("Celda L Selected.")
+    shinyjs::show("celdaLselect")
+    shinyjs::show("celdaLbtn")
   })
   output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
 
-  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-    return(plotGridSearchPerplexityDiff(modsplit()))
-  })
-  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
+  #modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
+  #  return()
+  #})
+  output$modsplitplotdiff <- renderPlotly({plotGridSearchPerplexityDiff(modsplit())})
 
   observeEvent(input$celdaLbtn, {
     modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
-    showNotification("Celda L Selected.")
+    showNotification("Number of Feature Modules Selected.")
   })
 
   cellsplit <- eventReactive(input$celdacellsplit, {
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
-    return(recursiveSplitCell(modsplit(), initialK = input$celdaKinit, maxK = input$celdaKmax))
+    withProgress(message = "Clustering Cells", max = 1, value = 1, {
+      cellsplitting <- recursiveSplitCell(modsplit(), initialK = input$celdaKinit, maxK = input$celdaKmax)
+    })
+    return(cellsplitting)
+    showNotification("Cell Clustering Complete.")
+    shinyjs::show("celdaKselect")
+    shinyjs::show("celdaKbtn")
   })
 
   output$cellsplitplot <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
 
+  celdamod <- reactiveVal(NULL)
   observeEvent(input$celdaKbtn, {
-    cellsplit <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
-    showNotification("Celda K Selected.")
+    celdamod(subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect)))
+    showNotification("Number of Cell Clusters Selected.")
   })
 
   observeEvent(input$CeldaUmap, {
-    celda <- celdaUmap(cellsplit())
+    withProgress(message = "Computing Umap", max = 1, value = 1, {
+      celdamod(celdaUmap(celdamod()))
+    })
+    showNotification("Umap complete.")
   })
 
   observeEvent(input$CeldaTsne, {
-    celda <- celdaTsne(celda)
+    withProgress(message = "Computing Tsne", max = 1, value = 1, {
+      celdamod(celdaTsne(celdamod()))
+    })
+    showNotification("Tsne complete.")
   })
 
   observeEvent(input$celdafactorize,{
     factorized <- factorizeMatrix(vals$counts)
   })
-
-  #observeEvent(input$runCelda, {
-
-  #})
 
   # celda clustering tab
   observeEvent(input$runCelda2, {
