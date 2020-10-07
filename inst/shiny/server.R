@@ -832,7 +832,11 @@ shinyServer(function(input, output, session) {
       sceObj <- importMultipleSources(allImportEntries)
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
-          vals$original <- cbind(vals$original, sceObj)
+          sceList <- list(vals$original, sceObj)
+          vals$original <- combineSCE(sceList = sceList, 
+                     by.r = NULL, 
+                     by.c = Reduce(intersect, lapply(sceList, function(x) { colnames(colData(x))})), 
+                     combined = T)
         } else {
           vals$original <- sceObj
         }
