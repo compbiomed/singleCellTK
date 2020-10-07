@@ -8,7 +8,7 @@ plotRunPerCellQCResults(
   inSCE,
   sample = NULL,
   groupby = NULL,
-  combinePlot = NULL,
+  combinePlot = "all",
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,

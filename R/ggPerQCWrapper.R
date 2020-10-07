@@ -44,10 +44,11 @@
 #' plotRunPerCellQCResults(inSCE=sce)
 #' }
 #' @export
+
 plotRunPerCellQCResults <- function(inSCE,
                                     sample=NULL,
                                     groupby=NULL,
-                                    combinePlot=NULL,
+                                    combinePlot="all",
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
@@ -64,187 +65,224 @@ plotRunPerCellQCResults <- function(inSCE,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
-    }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
-
-  samples <- unique(sample)
-
-  if (length(samples) > 1) {
-    combined.sum <- plotSCEViolinColData(
-      inSCE=inSCE,
-      coldata="sum",
-      groupby=sample,
-      xlab="",
-      ylab="Counts",
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total counts per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      gridLine=TRUE,
-      summary="median",
-      titleSize=titleSize
-    )
-    combined.detected <- plotSCEViolinColData(
-      inSCE=inSCE,
-      coldata="detected",
-      groupby=sample,
-      xlab="",
-      ylab="Features",
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total features detected per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      gridLine=TRUE,
-      summary="median",
-      titleSize=titleSize
-    )
-    merged.plots <- list(combined.sum, combined.detected)
-    names(merged.plots) <- c("Sum", "Detected")
-    merged.plots <- list(Violin = merged.plots)
-  }
-
-  res.list <- c()
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    sampleSub <- sample[sampleInd]
-    inSCESub <- inSCE[, sampleInd]
-
-    violin.sum <- list(sum = plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="sum",
-      sample=sampleSub,
-      xlab="",
-      ylab="Counts",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total counts per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.sum)
-
-    violin.detected <- list(detected = plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="detected",
-      sample=sampleSub,
-      xlab="",
-      ylab="Features",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Total features detected per cell",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.detected)
-
-
-    violin.toppercent <- list(toppercent = plotSCEViolinColData(
-      inSCE=inSCESub,
-      coldata="percent_top_50",
-      sample=sampleSub,
-      xlab="",
-      ylab="Gene expression percentage (%)",
-      groupby=groupby,
-      violin=violin,
-      boxplot=boxplot,
-      dots=dots,
-      transparency=transparency,
-      title="Top 50 gene expression percentage",
-      dotSize=dotSize,
-      axisSize=axisSize,
-      axisLabelSize=axisLabelSize,
-      summary="median",
-      titleSize=titleSize
-    ))
-    res.list <- c(res.list, violin.toppercent)
-
-    if (any(grepl(
-      pattern="subsets_",
-      names(colData(inSCESub))
-    ))) {
-      subsets <- grep(
-        pattern="subsets_",
-        names(colData(inSCESub)), value=TRUE
-      )
-
-      violin.subset <- lapply(subsets, function(x) {
-        plotSCEViolinColData(
-          inSCE=inSCESub,
-          coldata=x,
-          sample=sampleSub,
-          xlab="",
-          ylab=x,
-          groupby=groupby,
-          violin=violin,
-          boxplot=boxplot,
-          dots=dots,
-          transparency=transparency,
-          axisSize=axisSize,
-          axisLabelSize=axisLabelSize,
-          title=paste0(x, " per cell"),
-          dotSize=dotSize,
-          titleSize=titleSize,
-          summary="median"
-        )
-      })
-      names(violin.subset) <- subsets
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
     } else {
-      violin.subset <- NULL
+        sample <- rep(1, ncol(inSCE))
     }
 
-    if (!is.null(violin.subset)) {
-      res.list <- c(res.list, violin.subset)
-    }
-    return(res.list)
-  })
+    samples <- unique(sample)
 
-  if (length(unique(samples)) > 1) {
-      names(plotlist) <- samples
-      plotlist <- c(merged.plots, list(Sample = plotlist))
-  } else {
-      plotlist <- unlist(plotlist, recursive=F)
-  }
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
-                                      relHeights = relHeights,
-                                      relWidths = relWidths,
-                                      labels = plotLabels,
-                                      labelSize = plotLabelSize,
-                                      samplePerColumn = samplePerColumn,
-                                      sampleRelHeights = sampleRelHeights,
-                                      sampleRelWidths = sampleRelWidths)
+    if (length(samples) >= 1) {
+        combined.sum <- plotSCEViolinColData(
+            inSCE=inSCE,
+            coldata="sum",
+            groupby=sample,
+            xlab="",
+            ylab="Counts",
+            violin=violin,
+            boxplot=boxplot,
+            dots=dots,
+            transparency=transparency,
+            title="Total counts per cell",
+            dotSize=dotSize,
+            axisSize=axisSize,
+            axisLabelSize=axisLabelSize,
+            gridLine=TRUE,
+            summary="median",
+            titleSize=titleSize
+        )
+
+        combined.detected <- plotSCEViolinColData(
+            inSCE=inSCE,
+            coldata="detected",
+            groupby=sample,
+            xlab="",
+            ylab="Features",
+            violin=violin,
+            boxplot=boxplot,
+            dots=dots,
+            transparency=transparency,
+            title="Total features detected per cell",
+            dotSize=dotSize,
+            axisSize=axisSize,
+            axisLabelSize=axisLabelSize,
+            gridLine=TRUE,
+            summary="median",
+            titleSize=titleSize
+        )
+        merged.plots <- list(combined.sum, combined.detected)
+        names(merged.plots) <- c("Sum", "Detected")
+
+        if (any(grepl(
+            pattern="subsets_",
+            names(colData(inSCE))
+        ))) {
+            subsets <- grep(
+                pattern="subsets_",
+                names(colData(inSCE)), value=TRUE
+            )
+
+            combined.subset <- lapply(subsets, function(x) {
+                plotSCEViolinColData(
+                    inSCE=inSCE,
+                    coldata=x,
+                    groupby = sample,
+                    xlab="",
+                    ylab=x,
+                    violin=violin,
+                    boxplot=boxplot,
+                    dots=dots,
+                    transparency=transparency,
+                    axisSize=axisSize,
+                    axisLabelSize=axisLabelSize,
+                    title=paste0(x, " per cell"),
+                    dotSize=dotSize,
+                    titleSize=titleSize,
+                    summary="median"
+                )
+            })
+            names(combined.subset) <- c("Gene_Subset_Sum", "Gene_Subset_Features", "Gene_Subset_Top50_Percent")
+            merged.plots <- c(merged.plots, combined.subset)
+        } else {
+            combined.subset <- NULL
+        }
+
+        merged.plots <- list(Violin = merged.plots)
     }
-  }
-  return(plotlist)
+
+    res.list <- c()
+    plotlist <- lapply(samples, function(x) {
+        sampleInd <- which(sample == x)
+        sampleSub <- sample[sampleInd]
+        inSCESub <- inSCE[, sampleInd]
+
+        if(combinePlot == "sample"){
+            violin.sum <- list(sum = plotSCEViolinColData(
+                inSCE=inSCESub,
+                coldata="sum",
+                sample=sampleSub,
+                xlab="",
+                ylab="Counts",
+                groupby=groupby,
+                violin=violin,
+                boxplot=boxplot,
+                dots=dots,
+                transparency=transparency,
+                title="Total counts per cell",
+                dotSize=dotSize,
+                axisSize=axisSize,
+                axisLabelSize=axisLabelSize,
+                summary="median",
+                titleSize=titleSize
+            ))
+            res.list <- c(res.list, violin.sum)
+
+            violin.detected <- list(detected = plotSCEViolinColData(
+                inSCE=inSCESub,
+                coldata="detected",
+                sample=sampleSub,
+                xlab="",
+                ylab="Features",
+                groupby=groupby,
+                violin=violin,
+                boxplot=boxplot,
+                dots=dots,
+                transparency=transparency,
+                title="Total features detected per cell",
+                dotSize=dotSize,
+                axisSize=axisSize,
+                axisLabelSize=axisLabelSize,
+                summary="median",
+                titleSize=titleSize
+            ))
+            res.list <- c(res.list, violin.detected)
+        }
+
+        violin.toppercent <- list(toppercent = plotSCEViolinColData(
+            inSCE=inSCESub,
+            coldata="percent_top_50",
+            sample=sampleSub,
+            xlab="",
+            ylab="Gene expression percentage (%)",
+            groupby=groupby,
+            violin=violin,
+            boxplot=boxplot,
+            dots=dots,
+            transparency=transparency,
+            title="Top 50 gene expression percentage",
+            dotSize=dotSize,
+            axisSize=axisSize,
+            axisLabelSize=axisLabelSize,
+            summary="median",
+            titleSize=titleSize
+        ))
+        res.list <- c(res.list, violin.toppercent)
+
+        if (any(grepl(
+            pattern="subsets_",
+            names(colData(inSCESub))
+        ))) {
+            subsets <- grep(
+                pattern="subsets_",
+                names(colData(inSCESub)), value=TRUE
+            )
+
+            violin.subset <- lapply(subsets, function(x) {
+                plotSCEViolinColData(
+                    inSCE=inSCESub,
+                    coldata=x,
+                    sample=sampleSub,
+                    xlab="",
+                    ylab=x,
+                    groupby=groupby,
+                    violin=violin,
+                    boxplot=boxplot,
+                    dots=dots,
+                    transparency=transparency,
+                    axisSize=axisSize,
+                    axisLabelSize=axisLabelSize,
+                    title=paste0(x, " per cell"),
+                    dotSize=dotSize,
+                    titleSize=titleSize,
+                    summary="median"
+                )
+            })
+            names(violin.subset) <- subsets
+        } else {
+            violin.subset <- NULL
+        }
+
+        if (!is.null(violin.subset)) {
+            res.list <- c(res.list, violin.subset)
+        }
+        return(res.list)
+    })
+
+    if (length(unique(samples)) >= 1) {
+        names(plotlist) <- samples
+        plotlist <- c(merged.plots, list(Sample = plotlist))
+    } else {
+        plotlist <- unlist(plotlist, recursive=F)
+    }
+    if(!is.null(combinePlot)){
+        if(combinePlot %in% c("all", "sample")){
+            plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
+                                            relHeights = relHeights,
+                                            relWidths = relWidths,
+                                            labels = plotLabels,
+                                            labelSize = plotLabelSize,
+                                            samplePerColumn = samplePerColumn,
+                                            sampleRelHeights = sampleRelHeights,
+                                            sampleRelWidths = sampleRelWidths)
+        }
+    }
+    return(plotlist)
 }
 
 #' @title Plots for runEmptyDrops outputs.
