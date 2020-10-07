@@ -75,7 +75,7 @@ navbar:
     - text: "R Console Analysis"
       menu:
         - text: "Import data into SCTK"
-          href: articles/import_scRNAseq_data_as_SCE.html
+          href: articles/import_scRNAseq_data_as_SCE_Console.html
         - text: "Quality Control"
           href: articles/run_qcConsole.html
         - text: "Normalization"

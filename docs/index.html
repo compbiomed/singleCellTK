@@ -64,7 +64,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="articles/import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a>
     </li>
     <li>
       <a href="articles/run_qcConsole.html">Quality Control</a>
@@ -177,17 +177,17 @@
 <h3 class="hasAnchor">
 <a href="#release-version" class="anchor"></a>Release Version</h3>
 <p>The current release version of SCTK can be downloaded from <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html">Bioconductor v3.10</a>:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
+<div class="sourceCode"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
   <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
 <span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"singleCellTK"</span>)</pre></div>
 <p>Load the package for analysis by running</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)</pre></div>
+<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)</pre></div>
 </div>
 <div id="development-version" class="section level3">
 <h3 class="hasAnchor">
 <a href="#development-version" class="anchor"></a>Development Version</h3>
 <p>The development version is available at <a href="https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html">Bioconductor v3.11</a> or from this repository:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="co"># install.packages("devtools")</span>
+<div class="sourceCode"><pre class="r"><span class="co"># install.packages("devtools")</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>,<span class="kw">ref</span><span class="kw">=</span><span class="st">"devel"</span>)</pre></div>
 </div>
 <div id="install-from-containerized-images" class="section level3">
@@ -212,17 +212,17 @@
 <h4 class="hasAnchor">
 <a href="#troubleshooting-r-installation" class="anchor"></a>Troubleshooting R Installation</h4>
 <p>For the majority of users, the commands above will install the latest version of the singleCellTK without any errors. Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:</p>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
+<div class="sourceCode"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span><span class="kw">=</span><span class="fl">TRUE</span>))
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
 <span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/version.html">version</a></span>()</pre></div>
 <p>If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:</p>
-<div class="sourceCode" id="cb10"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
+<div class="sourceCode"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
 <p>After you install Bioconductor 3.6 or higher, you should be able to install the toolkit using <code><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">devtools::install_github("compbiomed/singleCellTK")</a></code>. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.</p>
-<div class="sourceCode" id="cb11"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/valid.html">valid</a></span>()</pre></div>
+<div class="sourceCode"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/valid.html">valid</a></span>()</pre></div>
 <p>If the command above does not return <code>TRUE</code>, run the following command to update your R packages:</p>
-<div class="sourceCode" id="cb12"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
+<div class="sourceCode"><pre class="r"><span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>()</pre></div>
 <p>Then, try to install the toolkit again:</p>
-<div class="sourceCode" id="cb13"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</pre></div>
+<div class="sourceCode"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK"</span>)</pre></div>
 <p>If you still encounter an error, please <a href="mailto:camp@bu.edu">contact us</a> and we’d be happy to help.</p>
 </div>
 </div>
