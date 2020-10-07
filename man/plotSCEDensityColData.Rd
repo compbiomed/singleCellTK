@@ -17,7 +17,7 @@ plotSCEDensityColData(
   title = NULL,
   titleSize = 18,
   cutoff = NULL,
-  combinePlot = NULL,
+  combinePlot = "none",
   plotLabels = NULL
 )
 }
@@ -51,9 +51,8 @@ when TRUE. Default TRUE.}
 \item{cutoff}{Numeric value. The plot will be annotated with a vertical line
 if set. Default NULL.}
 
-\item{combinePlot}{Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.
-Default TRUE.}
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
 
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}

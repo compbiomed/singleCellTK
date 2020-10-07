@@ -49,9 +49,8 @@
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
@@ -83,8 +82,12 @@
                        legendTitle = NULL,
                        legendTitleSize = 12,
                        legendSize = 10,
-                       combinePlot = NULL,
+                       combinePlot = "none",
                        plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -95,14 +98,14 @@
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x){
     sceSampleInd <- which(sample == x)
     inSCESub <- inSCE[, sceSampleInd]
     colorBySub <- colorBy[sceSampleInd]
-    
+
     dataframe <- data.frame(SingleCellExperiment::reducedDim(
       inSCESub,
       reducedDimName
@@ -124,7 +127,7 @@
       warning("More than two dimensions supplied in reducedDims.
               Using the first two.")
     }
-    
+
     # If xlab and ylab are specified
     if (!is.null(xlab) & !is.null(ylab)) {
       colnames(dataframe) <- c(xlab, ylab)
@@ -133,10 +136,10 @@
       colnames(dataframe) <- c(paste0(reducedDimName, "_1"),
                                paste0(reducedDimName, "_2"))
     }
-    
+
     xdim <- colnames(dataframe)[1]
     ydim <- colnames(dataframe)[2]
-    
+
     if (!is.null(conditionClass) & !is.null(colorBySub)) {
       if (conditionClass %in% c("character", "factor", "numeric")) {
         if (conditionClass == "character") {
@@ -148,7 +151,7 @@
         }
       }
     }
-    
+
     if (!is.null(bin) & !is.null(colorBySub)) {
       colorBySub <- .binSCTK(
         value = colorBySub,
@@ -156,11 +159,11 @@
         binLabel = binLabel
       )
     }
-    
+
     if (!is.null(colorBySub)) {
       dataframe$color <- colorBySub
     }
-    
+
     if (!is.null(groupBy)){
       dataframe$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
     }
@@ -217,12 +220,12 @@
       g <- g + ggplot2::labs(color = "") +
         ggplot2::theme(legend.text=ggplot2::element_text(size=legendSize))
     }
-    
+
     if (!is.null(groupBy)){
       g <- g + ggplot2::facet_wrap(~groups)
     }
-    
-    
+
+
     if (isTRUE(labelClusters) && class(colorBySub) %in% c("character", "factor")) {
       centroidList <- lapply(unique(colorBySub), function(x) {
         dataframe.sub <- dataframe[dataframe$color == x, ]
@@ -237,15 +240,15 @@
         color = centroid[, 3],
         Sample = rep(1, length(unique(colorBySub)))
       )
-      
+
       if (!is.null(shape)) {
         centroid$shape <- dataframe$shape[1]
       }
-      
+
       if (!is.null(groupBy)){
         g <- g + ggplot2::facet_wrap(~groups)
       }
-      
+
       colnames(centroid)[seq_len(2)] <- c(xdim, ydim)
       g <- g + ggplot2::geom_point(
         data = centroid,
@@ -262,24 +265,30 @@
     }
     return(g)
   })
-  ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
-      }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
-    }
+
+  if (length(unique(samples)) > 1) {
+    names(plotlist) <- samples
+    plotlist <- list(Sample = plotlist)
   }
+
+  ##Needs to be turned off for Shiny User Interface
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
+      }
+    }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
+  }else if(combinePlot == "none" && length(plotlist) == 1){
+    plotlist <- plotlist[[1]]
+  }
+
   return(plotlist)
 }
-
 #' @title Dimension reduction plot tool for colData
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
@@ -332,9 +341,8 @@
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
 #'  Default FALSE.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
@@ -381,10 +389,14 @@ plotSCEDimReduceColData <- function(inSCE,
                                     legendTitle = NULL,
                                     legendTitleSize = 12,
                                     legendSize = 10,
-                                    combinePlot = NULL,
+                                    combinePlot = "none",
                                     plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
-  
+
   g <- .ggScatter(
     inSCE = inSCE,
     sample = sample,
@@ -467,9 +479,8 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param legendSize size of legend. Default 10.
 #' @param groupBy Facet wrap the scatterplot based on value.
 #' Default \code{NULL}.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
@@ -506,8 +517,12 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      legendSize = 10,
                                      legendTitleSize = 12,
                                      groupBy = NULL,
-                                     combinePlot = NULL,
+                                     combinePlot = "none",
                                      plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -515,7 +530,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
     binary = "Continuous"
   )
   counts <- mat[, 2]
-  
+
   g <- .ggScatter(
     inSCE = inSCE,
     sample = sample,
@@ -546,7 +561,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
     combinePlot = combinePlot,
     plotLabels = plotLabels
   )
-  
+
   return(g)
 }
 
@@ -602,9 +617,8 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
@@ -647,8 +661,12 @@ plotSCEScatter <- function(inSCE,
                            legendTitle = NULL,
                            legendTitleSize = 12,
                            legendSize = 10,
-                           combinePlot = NULL,
+                           combinePlot = "none",
                            plotLabels = NULL){
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!is.null(slot)){
     if (slot == "reducedDims"){
       annotation_clm <- substr(annotation, stringr::str_length(annotation), stringr::str_length(annotation))
@@ -658,16 +676,16 @@ plotSCEScatter <- function(inSCE,
              Please run 'methods::slotNames' if you are unsure the
 	     specified slot exists.")
     }
-    
+
     sceSubset <- do.call(slot, args = list(inSCE))
-    
+
     if (!annotation %in% names(sceSubset)) {
       stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
     }
     annotation.ix <- match(annotation, c(names(sceSubset)))
   }
-  
+
   if (is.null(slot)){
     colorPlot <- NULL
   }else if (slot == "assays" && !is.null(feature)) {
@@ -682,7 +700,7 @@ plotSCEScatter <- function(inSCE,
   } else if (slot == "reducedDims") {
     colorPlot <- sceSubset[[annotation.ix]][, as.numeric(annotation_clm)]
   }
-  
+
   g <- .ggScatter(
     inSCE = inSCE,
     sample = sample,
@@ -765,7 +783,7 @@ plotSCEScatter <- function(inSCE,
     groupBy <- rep("Sample", length(y))
   }
   df <- data.frame(groupBy = groupBy, y = y)
-  
+
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
       x = "groupBy",
@@ -801,11 +819,11 @@ plotSCEScatter <- function(inSCE,
         size = titleSize
       ))
   }
-  
+
   ###
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
   ###
-  
+
   if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
                                                                 hjust = 1,
@@ -815,7 +833,7 @@ plotSCEScatter <- function(inSCE,
                             axis.ticks.x = ggplot2::element_blank(),
                             axis.title.x = ggplot2::element_blank())
   }
-  
+
   if (gridLine == TRUE){
     p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
   }
@@ -841,7 +859,7 @@ plotSCEScatter <- function(inSCE,
     summary <- paste(toupper(substr(summary, 1, 1)),
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
-    
+
     p <- p + ggplot2::geom_text(data = summ,
                                 ggplot2::aes_string(x = "groupBy",
                                                     y = "statY",
@@ -853,7 +871,7 @@ plotSCEScatter <- function(inSCE,
                                    color = "red",
                                    linetype = "dashed")
   }
-  
+
   return(p)
 }
 
@@ -887,9 +905,8 @@ plotSCEScatter <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -916,8 +933,12 @@ plotSCEViolinColData <- function(inSCE,
                                  summary = NULL,
                                  title = NULL,
                                  titleSize = NULL,
-                                 combinePlot = NULL,
+                                 combinePlot = "none",
                                  plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
       stop("'", paste(coldata), "' is not found in ColData.")
@@ -926,7 +947,7 @@ plotSCEViolinColData <- function(inSCE,
   } else {
     stop("You must define the desired colData to plot.")
   }
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(coldata)) {
@@ -941,7 +962,7 @@ plotSCEViolinColData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number",
@@ -950,7 +971,7 @@ plotSCEViolinColData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
@@ -960,11 +981,11 @@ plotSCEViolinColData <- function(inSCE,
     }else{
       groupbySub <- NULL
     }
-    
+
     if(!is.null(title) && length(samples) > 1){
       title = paste(title, x, sep = "_")
     }
-    
+
     p <- .ggViolin(
       y = coldataSub,
       groupBy = groupbySub,
@@ -985,24 +1006,26 @@ plotSCEViolinColData <- function(inSCE,
     )
     return(p)
   })
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
+  }else if(combinePlot == "none" && length(plotlist) == 1){
+    plotlist <- plotlist[[1]]
   }
+
   return(plotlist)
 }
+
 
 #' @title Violin plot of assay data.
 #' @description Visualizes values stored in the assay slot of a
@@ -1035,9 +1058,8 @@ plotSCEViolinColData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -1065,8 +1087,12 @@ plotSCEViolinAssayData <- function(inSCE,
                                    summary = NULL,
                                    title = NULL,
                                    titleSize = NULL,
-                                   combinePlot = NULL,
+                                   combinePlot = "none",
                                    plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -1096,9 +1122,9 @@ plotSCEViolinAssayData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     countSub <- counts[sampleInd]
@@ -1107,7 +1133,7 @@ plotSCEViolinAssayData <- function(inSCE,
     }else{
       groupbySub <- NULL
     }
-    
+
     p <- .ggViolin(
       y = countSub,
       groupBy = groupbySub,
@@ -1128,32 +1154,31 @@ plotSCEViolinAssayData <- function(inSCE,
     )
     return(p)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    if(!is.null(combinePlot)){
-      if(combinePlot == "sample"){
-        plotlist <- c(list(Sample = plotlist))
-      }
+    if(combinePlot == "sample"){
+      plotlist <- c(list(Sample = plotlist))
     }
   } else {
-    plotlist <- unlist(plotlist, recursive=F)
+    plotlist <- plotlist[[1]]
   }
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
+  }else if(combinePlot == "none" && length(plotlist) == 1){
+    plotlist <- plotlist[[1]]
   }
+
   return(plotlist)
 }
 
@@ -1191,9 +1216,8 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -1222,23 +1246,27 @@ plotSCEViolin <- function(inSCE,
                           summary = NULL,
                           title = NULL,
                           titleSize = NULL,
-                          combinePlot = NULL,
+                          combinePlot = "none",
                           plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
 	 specified slot exists.")
   }
-  
+
   sceSubset <- do.call(slot, args = list(inSCE))
-  
+
   if (!annotation %in% names(sceSubset)) {
     stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
   }
-  
+
   annotation.ix <- match(annotation, names(sceSubset))
-  
+
   if (slot == "assays" && !is.null(feature)) {
     counts <- sceSubset[[annotation.ix]]
     if (feature %in% rownames(counts)) {
@@ -1249,7 +1277,7 @@ plotSCEViolin <- function(inSCE,
   } else if (slot == "metadata") {
     counts <- sceSubset[[annotation.ix]]
   }
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(counts)) {
@@ -1264,7 +1292,7 @@ plotSCEViolin <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number",
@@ -1300,10 +1328,10 @@ plotSCEViolin <- function(inSCE,
       title = title,
       titleSize = titleSize
     )
-    
+
     return(p)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     if(!is.null(combinePlot)){
@@ -1312,23 +1340,25 @@ plotSCEViolin <- function(inSCE,
       }
     }
   } else {
-    plotlist <- unlist(plotlist, recursive=F)
+    plotlist <- plotlist[[1]]
+    # plotlist <- unlist(plotlist, recursive=F)
   }
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample") &&
+     length(unique(samples)) > 1){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
+  }else if(combinePlot == "none" && length(plotlist) == 1){
+    plotlist <- plotlist[[1]]
   }
   return(plotlist)
 }
@@ -1364,20 +1394,20 @@ plotSCEViolin <- function(inSCE,
     groupBy <- rep("Sample", length(value))
   }
   df <- data.frame(x = groupBy, y = value)
-  
+
   p <- ggplot2::ggplot(df, ggplot2::aes_string(x = value)) +
     ggplot2::geom_density() +
     ggplot2::facet_grid(. ~ x)
-  
+
   if (defaultTheme == TRUE) {
     p <- .ggSCTKTheme(p) +
       ggplot2::theme(strip.background = ggplot2::element_blank())
   }
-  
+
   if (all(unique(groupBy) == "Sample")) {
     p <- p + ggplot2::theme(strip.text.x = ggplot2::element_blank())
   }
-  
+
   if (!is.null(title)) {
     p <- p + ggplot2::ggtitle(label = title) +
       ggplot2::theme(plot.title = ggplot2::element_text(
@@ -1385,22 +1415,22 @@ plotSCEViolin <- function(inSCE,
         size = titleSize
       ))
   }
-  
+
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
       ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize))
   }
-  
+
   if (!is.null(ylab)) {
     p <- p + ggplot2::ylab(ylab) +
       ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize))
   }
   p <- p + ggplot2::theme(axis.text = ggplot2::element_text(size = axisSize))
-  
+
   if (!is.null(cutoff)) {
     p <- p + ggplot2::geom_vline(xintercept = cutoff, color = "red")
   }
-  
+
   return(p)
 }
 
@@ -1424,9 +1454,8 @@ plotSCEViolin <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -1447,8 +1476,12 @@ plotSCEDensityColData <- function(inSCE,
                                   title = NULL,
                                   titleSize = 18,
                                   cutoff = NULL,
-                                  combinePlot = NULL,
+                                  combinePlot = "none",
                                   plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
       stop("'", paste(coldata), "' is not found in ColData.")
@@ -1457,7 +1490,7 @@ plotSCEDensityColData <- function(inSCE,
   } else {
     stop("You must define the desired colData to plot.")
   }
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(coldata)) {
@@ -1472,7 +1505,7 @@ plotSCEDensityColData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -1483,9 +1516,9 @@ plotSCEDensityColData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     coldataSub <- coldata[sampleInd]
@@ -1494,7 +1527,7 @@ plotSCEDensityColData <- function(inSCE,
     } else {
       groupbySub <- NULL
     }
-    
+
     if (!is.null(title) && length(samples) > 1) {
       title <- paste(title, x, sep = "_")
     }
@@ -1513,20 +1546,19 @@ plotSCEDensityColData <- function(inSCE,
     return(p)
   })
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
   }
+
   return(plotlist)
 }
 
@@ -1552,9 +1584,8 @@ plotSCEDensityColData <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -1576,8 +1607,12 @@ plotSCEDensityAssayData <- function(inSCE,
                                     cutoff = NULL,
                                     title = NULL,
                                     titleSize = 18,
-                                    combinePlot = NULL,
+                                    combinePlot = "none",
                                     plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -1585,7 +1620,7 @@ plotSCEDensityAssayData <- function(inSCE,
     binary = "Continuous"
   )
   counts <- mat[, 2]
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(counts)) {
@@ -1600,7 +1635,7 @@ plotSCEDensityAssayData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -1611,9 +1646,9 @@ plotSCEDensityAssayData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     countsSub <- counts[sampleInd]
@@ -1622,11 +1657,11 @@ plotSCEDensityAssayData <- function(inSCE,
     } else {
       groupbySub <- NULL
     }
-    
+
     if (!is.null(title) && length(samples) > 1) {
       title <- paste(title, x, sep = "_")
     }
-    
+
     p <- .ggDensity(
       value = countsSub,
       groupBy = groupbySub,
@@ -1641,21 +1676,19 @@ plotSCEDensityAssayData <- function(inSCE,
     )
     return(p)
   })
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
   }
   return(plotlist)
 }
@@ -1685,9 +1718,8 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
-#' @param combinePlot Boolean. If multiple plots are generated (multiple
-#'  samples, etc.), will combined plots using `cowplot::plot_grid`.
-#'  Default TRUE.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @examples
@@ -1711,23 +1743,27 @@ plotSCEDensity <- function(inSCE,
                            title = NULL,
                            titleSize = 18,
                            cutoff = NULL,
-                           combinePlot = NULL,
+                           combinePlot = "none",
                            plotLabels = NULL) {
+  if(!combinePlot %in% c("all", "sample", "none")){
+    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
              Please run 'methods::slotNames' if you are unsure the
              specified slot exists.")
   }
-  
+
   sceSubset <- do.call(slot, args = list(inSCE))
-  
+
   if (!annotation %in% names(sceSubset)) {
     stop("'annotation' must be an annotation stored within the specified
              slot of the SingleCellExperiment object.")
   }
-  
+
   annotation.ix <- match(annotation, names(sceSubset))
-  
+
   if (slot == "assays" && !is.null(feature)) {
     counts <- sceSubset[[annotation.ix]]
     if (feature %in% rownames(counts)) {
@@ -1738,7 +1774,7 @@ plotSCEDensity <- function(inSCE,
   } else if (slot == "metadata") {
     counts <- sceSubset[[annotation.ix]]
   }
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(counts)) {
@@ -1753,7 +1789,7 @@ plotSCEDensity <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop(
@@ -1764,9 +1800,9 @@ plotSCEDensity <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x) {
     sampleInd <- which(sample == x)
     countsSub <- counts[sampleInd]
@@ -1775,11 +1811,11 @@ plotSCEDensity <- function(inSCE,
     } else {
       groupbySub <- NULL
     }
-    
+
     if (!is.null(title) && length(samples) > 1) {
       title <- paste(title, x, sep = "_")
     }
-    
+
     p <- .ggDensity(
       value = countsSub,
       groupBy = groupbySub,
@@ -1796,22 +1832,21 @@ plotSCEDensity <- function(inSCE,
   if(!is.null(feature)){
     names(plotlist) <- feature
   }
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
-      figNcol = NULL
-      if(!is.null(groupBy)){
-        if(length(unique(groupBy)) > 1){
-          figNcol = 1
-        }
+  if(combinePlot %in% c("all", "sample")){
+    figNcol = NULL
+    if(!is.null(groupBy)){
+      if(length(unique(groupBy)) > 1){
+        figNcol = 1
       }
-      plotlist <- .ggSCTKCombinePlots(plotlist,
-                                      combinePlot = combinePlot,
-                                      ncols = figNcol,
-                                      labels = plotLabels)
     }
+    plotlist <- .ggSCTKCombinePlots(plotlist,
+                                    combinePlot = combinePlot,
+                                    ncols = figNcol,
+                                    labels = plotLabels)
   }
+
   return(plotlist)
 }
 
@@ -1868,7 +1903,7 @@ plotEmptyDropsScatter <- function(inSCE,
                                   legendTitle = NULL,
                                   legendTitleSize = 12,
                                   legendSize = 10,
-                                  combinePlot = NULL,
+                                  combinePlot = "none",
                                   relHeights=1,
                                   relWidths=1,
                                   samplePerColumn = TRUE,
@@ -1885,9 +1920,9 @@ plotEmptyDropsScatter <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   samples <- unique(sample)
-  
+
   plotlist <- lapply(samples, function(x){
     sceSampleInd <- which(sample == x)
     inSCESub <- inSCE[, sceSampleInd]
@@ -1900,23 +1935,23 @@ plotEmptyDropsScatter <- function(inSCE,
           return("Empty Droplet")
         }
       }
-      
+
     }))
-    
+
     df <- data.frame(x = inSCESub$dropletUtils_emptyDrops_total,
                      y = -(inSCESub$dropletUtils_emptyDrops_logprob),
                      isCell = isCell)
-    
+
     p <- ggplot2::ggplot(df, ggplot2::aes_string("x",
                                                  "y", color = "isCell")) +
       ggplot2::geom_point(size = dotSize) +
       ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=2))) +
       ggplot2::scale_color_manual(values = c("gray", "red"))
-    
+
     if (defaultTheme == TRUE) {
       p <- .ggSCTKTheme(p)
     }
-    
+
     if (!is.null(title)) {
       if(length(samples) > 1){
         title = paste(title, x, sep = "_")
@@ -1947,16 +1982,16 @@ plotEmptyDropsScatter <- function(inSCE,
     }
     return(p)
   })
-  
+
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
     plotlist <- list(Sample = plotlist)
   } else {
     plotlist <- plotlist[[1]]
   }
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
+  if(!combinePlot == "none"){
     if(combinePlot == "all" && length(unique(samples)) > 1){
       return(cowplot::plot_grid(plotlist = unlist(plotlist,
                                                   recursive = FALSE),
@@ -1964,7 +1999,7 @@ plotEmptyDropsScatter <- function(inSCE,
                                 vjust = 0,
                                 rel_heights = sampleRelHeights,
                                 rel_widths = sampleRelWidths))
-      
+
     }else{
       return(plotlist)
     }
@@ -2015,7 +2050,7 @@ plotBarcodeRankScatter <- function(inSCE,
                                    axisSize = 12,
                                    axisLabelSize = 15,
                                    legendSize = 10,
-                                   combinePlot = NULL,
+                                   combinePlot = "none",
                                    sampleRelHeights = 1,
                                    sampleRelWidths = 1){
     if (!is.null(sample)) {
@@ -2038,19 +2073,19 @@ plotBarcodeRankScatter <- function(inSCE,
     inflection <- sampleMeta$dropletUtils_barcodeRank_inflection
     df <- data.frame(rank = sampleMeta$dropletUtils_barcodeRank_rank,
                      umi = sampleMeta$dropletUtils_barcodeRank_total)
-    
-    
+
+
     p <- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
       ggplot2::geom_point(size=dotSize, shape=20) +
       ggplot2::scale_x_log10() +
       ggplot2::scale_y_log10()
-    
+
     p <- p + ggplot2::geom_hline(ggplot2::aes(yintercept=knee, linetype = "Knee"), colour = 'red') +
       ggplot2::geom_hline(ggplot2::aes(yintercept=inflection, linetype = "Inflection"), colour= 'blue') +
       ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
                                      guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
                                                                    override.aes = list(color = c("blue", "red"))))
-    
+
     if (defaultTheme == TRUE) {
       p <- .ggSCTKTheme(p)
     }
@@ -2070,7 +2105,7 @@ plotBarcodeRankScatter <- function(inSCE,
         ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
                        axis.text.x = ggplot2::element_text(size = axisSize))
     }
-    
+
     if (!is.null(ylab)) {
       p <- p + ggplot2::ylab(ylab) +
         ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
@@ -2088,9 +2123,9 @@ plotBarcodeRankScatter <- function(inSCE,
   } else {
       plotlist <- plotlist[[1]]
   }
-  
+
   ##Needs to be turned off for Shiny User Interface
-  if(!is.null(combinePlot)){
+  if(!combinePlot == "none"){
       if(combinePlot %in% c("all") && length(unique(sample)) > 1){
           return(cowplot::plot_grid(plotlist = unlist(plotlist,
           recursive = FALSE),
@@ -2103,7 +2138,7 @@ plotBarcodeRankScatter <- function(inSCE,
       }
   }
   return(plotlist)
-  
+
 }
 
 #' @title Bar plot plotting tool.
@@ -2146,17 +2181,17 @@ plotBarcodeRankScatter <- function(inSCE,
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
-  
+
   df <- data.frame(x = groupBy, y = y)
-  
+
   p <- ggplot2::ggplot(df) +
     ggplot2::aes_string(
       x = "groupBy",
       y = "y"
     )
-  
+
   p <- p + ggplot2::geom_bar(stat = "identity")
-  
+
   if (defaultTheme == TRUE) {
     p <- .ggSCTKTheme(p)
   }
@@ -2167,7 +2202,7 @@ plotBarcodeRankScatter <- function(inSCE,
         size = titleSize
       ))
   }
-  
+
   ###
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
   ###
@@ -2181,7 +2216,7 @@ plotBarcodeRankScatter <- function(inSCE,
                             axis.ticks.x = ggplot2::element_blank(),
                             axis.title.x = ggplot2::element_blank())
   }
-  
+
   if (gridLine == TRUE){
     p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
   }
@@ -2207,7 +2242,7 @@ plotBarcodeRankScatter <- function(inSCE,
     summary <- paste(toupper(substr(summary, 1, 1)),
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
-    
+
     p <- p + ggplot2::geom_text(data = summ,
       ggplot2::aes_string(x = "groupBy",
         y = "statY",
@@ -2219,7 +2254,7 @@ plotBarcodeRankScatter <- function(inSCE,
                                    color = "red",
                                    linetype = "dashed")
   }
-  
+
   return(p)
 }
 
@@ -2286,7 +2321,7 @@ plotSCEBarColData <- function(inSCE,
   } else {
     stop("You must define the desired colData to plot.")
   }
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(coldata)) {
@@ -2301,7 +2336,7 @@ plotSCEBarColData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number",
@@ -2310,7 +2345,7 @@ plotSCEBarColData <- function(inSCE,
   } else {
     sample <- rep(1, ncol(inSCE))
   }
-  
+
   p <- .ggBar(
     y = coldata,
     groupBy = groupBy,
@@ -2324,7 +2359,7 @@ plotSCEBarColData <- function(inSCE,
     title = title,
     titleSize = titleSize
   )
-  
+
   return(p)
 }
 
@@ -2387,7 +2422,7 @@ plotSCEBarAssayData <- function(inSCE,
     binary = "Continuous"
   )
   counts <- mat[, 2]
-  
+
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
       if (length(groupBy) != length(counts)) {
@@ -2402,7 +2437,7 @@ plotSCEBarAssayData <- function(inSCE,
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
   }
-  
+
   p <- .ggBar(
     y = counts,
     groupBy = groupBy,
@@ -2416,7 +2451,7 @@ plotSCEBarAssayData <- function(inSCE,
     title = title,
     titleSize = titleSize
   )
-  
+
   return(p)
 }
 
@@ -2454,7 +2489,7 @@ plotSCEBarAssayData <- function(inSCE,
   } else {
     plotlistViolin <- NULL
   }
-  
+
   if ("Sample" %in% names(plotlist)) {
     plotlistSample <- plotlist$Sample
     if (samplePerColumn) {
@@ -2465,27 +2500,31 @@ plotSCEBarAssayData <- function(inSCE,
       nrowSub = NULL
     }
     plotlistSample <- lapply(plotlistSample, function(x) {
-      return(cowplot::plot_grid(
-        plotlist = x,
-        align = "h",
-        nrow = nrowSub,
-        vjust = 0,
-        rel_heights = sampleRelHeights,
-        rel_widths = sampleRelWidths
-      ))
+      if(all(class(x) %in% c("gg","ggplot"))){
+        return(x)
+      }else if (class(x) %in% c("list")){
+        return(cowplot::plot_grid(
+          plotlist = x,
+          align = "h",
+          nrow = nrowSub,
+          vjust = 0,
+          rel_heights = sampleRelHeights,
+          rel_widths = sampleRelWidths
+        ))
+      }
     })
   }else{
     plotlistSample <- NULL
   }
-  
+
   if(!is.null(plotlistViolin) | !is.null(plotlistSample)){
     plotlist <- c(plotlistViolin, plotlistSample)
   }
   # To make the resulting plot close to a square as possible
-  if (is.null(ncols)) {
+  if (is.null(ncols) && is.null(nrows)) {
     ncols <- round(sqrt(length(plotlist)))
   }
-  
+
   if (combinePlot == "all") {
     if (!is.null(labels) && labels != "none") {
       # If default, sample name will be used as labels
@@ -2496,16 +2535,16 @@ plotSCEBarAssayData <- function(inSCE,
           }
         }
       }
-      
+
       listNamePlot <- list()
-      
+
       if(is.null(labelPositionX)){
         labelPositionX = rep(0, length(plotlist))
       }
       if(is.null(labelPositionY)){
         labelPositionY = rep(1, length(plotlist))
       }
-      
+
       for(x in 1:length(plotlist)){
         labeled <- plotlist[[x]] + cowplot::draw_plot_label(
           labels[x],
@@ -2514,10 +2553,10 @@ plotSCEBarAssayData <- function(inSCE,
           size = labelSize)
         listNamePlot[[x]] <- labeled
       }
-      
+
       plotlist <- listNamePlot
     }
-    
+
     plotRes <- cowplot::plot_grid(
       plotlist = plotlist,
       ncol = ncols,
@@ -2525,19 +2564,33 @@ plotSCEBarAssayData <- function(inSCE,
       rel_heights = relHeights,
       rel_widths = relWidths
     )
-    
+
     return(plotRes)
   } else if (combinePlot == "sample") {
+    #Will happen if "sample" is chosen and multiple samples exist,
+    #whcih means there will be a plotlistViolin object
     if (!is.null(plotlistViolin)) {
       return(list(Violin = plotlistViolin, Sample = plotlistSample))
-    } else if(length(plotlist) == 1) {
-      return(plotlist[[1]])
+      #Will happen when calling the non-QC plot fxns (ie, plotSCEScatter, plotSCEViolin)
+      #for multiple samples, meaning no merging has occurred across plots
+    }else if (!is.null(plotlistSample)){
+      return(plotlistSample)
+      # #Will happen when?
+      # }else if(length(plotlist) == 1) {
+      #     return(plotlist[[1]])
+      #Will happen when sample = NULL, combinePlot = "sample", meaning up to this point
+      #the "plotlist" should be a list of individual plots for only one sample
     } else{
-      return(plotlist)
+      return(cowplot::plot_grid(
+        plotlist = plotlist,
+        ncol = ncols,
+        nrow = nrows,
+        rel_heights = relHeights,
+        rel_widths = relWidths
+      ))
     }
   }
 }
-
 .ggSCTKTheme <- function(gg) {
   return(gg + ggplot2::theme_bw() +
            ggplot2::theme(
