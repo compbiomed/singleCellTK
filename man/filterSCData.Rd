@@ -15,7 +15,7 @@ filterSCData(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. Required}
 
 \item{useAssay}{Indicate which assay to use for filtering. Default is
 "counts"}

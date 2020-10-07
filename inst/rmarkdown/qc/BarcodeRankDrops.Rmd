@@ -1,0 +1,39 @@
+---
+title: "Comprehensive reporting of droplet QC metrics: computing barcode ranks with barcodeRank"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+    result: show
+---
+
+```{r "BarcodeRank-lib", include=FALSE, warning=FALSE}
+require(umap)
+require(ggplot2)
+require(SingleCellExperiment)
+require(singleCellTK)
+```
+
+```{r, "BarcodeRank-import", include=FALSE, include=FALSE, warning=FALSE}
+sce<-params$object
+```
+
+```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+   plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
+    i="BarcodeRanks"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## BarcodeRanks, Total UMI counts vs Rank \n\n'))
+    plotsBarcodeRank
+    cat(paste0('## Session info \n\n'))
+    sce@metadata$runBarcodeRankDrops
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runBarcodeRank <- descriptionBarcodeRank()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runBarcodeRank`

@@ -5,33 +5,63 @@
 \title{Plot the percent of the variation that is explained by batch and condition
 in the data}
 \usage{
-plotBatchVariance(inSCE, useAssay = "logcounts", batch, condition = NULL)
+plotBatchVariance(
+  inSCE,
+  useAssay = NULL,
+  useReddim = NULL,
+  useAltExp = NULL,
+  batch = "batch",
+  condition = NULL,
+  title = NULL
+)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{Indicate which assay to use for PCA. Default is "logcounts"}
+\item{useAssay}{A single character. The name of the assay that stores the
+value to plot. For \code{useReddim} and \code{useAltExp} also. Default
+\code{NULL}.}
 
-\item{batch}{The column in the annotation data that corresponds to batch.
-Required}
+\item{useReddim}{A single character. The name of the dimension reduced
+matrix that stores the value to plot. Default \code{NULL}.}
 
-\item{condition}{The column in the annotation data that corresponds to
-condition. Optional}
+\item{useAltExp}{A single character. The name of the alternative experiment
+that stores an assay of the value to plot. Default \code{NULL}.}
+
+\item{batch}{A single character. The name of batch annotation column in
+\code{colData(inSCE)}. Default \code{"batch"}.}
+
+\item{condition}{A single character. The name of an additional condition
+annotation column in \code{colData(inSCE)}. Default \code{NULL}.}
+
+\item{title}{A single character. The title text on the top. Default
+\code{NULL}.}
 }
 \value{
-A boxplot of variation explained by batch, condition, and
-batch+condition (if applicable).
+A ggplot object of a boxplot of variation explained by batch,
+condition, and batch+condition.
 }
 \description{
 Visualize the percent variation in the data that is explained by batch and
-condition if it is given.
+condition, individually, and that explained by combining both annotations.
+Plotting only the variation explained by batch is supported but not
+recommended, because this can be confounded by potential condition.
+}
+\details{
+When condition and batch both are causing some variation, if the difference
+between full variation and condition variation is close to batch variation,
+this might imply that batches are causing some effect; if the difference is
+much less than batch variation, then the batches are likely to be confounded
+by the conditions.
 }
 \examples{
-if(requireNamespace("bladderbatch", quietly = TRUE)) {
-  library(bladderbatch)
-  data(bladderdata)
-  dat <- as(as(bladderEset, "SummarizedExperiment"), "SCtkExperiment")
-  plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+\dontrun{
+  if(requireNamespace("bladderbatch", quietly = TRUE)) {
+    library(bladderbatch)
+    data(bladderdata)
+    dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
+    plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+  }
 }
 
 }

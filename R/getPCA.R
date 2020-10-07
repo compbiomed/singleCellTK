@@ -1,60 +1,28 @@
-#' Get and plot PCA components for a SCtkE object
+#' getPCA
+#' A wrapper to \link[scater]{runPCA} function to compute principal component analysis (PCA) from a given \code{SingleCellExperiment} object.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Assay to use for PCA computation.
+#' @param reducedDimName Name to use for the reduced output assay.
+#' @param ndim Number of principal components to obtain from the PCA computation. Default \code{50}.
+#' @param ntop Number of top features to use with PCA. Default \code{500}.
 #'
-#' Selects the 500 most variable genes in the SCE, performs
-#' PCA based on them and stores the values in the reducedDims slot of
-#' the SCE object.
-#'
-#' @param inSCE Input SCtkExperiment object. Required
-#' @param useAssay Indicate which assay to use for PCA. Default is "counts"
-#' @param reducedDimName Store the PCA data with this name. The default is PCA.
-#' The toolkit will store data with the pattern <ASSAY>_<ALGORITHM>.
-#'
-#' @return A SCtkE object with the specified reducedDim and
-#' pcaVariances updated
+#' @return A \code{SingleCellExperiment} object with stored PCA computation
 #' @export
-#' @examples
-#' data("mouseBrainSubsetSCE")
-#' #add a CPM assay
-#' assay(mouseBrainSubsetSCE, "cpm") <- apply(assay(mouseBrainSubsetSCE,
-#'                                                  "counts"),
-#'                                            2, function(x) {
-#'                                              x / (sum(x) / 1000000)
-#'                                            })
-#' mouseBrainSubsetSCE <- getPCA(mouseBrainSubsetSCE,
-#'                               useAssay = "cpm",
-#'                               reducedDimName = "PCA_cpm")
-#' reducedDims(mouseBrainSubsetSCE)
 #'
-getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA"){
-  if (nrow(inSCE) < 500){
+#' @examples
+#' data(sce_chcl, package = "scds")
+#' sce_chcl <- getPCA(sce_chcl, useAssay = "logcounts")
+getPCA <- function(inSCE, useAssay="logcounts", reducedDimName="PCA", ndim = 50, ntop = 500){
+  if (nrow(inSCE) < ntop){
     ntop <- nrow(inSCE)
   } else{
-    ntop <- 500
+    ntop <- ntop
   }
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
-    stop(useAssay, " not in the assay list")
+    stop(paste(useAssay, " not in the assay list"))
   }
-  exprsMat <- base::as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
-  if (!is.matrix(exprsMat)){
-    stop("Input matrix ", useAssay, " is not a matrix")
-  }
-  rv <- matrixStats::rowVars(exprsMat)
-  featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
-  exprsToPlot <- exprsMat[featureSet, , drop = FALSE]
-  exprsToPlot <- scale(t(exprsToPlot))
-  keepFeature <- (matrixStats::colVars(exprsToPlot) > 0.001)
-  keepFeature[is.na(keepFeature)] <- FALSE
-  exprsToPlot <- exprsToPlot[, keepFeature]
-  pca <- stats::prcomp(exprsToPlot)
-  #colnames(pc) <- paste("PC", seq_along(1:ncol(inSCE)), sep = "")
-  percentVar <- pca$sdev ^ 2 / sum(pca$sdev ^ 2)
-  pca <- pca$x
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- pca
-  if (class(inSCE) == "SCtkExperiment"){
-    pcaVariances(inSCE) <- S4Vectors::DataFrame(percentVar)
-    rownames(pcaVariances(inSCE)) <- paste0(
-      "PC", seq_len(nrow(pcaVariances(inSCE))))
-  }
+  
+  inSCE <- scater::runPCA(inSCE, name = reducedDimName, exprs_values = useAssay, ncomponents = ndim,  ntop = ntop, scale = TRUE)
+
   return(inSCE)
 }
-

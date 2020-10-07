@@ -1,0 +1,45 @@
+---
+title: "Comprehensive reporting of QC metrics: computational doublet annotation using ScdsHybrid"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r,"CxdsBcdsHybrid-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "CxdsBcdsHybrid-input", warning=FALSE, include=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotScdsHybrid<- suppressWarnings(plotScdsHybridResults(sce.qc, reducedDimName = "UMAP"))
+    i="ScdsHybrid"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotScdsHybrid$scatter_doubletScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotScdsHybrid$density_doubletScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotScdsHybrid$violin_doubletScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runCxdsBcdsHybrid
+```
+
+```{r, "ScdsHybrid-desc", include=FALSE, warning=FALSE, message=FALSE}
+description_ScdsHybrid<- descriptionScdsHybrid()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_ScdsHybrid`

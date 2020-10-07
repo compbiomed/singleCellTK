@@ -1,0 +1,36 @@
+---
+title: "Comprehensive reporting of droplet QC metrics: identifying empty droplets using emptyDrops"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+```{r, "EmtyDrops-lib", include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(umap)
+```
+
+```{r "EmtyDrops-import", include=FALSE}
+sce<- params$object
+```
+
+```{r, "EmptyDrops", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce))
+    i="EmptyDrops"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## EmptyDrops, Total UMI counts vs Log-Probability \n\n'))
+    plotsEmptyDrops$scatterEmptyDrops[[1]]
+    cat(paste0('## Session info \n\n'))
+    sce@metadata$runEmptyDrops
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runEmptyDrops <- descriptionEmptyDrops()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runEmptyDrops`

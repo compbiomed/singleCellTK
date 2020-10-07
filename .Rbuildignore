@@ -1,6 +1,15 @@
+^renv$
+^renv\.lock$
 .*\.Rproj$
 ^\.Rproj\.user$
 ^docs$
 ^_pkgdown\.yml$
 .travis.yml
 misc/
+^data-raw$
+.BBSoptions
+.Rprofile
+renv*
+Dockerfile
+exec/png
+

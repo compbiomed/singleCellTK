@@ -1,8 +1,8 @@
 .myenv <- new.env(parent = emptyenv())
 
-#' Run GSVA analysis on a SCtkExperiment object.
+#' Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
 #'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param pathwaySource The pathway source if "Manual Input", the pathwayNames
 #' should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
@@ -14,21 +14,6 @@
 #'
 #' @return gsvaSCE(): A data.frame of pathway activity scores from GSVA.
 #' @export
-#' @examples
-#' utils::data(maits, package = "MAST")
-#' utils::data(c2BroadSets, package = "GSVAdata")
-#' maitslogtpm <- t(maits$expressionmat)
-#' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
-#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
-#' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
-#' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
-#' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
-#'                       featureFile = maitsfeatures, assayName = "logtpm",
-#'                       inputDataFrames = TRUE, createLogCounts = FALSE)
-#' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
-#' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-#'                parallel.sz = 1)
 gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
                     pathwayNames, ...){
   if (pathwaySource == "Manual Input"){
@@ -74,25 +59,6 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
 #' @return gsvaPlot(): The requested plot of the GSVA results.
 #'
 #' @export
-#'
-#' @examples
-#' #Create a small example to run
-#' utils::data(maits, package = "MAST")
-#' utils::data(c2BroadSets, package = "GSVAdata")
-#' maitslogtpm <- t(maits$expressionmat)
-#' genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) %in%
-#'                  GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
-#' maitslogtpm <- maitslogtpm[rownames(maitslogtpm) %in% genesToSubset, ]
-#' maitsfeatures <- maits$fdat[rownames(maits$fdat) %in% genesToSubset, ]
-#' maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
-#'                       featureFile = maitsfeatures, assayName = "logtpm",
-#'                       inputDataFrames = TRUE, createLogCounts = FALSE)
-#' rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
-#' res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-#'                pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-#'                parallel.sz = 1)
-#' gsvaPlot(inSCE = maitsSCE, gsvaData = res,
-#'          plotType = "Violin", condition = "condition")
 gsvaPlot <- function(inSCE, gsvaData, plotType, condition=NULL,
                      show_column_names = TRUE, show_row_names = TRUE,
                      text_size = 12){

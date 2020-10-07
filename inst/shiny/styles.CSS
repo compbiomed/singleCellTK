@@ -1,0 +1,66 @@
+.disabled {
+  color: #cccccc !important ;
+  cursor: not-allowed;
+  border-color: #aaa;
+}
+
+/* Overriding theme's CSS for tabs*/
+/*.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+  background-color: blue;
+}
+*/
+.nav>li>a:hover, .nav>li>a:focus {
+  background-color: #f3f3f3;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #d2d2d2;
+  margin-bottom: 5px;
+}
+.nav-tabs>li>a{
+  background-color: #ececec;
+  margin-right: 10px;
+  border-bottom: 1px solid #d2d2d2;
+}
+.nav-tabs>li>a:hover {
+  border: 1px solid #d2d2d2;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d2;
+  border-bottom-color: transparent;
+}
+
+#consoleDiv {
+  position: fixed; 
+  bottom: 0; 
+  z-index: 5; 
+  padding: 0;
+  width: 100%;
+}
+
+#console {
+  height: 150px; 
+  margin-bottom: 0
+}
+
+.shiny-input-radiogroup {
+  margin-top: 20px;
+}
+
+#violinConditional .form-group, #binningConditional .form-group {
+  float: right;
+}
+
+.btn {
+  white-space: normal;
+}
+
+label[for="Col"]
+{
+    display:none;
+}
+
+.colourpicker .colourpicker-input {
+  max-height: 20px;
+}

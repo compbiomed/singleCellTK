@@ -1,0 +1,197 @@
+---
+title: "SCTK Droplet QC Report"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+  subTitle: subTitle
+  studyDesign: studyDesign
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_float: true
+    code_folding: hide
+    html_notebook: default
+---
+
+```{r "DropletQC-lib", include=FALSE, warning=FALSE}
+require(umap)
+require(SummarizedExperiment)
+require(SingleCellExperiment)
+require(singleCellTK)
+require(dplyr)
+
+preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
+  meta <- meta[!names(meta) %in% ignore]
+  lapply(meta, function(y){
+    while(is.list(y)) {
+      if (length(y) != 0){
+       y <- y[[1]]  
+      } else {
+       y <- "NULL"
+      }
+    }
+      
+    if(is.vector(y)) {
+      y <- paste(y,collapse=' ')
+    }
+      
+    if(is.null(y)) {
+      y <- "NULL"
+    }
+      
+    return(y)
+  })
+}
+```
+
+```{r, "DropletQC-import", include=FALSE, include=FALSE, warning=FALSE}
+sce<-params$object
+subTitle <- params$subTitle
+studyDesign <- params$studyDesign
+samples <- unique(colData(sce)$sample)
+```
+
+---
+subtitle: "`r subTitle`"
+---
+
+`r studyDesign`
+<br />
+
+# Introduction
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+<br />
+<br />
+
+
+# Empty Drops Detection
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runEmptyDrops <- descriptionEmptyDrops()
+```
+
+```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
+plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce, 
+                                                         sample = colData(sce)$sample))
+i="EmptyDrops"
+cat(paste0('## ', i, ' \n'))
+```
+<br />
+`r description_runEmptyDrops$introduction`
+`r description_runEmptyDrops$runEmptyDrops`
+`r description_runEmptyDrops$plotEmptyDropsResults`
+`r description_runEmptyDrops$plot2`
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("\n")
+for (i in seq_along(samples)) {
+  cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
+  cat("\n\n")
+  
+  cat("#### Total UMI counts vs Log-Probability \n")
+  print(plotsEmptyDrops$scatterEmptyDrops[[i]])
+  cat("\n\n")
+  
+  cat("#### Parameters \n\n")
+  runEmptyMeta <- sce@metadata$runEmptyDrops
+  if(length(samples) == 1) {runEmptyMeta <- list(runEmptyMeta)}
+  
+  x <- preprocessMeta(runEmptyMeta[[i]])
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat(description_runEmptyDrops$parameter)
+  cat("\n\n")
+}
+```
+`r cat("\n")`
+
+
+
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runBarcodeRank <- descriptionBarcodeRank()
+```
+
+```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+# plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce,
+#                                                                 sample = colData(sce)$sample)
+plotsBarcodeRank <- suppressWarnings(plotBarcodeRankScatter(sce,
+                                                            sample = colData(sce)$sample,
+                                                            title="BarcodeRanks Rank Plot",
+                                                            combinePlot = FALSE))
+names(plotsBarcodeRank) <- samples
+i="BarcodeRanks"
+cat(paste0('## ', i, ' \n'))
+```
+<br />
+`r description_runBarcodeRank$introduction`
+`r description_runBarcodeRank$runBarcodeRankDrops`
+`r description_runBarcodeRank$plotBarcodeRankDropsResults`
+`r description_runBarcodeRank$plot`
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("\n")
+for (i in seq_along(samples)) {
+  cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
+  cat("\n\n")
+  
+  cat("#### Total UMI counts vs Rank {.tabset .tabset-fade} \n\n")
+  print(plotsBarcodeRank[[samples[i]]])
+  cat("\n\n")
+  
+  cat("#### Parameters {.tabset .tabset-fade} \n\n")
+  runBarcodeMeta <- sce@metadata$runBarcodeRankDrops
+  if (length(samples) == 1) { runBarcodeMeta <- list(runBarcodeMeta) }
+  x <- preprocessMeta(runBarcodeMeta[[i]])
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat(description_runBarcodeRank$parameter)
+  cat("\n\n")  
+}
+```
+`r cat("\n")`
+
+# Summary Statistics {.tabset .tabset-fade}
+# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r, echo = FALSE, "Summary of valid cells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+cat("\n")
+
+for (i in seq_along(samples)) {
+  cat(paste0("## ", samples[i], " {.tabset .tabset-fade} \n"))
+  cat("\n\n")
+  sceColData <- colData(sce)%>% as.data.frame() %>% filter(sample == samples[i])
+
+  idx <- list(
+          'Knee'= sceColData$dropletUtils_BarcodeRank_Knee == 1,
+          'Inflection'= sceColData$dropletUtils_BarcodeRank_Inflection == 1, 
+          'EmptyDrops' = !is.na(sceColData$dropletUtils_emptyDrops_fdr) &
+           (sceColData$dropletUtils_emptyDrops_fdr < 0.01))
+
+  SummaryTable <- lapply(idx, function(x){
+  sceColData[x,] %>% 
+    dplyr::summarise('Number of cells' = n(), 'Median UMI' = median(sum), 
+                     'Median Genes' = median(detected))
+  })
+  # i="Summary Statistics"
+  # cat(paste0('## ', i, ' \n'))
+    
+  cat(do.call(base::rbind, SummaryTable) %>% 
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+    
+  summary <- "The summary statistics table summarizes QC metrics of droplets that passed different cell detection cutoff. Here it summarizes number of cells passing the cutoff, median of UMI count and median of genes detected per cell."
+  cat(summary)
+  cat("\n\n") 
+}
+```
+`r cat("\n")`
+
+# SessionInfo
+```{r "DropletQC-session-info", echo = FALSE}
+sessionInfo()
+```
