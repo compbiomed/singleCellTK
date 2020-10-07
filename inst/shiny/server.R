@@ -550,12 +550,12 @@ shinyServer(function(input, output, session) {
     } else {
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("dnewSampleCR2", allImportEntries$id_count)
-        entry <- list(type="cellRanger2", id=id, params=list(sampleDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type="cellRanger2", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
         id <- paste0("dnewSampleCR3", allImportEntries$id_count)
-        entry <- list(type-"cellRanger3", id=id, params=list(sampleDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type-"cellRanger3", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       }
@@ -826,84 +826,17 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  # Event handler for "Upload" button on import page
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
-      sceObj <- NULL
-      for (entry in allImportEntries$samples) {
-        if (entry$type == "cellRanger2") {
-          if (is.null(entry$params$cellRangerDirs)) {
-            newSce <- importCellRangerV2Sample(
-              sampleDir = entry$params$sampleDir,
-              sampleName = entry$params$sampleName,
-            )
-          } else {
-            newSce <- importCellRangerV2(
-              cellRangerDirs = entry$params$cellRangerDirs,
-              sampleDirs = entry$params$sampleDirs,
-              sampleNames = entry$params$sampleNames,
-            )
-          }
-        } else if (entry$type == "cellRanger3") {
-          if (is.null(entry$params$cellRangerDirs)) {
-            newSce <- importCellRangerV3Sample(
-              sampleDir = entry$params$sampleDir,
-              sampleName = entry$params$sampleName,
-            )
-          } else {
-            newSce <- importCellRangerV3(
-              cellRangerDirs = entry$params$cellRangerDirs,
-              sampleDirs = entry$params$sampleDirs,
-              sampleNames = entry$params$sampleNames,
-            )
-          }
-        } else if (entry$type == "starSolo") {
-          newSce <- importSTARsolo(
-            STARsoloDirs = entry$params$STARsoloDirs,
-            samples = entry$params$amples
-          )
-        } else if (entry$type == "busTools") {
-          newSce <- importBUStools(
-            BUStoolsDirs = entry$params$BUStoolsDirs,
-            samples = entry$params$samples,
-          )
-        } else if (entry$type == "seqc") {
-          newSce <- importSEQC(
-            seqcDirs = entry$params$seqcDirs,
-            samples = entry$params$samples,
-            prefix = entry$params$prefix,
-          )
-        } else if (entry$type == "optimus") {
-          newSce <- importOptimus(
-            OptimusDirs = entry$params$OptimusDirs,
-            samples = entry$params$samples
-          )
-        } else if (entry$type == "files") {
-          newSce <- importFromFiles(assayFile = entry$params$assayFile,
-                                           annotFile = entry$params$annotFile,
-                                           featureFile = entry$params$featureFile,
-                                           assayName = entry$params$assayName)
-        } else if (entry$type == "example") {
-          newSce <- withConsoleMsgRedirect(importExampleData(dataset = entry$params$dataset))
-        } else if (entry$type == "rds") {
-          importedrds <- readRDS(entry$params$rdsFile)
-          if (base::inherits(importedrds, "SummarizedExperiment")) {
-            newSce <- importedrds
-          } else if (base::inherits(importedrds, "Seurat")) {
-            newSce <- convertSeuratToSCE(importedrds)
-          } else {
-            showNotification("The '.rds' file should contain a 'SingleCellExperiment' or 'Seurat' object.", type = "error")
-          }
-        }
-        if(is.null(sceObj)) {
-          sceObj <- newSce
-        } else {
-          sceObj <- cbind(sceObj, newSce)
-        }
-      }
-
+      sceObj <- importMultipleSources(allImportEntries)
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
-          vals$original <- cbind(vals$original, sceObj)
+          sceList <- list(vals$original, sceObj)
+          vals$original <- combineSCE(sceList = sceList, 
+                     by.r = NULL, 
+                     by.c = Reduce(intersect, lapply(sceList, function(x) { colnames(colData(x))})), 
+                     combined = T)
         } else {
           vals$original <- sceObj
         }
@@ -1235,12 +1168,14 @@ shinyServer(function(input, output, session) {
                                    sample = qcSample,
                                    useAssay = input$qcAssaySelect,
                                    paramsList = paramsList)
-        # run getUMAP by default
-        vals$counts <- getUMAP(inSCE = vals$counts,
-                               sample = qcSample,
-                               useAssay = input$qcAssaySelect,
-        )
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
+        # run getUMAP if no UMAP
+        if (!("UMAP" %in% redDimList)) {
+          vals$counts <- getUMAP(inSCE = vals$counts,
+                                 sample = qcSample,
+                                 useAssay = input$qcAssaySelect,
+          )
+        }
         updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
         shinyjs::show(id = "qcPlotSection", anim = FALSE)
       }

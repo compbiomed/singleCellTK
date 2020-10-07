@@ -226,7 +226,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
           appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
         }
       }
-      output[[subPlotID]] <- renderPlot(plots[[s]])
+      output[[subPlotID]] <- renderPlot(plots$Sample[[s]])
     }
   }
 }
@@ -241,36 +241,36 @@ arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuse
   for (a in algoList) {
     if (a == "doubletCells") {
       dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                     reducedDimName = redDimName)
+                                                     reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {
       cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                             reducedDimName = redDimName)
+                                             reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
     } else if (a == "bcds") {
       bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                             reducedDimName = redDimName)
+                                             reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
     } else if (a == "cxds_bcds_hybrid") {
       cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                     reducedDimName = redDimName)
+                                                     reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
     } else if (a == "decontX") {
       dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                reducedDimName = redDimName)
+                                                reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
-      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
+      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs, statuses)
       
     } else if (a == "scrublet") {
       sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                reducedDimName = redDimName)
+                                                reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
       
     } else if (a == "doubletFinder") {
       dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                      reducedDimName = redDimName)
+                                                      reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
     }
   }
