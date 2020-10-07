@@ -16,7 +16,7 @@ plotBarcodeRankScatter(
   axisSize = 12,
   axisLabelSize = 15,
   legendSize = 10,
-  combinePlot = NULL,
+  combinePlot = "none",
   sampleRelHeights = 1,
   sampleRelWidths = 1
 )
