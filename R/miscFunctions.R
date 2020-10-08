@@ -184,16 +184,9 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' according to the method selected.
 #' @return A character vector of \code{n} hex color codes.
 #' @export
-discreteColorPalette <- function(n, palette = c("ggplot", "celda", "random"),
+discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
                                  seed = 12345, ...) {
-  # Setting "random" as default
-  if (length(palette) == 3 &&
-      all(palette == c("ggplot", "celda", "random"))) {
-    palette <- "random"
-  }
-  if (length(palette) != 1) {
-    stop("Please choose only one palette method.")
-  }
+  palette <- match.arg(palette)
   # Generate the colors
   if (palette == "random") {
     withr::with_seed(seed, {
