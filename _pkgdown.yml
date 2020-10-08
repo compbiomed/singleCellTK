@@ -28,7 +28,6 @@ reference:
     - runBBKNN
     - runHarmony
     - runLimmaBC
-    - runSCGEN
     - runSeurat3Integration
     - runFastMNN
     - runLIGER
