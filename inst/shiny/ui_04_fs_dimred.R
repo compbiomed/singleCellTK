@@ -2,58 +2,59 @@ shinyPanelFS_DimRed <- fluidPage(
   tabsetPanel(
     tabPanel("Feature Selection",
         fluidRow(
-                    column(4,
-                        fluidRow(
-                            column(12,
-                                panel(heading = "Compute HVG",
-                                    selectInput(
-                                        inputId = "hvgMethodFS",
-                                        label = "Select HVG method: ",
-                                        choices = c(
-                                        "Seurat - vst" = "vst", 
-                                        "Seurat - mean.var.plot" = "mean.var.plot", 
-                                        "Seurat - dispersion" = "dispersion",
-                                        "Scran - modelGeneVar" = "modelGeneVar")),
-                                    selectInput(
-                                        inputId = "assaySelectFS",
-                                        label = "Select assay:",
-                                        choices = currassays),
-                                    textInput(
-                                        inputId = "hvgNoFeaturesFS",
-                                        label = "Select number of features to find: ",
-                                        value = "2000"),
-                                    actionButton(
-                                        inputId = "findHvgButtonFS",
-                                        label = "Find HVG")
-                                     )
-                                  )
-                                ),
-                        br(),
-                        fluidRow(
-                            column(12,
-                                panel(heading = "Display HVG",
-                                    textInput(
-                                        inputId = "hvgNoFeaturesViewFS",
-                                        label = "Select number of features to display: ",
-                                        value = "100"),
-                                    verbatimTextOutput(
-                                        outputId = "hvgOutputFS",
-                                        placeholder = TRUE)
-                                     )
-                                  )
-                                )
-                          ),
-                     column(8,
-                        fluidRow(
-                            column(12,
-                                panel(heading = "Plot",
-                                    plotOutput(
-                                        outputId = "plotFS")
-                                     )
-                                  )
-                                )
-                           )
-                    )
+          column(
+            4,
+            panel(
+              heading = "Compute HVG",
+              selectInput(
+                inputId = "hvgMethodFS",
+                label = "Select HVG method: ",
+                choices = c(
+                  "Seurat - vst" = "vst",
+                  "Seurat - mean.var.plot" = "mean.var.plot",
+                  "Seurat - dispersion" = "dispersion",
+                  "Scran - modelGeneVar" = "modelGeneVar")),
+              selectInput(
+                inputId = "assaySelectFS",
+                label = "Select assay:",
+                choices = currassays),
+              withBusyIndicatorUI(actionButton("findHvgButtonFS",
+                                               "Compute Variability"))
+            ),
+            panel(
+              heading = "Select and Subset",
+              p("Selection will be based on the latest computation above."),
+              numericInput("hvgNumberSelect", "Number of HVG to select",
+                           2000, step = 100),
+              textInput("hvgAltExpName", "Name for the subset",
+                        "featureSubset"),
+              withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
+            )
+          ),
+          column(
+            8,
+            panel(
+              heading = "Plot",
+              p("Visualization will be based on the latest computation on the left."),
+              numericInput(
+                inputId = "hvgNoFeaturesViewFS",
+                label = "Select number of features to display: ",
+                value = 100),
+              actionButton("showHVG", "Show"),
+              div(
+                style = "margin-top: 15px;",
+                verbatimTextOutput(
+                  outputId = "hvgOutputFS",
+                  placeholder = TRUE)
+              ),
+              plotOutput(
+                outputId = "plotFS",
+                width = 400,
+                height = 400
+              )
+            )
+          )
+        )
     ),
     tabPanel("Run New Dimensional Reduction",
       # SHINYJS COLLAPSE --------------------------
@@ -87,7 +88,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
                                          sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 200),
                                          sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
-                                         sliderInput("mindistUMAP", "minimum distance between points", min = 0.001, max = 0.1, value = 0.01), 
+                                         sliderInput("mindistUMAP", "minimum distance between points", min = 0.001, max = 0.1, value = 0.01),
 					numericInput("alphaUMAP", "learning rate(alpha)", value = 1)
                                        ),
                                        conditionalPanel(
