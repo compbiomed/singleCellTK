@@ -80,7 +80,6 @@ if (internetConnection){
 numSamples <- 30
 pcComponentsSelectedY <- NULL
 if (!is.null(getShinyOption("inputSCEset"))){
-  print(getShinyOption("inputSCEset"))
   numSamples <- ncol(getShinyOption("inputSCEset"))
   clusterChoice <- colnames(colData(getShinyOption("inputSCEset")))
   geneChoice <- rownames(getShinyOption("inputSCEset"))
@@ -129,11 +128,11 @@ source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_cluster.R", local = TRUE) #creates shinyPanelCluster variable
 source("ui_09_3_celdaWorkflow.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
+source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
-source("ui_06_3_hypeR.R", local = TRUE) #creates shinyPanelhypeR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
 source("ui_08_2_cellviewer_v2.R", local = TRUE) #creates shinyPanelCellViewer variable
@@ -173,7 +172,6 @@ if (is.null(getShinyOption("includeVersion"))){
   }
 }
 
-# Define UI for application that draws a histogram
 shinyUI(
     navbarPage(
       tooltitle,

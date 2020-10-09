@@ -15,7 +15,7 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
                     comment = c(ORCID = "0000-0002-6247-6595")))
 Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
-    R (>= 3.6.0),
+    R (>= 4.0),
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
@@ -47,8 +47,8 @@ Imports:
     fields,
     ggplot2,
     ggplotify,
-    ggtree,
     ggrepel,
+    ggtree,
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
@@ -118,7 +118,6 @@ Suggests:
     org.Mm.eg.db,
     stringr
 Remotes: 
-    joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
     rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,

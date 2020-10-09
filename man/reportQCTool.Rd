@@ -35,6 +35,7 @@ A  function to generate .html Rmarkdown report for the specified QC algorithm ou
 data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 sce <- runDecontX(sce)
+sce <- getUMAP(sce)
 reportQCTool(inSCE = sce, algorithm = "DecontX")
 }
 }
