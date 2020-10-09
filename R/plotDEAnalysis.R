@@ -44,10 +44,13 @@
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
+#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
+#' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of violin plot
 #' @export
 plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
-                           nrow = 6, ncol = 6, defaultTheme = TRUE){
+                           nrow = 6, ncol = 6, defaultTheme = TRUE,
+                          check_sanity = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkDiffExpResultExists(inSCE, useResult, labelBy)
@@ -81,7 +84,8 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                           levels = result$groupNames),
                        ngeneson = rep("", (length(cells1) + length(cells2))),
                        stringsAsFactors = FALSE)
-    sca <- suppressMessages(MAST::FromMatrix(expres, cdat))
+    sca <- suppressMessages(MAST::FromMatrix(expres, cdat,
+                                             check_sanity = check_sanity))
     if(threshP){
         #TODO: if nrow*ncol < `min_per_bin`` below, there would be an error.
         invisible(utils::capture.output(thres <-
@@ -122,10 +126,13 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
+#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
+#' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of linear regression
 #' @export
 plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
-                               nrow = 6, ncol = 6, defaultTheme = TRUE){
+                               nrow = 6, ncol = 6, defaultTheme = TRUE,
+                              check_sanity = TRUE){
     #TODO: DO we split the up/down regulation too?
     # Check
     .checkDiffExpResultExists(inSCE, useResult, labelBy)
@@ -158,7 +165,8 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                           levels = result$groupNames),
                        ngeneson = rep("", (length(cells1) + length(cells2))),
                        stringsAsFactors = FALSE)
-    sca <- suppressMessages(MAST::FromMatrix(expres, cData = cdat))
+    sca <- suppressMessages(MAST::FromMatrix(expres, cData = cdat,
+                                             check_sanity = check_sanity))
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
     if(length(unique(SummarizedExperiment::colData(sca)$cngeneson)) < 2){
@@ -378,16 +386,21 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 }
 
 #' MAST Identify adaptive thresholds
+#'
+#' Calculate and produce a list of thresholded counts (on natural scale),
+#' thresholds, bins, densities estimated on each bin, and the original data from
+#' \code{\link[MAST]{thresholdSCRNACountMatrix}}
 #' @param inSCE SingleCellExperiment object
 #' @param useAssay character, default \code{"logcounts"}
-#' @return list of thresholded counts (on natural scale), thresholds, bins,
-#' densities estimated on each bin, and the original data from
-#' \code{\link[MAST]{thresholdSCRNACountMatrix}}
+#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
+#' to see if the counts are logged. Default \code{TRUE}
+#' @return Plot the thresholding onto the plotting region.
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- thresholdGenes(mouseBrainSubsetSCE)
-thresholdGenes <- function(inSCE, useAssay="logcounts"){
+plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
+                                   check_sanity = TRUE){
     # data preparation
     expres <- SummarizedExperiment::assay(inSCE, useAssay)
     if(!is.matrix(expres)){
@@ -397,9 +410,13 @@ thresholdGenes <- function(inSCE, useAssay="logcounts"){
     fdata <- data.frame(Gene = rownames(expres))
     rownames(fdata) <- fdata$Gene
     SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
-                               fdata)
+                               fdata, check_sanity = check_sanity)
     SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
     invisible(utils::capture.output(thres <- MAST::thresholdSCRNACountMatrix(
         SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
-    return(thres)
+    # plotting
+    graphics::par(mfrow = c(5, 4))
+    graphics::plot(thres)
+    graphics::par(mfrow = c(1, 1))
+    # return(thres)
 }

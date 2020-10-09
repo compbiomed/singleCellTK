@@ -12,7 +12,7 @@ shinyPanelHeatmap <- fluidPage(
     fluidRow(
       div(style="display:inline-block;vertical-align:top;width:180px;margin-left:20px;",
           h4("Import from analysis")),
-      div(style="display:inline-block;vertical-align:bottom;width:150px;margin-top:5px;",
+      div(style="display:inline-block;vertical-align:bottom;width:220px;margin-top:5px;",
           selectInput("hmImport", NULL,
                       c("None",
                         "Differential Expression",
