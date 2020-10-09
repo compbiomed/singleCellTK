@@ -3,7 +3,6 @@ cache:
   - packages
   - pip
 r:
-  - oldrel
   - release
 sudo: false
 warnings_are_errors: true
