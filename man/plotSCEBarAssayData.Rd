@@ -6,10 +6,10 @@
 \usage{
 plotSCEBarAssayData(
   inSCE,
+  sample = NULL,
   useAssay = "counts",
   feature,
-  groupby = NULL,
-  dots = TRUE,
+  groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -17,25 +17,27 @@ plotSCEBarAssayData(
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
 \item{useAssay}{Indicate which assay to use. Default "counts".}
 
 \item{feature}{Name of feature stored in assay of SingleCellExperiment
 object.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
-
-\item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
@@ -52,17 +54,27 @@ Default TRUE.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
 }
 \description{
 Visualizes values stored in the assay slot of a
- SingleCellExperiment object via a violin plot.
+ SingleCellExperiment object via a bar plot.
 }
 \examples{
 plotSCEBarAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Apoe", groupby = "sex"
+  feature = "Apoe", groupBy = "sex"
 )
 }

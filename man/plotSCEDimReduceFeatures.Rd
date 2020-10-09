@@ -13,6 +13,8 @@ plotSCEDimReduceFeatures(
   useAssay = "logcounts",
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -29,7 +31,8 @@ plotSCEDimReduceFeatures(
   legendSize = 10,
   legendTitleSize = 12,
   groupBy = NULL,
-  combinePlot = TRUE
+  combinePlot = "none",
+  plotLabels = NULL
 )
 }
 \arguments{
@@ -51,6 +54,10 @@ object. Plot will be colored based on feature value.}
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -98,9 +105,11 @@ Default 'blue'.}
 \item{groupBy}{Facet wrap the scatterplot based on value.
 Default \code{NULL}.}
 
-\item{combinePlot}{Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.
-Default TRUE.}
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
 }
 \value{
 a ggplot of the reduced dimensions.

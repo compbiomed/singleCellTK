@@ -8,8 +8,8 @@ plotDoubletCellsResults(
   inSCE,
   sample = NULL,
   shape = NULL,
-  groupby = NULL,
-  combinePlot = NULL,
+  groupBy = NULL,
+  combinePlot = "all",
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
@@ -31,8 +31,12 @@ plotDoubletCellsResults(
   legendTitleSize = 16,
   relHeights = c(1.5, 1, 1),
   relWidths = c(1, 1, 1),
+  plotNCols = NULL,
+  plotNRows = NULL,
   plotLabels = "default",
   plotLabelSize = 20,
+  plotLabelPositionX = NULL,
+  plotLabelPositionY = NULL,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -48,11 +52,11 @@ Default NULL.}
 
 \item{shape}{If provided, add shapes based on the value.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
-\item{combinePlot}{Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 while "sample" will output a list of plots separated by sample. Default "all".}
 
 \item{violin}{Boolean. If TRUE, will plot the violin plot. Default TRUE.}
@@ -63,7 +67,7 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
-\item{logScore}{Boolean. If TRUE, the doublet score will be log normalized.}
+\item{logScore}{Boolean. If TRUE, the log normalized doublet score will be used.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}
@@ -107,10 +111,18 @@ when TRUE. Default TRUE.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
 
+\item{plotNCols}{Number of columns when plots are combined in a grid.}
+
+\item{plotNRows}{Number of rows when plots are combined in a grid.}
+
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
 
 \item{plotLabelSize}{size of labels}
+
+\item{plotLabelPositionX}{Numeric vector. The X position of the plot label.}
+
+\item{plotLabelPositionY}{Numeric vector. The Y position of the plot label.}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}

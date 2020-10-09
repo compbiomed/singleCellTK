@@ -3,7 +3,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   h1("Cell Viewer"),
   radioGroupButtons(
     "viewertabs",
-    choices = c("reducedDims Plot", "Bar Plot", "Violin/Box Plot"),
+    choices = c("Scatter Plot", "Bar Plot", "Violin/Box Plot"),
     selected = NULL
   ),
   fluidRow(column(
@@ -38,7 +38,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             ),
             selectInput("ColumnSelect_Xaxis", h5("Dimension"), choices = NULL)
           ),
-          
+
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
@@ -53,7 +53,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(gene_list)
             )
           ),
-          
+
           #Cell Annotation condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Xaxis"),
@@ -63,7 +63,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(annotation_list)
             )
           ),
-          
+
           #-+-+-+-+-+-Y-Axis###################################
           h5(strong("Y-Axis")),
           selectInput(
@@ -81,7 +81,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             ),
             selectInput("ColumnSelect_Yaxis", h5("Dimension"), choices = NULL)
           ),
-          
+
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
@@ -96,7 +96,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(gene_list)
             )
           ),
-          
+
           #Cell Annotation condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Yaxis"),
@@ -106,30 +106,30 @@ shinyPanelCellViewer <- fluidPage(tags$div(
               choices = c(annotation_list)
             )
           )
-          
+
         )
       ),
-      
+
       #-+-+-+-+-+-colorby part1###################################
       tags$hr(),
       #Select Color by Data
       # Section 1 - Assay Settings
       actionButton("cv_button2", h4(strong("Color"))),
-      
+
       # open by default
       tags$div(
         id = "cv_collapse2",
         selectInput(
           'TypeSelect_Colorby', h5(strong('Color By')), choices = c(
-            "Default Color",
+            "Single Color",
             "Reduced Dimensions",
             "Expression Assays",
             "Cell Annotation"
           ),
         ),
-        # Default color condition
+        # Single Color condition
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'Default Color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['%s'] == 'Single Color'", "TypeSelect_Colorby"),
           colourInput("Col", "", "purple", palette = 'limited')
         ),
         #Reduced Dimensions condition
@@ -142,7 +142,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           ),
           selectInput("ColumnSelect_Colorby", h5("Dimension"), choices = NULL)
         ),
-        
+
         #Expression Assays condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
@@ -157,7 +157,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c(gene_list)
           )
         ),
-        
+
         #Cell Annotation condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Cell Annotation'", "TypeSelect_Colorby"),
@@ -167,44 +167,68 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             choices = c(annotation_list)
           )
         ),
-        
+
+        # && output.hide_typebtns == 'show'
         #-+-+-+-+-+-colorby part2###################################
         conditionalPanel(
-          condition = sprintf("input['%s'] != 'Default Color'", "TypeSelect_Colorby"),
+          condition = sprintf("input['TypeSelect_Colorby'] != 'Single Color' && output.hide_typebtns == 'show'"),
           radioButtons(
             "SelectColorType",
             label = NULL,
-            choices = c("Categorical", "Continuous")
+            choices = c("Categorical", "Continuous"),
           ),
-          tags$hr(),
-          conditionalPanel(
-            id="binningConditional",
-            condition = sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
-            # checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
-            h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
-            switchInput(
-              inputId = "checkColorbinning",
-              onLabel = "Yes",
-              offLabel = "No",
-              value=FALSE,
-              size="mini",
-              inline = TRUE
-            )
-          ),
-          
-          conditionalPanel(
-            condition =  "input.checkColorbinning == 1",
-            numericInput(
-              "adjustColorbinning",
-              h5("Number of Bins"),
-              value = 2,
-              min = 2
-            )
+        ),
+        hidden(
+          tags$div(
+            id = "continuousColorConditional",
+            colourInput("highColor", "High Color", "blue", "background", "limited"),
+            colourInput("midColor", "Middle Color", "#666666", "background", "limited"),
+            colourInput("lowColor", "Low Color", "white", "background", "limited")
           )
-          #,
-          
-          
-          #selectizeInput("adjustbrewer", h5(strong("Color Palettes")), choices = NULL)
+        ),
+        hidden(tags$div(
+          id = "categoricalColorConditional",
+          selectizeInput(
+            "colorTheme",
+            label = h5("Color Scheme"),
+            c("ggplot", "celda", "random")
+          ),
+          uiOutput("categoricalColorUI")
+        )), 
+        conditionalPanel(
+          id="binningConditional",
+          condition = sprintf("input['%s'] == 'Continuous' && input['%s'] != 'Single Color'", "SelectColorType", "TypeSelect_Colorby"),
+            #sprintf("input['%s'] == 'Continuous'", "SelectColorType"),
+          #checkboxInput("checkColorbinning", "Perform Binning", value = FALSE)
+          h5(style="display: inline-block; margin-top: 0px; margin-bottom: 20px","Perform Binning"),
+          prettyToggle(
+            inputId = "checkColorbinning",
+            label_on = "Yes",
+            label_off = "No",
+            value = FALSE,
+            inline = TRUE,
+            shape = "curve",
+            width = "100%"
+          )
+          #switchInput(
+          #  inputId = "checkColorbinning",
+          #  onLabel = "Yes",
+          #  offLabel = "No",
+          #  value=FALSE,
+          #  inline = TRUE,
+          #  #shape = "curve"
+          #  labelWidth = "50px",
+          #  width = "auto"
+          #)
+        ),
+        conditionalPanel(
+          condition =  "input.checkColorbinning == 1 && output.hide_bins == 'show'",
+          numericInput(
+            "adjustColorbinning",
+            h5("Number of Bins"),
+            value = 2,
+            min = 2
+          )
         )
       ),
       #-+-+-+-+-+-group by###################################
@@ -251,15 +275,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   column(
     9,
     wellPanel(
-      plotlyOutput("scatter") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
-      tags$br(),
+      plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.
@@ -272,26 +289,59 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         column(6, textInput("adjustlegendtitle", h5(
           strong("Legend title:")
         ))),
-        column(6, sliderInput(
+        column(6, textInput("adjustxlab", h5(
+          strong("X-axis label:")
+        ))),
+        column(6, textInput("adjustylab", h5(
+          strong("Y-axis label:")
+        ))),
+        column(3, numericInput(
+          "adjustlegendtitlesize",
+          h5(strong("Legend title size:")),
+          min = 1,
+          max = 20,
+          value = 12
+        )),
+        column(3, numericInput(
+          "adjustlegendsize",
+          h5(strong("Legend size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(3, numericInput(
+          "adjustaxissize",
+          h5(strong("Axis size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(3, numericInput(
+          "adjustaxislabelsize",
+          h5(strong("Axis label size:")),
+          min = 1,
+          max = 20,
+          value = 10
+        )),
+        column(3, numericInput(
           "adjustalpha",
           h5(strong("Opacity:")),
           min = 0,
           max = 1,
           value = 1
         )),
-        column(6, sliderInput(
+        column(3, numericInput(
           "adjustsize",
-          h5(strong("Size:")),
+          h5(strong("Dot size:")),
           min = 0.1,
           max = 0.8,
           value = 0.45
         )),
-        column(6, textInput("adjustxlab", h5(
-          strong("X-axis label:")
-        ))),
-        column(6, textInput("adjustylab", h5(
-          strong("Y-axis label:")
-        )))
+        column(3, checkboxInput(
+          "adjustgridlines",
+          h5(strong("Add gridlines")),
+          value = FALSE,
+        ))
       )
     )
   ))
