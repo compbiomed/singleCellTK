@@ -23,9 +23,6 @@ before_install:
   - pip install --upgrade pip
   - pip install scipy scrublet scanpy scanorama scgen bbknn
 
-install:
-- R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
-
 addons:
   apt:
     packages:
