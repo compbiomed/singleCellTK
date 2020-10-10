@@ -2389,64 +2389,120 @@ shinyServer(function(input, output, session) {
 
   modsplit <- eventReactive(input$celdamodsplit, {
     celda_sce <- selectFeatures(as.matrix(counts(vals$counts)))
-    #celda_alt <- SingleCellExperiment::altExp(celda_sce, "featureSubset")
     #factorized <- factorizeMatrix(celda_sce)
+    assay(altExp(celda_sce), "normalizedCounts") <- normalizeCounts(counts(altExp(celda_sce)))
     updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
     withProgress(message = "Clustering Features", max = 1, value = 1, {
       modsplitting <- recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax)
     })
-    return(modsplitting)
     showNotification("Celda L Selected.")
-    shinyjs::show("celdaLselect")
-    shinyjs::show("celdaLbtn")
+    shinyjs::show(id = "celdaLselect")
+    shinyjs::show(id = "celdaLbtn")
+    return(modsplitting)
   })
   output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
 
-  #modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-  #  return()
-  #})
   output$modsplitplotdiff <- renderPlotly({plotGridSearchPerplexityDiff(modsplit())})
 
-  observeEvent(input$celdaLbtn, {
+  #observeEvent(input$celdaLbtn, {
+  #  modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
+  #  showNotification("Number of Feature Modules Selected.")
+  #  updateCollapse(session = session, "CeldaUI", style = list("Module Splitting" = "danger"))
+  #  shinyjs::enable(selector = "div[value='Cell Splitting']")
+  #})
+
+  celdaLselected <- eventReactive(input$celdaLbtn,{
     modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
+    return(modsplit)
+  })
+
+  observeEvent(input$celdaLbtn, {
     showNotification("Number of Feature Modules Selected.")
+    updateCollapse(session = session, "CeldaUI", style = list("Module Splitting" = "danger"))
+    shinyjs::enable(selector = "div[value='Cell Splitting']")
   })
 
   cellsplit <- eventReactive(input$celdacellsplit, {
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     withProgress(message = "Clustering Cells", max = 1, value = 1, {
-      cellsplitting <- recursiveSplitCell(modsplit(), initialK = input$celdaKinit, maxK = input$celdaKmax)
+      cellsplitting <- recursiveSplitCell(celdaLselected(), initialK = input$celdaKinit, maxK = input$celdaKmax)
     })
-    return(cellsplitting)
     showNotification("Cell Clustering Complete.")
-    shinyjs::show("celdaKselect")
-    shinyjs::show("celdaKbtn")
+    shinyjs::show(id = "celdaKselect")
+    shinyjs::show(id = "celdaKbtn")
+    return(cellsplitting)
   })
 
   output$cellsplitplot <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
 
-  celdamod <- reactiveVal(NULL)
-  observeEvent(input$celdaKbtn, {
-    celdamod(subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect)))
-    showNotification("Number of Cell Clusters Selected.")
+  celdaKselected <- eventReactive(input$celdaKbtn, {
+    cellsplit <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
+    return(cellsplit)
   })
 
-  observeEvent(input$CeldaUmap, {
+  observeEvent(input$celdaKbtn, {
+    showNotification("Number of Cell Clusters Selected.")
+    updateCollapse(session = session, "CeldaUI", style = list("Cell Splitting" = "danger"))
+    shinyjs::enable(selector = "div[value='Umap/Tsne']")
+    shinyjs::disable(id = "CeldaTsne")
+  })
+
+  celdaumap <- eventReactive(input$CeldaUmap, {
     withProgress(message = "Computing Umap", max = 1, value = 1, {
-      celdamod(celdaUmap(celdamod()))
+      celdamodel <- celdaUmap(celdaKselected())
     })
     showNotification("Umap complete.")
+    shinyjs::enable("CeldaTsne")
+    return(celdamodel)
+  })
+
+  output$celdaumapplot <- renderPlotly({plotDimReduceCluster(celdaumap(), reducedDimName = "celda_UMAP", xlab = "UMAP_1",
+    ylab = "UMAP_2", labelClusters = TRUE)})
+
+  celdatsne <- eventReactive(input$CeldaTsne, {
+    withProgress(message = "Computing Tsne", max = 1, value = 1, {
+      celdamodel <- celdaTsne(celdaumap())
+    })
+    showNotification("Tsne complete.")
+    return(celdamodel)
   })
 
   observeEvent(input$CeldaTsne, {
-    withProgress(message = "Computing Tsne", max = 1, value = 1, {
-      celdamod(celdaTsne(celdamod()))
-    })
-    showNotification("Tsne complete.")
+    updateCollapse(session = session, "CeldaUI", style = list("Umap/Tsne" = "danger"))
+    shinyjs::enable(selector = "div[value='Plot Heatmap']")
   })
 
-  observeEvent(input$celdafactorize,{
-    factorized <- factorizeMatrix(vals$counts)
+  output$celdatsneplot <- renderPlotly({plotDimReduceCluster(celdatsne(), reducedDimName = "celda_tSNE", xlab = "tSNE_1",
+    ylab = "tSNE_2", labelClusters = TRUE)})
+
+  modheatmapplt <- eventReactive(input$celdamodheatmapbtn, {
+    moduleHeatmap(celdatsne(), featureModule = input$celdamodheatmapselect)
+  })
+
+  output$celdamodheatmapplot <- renderPlotly({modheatmapplt()})
+
+  observe({
+    if(!is.null(vals$counts)){
+      #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
+      shinyjs::enable(
+        selector = "div[value='Module Splitting']")
+    }else{
+      #If no data uploaded in data tab, disabled all tabs and plots.
+
+      #Disable tabs
+      shinyjs::disable(
+        selector = "div[value='Module Splitting']")
+      shinyjs::disable(
+        selector = "div[value='Cell Splitting']")
+      shinyjs::disable(
+        selector = "div[value='Umap/Tsne']")
+      shinyjs::disable(
+        selector = "div[value='Plot Heatmap']")
+
+      #Disable plots inside PCA subtab
+      #shinyjs::disable(
+      #  selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+    }
   })
 
   # celda clustering tab
