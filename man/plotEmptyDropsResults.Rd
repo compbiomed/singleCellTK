@@ -31,7 +31,7 @@ dimension reduction components or a variable with saved results from
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}
 
-\item{combinePlot}{Must be either "all" or "sample". "all" will combine all plots into a single
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".}
 
 \item{fdrCutoff}{Numeric. Thresholds barcodes based on the FDR values from
