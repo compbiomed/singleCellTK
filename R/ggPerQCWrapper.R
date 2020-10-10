@@ -22,7 +22,7 @@
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -316,7 +316,7 @@ plotRunPerCellQCResults <- function(inSCE,
     names(plotlist) <- samples
     if(combinePlot == "all"){
       plotlist <- c(merged.plots)
-    }else{
+    }else if(combinePlot == "sample"){
       plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {
@@ -332,6 +332,8 @@ plotRunPerCellQCResults <- function(inSCE,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
                                       labelPositionY = plotLabelPositionY,
+                                      nrows = plotNRows,
+                                      ncols = plotNCols,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -339,6 +341,7 @@ plotRunPerCellQCResults <- function(inSCE,
   }
   return(plotlist)
 }
+
 #' @title Plots for runEmptyDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
 #'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
@@ -358,7 +361,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -502,7 +505,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -649,7 +652,7 @@ plotScrubletResults <- function(inSCE,
     ))
     res.list <- c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
       violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub, coldata="scrublet_score",
       sample=sampleSub,
@@ -714,6 +717,8 @@ plotScrubletResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -768,7 +773,7 @@ plotScrubletResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -967,7 +972,7 @@ plotDoubletFinderResults <- function(inSCE,
     })
     res.list <- c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
     violinScore <- lapply(df.scores, function(x) {
       plotSCEViolinColData(
         inSCE=inSCESub,
@@ -1063,6 +1068,8 @@ plotDoubletFinderResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -1117,7 +1124,7 @@ plotDoubletFinderResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -1272,7 +1279,7 @@ plotDoubletCellsResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata=coldata,
@@ -1309,6 +1316,8 @@ plotDoubletCellsResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -1362,7 +1371,7 @@ plotDoubletCellsResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -1510,7 +1519,7 @@ plotCxdsResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="scds_cxds_score",
@@ -1574,10 +1583,10 @@ plotCxdsResults <- function(inSCE,
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
-                                      ncols = plotNCols,
-                                      nrows = plotNRows,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -1631,7 +1640,7 @@ plotCxdsResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -1779,7 +1788,7 @@ plotBcdsResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
       violinScore <- list(violin_doubletScore = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="scds_bcds_score",
@@ -1845,6 +1854,8 @@ plotBcdsResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -1899,7 +1910,7 @@ plotBcdsResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -2044,7 +2055,7 @@ plotScdsHybridResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterScore)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
     violinScore <- list(violin_doubletScore = plotSCEViolinColData(
       inSCE=inSCESub,
       coldata="scds_hybrid_score",
@@ -2112,6 +2123,8 @@ plotScdsHybridResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,
@@ -2165,7 +2178,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all" or "sample". "all" will combine all plots into a single .ggplot object,
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
@@ -2310,7 +2323,7 @@ plotDecontXResults <- function(inSCE,
     ))
     res.list = c(res.list, scatterContamination)
 
-    if(combinePlot == "sample"){
+    if(combinePlot != "all" | length(samples) == 1){
     violinContamination <- list(violin_decontXContamination = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="decontX_contamination",
@@ -2376,6 +2389,8 @@ plotDecontXResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
+                                      ncols = plotNCols,
+                                      nrows = plotNRows,
                                       labels = plotLabels,
                                       labelSize = plotLabelSize,
                                       labelPositionX = plotLabelPositionX,

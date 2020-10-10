@@ -168,6 +168,45 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   return(col[seq_len(n)])
 }
 
+#' Generate given number of color codes
+#'
+#' @description Three different generation methods are wrapped, including
+#' \code{\link[celda]{distinctColors}},
+#' \code{\link[randomcoloR]{distinctColorPalette}} and the \code{ggplot}
+#' default color generation.
+#' @param n An integer, the number of color codes to generate.
+#' @param palette A single character string. Select the method, available
+#' options are \code{"ggplot"}, \code{"celda"} and \code{"random"}. Default
+#' \code{"random"}.
+#' @param seed An integer. Set the seed for random process that happens only in
+#' "random" generation. Default \code{12345}.
+#' @param ... Other arguments that are passed to the internal function,
+#' according to the method selected.
+#' @return A character vector of \code{n} hex color codes.
+#' @export
+discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
+                                 seed = 12345, ...) {
+  palette <- match.arg(palette)
+  # Generate the colors
+  if (palette == "random") {
+    withr::with_seed(seed, {
+      # Using randomcoloR original codes here
+      km <- stats::kmeans(colorSpace, n, iter.max = 20)
+      colors <- unname(colorspace::hex(colorspace::LAB(km$centers)))
+      colors <- colors[order(colors)]
+    })
+  } else if (palette == "ggplot") {
+    hues <- seq(15, 375, length = n + 1)
+    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
+  } else if (palette == "celda") {
+    colors <- distinctColors(n, ...)
+  } else {
+    stop("Given palette '", palette, "' is not supported. Please choose from ",
+         "'ggplot', 'celda' or 'random'.")
+  }
+  return(colors)
+}
+
 #test shiny functions
 .testFunctions <- function(){
   if (interactive()){
