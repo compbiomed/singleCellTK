@@ -12,35 +12,27 @@ shinyPanelBatchcorrect <- fluidPage(
                         panel(
                             heading = "Normalization Options",
                             selectInput(
-                                inputId = "normalizeLibrarySelect",
-                                label = "Select normalization:",
-                                choices = c(
-                                    "Seurat" = "seurat",
-                                    "CPM" = "cpm")
-                                ),
+                              inputId = "normalizeAssayMethodSelect",
+                              label = "Select normalization method: ",
+                              choices = c("Seurat - LogNormalize" = "LogNormalize", 
+                                          "Seurat - CLR" = "CLR", 
+                                          "Seurat - RC" = "RC", 
+                                          "Scater - CPM" = "CPM")
+                            ),
                             selectInput("normalizeAssaySelect", "Select Assay:", currassays),
                             conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'seurat'",
-                                selectInput(
-                                    inputId = "normalizeAssayMethodSelect",
-                                    label = "Select normalization method: ",
-                                    choices = c("LogNormalize", "CLR", "RC")
-                                    ),
+                                condition = "input.normalizeAssayMethodSelect != 'CPM'",
                                 textInput(
                                 inputId = "normalizationScaleFactor",
                                 label = "Set scaling factor: ",
                                 value = "10000"
                                     )
                             ),
-                            # conditionalPanel(
-                            #     condition = "input.normalizeLibrarySelect == 'cpm'",
-                            #     conditionalPanel(
-                            #         condition = "input.assayModifyAction != 'delete'",
-                            #         
-                            #         ),
-                            #     ),
-                            textInput("normalizeAssayOutname", "Assay Name", "",
-                                      placeholder = "What should the assay be called?"),
+                            textInput(
+                              inputId = "normalizeAssayOutname",
+                              label = "Assay Name:",
+                              value = "SeuratLogNormalize"
+                            ),
                             withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
                         )
                     )
