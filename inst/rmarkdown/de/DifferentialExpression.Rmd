@@ -1,0 +1,68 @@
+---
+title: "Differential Expression Analysis"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+  study: study
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_float: true
+    code_folding: hide
+    html_notebook: default
+---
+
+```{r, "DE-lib", include=FALSE}
+require(singleCellTK)
+require(DT)
+```
+
+```{r "DE-import", include=FALSE}
+sce <- params$object
+study <- params$study
+metas <- metadata(sce)$diffExp[[study]]
+useAssay <- metas$useAssay
+cond1 <- metas$groupNames[[1]]
+cond2 <- metas$groupNames[[2]]
+```
+
+# Analysis: `r study`
+
+The differential expression was performed by comparing the feature expression of cells belonging to condition "**`r cond1`**" against the cells belonging to condition "**`r cond2`**". The feature expression matrix used was "**`r useAssay`**".  
+
+In the condition "**`r cond1`**", **`r length(which(metas$select$ix1))`** cells were included, while **`r length(which(metas$select$ix2))`** cells were included for condition **`r cond2`**. 
+
+The method used for performing the differential expression analysis was "**`r metas$method`**". For the more information of the method, please refer to [the help page](#).
+
+## Result Table
+
+```{r "DE-table"}
+datatable(metas$result, options = list(pageLength = 10))
+```
+
+## Visualization
+
+The following plot shows the linear model regression of the top 36 differentially expressed genes, ranked by FDR values. 
+
+```{r "DE-Vis-regression", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+plotDEGRegression(sce, study)
+```
+
+The following plot shows the violin plot also for comparing the expression of the top 36 genes between the two conditions. 
+
+```{r "DE-Vis-violin", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+plotDEGViolin(sce, study)
+```
+
+The following heatmap will be divided by the conditions and the regulation. A gene will be determined as up-regulated in condition **`r cond1`** if its log2FC value was greater than 0.25 and FDR is less than 0.05, and down-regulated in condition **`r cond1`** if the log2FC value is less than -0.25. The gene regulation and condition setting will be annotated by default. In addition, if the condition setting was achieved by using a categorical annotation in the object, the annotation used will also be labeled to the column level of the heatmap. 
+
+```{r "DE-Vis-heatmap", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+plotDEGHeatmap(sce, study)
+```
+
+# SessionInfo
+
+```{r "DropletQC-session-info"}
+    sessionInfo()
+```

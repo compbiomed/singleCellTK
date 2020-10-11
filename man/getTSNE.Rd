@@ -14,7 +14,7 @@ getTSNE(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
@@ -27,8 +27,8 @@ getTSNE(
 \item{run_pca}{run tSNE on PCA components? Default is TRUE.}
 }
 \value{
-A SCtkE object with the specified reducedDim and
-pcaVariances updated
+A \linkS4class{SingleCellExperiment} object with the specified
+reducedDim updated
 }
 \description{
 Run t-SNE dimensionality reduction method on the assay data.

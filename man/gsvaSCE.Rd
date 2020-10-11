@@ -3,7 +3,7 @@
 \name{gsvaSCE}
 \alias{gsvaSCE}
 \alias{gsvaPlot}
-\title{Run GSVA analysis on a SCtkExperiment object.}
+\title{Run GSVA analysis on a \linkS4class{SingleCellExperiment} object}
 \usage{
 gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
 
@@ -18,7 +18,7 @@ gsvaPlot(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
@@ -54,7 +54,7 @@ gsvaSCE(): A data.frame of pathway activity scores from GSVA.
 gsvaPlot(): The requested plot of the GSVA results.
 }
 \description{
-Run GSVA analysis on a SCtkExperiment object.
+Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
 }
 \section{Functions}{
 \itemize{
@@ -63,36 +63,3 @@ Run GSVA analysis on a SCtkExperiment object.
 Plot GSVA Results
 }}
 
-\examples{
-utils::data(maits, package = "MAST")
-utils::data(c2BroadSets, package = "GSVAdata")
-maitslogtpm <- t(maits$expressionmat)
-genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) \%in\%
-                 GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
-maitslogtpm <- maitslogtpm[rownames(maitslogtpm) \%in\% genesToSubset, ]
-maitsfeatures <- maits$fdat[rownames(maits$fdat) \%in\% genesToSubset, ]
-maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
-                      featureFile = maitsfeatures, assayName = "logtpm",
-                      inputDataFrames = TRUE, createLogCounts = FALSE)
-rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
-res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-               pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-               parallel.sz = 1)
-#Create a small example to run
-utils::data(maits, package = "MAST")
-utils::data(c2BroadSets, package = "GSVAdata")
-maitslogtpm <- t(maits$expressionmat)
-genesToSubset <- rownames(maitslogtpm)[which(rownames(maitslogtpm) \%in\%
-                 GSEABase::geneIds(c2BroadSets[["KEGG_PROTEASOME"]]))]
-maitslogtpm <- maitslogtpm[rownames(maitslogtpm) \%in\% genesToSubset, ]
-maitsfeatures <- maits$fdat[rownames(maits$fdat) \%in\% genesToSubset, ]
-maitsSCE <- createSCE(assayFile = maitslogtpm, annotFile = maits$cdat,
-                      featureFile = maitsfeatures, assayName = "logtpm",
-                      inputDataFrames = TRUE, createLogCounts = FALSE)
-rowData(maitsSCE)$testbiomarker <- rep(1, nrow(maitsSCE))
-res <- gsvaSCE(inSCE = maitsSCE, useAssay = "logtpm",
-               pathwaySource = "Manual Input", pathwayNames = "testbiomarker",
-               parallel.sz = 1)
-gsvaPlot(inSCE = maitsSCE, gsvaData = res,
-         plotType = "Violin", condition = "condition")
-}

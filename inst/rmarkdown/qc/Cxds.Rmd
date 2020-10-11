@@ -1,0 +1,45 @@
+---
+title: "Comprehensive reporting of QC metrics: computational doublet annotation using cxds"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "runCxds-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "Cxds-import", warning=FALSE, include=FALSE}
+sce.qc<- params$object
+```
+
+```{r "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotCxds<- suppressWarnings(plotCxdsResults( sce.qc, reducedDimName = "UMAP"))
+    i="Cxds"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotCxds$scatterScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotCxds$densityScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotCxds$violinScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runCxds
+```
+
+```{r, "Cxds", include=FALSE, warning=FALSE, message=FALSE}
+descriprion_CxdsResults<- descriptionCXDS()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r descriprion_CxdsResults`

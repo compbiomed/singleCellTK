@@ -1,14 +1,13 @@
 #' Run t-SNE dimensionality reduction method on the assay data.
-#'
-#' @param inSCE Input SCtkExperiment object. Required
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts".
 #' @param reducedDimName a name to store the results of the dimension reductions
 #' @param n_iterations maximum iterations. Default is 1000
 #' @param perplexity perplexity parameter. 
 #' @param run_pca run tSNE on PCA components? Default is TRUE.
 #'
-#' @return A SCtkE object with the specified reducedDim and
-#' pcaVariances updated
+#' @return A \linkS4class{SingleCellExperiment} object with the specified
+#' reducedDim updated
 #'
 #' @export
 #' @examples
@@ -32,7 +31,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
   if (!(useAssay %in% names(SummarizedExperiment::assays(inSCE)))){
     stop(useAssay, " not in the assay list")
   }
-  exprsMat <- SummarizedExperiment::assay(inSCE, useAssay)
+  exprsMat <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
   if (!is.matrix(exprsMat)){
     stop("Input matrix ", useAssay, " is not a matrix")
   }

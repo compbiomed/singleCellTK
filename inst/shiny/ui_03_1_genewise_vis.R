@@ -6,7 +6,7 @@ shinyPanelVis <- fluidPage(
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        h4("Options:"),
+        h3("Options:"),
         selectInput("visAssaySelect", "Select Assay:", currassays),
         selectInput("visPlotMethod", "Visualization Method:", c("boxplot", "scatterplot", "barplot", "heatmap")),
         selectInput("visCondn", "Condition:", c("none", clusterChoice)),

@@ -47,7 +47,7 @@ multiple conditions, respectively.
 }
 \section{Functions}{
 \itemize{
-\item \code{subDiffEx}: Get PCA components for a SCtkE object
+\item \code{subDiffEx}: 
 
 \item \code{subDiffExttest}: Runs t-tests on all genes in a simulated dataset with 2
 conditions, and adjusts for FDR.

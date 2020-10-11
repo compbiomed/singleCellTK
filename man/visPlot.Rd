@@ -16,7 +16,7 @@ visPlot(
 )
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{The assay to use in the visualization plot. Required}
 

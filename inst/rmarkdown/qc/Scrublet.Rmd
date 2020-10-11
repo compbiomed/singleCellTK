@@ -1,0 +1,47 @@
+---
+title: "Comprehensive reporting of QC metrics: identifying doublets with Scrublet"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "scrublet-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r,"scrublet-import", warning=FALSE, include=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsScrublet<- suppressWarnings(plotScrubletResults(sce.qc, reducedDimName="UMAP"))
+    i="Scrublet"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotsScrublet$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotsScrublet$scatter_doubletCall
+   
+    cat(paste0('## Density Score \n\n'))
+    plotsScrublet$density_doubletScore
+   
+    cat(paste0('## Violin Score \n\n'))
+    plotsScrublet$violin_doubletScore
+ 
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runScrublet
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_Scrublet <- descriptionScrublet()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_Scrublet`

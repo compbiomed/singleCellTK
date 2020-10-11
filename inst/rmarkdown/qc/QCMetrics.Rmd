@@ -1,0 +1,45 @@
+---
+title: "Comprehensive reporting of QC metrics: computing per cell QC metrics usind addPerCellQC"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "QCMetrics-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "QCMetrics-import", warning=FALSE, include=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "QCMetrics", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotsQCMetrics<- suppressWarnings(plotRunPerCellQCResults(sce.qc))
+    i="QCMetrics"
+    cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Sum \n\n'))
+    plotsQCMetrics$sum
+    cat(paste0('## Total \n\n'))
+    plotsQCMetrics$detected
+    cat(paste0('## Subsets mito sum \n\n'))
+    plotsQCMetrics$subsets_mito_sum
+    cat(paste0('## Subsets mito detected \n\n'))
+    plotsQCMetrics$subsets_mito_detected
+    cat(paste0('## Subsets mito percent \n\n'))
+    plotsQCMetrics$subsets_mito_percent
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$scater$addPerCellQC
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_runPerCellQC <- descriptionRunPerCellQC()
+```
+# {.unlisted .unnumbered .toc-ignore}
+`r description_runPerCellQC`
