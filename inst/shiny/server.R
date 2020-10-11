@@ -1814,7 +1814,7 @@ shinyServer(function(input, output, session) {
     } else if(input$normalizeAssayMethodSelect == "RC"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
     } else if(input$normalizeAssayMethodSelect == "CPM"){
-      updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "CPMCounts")
+      updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterCPMCounts")
     } else if(input$normalizeAssayMethodSelect == "LNC"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterLogNormCounts")
     } else if(input$normalizeAssayMethodSelect == "SCT"){
