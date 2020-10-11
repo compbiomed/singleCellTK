@@ -4363,8 +4363,15 @@ shinyServer(function(input, output, session) {
           || input$hvgMethodFS == "dispersion") {
         withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
           #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+          if(input$hvgMethodFS == "mean.var.plot"){
+            vals$counts <- seuratScaleData(
+              inSCE = vals$counts,
+              useAssay = input$assaySelectFS
+            )
+          }
           vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                       useAssay = input$assaySelectFS,
+                                       normAssay = input$assaySelectFS,
+                                       useAssay = "seuratScaledData",
                                        hvgMethod = input$hvgMethodFS,
                                        hvgNumber = as.numeric(input$hvgNoFeaturesFS))
           if (input$hvgMethodFS == "vst") {
