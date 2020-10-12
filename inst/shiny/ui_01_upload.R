@@ -187,3 +187,4 @@ shinyPanelUpload <- fluidPage(
   )
   #includeHTML("www/footer.html")
 )
+

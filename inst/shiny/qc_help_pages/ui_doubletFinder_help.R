@@ -40,3 +40,4 @@ doubletFinderHelpModal <- function() {
     )
   )
 }
+
