@@ -22,3 +22,4 @@ ShinyPanelHypeR <- fluidPage(
   )
 )
 )
+

@@ -44,3 +44,4 @@ shinyPanelFilter <- fluidPage(
     actionButton("filterSCE", "Filter")
   )
 )
+

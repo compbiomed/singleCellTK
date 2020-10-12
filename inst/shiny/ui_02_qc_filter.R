@@ -8,3 +8,4 @@ shinyPanelQCFilter <- fluidPage(
     tabPanel("Filtering", shinyPanelFilter)
   )
 )
+

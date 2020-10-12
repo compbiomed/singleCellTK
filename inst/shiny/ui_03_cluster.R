@@ -280,4 +280,5 @@ shinyPanelCluster <- fluidPage(
 #   req(vals$dendrogram)
 #   vals$dendrogram
 # }, height = 600)
-# 
+#
+ 
