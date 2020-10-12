@@ -1752,7 +1752,21 @@ shinyServer(function(input, output, session) {
     else if(input$assayModifyAction == "trim"){
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
     }
-
+  })
+  
+  observeEvent(input$modifyAssaySelect,{
+    if (input$assayModifyAction == "log"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+    }
+    else if (input$assayModifyAction == "log1p"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+    }
+    else if (input$assayModifyAction == "z.score") {
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+    }
+    else if(input$assayModifyAction == "trim"){
+      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+    }
   })
 
   observeEvent(input$normalizeAssay, {
