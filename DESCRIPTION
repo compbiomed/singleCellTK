@@ -1,6 +1,6 @@
 Package: singleCellTK
 Type: Package
-Title: Interactive Analysis of Single Cell RNA-Seq Data
+Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
 Version: 1.7.6
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
@@ -20,12 +20,9 @@ Depends:
     SingleCellExperiment,
     DelayedArray,
     Biobase
-Description: Run common single cell analysis directly through your browser
-    including differential expression, downsampling analysis, and clustering.
+Description: Run common single cell analysis in the R console or directly through your browser. Includes many functions for import, quality control, normalization, batch correction, clustering, differential expression, and visualization..
 License: MIT + file LICENSE
 Encoding: UTF-8
-cache:
-  - packages: true
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
     Clustering, ImmunoOncology
 LazyData: TRUE
@@ -58,7 +55,6 @@ Imports:
     limma,
     MAST,
     Matrix,
-    mnormt,
     matrixStats,
     methods,
     msigdbr,
@@ -118,12 +114,9 @@ Suggests:
     org.Mm.eg.db,
     stringr
 Remotes: 
-    joshua-d-campbell/DoubletFinder,
     joshua-d-campbell/harmony,
-    rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input,
-    campbio/celda@RELEASE_3_11
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
