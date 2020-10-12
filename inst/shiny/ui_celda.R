@@ -502,3 +502,4 @@ shinyPanelCelda2 <- fluidPage(
     )
   )
 )
+

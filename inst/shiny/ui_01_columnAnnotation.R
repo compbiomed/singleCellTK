@@ -95,3 +95,4 @@ shinyPanelColumnAnnotation <- fluidPage(
                               uiOutput("outputColumnAnnotationTable_colData")
               )
 )
+
