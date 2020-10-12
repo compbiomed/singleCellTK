@@ -455,7 +455,7 @@ runDoubletFinder <- function(inSCE,
     res.temp <- sweep.list[[i]]
     
     ## Use gaussian kernel density estimation of pANN vector to compute bimodality coefficient
-    gkde <- approxfun(KernSmooth::bkde(res.temp$pANN, kernel="normal"))
+    gkde <- stats::approxfun(KernSmooth::bkde(res.temp$pANN, kernel="normal"))
     x <- seq(from=min(res.temp$pANN), to=max(res.temp$pANN), length.out=nrow(res.temp))
     sweep.stats$BCreal[i] <- .bimodality_coefficient(gkde(x))
     
@@ -470,8 +470,8 @@ runDoubletFinder <- function(inSCE,
     test.ind <- (1:nrow(meta))[-train.ind]
     colnames(meta) <- c("SinDub","pANN")
     meta$SinDub <- factor(meta$SinDub, levels = c("Doublet","Singlet"))
-    model.lm <- glm(SinDub ~ pANN, family="binomial"(link='logit'), data=meta, subset=train.ind)
-    prob <- predict(model.lm, newdata=meta[test.ind, ], type="response")
+    model.lm <- stats::glm(SinDub ~ pANN, family=stats::binomial(link='logit'), data=meta, subset=train.ind)
+    prob <- stats::predict(model.lm, newdata=meta[test.ind, ], type="response")
     ROCpred <- ROCR::prediction(predictions=prob, labels=meta$SinDub[test.ind])
     perf.auc <- ROCR::performance(ROCpred, measure="auc")
     sweep.stats$AUC[i] <- perf.auc@y.values[[1]]
@@ -527,18 +527,10 @@ runDoubletFinder <- function(inSCE,
       x <- x + 1
       ind <- which(sweep.stats$pK == i)
       bc.mvn$MeanBC[x] <- mean(sweep.stats[ind, "BCreal"])
-      bc.mvn$VarBC[x] <- sd(sweep.stats[ind, "BCreal"])^2
-      bc.mvn$BCmetric[x] <- mean(sweep.stats[ind, "BCreal"])/(sd(sweep.stats[ind, "BCreal"])^2)
+      bc.mvn$VarBC[x] <- stats::sd(sweep.stats[ind, "BCreal"])^2
+      bc.mvn$BCmetric[x] <- mean(sweep.stats[ind, "BCreal"])/(stats::sd(sweep.stats[ind, "BCreal"])^2)
     }
-    
-    ## Plot for visual validation of BCmvn distribution
-    par(mar=rep(1,4))
-    x <- plot(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, pch=16, col="#41b6c4", cex=0.75)
-    x <- lines(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, col="#41b6c4")
-    print(x)
-    
     return(bc.mvn)
-    
   }
   
   ## Implementation for data with ground-truth doublet classifications (e.g., MULTI-seq, CellHashing, Demuxlet, etc.)
@@ -556,19 +548,9 @@ runDoubletFinder <- function(inSCE,
       ind <- which(sweep.stats$pK == i)
       bc.mvn$MeanAUC[x] <- mean(sweep.stats[ind, "AUC"])
       bc.mvn$MeanBC[x] <- mean(sweep.stats[ind, "BCreal"])
-      bc.mvn$VarBC[x] <- sd(sweep.stats[ind, "BCreal"])^2
-      bc.mvn$BCmetric[x] <- mean(sweep.stats[ind, "BCreal"])/(sd(sweep.stats[ind, "BCreal"])^2)
+      bc.mvn$VarBC[x] <- stats::sd(sweep.stats[ind, "BCreal"])^2
+      bc.mvn$BCmetric[x] <- mean(sweep.stats[ind, "BCreal"])/(stats::sd(sweep.stats[ind, "BCreal"])^2)
     }
-    
-    ## Plot for visual validation of BCmvn distribution
-    par(mar=rep(1,4))
-    x <- plot(x=bc.mvn$ParamID, y=bc.mvn$MeanAUC, pch=18, col="black", cex=0.75,xlab=NA, ylab = NA)
-    x <- lines(x=bc.mvn$ParamID, y=bc.mvn$MeanAUC, col="black", lty=2)
-    par(new=TRUE)
-    x <- plot(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, pch=16, col="#41b6c4", cex=0.75)
-    axis(side=4)
-    x <- lines(x=bc.mvn$ParamID, y=bc.mvn$BCmetric, col="#41b6c4")
-    print(x)
     
     return(bc.mvn)
     
@@ -645,7 +627,7 @@ runDoubletFinder <- function(inSCE,
     }
     
     if (sct == TRUE) {
-      require(sctransform)
+      #require(sctransform)
       print("Creating Seurat object...")
       seu_wdoublets <- Seurat::CreateSeuratObject(counts = data_wdoublets)
       
