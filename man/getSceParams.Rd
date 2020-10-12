@@ -25,7 +25,7 @@ getSceParams(
 
 \item{samplename}{The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.}
 
-\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE, 
+\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 return character object.}
 }
 \description{
