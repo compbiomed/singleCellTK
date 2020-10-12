@@ -19,7 +19,7 @@ plotEmptyDropsScatter(
   legendTitle = NULL,
   legendTitleSize = 12,
   legendSize = 10,
-  combinePlot = NULL,
+  combinePlot = "none",
   relHeights = 1,
   relWidths = 1,
   samplePerColumn = TRUE,

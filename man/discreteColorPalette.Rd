@@ -6,7 +6,7 @@
 \usage{
 discreteColorPalette(
   n,
-  palette = c("ggplot", "celda", "random"),
+  palette = c("random", "ggplot", "celda"),
   seed = 12345,
   ...
 )

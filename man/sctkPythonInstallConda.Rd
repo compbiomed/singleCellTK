@@ -8,7 +8,7 @@ sctkPythonInstallConda(
   envname = "sctk-reticulate",
   conda = "auto",
   packages = c("scipy", "numpy", "astroid", "six"),
-  pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "scgen", "anndata"),
+  pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata"),
   selectConda = TRUE,
   forge = FALSE,
   pipIgnoreInstalled = TRUE,
