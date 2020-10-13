@@ -78,7 +78,7 @@ importMultipleSources <- function(allImportEntries) {
   return(combineSCE(sceList = sceObjs,
                     by.r = NULL,
                     by.c = Reduce(intersect, lapply(sceObjs, function(x) { colnames(colData(x))})),
-                    combined = T)
+                    combined = TRUE)
   )
 }
 
