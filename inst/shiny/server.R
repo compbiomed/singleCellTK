@@ -1236,7 +1236,11 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterColSelect, {
+    # prep the modal - remove the threshold div and hide the categorical option
+    shinyjs::hide("convertFilterType")
+    updateCheckboxInput(session, "convertToCat", value = F)
     removeUI(selector = "#newThresh")
+    # check if column contains numerical values
     isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
     if (length(vals$counts[[input$filterColSelect]]) > 0) {
       if (isNum) {
@@ -1247,22 +1251,56 @@ shinyServer(function(input, output, session) {
           selector = "#filterCriteria",
           ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
         )
-      } else {
+        # if less than 25 unique categories, give categorical option
+        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+          if (is.null(input$convertToCat)) {
+            insertUI(
+              selector = "#convertFilterType",
+              ui = checkboxInput("convertToCat", "Convert to categorical filter?")
+            )
+          }
+          shinyjs::show("convertFilterType")
+        }
+        
+      } else { # if non-numerical values, create checkbox input
         insertUI(
           selector = "#filterCriteria",
           ui = tags$div(id="newThresh",
                         checkboxGroupInput("filterThresh", "Please select which columns to keep:",
-                                           choiceNames = as.vector(unique(vals$counts[[input$filterColSelect]])),
-                                           choiceValues = as.vector(unique(vals$counts[[input$filterColSelect]]))
+                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
                         ),
           )
         )
       }
-    } else {
+    } else { # if no values in column, show error
       insertUI(
         selector = "#filterCriteria",
         ui = tags$div(id="newThresh", tags$b("This column does not have any filtering criteria", style = "color: red;"))
       )
+    }
+  })
+  
+  observeEvent(input$convertToCat, {
+    if (!is.null(input$filterColSelect)) {
+      removeUI(selector = "#newThresh")
+      if (input$convertToCat) {
+        insertUI(
+          selector = "#filterCriteria",
+          ui = tags$div(id="newThresh",
+                        checkboxGroupInput("filterThresh", "Please select which columns to keep:",
+                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
+                        )
+          )
+        )
+      } else {
+        minCol <- min(vals$counts[[input$filterColSelect]])
+        maxCol <- max(vals$counts[[input$filterColSelect]])
+        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minCol, maxCol)
+        insertUI(
+          selector = "#filterCriteria",
+          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
+        )
+      }
     }
   })
 

@@ -236,6 +236,11 @@ filteringModal <- function(failed=FALSE, colNames) {
     selectInput("filterColSelect", "", colNames),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
+    shinyjs::hidden(
+      tags$div(id = "convertFilterType",
+               # checkboxInput("convertToCat", "Convert to categorical filter?"),
+      )
+    ),
     tags$div(id = "filterCriteria"),
     
     footer = tagList(
