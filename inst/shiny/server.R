@@ -2298,121 +2298,126 @@ shinyServer(function(input, output, session) {
   #     anim = TRUE), add = TRUE)
   # shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
 
-  modsplit <- eventReactive(input$celdamodsplit, {
-    celda_sce <- selectFeatures(as.matrix(counts(vals$counts)))
-    #factorized <- factorizeMatrix(celda_sce)
-    assay(altExp(celda_sce), "normalizedCounts") <- normalizeCounts(counts(altExp(celda_sce)))
-    updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
+  observeEvent(input$celdamodsplit, {
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
+      panel(heading = "Perplexity Plot",
+        plotlyOutput(outputId = "plot_modsplit_perp")
+      )
+    ), select = TRUE)
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Difference Plot",
+      panel(heading = "Perplexity Diff Plot",
+        plotlyOutput(outputId = "plot_modsplit_perpdiff")
+      )
+    ))
+
     withProgress(message = "Clustering Features", max = 1, value = 1, {
-      modsplitting <- recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax)
+        vals$counts <- selectFeatures(as.matrix(counts(vals$counts)))
+        assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
+        updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
+        vals$counts <- recursiveSplitModule(vals$counts, initialL = input$celdaLinit, maxL = input$celdaLmax)
+        output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
+        output$plot_modsplit_perpdiff <- renderPlotly({plotGridSearchPerplexityDiff(vals$counts)})
     })
-    showNotification("Celda L Selected.")
+
+    shinyjs::enable(
+      selector = ".celda_modsplit_plots a[data-value='Perplexity Plot']")
+    shinyjs::enable(
+      selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
+    shinyjs::show(selector = ".celda_modsplit_plots")
+    showNotification("Module splitting complete.")
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
-    return(modsplitting)
-  })
-  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-
-  output$modsplitplotdiff <- renderPlotly({plotGridSearchPerplexityDiff(modsplit())})
-
-  #observeEvent(input$celdaLbtn, {
-  #  modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
-  #  showNotification("Number of Feature Modules Selected.")
-  #  updateCollapse(session = session, "CeldaUI", style = list("Module Splitting" = "danger"))
-  #  shinyjs::enable(selector = "div[value='Cell Splitting']")
-  #})
-
-  celdaLselected <- eventReactive(input$celdaLbtn,{
-    modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
-    return(modsplit)
   })
 
   observeEvent(input$celdaLbtn, {
+    vals$counts <- subsetCeldaList(vals$counts, params = list(L = input$celdaLselect))
     showNotification("Number of Feature Modules Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Module Splitting" = "danger"))
-    shinyjs::enable(selector = "div[value='Cell Splitting']")
+    updateCollapse(session = session, "CeldaUI", style = list("Identify # of Feature Modules" = "danger"))
+    shinyjs::enable(
+      selector = "div[value='Identify # of Cell Clusters']")
   })
 
-  cellsplit <- eventReactive(input$celdacellsplit, {
-    updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
+  observeEvent(input$celdacellsplit, {
+    removeTab(inputId = "celdaCellsplitTabset", target = "Perplexity Plot")
+    appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = "Perplexity Plot",
+      panel(heading = "Perplexity Plot",
+        plotlyOutput(outputId = "plot_cellsplit_perp")
+      )
+    ), select = TRUE)
     withProgress(message = "Clustering Cells", max = 1, value = 1, {
-      cellsplitting <- recursiveSplitCell(celdaLselected(), initialK = input$celdaKinit, maxK = input$celdaKmax)
+      vals$counts <- recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax)
+      output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
     })
+    shinyjs::enable(
+      selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
+    shinyjs::show(selector = ".celda_cellsplit_plots")
     showNotification("Cell Clustering Complete.")
+    updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     shinyjs::show(id = "celdaKselect")
     shinyjs::show(id = "celdaKbtn")
-    return(cellsplitting)
-  })
-
-  output$cellsplitplot <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
-
-  celdaKselected <- eventReactive(input$celdaKbtn, {
-    cellsplit <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
-    return(cellsplit)
   })
 
   observeEvent(input$celdaKbtn, {
+    vals$counts <- subsetCeldaList(vals$counts, params = list(K = input$celdaKselect))
     showNotification("Number of Cell Clusters Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Cell Splitting" = "danger"))
-    shinyjs::enable(selector = "div[value='Umap/Tsne']")
-    shinyjs::disable(id = "CeldaTsne")
+    updateCollapse(session = session, "CeldaUI", style = list("Identify # of Cell Clusters" = "danger"))
+    shinyjs::enable(
+      selector = "div[value='Visualization']")
   })
 
-  celdaumap <- eventReactive(input$CeldaUmap, {
+  observeEvent(input$CeldaUmap, {
     withProgress(message = "Computing Umap", max = 1, value = 1, {
-      celdamodel <- celdaUmap(celdaKselected())
+      vals$counts <- celdaUmap(vals$counts)
+      output$celdaumapplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_UMAP", xlab = "UMAP_1",
+        ylab = "UMAP_2", labelClusters = TRUE)})
     })
     showNotification("Umap complete.")
     shinyjs::enable("CeldaTsne")
-    return(celdamodel)
-  })
-
-  output$celdaumapplot <- renderPlotly({plotDimReduceCluster(celdaumap(), reducedDimName = "celda_UMAP", xlab = "UMAP_1",
-    ylab = "UMAP_2", labelClusters = TRUE)})
-
-  celdatsne <- eventReactive(input$CeldaTsne, {
-    withProgress(message = "Computing Tsne", max = 1, value = 1, {
-      celdamodel <- celdaTsne(celdaumap())
-    })
-    showNotification("Tsne complete.")
-    return(celdamodel)
   })
 
   observeEvent(input$CeldaTsne, {
-    updateCollapse(session = session, "CeldaUI", style = list("Umap/Tsne" = "danger"))
-    shinyjs::enable(selector = "div[value='Plot Heatmap']")
+    withProgress(message = "Computing Tsne", max = 1, value = 1, {
+      vals$counts <- celdaTsne(vals$counts)
+      output$celdatsneplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_tSNE", xlab = "tSNE_1",
+        ylab = "tSNE_2", labelClusters = TRUE)})
+    })
+    showNotification("Tsne complete.")
   })
 
-  output$celdatsneplot <- renderPlotly({plotDimReduceCluster(celdatsne(), reducedDimName = "celda_tSNE", xlab = "tSNE_1",
-    ylab = "tSNE_2", labelClusters = TRUE)})
-
-  modheatmapplt <- eventReactive(input$celdamodheatmapbtn, {
-    moduleHeatmap(celdatsne(), featureModule = input$celdamodheatmapselect)
+  observeEvent(input$celdamodheatmapbtn, {
+    withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
+      output$celdamodheatmapplot <- renderPlotly({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapselect)})
+    })
+    showNotification("Module heatmap complete.")
   })
-
-  output$celdamodheatmapplot <- renderPlotly({modheatmapplt()})
 
   observe({
     if(!is.null(vals$counts)){
       #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
       shinyjs::enable(
-        selector = "div[value='Module Splitting']")
+        selector = "div[value='Identify # of Feature Modules']")
     }else{
       #If no data uploaded in data tab, disabled all tabs and plots.
 
       #Disable tabs
       shinyjs::disable(
-        selector = "div[value='Module Splitting']")
+        selector = "div[value='Identify # of Feature Modules']")
       shinyjs::disable(
-        selector = "div[value='Cell Splitting']")
+        selector = "div[value='Identify # of Cell Clusters']")
       shinyjs::disable(
-        selector = "div[value='Umap/Tsne']")
-      shinyjs::disable(
-        selector = "div[value='Plot Heatmap']")
+        selector = "div[value='Visualization']")
 
-      #Disable plots inside PCA subtab
-      #shinyjs::disable(
-      #  selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+      #Disable plots inside Modsplit subtab
+      shinyjs::disable(
+        selector = ".celda_modsplit_plots a[data-value='Perplexity Plot']")
+      shinyjs::disable(
+        selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
+
+      #Disaple plots inside Cellsplit subtab
+      shinyjs::disable(
+        selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
     }
   })
 

@@ -2,7 +2,7 @@
 shinyPanelCelda <- fluidPage(
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
     bsCollapse(id = "CeldaUI", open = "Data Input",
-        bsCollapsePanel("Module Splitting",
+        bsCollapsePanel("Identify # of Feature Modules",
            fluidRow(
                column(4,
                    panel(
@@ -16,15 +16,19 @@ shinyPanelCelda <- fluidPage(
                    )
                ),
                column(8,
-                   panel(
-                       plotlyOutput("modsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                       plotlyOutput("modsplitplotdiff") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                   fluidRow(
+                       column(12,
+                           hidden(
+                               tags$div(class = "celda_modsplit_plots", tabsetPanel(id = "celdaModsplitTabset", type = "tabs"
+                               ))
+                           )
+                       )
                    )
                )
            ),
             style = "primary"),
 
-        bsCollapsePanel("Cell Splitting",
+        bsCollapsePanel("Identify # of Cell Clusters",
             fluidRow(
                 column(4,
                     panel(
@@ -38,46 +42,65 @@ shinyPanelCelda <- fluidPage(
                     )
                 ),
                 column(8,
-                    panel(
-                        plotlyOutput("cellsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                    fluidRow(
+                        column(12,
+                            hidden(
+                                tags$div(class = "celda_cellsplit_plots", tabsetPanel(id = "celdaCellsplitTabset", type = "tabs"
+                                ))
+                            )
+                        )
                     )
                 )
             ),
             style = "primary"),
 
-        bsCollapsePanel("Umap/Tsne",
-            fluidRow(
-                column(4,
-                    panel(
-                        actionButton("CeldaUmap", "Run UMAP"),
-                        actionButton("CeldaTsne", "Run tSNE")
+        bsCollapsePanel("Visualization",
+            tabsetPanel(
+                tabPanel("UMAP",
+                    fluidRow(
+                        column(4,
+                            panel(
+                                actionButton("CeldaUmap", "Run UMAP")
+                            )
+                        ),
+                        column(8,
+                            panel(
+                                plotlyOutput("celdaumapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                            )
+                        )
                     )
                 ),
-                column(8,
-                    panel(
-                        plotlyOutput("celdaumapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                        plotlyOutput("celdatsneplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                tabPanel("TSNE",
+                    fluidRow(
+                        column(4,
+                            panel(
+                                actionButton("CeldaTsne", "Run tSNE")
+                            )
+                        ),
+                        column(8,
+                            panel(
+                                plotlyOutput("celdatsneplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                            )
+                        )
+                    )
+                ),
+                tabPanel("Heatmap",
+                    fluidRow(
+                        column(4,
+                            panel(
+                                numericInput("celdamodheatmapselect", "Select Module to Plot:", min = 1, max = 25, value = 10),
+                                actionButton("celdamodheatmapbtn", "Select Module Number")
+                            )
+                        ),
+                        column(8,
+                            panel(
+                                plotlyOutput("celdamodheatmapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+                                plotlyOutput("celdaprobplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+                            )
+                        )
                     )
                 )
-            ),
-            style = "primary"),
-
-        bsCollapsePanel("Plot Heatmap",
-            fluidRow(
-                column(4,
-                    panel(
-                        numericInput("celdamodheatmapselect", "Select Module to Plot:", min = 1, max = 25, value = 10),
-                        actionButton("celdamodheatmapbtn", "Select Module Number")
-                        )
-                    ),
-                column(8,
-                    panel(
-                        plotlyOutput("celdamodheatmapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                        plotlyOutput("celdaprobplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                        )
-                    )
             ),
             style = "primary")
     )
-
 )
