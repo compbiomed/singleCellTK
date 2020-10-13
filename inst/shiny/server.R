@@ -838,7 +838,7 @@ shinyServer(function(input, output, session) {
           vals$original <- combineSCE(sceList = sceList,
                      by.r = NULL,
                      by.c = Reduce(intersect, lapply(sceList, function(x) { colnames(colData(x))})),
-                     combined = T)
+                     combined = TRUE)
         } else {
           vals$original <- sceObj
         }
@@ -1211,7 +1211,7 @@ shinyServer(function(input, output, session) {
         qc_algo_status[[algo]] <- list(self="done")
         if (length(uniqueSampleNames) > 1) {
           for (s in uniqueSampleNames) {
-            qc_algo_status[[algo]][[s]] = T
+            qc_algo_status[[algo]][[s]] = TRUE
           }
         }
       }
@@ -3750,7 +3750,7 @@ shinyServer(function(input, output, session) {
         tryCatch({
           png(image, width = 75, height = 25, bg = 'transparent')
           par(mar = c(0, 0, 0, 0))
-          barplot(rep(1, length(cols)), col = cols, axes = F)
+          barplot(rep(1, length(cols)), col = cols, axes = FALSE)
         },finally = dev.off())
 
         shiny:::httpResponse(
@@ -4404,25 +4404,25 @@ shinyServer(function(input, output, session) {
       if (input$hvgMethodFS == "vst"
           || input$hvgMethodFS == "mean.var.plot"
           || input$hvgMethodFS == "dispersion") {
-        withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-          #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
-          if(input$hvgMethodFS == "mean.var.plot"){
+          withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+            if(input$hvgMethodFS == "mean.var.plot"){
             vals$counts <- seuratScaleData(
               inSCE = vals$counts,
               useAssay = input$assaySelectFS
             )
           }
-          vals$counts <- seuratFindHVG(inSCE = vals$counts,
+            vals$counts <- seuratFindHVG(inSCE = vals$counts,
                                        normAssay = input$assaySelectFS,
                                        useAssay = "seuratScaledData",
                                        hvgMethod = input$hvgMethodFS,
                                        hvgNumber = 100)
-        } else if (input$hvgMethodFS == "modelGeneVar") {
-          vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
-        }
-        vals$hvgCalculated$status <- TRUE
-        vals$hvgCalculated$method <- input$hvgMethodFS
-      })
+            })
+      } else if (input$hvgMethodFS == "modelGeneVar") {
+        vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
+      }
+      vals$hvgCalculated$status <- TRUE
+      vals$hvgCalculated$method <- input$hvgMethodFS
     }
   })
 
