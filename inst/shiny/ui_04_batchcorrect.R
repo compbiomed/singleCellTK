@@ -16,12 +16,16 @@ shinyPanelBatchcorrect <- fluidPage(
                               label = "Select normalization method: ",
                               choices = c("Seurat - LogNormalize" = "LogNormalize", 
                                           "Seurat - CLR" = "CLR", 
-                                          "Seurat - RC" = "RC", 
+                                          "Seurat - RC" = "RC",
+                                          "Seurat - SCTransform" = "SCT",
+                                          "Scater - LogNormCounts" = "LNC",
                                           "Scater - CPM" = "CPM")
                             ),
                             selectInput("normalizeAssaySelect", "Select Assay:", currassays),
                             conditionalPanel(
-                              condition = "input.normalizeAssayMethodSelect != 'CPM'",
+                              condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
+                              || input.normalizeAssayMethodSelect == 'CLR'
+                              || input.normalizeAssayMethodSelect == 'RC'",
                               textInput(
                                 inputId = "normalizationScaleFactor",
                                 label = "Set scaling factor: ",
@@ -52,35 +56,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                 )
                             ),
                             selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction != 'delete'
-                                    && input.assayModifyAction != 'seurat.scale'",
-                                textInput("modifyAssayOutname", "Assay Name",
-                                          value = "countsLog")
-                            ),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction == 'seurat.scale'",
-                                selectInput(
-                                    inputId = "scaleSeuratModel",
-                                    label = "Select model for scaling: ",
-                                    choices = c("linear", "poisson", "negbinom")
-                                    ),
-                                materialSwitch(
-                                    inputId = "scaleSeuratDoScale",
-                                    label = "Scale data?",
-                                    value = TRUE
-                                    ),
-                                materialSwitch(
-                                    inputId = "scaleSeuratDoCenter",
-                                    label = "Center data?",
-                                    value = TRUE
-                                    ),
-                                textInput(
-                                    inputId = "scaleSeuratMaxValue",
-                                    label = "Max value for scaled data: ",
-                                    value = "10"
-                                    )
-                            ),
+                            textInput("modifyAssayOutname", "Assay Name",
+                                      value = "countsLog"),
                             materialSwitch(
                                 inputId = "trimAssayCheckbox",
                                 label = "Trim Assay",
