@@ -1633,11 +1633,14 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
       if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
-        showNotification("Assay does not exist!", type = "error")
+        stop("Assay does not exist!")
       } else if (input$modifyAssayOutname == "") {
-        showNotification("Assay name cannot be empty!", type = "error")
+        stop("Assay name cannot be empty!")
       } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-        showNotification("Assay name already exists! Use another assay name!", type = "error")
+        stop("Assay name already exists! Use another assay name!")
+      } else if(is.na(input$trimUpperValueAssay)
+                || is.na(input$trimLowerValueAssay)){
+        stop("Upper or lower trim value cannot be empty!")
       } else {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
@@ -1722,6 +1725,9 @@ shinyServer(function(input, output, session) {
       }
       else if(input$normalizeAssaySelect == ""){
         stop("Please select an assay before proceeding with normalization!")
+      }
+      else if(is.na(as.numeric(input$normalizationScaleFactor))){
+        stop("Scaling factor must be a numeric non-empty value!")
       }
       else{
         if (input$normalizeAssayMethodSelect == "LogNormalize"
@@ -6007,7 +6013,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(vals$counts@metadata)){
         
         #Proceed only if sce object has seurat object stored in metadata slot
-        if(!is.null(vals$counts@metadata$seurat)){
+        if(!is.null(vals$counts@metadata$seurat$obj)){
           
           #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
           if(!"seuratScaledData" %in% assayNames(vals$counts)){
