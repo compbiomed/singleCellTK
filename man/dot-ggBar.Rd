@@ -6,7 +6,7 @@
 \usage{
 .ggBar(
   y,
-  groupBy = NULL,
+  groupby = NULL,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
@@ -22,7 +22,7 @@
 \arguments{
 \item{y}{Numeric values to be plotted on y-axis.}
 
-\item{groupBy}{Groupings for each numeric value. A user may input a vector
+\item{groupby}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
