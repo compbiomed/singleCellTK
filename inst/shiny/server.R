@@ -6007,7 +6007,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(vals$counts@metadata)){
         
         #Proceed only if sce object has seurat object stored in metadata slot
-        if(!is.null(vals$counts@metadata$seurat)){
+        if(!is.null(vals$counts@metadata$seurat$obj)){
           
           #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
           if(!"seuratScaledData" %in% assayNames(vals$counts)){
