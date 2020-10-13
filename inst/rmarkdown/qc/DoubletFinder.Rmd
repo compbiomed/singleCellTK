@@ -1,0 +1,49 @@
+---
+title: "Comprehensive reporting of QC metrics: predicting doublets with doubletFinder"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "DoubletFinder-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "DoubletFinder-import", warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "DoubletFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
+    i="DoubletFinder"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
+    plotDoubletFinder$Scatter_Score_Resolution_1.5
+    
+    cat(paste0('## Scatter Call Resolution 1.5 \n\n'))
+    plotDoubletFinder$Scatter_Call_Resolution_1.5
+    
+    cat(paste0('## Density Resolution 1.5 \n\n'))
+    plotDoubletFinder$Density_Resolution_1.5
+   
+    cat(paste0('## Violin Resolution 1.5 \n\n'))
+    plotDoubletFinder$violin_Resolution_1.5
+ 
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDoubletFinder
+```
+
+
+```{r, "DoubletFinder-desc", warning=FALSE, message=FALSE}
+description_DoubletFinder <- descriptionDoubletFinder()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DoubletFinder`

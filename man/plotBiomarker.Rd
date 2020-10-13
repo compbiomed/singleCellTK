@@ -5,12 +5,21 @@
 \title{Given a set of genes, return a ggplot of expression
 values.}
 \usage{
-plotBiomarker(inSCE, gene, binary = "Binary", shape = "No Shape",
-  useAssay = "counts", reducedDimName = "PCA", x = NULL, y = NULL,
-  comp1 = NULL, comp2 = NULL)
+plotBiomarker(
+  inSCE,
+  gene,
+  binary = "Binary",
+  shape = "No Shape",
+  useAssay = "counts",
+  reducedDimName = "PCA",
+  x = NULL,
+  y = NULL,
+  comp1 = NULL,
+  comp2 = NULL
+)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{gene}{genelist to run the method on.}
 

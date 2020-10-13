@@ -7,7 +7,7 @@
 convertGeneIDs(inSCE, inSymbol, outSymbol, database = "org.Hs.eg.db")
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{inSymbol}{The input symbol type}
 
@@ -16,7 +16,7 @@ convertGeneIDs(inSCE, inSymbol, outSymbol, database = "org.Hs.eg.db")
 \item{database}{The org.*.eg.db database to use. The default is org.Hs.eg.db}
 }
 \value{
-A SCtkExperiment with converted gene IDs.
+A \linkS4class{SingleCellExperiment} object with converted gene IDs.
 }
 \description{
 Convert the gene IDs in a SingleCellExperiment object using Bioconductor

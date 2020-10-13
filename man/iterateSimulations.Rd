@@ -4,11 +4,17 @@
 \alias{iterateSimulations}
 \title{Returns significance data from a snapshot.}
 \usage{
-iterateSimulations(originalData, useAssay = "counts", realLabels,
-  totalReads, cells, iterations)
+iterateSimulations(
+  originalData,
+  useAssay = "counts",
+  realLabels,
+  totalReads,
+  cells,
+  iterations
+)
 }
 \arguments{
-\item{originalData}{SCtkExperiment. The SCtkExperiment object storing all
+\item{originalData}{The \linkS4class{SingleCellExperiment} object storing all
 assay data from the shiny app.}
 
 \item{useAssay}{Character. The name of the assay to be used for subsampling.}

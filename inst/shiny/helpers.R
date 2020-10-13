@@ -146,3 +146,193 @@ allSections <- function(action, collapseList) {
     }
   }
 }
+
+withConsoleRedirect <- function(expr) {
+  options(warn = 1)
+  tmpSinkfileName <- tempfile()
+  tmpFD <- file(tmpSinkfileName, open = "wt")
+  sink(tmpFD, type="output", split = TRUE)
+  sink(tmpFD, type = "message")
+  
+  result <- expr
+  
+  sink(type = "message")
+  sink()
+  console.out <- readChar(tmpSinkfileName, file.info(tmpSinkfileName)$size)
+  unlink(tmpSinkfileName)
+  if (length(console.out) > 0) {
+    insertUI(paste0("#", "console"), where = "beforeEnd",
+             ui = tags$p(paste0(console.out, "\n", collapse = ""))
+    )
+  }
+  result
+}
+
+withConsoleMsgRedirect <- function(expr) {
+  withCallingHandlers({
+    result <- expr
+  },
+  message = function(m) {
+    shinyjs::html(id = "console", html = m$message, add = TRUE)
+  })
+  result
+}
+
+
+#-----------#
+# Gene Sets #
+#-----------#
+formatGeneSetList <- function(setListStr) {
+  setListArr <- strsplit(setListStr, "\n")[[1]]
+  setListList <- list()
+  for (set in setListArr) {
+    setListList[[set]] <- set
+  }
+  return(setListList)
+}
+
+formatGeneSetDBChoices <- function(dbIDs, dbCats) {
+  splitIds = strsplit(dbIDs, " ")
+  choices <- list()
+  
+  for (i in seq_along(splitIds)) {
+    entry <- splitIds[i][[1]]
+    choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
+  }
+  
+  return(choices)
+}
+
+
+#--------------#
+# QC/Filtering #
+#--------------#
+
+combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
+  if (combineP=="all") {
+    output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
+  } else {
+    tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
+    removeUI(selector = paste0("#", plotIds[[algo]]))
+    
+    for (i in seq_along(sampleList)) {
+      s <- sampleList[[i]]
+      sID <- paste(c(algo, s, "Tab"), collapse = "")
+      subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
+      if (is.null(statuses[[algo]][[s]])) {
+        if (i == 1) {
+          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
+        } else {
+          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
+        }
+      }
+      output[[subPlotID]] <- renderPlot(plots$Sample[[s]])
+    }
+  }
+}
+
+
+arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
+  uniqueSampleNames <- unique(sampleList)
+  combineP <- "all"
+  if (length(uniqueSampleNames) > 1) {
+    combineP <- "sample"
+  }
+  for (a in algoList) {
+    if (a == "doubletCells") {
+      dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                     reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
+    } else if (a == "cxds") {
+      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                             reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
+    } else if (a == "bcds") {
+      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                             reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
+    } else if (a == "cxds_bcds_hybrid") {
+      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                     reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
+    } else if (a == "decontX") {
+      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
+    } else if (a == "QCMetrics") {
+      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs, statuses)
+      
+    } else if (a == "scrublet") {
+      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
+      
+    } else if (a == "doubletFinder") {
+      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
+                                                      reducedDimName = redDimName, plotLabels = "none")
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
+    }
+  }
+}
+
+
+findOverlapping <- function(arr1, arr2) {
+  filter <- vector()
+  for (x in arr1) {
+    if (x %in% arr2) {
+      filter <- c(filter, TRUE)
+    } else {
+      filter <- c(filter, FALSE)
+    }
+  }
+  return(arr1[filter])
+}
+
+addToColFilterParams <- function(name, criteria, id, paramsReactive) {
+  threshStr <- ""
+  if (is.numeric(criteria)) {
+    threshStr <- sprintf("%s > %.5f", name, criteria)
+  } else {
+    threshArr <- list()
+    for (c in criteria) {
+      threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
+    }
+    threshStr <- paste(threshArr, collapse = " | ")
+  }
+  
+  entry <- list(col=name, param=threshStr, id=id)
+  paramsReactive$params <- c(paramsReactive$params, list(entry))
+  paramsReactive$id_count <- paramsReactive$id_count + 1
+}
+
+addToRowFilterParams <- function(name, X, Y, id, paramsReactive) {
+  entry <- list(row=name, X=X, Y=Y, id=id)
+  paramsReactive$params <- c(paramsReactive$params, list(entry))
+  paramsReactive$id_count <- paramsReactive$id_count + 1
+}
+
+
+formatFilteringCriteria <- function(paramsReactive) {
+  criteria = list()
+  for (entry in paramsReactive) {
+    criteria <- c(criteria, entry$param)
+  }
+  return(criteria)
+}
+
+
+addRowFiltersToSCE <- function(inSCE, paramsReactive) {
+  for (entry in paramsReactive$params) {
+    rowName <- paste0(entry$row, "_filter")
+    a <- assay(inSCE, entry$row)
+    vec <- rowSums(a > entry$X) > entry$Y
+    rowData(inSCE)[[rowName]] <- vec
+    entry$param <- sprintf("%s == T", rowName)
+  }
+  return(inSCE)
+}
+
+
+
+

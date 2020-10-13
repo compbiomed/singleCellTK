@@ -1,0 +1,45 @@
+---
+title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ells"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "scran-doubletcell-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "scran-doubletcell-import", warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "DoubletCells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, reducedDimName = "UMAP"))
+    i="DoubletCells"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotDoubletCells$scatter_doubletScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotDoubletCells$density_doubletScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotDoubletCells$violin_doubletScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runDoubletCells
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+description_DoubletCells<- descriptionDoubletCells()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_DoubletCells`

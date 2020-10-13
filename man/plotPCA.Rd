@@ -4,12 +4,19 @@
 \alias{plotPCA}
 \title{Plot PCA run data from its components.}
 \usage{
-plotPCA(inSCE, colorBy = "No Color", shape = "No Shape", pcX = "PC1",
-  pcY = "PC2", reducedDimName = "PCA", runPCA = FALSE,
-  useAssay = "logcounts")
+plotPCA(
+  inSCE,
+  colorBy = "No Color",
+  shape = "No Shape",
+  pcX = "PC1",
+  pcY = "PC2",
+  reducedDimName = "PCA",
+  runPCA = FALSE,
+  useAssay = "logcounts"
+)
 }
 \arguments{
-\item{inSCE}{Input SCTKExperiment object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{colorBy}{The variable to color clusters by}
 

@@ -24,17 +24,30 @@ reference:
     contents:
     - plotBatchVariance
     - ComBatSCE
+    - plotSCEBatchFeatureMean
+    - runComBat
+    - runBBKNN
+    - runHarmony
+    - runLimmaBC
+    - runSeurat3Integration
+    - runFastMNN
+    - runLIGER
+    - runMNNCorrect
+    - runSCANORAMA
+    - runSCMerge
+    - runZINBWaVE
   - title: Differential Expression
     contents:
-    - scDiffEx
-    - scDiffExANOVA
-    - scDiffExDESeq2
-    - scDiffExlimma
-    - plotDiffEx
-    - MAST
-    - MASTregression
-    - MASTviolin
+    - runDESeq2
+    - runLimmaDE
+    - runANOVA
+    - runMAST
+    - plotDEGViolin
+    - plotDEGRegression
+    - plotDEGHeatmap
     - thresholdGenes
+    - findMarkerDiffExp
+    - plotMarkerDiffExp
   - title: Pathway Activity Analysis
     contents:
     - gsvaPlot

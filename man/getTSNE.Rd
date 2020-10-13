@@ -4,11 +4,17 @@
 \alias{getTSNE}
 \title{Run t-SNE dimensionality reduction method on the assay data.}
 \usage{
-getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
-  n_iterations = 1000, perplexity = NULL)
+getTSNE(
+  inSCE,
+  useAssay = "logcounts",
+  reducedDimName = "TSNE",
+  n_iterations = 1000,
+  perplexity = NULL,
+  run_pca = TRUE
+)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts".}
 
@@ -16,11 +22,13 @@ getTSNE(inSCE, useAssay = "logcounts", reducedDimName = "TSNE",
 
 \item{n_iterations}{maximum iterations. Default is 1000}
 
-\item{perplexity}{perplexity parameter. Default is 5}
+\item{perplexity}{perplexity parameter.}
+
+\item{run_pca}{run tSNE on PCA components? Default is TRUE.}
 }
 \value{
-A SCtkE object with the specified reducedDim and
-pcaVariances updated
+A \linkS4class{SingleCellExperiment} object with the specified
+reducedDim updated
 }
 \description{
 Run t-SNE dimensionality reduction method on the assay data.

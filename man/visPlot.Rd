@@ -4,11 +4,19 @@
 \alias{visPlot}
 \title{visPlot}
 \usage{
-visPlot(inSCE, useAssay, method, condition = NULL, glist,
-  facetWrap = TRUE, scaleHMap = TRUE, convertFactor = FALSE)
+visPlot(
+  inSCE,
+  useAssay,
+  method,
+  condition = NULL,
+  glist,
+  facetWrap = TRUE,
+  scaleHMap = TRUE,
+  convertFactor = FALSE
+)
 }
 \arguments{
-\item{inSCE}{Input SCtkExperiment object. Required}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{The assay to use in the visualization plot. Required}
 

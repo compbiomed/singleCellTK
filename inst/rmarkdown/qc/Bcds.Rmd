@@ -1,0 +1,44 @@
+---
+title: "Comprehensive reporting of QC metrics: computational doublet annotation using bcds"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "Bcds-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(umap)
+require(ggplot2)
+```
+
+```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+  plotBcds<- suppressWarnings(plotBcdsResults(sce.qc, reducedDimName = "UMAP"))
+    i="Bcds"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotBcds$scatter_doubletScore
+    
+    cat(paste0('## Scatter Call \n\n'))
+    plotBcds$scatter_doubletCall
+   
+    cat(paste0('## Density Score \n\n'))
+    plotBcds$density_doubletScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotBcds$violin_doubletScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runBcds
+```
+
+```{r, "Bcds-desc", include=FALSE, warning=FALSE, message=FALSE}
+descriprion_BcdsResults<- descriptionBCDS()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r descriprion_BcdsResults`

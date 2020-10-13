@@ -1,4 +1,4 @@
-shinyPanelCelda <- fluidPage(
+shinyPanelCelda2 <- fluidPage(
   useShinyalert(),
   tags$div(
     class = "container",
@@ -32,9 +32,9 @@ shinyPanelCelda <- fluidPage(
                         "celdaModel"),
                       numericInput("cellClusterC",
                         label = "Number of Cell Clusters (K):",
-                        value = 2,
+                        value = 15,
                         min = 1,
-                        max = 100000,
+                        max = 100,
                         step = 1)
                     ),
                     conditionalPanel(
@@ -42,9 +42,9 @@ shinyPanelCelda <- fluidPage(
                         "celdaModel"),
                       numericInput("geneModuleG",
                         label = "Number of Gene Modules (L):",
-                        value = 2,
+                        value = 50,
                         min = 1,
-                        max = 100000,
+                        max = 200,
                         step = 1)
                     ),
                     conditionalPanel(
@@ -52,15 +52,15 @@ shinyPanelCelda <- fluidPage(
                         "celdaModel"),
                       numericInput("cellClusterCG",
                         label = "Number of Cell Clusters (K):",
-                        value = 2,
+                        value = 15,
                         min = 1,
-                        max = 100000,
+                        max = 100,
                         step = 1),
                       numericInput("geneModuleCG",
                         label = "Number of Gene Modules (L):",
-                        value = 2,
+                        value = 50,
                         min = 1,
-                        max = 100000,
+                        max = 200,
                         step = 1))
                   )
                 ),
@@ -153,7 +153,7 @@ shinyPanelCelda <- fluidPage(
                 withBusyIndicatorUI(actionButton(inputId = "renderHeatmap",
                   label = "Render Heatmap")),
                 tags$hr(),
-                downloadButton("downloadSCECelda", "Download SCtkExperiment")
+                downloadButton("downloadSCECelda", "Download SingleCellExperiment object (.rds)")
               ),
               mainPanel(
                 conditionalPanel(
@@ -502,5 +502,4 @@ shinyPanelCelda <- fluidPage(
     )
   )
 )
-
 

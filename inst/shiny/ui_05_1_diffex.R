@@ -2,186 +2,286 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
               "(help)", target = "_blank")),
-    sidebarLayout(
-      sidebarPanel(
+    fluidRow(
+      panel(
+        style = "margin:2px;",
+        selectInput("deAssay", "Select Assay:", currassays),
+        radioButtons('deCondMethod', "Condition Selection:",
+                     choiceNames = c("By annotations",
+                                     "Manually select individual cells",
+                                     "Manually enter cell IDs"),
+                     choiceValues = c(1, 2, 3), inline = TRUE),
         fluidRow(
-          column(5, h3("Settings:")),
-          column(3, br(), actionButton("Diffex_hideAllSections", "Hide All")),
-          column(3, br(), actionButton("Diffex_showAllSections", "Show All"))
+          column(width = 6,
+                 textInput("deG1Name", "Name of Condition1", "Condition1",
+                           placeholder = "Required")
+          ),
+          column(width = 6,
+                 textInput("deG2Name", "Name of Condition2", "Condition2",
+                           placeholder = "Required")
+          )
         ),
-        br(),
-        #TODO: Remove DESeq, add edgeR, add more custom options?
-        actionButton("diffex1", "Options"),
-        tags$div(
-          id = "de1",
-          wellPanel(
-            actionButton("diffex6", "Saved Results"),
-            shinyjs::hidden(
-              tags$div(
-                id = "de6",
-                wellPanel(
-                  uiOutput("savedRes"),
-                  withBusyIndicatorUI(
-                    actionButton("loadResults", "Load Saved Results")
-                  )
+        conditionalPanel(
+          condition = "input.deCondMethod == 1",
+          # Select by class UI ####
+          panel(
+            selectInput("deC1Class", "Choose Annotation Class:",
+                        clusterChoice),
+            fluidRow(
+              column(width = 6,
+                     uiOutput("deC1G1UI"),
+                     uiOutput("deC1G1CellCheckUI"),
+                     uiOutput("deC1G1NCell")
+              ),
+              column(width = 6,
+                     uiOutput("deC1G2UI"),
+                     uiOutput("deC1G2CellCheckUI"),
+                     uiOutput("deC1G2NCell")
+              )
+            )
+          )
+        ),
+        conditionalPanel(
+          condition = "input.deCondMethod == 2",
+          panel(
+            tabsetPanel(
+              tabPanel(
+                "Condition 1",
+                tagList(
+                  selectInput(
+                    'deC2G1Col',
+                    "Columns to display",
+                    clusterChoice, multiple = TRUE, width = '550px'
+                  ),
+                  DT::dataTableOutput("deC2G1Table"),
+                  actionButton('deC2G1Table_addAll', "Add all filtered"),
+                  actionButton('deC2G1Table_clear', "Clear selection"),
+                )
+              ),
+              tabPanel(
+                "Condition 2",
+                tagList(
+                  selectInput(
+                    'deC2G2Col',
+                    "Columns to display",
+                    clusterChoice, multiple = TRUE, width = '550px'
+                  ),
+                  p("Leave unselected for all the others.",
+                    style = 'color:grey;'),
+                  DT::dataTableOutput("deC2G2Table"),
+                  actionButton('deC2G2Table_addAll', "Add all filtered"),
+                  actionButton('deC2G2Table_clear', "Clear selection"),
                 )
               )
             ),
-            selectInput("diffexAssay", "Select Assay:", currassays),
-            selectInput("selectDiffex", "Select Method:",
-                        c("limma (use log values)" = "limma",
-                          "DESeq2 (use counts)" = "DESeq2",
-                          "ANOVA (use log values)" = "ANOVA")),
-            uiOutput("selectDiffexConditionUI"),
-            uiOutput("selectDiffexConditionLevelUI"),
-            selectInput("selectCorrection", "Correction Method:",
-                        c("fdr", "holm", "hochberg", "hommel", "bonferroni",
-                          "BH", "BY", "none")),
-            withBusyIndicatorUI(actionButton("runDiffex",
-                                             "Run Differential Expression"))
+            h4("Summary", style = 'margin-top:10px'),
+            uiOutput("deC2G1info"),
+            uiOutput("deC2G2info")
           )
         ),
-        actionButton("diffex2", "Heatmap"),
-        shinyjs::hidden(
-          tags$div(
-            id = "de2",
-            wellPanel(
-              numericInput("selectNGenes", "Enter Top 'N' Genes value:", value = 500),
-              uiOutput("diffexNgenes"),
-              checkboxInput("applyCutoff", "Apply p-value Cutoff"),
-              conditionalPanel(
-                condition = "input.applyCutoff == true",
-                sliderInput("selectPval", "p-value (adjusted) cutoff:", 0.01, 0.2, 0.05)
+        conditionalPanel(
+          condition = "input.deCondMethod == 3",
+          # Direct enter name UI ####
+          panel(
+            fluidRow(
+              column(width = 6,
+                     h4("The Condition of Interests:"),
+                     textAreaInput(
+                       "deC3G1Cell", "Cell IDs:", height = '150px',
+                       placeholder = "Enter cell IDs here, \none per line with no symbol separator."),
+                     uiOutput("deC3G1NCell")
               ),
-              checkboxInput("applylogFCCutoff", "Apply logFC Cutoff"),
-              conditionalPanel(
-                condition = "input.applylogFCCutoff == true",
-                numericInput("selectlogFCDiffex", "Select logFC cutoff", value = 2, step = 0.5),
-                uiOutput("logFCDiffexRange"),
-                checkboxInput("applyAbslogFCDiffex", "absolute logFC value")
-              ),
-              checkboxInput("applyScaleDiffex", "Scale Expression values?", value = TRUE),
-              br(),
-              actionButton("diffex3", "Options"),
-              tags$div(
-                id = "de3",
-                wellPanel(
-                  h3("General Options"),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("displayHeatmapRowLabels",
-                                    "Row Labels", value = TRUE)
-                    ),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("displayHeatmapColumnLabels",
-                                    "Column Labels", value = TRUE)
-                    )
-                  ),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("displayHeatmapColumnDendrograms",
-                                    "Column Dendrograms", value = TRUE)
-                    ),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("displayHeatmapRowDendrograms",
-                                    "Row Dendrograms", value = TRUE)
-                    )
-                  ),
-                  fluidRow(
-                    column(
-                      width = 1,
-                      checkboxInput("clusterRows", "Cluster Rows",
-                                    value = TRUE)),
-                    column(
-                      width = 1,
-                      offset = 4,
-                      checkboxInput("clusterColumns", "Cluster Columns",
-                                    value = TRUE)
-                    )
-                  ),
-                  textInput("heatmapColumnsTitle", "Columns Title",
-                            value = "Differential Expression"),
-                  tags$hr(),
-                  h3("Colorbar Options"),
-                  checkboxInput("displayHeatmapColorBar", "Display Color Bar",
-                                value = TRUE),
-                  uiOutput("colorBarConditionUI"),
-                  uiOutput("heatmapSampleAnnotations")
-                )
-              ),
-              br(),
-              withBusyIndicatorUI(actionButton("runPlotDiffex", "Plot heatmap"))
+              column(width = 6,
+                     h4("The Control Condition:"),
+                     textAreaInput(
+                       "deC3G2Cell", "Cell IDs:", height = '150px',
+                       placeholder = "Leave this blank for all the others."),
+                     uiOutput("deC3G2NCell")
+              )
             )
           )
         ),
-        actionButton("diffex5", "Save Results"),
-        shinyjs::hidden(
-          tags$div(
-            id = "de5",
-            wellPanel(
-              helpText("Save results in rowData() of a sctk object to use it in a current session or download the sctk object for future use"),
-              textInput("ResultsName", "Name : ", value = ""),
-              withBusyIndicatorUI(actionButton("saveResults", "Save Results")),
-              uiOutput("saveDiffResultsNote")
+        h4("Parameters:"),
+        fluidRow(
+          column(
+            width = 4,
+            selectInput('deMethod', "Choose analysis method",
+                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
+          ),
+          column(
+            width = 8,
+            style = 'margin-top: 32px;',
+            conditionalPanel(
+              condition = "input.deMethod == 'MAST'",
+              p("MAST requires 'logcounts' input assay.",
+                style = 'color:red;')
+            ),
+            conditionalPanel(
+              condition = "input.deMethod == 'DESeq2'",
+              p("DESeq2 requires integer 'counts' input assay.",
+                style = 'color:red;')
+            ),
+            conditionalPanel(
+              condition = "input.deMethod == 'Limma'",
+              p("Limma requires 'logcounts' input assay.",
+                style = 'color:red;')
+            ),
+            conditionalPanel(
+              condition = "input.deMethod == 'ANOVA'",
+              p("ANOVA does not produce Log2FC value.",
+                style = 'color:red;')
             )
           )
         ),
-        #this section was previously called 'biomarker'
-        actionButton("diffex7", "Save top 'N' significant genes"),
-        shinyjs::hidden(
-          tags$div(
-            id = "de7",
-            wellPanel(
-             helpText("Save these to be used in enrichment analysis, visualise and filtering gene annotation"),
-              br(),
-              numericInput("selectBioNGenes", "Enter Top 'N' Genes value: ", value = 100),
-              uiOutput("BioNgenes"),
-              checkboxInput("applyBioCutoff1", "Apply p-value Cutoff"),
-              conditionalPanel(
-                condition = "input.applyBioCutoff1 == true",
-                sliderInput("selectAdjPVal", "Select p-value(adjusted) cutoff", 0.01, 0.2, 0.05)
-              ),
-              checkboxInput("applyBioCutoff2", "Apply logFC Cutoff"),
-              conditionalPanel(
-                condition = "input.applyBioCutoff2 == true",
-                numericInput("selectlogFC", "Select logFC cutoff", value = 2, step = 0.5),
-                uiOutput("logFCBioRange"),
-                checkboxInput("applyAbslogFC", "absolute logFC value")
-              ),
-              textInput("biomarkerName", "Name : ", value = ""),
-              withBusyIndicatorUI(actionButton("saveBiomarker", "Save Biomarker")),
-              uiOutput("bioMarkerNote")
-            )
+        fluidRow(
+          column(
+            width = 3,
+            numericInput("deFDRThresh", "Output FDR less than:",
+                         min = 0.01, max = 1, step = 0.01, value = 0.05)
+          ),
+          column(
+            width = 6,
+            numericInput("deFCThresh",
+                         "Output Log2FC Absolute value greater than:",
+                         min = 0, step = 0.05, value = 0)
           )
         ),
-        actionButton("diffex4", "Download Results table"),
-        shinyjs::hidden(
-          tags$div(
-            id = "de4",
-            wellPanel(downloadButton("downloadGeneList", "Download(.csv)"))
+        fluidRow(
+          column(
+            width = 4,
+            style = 'margin-top: 18px;',
+            checkboxInput("dePosOnly", "Only up-regulated genes",
+                          value = FALSE)
+          ),
+          column(
+            width = 3,
+            selectInput("deCovar", "Select Covariates",
+                        clusterChoice, multiple = TRUE)
+          )
+        ),
+        fluidRow(
+          column(
+            width = 6,
+            textInput("deAnalysisName",
+                      "Name of Differential Expression Analysis:",
+                      placeholder = 'Required.')
+          ),
+          column(
+            width = 6,
+            style = 'margin-top: 25px;',
+            withBusyIndicatorUI(
+              actionButton("runDE", "Run Differential Expression Analysis")
+            )
           )
         )
-      ),
-      mainPanel(
-        tabsetPanel(
-          tabPanel(
-            "Results Table",
-            DT::dataTableOutput("diffextable")
+      )
+    ),
+    fluidRow(
+      uiOutput("deResSelUI"),
+      tabsetPanel(
+        tabPanel("Adaptive thresholding", plotOutput("deThreshplot")),
+        tabPanel("Results Table",
+                 DT::dataTableOutput("deResult"),
+                 downloadButton("deDownload", "Download Result Table")),
+        tabPanel(
+          "Violin Plot",
+          panel(
+            fluidRow(
+              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+                  p('Plot the top')),
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
+                  numericInput('deVioNRow', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 12px;",
+                  p('x')),
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
+                  numericInput('deVioNCol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 10px;",
+                  p('=')),
+              div(style="display: inline-block;vertical-align:center; width: 30px;",
+                  uiOutput('deVioTotalUI')),
+              div(style="display: inline-block;vertical-align:center; width: 50px;",
+                  p('genes'))
+            ),
+            fluidRow(
+              column(
+                width = 5,
+                selectInput('deVioLabel', "Label features by",
+                            c("Default ID", featureChoice))
+              ),
+              column(
+                width = 5,
+                style = 'margin-top: 15px;',
+                withBusyIndicatorUI(actionButton('dePlotVio', 'Plot'))
+              )
+            )
+            #checkboxInput('deVioUseThresh', 'plot threshold values from adaptive thresholding',
+            #              value = FALSE, width = '800px')
           ),
-          tabPanel(
-            "Heatmap",
-            plotOutput("diffPlot")
+          plotOutput("deViolinPlot", height = "800px")
+        ),
+        tabPanel(
+          "Linear Model",
+          panel(
+            fluidRow(
+              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+                  p('Plot the top')),
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
+                  numericInput('deRegNRow', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 12px;",
+                  p('x')),
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
+                  numericInput('deRegNCol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 10px;",
+                  p('=')),
+              div(style="display: inline-block;vertical-align:center; width: 30px;",
+                  uiOutput('deRegTotalUI')),
+              div(style="display: inline-block;vertical-align:center; width: 50px;",
+                  p('genes'))
+            ),
+            fluidRow(
+              column(
+                width = 5,
+                selectInput('deRegLabel', "Label features by",
+                            c("Default ID", featureChoice))
+              ),
+              column(
+                width = 5,
+                style = 'margin-top: 15px;',
+                withBusyIndicatorUI(actionButton('dePlotReg', 'Plot'))
+              )
+            ),
+            #checkboxInput('deRegUseThresh', 'plot threshold values from adaptive thresholding',
+            #              value = FALSE, width = '800px')
+          ),
+          plotOutput("deRegPlot", height = "800px")
+        ),
+        tabPanel(
+          "Heatmap",
+          sidebarLayout(
+            sidebarPanel(
+              checkboxInput('deHMPosOnly', "Only up-regulated",
+                            value = FALSE),
+              numericInput("deHMFC", "Aboslute log2FC value greater than:",
+                           value = 1, min = 0, step = 0.05),
+              numericInput("deHMFDR", "FDR value less than", value = 0.05,
+                           max = 1, step = 0.01),
+              selectInput("deHMcolData", "Additional cell annotation",
+                          choices = clusterChoice, multiple = TRUE),
+              selectInput("deHMrowData", "Additional feature annotation",
+                          choices = featureChoice, multiple = TRUE),
+              uiOutput('deHMSplitColUI'),
+              uiOutput('deHMSplitRowUI'),
+              withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
+            ),
+            mainPanel(
+              plotOutput("deHeatmap", height = "600px")
+            )
           )
         )
       )
     )
   )
 )
+

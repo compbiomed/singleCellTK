@@ -2,12 +2,21 @@
 % Please edit documentation in R/alignSingleCellData.R
 \name{alignSingleCellData}
 \alias{alignSingleCellData}
-\title{Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object}
+\title{Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object}
 \usage{
-alignSingleCellData(inputfile1, inputfile2 = NULL, indexPath,
-  gtfAnnotation, outputDir = NULL, sampleAnnotations = NULL,
-  featureAnnotations = NULL, threads = 1, saveBam = FALSE,
-  saveCountFiles = FALSE, isPairedEnd = FALSE)
+alignSingleCellData(
+  inputfile1,
+  inputfile2 = NULL,
+  indexPath,
+  gtfAnnotation,
+  outputDir = NULL,
+  sampleAnnotations = NULL,
+  featureAnnotations = NULL,
+  threads = 1,
+  saveBam = FALSE,
+  saveCountFiles = FALSE,
+  isPairedEnd = FALSE
+)
 }
 \arguments{
 \item{inputfile1}{An input file or list of files. Files can be fastq,
@@ -49,7 +58,7 @@ files are paired end.}
 Object to import into the shiny app.
 }
 \description{
-Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object
+Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object
 }
 \examples{
 \dontrun{
