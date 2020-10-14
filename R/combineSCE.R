@@ -79,7 +79,7 @@
   
   ## Get merged rowData
   by.r <- unique(c('rownames', by.r))
-  unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=by.r, all=T), feList)
+  unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=by.r, all=TRUE), feList)
   allGenes <- unique(unlist(lapply(feList, rownames)))
   
   ## rowData
@@ -104,7 +104,7 @@
   })
   
   by.c <- unique(c("rownames", by.c))
-  unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=by.c, all=T), cbList)
+  unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=by.c, all=TRUE), cbList)
   rownames(unionCb) <- unionCb[['rownames']]
   newCbList <- list()
   for (i in seq_along(sceList)) {
@@ -234,7 +234,7 @@ combineSCE <- function(sceList, by.r, by.c, combined){
   assayList <- .mergeAssaySCE(sceList) 
   
   New_SCE <- list()
-  for (i in 1:length(sceList)) {
+  for (i in seq(length(sceList))) {
     ## create new sce
     New_SCE[[i]] <- .constructSCE(matrices = assayList[[i]], features = newFeList,
                                   barcodes = newCbList[[i]], 

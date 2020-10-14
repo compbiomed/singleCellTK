@@ -67,11 +67,11 @@ subTitle <- params$subTitle
 studyDesign <- params$studyDesign
 samples <- unique(colData(sce.qc)$sample)
 
-reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = T)
+reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
 if (length(reduceDims) != 0) {
   reduceDimUsed <- reduceDims[1]
 } else {
-  reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = T)
+  reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = TRUE)
   if (length(reduceDims) == 0) {
     stop("No reduced dimension are available for QC visualization!")
   } else {

@@ -41,7 +41,7 @@ shinyPanelQC <- fluidPage(
                      numericInput("DXdbscanEps", "dbscanEps - Clustering resolution parameter (if no cell cluster labels) (default 1)", 1),
                      
                      checkboxInput("DXestDelta", "estimateDelta - Estimate delta?"), # T/F input
-                     checkboxInput("DXverbose", "verbose - Print log messages?", value = T), # T/F input
+                     checkboxInput("DXverbose", "verbose - Print log messages?", value = TRUE), # T/F input
             )
           ),
           tags$hr(),
@@ -67,7 +67,7 @@ shinyPanelQC <- fluidPage(
                      numericInput("CXntop", "ntop - Number of top variance genes (default 500)", 500),
                      numericInput("CXbinThresh", "binThresh - Threshold to consider a gene 'present' (default 0)", 0),
                      
-                     checkboxInput("CXverb", "verb - Output progress messages?", value = T), # T/F input
+                     checkboxInput("CXverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("CXretRes", "retRes - Return gene pair scores and top-scoring gene pairs?"), # T/F input
                      checkboxInput("CXestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
             )
@@ -84,7 +84,7 @@ shinyPanelQC <- fluidPage(
                      
                      textInput("BCnmax", "nmax - Max number of training rounds (default 'tune')", value = "tune"),
                      
-                     checkboxInput("BCverb", "verb - Output progress messages?", value = T), # T/F input
+                     checkboxInput("BCverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("BCretRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BCvarImp", "varImp - Return variable importance?"), # T/F input
                      checkboxInput("BCestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
@@ -110,8 +110,8 @@ shinyPanelQC <- fluidPage(
                      checkboxInput("BC2retRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BC2varImp", "varImp - Return variable importance?"), # T/F input
                      
-                     checkboxInput("CXBCverb", "verb - Output bcds progress messages?", value = T), # T/F input
-                     checkboxInput("CXBCestNdbl", "estNdbl - Estimate the number of doublets?", value = T), # T/F input
+                     checkboxInput("CXBCverb", "verb - Output bcds progress messages?", value = TRUE), # T/F input
+                     checkboxInput("CXBCestNdbl", "estNdbl - Estimate the number of doublets?", value = TRUE), # T/F input
             )
           ),
           # scrublet
@@ -136,12 +136,12 @@ shinyPanelQC <- fluidPage(
                      
                      textInput("SdistanceMetric", "distanceMetric - Distance metric", value = "euclidean"),
 
-                     checkboxInput("SuseApproxNeighbors", "useApproxNeighbors - Use approximate nearest neighbor method?", value = T), # T/F input
+                     checkboxInput("SuseApproxNeighbors", "useApproxNeighbors - Use approximate nearest neighbor method?", value = TRUE), # T/F input
                      checkboxInput("SgetDoubletNeighborParents", "getDoubletNeighborParents - Return doublet neighbors' parent transcriptomes?"), # T/F input
                      checkboxInput("SlogTransform", "logTransform - Log transform counts matrix?"), # T/F input
-                     checkboxInput("SmeanCenter", "meanCenter - Center each gene's data at zero?", value = T), # T/F input
-                     checkboxInput("SnormalizeVariance", "normalizeVariance - Normalize each gene's data to have a variance of 1?", value = T), # T/F input
-                     checkboxInput("Sverbose", "verbose - Output progress updates?", value = T), # T/F input
+                     checkboxInput("SmeanCenter", "meanCenter - Center each gene's data at zero?", value = TRUE), # T/F input
+                     checkboxInput("SnormalizeVariance", "normalizeVariance - Normalize each gene's data to have a variance of 1?", value = TRUE), # T/F input
+                     checkboxInput("Sverbose", "verbose - Output progress updates?", value = TRUE), # T/F input
             )
           ),
           # doubletFinder
@@ -156,7 +156,7 @@ shinyPanelQC <- fluidPage(
                      numericInput("DFformationRate", "formationRate - Doublet formation rate (default 0.075)", 0.075),
                      numericInput("DFseuratPcs", "seuratPcs - PCs to determine the number of clusters (default 15)", 15),
                      
-                     checkboxInput("DFverbose", "verbose - Output log messages?", value = T), # T/F input
+                     checkboxInput("DFverbose", "verbose - Output log messages?", value = TRUE), # T/F input
             )
           ),
           tags$hr(),
