@@ -5,12 +5,20 @@
 \title{seuratFindHVG
 Find highly variable genes and store in the input sce object}
 \usage{
-seuratFindHVG(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000)
+seuratFindHVG(
+  inSCE,
+  useAssay,
+  normAssay = "seuratNormData",
+  hvgMethod = "vst",
+  hvgNumber = 2000
+)
 }
 \arguments{
 \item{inSCE}{(sce) object to compute highly variable genes from and to store back to it}
 
 \item{useAssay}{Assay containing scaled counts to use for detecting highly variable genes.}
+
+\item{normAssay}{Specify a normalized assay. Default is \code{seuratNormData}.}
 
 \item{hvgMethod}{selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.}
 

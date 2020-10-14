@@ -17,7 +17,7 @@ sample each cell belongs to. If \code{NULL}, all cells will be assumed
 to come from the same sample. Default \code{"sample"}.}
 }
 \value{
-A data.frame of summary metrics per sample.
+A data.frame object of summary metrics.
 }
 \description{
 Creates a table of summary metrics from an input

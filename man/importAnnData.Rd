@@ -55,6 +55,8 @@ Additionally there might be errors in converting some python objects in the unst
 There are no known R solutions at present. Refer \url{https://github.com/rstudio/reticulate/issues/209}
 }
 \examples{
+\dontrun{
 sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
                      sampleNames = 'pbmc3k_20by20')
+}
 }

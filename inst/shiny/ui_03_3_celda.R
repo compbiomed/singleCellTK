@@ -356,7 +356,7 @@ shinyPanelCelda2 <- fluidPage(
       ),
       tabPanel(
         "Visualize",
-        wellPanel(style="background-color: white",
+        wellPanel(
           fluidRow(
             tabsetPanel(
               tabPanel("t-SNE",
