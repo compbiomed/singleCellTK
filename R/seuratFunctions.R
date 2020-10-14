@@ -81,19 +81,21 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' seuratFindHVG
 #' Find highly variable genes and store in the input sce object
 #' @param inSCE (sce) object to compute highly variable genes from and to store back to it
-#' @param useAssay Assay inside the SCE object to use for hvg computation.
+#' @param normAssay Normalized assay inside the SCE object to use for hvg computation.
+#' @param scaledAssay Scaled assay inside the SCE object to use for hvg computation.
 #' @param hvgMethod selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
 #' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}.
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-seuratFindHVG <- function(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000) {
-  if(!"seuratScaledData" %in% SummarizedExperiment::assayNames(inSCE)){
-    inSCE <- seuratScaleData(
-      inSCE = inSCE,
-      useAssay = useAssay)
+seuratFindHVG <- function(inSCE, normAssay = NULL, scaledAssay,  hvgMethod = "vst", hvgNumber = 2000) {
+  seuratObject <- NULL
+  if(!is.null(normAssay)){
+    seuratObject <- convertSCEToSeurat(inSCE, normAssay = normAssay, scaledAssay = scaledAssay)  
   }
-  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay, scaledAssay = "seuratScaledData")
+  else{
+    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = scaledAssay)
+  }
   seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber, verbose = FALSE)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   if (hvgMethod == "vst") {

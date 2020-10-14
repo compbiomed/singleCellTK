@@ -14,9 +14,17 @@ shinyPanelFS_DimRed <- fluidPage(
                   "Seurat - mean.var.plot" = "mean.var.plot",
                   "Seurat - dispersion" = "dispersion",
                   "Scran - modelGeneVar" = "modelGeneVar")),
+              conditionalPanel(
+                condition = "input.hvgMethodFS == 'mean.var.plot'
+                || input.hvgMethodFS == 'dispersion'",
               selectInput(
-                inputId = "assaySelectFS",
-                label = "Select assay:",
+                inputId = "assaySelectFS_Norm",
+                label = "Select normalized assay:",
+                choices = currassays)
+                ),
+              selectInput(
+                inputId = "assaySelectFS_Scale",
+                label = "Select scaled assay:",
                 choices = currassays),
               withBusyIndicatorUI(actionButton("findHvgButtonFS",
                                                "Compute Variability"))

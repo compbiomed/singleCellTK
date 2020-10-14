@@ -178,7 +178,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
-    updateSelectInput(session, "assaySelectFS", choices = currassays)
+    updateSelectInput(session, "assaySelectFS_Scale", choices = currassays)
+    updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "qcAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
@@ -4428,14 +4429,15 @@ shinyServer(function(input, output, session) {
           || input$hvgMethodFS == "dispersion") {
           withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
             tryCatch(vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                                  useAssay = input$assaySelectFS,
+                                                  normAssay = input$assaySelectFS_Norm,
+                                                  scaledAssay = input$assaySelectFS_Scale,
                                                   hvgMethod = input$hvgMethodFS,
                                                   hvgNumber = 100), error = function(e) 
                                                     stop("HVG computation failed. Try re-computing with a normalized assay!"))
-            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS_Scale, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
             })
       } else if (input$hvgMethodFS == "modelGeneVar") {
-        vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
+        vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Scale)
       }
       vals$hvgCalculated$status <- TRUE
       vals$hvgCalculated$method <- input$hvgMethodFS
@@ -4535,7 +4537,7 @@ shinyServer(function(input, output, session) {
                 HVGs <- getTopHVG(inSCE = vals$counts,
                                   method = input$hvgMethodFS,
                                   n = input$hvgNumberSelect)
-                vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
+                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Scale, HVGs,
                                          input$hvgAltExpName, x)
             }
           })
@@ -4543,7 +4545,7 @@ shinyServer(function(input, output, session) {
           HVGs <- getTopHVG(inSCE = vals$counts,
                             method = input$hvgMethodFS,
                             n = input$hvgNumberSelect)
-          vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
+          vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Scale, HVGs,
                                    input$hvgAltExpName)
       }
     } else {
@@ -5494,7 +5496,8 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
       vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                   useAssay = "seuratScaledData",
+                                   normAssay = "seuratNormData",
+                                   scaledAssay = "seuratScaledData",
                                    hvgMethod = input$hvg_method,
                                    hvgNumber = as.numeric(input$hvg_no_features))
       
