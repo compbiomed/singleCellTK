@@ -40,7 +40,7 @@ shinyPanelFS_DimRed <- fluidPage(
                 inputId = "hvgNoFeaturesViewFS",
                 label = "Select number of features to display: ",
                 value = 100),
-              actionButton("showHVG", "Show"),
+              withBusyIndicatorUI(actionButton("showHVG", "Show")),
               div(
                 style = "margin-top: 15px;",
                 verbatimTextOutput(

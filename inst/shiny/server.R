@@ -4421,23 +4421,18 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   
   observeEvent(input$findHvgButtonFS, {
+    withBusyIndicatorServer("findHvgButtonFS", {
     if (!is.null(vals$counts)) {
       if (input$hvgMethodFS == "vst"
           || input$hvgMethodFS == "mean.var.plot"
           || input$hvgMethodFS == "dispersion") {
           withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+            tryCatch(vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                                  useAssay = input$assaySelectFS,
+                                                  hvgMethod = input$hvgMethodFS,
+                                                  hvgNumber = 100), error = function(e) 
+                                                    stop("HVG computation failed. Try re-computing with a normalized assay!"))
             #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
-            if(input$hvgMethodFS == "mean.var.plot"){
-            vals$counts <- seuratScaleData(
-              inSCE = vals$counts,
-              useAssay = input$assaySelectFS
-            )
-          }
-            vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                       normAssay = input$assaySelectFS,
-                                       useAssay = "seuratScaledData",
-                                       hvgMethod = input$hvgMethodFS,
-                                       hvgNumber = 100)
             })
       } else if (input$hvgMethodFS == "modelGeneVar") {
         vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
@@ -4446,10 +4441,17 @@ shinyServer(function(input, output, session) {
       vals$hvgCalculated$method <- input$hvgMethodFS
     }
   })
+  })
   
   observeEvent(input$showHVG, {
+    withBusyIndicatorServer("showHVG", {
     if (isTRUE(vals$hvgCalculated$status) &&
         !is.null(vals$hvgCalculated$method)) {
+      #checks
+      if(is.na(input$hvgNoFeaturesViewFS)){
+        stop("Number of features cannot be empty!")
+      }
+      #processing
       HVGs <- getTopHVG(inSCE = vals$counts,
                         method = input$hvgMethodFS,
                         n = input$hvgNoFeaturesViewFS)
@@ -4496,6 +4498,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
+  })
   
   addAltExp <- function(inSCE, useAssay, geneSet, altExpName,
                         overwrite = FALSE){
@@ -4511,8 +4514,15 @@ shinyServer(function(input, output, session) {
   }
   
   observeEvent(input$hvgSubsetRun, {
+    withBusyIndicatorServer("hvgSubsetRun", {
     if (isTRUE(vals$hvgCalculated$status) &&
         !is.null(vals$hvgCalculated$method)) {
+      if(is.na(input$hvgNumberSelect)){
+        stop("Number of HVG cannot be empty!")
+      }
+      if(input$hvgAltExpName == ""){
+        stop("Name of the subset cannot be empty!")
+      }
       if (input$hvgAltExpName %in% altExpNames(vals$counts)) {
         shinyalert(
           "Warning",
@@ -4522,23 +4532,19 @@ shinyServer(function(input, output, session) {
           confirmButtonText = "Overwrite",
           callbackR = function(x){
             if (isTRUE(x)) {
-              withBusyIndicatorServer("hvgSubsetRun", {
                 HVGs <- getTopHVG(inSCE = vals$counts,
                                   method = input$hvgMethodFS,
                                   n = input$hvgNumberSelect)
                 vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
                                          input$hvgAltExpName, x)
-              })
             }
           })
       } else {
-        withBusyIndicatorServer("hvgSubsetRun", {
           HVGs <- getTopHVG(inSCE = vals$counts,
                             method = input$hvgMethodFS,
                             n = input$hvgNumberSelect)
           vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
                                    input$hvgAltExpName)
-        })
       }
     } else {
       shinyalert::shinyalert(
@@ -4547,6 +4553,7 @@ shinyServer(function(input, output, session) {
         type = "error"
       )
     }
+  })
   })
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
