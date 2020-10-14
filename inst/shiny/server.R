@@ -2311,7 +2311,6 @@ shinyServer(function(input, output, session) {
         plotlyOutput(outputId = "plot_modsplit_perpdiff")
       )
     ))
-
     withProgress(message = "Clustering Features", max = 1, value = 1, {
         vals$counts <- selectFeatures(as.matrix(counts(vals$counts)))
         assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
@@ -2345,11 +2344,28 @@ shinyServer(function(input, output, session) {
       panel(heading = "Perplexity Plot",
         plotlyOutput(outputId = "plot_cellsplit_perp")
       )
+
     ), select = TRUE)
     withProgress(message = "Clustering Cells", max = 1, value = 1, {
+      temp_umap <- celdaUmap(vals$counts)
       vals$counts <- recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax)
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
     })
+    for (i in runParams(vals$counts)$K) {
+      removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
+      appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
+        panel(heading = sprintf("Cluster %s", i),
+          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i))
+          )
+      ))
+      withProgress(message = "Plotting Clusters", max = 1, value = 1, {
+        temp_model <- subsetCeldaList(vals$counts, params = list(K = i))
+        output[[sprintf("plot_K_umap_%s", i)]] <- renderPlotly({plotDimReduceCluster(temp_model, dim1= reducedDim(altExp(temp_umap), "celda_UMAP")[, 1],
+          dim2 = reducedDim(altExp(temp_umap), "celda_UMAP")[, 2], labelClusters = TRUE)})
+      })
+    shinyjs::enable(
+        selector = sprintf(".celda_cellsplit_plots a[data-value='Cluster %s']", i))
+    }
     shinyjs::enable(
       selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
     shinyjs::show(selector = ".celda_cellsplit_plots")
@@ -2365,6 +2381,7 @@ shinyServer(function(input, output, session) {
     updateCollapse(session = session, "CeldaUI", style = list("Identify # of Cell Clusters" = "danger"))
     shinyjs::enable(
       selector = "div[value='Visualization']")
+    updateNumericInput(session, "celdamodheatmapnum", max = input$celdaKselect, value = 1)
   })
 
   observeEvent(input$CeldaUmap, {
@@ -2386,11 +2403,41 @@ shinyServer(function(input, output, session) {
     showNotification("Tsne complete.")
   })
 
-  observeEvent(input$celdamodheatmapbtn, {
-    withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
-      output$celdamodheatmapplot <- renderPlotly({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapselect)})
+  observeEvent(input$celdaheatmapbtn, {
+    removeTab(inputId = "celdaHeatmapTabset", target = "Heatmap")
+    removeTab(inputId = "celdaHeatmapTabset", target = "Module Heatmap")
+    appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Heatmap",
+      panel(heading = "Heatmap",
+        plotlyOutput(outputId = "celdaheatmapplt")
+      )
+    ), select = TRUE)
+    withProgress(message = "Plotting Heatmap", max = 1, value = 1, {
+      output$celdaheatmapplt <- renderPlotly({celdaHeatmap(vals$counts)})
     })
+    if (input$heatmap_module){
+      appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Module Heatmap",
+        panel(heading = "Module Heatmap",
+          plotlyOutput(outputId = "celdamodheatmapplt")
+        )
+      ))
+      withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
+        output$celdamodheatmapplt <- renderPlotly({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
+      })
+    }
+    shinyjs::enable(
+      selector = ".celda_heatmap_plots a[data-value='Heatmap']")
+    shinyjs::toggleState(
+      selector = ".celda_heatmap_plots a[data-value='Module Heatmap']",
+      condition = input$celdamodheatmap)
+    shinyjs::show(selector = ".celda_heatmap_plots")
     showNotification("Module heatmap complete.")
+  })
+
+  observeEvent(input$celdaprobmapbtn, {
+    withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
+      output$celdaprobmapplt <- renderPlotly({celdaProbabilityMap(vals$counts)})
+    })
+    showNotification("Probability map complete.")
   })
 
   observe({
@@ -2415,9 +2462,15 @@ shinyServer(function(input, output, session) {
       shinyjs::disable(
         selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
 
-      #Disaple plots inside Cellsplit subtab
+      #Disable plots inside Cellsplit subtab
       shinyjs::disable(
         selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
+
+      #Disable plots inside Heatmap subtab
+      shinyjs::disable(
+        selector = ".celda_heatmap_plots a[data-value='Heatmap']")
+      shinyjs::disable(
+        selector = ".celda_heatmap_plots a[data-value='Module Heatmap']")
     }
   })
 

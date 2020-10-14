@@ -88,15 +88,36 @@ shinyPanelCelda <- fluidPage(
                     fluidRow(
                         column(4,
                             panel(
-                                numericInput("celdamodheatmapselect", "Select Module to Plot:", min = 1, max = 25, value = 10),
-                                actionButton("celdamodheatmapbtn", "Select Module Number")
+                                actionButton("celdaheatmapbtn", "Plot Heatmap"),
+                                materialSwitch(inputId = "heatmap_module", label = "Display module heatmap?", value = TRUE),
+                                conditionalPanel(
+                                    condition = 'input.heatmap_module == true',
+                                    numericInput(inputId = "celdamodheatmapnum",
+                                        label = "Select module to display on heatmap:", value = 10, step = 1),
+                                ),
                             )
                         ),
                         column(8,
-                            panel(
-                                plotlyOutput("celdamodheatmapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                                plotlyOutput("celdaprobplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+                            fluidRow(
+                                column(12,
+                                    hidden(
+                                        tags$div(class = "celda_heatmap_plots", tabsetPanel(id = "celdaHeatmapTabset", type = "tabs"
+                                        ))
+                                    )
+                                )
                             )
+                        )
+                    )
+                ),
+                tabPanel("Probablity Map",
+                    column(4,
+                        panel(
+                            actionButton("celdaprobplotbtn", "Plot Probability Map")
+                        )
+                    ),
+                    column(8,
+                        panel(
+                            plotlyOutput("celdaprobmapplt", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
                         )
                     )
                 )
