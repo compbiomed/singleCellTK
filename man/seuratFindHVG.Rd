@@ -10,7 +10,7 @@ seuratFindHVG(inSCE, useAssay, hvgMethod = "vst", hvgNumber = 2000)
 \arguments{
 \item{inSCE}{(sce) object to compute highly variable genes from and to store back to it}
 
-\item{useAssay}{Assay containing scaled counts to use for detecting highly variable genes.}
+\item{useAssay}{Assay inside the SCE object to use for hvg computation.}
 
 \item{hvgMethod}{selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.}
 
