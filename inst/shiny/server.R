@@ -4535,6 +4535,10 @@ shinyServer(function(input, output, session) {
                 HVGs <- getTopHVG(inSCE = vals$counts,
                                   method = input$hvgMethodFS,
                                   n = input$hvgNumberSelect)
+                
+                #make sure no NA's are introduced in HVGs
+                HVGs <- stats::na.omit(HVGs)
+                
                 vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
                                          input$hvgAltExpName, x)
             }
@@ -4543,6 +4547,10 @@ shinyServer(function(input, output, session) {
           HVGs <- getTopHVG(inSCE = vals$counts,
                             method = input$hvgMethodFS,
                             n = input$hvgNumberSelect)
+          
+          #make sure no NA's are introduced in HVGs
+          HVGs <- stats::na.omit(HVGs)
+          
           vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
                                    input$hvgAltExpName)
       }
