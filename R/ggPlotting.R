@@ -177,14 +177,14 @@
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
     }
-    if (class(colorBySub) == "numeric"){
+    if (inherits(colorBySub, "numeric")){
       g <- g + ggplot2::scale_color_gradient2(
         low = colorLow,
         mid = colorMid,
         high = colorHigh,
         aesthetics = "colour",
         midpoint = mean(colorBySub))
-    }else if (class(colorBySub) == "character" | class(colorBySub) == "factor"){
+    }else if (inherits(colorBySub, "character") | inherits(colorBySub, "factor")){
       g <- g +
         ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 2)))
       if(all(!is.null(colorScale))){
@@ -2502,7 +2502,7 @@ plotSCEBarAssayData <- function(inSCE,
     plotlistSample <- lapply(plotlistSample, function(x) {
       if(all(class(x) %in% c("gg","ggplot"))){
         return(x)
-      }else if (class(x) %in% c("list")){
+      }else if (inherits(x, "list")){
         return(cowplot::plot_grid(
           plotlist = x,
           align = "h",

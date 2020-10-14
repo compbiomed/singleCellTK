@@ -193,7 +193,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' resolved.
 #' @return The same matrix as input with rowname duplication resolved.
 featureNameDedup <- function(countmat){
-    if(!class(rownames(countmat)) == 'character'){
+    if(!inherits(rownames(countmat), "character")){
         stop("No character feature name found.")
     }
     gene.table <- table(rownames(countmat))

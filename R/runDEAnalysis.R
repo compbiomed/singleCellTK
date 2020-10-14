@@ -71,7 +71,7 @@
             cells2 <- sort(setdiff(colnames(inSCE), cells1))
         }
     } else {
-        if(length(class) == 1 && class(class) == "character"){
+        if(length(class) == 1 && inherits(class, "character")){
             if(!class %in% names(SummarizedExperiment::colData(inSCE))){
                 stop("class: '", class, "' not found.")
             }
