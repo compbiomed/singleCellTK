@@ -23,6 +23,7 @@ reference:
   - title: Batch Correction
     contents:
     - plotBatchVariance
+    - ComBatSCE
     - plotSCEBatchFeatureMean
     - runComBat
     - runBBKNN

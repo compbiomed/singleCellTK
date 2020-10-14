@@ -87,6 +87,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
 #' sce <- runDecontX(sce)
+#' sce <- getUMAP(sce)
 #' reportQCTool(inSCE = sce, algorithm = "DecontX")
 #' }
 #' @export
@@ -150,7 +151,6 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
  }
-
 
 #' @title Get runDEAnalysis .html report
 #' @description A  function to generate .html Rmarkdown report containing the

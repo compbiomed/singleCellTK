@@ -83,11 +83,6 @@ test_that("Testing scrublet",{
   expect_equal(dim(reducedDim(sceres,'scrublet_UMAP')), c(ncol(sceres),2))
 })
 
-test_that("Testing sampleSummaryStats",{
-  df <- sampleSummaryStats(sceres, simple = FALSE)
-   expect_equal(class(df), "matrix")
-})
-
 sceDroplet <- runDropletQC(sceDroplet)
 
 test_that("Testing emptydrops",{

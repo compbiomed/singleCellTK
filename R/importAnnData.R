@@ -89,9 +89,10 @@
 #' There are no known R solutions at present. Refer \url{https://github.com/rstudio/reticulate/issues/209}
 #' @return A \code{SingleCellExperiment} object.
 #' @examples
+#' \dontrun{
 #' sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
 #'                      sampleNames = 'pbmc3k_20by20')
-
+#' }
 #' @export
 importAnnData <- function(sampleDirs = NULL,
                           sampleNames = NULL,

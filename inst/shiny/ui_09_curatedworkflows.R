@@ -6,3 +6,4 @@ shinyPanelCuratedWorkflows <- fluidPage(
     tabPanel("Bioconductor/OSCA")
   )
 )
+

@@ -14,7 +14,7 @@ runPerCellQC(
   percent_top = c(50, 100, 200, 500),
   use_altexps = FALSE,
   flatten = TRUE,
-  detection.limit = 0,
+  detectionLimit = 0,
   BPPARAM = BiocParallel::SerialParam()
 )
 }
@@ -49,7 +49,7 @@ Alternatively NULL, in which case alternative experiments are not used.}
 \item{flatten}{Logical scalar indicating whether the nested \link[S4Vectors]{DataFrame-class}
 in the output should be flattened.}
 
-\item{detection.limit}{A numeric scalar specifying the lower detection limit for expression.}
+\item{detectionLimit}{A numeric scalar specifying the lower detection limit for expression.}
 
 \item{BPPARAM}{A \link[BiocParallel]{BiocParallelParam} object specifying
 whether the QC calculations should be parallelized.}

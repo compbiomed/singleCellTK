@@ -37,7 +37,7 @@ sce.qc<- params$object
     sce.qc@metadata$runCxds
 ```
 
-```{r, "Cxds", include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Cxds-desc", include=FALSE, warning=FALSE, message=FALSE}
 descriprion_CxdsResults<- descriptionCXDS()
 ```
 

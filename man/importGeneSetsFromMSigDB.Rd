@@ -16,15 +16,15 @@ importGeneSetsFromMSigDB(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{categoryIDs}{Character vector containing the MSigDB gene set ids. 
+\item{categoryIDs}{Character vector containing the MSigDB gene set ids.
 The column \code{ID} in the table returned by \code{getMSigDBTable()} shows
 the list of possible gene set IDs that can be obtained.}
 
 \item{species}{Character. Species available can be found using the function
 \code{\link[msigdbr]{msigdbr_show_species}}. Default \code{"Homo sapiens"}.}
 
-\item{mapping}{Character. One of "gene_symbol", "human_gene_symbol", or 
-"entrez_gene". Gene identifiers to be used for MSigDB gene sets. IDs 
+\item{mapping}{Character. One of "gene_symbol", "human_gene_symbol", or
+"entrez_gene". Gene identifiers to be used for MSigDB gene sets. IDs
 denoted by the \code{by} parameter must be either in gene symbol or
 Entrez gene id format to match IDs from MSigDB.}
 
@@ -47,7 +47,7 @@ downstream quality control and analysis functions in \link{singleCellTK}.
 \details{
 The gene identifiers in gene sets from MSigDB will be retrieved
 using the \code{\link{msigdbr}} package. They will be mapped to the IDs in
-\code{inSCE} using the \code{by} parameter and 
+\code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package
 \link{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
