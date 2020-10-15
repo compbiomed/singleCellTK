@@ -111,7 +111,7 @@ if (skipCellData) {
   plotsQCMetrics<- tryCatch(
     {plotRunPerCellQCResults(sce.qc, 
                              sample = colData(sce.qc)$sample, 
-                             combinePlot="none")},
+                             combinePlot="sample")},
     error = function(e) {
       cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
       skipCellData <- TRUE
