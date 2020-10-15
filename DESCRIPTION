@@ -49,10 +49,8 @@ Imports:
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
-    harmony,
     igraph,
     KernSmooth,
-    liger,
     limma,
     MAST,
     Matrix,
@@ -111,10 +109,10 @@ Suggests:
     xtable,
     spelling,
     org.Mm.eg.db,
-    stringr
+    stringr,
+    harmony,
+    liger
 Remotes: 
-    joshua-d-campbell/harmony,
-    joshua-d-campbell/liger,
     joshua-d-campbell/shiny-directory-input,
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/

@@ -34,8 +34,12 @@
 #'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
 #'     library(bladderbatch)
 #'     data(bladderdata)
-#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
-#'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#'     dat <- as(as(bladderEset, "SummarizedExperiment"),
+#'               "SingleCellExperiment")
+#'     plotBatchVariance(dat,
+#'                       useAssay="exprs",
+#'                       batch="batch",
+#'                       condition = "cancer")
 #'   }
 #' }
 #'

@@ -14,8 +14,8 @@ shinyPanelBatchcorrect <- fluidPage(
                             selectInput(
                               inputId = "normalizeAssayMethodSelect",
                               label = "Select normalization method: ",
-                              choices = c("Seurat - LogNormalize" = "LogNormalize", 
-                                          "Seurat - CLR" = "CLR", 
+                              choices = c("Seurat - LogNormalize" = "LogNormalize",
+                                          "Seurat - CLR" = "CLR",
                                           "Seurat - RC" = "RC",
                                           "Seurat - SCTransform" = "SCT",
                                           "Scater - LogNormCounts" = "LNC",
@@ -102,10 +102,11 @@ shinyPanelBatchcorrect <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
+        #uiOutput("batchCorrAssayUI"),
         selectInput("batchCorrAssay", "Select Assay:", currassays),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("BBKNN", "ComBat", "FastMNN", "Harmony", "LIGER", "Limma",
+                    c("ComBat", "BBKNN", "FastMNN", "Harmony", "LIGER", "Limma",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
         # BBKNN ####
