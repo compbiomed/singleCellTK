@@ -883,7 +883,7 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(merged.plots) <- sapply(df.scores, function(x) {
+    names(merged.plots) <- vapply(df.scores, function(x) {
       paste0("Violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
@@ -921,7 +921,7 @@ plotDoubletFinderResults <- function(inSCE,
             )
         )
     })
-    names(densityScore) <- sapply(df.scores, function(x) {
+    names(densityScore) <- vapply(df.scores, function(x) {
         paste0("Density_", gsub(
             pattern="doubletFinder_doublet_score_",
             "", x=x
@@ -964,7 +964,7 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterScore) <- sapply(df.scores, function(x) {
+    names(scatterScore) <- vapply(df.scores, function(x) {
       paste0("Scatter_Score_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
@@ -1002,7 +1002,7 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(violinScore) <- sapply(df.scores, function(x) {
+    names(violinScore) <- vapply(df.scores, function(x) {
       paste0("violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
@@ -1048,7 +1048,7 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterCall) <- sapply(df.labels, function(x) {
+    names(scatterCall) <- vapply(df.labels, function(x) {
       paste0("Scatter_Call_", gsub(
         pattern="doubletFinder_doublet_label_",
         "", x=x

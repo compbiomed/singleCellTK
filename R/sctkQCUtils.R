@@ -9,6 +9,8 @@
 #' @param directory Output directory. Default is './'.
 #' @param format The format of output. It currently supports flat files, rds files
 #' and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").
+#' @examples
+#' exportSCE(mouseBrainSubsetSCE, format = "SCE")
 #' @export
 exportSCE <- function(inSCE,
                       samplename = "sample",
@@ -73,6 +75,10 @@ exportSCE <- function(inSCE,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' generateMeta(sce, dir = ".", samplename = "Sample",
+#'  HTAN = TRUE)
 #' @importFrom SummarizedExperiment assay colData
 generateMeta <- function(dropletSCE = NULL,
                           cellSCE = NULL,

@@ -117,6 +117,8 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' @param ... Other arguments that are passed to the internal function,
 #' according to the method selected.
 #' @return A character vector of \code{n} hex color codes.
+#' @examples
+#' discreteColorPalette(n = 3)
 #' @export
 discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
                                  seed = 12345, ...) {

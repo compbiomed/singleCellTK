@@ -43,7 +43,7 @@
 
 #' seuratNormalizeData
 #' Wrapper for NormalizeData() function from seurat library
-#' Normalizes the sce object according to the input parameters 
+#' Normalizes the sce object according to the input parameters
 #' @param inSCE (sce) object to normalize
 #' @param useAssay Assay containing raw counts to use for normalization.
 #' @param normAssayName Name of new assay containing normalized data. Default \code{seuratNormData}.
@@ -120,11 +120,11 @@ seuratFindHVG <- function(inSCE, useAssay, normAssay = "seuratNormData", hvgMeth
 seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) {
     seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = FALSE)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    
+
     temp <- seuratObject@reductions$pca@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
-    
+
     return(inSCE)
 }
 
@@ -140,11 +140,11 @@ seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) 
 seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) {
     seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), nics = as.double(nics), verbose = FALSE)
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    
+
     temp <- seuratObject@reductions$ica@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
-    
+
     return(inSCE)
 }
 
@@ -189,7 +189,7 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL) {
 #' seuratPlotHVG
 #' Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes computations
-#' @return plot object 
+#' @return plot object
 #' @export
 seuratPlotHVG <- function(inSCE) {
     seuratObject <- convertSCEToSeurat(inSCE)
@@ -235,17 +235,17 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @return Updated sce object which now contains the computed clusters
 #' @export
 seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8, externalReduction = NULL) {
-    
-  
+
+
     algorithm <- match.arg(algorithm)
     useReduction <- match.arg(useReduction)
-    
+
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-    
+
     if(!is.null(externalReduction)){
       seuratObject@reductions <- list(pca = externalReduction)
     }
-    
+
     seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction, dims = seq(dims))
     no_algorithm <- 1
     if (algorithm == "louvain") {
@@ -279,7 +279,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-  
+
   return(inSCE)
 }
 
@@ -292,7 +292,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param dims Numerical value of how many reduction components to use for UMAP computation. Default \code{10}.
 #' @param minDist Sets the \code{"min.dist"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.
 #' @param nNeighbors Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.
-#' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}. 
+#' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}.
 #' @return Updated sce object with UMAP computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
@@ -306,11 +306,11 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
                                   n.neighbors = nNeighbors,
                                   spread = spread)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  
+
   temp <- seuratObject@reductions$umap@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-  
+
   return(inSCE)
 }
 
@@ -338,7 +338,7 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
     plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
     if(!is.null(significantPC)){
       plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
-      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point() 
+      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point()
     }
     plot$labels$x <- "PC"
     plot$labels$y <- "Standard Deviation"
@@ -368,7 +368,7 @@ seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica")
 }
 
 #' seuratHeatmapPlot
-#' Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot 
+#' Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot
 #' @param plotObject plot object computed from seuratComputeHeatmap() function
 #' @param dims numerical value of how many heatmaps to draw (default is 0)
 #' @param ncol numerical value indicating that in how many columns should the heatmaps be distrbuted (default is 2)
@@ -403,6 +403,9 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param normAssayName Name of assay to store the normalized data. Default \code{"seuratNormData"}.
 #' @param scaledAssayName Name of assay to store the scaled data. Default \code{"seuratScaledData"}.
 #' @return \code{SingleCellExperiment} output object
+#' @examples
+#' seurat <- convertSCEToSeurat(mouseBrainSubsetSCE)
+#' sce <- convertSeuratToSCE(seurat)
 #' @export
 convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", scaledAssayName = "seuratScaledData") {
   inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
@@ -421,10 +424,12 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
 #' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
 #' @return Updated seurat object that contains all data from the input sce object
+#' @examples
+#' seurat <- convertSCEToSeurat(mouseBrainSubsetSCE)
 #' @export
 #' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
-  
+
   if(!is.null(countsAssay) && !(countsAssay %in% names(assays(inSCE)))) {
     stop(paste0("'", countsAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
@@ -437,14 +442,14 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
     stop(paste0("'", scaledAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
-  
+
   # Seurat has a particular way of modifying row/colnames
   # Save row/colnames in metadata
   seuratRowNames <- gsub("_", "-", rownames(inSCE))
   seuratColNames <- gsub("_", "-", colnames(inSCE))
   inSCE@metadata$seurat$colNames <- seuratColNames
   inSCE@metadata$seurat$rowNames <- seuratRowNames
-  
+
   # Create Seurat object and Set counts assay
   # If no counts assay is supplied, the first assay is used
   if (!is.null(countsAssay) && countsAssay %in% names(assays(inSCE))) {
@@ -455,21 +460,21 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   rownames(temp) <- seuratRowNames
   colnames(temp) <- seuratColNames
   seuratObject <- Seurat::CreateSeuratObject(counts = temp)
-  
-  # Set normalized assay  
+
+  # Set normalized assay
   if (!is.null(normAssay) && normAssay %in% names(assays(inSCE))) {
     seuratObject@assays$RNA@data <- .convertToMatrix(assay(inSCE, normAssay))
     rownames(seuratObject@assays$RNA@data) <- seuratRowNames
     colnames(seuratObject@assays$RNA@data) <- seuratColNames
   }
-  
+
   # Set Scaled Assay
   if (!is.null(scaledAssay) && scaledAssay %in% names(assays(inSCE))) {
     seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, scaledAssay))
     rownames(seuratObject@assays$RNA@scale.data) <- seuratRowNames
     colnames(seuratObject@assays$RNA@scale.data) <- seuratColNames
   }
-  
+
   if (!is.null(inSCE@metadata$seurat$obj)) {
     if(length(inSCE@metadata$seurat$obj@assays$RNA@var.features) > 0) {
       seuratObject@assays$RNA@var.features <- inSCE@metadata$seurat$obj@assays$RNA@var.features
@@ -525,7 +530,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
 #' @param inSCE Input \code{SingleCellExperiment} object to remove Seurat data from.
 #' @param scaleData Remove scaled data from seurat. Default \code{TRUE}.
-#' @param varFeatures Remove variable features from seurat. Default \code{TRUE}. 
+#' @param varFeatures Remove variable features from seurat. Default \code{TRUE}.
 #' @param PCA Remove PCA from seurat. Default \code{TRUE}.
 #' @param ICA Remove ICA from seurat. Default \code{TRUE}.
 #' @param tSNE Remove tSNE from seurat. Default \code{TRUE}.
@@ -533,7 +538,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @param clusters Remove clusters from seurat. Default \code{TRUE}.
 #' @return Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
 #' @importFrom SummarizedExperiment assay<-
-.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){ 
+.seuratInvalidate <- function(inSCE, scaleData = TRUE, varFeatures = TRUE, PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE, clusters = TRUE){
   if(scaleData){
     assay(inSCE, "seuratScaledData") <- NULL
   }
@@ -584,35 +589,35 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   if(kAnchor == 0 || kFilter == 0 || kWeight == 0){
     stop("kAnchor, kFilter or kWeight cannot be zero. Please input correct parameters.")
   }
-  
+
   #create seurat object
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
-  
+
   #split seurat object by batch variable
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
-  
+
   #find anchors
   seurat.anchors <- Seurat::FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
   seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
-  
+
   #store results back in altExp slot of sce object
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")))
   SummarizedExperiment::assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this if counts in above line set to altExp
-  
+
   #store back colData from sce into the altExp slot
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
-  
+
   #counts <- assay(altExp(inSCE, newAssayName), "altExp")
   #remove NA values from counts and replace with zero so can be used properly by dgCMatrix
   counts <- assay(altExp(inSCE, newAssayName), newAssayName)
   counts[is.na(counts)] <- 0
-  
+
   #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
   assay(altExp(inSCE, newAssayName), newAssayName) <- counts
-  
+
   return(inSCE)
 }
 
