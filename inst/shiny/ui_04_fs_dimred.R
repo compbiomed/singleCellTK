@@ -15,8 +15,8 @@ shinyPanelFS_DimRed <- fluidPage(
                   "Seurat - dispersion" = "dispersion",
                   "Scran - modelGeneVar" = "modelGeneVar")),
               selectInput(
-                inputId = "assaySelectFS",
-                label = "Select assay:",
+                inputId = "assaySelectFS_Norm",
+                label = "Select normalized assay:",
                 choices = currassays),
               withBusyIndicatorUI(actionButton("findHvgButtonFS",
                                                "Compute Variability"))
@@ -40,7 +40,7 @@ shinyPanelFS_DimRed <- fluidPage(
                 inputId = "hvgNoFeaturesViewFS",
                 label = "Select number of features to display: ",
                 value = 100),
-              actionButton("showHVG", "Show"),
+              withBusyIndicatorUI(actionButton("showHVG", "Show")),
               div(
                 style = "margin-top: 15px;",
                 verbatimTextOutput(
