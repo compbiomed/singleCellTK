@@ -32,10 +32,5 @@ sce <- seuratNormalizeData(sce, useAssay = "counts")
 sce <- seuratFindHVG(sce, useAssay = "counts")
 sce <- seuratScaleData(sce, useAssay = "counts")
 sce <- seuratPCA(sce, useAssay = "counts")
-<<<<<<< HEAD
-seuratReductionPlot(sce, useReductionPlot = "pca")
-}
-=======
 seuratReductionPlot(sce, useReductionPlot = "pca")}
->>>>>>> 8138400da0f67a1e5a2d9d39beb7815a7b087ac6
 }

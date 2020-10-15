@@ -273,12 +273,7 @@ seuratPlotHVG <- function(inSCE) {
 #' sce <- seuratFindHVG(sce, useAssay = "counts")
 #' sce <- seuratScaleData(sce, useAssay = "counts")
 #' sce <- seuratPCA(sce, useAssay = "counts")
-<<<<<<< HEAD
-#' seuratReductionPlot(sce, useReductionPlot = "pca")
-#' }
-=======
 #' seuratReductionPlot(sce, useReductionPlot = "pca")}
->>>>>>> 8138400da0f67a1e5a2d9d39beb7815a7b087ac6
 #' @return plot object
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
