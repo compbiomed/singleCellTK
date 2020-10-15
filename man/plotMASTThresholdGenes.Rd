@@ -24,5 +24,5 @@ thresholds, bins, densities estimated on each bin, and the original data from
 }
 \examples{
 data("mouseBrainSubsetSCE")
-res <- thresholdGenes(mouseBrainSubsetSCE)
+plotMASTThresholdGenes(mouseBrainSubsetSCE)
 }

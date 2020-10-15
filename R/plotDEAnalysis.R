@@ -405,7 +405,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
-#' res <- thresholdGenes(mouseBrainSubsetSCE)
+#' plotMASTThresholdGenes(mouseBrainSubsetSCE)
 plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
                                    check_sanity = TRUE){
   # data preparation
