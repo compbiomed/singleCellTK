@@ -176,6 +176,7 @@ shinyUI(
     navbarPage(
       tooltitle,
       id = "navbar",
+      # selected="CellViewer",
       # theme = shinytheme(shinyTheme),
       theme = shinytheme("yeti"),
       navbarMenu(
@@ -210,7 +211,7 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
-                 tabPanel("Cell Viewer", shinyPanelCellViewer, value = "CellViewer"),
+                 tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
       footer = includeHTML("www/footer.html"),
       fluidRow(
@@ -223,3 +224,4 @@ shinyUI(
       extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
     )
 )
+

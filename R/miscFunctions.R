@@ -10,9 +10,7 @@
 #' sample each cell belongs to. If \code{NULL}, all cells will be assumed
 #' to come from the same sample. Default \code{"sample"}.
 #'
-#' @return A data.frame of summary metrics per sample.
-#' @importFrom Matrix colSums
-#' @importFrom DelayedArray colSums
+#' @return A data.frame object of summary metrics.
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -49,70 +47,6 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
                    "Median features detected per cell" = as.integer(round(medianDetected[,2])),
                    stringsAsFactors = FALSE, check.names = FALSE)
   return(df)
-}
-
-
-#' Filter Genes and Samples from a Single Cell Object
-#'
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
-#' @param useAssay Indicate which assay to use for filtering. Default is
-#' "counts"
-#' @param deletesamples List of samples to delete from the object.
-#' @param removeNoExpress Remove genes that have no expression across all
-#' samples. The default is true
-#' @param removeBottom Fraction of low expression genes to remove from the
-#' single cell object. This occurs after removeNoExpress. The default is 0.50.
-#' @param minimumDetectGenes Minimum number of genes with at least 1
-#' count to include a sample in the single cell object. The default is 1700.
-#' @param filterSpike Apply filtering to Spike in controls (indicated by
-#' isSpike).
-#' The default is TRUE.
-#'
-#' @return The filtered single cell object.
-#' @export
-#' @examples
-#' \dontrun{
-#' data("mouseBrainSubsetSCE")
-#' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
-#'                                     deletesamples="X1772063061_G11")
-#' }
-filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
-                         removeNoExpress=TRUE, removeBottom=0.5,
-                         minimumDetectGenes=1700, filterSpike=TRUE){
-  #delete specified samples
-  inSCE <- inSCE[, !(colnames(inSCE) %in% deletesamples)]
-
-  if (filterSpike){
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE)))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
-                       decreasing = TRUE)[seq_len(nkeeprows)]
-  } else {
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE))) -
-      sum(SingleCellExperiment::isSpike(inSCE))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
-                       decreasing = TRUE)
-    tokeeprow <- setdiff(tokeeprow,
-                         which(SingleCellExperiment::isSpike(inSCE)))
-    tokeeprow <- tokeeprow[seq_len(nkeeprows)]
-    tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(inSCE)))
-  }
-  tokeepcol <- colSums(SummarizedExperiment::assay(inSCE, useAssay) != 0) >=
-    minimumDetectGenes
-  inSCE <- inSCE[tokeeprow, tokeepcol]
-
-  #remove genes with no expression
-  if (removeNoExpress){
-    if (filterSpike){
-      inSCE <- inSCE[rowSums(SummarizedExperiment::assay(inSCE,
-                                                              useAssay)) != 0, ]
-    } else {
-      inSCE <- inSCE[(rowSums(
-        SummarizedExperiment::assay(inSCE, useAssay)) != 0 |
-          SingleCellExperiment::isSpike(inSCE)), ]
-    }
-  }
-
-  return(inSCE)
 }
 
 #' Generate a distinct palette for coloring different clusters
@@ -166,6 +100,45 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   col <- grDevices::hsv(new.hsv[1, ], new.hsv[2, ], new.hsv[3, ])
 
   return(col[seq_len(n)])
+}
+
+#' Generate given number of color codes
+#'
+#' @description Three different generation methods are wrapped, including
+#' \code{\link[celda]{distinctColors}},
+#' [randomcoloR](SCTK_PerformingQC_Cell_V3.Rmd) and the \code{ggplot}
+#' default color generation.
+#' @param n An integer, the number of color codes to generate.
+#' @param palette A single character string. Select the method, available
+#' options are \code{"ggplot"}, \code{"celda"} and \code{"random"}. Default
+#' \code{"random"}.
+#' @param seed An integer. Set the seed for random process that happens only in
+#' "random" generation. Default \code{12345}.
+#' @param ... Other arguments that are passed to the internal function,
+#' according to the method selected.
+#' @return A character vector of \code{n} hex color codes.
+#' @export
+discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
+                                 seed = 12345, ...) {
+  palette <- match.arg(palette)
+  # Generate the colors
+  if (palette == "random") {
+    withr::with_seed(seed, {
+      # Using randomcoloR original codes here
+      km <- stats::kmeans(colorSpace, n, iter.max = 20)
+      colors <- unname(colorspace::hex(colorspace::LAB(km$centers)))
+      colors <- colors[order(colors)]
+    })
+  } else if (palette == "ggplot") {
+    hues <- seq(15, 375, length = n + 1)
+    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
+  } else if (palette == "celda") {
+    colors <- distinctColors(n, ...)
+  } else {
+    stop("Given palette '", palette, "' is not supported. Please choose from ",
+         "'ggplot', 'celda' or 'random'.")
+  }
+  return(colors)
 }
 
 #test shiny functions

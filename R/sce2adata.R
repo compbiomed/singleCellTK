@@ -43,12 +43,12 @@
         }
     }
 
-    # Furthermore, the other assays will for now also be saved to .obsm
+    # Furthermore, the other assays will for now also be saved to .layers
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
     for (i in 1:length(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            AnnData$obsm$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
+            AnnData$layers$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
         }
     }
     return(AnnData)

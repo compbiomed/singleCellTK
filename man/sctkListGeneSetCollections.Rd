@@ -10,7 +10,7 @@ sctkListGeneSetCollections(inSCE)
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 }
 \description{
-Returns a vector of GeneSetCollections that have been 
+Returns a vector of GeneSetCollections that have been
 imported and stored in \code{metadata(inSCE)$sctk$genesets}.
 }
 \examples{
@@ -28,7 +28,7 @@ sce <- importGeneSetsFromCollection(inSCE = sce,
                                     geneSetCollection = gsc2,
                                     by = "rownames",
                                     collectionName = "Collection2")
-collections <- sctkListGeneSetCollections(sce)                              
+collections <- sctkListGeneSetCollections(sce)
 }
 \seealso{
 \link{importGeneSetsFromList} for importing from lists,

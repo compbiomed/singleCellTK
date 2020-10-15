@@ -23,12 +23,12 @@ reference:
   - title: Batch Correction
     contents:
     - plotBatchVariance
+    - ComBatSCE
     - plotSCEBatchFeatureMean
     - runComBat
     - runBBKNN
     - runHarmony
     - runLimmaBC
-    - runSCGEN
     - runSeurat3Integration
     - runFastMNN
     - runLIGER

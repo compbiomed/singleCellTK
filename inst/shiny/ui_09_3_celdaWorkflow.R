@@ -31,8 +31,8 @@ shinyPanelCelda <- fluidPage(
 
         bsCollapsePanel("Dimensionality Reduction",
             panel(
-                actionButton("celdaUmap", "Run UMAP"),
-                actionButton("celdaTsne", "Run tSNE")
+                actionButton("CeldaUmap", "Run UMAP"),
+                actionButton("CeldaTsne", "Run tSNE")
             )
         ),
 
@@ -194,3 +194,4 @@ shinyPanelCelda <- fluidPage(
     )
 
 )
+

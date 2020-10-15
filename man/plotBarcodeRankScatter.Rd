@@ -16,7 +16,9 @@ plotBarcodeRankScatter(
   axisSize = 12,
   axisLabelSize = 15,
   legendSize = 10,
-  combinePlot = TRUE
+  combinePlot = "none",
+  sampleRelHeights = 1,
+  sampleRelWidths = 1
 )
 }
 \arguments{
@@ -47,7 +49,13 @@ when TRUE. Default TRUE.}
 \item{legendSize}{size of legend. Default 10.}
 
 \item{combinePlot}{Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.
+samples, etc.), will combined plots using `cowplot::plot_grid`.}
+
+\item{sampleRelHeights}{If there are multiple samples and combining by "all",
+the relative heights for each plot.}
+
+\item{sampleRelWidths}{If there are multiple samples and combining by "all",
+the relative widths for each plot.
 Default TRUE.}
 }
 \description{

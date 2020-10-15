@@ -20,6 +20,20 @@
     }
 
     if(simple != TRUE){
+        if ("dropletUtils_barcodeRank_knee" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(
+                metrics, "BarcodeRank - Number of libraries above knee point"
+            )
+            values <- c(values, sum(SummarizedExperiment::colData(inSCE)$dropletUtils_BarcodeRank_Knee))
+        }
+
+        if ("dropletUtils_barcodeRank_inflection" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(
+                metrics, "BarcodeRank - Number of libraries above inflection point"
+            )
+            values <- c(values, sum(SummarizedExperiment::colData(inSCE)$dropletUtils_BarcodeRank_Inflection))
+        }
+
         if ("scrublet_call" %in% colnames(SummarizedExperiment::colData(inSCE))) {
             metrics <- c(
                 metrics, "Scrublet - Number of doublets",
@@ -53,7 +67,7 @@
                                         "",
                                         colnames(SummarizedExperiment::colData(inSCE))[ix])))
                 values <- c(values,sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet"),
-                            signif(sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet") / length(SummarizedExperiment::colData(inSCE)[, ix]) * 100), 3)
+                            signif(sum(SummarizedExperiment::colData(inSCE)[, ix] == "Doublet") / length(SummarizedExperiment::colData(inSCE)[, ix]) * 100, 3))
             }
         }
 
@@ -61,21 +75,21 @@
             metrics <- c(metrics, "CXDS - Number of doublets",
                          "CXDS - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_cxds_call == TRUE),
-                        signif(sum(inSCE$scds_cxds_call == TRUE)/length(inSCE$scds_cxds_call) * 100), 3)
+                        signif(sum(inSCE$scds_cxds_call == TRUE)/length(inSCE$scds_cxds_call) * 100, 3))
         }
 
         if("scds_bcds_call" %in% colnames(SummarizedExperiment::colData(inSCE))){
             metrics <- c(metrics, "BCDS - Number of doublets",
                          "BCDS - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_bcds_call == TRUE),
-                        signif(sum(inSCE$scds_bcds_call == TRUE)/length(inSCE$scds_bcds_call) * 100), 3)
+                        signif(sum(inSCE$scds_bcds_call == TRUE)/length(inSCE$scds_bcds_call) * 100, 3))
         }
 
         if("scds_hybrid_call" %in% colnames(SummarizedExperiment::colData(inSCE))){
             metrics <- c(metrics, "SCDS Hybrid - Number of doublets",
                          "SCDS Hybrid - Percentage of doublets")
             values <- c(values, sum(inSCE$scds_hybrid_call == TRUE),
-                        signif(sum(inSCE$scds_hybrid_call == TRUE)/length(inSCE$scds_hybrid_call) * 100), 3)
+                        signif(sum(inSCE$scds_hybrid_call == TRUE)/length(inSCE$scds_hybrid_call) * 100, 3))
         }
 
         if("decontX_clusters" %in% colnames(SummarizedExperiment::colData(inSCE))){
@@ -166,8 +180,6 @@ sampleSummaryStats <- function(inSCE,
             return(as.numeric(x))
         }
     })
-
-    dfTableRes <- formatC(dfTableRes, drop0trailing = TRUE)
 
     return(dfTableRes)
 }

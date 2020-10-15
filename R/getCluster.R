@@ -150,11 +150,13 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
   if(all(algorithm == c("Hartigan-Wong", "Lloyd", "MacQueen"))){
     algorithm = "Hartigan-Wong"
   }
-  set.seed(seed)
   message(paste0(date(), " ... Running 'KMeans clustering'"))
   mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
-  clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
-                                nstart = nStart, algorithm = algorithm)
+  
+  clust.kmeans <- withr::with_seed(seed = seed,
+                {stats::kmeans(mat, centers = nCenters, iter.max = nIter,
+                        nstart = nStart, algorithm = algorithm)})
+  
   clust.kmeans <- factor(clust.kmeans$cluster)
   SummarizedExperiment::colData(inSCE)[[clusterName]] <- clust.kmeans
   return(inSCE)

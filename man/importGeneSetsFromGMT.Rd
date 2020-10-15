@@ -32,7 +32,7 @@ gene identifies will be mapped to that column in the \code{rowData}
 of \code{inSCE}. \code{by} can be a vector the same length as
 the number of gene sets in the GMT file and the elements of the vector
 can point to different locations within \code{inSCE}. Finally, \code{by}
-can be \code{NULL}. In this case, the location of the gene identifiers 
+can be \code{NULL}. In this case, the location of the gene identifiers
 in \code{inSCE} should be saved in the description (2nd column)
 of the GMT file. See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
@@ -47,7 +47,7 @@ downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers in gene sets in the GMT file will be
-mapped to the rownames of \code{inSCE} using the \code{by} parameter and 
+mapped to the rownames of \code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package
 \link{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
@@ -60,9 +60,9 @@ data(scExample)
 gmt <- system.file("extdata/mito_subset.gmt", package = "singleCellTK")
 
 # "feature_name" is the second column in the GMT file, so the ids will
-# be mapped using this column in the 'rowData' of 'sce'. This 
-# could also be accomplished by setting by = "feature_name" in the 
-# function call. 
+# be mapped using this column in the 'rowData' of 'sce'. This
+# could also be accomplished by setting by = "feature_name" in the
+# function call.
 sce <- importGeneSetsFromGMT(inSCE = sce, file = gmt, by = NULL)
 }
 \seealso{

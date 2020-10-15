@@ -6,15 +6,18 @@
 \usage{
 plotSCEScatter(
   inSCE,
-  slot,
+  slot = NULL,
   sample = NULL,
   annotation,
   feature = NULL,
+  groupBy = NULL,
   shape = NULL,
   reducedDimName = NULL,
   conditionClass = NULL,
   xlab = NULL,
   ylab = NULL,
+  axisSize = 10,
+  axisLabelSize = 10,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -31,7 +34,8 @@ plotSCEScatter(
   legendTitle = NULL,
   legendTitleSize = 12,
   legendSize = 10,
-  combinePlot = TRUE
+  combinePlot = "none",
+  plotLabels = NULL
 )
 }
 \arguments{
@@ -39,14 +43,17 @@ plotSCEScatter(
 components or a variable with saved results. Required}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
-options: "assays", "colData", "metadata"}
+options: "assays", "colData", "metadata", "reducedDims". Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{annotation}{Desired vector within the slot used for plotting.}
+\item{annotation}{Desired vector within the slot used for plotting. Default NULL.}
 
 \item{feature}{name of feature stored in assay of SingleCellExperiment
 object. Will be used only if "assays" slot is chosen. Default NULL.}
+
+\item{groupBy}{Group by a condition(any column of the annotation data).
+Default NULL.}
 
 \item{shape}{add shapes to each condition.}
 
@@ -60,6 +67,10 @@ class. Default NULL.}
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -106,9 +117,11 @@ Default 'blue'.}
 
 \item{legendSize}{size of legend. Default 10.}
 
-\item{combinePlot}{Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.
-Default TRUE.}
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
 }
 \value{
 a ggplot of the reduced dimensions.
