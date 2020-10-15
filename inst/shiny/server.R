@@ -1893,23 +1893,21 @@ shinyServer(function(input, output, session) {
               confirmButtonText = "Overwrite",
               callbackR = function(x){if(isTRUE(x)){
                 if (input$dimRedPlotMethod == "PCA"){
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
                                           reducedDimName = input$dimRedNameInput)
                     updateReddimInputs()
-                  }
                 } else if (input$dimRedPlotMethod == "tSNE"){
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
                                            reducedDimName = input$dimRedNameInput,
                                            perplexity = input$perplexityTSNE,
                                            n_iterations = input$iterTSNE)
                     updateReddimInputs()
-                  }
                 } else {
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+                  if(is.na(input$alphaUMAP)){
+                    stop("Learning rate (alpha) must be a numeric non-empty value!")
+                  }
                     vals$counts <- getUMAP(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
                                            reducedDimName = input$dimRedNameInput,
@@ -1919,29 +1917,26 @@ shinyServer(function(input, output, session) {
                                            alpha = input$alphaUMAP
                     )
                     updateReddimInputs()
-                  }
                 }
               }}
             )
           } else {
             if (input$dimRedPlotMethod == "PCA"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = input$dimRedNameInput)
                 updateReddimInputs()
-              }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
                 updateReddimInputs()
-              }
             } else {
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+              if(is.na(input$alphaUMAP)){
+                stop("Learning rate (alpha) must be a numeric non-empty value!")
+              }
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
@@ -1951,7 +1946,6 @@ shinyServer(function(input, output, session) {
                                        alpha = input$alphaUMAP
                 )
                 updateReddimInputs()
-              }
             }
           }
         }
