@@ -32,7 +32,7 @@ A  function to generate .html Rmarkdown report containing the visualizations of 
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
 sce <- runCellQC(sce)
 reportCellQC(inSCE = sce)

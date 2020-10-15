@@ -330,7 +330,7 @@
 #'  'doublet_finder_doublet_score'.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDoubletFinder(sce)
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-

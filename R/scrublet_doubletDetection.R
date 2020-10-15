@@ -79,7 +79,7 @@
 #'  \emph{scrublet_score} and \emph{scrublet_call}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runScrublet(sce)
 #' @export
 #' @importFrom reticulate py_module_available py_set_seed import

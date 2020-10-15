@@ -20,7 +20,7 @@
 #' of \code{inSCE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \donttest{
 #' sce <- runCellQC(sce)
 #' }

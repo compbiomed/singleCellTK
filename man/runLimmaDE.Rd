@@ -90,7 +90,7 @@ used.
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce@assays@data$logcounts <- log10(counts(sce) + 1)
 sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "Limma")

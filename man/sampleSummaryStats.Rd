@@ -24,6 +24,6 @@ Plot QC metrics generated from QC algorithms via either kable or csv file.
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sampleSummaryStats(sce, simple = TRUE)
 }

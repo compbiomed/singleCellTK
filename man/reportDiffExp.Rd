@@ -28,10 +28,3 @@ Default \code{NULL}.}
 A  function to generate .html Rmarkdown report containing the
 visualizations of the \code{\link{runDEAnalysis}} function output
 }
-\examples{
-data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
- groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
-reportDiffExp(sce, study = "DESeq2", output_file = "DESeq2_res")
-}

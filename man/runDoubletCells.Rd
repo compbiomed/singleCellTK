@@ -93,7 +93,7 @@ This function is a wrapper function for \link[scran]{doubletCells}.
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDoubletCells(sce)
 }
 \references{

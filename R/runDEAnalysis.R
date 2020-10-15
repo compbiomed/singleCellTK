@@ -127,7 +127,7 @@
 #' \code{\link{runANOVA}}
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
 #'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
 #' @return Input SCE object with \code{metadata(inSCE)} updated with name
@@ -190,7 +190,7 @@ runDEAnalysis <- function(method = 'MAST', ...){
 #' Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
 #'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
 #'
@@ -317,7 +317,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce@assays@data$logcounts <- log10(counts(sce) + 1)
 #' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
 #'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "Limma")
@@ -440,7 +440,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce@assays@data$logcounts <- log10(counts(sce) + 1)
 #' sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
 #'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
@@ -586,7 +586,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce@assays@data$logcounts <- log10(counts(sce) + 1)
 #' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
 #'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "MAST")

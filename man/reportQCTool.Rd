@@ -32,7 +32,7 @@ A  function to generate .html Rmarkdown report for the specified QC algorithm ou
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \donttest{
 sce <- runDecontX(sce)
 sce <- getUMAP(sce)

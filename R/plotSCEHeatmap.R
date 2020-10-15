@@ -177,7 +177,7 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param ... Other arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' plotSCEHeatmap(sce[1:3,1:3])
+#' plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @export
 #' @author Yichen Wang

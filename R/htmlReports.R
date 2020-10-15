@@ -47,7 +47,7 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @return .html file
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
 #' sce <- runCellQC(sce)
 #' reportCellQC(inSCE = sce)
@@ -84,7 +84,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' @return .html file
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \donttest{
 #' sce <- runDecontX(sce)
 #' sce <- getUMAP(sce)
@@ -165,12 +165,6 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
-#' reportDiffExp(sce, study = "DESeq2", output_file = "DESeq2_res")
 #' @return .html file
 #' @export
 reportDiffExp <- function(inSCE, study,
