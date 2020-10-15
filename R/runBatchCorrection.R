@@ -232,6 +232,12 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
                        batch = "batch", reducedDimName = "HARMONY",
                        nComponents = 50L, theta = 5, nIter = 10L){
+  if (!requireNamespace("harmony", quietly = TRUE)) {
+    stop("The Harmony package is required to run this function. ",
+         "Install harmony with: ",
+         "devtools::install_github('joshua-d-campbell/harmony') ",
+         call. = FALSE)
+  }
   ## Input check
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
@@ -299,6 +305,19 @@ runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
 runLIGER <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                      reducedDimName = 'LIGER', nComponents = 20L, lambda = 5.0,
                      resolution = 1.0){
+  if (!requireNamespace("liger", quietly = TRUE)) {
+    stop("The Liger package is required to run this function. ",
+         "Install liger with: ",
+         "devtools::install_github('joshua-d-campbell/liger') \n",
+         "NOTICE that the one on cran/BiocManager is not what we need.",
+         call. = FALSE)
+  }
+  if (!exists('createLiger', where=asNamespace('liger'), mode='function')) {
+    stop("You are using the wrong source of Liger, please reinstall with: ",
+         "devtools::install_github('joshua-d-campbell/liger') \n",
+         "NOTICE that the one on cran/BiocManager is not what we need.",
+         call. = FALSE)
+  }
   ## Input check
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
