@@ -34,4 +34,3 @@ sce <- seuratScaleData(sce, useAssay = "counts")
 sce <- seuratPCA(sce, useAssay = "counts")
 seuratReductionPlot(sce, useReductionPlot = "pca")
 }
-}
