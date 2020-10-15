@@ -33,3 +33,6 @@ Three different generation methods are wrapped, including
 [randomcoloR](SCTK_PerformingQC_Cell_V3.Rmd) and the \code{ggplot}
 default color generation.
 }
+\examples{
+discreteColorPalette(n = 3)
+}

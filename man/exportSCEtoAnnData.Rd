@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportSCEtoAnndata.R
 \name{exportSCEtoAnnData}
 \alias{exportSCEtoAnnData}
-\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as 
+\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as
 Python annData object}
 \usage{
 exportSCEtoAnnData(
@@ -46,9 +46,7 @@ are available as parameters to this export function and set to defaults. Default
 overridden at function call.
 }
 \examples{
-\dontrun{
 data(sce_chcl, package = "scds")
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-}
 
 }

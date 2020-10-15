@@ -71,7 +71,7 @@
             cells2 <- sort(setdiff(colnames(inSCE), cells1))
         }
     } else {
-        if(length(class) == 1 && class(class) == "character"){
+        if(length(class) == 1 && inherits(class, "character")){
             if(!class %in% names(SummarizedExperiment::colData(inSCE))){
                 stop("class: '", class, "' not found.")
             }
@@ -125,6 +125,11 @@
 #' @param ... Other arguments passed to specific functions. Refer to
 #' \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
 #' \code{\link{runANOVA}}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
 #' @return Input SCE object with \code{metadata(inSCE)} updated with name
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
 #' functions.
@@ -183,6 +188,12 @@ runDEAnalysis <- function(method = 'MAST', ...){
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -304,6 +315,13 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce@assays@data$logcounts <- log10(counts(sce) + 1)
+#' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "Limma")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -420,6 +438,14 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce@assays@data$logcounts <- log10(counts(sce) + 1)
+#' sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "ANOVA", fdrThreshold = NULL)
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -558,6 +584,13 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce@assays@data$logcounts <- log10(counts(sce) + 1)
+#' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "MAST")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the

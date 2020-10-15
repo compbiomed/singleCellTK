@@ -42,8 +42,8 @@ the neighbourhood construction step to produce a graph that is balanced
 across all batches of the data.
 }
 \examples{
-\dontrun{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runBBKNN(sceBatches)
 }
 }

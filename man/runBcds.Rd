@@ -60,6 +60,6 @@ A wrapper function for \link[scds]{bcds}. Annotate
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runBcds(sce)
 }

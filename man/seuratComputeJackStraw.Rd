@@ -21,3 +21,13 @@ Updated \code{SingleCellExperiment} object with jackstraw computations stored in
 seuratComputeJackStraw
 Compute jackstraw plot and store the computations in the input sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+}
+}

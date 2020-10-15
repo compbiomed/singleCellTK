@@ -17,3 +17,11 @@ plot object
 seuratPlotHVG
 Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+seuratPlotHVG(sce)
+}
+}

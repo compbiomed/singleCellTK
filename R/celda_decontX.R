@@ -49,14 +49,14 @@
 #' @param logfile Character. Messages will be redirected to a file named
 #'  `logfile`. If NULL, messages will be printed to stdout.  Default NULL.
 #' @param verbose Logical. Whether to print log messages. Default TRUE.
-#' 
+#'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  'decontX_Contamination' and 'decontX_Clusters' added to the
 #'  \link[SummarizedExperiment]{colData} slot. Additionally, the
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDecontX(sce)
 #' @export
 runDecontX <- function(inSCE,
@@ -84,8 +84,8 @@ runDecontX <- function(inSCE,
 
   message(paste0(date(), " ... Running 'DecontX'"))
 
-  inSCE <- celda::decontX(x = inSCE, 
-                          batch = sample, 
+  inSCE <- celda::decontX(x = inSCE,
+                          batch = sample,
                           assayName = useAssay,
                           z = z,
                           maxIter = maxIter,
@@ -100,7 +100,7 @@ runDecontX <- function(inSCE,
                           verbose = verbose)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]
-  
+
   inSCE@metadata$runDecontX <- argsList[-1]
   inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
 

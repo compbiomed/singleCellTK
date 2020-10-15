@@ -117,6 +117,8 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' @param ... Other arguments that are passed to the internal function,
 #' according to the method selected.
 #' @return A character vector of \code{n} hex color codes.
+#' @examples
+#' discreteColorPalette(n = 3)
 #' @export
 discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
                                  seed = 12345, ...) {
@@ -193,7 +195,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' resolved.
 #' @return The same matrix as input with rowname duplication resolved.
 featureNameDedup <- function(countmat){
-    if(!class(rownames(countmat)) == 'character'){
+    if(!inherits(rownames(countmat), "character")){
         stop("No character feature name found.")
     }
     gene.table <- table(rownames(countmat))
@@ -234,6 +236,10 @@ featureNameDedup <- function(countmat){
 #' or to identify partial matches using \code{\link{grep}}. Default \code{TRUE}
 #' @param firstMatch A logical scalar. Whether to only identify the first
 #' matches or to return all plausible matches. Default \code{TRUE}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' retrieveSCEIndex(inSCE = sce, IDs = "ENSG00000205542",
+#'  axis = "row")
 #' @return A unique, non-NA numeric vector of indices for the matching
 #' features/cells in \code{inSCE}.
 #' @author Yusuke Koga, Joshua Campbell

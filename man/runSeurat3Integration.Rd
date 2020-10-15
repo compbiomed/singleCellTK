@@ -51,8 +51,8 @@ anchors are then used to harmonize the datasets, or transfer information
 from one dataset to another.
 }
 \examples{
-\dontrun{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 100)
 }
 }

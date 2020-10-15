@@ -33,3 +33,9 @@ seuratNormalizeData
 Wrapper for NormalizeData() function from seurat library
 Normalizes the sce object according to the input parameters
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+}
+}
