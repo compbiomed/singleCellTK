@@ -68,6 +68,9 @@ violin plot. Options are "mean" or "median". Default NULL.}
 samples, etc.), will combined plots using `cowplot::plot_grid`.
 Default TRUE.}
 }
+\value{
+a ggplot of the barplot of assay data.
+}
 \description{
 Visualizes values stored in the assay slot of a
  SingleCellExperiment object via a bar plot.
