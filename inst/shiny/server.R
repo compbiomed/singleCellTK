@@ -178,7 +178,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
-    updateSelectInput(session, "assaySelectFS", choices = currassays)
+    updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "qcAssaySelect", choices = currassays)
     updateSelectInput(session, "visAssaySelect", choices = currassays)
@@ -1633,11 +1633,14 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
       if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
-        showNotification("Assay does not exist!", type = "error")
+        stop("Assay does not exist!")
       } else if (input$modifyAssayOutname == "") {
-        showNotification("Assay name cannot be empty!", type = "error")
+        stop("Assay name cannot be empty!")
       } else if (input$modifyAssayOutname %in% names(assays(vals$counts))) {
-        showNotification("Assay name already exists! Use another assay name!", type = "error")
+        stop("Assay name already exists! Use another assay name!")
+      } else if(is.na(input$trimUpperValueAssay)
+                || is.na(input$trimLowerValueAssay)){
+        stop("Upper or lower trim value cannot be empty!")
       } else {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
@@ -1722,6 +1725,9 @@ shinyServer(function(input, output, session) {
       }
       else if(input$normalizeAssaySelect == ""){
         stop("Please select an assay before proceeding with normalization!")
+      }
+      else if(is.na(as.numeric(input$normalizationScaleFactor))){
+        stop("Scaling factor must be a numeric non-empty value!")
       }
       else{
         if (input$normalizeAssayMethodSelect == "LogNormalize"
@@ -1887,23 +1893,21 @@ shinyServer(function(input, output, session) {
               confirmButtonText = "Overwrite",
               callbackR = function(x){if(isTRUE(x)){
                 if (input$dimRedPlotMethod == "PCA"){
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
                                           reducedDimName = input$dimRedNameInput)
                     updateReddimInputs()
-                  }
                 } else if (input$dimRedPlotMethod == "tSNE"){
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
                                            reducedDimName = input$dimRedNameInput,
                                            perplexity = input$perplexityTSNE,
                                            n_iterations = input$iterTSNE)
                     updateReddimInputs()
-                  }
                 } else {
-                  if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+                  if(is.na(input$alphaUMAP)){
+                    stop("Learning rate (alpha) must be a numeric non-empty value!")
+                  }
                     vals$counts <- getUMAP(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
                                            reducedDimName = input$dimRedNameInput,
@@ -1913,29 +1917,26 @@ shinyServer(function(input, output, session) {
                                            alpha = input$alphaUMAP
                     )
                     updateReddimInputs()
-                  }
                 }
               }}
             )
           } else {
             if (input$dimRedPlotMethod == "PCA"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
                                       reducedDimName = input$dimRedNameInput)
                 updateReddimInputs()
-              }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
                 updateReddimInputs()
-              }
             } else {
-              if (is.null(reducedDim(vals$counts, input$dimRedNameInput, withDimnames = FALSE))) {
+              if(is.na(input$alphaUMAP)){
+                stop("Learning rate (alpha) must be a numeric non-empty value!")
+              }
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
                                        reducedDimName = input$dimRedNameInput,
@@ -1945,7 +1946,6 @@ shinyServer(function(input, output, session) {
                                        alpha = input$alphaUMAP
                 )
                 updateReddimInputs()
-              }
             }
           }
         }
@@ -4401,80 +4401,98 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   observeEvent(input$findHvgButtonFS, {
-    if (!is.null(vals$counts)) {
-      if (input$hvgMethodFS == "vst"
-          || input$hvgMethodFS == "mean.var.plot"
-          || input$hvgMethodFS == "dispersion") {
-          withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
-            if(input$hvgMethodFS == "mean.var.plot"){
-            vals$counts <- seuratScaleData(
-              inSCE = vals$counts,
-              useAssay = input$assaySelectFS
-            )
-          }
-            vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                       normAssay = input$assaySelectFS,
-                                       useAssay = "seuratScaledData",
-                                       hvgMethod = input$hvgMethodFS,
-                                       hvgNumber = 100)
+    withBusyIndicatorServer("findHvgButtonFS", {
+      if (!is.null(vals$counts)) {
+        if (input$hvgMethodFS == "vst"
+            || input$hvgMethodFS == "mean.var.plot"
+            || input$hvgMethodFS == "dispersion") {
+          withProgress(
+            message = "Finding highly variable genes",
+            max = 1, value = 1, {
+              print(vals$counts)
+              print(input$assaySelectFS_Norm)
+              print(input$hvgMethodFS)
+              tryCatch(vals$counts <- seuratFindHVG(
+                                        inSCE = vals$counts,
+                                        useAssay = input$assaySelectFS_Norm,
+                                        hvgMethod = input$hvgMethodFS,
+                                        hvgNumber = 100),
+                       error = function(e) {
+                         stop("HVG computation failed. ",
+                              "Try re-computing with a normalized assay!")
+                       }
+              )
+              # vals$counts <- seuratFindHVG(vals$counts,
+              # useAssay = input$assaySelectFS_Norm,
+              # seuratWorkflow$geneNamesSeurat,
+              # input$hvgMethodFS,
+              # as.numeric(input$hvgNoFeaturesFS))
             })
-      } else if (input$hvgMethodFS == "modelGeneVar") {
-        vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS)
+        } else if (input$hvgMethodFS == "modelGeneVar") {
+          vals$counts <- scran_modelGeneVar(inSCE = vals$counts,
+                                           assayName = input$assaySelectFS_Norm)
+        }
+        vals$hvgCalculated$status <- TRUE
+        vals$hvgCalculated$method <- input$hvgMethodFS
       }
-      vals$hvgCalculated$status <- TRUE
-      vals$hvgCalculated$method <- input$hvgMethodFS
-    }
+    })
   })
 
   observeEvent(input$showHVG, {
-    if (isTRUE(vals$hvgCalculated$status) &&
-        !is.null(vals$hvgCalculated$method)) {
-      HVGs <- getTopHVG(inSCE = vals$counts,
-                        method = input$hvgMethodFS,
-                        n = input$hvgNoFeaturesViewFS)
-      if (input$hvgMethodFS == "vst") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
-        labeling <- "Standardized Variance"
-      } else if (input$hvgMethodFS == "mean.var.plot") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
-        labeling <- "Dispersion"
-      } else if (input$hvgMethodFS == "dispersion") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
-        labeling <- "Dispersion"
-      } else if (input$hvgMethodFS == "modelGeneVar") {
-        x <- rowData(vals$counts)$scran_modelGeneVar_mean
-        y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
-        labeling <- "Variance"
-      }
-      vals$vfplot <- ggplot() +
-        geom_point(aes(x = x, y = y)) +
-        geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                       y = subset(y, rownames(vals$counts) %in% HVGs)),
-                   colour = "red") +
-        geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                       y = subset(y, rownames(vals$counts) %in% HVGs),
-                       label = subset(rownames(vals$counts),
-                                      rownames(vals$counts) %in% HVGs)),
-                   colour = "red",
-                   size = 2) +
-        labs(x = "Mean", y = labeling)
-      output$plotFS <- renderPlot({
-        if (!is.null(vals$vfplot)) {
-          vals$vfplot
+    withBusyIndicatorServer("showHVG", {
+      if (isTRUE(vals$hvgCalculated$status) &&
+          !is.null(vals$hvgCalculated$method)) {
+        #checks
+        if(is.na(input$hvgNoFeaturesViewFS)){
+          stop("Number of features cannot be empty!")
         }
-      }, width = 400, height = 400)
-      output$hvgOutputFS <- renderText({HVGs})
-    } else {
-      shinyalert::shinyalert(
-        "Error",
-        text = "Please compute the variance before the visualization!",
-        type = "error"
-      )
-    }
+        #processing
+        HVGs <- getTopHVG(inSCE = vals$counts,
+                          method = input$hvgMethodFS,
+                          n = input$hvgNoFeaturesViewFS)
+        if (input$hvgMethodFS == "vst") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
+          labeling <- "Standardized Variance"
+        } else if (input$hvgMethodFS == "mean.var.plot") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
+          labeling <- "Dispersion"
+        } else if (input$hvgMethodFS == "dispersion") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
+          labeling <- "Dispersion"
+        } else if (input$hvgMethodFS == "modelGeneVar") {
+          x <- rowData(vals$counts)$scran_modelGeneVar_mean
+          y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
+          labeling <- "Variance"
+        }
+        vals$vfplot <- ggplot() +
+          geom_point(aes(x = x, y = y)) +
+          geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
+                         y = subset(y, rownames(vals$counts) %in% HVGs)),
+                     colour = "red") +
+          geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
+                         y = subset(y, rownames(vals$counts) %in% HVGs),
+                         label = subset(rownames(vals$counts),
+                                        rownames(vals$counts) %in% HVGs)),
+                     colour = "red",
+                     size = 2) +
+          labs(x = "Mean", y = labeling)
+        output$plotFS <- renderPlot({
+          if (!is.null(vals$vfplot)) {
+            vals$vfplot
+          }
+        }, width = 400, height = 400)
+        output$hvgOutputFS <- renderText({HVGs})
+      } else {
+        shinyalert::shinyalert(
+          "Error",
+          text = "Please compute the variance before the visualization!",
+          type = "error"
+        )
+      }
+    })
   })
 
   addAltExp <- function(inSCE, useAssay, geneSet, altExpName,
@@ -4491,8 +4509,15 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$hvgSubsetRun, {
+    withBusyIndicatorServer("hvgSubsetRun", {
     if (isTRUE(vals$hvgCalculated$status) &&
         !is.null(vals$hvgCalculated$method)) {
+      if(is.na(input$hvgNumberSelect)){
+        stop("Number of HVG cannot be empty!")
+      }
+      if(input$hvgAltExpName == ""){
+        stop("Name of the subset cannot be empty!")
+      }
       if (input$hvgAltExpName %in% altExpNames(vals$counts)) {
         shinyalert(
           "Warning",
@@ -4502,23 +4527,27 @@ shinyServer(function(input, output, session) {
           confirmButtonText = "Overwrite",
           callbackR = function(x){
             if (isTRUE(x)) {
-              withBusyIndicatorServer("hvgSubsetRun", {
                 HVGs <- getTopHVG(inSCE = vals$counts,
                                   method = input$hvgMethodFS,
                                   n = input$hvgNumberSelect)
-                vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
+
+                #make sure no NA's are introduced in HVGs
+                HVGs <- stats::na.omit(HVGs)
+
+                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
                                          input$hvgAltExpName, x)
-              })
             }
           })
       } else {
-        withBusyIndicatorServer("hvgSubsetRun", {
           HVGs <- getTopHVG(inSCE = vals$counts,
                             method = input$hvgMethodFS,
                             n = input$hvgNumberSelect)
-          vals$counts <- addAltExp(vals$counts, input$assaySelectFS, HVGs,
+
+          #make sure no NA's are introduced in HVGs
+          HVGs <- stats::na.omit(HVGs)
+
+          vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
                                    input$hvgAltExpName)
-        })
       }
     } else {
       shinyalert::shinyalert(
@@ -4527,6 +4556,7 @@ shinyServer(function(input, output, session) {
         type = "error"
       )
     }
+  })
   })
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
@@ -5496,7 +5526,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
       vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                   useAssay = "seuratScaledData",
+                                   useAssay = "seuratNormData",
                                    hvgMethod = input$hvg_method,
                                    hvgNumber = as.numeric(input$hvg_no_features))
 
@@ -6022,7 +6052,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(vals$counts@metadata)){
 
         #Proceed only if sce object has seurat object stored in metadata slot
-        if(!is.null(vals$counts@metadata$seurat)){
+        if(!is.null(vals$counts@metadata$seurat$obj)){
 
           #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
           if(!"seuratScaledData" %in% assayNames(vals$counts)){
