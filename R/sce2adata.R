@@ -14,7 +14,7 @@
 .sce2adata <- function(SCE, useAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first
-    stopifnot(class(SCE) == "SingleCellExperiment")
+    stopifnot(inherits(SCE, "SingleCellExperiment"))
 
     # Extract information that correspond to AnnData structure
     X <- t(SummarizedExperiment::assay(SCE, useAssay))

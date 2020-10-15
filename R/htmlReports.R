@@ -8,8 +8,8 @@
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
+#' \dontrun{
 #' sce <- runDropletQC(sce)
 #' reportDropletQC(inSCE = sce)
 #' }
@@ -46,9 +46,9 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runCellQC(sce)
 #' reportCellQC(inSCE = sce)
 #' }
@@ -83,9 +83,9 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \donttest{
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \donttest{
 #' sce <- runDecontX(sce)
 #' sce <- getUMAP(sce)
 #' reportQCTool(inSCE = sce, algorithm = "DecontX")

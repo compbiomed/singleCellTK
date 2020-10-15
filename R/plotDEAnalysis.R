@@ -268,6 +268,15 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param title character. Main title of the heatmap. Default
 #' \code{"MAST Result: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+#'  groupName2 = "Sample2", index1 = 1:100, index2 = 101:190, analysisName = "DESeq2")
+#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1)
+#' }
+#'
 #' @return A ComplexHeatmap::Heatmap object
 #' @export
 #' @author Yichen Wang

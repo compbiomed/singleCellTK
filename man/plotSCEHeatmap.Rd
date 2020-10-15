@@ -139,6 +139,10 @@ A \code{\link[ComplexHeatmap]{Heatmap}} object
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
+}
 \author{
 Yichen Wang
 }
