@@ -227,7 +227,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
              ', not found. ')
     }
     if(is.null(featureIndex)){
-        featureIndex <- 1:nrow(inSCE)
+        featureIndex <- seq_len(nrow(inSCE))
     } else {
         if(is.character(featureIndexBy) && length(featureIndexBy) == 1){
             if(!featureIndexBy == 'rownames'){
@@ -254,7 +254,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
         featureIndex <- which(featureIndex)
     }
     if(is.null(cellIndex)){
-        cellIndex <- 1:ncol(inSCE)
+        cellIndex <- seq_len(ncol(inSCE))
     } else {
         if(is.character(cellIndexBy) && length(cellIndexBy) == 1){
             if(!cellIndexBy == 'rownames'){

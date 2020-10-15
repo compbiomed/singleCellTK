@@ -4,8 +4,8 @@
 #' \linkS4class{SingleCellExperiment}
 #'
 #' @param inSCE Input SingleCellExperiment object.
-#' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the first
-#' assay in \code{inSCE} will be used. Default \code{NULL}.
+#' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the
+#' first assay in \code{inSCE} will be used. Default \code{NULL}.
 #' @param sampleVariableName Variable name in \code{colData} denoting which
 #' sample each cell belongs to. If \code{NULL}, all cells will be assumed
 #' to come from the same sample. Default \code{"sample"}.
@@ -26,7 +26,8 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
     sampleVariable <- rep("Sample", ncol(inSCE))
   } else {
     if(!(sampleVariableName %in% colnames(colData(inSCE)))) {
-      stop(paste0("'", sampleVariableName, "' was not found in the 'colData' of 'inSCE'."))
+      stop("'", sampleVariableName, "' was not found in the 'colData' of ",
+           "'inSCE'.")
     }
     sampleVariable <- colData(inSCE)[,sampleVariableName]
   }
@@ -34,10 +35,12 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
   numCells <- table(sampleVariable)
   var <- colSums(SummarizedExperiment::assay(inSCE, useAssay))
   meanCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = mean)
-  medianCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = stats::median)
+  medianCounts <- stats::aggregate(var, by = list(sampleVariable),
+                                   FUN = stats::median)
   var2 <- colSums(SummarizedExperiment::assay(inSCE, useAssay) > 0)
   meanDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = mean)
-  medianDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = stats::median)
+  medianDetected <- stats::aggregate(var2, by = list(sampleVariable),
+                                     FUN = stats::median)
 
   df <- data.frame("Sample" = names(numCells),
                    "Number of Cells" = as.integer(round(as.numeric(numCells))),
@@ -133,7 +136,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     })
   } else if (palette == "ggplot") {
     hues <- seq(15, 375, length = n + 1)
-    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
+    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[seq_len(n)]
   } else if (palette == "celda") {
     colors <- distinctColors(n, ...)
   } else {
@@ -172,13 +175,15 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   chuN <- ceiling(dimN[2]/chuS) # number of chunks
   Mat <- list()
 
-  for (i in 1:chuN) {
+  for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
-      Mat[[i]] <- methods::as(x[, start:end], "Matrix") # Efficient way to convert DelayedArray to dgCMatrix
+      # Efficient way to convert DelayedArray to dgCMatrix
+      Mat[[i]] <- methods::as(x[, start:end], "Matrix")
     } else {
-      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix") # Convert dgTMatrix to dgCMatrix
+      # Convert dgTMatrix to dgCMatrix
+      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
     }
   }
   x <- do.call(base::cbind, Mat)
@@ -206,8 +211,7 @@ featureNameDedup <- function(countmat){
         for (genename in gene.duplicates.names){
             genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
             indices <- which(grepl(genename, rownames(countmat)))
-            num <- length(indices)
-            for (i in 1:num){
+            for (i in seq_along(indices)){
                 rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
             }
         }
@@ -323,14 +327,16 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 
-#backup or restore 'factor' columns in a dataframe (for use in col/row annotation editor)
+# backup or restore 'factor' columns in a dataframe
+# (for use in col/row annotation editor)
 .manageFactor <- function(df, operation = "backup"){
   if(operation == "backup"){
     data <- list()
     data$data_type <- list()
     data$df <- df
-    for (i in 1:length(colnames(data$df))) {
-      data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]), is.factor(data$df[,i]))
+    for (i in seq_along(colnames(data$df))) {
+      data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]),
+                                                  is.factor(data$df[,i]))
     }
     data$df <- .convertFactorToCharacter(df)
   }

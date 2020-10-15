@@ -2201,10 +2201,12 @@ shinyServer(function(input, output, session) {
         } else if (input$clustAlgo %in% seq(7, 9)) {
           # K-Means
           if(input$clustKMeansReddim == ""){
-            stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
+            stop("Must select a reducedDim! If none available, ",
+                 "compute one in the Dimensionality Reduction tab.")
           }
           if(is.na(input$clustKMeansN)){
-            stop("Number of clusters/centers must be a numeric non-empty value!")
+            stop("Number of clusters/centers must be ",
+                 "a numeric non-empty value!")
           }
           if(is.na(input$clustKMeansNIter)){
             stop("Max number of iterations must be a numeric non-empty value!")
@@ -2226,7 +2228,8 @@ shinyServer(function(input, output, session) {
         } else if (input$clustAlgo %in% seq(10, 12)) {
           # Seurat
           if(input$clustSeuratReddim == ""){
-            stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
+            stop("Must select a reducedDim! If none available, ",
+                 "compute one in the Dimensionality Reduction tab.")
           }
           if(is.na(input$clustSeuratDims)){
             stop("Number of dimensions must be a numeric non-empty value!")
@@ -2294,8 +2297,10 @@ shinyServer(function(input, output, session) {
         choice <- input$clustVisCol
       }
       if (is.null(input$clustVisReddim) || input$clustVisReddim == "") {
-        shinyalert::shinyalert("Error!", "No reduction selected. Select one or run dimension reduction first",
-                               type = "error")
+        shinyalert::shinyalert(
+          "Error!",
+          "No reduction selected. Select one or run dimension reduction first",
+          type = "error")
       }
       inSCE <- vals$counts
       reducedDimName <- input$clustVisReddim
@@ -4115,7 +4120,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-
   output$batchCheckResUI <- renderUI({
     selectInput("batchCheckCorrName", "Corrected Matrix",
                 c(names(vals$batchRes)))
@@ -4139,7 +4143,6 @@ shinyServer(function(input, output, session) {
         }
         ## Original assay PCA
         oriAssayPCAName <- paste0(input$batchCheckOrigAssay, "_PCA")
-        print(2)
         if(!oriAssayPCAName %in% names(reducedDims(vals$counts))){
           # TODO: Think about whether to perform this only on temp SCE
           # instead of vals$counts
@@ -4148,20 +4151,13 @@ shinyServer(function(input, output, session) {
                                 reducedDimName = oriAssayPCAName)
           updateReddimInputs()
         }
-        print(3)
         resName <- input$batchCheckCorrName
         ## Corrected assay/altExp PCA
         if (vals$batchRes[[resName]] == 'assay'){
           corrAssayPCAName = paste0(resName, "_PCA")
-          # Here the bug comes
-          print(vals$counts)
-          print(resName)
-          print(corrAssayPCAName)
           vals$counts <- getPCA(vals$counts, useAssay = resName,
                                 reducedDimName = corrAssayPCAName)
-          print(3.3)
           updateReddimInputs()
-          print(3.4)
         } else if (vals$batchRes[[resName]] == 'altExp'){
           ae <- altExp(vals$counts, resName)
           corrAltExpPCAName <- paste0(resName, "_PCA")
@@ -4173,11 +4169,6 @@ shinyServer(function(input, output, session) {
         }
         inSCE <- vals$counts
         ## Update plots
-        print(inSCE)
-        print(useAssay)
-        print(batch)
-        print(shapeBy)
-        print(oriAssayPCAName)
         output$batchOriVars <- renderPlot({
           plotBatchVariance(inSCE = inSCE, useAssay = useAssay, batch = batch,
                             condition = shapeBy)
@@ -4557,82 +4548,97 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$findHvgButtonFS, {
     withBusyIndicatorServer("findHvgButtonFS", {
-    if (!is.null(vals$counts)) {
-      if (input$hvgMethodFS == "vst"
-          || input$hvgMethodFS == "mean.var.plot"
-          || input$hvgMethodFS == "dispersion") {
-          withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-            tryCatch(vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                                  useAssay = input$assaySelectFS_Norm,
-                                                  hvgMethod = input$hvgMethodFS,
-                                                  hvgNumber = 100), error = function(e)
-                                                    stop("HVG computation failed. Try re-computing with a normalized assay!"))
-            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS_Norm, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
+      if (!is.null(vals$counts)) {
+        if (input$hvgMethodFS == "vst"
+            || input$hvgMethodFS == "mean.var.plot"
+            || input$hvgMethodFS == "dispersion") {
+          withProgress(
+            message = "Finding highly variable genes",
+            max = 1, value = 1, {
+              print(vals$counts)
+              print(input$assaySelectFS_Norm)
+              print(input$hvgMethodFS)
+              tryCatch(vals$counts <- seuratFindHVG(
+                                        inSCE = vals$counts,
+                                        useAssay = input$assaySelectFS_Norm,
+                                        hvgMethod = input$hvgMethodFS,
+                                        hvgNumber = 100),
+                       error = function(e) {
+                         stop("HVG computation failed. ",
+                              "Try re-computing with a normalized assay!")
+                       }
+              )
+              # vals$counts <- seuratFindHVG(vals$counts,
+              # useAssay = input$assaySelectFS_Norm,
+              # seuratWorkflow$geneNamesSeurat,
+              # input$hvgMethodFS,
+              # as.numeric(input$hvgNoFeaturesFS))
             })
-      } else if (input$hvgMethodFS == "modelGeneVar") {
-        vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Norm)
+        } else if (input$hvgMethodFS == "modelGeneVar") {
+          vals$counts <- scran_modelGeneVar(inSCE = vals$counts,
+                                           assayName = input$assaySelectFS_Norm)
+        }
+        vals$hvgCalculated$status <- TRUE
+        vals$hvgCalculated$method <- input$hvgMethodFS
       }
-      vals$hvgCalculated$status <- TRUE
-      vals$hvgCalculated$method <- input$hvgMethodFS
-    }
-  })
+    })
   })
 
   observeEvent(input$showHVG, {
     withBusyIndicatorServer("showHVG", {
-    if (isTRUE(vals$hvgCalculated$status) &&
-        !is.null(vals$hvgCalculated$method)) {
-      #checks
-      if(is.na(input$hvgNoFeaturesViewFS)){
-        stop("Number of features cannot be empty!")
-      }
-      #processing
-      HVGs <- getTopHVG(inSCE = vals$counts,
-                        method = input$hvgMethodFS,
-                        n = input$hvgNoFeaturesViewFS)
-      if (input$hvgMethodFS == "vst") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
-        labeling <- "Standardized Variance"
-      } else if (input$hvgMethodFS == "mean.var.plot") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
-        labeling <- "Dispersion"
-      } else if (input$hvgMethodFS == "dispersion") {
-        x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
-        y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
-        labeling <- "Dispersion"
-      } else if (input$hvgMethodFS == "modelGeneVar") {
-        x <- rowData(vals$counts)$scran_modelGeneVar_mean
-        y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
-        labeling <- "Variance"
-      }
-      vals$vfplot <- ggplot() +
-        geom_point(aes(x = x, y = y)) +
-        geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                       y = subset(y, rownames(vals$counts) %in% HVGs)),
-                   colour = "red") +
-        geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                       y = subset(y, rownames(vals$counts) %in% HVGs),
-                       label = subset(rownames(vals$counts),
-                                      rownames(vals$counts) %in% HVGs)),
-                   colour = "red",
-                   size = 2) +
-        labs(x = "Mean", y = labeling)
-      output$plotFS <- renderPlot({
-        if (!is.null(vals$vfplot)) {
-          vals$vfplot
+      if (isTRUE(vals$hvgCalculated$status) &&
+          !is.null(vals$hvgCalculated$method)) {
+        #checks
+        if(is.na(input$hvgNoFeaturesViewFS)){
+          stop("Number of features cannot be empty!")
         }
-      }, width = 400, height = 400)
-      output$hvgOutputFS <- renderText({HVGs})
-    } else {
-      shinyalert::shinyalert(
-        "Error",
-        text = "Please compute the variance before the visualization!",
-        type = "error"
-      )
-    }
-  })
+        #processing
+        HVGs <- getTopHVG(inSCE = vals$counts,
+                          method = input$hvgMethodFS,
+                          n = input$hvgNoFeaturesViewFS)
+        if (input$hvgMethodFS == "vst") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
+          labeling <- "Standardized Variance"
+        } else if (input$hvgMethodFS == "mean.var.plot") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
+          labeling <- "Dispersion"
+        } else if (input$hvgMethodFS == "dispersion") {
+          x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
+          y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
+          labeling <- "Dispersion"
+        } else if (input$hvgMethodFS == "modelGeneVar") {
+          x <- rowData(vals$counts)$scran_modelGeneVar_mean
+          y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
+          labeling <- "Variance"
+        }
+        vals$vfplot <- ggplot() +
+          geom_point(aes(x = x, y = y)) +
+          geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
+                         y = subset(y, rownames(vals$counts) %in% HVGs)),
+                     colour = "red") +
+          geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
+                         y = subset(y, rownames(vals$counts) %in% HVGs),
+                         label = subset(rownames(vals$counts),
+                                        rownames(vals$counts) %in% HVGs)),
+                     colour = "red",
+                     size = 2) +
+          labs(x = "Mean", y = labeling)
+        output$plotFS <- renderPlot({
+          if (!is.null(vals$vfplot)) {
+            vals$vfplot
+          }
+        }, width = 400, height = 400)
+        output$hvgOutputFS <- renderText({HVGs})
+      } else {
+        shinyalert::shinyalert(
+          "Error",
+          text = "Please compute the variance before the visualization!",
+          type = "error"
+        )
+      }
+    })
   })
 
   addAltExp <- function(inSCE, useAssay, geneSet, altExpName,
@@ -5000,17 +5006,24 @@ shinyServer(function(input, output, session) {
     }
   })
   # Threshold adapting plot
-  output$deThreshplot <- renderPlot({
+  observeEvent(input$deAssay, {
     if(!is.null(vals$counts)){
-      if(length(grep('log', input$deAssay, ignore.case = TRUE)) > 0){
-        thres <- thresholdGenes(inSCE = vals$counts,
-                                useAssay = input$deAssay)
-        par(mfrow = c(5, 4))
-        plot(thres)
-        par(mfrow = c(1, 1))
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, input$deAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnThresh <- renderText("")
+      } else {
+        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
       }
+      output$deThreshplot <- renderPlot({
+        plotMASTThresholdGenes(inSCE = vals$counts,
+                               useAssay = input$deAssay,
+                               check_sanity = FALSE)
+      }, height = 800)
     }
-  }, height = 800)
+  })
+
   # Data table
   output$deResult <- DT::renderDataTable({
     if(!is.null(input$deResSel)){
@@ -5051,15 +5064,26 @@ shinyServer(function(input, output, session) {
       useResult <- input$deResSel
       nrow <- input$deVioNRow
       ncol <- input$deVioNCol
+
+      useAssay <- metadata(vals$counts)$diffExp[[useResult]]$useAssay
       if(input$deVioLabel == "Default ID"){
         labelBy = NULL
       } else {
         labelBy = input$deVioLabel
       }
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, useAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnViolin <- renderText("")
+      } else {
+        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+      }
       output$deViolinPlot <- renderPlot({
         plotDEGViolin(inSCE = sce, useResult = useResult,
                       #threshP = input$deVioUseThresh,
-                      nrow = nrow, ncol = ncol, labelBy = labelBy)
+                      nrow = nrow, ncol = ncol, labelBy = labelBy,
+                      check_sanity = FALSE)
       })
     }
   })
@@ -5076,18 +5100,29 @@ shinyServer(function(input, output, session) {
       useResult <- input$deResSel
       nrow <- input$deRegNRow
       ncol <- input$deRegNCol
+      useAssay <- metadata(vals$counts)$diffExp[[useResult]]$useAssay
       if(input$deRegLabel == "Default ID"){
         labelBy = NULL
       } else {
         labelBy = input$deRegLabel
       }
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, useAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnReg <- renderText("")
+      } else {
+        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+      }
       output$deRegPlot <- renderPlot({
         plotDEGRegression(inSCE = sce, useResult = useResult,
                           #threshP = input$deVioUseThresh,
-                          nrow = nrow, ncol = ncol, labelBy = labelBy)
+                          nrow = nrow, ncol = ncol, labelBy = labelBy,
+                          check_sanity = FALSE)
       })
     }
   })
+
   # Heatmap
   output$deHMSplitColUI <- renderUI({
     otherAvail <- input$deHMcolData
