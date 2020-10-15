@@ -35,3 +35,8 @@ objects in sceList. The colData is merged.
 \description{
 Generate manifest file for droplet and cell count data
 }
+\examples{
+data(scExample, package = "singleCellTK")
+generateMeta(sce, dir = ".", samplename = "Sample",
+ HTAN = TRUE)
+}

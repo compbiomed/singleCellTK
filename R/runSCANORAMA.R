@@ -24,8 +24,8 @@
 #' @export
 #' @references Brian Hie et al, 2019
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runSCANORAMA(sceBatches)
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',

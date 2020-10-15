@@ -22,8 +22,8 @@
 #' @export
 #' @references Krzysztof Polanski et al., 2020
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runBBKNN(sceBatches)
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',

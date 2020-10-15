@@ -623,13 +623,11 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
-#' \donttest{
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
 #'   slot = "assays", annotation = "counts", feature = "Apoe",
 #'   reducedDimName = "TSNE_counts", labelClusters = FALSE
 #' )
-#' }
 #' @export
 #' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,

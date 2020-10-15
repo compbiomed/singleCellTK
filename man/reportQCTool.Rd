@@ -31,9 +31,9 @@ Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet",
 A  function to generate .html Rmarkdown report for the specified QC algorithm output
 }
 \examples{
-\donttest{
 data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+\donttest{
 sce <- runDecontX(sce)
 sce <- getUMAP(sce)
 reportQCTool(inSCE = sce, algorithm = "DecontX")

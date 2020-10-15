@@ -48,8 +48,8 @@ that identify images with overlapping content and merge these into a larger
 panorama.
 }
 \examples{
-\dontrun{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runSCANORAMA(sceBatches)
 }
 }

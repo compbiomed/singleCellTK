@@ -236,6 +236,10 @@ featureNameDedup <- function(countmat){
 #' or to identify partial matches using \code{\link{grep}}. Default \code{TRUE}
 #' @param firstMatch A logical scalar. Whether to only identify the first
 #' matches or to return all plausible matches. Default \code{TRUE}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' retrieveSCEIndex(inSCE = sce, IDs = "ENSG00000205542",
+#'  axis = "row")
 #' @return A unique, non-NA numeric vector of indices for the matching
 #' features/cells in \code{inSCE}.
 #' @author Yusuke Koga, Joshua Campbell

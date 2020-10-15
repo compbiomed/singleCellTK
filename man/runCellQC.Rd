@@ -53,9 +53,9 @@ A wrapper function to run several QC algorithms on a
  object containing cells after empty droplets have been removed.
 }
 \examples{
-\donttest{
 data(scExample, package = "singleCellTK")
 sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+\donttest{
 sce <- runCellQC(sce)
 }
 }

@@ -50,6 +50,11 @@
 #' @param normAssayName Name of new assay containing normalized data. Default \code{seuratNormData}.
 #' @param normalizationMethod selected normalization method. Default \code{"LogNormalize"}.
 #' @param scaleFactor numeric value that represents the scaling factor. Default \code{10000}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' }
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
 seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
@@ -69,6 +74,13 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
 #' @param scale boolean if data should be scaled or not. Default \code{TRUE}.
 #' @param center boolean if data should be centered or not. Default \code{TRUE}
 #' @param scaleMax maximum numeric value to return for scaled data. Default \code{10}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' }
 #' @return Scaled \code{SingleCellExperiment} object
 #' @export
 seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData", model = "linear", scale = TRUE, center = TRUE, scaleMax = 10) {
@@ -85,6 +97,12 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @param useAssay Normalized assay inside the SCE object to use for hvg computation.
 #' @param hvgMethod selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
 #' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' }
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
@@ -114,6 +132,14 @@ seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000)
 #' @param useAssay Assay containing scaled counts to use in PCA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat PCA. Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default \code{20}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
@@ -134,6 +160,14 @@ seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) 
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA Default \code{seuratICA}.
 #' @param nics Number of independent components to compute. Default \code{20}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratICA(sce, useAssay = "counts")
+#' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the computed independent components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
@@ -153,6 +187,15 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 #' @param inSCE (sce) object on which to compute and store jackstraw plot
 #' @param useAssay Assay containing scaled counts to use in JackStraw calculation.
 #' @param dims Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+#' }
 #' @return Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
 #' @export
 seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
@@ -173,6 +216,16 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
 #' Computes the plot object for jackstraw plot from the pca slot in the input sce object
 #' @param inSCE (sce) object from which to compute the jackstraw plot (pca should be computed)
 #' @param dims Number of components to plot in Jackstraw. If \code{NULL}, then all components are plotted Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+#' seuratJackStrawPlot(sce)
+#' }
 #' @return plot object
 #' @export
 seuratJackStrawPlot <- function(inSCE, dims = NULL) {
@@ -189,6 +242,13 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL) {
 #' seuratPlotHVG
 #' Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes computations
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' seuratPlotHVG(sce)
+#' }
 #' @return plot object
 #' @export
 seuratPlotHVG <- function(inSCE) {
@@ -206,6 +266,14 @@ seuratPlotHVG <- function(inSCE) {
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
 #' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' seuratReductionPlot(sce, useReductionPlot = "pca")
 #' @return plot object
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
@@ -232,6 +300,15 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @param groupSingletons boolean if singletons should be grouped together or not. Default \code{TRUE}.
 #' @param resolution Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.
 #' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' sce <- seuratFindClusters(sce, useAssay = "counts")
+#' }
 #' @return Updated sce object which now contains the computed clusters
 #' @export
 seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8, externalReduction = NULL) {
@@ -293,6 +370,16 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param minDist Sets the \code{"min.dist"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.
 #' @param nNeighbors Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.
 #' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' sce <- seuratFindClusters(sce, useAssay = "counts")
+#' sce <- seuratRunUMAP(sce, useReduction = "pca")
+#' }
 #' @return Updated sce object with UMAP computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
@@ -331,6 +418,15 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param inSCE (sce) object from which to compute the elbow plot (pca should be computed)
 #' @param significantPC Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.
 #' @param reduction Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' seuratElbowPlot(sce)
+#' }
 #' @return plot object
 #' @export
 seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
@@ -356,6 +452,16 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
 #' @param fast See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param combine See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param raster See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- seuratPCA(sce, useAssay = "counts")
+#' heatmap <- seuratComputeHeatmap(sce, useAssay = "counts")
+#' seuratHeatmapPlot(heatmap)
+#' }
 #' @return plot object
 #' @export
 seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = NULL, nfeatures = 30, fast = TRUE, combine = TRUE, raster = TRUE) {
@@ -402,6 +508,10 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param seuratObject Input Seurat object
 #' @param normAssayName Name of assay to store the normalized data. Default \code{"seuratNormData"}.
 #' @param scaledAssayName Name of assay to store the scaled data. Default \code{"seuratScaledData"}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' seurat <- convertSCEToSeurat(sce)
+#' sce <- convertSeuratToSCE(seurat)
 #' @return \code{SingleCellExperiment} output object
 #' @export
 convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", scaledAssayName = "seuratScaledData") {
@@ -419,7 +529,10 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @param inSCE A \code{SingleCellExperiment} object to convert to a Seurat object.
 #' @param countsAssay Which assay to use from sce object for raw counts. Default \code{NULL}.
 #' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
-#' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
+#' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' seurat <- convertSCEToSeurat(sce)
 #' @return Updated seurat object that contains all data from the input sce object
 #' @export
 #' @importFrom SummarizedExperiment assay assays

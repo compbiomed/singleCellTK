@@ -40,8 +40,8 @@
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
 #' @examples
-#' \donttest{
 #' data(scExample, package="singleCellTK")
+#' \donttest{
 #' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
@@ -888,7 +888,8 @@ plotDoubletFinderResults <- function(inSCE,
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
+
     # merged.plots <- list(merged.plots)
     merged.plots <- list(Violin = merged.plots)
   }
@@ -926,7 +927,7 @@ plotDoubletFinderResults <- function(inSCE,
             pattern="doubletFinder_doublet_score_",
             "", x=x
         ))
-    })
+    }, character(1))
     res.list <- c(res.list, densityScore)
 
     scatterScore <- lapply(df.scores, function(x) {
@@ -969,7 +970,7 @@ plotDoubletFinderResults <- function(inSCE,
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterScore)
 
     if(combinePlot != "all" | length(samples) == 1){
@@ -1007,7 +1008,7 @@ plotDoubletFinderResults <- function(inSCE,
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, violinScore)
     }
 
@@ -1053,7 +1054,7 @@ plotDoubletFinderResults <- function(inSCE,
         pattern="doubletFinder_doublet_label_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterCall)
     return(res.list)
   })

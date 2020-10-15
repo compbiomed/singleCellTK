@@ -23,3 +23,10 @@ Updated \code{SingleCellExperiment} object with highly variable genes computatio
 seuratFindHVG
 Find highly variable genes and store in the input sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+}
+}

@@ -28,8 +28,8 @@
 #' @export
 #' @references Stuart et al. 2019
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runSeurat3Integration(sceBatches, nAnchors = 100)
 #' }
 runSeurat3Integration <- function(inSCE, useAssay = 'logcounts',

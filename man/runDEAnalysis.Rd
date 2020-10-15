@@ -24,3 +24,9 @@ functions.
 Perform differential expression analysis on SCE with specified method
 Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
+}

@@ -8,8 +8,8 @@
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
+#' \dontrun{
 #' sce <- runDropletQC(sce)
 #' reportDropletQC(inSCE = sce)
 #' }
@@ -46,9 +46,9 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' \dontrun{
 #' sce <- runCellQC(sce)
 #' reportCellQC(inSCE = sce)
 #' }
@@ -83,9 +83,9 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \donttest{
 #' data(scExample, package = "singleCellTK")
 #' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' \donttest{
 #' sce <- runDecontX(sce)
 #' sce <- getUMAP(sce)
 #' reportQCTool(inSCE = sce, algorithm = "DecontX")
@@ -165,6 +165,12 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
+#' reportDiffExp(sce, study = "DESeq2", output_file = "DESeq2_res")
 #' @return .html file
 #' @export
 reportDiffExp <- function(inSCE, study,

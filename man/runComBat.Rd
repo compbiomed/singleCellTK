@@ -54,8 +54,8 @@ or non-parametric empirical Bayes frameworks for adjusting data for batch
 effects.
 }
 \examples{
-\dontrun{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 # parametric adjustment
 sceCorr <- runComBat(sceBatches)
 # non-parametric adjustment, mean-only version

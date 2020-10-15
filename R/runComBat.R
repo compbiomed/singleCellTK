@@ -26,8 +26,8 @@
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' # parametric adjustment
 #' sceCorr <- runComBat(sceBatches)
 #' # non-parametric adjustment, mean-only version

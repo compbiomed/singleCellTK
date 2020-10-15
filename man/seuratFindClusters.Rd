@@ -40,3 +40,13 @@ Updated sce object which now contains the computed clusters
 seuratFindClusters
 Computes the clusters from the input sce object and stores them back in sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratFindClusters(sce, useAssay = "counts")
+}
+}
