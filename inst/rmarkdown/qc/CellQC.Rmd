@@ -367,10 +367,10 @@ i="Cxds"
 cat(paste0('## ', i, ' \n'))
 ```
 <br />
-`r descriprion_CxdsResults$introduction`
-`r descriprion_CxdsResults$runCxds`
-`r descriprion_CxdsResults$plotCxdsResults`
-`r descriprion_CxdsResults$output`
+`r description_CxdsResults$introduction`
+`r description_CxdsResults$runCxds`
+`r description_CxdsResults$plotCxdsResults`
+`r description_CxdsResults$output`
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
@@ -423,7 +423,7 @@ for (sample in samples){
 
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE}
-descriprion_BcdsResults<- descriptionBCDS()
+description_BcdsResults<- descriptionBCDS()
 ```
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -436,10 +436,10 @@ i="Bcds"
 cat(paste0('## ', i, ' \n'))
 ```
 <br />
-`r descriprion_BcdsResults$introduction`
-`r descriprion_BcdsResults$runBcds`
-`r descriprion_BcdsResults$plotBcdsResults`
-`r descriprion_BcdsResults$output`
+`r description_BcdsResults$introduction`
+`r description_BcdsResults$runBcds`
+`r description_BcdsResults$plotBcdsResults`
+`r description_BcdsResults$output`
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
@@ -477,10 +477,10 @@ for (sample in samples){
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
   
-  cat(descriprion_BcdsResults$nTop)
-  cat(descriprion_BcdsResults$srat)
-  cat(descriprion_BcdsResults$nmax)
-  cat(descriprion_BcdsResults$varImp)
+  cat(description_BcdsResults$nTop)
+  cat(description_BcdsResults$srat)
+  cat(description_BcdsResults$nmax)
+  cat(description_BcdsResults$varImp)
   cat("\n\n")
 }
 ```
