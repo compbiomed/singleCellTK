@@ -2324,12 +2324,12 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
-        plotlyOutput(outputId = "plot_modsplit_perp")
+        plotlyOutput(outputId = "plot_modsplit_perp", height = 300)
       )
     ), select = TRUE)
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Difference Plot",
       panel(heading = "Perplexity Diff Plot",
-        plotlyOutput(outputId = "plot_modsplit_perpdiff")
+        plotlyOutput(outputId = "plot_modsplit_perpdiff", height = 300)
       )
     ))
     withProgress(message = "Clustering Features", max = 1, value = 1, {
@@ -2363,20 +2363,21 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "celdaCellsplitTabset", target = "Perplexity Plot")
     appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
-        plotlyOutput(outputId = "plot_cellsplit_perp")
+        plotlyOutput(outputId = "plot_cellsplit_perp", height = 300)
       )
 
     ), select = TRUE)
     withProgress(message = "Clustering Cells", max = 1, value = 1, {
       temp_umap <- celdaUmap(vals$counts)
-      vals$counts <- recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax)
+      vals$counts <- recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
+                                        yInit = celdaModules(vals$counts))
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
     })
     for (i in runParams(vals$counts)$K) {
       removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
       appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
         panel(heading = sprintf("Cluster %s", i),
-          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i))
+          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i), height = 300)
           )
       ))
       withProgress(message = "Plotting Clusters", max = 1, value = 1, {
@@ -2429,20 +2430,20 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "celdaHeatmapTabset", target = "Module Heatmap")
     appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Heatmap",
       panel(heading = "Heatmap",
-        plotlyOutput(outputId = "celdaheatmapplt")
+        plotOutput(outputId = "celdaheatmapplt", height = 300)
       )
     ), select = TRUE)
     withProgress(message = "Plotting Heatmap", max = 1, value = 1, {
-      output$celdaheatmapplt <- renderPlotly({celdaHeatmap(vals$counts)})
+      output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
     })
     if (input$heatmap_module){
       appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Module Heatmap",
         panel(heading = "Module Heatmap",
-          plotlyOutput(outputId = "celdamodheatmapplt")
+          plotOutput(outputId = "celdamodheatmapplt", height = 300)
         )
       ))
       withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
-        output$celdamodheatmapplt <- renderPlotly({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
+        output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
       })
     }
     shinyjs::enable(
@@ -2454,9 +2455,9 @@ shinyServer(function(input, output, session) {
     showNotification("Module heatmap complete.")
   })
 
-  observeEvent(input$celdaprobmapbtn, {
+  observeEvent(input$celdaprobplotbtn, {
     withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
-      output$celdaprobmapplt <- renderPlotly({celdaProbabilityMap(vals$counts)})
+      output$celdaprobmapplt <- renderPlot({celdaProbabilityMap(vals$counts)})
     })
     showNotification("Probability map complete.")
   })

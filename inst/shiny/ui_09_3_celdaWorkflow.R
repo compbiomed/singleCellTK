@@ -65,7 +65,7 @@ shinyPanelCelda <- fluidPage(
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdaumapplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                plotlyOutput("celdaumapplot", height = 300)
                             )
                         )
                     )
@@ -79,7 +79,7 @@ shinyPanelCelda <- fluidPage(
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdatsneplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                plotlyOutput("celdatsneplot", height = 300)
                             )
                         )
                     )
@@ -117,7 +117,7 @@ shinyPanelCelda <- fluidPage(
                     ),
                     column(8,
                         panel(
-                            plotlyOutput("celdaprobmapplt", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                            plotOutput("celdaprobmapplt", height = 300)
                         )
                     )
                 )
