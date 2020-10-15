@@ -42,7 +42,7 @@
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' \donttest{
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE=sce)
@@ -524,7 +524,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
@@ -792,7 +792,7 @@ plotScrubletResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletFinder(sce)
 #' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
@@ -1144,7 +1144,7 @@ plotDoubletFinderResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletCells(sce)
 #' plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1391,7 +1391,7 @@ plotDoubletCellsResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxds(sce)
 #' plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1660,7 +1660,7 @@ plotCxdsResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runBcds(sce)
 #' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1930,7 +1930,7 @@ plotBcdsResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxdsBcdsHybrid(sce)
 #' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
@@ -2198,7 +2198,7 @@ plotScdsHybridResults <- function(inSCE,
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
 #' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
