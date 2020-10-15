@@ -4,7 +4,7 @@
 \alias{importMultipleSources}
 \title{Imports samples from different sources and compiles them into a list of SCE objects}
 \usage{
-importMultipleSources(allImportEntries)
+importMultipleSources(allImportEntries, delayedArray = FALSE)
 }
 \arguments{
 \item{allImportEntries}{object containing the sources and parameters of all the samples being imported (from the UI)}
