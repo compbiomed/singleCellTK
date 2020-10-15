@@ -2347,50 +2347,182 @@ shinyServer(function(input, output, session) {
   #     anim = TRUE), add = TRUE)
   # shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
 
-  modsplit <- eventReactive(input$celdamodsplit, {
-    celda_sce <- selectFeatures(as.matrix(counts(vals$counts)))
-    updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
-    return(recursiveSplitModule(celda_sce, initialL = input$celdaLinit, maxL = input$celdaLmax))
-  })
-  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
+  observeEvent(input$celdamodsplit, {
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
+      panel(heading = "Perplexity Plot",
+        plotlyOutput(outputId = "plot_modsplit_perp", height = 300)
+      )
+    ), select = TRUE)
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Difference Plot",
+      panel(heading = "Perplexity Diff Plot",
+        plotlyOutput(outputId = "plot_modsplit_perpdiff", height = 300)
+      )
+    ))
+    withProgress(message = "Clustering Features", max = 1, value = 1, {
+        vals$counts <- selectFeatures(as.matrix(counts(vals$counts)))
+        assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
+        updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
+        vals$counts <- recursiveSplitModule(vals$counts, initialL = input$celdaLinit, maxL = input$celdaLmax)
+        output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
+        output$plot_modsplit_perpdiff <- renderPlotly({plotGridSearchPerplexityDiff(vals$counts)})
+    })
 
-  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-    return(plotGridSearchPerplexityDiff(modsplit()))
+    shinyjs::enable(
+      selector = ".celda_modsplit_plots a[data-value='Perplexity Plot']")
+    shinyjs::enable(
+      selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
+    shinyjs::show(selector = ".celda_modsplit_plots")
+    showNotification("Module splitting complete.")
+    shinyjs::show(id = "celdaLselect")
+    shinyjs::show(id = "celdaLbtn")
   })
-  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
 
   observeEvent(input$celdaLbtn, {
-    modsplit <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
-    showNotification("Celda L Selected.")
+    vals$counts <- subsetCeldaList(vals$counts, params = list(L = input$celdaLselect))
+    showNotification("Number of Feature Modules Selected.")
+    updateCollapse(session = session, "CeldaUI", style = list("Identify # of Feature Modules" = "danger"))
+    shinyjs::enable(
+      selector = "div[value='Identify # of Cell Clusters']")
   })
 
-  cellsplit <- eventReactive(input$celdacellsplit, {
+  observeEvent(input$celdacellsplit, {
+    removeTab(inputId = "celdaCellsplitTabset", target = "Perplexity Plot")
+    appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = "Perplexity Plot",
+      panel(heading = "Perplexity Plot",
+        plotlyOutput(outputId = "plot_cellsplit_perp", height = 300)
+      )
+
+    ), select = TRUE)
+    withProgress(message = "Clustering Cells", max = 1, value = 1, {
+      temp_umap <- celdaUmap(vals$counts)
+      vals$counts <- recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
+                                        yInit = celdaModules(vals$counts))
+      output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
+    })
+    for (i in runParams(vals$counts)$K) {
+      removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
+      appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
+        panel(heading = sprintf("Cluster %s", i),
+          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i), height = 300)
+          )
+      ))
+      withProgress(message = "Plotting Clusters", max = 1, value = 1, {
+        temp_model <- subsetCeldaList(vals$counts, params = list(K = i))
+        output[[sprintf("plot_K_umap_%s", i)]] <- renderPlotly({plotDimReduceCluster(temp_model, dim1= reducedDim(altExp(temp_umap), "celda_UMAP")[, 1],
+          dim2 = reducedDim(altExp(temp_umap), "celda_UMAP")[, 2], labelClusters = TRUE)})
+      })
+    shinyjs::enable(
+        selector = sprintf(".celda_cellsplit_plots a[data-value='Cluster %s']", i))
+    }
+    shinyjs::enable(
+      selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
+    shinyjs::show(selector = ".celda_cellsplit_plots")
+    showNotification("Cell Clustering Complete.")
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
-    return(recursiveSplitCell(modsplit(), initialK = input$celdaKinit, maxK = input$celdaKmax))
+    shinyjs::show(id = "celdaKselect")
+    shinyjs::show(id = "celdaKbtn")
   })
-
-  output$cellsplitplot <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
 
   observeEvent(input$celdaKbtn, {
-    cellsplit <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
-    showNotification("Celda K Selected.")
+    vals$counts <- subsetCeldaList(vals$counts, params = list(K = input$celdaKselect))
+    showNotification("Number of Cell Clusters Selected.")
+    updateCollapse(session = session, "CeldaUI", style = list("Identify # of Cell Clusters" = "danger"))
+    shinyjs::enable(
+      selector = "div[value='Visualization']")
+    updateNumericInput(session, "celdamodheatmapnum", max = input$celdaKselect, value = 1)
   })
 
   observeEvent(input$CeldaUmap, {
-    celda <- celdaUmap(cellsplit())
+    withProgress(message = "Computing Umap", max = 1, value = 1, {
+      vals$counts <- celdaUmap(vals$counts)
+      output$celdaumapplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_UMAP", xlab = "UMAP_1",
+        ylab = "UMAP_2", labelClusters = TRUE)})
+    })
+    showNotification("Umap complete.")
+    shinyjs::enable("CeldaTsne")
   })
 
   observeEvent(input$CeldaTsne, {
-    celda <- celdaTsne(celda)
+    withProgress(message = "Computing Tsne", max = 1, value = 1, {
+      vals$counts <- celdaTsne(vals$counts)
+      output$celdatsneplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_tSNE", xlab = "tSNE_1",
+        ylab = "tSNE_2", labelClusters = TRUE)})
+    })
+    showNotification("Tsne complete.")
   })
 
-  observeEvent(input$celdafactorize,{
-    factorized <- factorizeMatrix(vals$counts)
+  observeEvent(input$celdaheatmapbtn, {
+    removeTab(inputId = "celdaHeatmapTabset", target = "Heatmap")
+    removeTab(inputId = "celdaHeatmapTabset", target = "Module Heatmap")
+    appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Heatmap",
+      panel(heading = "Heatmap",
+        plotOutput(outputId = "celdaheatmapplt", height = 300)
+      )
+    ), select = TRUE)
+    withProgress(message = "Plotting Heatmap", max = 1, value = 1, {
+      output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
+    })
+    if (input$heatmap_module){
+      appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Module Heatmap",
+        panel(heading = "Module Heatmap",
+          plotOutput(outputId = "celdamodheatmapplt", height = 300)
+        )
+      ))
+      withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
+        output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
+      })
+    }
+    shinyjs::enable(
+      selector = ".celda_heatmap_plots a[data-value='Heatmap']")
+    shinyjs::toggleState(
+      selector = ".celda_heatmap_plots a[data-value='Module Heatmap']",
+      condition = input$celdamodheatmap)
+    shinyjs::show(selector = ".celda_heatmap_plots")
+    showNotification("Module heatmap complete.")
   })
 
-  #observeEvent(input$runCelda, {
+  observeEvent(input$celdaprobplotbtn, {
+    withProgress(message = "Plotting Module Heatmap", max = 1, value = 1, {
+      output$celdaprobmapplt <- renderPlot({celdaProbabilityMap(vals$counts)})
+    })
+    showNotification("Probability map complete.")
+  })
 
-  #})
+  observe({
+    if(!is.null(vals$counts)){
+      #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
+      shinyjs::enable(
+        selector = "div[value='Identify # of Feature Modules']")
+    }else{
+      #If no data uploaded in data tab, disabled all tabs and plots.
+
+      #Disable tabs
+      shinyjs::disable(
+        selector = "div[value='Identify # of Feature Modules']")
+      shinyjs::disable(
+        selector = "div[value='Identify # of Cell Clusters']")
+      shinyjs::disable(
+        selector = "div[value='Visualization']")
+
+      #Disable plots inside Modsplit subtab
+      shinyjs::disable(
+        selector = ".celda_modsplit_plots a[data-value='Perplexity Plot']")
+      shinyjs::disable(
+        selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
+
+      #Disable plots inside Cellsplit subtab
+      shinyjs::disable(
+        selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
+
+      #Disable plots inside Heatmap subtab
+      shinyjs::disable(
+        selector = ".celda_heatmap_plots a[data-value='Heatmap']")
+      shinyjs::disable(
+        selector = ".celda_heatmap_plots a[data-value='Module Heatmap']")
+    }
+  })
 
   # celda clustering tab
   observeEvent(input$runCelda2, {
@@ -3120,100 +3252,80 @@ shinyServer(function(input, output, session) {
     if(input$viewertabs == "Scatter Plot"){
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
-                            xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-                            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                            axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                            legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
-                            conditionClass = pltVars$class, defaultTheme = as.logical(pltVars$defTheme))
+          xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
+          conditionClass = pltVars$class, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
                                       reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
                                       xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
                                       groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
                                       colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
-                                      dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+                                      dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
                                       axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
                                       legendTitleSize = input$adjustlegendtitlesize)
       } else if (input$TypeSelect_Colorby == "Cell Annotation") {
         a <- plotSCEDimReduceColData(vals$counts,reducedDimName = input$QuickAccess,xlab = xname,ylab = yname,
-                                     colorBy = input$AnnotationSelect_Colorby,groupBy = pltVars$groupby,legendTitle = legendname,
-                                     title = input$adjusttitle,bin = pltVars$bin,transparency = input$adjustalpha,colorScale = colors,
-                                     colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor, dotSize = input$adjustsize,
-                                     combinePlot = FALSE,axisSize = input$adjustaxissize,axisLabelSize = input$adjustaxislabelsize,
-                                     legendSize = input$adjustlegendsize,legendTitleSize = input$adjustlegendtitlesize,conditionClass = pltVars$class)
+                                    colorBy = input$AnnotationSelect_Colorby,groupBy = pltVars$groupby,legendTitle = legendname,
+                                    title = input$adjusttitle,bin = pltVars$bin,transparency = input$adjustalpha,colorScale = colors,
+                                    colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor, dotSize = input$adjustsize,
+                                    combinePlot = "none",axisSize = input$adjustaxissize,axisLabelSize = input$adjustaxislabelsize,
+                                    legendSize = input$adjustlegendsize,legendTitleSize = input$adjustlegendtitlesize,conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
                             annotation = input$ColumnSelect_Colorby, transparency = input$adjustalpha,
                             colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
                             groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
                             xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
-                            combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+                            combinePlot = "none", axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
         a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
-                                 useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
-                                 feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
-                                 dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
-                                 axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-        a <- plotly::ggplotly(a)
+          useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
+          feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
+          dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
+          axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
-                               coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
-                               transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                               axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                               defaultTheme = as.logical(pltVars$defTheme))
-        a <- plotly::ggplotly(a)
+          coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          defaultTheme = as.logical(pltVars$defTheme))
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
-      if(input$vlnboxcheck == FALSE){
-        if(input$TypeSelect_Yaxis == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
-                                      useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-                                      feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
-                                      transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                                      axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                                      defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
-                                    coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
-                                    box = TRUE, groupBy = pltVars$groupby, transparency = input$adjustalpha,
-                                    dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
-                                    axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }
-      }else if(input$vlnboxcheck == TRUE){
-        if(input$TypeSelect_Yaxis == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
-                                      useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-                                      feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
-                                      transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                                      axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                                      defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
-                                    coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
-                                    box = FALSE, groupBy = pltVars$groupBy, transparency = input$adjustalpha,
-                                    dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
-                                    axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }
+      if(input$vlnboxcheck == TRUE){
+        vln <- TRUE
+        bx <- FALSE
+      }else if(input$vlnboxcheck == FALSE){
+        vln <- FALSE
+        bx <- TRUE
+      }
+      if(input$TypeSelect_Yaxis == "Expression Assays"){
+        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx,
+          useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
+          feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
+          transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+          axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+          defaultTheme = as.logical(pltVars$defTheme))
+      }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
+        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
+          coldata = input$AnnotationSelect_Yaxis, violin = vln, box = bx,
+          groupBy = pltVars$groupby, transparency = input$adjustalpha,
+          dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
+          axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }
     }
-    if (input$TypeSelect_Colorby == "Single Color" && input$viewertabs == "Scatter Plot"){
-      a[[1]]$layers[[1]]$aes_params$colour <- input$Col
+    if (input$TypeSelect_Colorby == "Single Color"){
+      a$layers[[1]]$aes_params$colour <- input$Col
     }
     if (input$adjustgridlines == TRUE){
-      a <- a[[1]] + ggplot2::theme_bw()
-      a <- plotly::ggplotly(a)
+      a <- a + ggplot2::theme_bw()
     }
+    a <- plotly::ggplotly(a)
     plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
   output$scatter <- renderPlotly({cellviewer()})
