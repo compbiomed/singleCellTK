@@ -224,6 +224,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "delRedDimType", choices = currreddim)
     updateSelectInput(session, "FastMNNReddim", choices = currreddim)
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
+    updateSelectInput(session, "clustVisReddim", choices = currreddim)
+    updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
+    updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
   }
 
   updateAltExpInputs <- function(){
@@ -2158,6 +2161,12 @@ shinyServer(function(input, output, session) {
         saveClusterName = gsub(" ", "_", input$clustName)
         if(input$clustAlgo %in% seq(6)){
           # Scran SNN
+          if(is.na(input$clustScranSNNK)){
+            stop("K must be a numeric non-empty value!")
+          }
+          if(is.na(input$clustScranSNNd)){
+            stop("Number of components must be a numeric non-empty value!")
+          }
           algoList <- list('1' = "walktrap", '2' = "louvain", '3' = "infomap",
                            '4' = "fastGreedy", '5' = "labelProp",
                            '6' = "leadingEigen")
@@ -2191,7 +2200,20 @@ shinyServer(function(input, output, session) {
           vals$counts <- do.call(runScranSNN, params)
         } else if (input$clustAlgo %in% seq(7, 9)) {
           # K-Means
-
+          if(input$clustKMeansReddim == ""){
+            stop("Must select a reducedDim! If none available, ",
+                 "compute one in the Dimensionality Reduction tab.")
+          }
+          if(is.na(input$clustKMeansN)){
+            stop("Number of clusters/centers must be ",
+                 "a numeric non-empty value!")
+          }
+          if(is.na(input$clustKMeansNIter)){
+            stop("Max number of iterations must be a numeric non-empty value!")
+          }
+          if(is.na(input$clustKMeansNStart)){
+            stop("Number of random sets must be a numeric non-empty value!")
+          }
           algoList <- list('7' = "Hartigan-Wong",
                            '8' = "Lloyd", '9' = "MacQueen")
           algo <- algoList[[as.character(input$clustAlgo)]]
@@ -2205,6 +2227,16 @@ shinyServer(function(input, output, session) {
           updateSelectInput(session, "clustVisReddim", input$clustKMeansReddim)
         } else if (input$clustAlgo %in% seq(10, 12)) {
           # Seurat
+          if(input$clustSeuratReddim == ""){
+            stop("Must select a reducedDim! If none available, ",
+                 "compute one in the Dimensionality Reduction tab.")
+          }
+          if(is.na(input$clustSeuratDims)){
+            stop("Number of dimensions must be a numeric non-empty value!")
+          }
+          if(is.na(input$clustSeuratRes)){
+            stop("Resolution must be a numeric non-empty value!")
+          }
           reddim <- reducedDim(vals$counts, input$clustSeuratReddim)
           rownames(reddim) <- gsub("_", "-", rownames(reddim))
           if ("percentVar" %in% names(attributes(reddim))) {
@@ -2265,8 +2297,10 @@ shinyServer(function(input, output, session) {
         choice <- input$clustVisCol
       }
       if (is.null(input$clustVisReddim) || input$clustVisReddim == "") {
-        shinyalert::shinyalert("Error!", "No reduction selected. Select one or run dimension reduction first",
-                               type = "error")
+        shinyalert::shinyalert(
+          "Error!",
+          "No reduction selected. Select one or run dimension reduction first",
+          type = "error")
       }
       inSCE <- vals$counts
       reducedDimName <- input$clustVisReddim
