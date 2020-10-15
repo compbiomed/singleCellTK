@@ -85,6 +85,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                      tags$div(
                                        id = "c-collapse-run-options", class = "collapse",
                                        conditionalPanel(
+                                         condition = sprintf("input['%s'] == 'PCA'", "dimRedPlotMethod"),
+                                         HTML('<p style="color:rgb(255,0,0);">No parameters available for PCA</p>')
+                                       ),
+                                       conditionalPanel(
                                          condition = sprintf("input['%s'] == 'UMAP'", "dimRedPlotMethod"),
                                          sliderInput("iterUMAP", "# of iterations", min = 50, max = 500, value = 200),
                                          sliderInput("neighborsUMAP", "# of nearest neighbors", min = 2, max = 100, value = 5),
