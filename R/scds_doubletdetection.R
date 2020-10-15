@@ -23,7 +23,7 @@
 #'  Please refer to the documentation of \link[scds]{cxds} for details.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runCxds(sce)
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-
@@ -31,9 +31,9 @@
 runCxds <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    ntop = 500, 
+    ntop = 500,
     binThresh = 0,
-    verb = FALSE, 
+    verb = FALSE,
     retRes = FALSE,
     estNdbl = FALSE,
     useAssay = "counts") {
@@ -48,7 +48,7 @@ runCxds <- function(inSCE,
     }
 
     message(paste0(date(), " ... Running 'cxds'"))
-    
+
     ## Getting current arguments
     #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
     argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -71,19 +71,19 @@ runCxds <- function(inSCE,
 
         mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
         counts(sceSample) <- .convertToMatrix(mat)
-        
+
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample,
-                                                           ntop = nGene, 
-                                                           binThresh = binThresh, 
-                                                           verb = verb, 
+                                                           ntop = nGene,
+                                                           binThresh = binThresh,
+                                                           verb = verb,
                                                            retRes = retRes,
                                                            estNdbl = estNdbl))}, silent = TRUE)
           nGene <- nGene - 100
-        }  
-        
+        }
+
         if (!inherits(result, "try-error") & !is.null(result)) {
           if ("cxds_call" %in% colnames(SummarizedExperiment::colData(result))) {
               output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
@@ -95,12 +95,12 @@ runCxds <- function(inSCE,
         } else {
           output[sceSampleInd, ] <- NA
           warning(paste0("'cxds' from package 'scds' did not complete successfully for sample", samples[i]))
-        }            
+        }
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
-    
+
     inSCE@metadata$runCxds <- argsList[-1]
     inSCE@metadata$runCxds$packageVersion <- utils::packageDescription("scds")$Version
 
@@ -120,7 +120,7 @@ runCxds <- function(inSCE,
 #'  separately. If NULL, then all cells will be processed together.
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
-#' @param ntop See \link[scds]{bcds} for more information. Default \code{500}. 
+#' @param ntop See \link[scds]{bcds} for more information. Default \code{500}.
 #' @param srat See \link[scds]{bcds} for more information. Default \code{1}.
 #' @param verb See \link[scds]{bcds} for more information. Default \code{FALSE}.
 #' @param retRes See \link[scds]{bcds} for more information. Default \code{FALSE}.
@@ -135,7 +135,7 @@ runCxds <- function(inSCE,
 #'  Please refer to the documentation of \link[scds]{bcds} for details.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runBcds(sce)
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-
@@ -143,11 +143,11 @@ runCxds <- function(inSCE,
 runBcds <- function(inSCE,
     sample = NULL,
     seed = 12345,
-    ntop = 500, 
-    srat = 1, 
+    ntop = 500,
+    srat = 1,
     verb = FALSE,
     retRes = FALSE,
-    nmax = "tune", 
+    nmax = "tune",
     varImp = FALSE,
     estNdbl = FALSE,
     useAssay = "counts"
@@ -163,7 +163,7 @@ runBcds <- function(inSCE,
     }
 
     message(paste0(date(), " ... Running 'bcds'"))
-    
+
     ## Getting current arguments
     #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
     argsList <- mget(names(formals()),sys.frame(sys.nframe()))
@@ -186,22 +186,22 @@ runBcds <- function(inSCE,
 
         mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
         counts(sceSample) <- .convertToMatrix(mat)
-        
+
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed,
             scds::bcds(sce = sceSample,
                        ntop = nGene,
-                       srat = srat, 
+                       srat = srat,
                        verb = verb,
                        retRes = retRes,
-                       nmax = nmax, 
+                       nmax = nmax,
                        varImp = varImp,
                        estNdbl = estNdbl
             ))}, silent = TRUE)
           nGene <- nGene - 100
-        }  
+        }
 
         if (!inherits(result, "try-error") & !is.null(result)) {
           if ("bcds_call" %in% colnames(SummarizedExperiment::colData(result))) {
@@ -214,13 +214,13 @@ runBcds <- function(inSCE,
         } else {
           output[sceSampleInd, ] <- NA
           warning(paste0("'bcds' from package 'scds' did not complete successfully for sample", samples[i]))
-        }  
- 
+        }
+
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
-    
+
     inSCE@metadata$runBcds <- argsList[-1]
     inSCE@metadata$runBcds$packageVersion <- utils::packageDescription("scds")$Version
 
@@ -241,7 +241,7 @@ runBcds <- function(inSCE,
 #'  Default NULL.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param nTop The number of top varialbe genes to consider. Used in both \code{csds}
-#' and \code{bcds}. Default \code{500}. 
+#' and \code{bcds}. Default \code{500}.
 #' @param cxdsArgs See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.
 #' @param bcdsArgs See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{NULL}.
 #' @param verb See \link[scds]{cxds_bcds_hybrid} for more information. Default \code{FALSE}.
@@ -256,7 +256,7 @@ runBcds <- function(inSCE,
 #'  details.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runCxdsBcdsHybrid(sce)
 #' @export
 #' @importFrom SummarizedExperiment colData colData<-
@@ -266,7 +266,7 @@ runCxdsBcdsHybrid <- function(inSCE,
     seed = 12345,
     nTop = 500,
     cxdsArgs = list(),
-    bcdsArgs = list(), 
+    bcdsArgs = list(),
     verb = FALSE,
     estNdbl = FALSE,
     force = FALSE,
@@ -309,14 +309,14 @@ runCxdsBcdsHybrid <- function(inSCE,
         result <- NULL
         nGene <- 500
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample, 
-                                                                       cxdsArgs=c(list(ntop = nGene), cxdsArgs), 
-                                                                       bcdsArgs=c(list(ntop = nGene), bcdsArgs), 
+          try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
+                                                                       cxdsArgs=c(list(ntop = nGene), cxdsArgs),
+                                                                       bcdsArgs=c(list(ntop = nGene), bcdsArgs),
                                                                        verb = verb,
                                                                        estNdbl = estNdbl,
                                                                        force = force))}, silent = TRUE)
           nGene <- nGene - 100
-        }  
+        }
 
         if (!inherits(result, "try-error") & !is.null(result)) {
           if ("hybrid_call" %in% colnames(SummarizedExperiment::colData(result))) {
@@ -329,12 +329,12 @@ runCxdsBcdsHybrid <- function(inSCE,
         } else {
           output[sceSampleInd, ] <- NA
           warning(paste0("'cxds_bcds_hybrid' from package 'scds' did not complete successfully for sample", samples[i]))
-        }   
+        }
     }
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
-    
+
     inSCE@metadata$runCxdsBcdsHybrid <- argsList[-1]
     inSCE@metadata$runCxdsBcdsHybrid$packageVersion <- utils::packageDescription("scds")$Version
 

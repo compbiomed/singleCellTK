@@ -37,8 +37,8 @@ A wrapper function to run several QC algorithms for determining
 empty droplets in single cell RNA-seq data
 }
 \examples{
-\donttest{
 data(scExample, package = "singleCellTK")
+\donttest{
 sce <- runDropletQC(sce)
 }
 }

@@ -99,9 +99,9 @@ A wrapper function which visualizes outputs from the
  object via various plots.
 }
 \examples{
-\donttest{
 data(scExample, package="singleCellTK")
-sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+\donttest{
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runPerCellQC(sce)
 plotRunPerCellQCResults(inSCE=sce)

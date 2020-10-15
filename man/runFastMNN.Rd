@@ -41,8 +41,8 @@ fastMNN is a variant of the classic MNN method, modified for speed and more
 robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
 }
 \examples{
-\dontrun{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 }
 }

@@ -118,7 +118,7 @@
 #' QC stats stored in the inSCE.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sampleSummaryStats(sce, simple = TRUE)
 #' @importFrom magrittr %>%
 #' @export

@@ -1,7 +1,7 @@
 context("misc functions")
 
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 
 test_that("summarizeSCE", {
   ta <- summarizeSCE(sce, sample = NULL)

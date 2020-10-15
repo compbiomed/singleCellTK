@@ -38,7 +38,7 @@
 #'
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
 #'                     reducedDimName = "UMAP", logNorm = TRUE,
 #'                     nNeighbors = 30, alpha = 1,

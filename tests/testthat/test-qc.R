@@ -3,7 +3,7 @@ library(singleCellTK)
 context("Testing dimensionality reduction algorithms")
 data(scExample, package = "singleCellTK")
 sceDroplet <- sce
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sampleVector <- c(rep("Sample1", 100), rep("Sample2", 95))
 sceres <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, sample = sampleVector, nNeighbors = 10, reducedDimName = "UMAP",
                 nIterations = 20, alpha = 1, minDist = 0.01, pca = TRUE, initialDims = 20)
