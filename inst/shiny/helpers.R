@@ -214,7 +214,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
   } else {
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
     removeUI(selector = paste0("#", plotIds[[algo]]))
-    
+
     for (i in seq_along(sampleList)) {
       s <- sampleList[[i]]
       sID <- paste(c(algo, s, "Tab"), collapse = "")
@@ -289,16 +289,22 @@ findOverlapping <- function(arr1, arr2) {
   return(arr1[filter])
 }
 
-addToColFilterParams <- function(name, criteria, id, paramsReactive) {
+addToColFilterParams <- function(name, categorial, criteria, criteriaGT, criteriaLT, id, paramsReactive) {
   threshStr <- ""
-  if (is.numeric(criteria)) {
-    threshStr <- sprintf("%s > %.5f", name, criteria)
-  } else {
+  if (categorial) {
     threshArr <- list()
     for (c in criteria) {
       threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
     }
     threshStr <- paste(threshArr, collapse = " | ")
+  } else {
+    if (is.null(criteriaGT)) {
+      threshStr <- sprintf("%s < %.5f", name, criteriaLT)
+    } else if (is.null(criteriaLT)) {
+      threshStr <- sprintf("%s > %.5f", name, criteriaGT)
+    } else {
+      threshStr <- sprintf("%s > %.5f & %s < %.5f", name, criteriaGT, name, criteriaLT)
+    }
   }
   
   entry <- list(col=name, param=threshStr, id=id)
@@ -332,7 +338,4 @@ addRowFiltersToSCE <- function(inSCE, paramsReactive) {
   }
   return(inSCE)
 }
-
-
-
 

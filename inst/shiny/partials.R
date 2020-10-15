@@ -265,17 +265,31 @@ rowFilteringModal <- function(failed=FALSE, assayInput) {
   )
 }
 
-# rowFilteringModal <- function(failed=FALSE, rowNames) {
-#   modalDialog(
-#     h3("Select a Column"),
-#     selectInput("filterRowSelect", "", rowNames),
-#     if (failed)
-#       div(tags$b("Please fill out all the required fields", style = "color: red;")),
-#     tags$div(id = "rowFilterCriteria"),
-#     
-#     footer = tagList(
-#       modalButton("Cancel"),
-#       actionButton("rowFiltModalOK", "OK")
-#     )
-#   )
-# }
+addFilteringThresholdOptions <- function(colInput) {
+  minCol <- min(colInput)
+  maxCol <- max(colInput)
+  
+  gt_label_str <- sprintf("Keep values above (please pick a number between %.5f and %.5f):", minCol, maxCol)
+  lt_label_str <- sprintf("Keep values below (please pick a number between %.5f and %.5f):", minCol, maxCol)
+  
+  
+  insertUI(
+    selector = "#filterCriteria",
+    ui = tags$div(
+      id="newThresh", 
+      checkboxInput("colGT", "Greater than:"),
+      shinyjs::hidden(
+        numericInput("filterThreshGT", gt_label_str, minCol, min = minCol, max = maxCol)
+      ),
+      checkboxInput("colLT", "Less than:"),
+      shinyjs::hidden(
+        numericInput("filterThreshLT", lt_label_str, minCol, min = minCol, max = maxCol)
+      )
+    )
+  )
+}
+
+
+
+
+

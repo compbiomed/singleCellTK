@@ -1221,6 +1221,10 @@ shinyServer(function(input, output, session) {
   #-----------#
   # FILTERING #
   #-----------#
+  shinyjs::onclick("colGT", shinyjs::toggle(id = "filterThreshGT",
+                                                anim = FALSE), add = TRUE)
+  shinyjs::onclick("colLT", shinyjs::toggle(id = "filterThreshLT",
+                                                anim = FALSE), add = TRUE)
 
   filteringParams <- reactiveValues(params = list(), id_count = 0)
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
@@ -1238,27 +1242,20 @@ shinyServer(function(input, output, session) {
   observeEvent(input$filterColSelect, {
     # prep the modal - remove the threshold div and hide the categorical option
     shinyjs::hide("convertFilterType")
-    updateCheckboxInput(session, "convertToCat", value = F)
     removeUI(selector = "#newThresh")
+    removeUI(selector = "div:has(>> #convertToCat)")
     # check if column contains numerical values
     isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
     if (length(vals$counts[[input$filterColSelect]]) > 0) {
       if (isNum) {
-        minCol <- min(vals$counts[[input$filterColSelect]])
-        maxCol <- max(vals$counts[[input$filterColSelect]])
-        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minCol, maxCol)
-        insertUI(
-          selector = "#filterCriteria",
-          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
-        )
+        # (from partials) insertUI for choosing greater than and less than params
+        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
         # if less than 25 unique categories, give categorical option
         if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
-          if (is.null(input$convertToCat)) {
-            insertUI(
-              selector = "#convertFilterType",
-              ui = checkboxInput("convertToCat", "Convert to categorical filter?")
-            )
-          }
+          insertUI(
+            selector = "#convertFilterType",
+            ui = checkboxInput("convertToCat", "Convert to categorical filter?")
+          )
           shinyjs::show("convertFilterType")
         }
         
@@ -1293,13 +1290,10 @@ shinyServer(function(input, output, session) {
           )
         )
       } else {
-        minCol <- min(vals$counts[[input$filterColSelect]])
-        maxCol <- max(vals$counts[[input$filterColSelect]])
-        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minCol, maxCol)
-        insertUI(
-          selector = "#filterCriteria",
-          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
-        )
+        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
+        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+          shinyjs::show("convertFilterType")
+        }
       }
     }
   })
@@ -1318,17 +1312,44 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filtModalOK, {
-    if ((!nzchar(input$filterThresh)) || (is.null(input$filterColSelect))) {
+    if (is.null(input$filterThresh) && is.null(input$filterThreshGT) && is.null(input$filterThreshLT)) {
       showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
     } else {
       id <- paste0("filteringParam", filteringParams$id_count)
+      # figure out which options the user selected
+      criteriaGT <- NULL
+      criteriaLT <- NULL
+      categoricalCol = F
+      if (input$colGT) {
+        criteriaGT = input$filterThreshGT
+      }
+      if (input$colLT) {
+        criteriaLT = input$filterThreshLT
+      }
+      if (!is.null(input$convertToCat)) {
+        if (input$convertToCat==T) {
+          categoricalCol = T
+        }
+      }
       # new row in parameters table
-      addToColFilterParams(input$filterColSelect, input$filterThresh, id, filteringParams)
+      addToColFilterParams(name = input$filterColSelect, 
+                           categorial = categoricalCol, 
+                           criteria = input$filterThresh, 
+                           criteriaGT = criteriaGT, 
+                           criteriaLT = criteriaLT, 
+                           id = id, 
+                           paramsReactive = filteringParams)
       threshStr <- ""
-      if (is.numeric(input$filterThresh)) {
-        threshStr <- sprintf("> %.5f", input$filterThresh)
-      } else {
+      if (categoricalCol) {
         threshStr <- paste(input$filterThresh, collapse = ', ')
+      } else {
+        if (is.null(criteriaGT)) {
+          threshStr <- sprintf("< %.5f", input$filterThreshLT)
+        } else if (is.null(criteriaLT)) {
+          threshStr <- sprintf("> %.5f", input$filterThreshGT)
+        } else {
+          threshStr <- sprintf("> %.5f & < %.5f", input$filterThreshGT, input$filterThreshLT)
+        }
       }
 
       make3ColTableRow("#newFilteringParams", id, input$filterColSelect, threshStr)
