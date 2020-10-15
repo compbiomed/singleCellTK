@@ -100,7 +100,7 @@ description_runPerCellQC <- descriptionRunPerCellQC()
 plotsQCMetrics<-plotRunPerCellQCResults(sce.qc, 
                                         sample = colData(sce.qc)$sample, 
                                         combinePlot="none")
-#plotsQCMetrics <- formatPlotList(plotsQCMetrics, samples)
+plotsQCMetrics <- formatPlotList(plotsQCMetrics, samples)
 i="General quality control metrics"
 cat(paste0('# ', i, ' \n'))
 ```
@@ -115,32 +115,46 @@ cat(paste0('# ', i, ' \n'))
 `r description_runPerCellQC$subsets`
 
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+
 ```{r results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
-cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Sum
-cat("\n\n")
-cat(paste0('## Total {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Detected
-cat("\n\n")
-cat(paste0('## Subsets mito sum {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Sum
-cat("\n\n")
-cat(paste0('## Subsets mito detected {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Features
-cat("\n\n")
-cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
-cat("\n\n")
-cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
+for (sample in samples) {
+  cat(paste0("## ", sample, " {.tabset .tabset-fade} \n"))
+  cat("\n\n")
+  
+  cat(paste0('### Sum {.tabset .tabset-fade} \n\n'))
+  print(plotsQCMetrics$Sample[[sample]][["Sum"]])
+  cat("\n\n")
+  
+  cat(paste0('### Total {.tabset .tabset-fade} \n\n'))
+  print(plotsQCMetrics$Sample[[sample]][["Detected"]])
+  cat("\n\n")
+  
+  cat(paste0('### Subsets mito sum {.tabset .tabset-fade} \n\n'))
+  print(plotsQCMetrics$Sample[[sample]][["Gene_Subset_Sum"]])
+  cat("\n\n")
+  
+  cat(paste0('### Subsets mito detected {.tabset .tabset-fade} \n\n'))
+  print(plotsQCMetrics$Sample[[sample]][["Gene_Subset_Features"]])
+  cat("\n\n")
+  
+  cat(paste0('### Subsets mito percent {.tabset .tabset-fade} \n\n'))
+  print(plotsQCMetrics$Sample[[sample]][["Gene_Subset_Top50_Percent"]])
+  cat("\n\n")
 
-runPerCellMeta <- sce.qc@metadata$scater
-# if(length(samples) == 1) {runPerCellMeta <- list(runPerCellMeta)}
-# x <- preprocessMeta(runPerCellMeta[[1]]$addPerCellQC)
-x <- preprocessMeta(runPerCellMeta[[samples[1]]]$addPerCellQC)
-t(as.data.frame(x)) %>%
-  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
-  kableExtra::scroll_box(width = "80%")
+  cat("### Parameters {.tabset .tabset-fade} \n\n")
+  runPerCellMeta <- sce.qc@metadata$scater
+  # if(length(samples) == 1) {
+  #   runScrubletMeta <- list(runScrubletMeta)
+  #   names(runScrubletMeta) <- sample
+  # }
+    
+  x <- preprocessMeta(runPerCellMeta$addPerCellQC)
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat("\n\n")
+}
 ```
 `r cat("\n")`
 `r description_runPerCellQC$parameter`
@@ -199,7 +213,7 @@ for (sample in samples) {
   #   names(runScrubletMeta) <- sample
   # }
     
-  x <- preprocessMeta(runScrubletMeta[[sample]])
+  x <- preprocessMeta(runScrubletMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -271,7 +285,7 @@ for (sample in samples) {
     #   names(DoubletFinderMeta) <- sample
     # }
     
-    x <- preprocessMeta(DoubletFinderMeta[[sample]])
+    x <- preprocessMeta(DoubletFinderMeta)
     cat(t(as.data.frame(x)) %>%
       knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
       kableExtra::scroll_box(width = "80%"))
@@ -340,7 +354,7 @@ for (sample in samples){
   #   names(DoubletCellMeta) <- sample
   # }
   
-  x <- preprocessMeta(DoubletCellMeta[[sample]])
+  x <- preprocessMeta(DoubletCellMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -403,7 +417,7 @@ for (sample in samples){
   #   names(CxdsMeta) <- sample
   # }
   
-  x <- preprocessMeta(CxdsMeta[[sample]])
+  x <- preprocessMeta(CxdsMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -472,7 +486,7 @@ for (sample in samples){
   #   names(BcdsMeta) <- sample
   # }
   
-  x <- preprocessMeta(BcdsMeta[[sample]])
+  x <- preprocessMeta(BcdsMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -542,7 +556,7 @@ for (sample in samples){
   #   names(HybridMeta) <- sample
   # }
   
-  x <- preprocessMeta(HybridMeta[[sample]])
+  x <- preprocessMeta(HybridMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -610,7 +624,7 @@ for (sample in samples){
   #   names(DecontXMeta) <- sample
   # }
   
-  x <- preprocessMeta(DecontXMeta[[sample]])
+  x <- preprocessMeta(DecontXMeta)
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))

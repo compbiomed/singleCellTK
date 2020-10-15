@@ -205,7 +205,7 @@ plotRunPerCellQCResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
 
-    if(combinePlot == "sample" | length(samples) == 1){
+    if(combinePlot == "sample" | combinePlot == "none" | length(samples) == 1){
       violin.sum <- list(sum = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="sum",
@@ -268,6 +268,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.toppercent)
+      names(res.list) <- c("Sum", "Detected", "TopPercent")
 
       if (any(grepl(
         pattern="subsets_",
@@ -317,6 +318,8 @@ plotRunPerCellQCResults <- function(inSCE,
     if(combinePlot == "all"){
       plotlist <- c(merged.plots)
     }else if(combinePlot == "sample"){
+      plotlist <- c(merged.plots, list(Sample = plotlist))
+    }else if(combinePlot == "none"){
       plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {

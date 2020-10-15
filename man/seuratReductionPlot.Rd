@@ -25,3 +25,13 @@ plot object
 seuratReductionPlot
 Plots the selected dimensionality reduction method
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+seuratReductionPlot(sce, useReductionPlot = "pca")
+}
+}
