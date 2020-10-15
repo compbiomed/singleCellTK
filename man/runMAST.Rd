@@ -19,7 +19,8 @@ runMAST(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = 0.05,
-  overwrite = FALSE
+  overwrite = FALSE,
+  check_sanity = TRUE
 )
 }
 \arguments{
@@ -71,6 +72,9 @@ value. Default \code{0.05}}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}
+
+\item{check_sanity}{Logical scalar. Whether to perform MAST's sanity check
+to see if the counts are logged. Default \code{TRUE}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with

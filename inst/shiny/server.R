@@ -4830,17 +4830,24 @@ shinyServer(function(input, output, session) {
     }
   })
   # Threshold adapting plot
-  output$deThreshplot <- renderPlot({
+  observeEvent(input$deAssay, {
     if(!is.null(vals$counts)){
-      if(length(grep('log', input$deAssay, ignore.case = TRUE)) > 0){
-        thres <- thresholdGenes(inSCE = vals$counts,
-                                useAssay = input$deAssay)
-        par(mfrow = c(5, 4))
-        plot(thres)
-        par(mfrow = c(1, 1))
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, input$deAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnThresh <- renderText("")
+      } else {
+        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
       }
+      output$deThreshplot <- renderPlot({
+        plotMASTThresholdGenes(inSCE = vals$counts,
+                               useAssay = input$deAssay,
+                               check_sanity = FALSE)
+      }, height = 800)
     }
-  }, height = 800)
+  })
+
   # Data table
   output$deResult <- DT::renderDataTable({
     if(!is.null(input$deResSel)){
@@ -4881,15 +4888,26 @@ shinyServer(function(input, output, session) {
       useResult <- input$deResSel
       nrow <- input$deVioNRow
       ncol <- input$deVioNCol
+
+      useAssay <- metadata(vals$counts)$diffExp[[useResult]]$useAssay
       if(input$deVioLabel == "Default ID"){
         labelBy = NULL
       } else {
         labelBy = input$deVioLabel
       }
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, useAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnViolin <- renderText("")
+      } else {
+        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+      }
       output$deViolinPlot <- renderPlot({
         plotDEGViolin(inSCE = sce, useResult = useResult,
                       #threshP = input$deVioUseThresh,
-                      nrow = nrow, ncol = ncol, labelBy = labelBy)
+                      nrow = nrow, ncol = ncol, labelBy = labelBy,
+                      check_sanity = FALSE)
       })
     }
   })
@@ -4906,18 +4924,29 @@ shinyServer(function(input, output, session) {
       useResult <- input$deResSel
       nrow <- input$deRegNRow
       ncol <- input$deRegNCol
+      useAssay <- metadata(vals$counts)$diffExp[[useResult]]$useAssay
       if(input$deRegLabel == "Default ID"){
         labelBy = NULL
       } else {
         labelBy = input$deRegLabel
       }
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, useAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnReg <- renderText("")
+      } else {
+        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+      }
       output$deRegPlot <- renderPlot({
         plotDEGRegression(inSCE = sce, useResult = useResult,
                           #threshP = input$deVioUseThresh,
-                          nrow = nrow, ncol = ncol, labelBy = labelBy)
+                          nrow = nrow, ncol = ncol, labelBy = labelBy,
+                          check_sanity = FALSE)
       })
     }
   })
+
   # Heatmap
   output$deHMSplitColUI <- renderUI({
     otherAvail <- input$deHMcolData

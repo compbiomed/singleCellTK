@@ -23,19 +23,18 @@ reference:
   - title: Batch Correction
     contents:
     - plotBatchVariance
-    - ComBatSCE
     - plotSCEBatchFeatureMean
     - runComBat
     - runBBKNN
     - runHarmony
     - runLimmaBC
-    - runSeurat3Integration
     - runFastMNN
     - runLIGER
     - runMNNCorrect
     - runSCANORAMA
     - runSCMerge
     - runZINBWaVE
+    - seuratIntegration
   - title: Differential Expression
     contents:
     - runDESeq2

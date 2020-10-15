@@ -558,6 +558,8 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
+#' to see if the counts are logged. Default \code{TRUE}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -571,7 +573,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     classGroup2 = NULL, analysisName, groupName1,
                     groupName2, covariates = NULL, onlyPos = FALSE,
                     log2fcThreshold = NULL, fdrThreshold = 0.05,
-                    overwrite = FALSE){
+                    overwrite = FALSE, check_sanity = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -597,9 +599,12 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                        condition = as.factor(cond),
                        ngeneson = rep("", (length(cells1) + length(cells2))),
                        stringsAsFactors = FALSE)
-    covariateDat <- data.frame(SummarizedExperiment::colData(inSCE[,subsetIdx])[,covariates,drop = FALSE])
+    covariateDat <-
+      data.frame(SummarizedExperiment::colData(inSCE[,subsetIdx])[,
+                                                                  covariates,
+                                                                  drop = FALSE])
     cdat <- cbind(cdat, covariateDat)
-    sca <- MAST::FromMatrix(mat, cdat)
+    sca <- MAST::FromMatrix(mat, cdat, check_sanity = check_sanity)
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
     cond <- factor(SummarizedExperiment::colData(sca)$condition)

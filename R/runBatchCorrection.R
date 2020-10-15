@@ -34,14 +34,15 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
   }
   if(!reticulate::py_module_available(module = "bbknn")){
     warning("Cannot find python module 'bbknn', please install Conda and",
-            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
-            "If one of these have been previously run to install the modules,",
-            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
-            " respectively, if R has been restarted since the module installation.",
-            " Alternatively, bbknn can be installed on the local machine",
-            "with pip (e.g. pip install bbknn) and then the 'use_python()'",
-            " function from the 'reticulate' package can be used to select the",
-            " correct Python environment.")
+            " run sctkPythonInstallConda() or run ",
+            "sctkPythonInstallVirtualEnv(). If one of these have been ",
+            "previously run to install the modules, make sure to run ",
+            "selectSCTKConda() or selectSCTKVirtualEnvironment(),",
+            " respectively, if R has been restarted since the module ",
+            "installation. Alternatively, bbknn can be installed on the local ",
+            "machine with pip (e.g. pip install bbknn) and then the ",
+            "'use_python()' function from the 'reticulate' package can be used",
+            " to select the correct Python environment.")
     return(inSCE)
   }
   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
@@ -107,7 +108,8 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
     stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
   }
-  if(any(!c(batch, covariates) %in% names(SummarizedExperiment::colData(inSCE)))){
+  if(any(!c(batch, covariates) %in%
+         names(SummarizedExperiment::colData(inSCE)))){
     anns <- c(batch, covariates)
     notFound <- which(!anns %in% names(SummarizedExperiment::colData(inSCE)))
     notFound <- anns[notFound]
@@ -494,14 +496,15 @@ runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   }
   if(!reticulate::py_module_available(module = "scanorama")){
     warning("Cannot find python module 'scanorama', please install Conda and",
-            " run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv().",
-            "If one of these have been previously run to install the modules,",
-            "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
-            " respectively, if R has been restarted since the module installation.",
-            " Alternatively, scanorama can be installed on the local machine",
-            "with pip (e.g. pip install scanorama) and then the 'use_python()'",
-            " function from the 'reticulate' package can be used to select the",
-            " correct Python environment.")
+            " run sctkPythonInstallConda() or run ",
+            "sctkPythonInstallVirtualEnv(). If one of these have been ",
+            "previously run to install the modules, make sure to run ",
+            "selectSCTKConda() or selectSCTKVirtualEnvironment(), ",
+            "respectively, if R has been restarted since the module ",
+            "installation. Alternatively, scanorama can be installed on the ",
+            "local machine with pip (e.g. pip install scanorama) and then the ",
+            "'use_python()' function from the 'reticulate' package can be used",
+            " to select the correct Python environment.")
     return(inSCE)
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
