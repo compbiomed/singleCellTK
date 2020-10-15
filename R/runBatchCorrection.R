@@ -333,9 +333,8 @@ runLIGER <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   ## Run algorithm
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   batches <- unique(batchCol)
-  nBatch <- length(batches)
   batchMatrices <- list()
-  for(i in 1:nBatch){
+  for(i in seq_along(batches)){
     b <- batches[i]
     batchMatrices[[b]] <-
       SummarizedExperiment::assay(inSCE, useAssay)[,batchCol == b]
@@ -624,7 +623,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
     # If kmeansK not given, detect by cell type.
     cellTypeCol <- SummarizedExperiment::colData(inSCE)[[cellType]]
     kmeansK <- c()
-    for (i in 1:length(uniqBatch)){
+    for (i in seq_along(uniqBatch)){
       cellTypePerBatch <- cellTypeCol[batchCol == uniqBatch[i]]
       kmeansK <- c(kmeansK, length(unique(cellTypePerBatch)))
     }
@@ -637,7 +636,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
     seg <- scMerge::scSEGIndex(SummarizedExperiment::assay(inSCE, useAssay),
                                cell_type = cellTypeCol,
                                BPPARAM = bpParam)
-    ctl <- rownames(seg[order(seg$segIdx, decreasing = TRUE)[1:1000],])
+    ctl <- rownames(seg[order(seg$segIdx, decreasing = TRUE)[seq_len(1000)],])
   } else {
     ctl <- seg
   }
@@ -718,7 +717,7 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     vars <- matrixStats::rowVars(logAssay)
     names(vars) <- rownames(inSCE)
     vars <- sort(vars, decreasing = TRUE)
-    tmpSCE <- inSCE[names(vars)[1:nHVG],]
+    tmpSCE <- inSCE[names(vars)[seq_len(nHVG)],]
   }
   epsilon <- min(nrow(inSCE), epsilon)
   tmpSCE <- zinbwave::zinbwave(tmpSCE, K = nComponents, epsilon = epsilon,

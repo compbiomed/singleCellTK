@@ -131,7 +131,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     })
   } else if (palette == "ggplot") {
     hues <- seq(15, 375, length = n + 1)
-    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
+    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[seq_len(n)]
   } else if (palette == "celda") {
     colors <- distinctColors(n, ...)
   } else {
@@ -170,7 +170,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   chuN <- ceiling(dimN[2]/chuS) # number of chunks
   Mat <- list()
 
-  for (i in 1:chuN) {
+  for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
@@ -204,8 +204,7 @@ featureNameDedup <- function(countmat){
         for (genename in gene.duplicates.names){
             genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
             indices <- which(grepl(genename, rownames(countmat)))
-            num <- length(indices)
-            for (i in 1:num){
+            for (i in seq_along(indices)){
                 rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
             }
         }
@@ -323,7 +322,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
     data <- list()
     data$data_type <- list()
     data$df <- df
-    for (i in 1:length(colnames(data$df))) {
+    for (i in seq_along(colnames(data$df))) {
       data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]), is.factor(data$df[,i]))
     }
     data$df <- .convertFactorToCharacter(df)

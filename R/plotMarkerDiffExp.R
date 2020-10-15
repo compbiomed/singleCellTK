@@ -87,7 +87,8 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
-    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
+    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
+            colnames(degFull)[seq_len(4)])){
         stop('"findMarker" result cannot be interpreted properly')
     }
     if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
@@ -119,7 +120,7 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         deg.cluster <- degFull[degFull[[clusterName]] == c,]
         deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC, decreasing = TRUE),]
         if (dim(deg.cluster)[1] > topN) {
-          deg.cluster <- deg.cluster[1:topN,]
+          deg.cluster <- deg.cluster[seq_len(topN),]
         }
         selected <- c(selected, deg.cluster$Gene)
       }

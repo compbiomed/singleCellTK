@@ -38,10 +38,10 @@ getTopHVG <- function(inSCE, method, n = 2000) {
             varianceColumnName = "scran_modelGeneVar_bio"
         }
         tempDataFrame <- data.frame(
-            featureNames = rownames(inSCE), 
+            featureNames = rownames(inSCE),
             variance = rowData(inSCE)[varianceColumnName])
         tempDataFrame <- tempDataFrame[order(-tempDataFrame[varianceColumnName]),]
-        topGenes <- as.character(tempDataFrame$featureNames[1:n])
+        topGenes <- as.character(tempDataFrame$featureNames[seq_len(n)])
     }
     else if (method == "mean.var.plot") {
         if (is.null(rowData(inSCE)$seurat_variableFeatures_mvp_mean)
@@ -51,14 +51,14 @@ getTopHVG <- function(inSCE, method, n = 2000) {
                     input sce object. Run Seurat feature selection with 'mean.var.plot' method before using this function!")
         }
         tempDataFrame <- data.frame(
-            featureNames = rownames(inSCE), 
-            mean = rowData(inSCE)$seurat_variableFeatures_mvp_mean, 
-            disp = rowData(inSCE)$seurat_variableFeatures_mvp_dispersion, 
+            featureNames = rownames(inSCE),
+            mean = rowData(inSCE)$seurat_variableFeatures_mvp_mean,
+            disp = rowData(inSCE)$seurat_variableFeatures_mvp_dispersion,
             dispScaled = rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled)
         tempDataFrame <- tempDataFrame[order(-tempDataFrame$disp),]
         means.use <- (tempDataFrame[, "mean"] > 0.1) & (tempDataFrame[, "mean"] < 8)
         dispersions.use <- (tempDataFrame[, "dispScaled"] > 1) & (tempDataFrame[, "dispScaled"] < Inf)
-        topGenes <- as.character(tempDataFrame$featureNames[which(x = means.use & dispersions.use)])[1:n]
+        topGenes <- as.character(tempDataFrame$featureNames[which(x = means.use & dispersions.use)])[seq_len(n)]
     }
     return(topGenes)
 }
