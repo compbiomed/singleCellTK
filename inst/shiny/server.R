@@ -831,6 +831,9 @@ shinyServer(function(input, output, session) {
   # Event handler for "Upload" button on import page
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
+      if (length(allImportEntries$samples) == 0) {
+        stop("You have not selected any samples to import.")
+      }
       sceObj <- importMultipleSources(allImportEntries)
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
@@ -1127,7 +1130,7 @@ shinyServer(function(input, output, session) {
         )
         useAssay <- input$qcAssaySelect
         qcSample <- colData(vals$original)[,input$qcSampleSelect]
-        if (qcSample == "None") {
+        if (length(qcSample)==1 && qcSample == "None") {
           qcSample <- NULL
         }
         algoList = list()
@@ -1177,10 +1180,16 @@ shinyServer(function(input, output, session) {
           vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
+                                 nNeighbors = input$UnNeighbors,
+                                 nIterations = input$UnIterations,
+                                 alpha = input$Ualpha,
+                                 minDist = input$UminDist,
+                                 spread = input$Uspread,
+                                 initialDims = input$UinitialDims
           )
         }
         updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
-        shinyjs::show(id = "qcPlotSection", anim = FALSE)
+        # shinyjs::show(id = "qcPlotSection", anim = FALSE)
       }
     })
   }))
@@ -1202,10 +1211,10 @@ shinyServer(function(input, output, session) {
         }
       }
       # only run getUMAP if there are no reducedDimNames
-      redDimName <- input$qcPlotRedDim
+      # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
+      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
       uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")

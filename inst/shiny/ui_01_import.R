@@ -261,7 +261,7 @@ shinyPanelImport <- fluidPage(
     ),
     tags$hr(),
     wellPanel(
-      h4("Current Samples:"),
+      h4("Samples to Import:"),
       fluidRow(
         column(3, tags$b("Type")),
         column(3, tags$b("Location")),
@@ -277,7 +277,7 @@ shinyPanelImport <- fluidPage(
                                                  "Overwrite existing SCE object" = "overwriteSCE")
     ),
     withBusyIndicatorUI(
-      actionButton("uploadData", "Upload")
+      actionButton("uploadData", "Import")
     ),
     
     tags$div(

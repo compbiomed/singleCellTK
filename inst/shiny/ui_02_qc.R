@@ -164,6 +164,16 @@ shinyPanelQC <- fluidPage(
           selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select variable containing sample labels", list()),
           
+          tags$hr(), # UMAP params
+          h4("UMAP Parameters"),
+          numericInput("UnNeighbors", "Size of local neighborhood used for manifold approximation (default 30)", 30),
+          numericInput("UnIterations", "Number of iterations performed during layout optimization (default 200)", 200),
+          numericInput("Ualpha", 'Initial value of "learning rate" (default 1)', 1),
+          numericInput("UminDist", "Effective minimum distance between embedded points (default 0.01)", 0.01),
+          numericInput("Uspread", "Effective scale of embedded points (default 1)", 1),
+          numericInput("UinitialDims", "Number of dimensions from PCA to use as input (default 25)", 25),
+          
+          
           withBusyIndicatorUI(actionButton("runQC", "Run")),
           tags$div(id = "qcPageErrors"),
         ),
