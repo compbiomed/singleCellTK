@@ -39,7 +39,7 @@ Default \code{"rownames"}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link[SummarizedExperiment]{metadata} slot.
+\link[S4Vectors]{metadata} slot.
 }
 \description{
 Converts a list of gene sets into a

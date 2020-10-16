@@ -42,7 +42,7 @@ Default \code{"rownames"}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link[SummarizedExperiment]{metadata} slot.
+\link[S4Vectors]{metadata} slot.
 }
 \description{
 Gets a list of MSigDB gene sets stores it in the metadata of the
