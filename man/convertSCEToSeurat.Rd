@@ -19,7 +19,7 @@ convertSCEToSeurat(
 
 \item{normAssay}{Which assay to use from sce object for normalized data. Default \code{NULL}.}
 
-\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}.}
+\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}}
 }
 \value{
 Updated seurat object that contains all data from the input sce object
@@ -27,4 +27,8 @@ Updated seurat object that contains all data from the input sce object
 \description{
 convertSCEToSeurat
 Converts sce object to seurat while retaining all assays and metadata
+}
+\examples{
+data(scExample, package = "singleCellTK")
+seurat <- convertSCEToSeurat(sce)
 }

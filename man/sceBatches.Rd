@@ -6,7 +6,7 @@
 \title{Example Single Cell RNA-Seq data in SingleCellExperiment object, with
 different batches annotated}
 \format{
-An object of class \code{SingleCellExperiment} with 400 rows and 500 columns.
+An object of class \code{SingleCellExperiment} with 100 rows and 250 columns.
 }
 \usage{
 sceBatches

@@ -130,6 +130,9 @@ the relative heights for each plot.}
 \item{sampleRelWidths}{If there are multiple samples and combining by "all",
 the relative widths for each plot.}
 }
+\value{
+list of .ggplot objects
+}
 \description{
 A wrapper function which visualizes outputs from the
  runScrublet function stored in the colData slot of the SingleCellExperiment
@@ -137,7 +140,7 @@ A wrapper function which visualizes outputs from the
 }
 \examples{
 data(scExample, package="singleCellTK")
-sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runScrublet(sce)
 plotScrubletResults(inSCE=sce, reducedDimName="UMAP")

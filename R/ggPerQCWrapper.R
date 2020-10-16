@@ -39,10 +39,11 @@
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
-#' \donttest{
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' \dontrun{
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE=sce)
@@ -205,7 +206,7 @@ plotRunPerCellQCResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
 
-    if(combinePlot == "sample" | length(samples) == 1){
+    if(combinePlot == "sample" | combinePlot == "none" | length(samples) == 1){
       violin.sum <- list(sum = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="sum",
@@ -268,6 +269,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.toppercent)
+      names(res.list) <- c("Sum", "Detected", "TopPercent")
 
       if (any(grepl(
         pattern="subsets_",
@@ -317,6 +319,8 @@ plotRunPerCellQCResults <- function(inSCE,
     if(combinePlot == "all"){
       plotlist <- c(merged.plots)
     }else if(combinePlot == "sample"){
+      plotlist <- c(merged.plots, list(Sample = plotlist))
+    }else if(combinePlot == "none"){
       plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {
@@ -371,6 +375,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -435,6 +440,7 @@ plotEmptyDropsResults <- function(inSCE,
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE=sce)
@@ -522,9 +528,10 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
@@ -790,9 +797,10 @@ plotScrubletResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletFinder(sce)
 #' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
@@ -883,12 +891,13 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(merged.plots) <- sapply(df.scores, function(x) {
+    names(merged.plots) <- vapply(df.scores, function(x) {
       paste0("Violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
+
     # merged.plots <- list(merged.plots)
     merged.plots <- list(Violin = merged.plots)
   }
@@ -921,12 +930,12 @@ plotDoubletFinderResults <- function(inSCE,
             )
         )
     })
-    names(densityScore) <- sapply(df.scores, function(x) {
+    names(densityScore) <- vapply(df.scores, function(x) {
         paste0("Density_", gsub(
             pattern="doubletFinder_doublet_score_",
             "", x=x
         ))
-    })
+    }, character(1))
     res.list <- c(res.list, densityScore)
 
     scatterScore <- lapply(df.scores, function(x) {
@@ -964,12 +973,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterScore) <- sapply(df.scores, function(x) {
+    names(scatterScore) <- vapply(df.scores, function(x) {
       paste0("Scatter_Score_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterScore)
 
     if(combinePlot != "all" | length(samples) == 1){
@@ -1002,12 +1011,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(violinScore) <- sapply(df.scores, function(x) {
+    names(violinScore) <- vapply(df.scores, function(x) {
       paste0("violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, violinScore)
     }
 
@@ -1048,12 +1057,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterCall) <- sapply(df.labels, function(x) {
+    names(scatterCall) <- vapply(df.labels, function(x) {
       paste0("Scatter_Call_", gsub(
         pattern="doubletFinder_doublet_label_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterCall)
     return(res.list)
   })
@@ -1141,9 +1150,10 @@ plotDoubletFinderResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletCells(sce)
 #' plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1388,9 +1398,10 @@ plotDoubletCellsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxds(sce)
 #' plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1657,9 +1668,10 @@ plotCxdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runBcds(sce)
 #' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1927,9 +1939,10 @@ plotBcdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxdsBcdsHybrid(sce)
 #' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
@@ -2195,9 +2208,10 @@ plotScdsHybridResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
 #' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")

@@ -58,6 +58,9 @@ the relative heights for each plot.}
 the relative widths for each plot.
 Default TRUE.}
 }
+\value{
+a ggplot object of the scatter plot.
+}
 \description{
 A plotting function which visualizes outputs from the
  runBarcodeRankDrops function stored in the colData slot of the SingleCellExperiment

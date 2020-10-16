@@ -21,8 +21,8 @@
 #' @export
 #' @references Lun ATL, et al., 2016
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 #' }
 runFastMNN <- function(inSCE, useAssay = "logcounts",

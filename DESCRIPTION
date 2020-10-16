@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.7.6
+Version: 2.0.0
 Author: David Jenkins
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut","cre"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
@@ -49,10 +49,8 @@ Imports:
     gridExtra,
     GSVA (>= 1.26.0),
     GSVAdata,
-    harmony,
     igraph,
     KernSmooth,
-    liger,
     limma,
     MAST,
     Matrix,
@@ -70,7 +68,6 @@ Imports:
     scran,
     Seurat (>= 3.1.3),
     shiny,
-    shinyDirectoryInput,
     shinyFiles,
     shinyWidgets,
     shinyjs,
@@ -111,11 +108,10 @@ Suggests:
     xtable,
     spelling,
     org.Mm.eg.db,
-    stringr
-Remotes: 
-    joshua-d-campbell/harmony,
-    joshua-d-campbell/liger,
-    joshua-d-campbell/shiny-directory-input,
+    stringr,
+    harmony,
+    liger,
+    shinyDirectoryInput
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

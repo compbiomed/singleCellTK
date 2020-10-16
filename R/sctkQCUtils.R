@@ -9,6 +9,12 @@
 #' @param directory Output directory. Default is './'.
 #' @param format The format of output. It currently supports flat files, rds files
 #' and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").
+#' @return NULL. Export SCE to output files. 
+#' @examples
+#' data(scExample)
+#' \dontrun{
+#' exportSCE(sce, format = "SCE")
+#' }
 #' @export
 exportSCE <- function(inSCE,
                       samplename = "sample",
@@ -73,6 +79,10 @@ exportSCE <- function(inSCE,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' generateMeta(sce, dir = ".", samplename = "Sample",
+#'  HTAN = TRUE)
 #' @importFrom SummarizedExperiment assay colData
 generateMeta <- function(dropletSCE = NULL,
                           cellSCE = NULL,
@@ -184,6 +194,7 @@ generateMeta <- function(dropletSCE = NULL,
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.
 #' @param writeYAML Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 #' return character object.
+#' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
                          skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"),

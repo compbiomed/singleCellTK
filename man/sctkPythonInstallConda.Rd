@@ -37,6 +37,9 @@ to install via pip due to compilation requirements).}
 
 \item{...}{Other parameters to pass to \code{\link[reticulate]{conda_install}}.}
 }
+\value{
+None. Installation of Conda environment.
+}
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package
 using \code{\link[reticulate]{conda_install}} from package \code{\link{reticulate}}. This

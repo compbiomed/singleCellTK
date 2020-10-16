@@ -31,8 +31,8 @@ the full droplet count matrix with the output from runDropletQC function}
 A  function to generate .html Rmarkdown report containing the visualizations of the runDropletQC function output
 }
 \examples{
-\dontrun{
 data(scExample, package = "singleCellTK")
+\dontrun{
 sce <- runDropletQC(sce)
 reportDropletQC(inSCE = sce)
 }

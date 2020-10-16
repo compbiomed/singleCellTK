@@ -8,7 +8,6 @@
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-#' print(head(rowData(sce_chcl)))
 #' @importFrom SummarizedExperiment assay rowData rowData<-
 scran_modelGeneVar <- function(inSCE, assayName) {
     tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, assayName)))

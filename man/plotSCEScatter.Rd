@@ -131,11 +131,9 @@ Plot results of reduced dimensions data of counts stored in any
 slot in the SingleCellExperiment object.
 }
 \examples{
-\donttest{
 plotSCEScatter(
   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
   slot = "assays", annotation = "counts", feature = "Apoe",
   reducedDimName = "TSNE_counts", labelClusters = FALSE
 )
-}
 }

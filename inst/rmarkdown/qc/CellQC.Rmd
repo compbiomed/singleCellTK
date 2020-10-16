@@ -354,6 +354,12 @@ description_DoubletCells<- descriptionDoubletCells()
 ```
 
 ```{r, "DoubletCells", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, 
+                                                            reducedDimName=reduceDimUsed,
+                                                            sample = colData(sce.qc)[['sample']],
+                                                            combinePlot = "none"))
+plotDoubletCells <- formatPlotList(plotDoubletCells, samples)
+
 i="DoubletCells"
 cat(paste0('## ', i, ' \n'))
 
