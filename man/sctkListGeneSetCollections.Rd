@@ -9,6 +9,9 @@ sctkListGeneSetCollections(inSCE)
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 }
+\value{
+Character vector.
+}
 \description{
 Returns a vector of GeneSetCollections that have been
 imported and stored in \code{metadata(inSCE)$sctk$genesets}.

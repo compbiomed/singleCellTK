@@ -21,6 +21,9 @@ sctkPythonInstallVirtualEnv(
 
 \item{python}{The path to a Python interpreter, to be used with the created virtual environment. When NULL, the Python interpreter associated with the current session will be used. Default NULL.}
 }
+\value{
+None. Installation of virtual environment.
+}
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package
 using \code{\link[reticulate]{virtualenv_install}} from package \code{\link{reticulate}}. This

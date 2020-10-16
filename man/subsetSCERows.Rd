@@ -29,14 +29,14 @@ for subsetting. Default \code{NULL}.}
 \item{rowData}{Character. An expression that will identify a subset of rows
 using variables found in the \code{rowData} of \code{inSCE}. For example,
 if \code{x} is a numeric vector in \code{rowData}, then \code{"x < 5"} will
-return all rows with x less than 5. Single quotes should be used for 
+return all rows with x less than 5. Single quotes should be used for
 character strings. For example, \code{"y == 'yes'"} will return all
 rows where y is "yes". Multiple expressions can be evaluated by placing them
 in a vector. For example \code{c("x < 5", "y =='yes'")} will apply both
 operations for subsetting. If \code{NULL}, this will not be used for
 subsetting. Default \code{NULL}.}
 
-\item{returnAsAltExp}{Boolean. If \code{TRUE}, the subsetted 
+\item{returnAsAltExp}{Boolean. If \code{TRUE}, the subsetted
 \linkS4class{SingleCellExperiment} object will be returned in the
 \code{altExp} slot of \code{inSCE}. If \code{FALSE}, the subsetted
 \linkS4class{SingleCellExperiment} object will be directly returned.}
@@ -47,6 +47,10 @@ add if \code{returnAsAltExp = TRUE}. Default \code{subset}.}
 \item{prependAltExpName}{Boolean. If \code{TRUE}, \code{altExpName} will
 be added to the beginning of the assay names in the \code{altExp} object.
 This is only utilized if \code{returnAsAltExp = TRUE}. Default \code{TRUE}.}
+}
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object that has
+been subsetted by rowData.
 }
 \description{
 Used to peform subsetting of a
@@ -64,7 +68,7 @@ data(scExample)
 # Set a variable up in the rowData indicating mitochondrial genes
 rowData(sce)$isMito <- ifelse(grepl("^MT-", rowData(sce)$feature_name),
                               "yes", "no")
-sce <- subsetSCERows(sce, rowData = "isMito == 'yes'")                          
+sce <- subsetSCERows(sce, rowData = "isMito == 'yes'")
 }
 \author{
 Joshua D. Campbell

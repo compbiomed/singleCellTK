@@ -27,6 +27,9 @@ gzip compressed. \code{FALSE} otherwise. Default
 
 \item{sample}{Name of the sample. It will be used as the prefix of file names.}
 }
+\value{
+Generates text files containing data from \code{inSCE}.
+}
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 \link[SingleCellExperiment]{SingleCellExperiment} to text files.
