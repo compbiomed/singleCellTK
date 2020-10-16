@@ -129,7 +129,8 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "DESeq2")
 #' @return Input SCE object with \code{metadata(inSCE)} updated with name
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
 #' functions.
@@ -192,7 +193,8 @@ runDEAnalysis <- function(method = 'MAST', ...){
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "DESeq2")
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "DESeq2")
 #'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
@@ -321,7 +323,8 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' library(scater)
 #' sce <- logNormCounts(sce)
 #' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "Limma")
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "Limma")
 #'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
@@ -593,7 +596,8 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' logcounts(sce) <- log(counts(sce) + 1)
 #' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "MAST")
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "MAST")
 #'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
