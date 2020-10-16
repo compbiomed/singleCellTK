@@ -97,6 +97,7 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 logcounts(sce) <- log(counts(sce) + 1)
 sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "MAST")
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ analysisName = "MAST")
 
 }
