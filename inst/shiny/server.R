@@ -5,6 +5,7 @@ options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
+source("shinyDirectoryInput.R", local = TRUE) # shinyDirectoryInput source code
 # R.utils::sourceDirectory("qc_help_pages")
 source("qc_help_pages/ui_decontX_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_help.R", local = TRUE) # creates several smaller UI components
@@ -256,8 +257,6 @@ shinyServer(function(input, output, session) {
 
   # Components for uploading directories if user is importing from a preprocessing step
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
-  shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  shinyFiles::shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
 
   sample <- reactive(input$sample)
   output$sample <- renderText({
@@ -268,14 +267,8 @@ shinyServer(function(input, output, session) {
     shinyFiles::parseFilePaths(volumes, sampleFile())$datapath
   })
   output$base = renderText({
-    shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    readDirectoryInput(session, 'directory')
   })
-  importCR2Files <- reactiveValues(files = list(), id_count = 0)
-  importCR3Files <- reactiveValues(files = list(), id_count = 0)
-  importSSFiles <- reactiveValues(files = list(), id_count = 0)
-  importBUSFiles <- reactiveValues(files = list(), id_count = 0)
-  importSEQFiles <- reactiveValues(files = list(), id_count = 0)
-  importOptFiles <- reactiveValues(files = list(), id_count = 0)
 
   allImportEntries <- reactiveValues(samples=list(), id_count=0)
 
@@ -294,7 +287,7 @@ shinyServer(function(input, output, session) {
 
 
       h3("Base Directory"),
-      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      directoryInput('directory', label = 'Choose Directory', value = '~'),
 
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
@@ -331,7 +324,7 @@ shinyServer(function(input, output, session) {
   importCRSDir <- function(failed = FALSE) {
     modalDialog(
       h3("Sample Directory"),
-      shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
+      directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sSampleID", ""),
@@ -349,7 +342,7 @@ shinyServer(function(input, output, session) {
   importCRDDir <- function(failed = FALSE) {
     modalDialog(
       h3("Data Directory"),
-      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      directoryInput('directory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
 
       textInput("dSampleID", "*This field is mandatory when uploading a data directory"),
@@ -367,7 +360,7 @@ shinyServer(function(input, output, session) {
   importCRBDir <- function(failed = FALSE) {
     modalDialog(
       h3("Base Directory"),
-      shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
+      directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
       wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
 
       tags$div(id = "bDirTable"),
@@ -392,9 +385,9 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$directory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'directory'),
+        path = choose.dir(default = readDirectoryInput(session, 'directory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'directory', value = path)
+        updateDirectoryInput(session, 'directory', value = path)
       }
     }
   )
@@ -409,9 +402,9 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$sDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'sDirectory'),
+        path = choose.dir(default = readDirectoryInput(session, 'sDirectory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'sDirectory', value = path)
+        updateDirectoryInput(session, 'sDirectory', value = path)
         if (!is.na(path)) {
           updateTextInput(session, "sSampleID", value = basename(path))
         }
@@ -429,11 +422,11 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$bDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'bDirectory'),
+        path = choose.dir(default = readDirectoryInput(session, 'bDirectory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'bDirectory', value = path)
+        updateDirectoryInput(session, 'bDirectory', value = path)
         # clear the previous table of sample names
-        prevPath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+        prevPath <- readDirectoryInput(session, 'bDirectory')
         count <- 0
         for (prev in list.dirs(prevPath, recursive = FALSE)) {
           count <- count+1
@@ -506,7 +499,7 @@ shinyServer(function(input, output, session) {
   # event listeners for Cell Ranger import modals' OK buttons
   # sample directory
   observeEvent(input$SDirOK, {
-    samplePath <- shinyDirectoryInput::readDirectoryInput(session, 'sDirectory')
+    samplePath <- readDirectoryInput(session, 'sDirectory')
     # make sure a directory is selected
     if (identical(samplePath, character(0))) {
       showModal(importCRSDir(failed = TRUE))
@@ -546,7 +539,7 @@ shinyServer(function(input, output, session) {
 
   # data directory
   observeEvent(input$DDirOK, {
-    dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    dataPath <- readDirectoryInput(session, 'directory')
     if ((!nzchar(input$dSampleID)) || (identical(dataPath, character(0)))) {
       showModal(importCRDDir(failed = TRUE))
     } else {
@@ -557,7 +550,7 @@ shinyServer(function(input, output, session) {
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
         id <- paste0("dnewSampleCR3", allImportEntries$id_count)
-        entry <- list(type-"cellRanger3", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type="cellRanger3", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       }
@@ -583,7 +576,7 @@ shinyServer(function(input, output, session) {
 
   # base directory
   observeEvent(input$BDirOK, {
-    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+    basePath <- readDirectoryInput(session, 'bDirectory')
     # if the user doesn't specify a base directory, show the modal again with the warning message
     if (identical(basePath, character(0))) {
       showModal(importCRBDir(failed = TRUE))
@@ -662,7 +655,6 @@ shinyServer(function(input, output, session) {
               selector = paste0("#", id_i)
             )
               toRemove <- vector()
-              print(allImportEntries$samples)
               for (entry in allImportEntries$samples) {
                 if (entry$id == id_i) {
                   toRemove <- c(toRemove, FALSE)
@@ -681,7 +673,7 @@ shinyServer(function(input, output, session) {
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
     samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
-    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    basePath <- readDirectoryInput(session, 'directory')
     curFiles <- list()
     if ((!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
       showModal(importModal(failed = TRUE))
@@ -6829,8 +6821,8 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$outputDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path <<- shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'outputDirectory'))
-        shinyDirectoryInput::updateDirectoryInput(session, 'outputDirectory', value = path)
+        path <<- choose.dir(default = readDirectoryInput(session, 'outputDirectory'))
+        updateDirectoryInput(session, 'outputDirectory', value = path)
       }
     }
   )
