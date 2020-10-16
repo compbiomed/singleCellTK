@@ -41,7 +41,7 @@
 #'  the relative widths for each plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' \donttest{
+#' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)

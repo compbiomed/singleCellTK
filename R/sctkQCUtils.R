@@ -9,8 +9,11 @@
 #' @param directory Output directory. Default is './'.
 #' @param format The format of output. It currently supports flat files, rds files
 #' and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").
-#' @examples
-#' exportSCE(mouseBrainSubsetSCE, format = "SCE")
+#' @example
+#' data(scExample)
+#' \dontrun{
+#' exportSCE(sce, format = "SCE")
+#' }
 #' @export
 exportSCE <- function(inSCE,
                       samplename = "sample",

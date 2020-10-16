@@ -20,8 +20,9 @@
 #' Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.
 #' @examples
 #' data(sce_chcl, package = "scds")
+#' \dontrun{
 #' exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-#'
+#' }
 #' @export
 exportSCEtoAnnData <- function(sce,
                                 useAssay = 'counts',

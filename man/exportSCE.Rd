@@ -31,6 +31,3 @@ and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData"
 \description{
 Export data in SingleCellExperiment object
 }
-\examples{
-exportSCE(mouseBrainSubsetSCE, format = "SCE")
-}

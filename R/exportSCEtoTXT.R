@@ -13,8 +13,9 @@
 #' @param sample Name of the sample. It will be used as the prefix of file names.
 #' @examples
 #' data(sce_chcl, package = "scds")
+#' \dontrun{
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-#'
+#' }
 #' @export
 #' @importFrom SummarizedExperiment colData rowData
 exportSCEtoFlatFile <- function(sce,
