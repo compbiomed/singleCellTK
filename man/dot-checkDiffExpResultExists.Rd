@@ -17,6 +17,9 @@ used when running a differential expression analysis function.}
 \item{labelBy}{A single character for a column of \code{rowData(inSCE)} as
 where to search for the labeling text. Default \code{NULL}.}
 }
+\value{
+Stop point if found
+}
 \description{
 Check if the specified MAST result in SingleCellExperiment object is
 complete. But does not garantee the biological correctness.

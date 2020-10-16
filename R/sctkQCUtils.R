@@ -9,8 +9,12 @@
 #' @param directory Output directory. Default is './'.
 #' @param format The format of output. It currently supports flat files, rds files
 #' and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").
-#' @examples
-#' exportSCE(mouseBrainSubsetSCE, format = "SCE")
+#' @return Generates a file containing data from \code{inSCE}, in specified \code{format}.
+#' @example
+#' data(scExample)
+#' \dontrun{
+#' exportSCE(sce, format = "SCE")
+#' }
 #' @export
 exportSCE <- function(inSCE,
                       samplename = "sample",
@@ -190,6 +194,7 @@ generateMeta <- function(dropletSCE = NULL,
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.
 #' @param writeYAML Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 #' return character object.
+#' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
                          skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"),

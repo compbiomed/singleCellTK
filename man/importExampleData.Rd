@@ -18,6 +18,9 @@ will store the data as a sparse matrix from package \link{Matrix} while
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.}
 }
+\value{
+The specified \link[SingleCellExperiment]{SingleCellExperiment} object.
+}
 \description{
 Retrieves published example datasets stored in
 \link[SingleCellExperiment]{SingleCellExperiment} using the

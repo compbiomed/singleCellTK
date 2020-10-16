@@ -6,6 +6,9 @@
 \usage{
 getMSigDBTable()
 }
+\value{
+data.frame, containing MSigDB categories
+}
 \description{
 Returns a data.frame that shows MSigDB categories and
 subcategories as well as descriptions for each. The entries in the ID

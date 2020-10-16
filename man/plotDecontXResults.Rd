@@ -130,6 +130,9 @@ the relative heights for each plot.}
 \item{sampleRelWidths}{If there are multiple samples and combining by "all",
 the relative widths for each plot.}
 }
+\value{
+list of .ggplot objects
+}
 \description{
 A wrapper function which visualizes outputs from the
  runDecontX function stored in the colData slot of the

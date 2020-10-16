@@ -68,7 +68,6 @@ Imports:
     scran,
     Seurat (>= 3.1.3),
     shiny,
-    shinyDirectoryInput,
     shinyFiles,
     shinyWidgets,
     shinyjs,
@@ -111,9 +110,8 @@ Suggests:
     org.Mm.eg.db,
     stringr,
     harmony,
-    liger
-Remotes: 
-    joshua-d-campbell/shiny-directory-input,
+    liger,
+    shinyDirectoryInput
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
