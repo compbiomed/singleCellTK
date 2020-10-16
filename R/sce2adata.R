@@ -37,7 +37,7 @@
     # }
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
     if(length(obsmNames) > 0){
-        for (i in 1:length(obsmNames)) {
+        for (i in seq_along(obsmNames)) {
             AnnData$obsm$'__setitem__'(obsmNames[i],
                                        SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
         }
@@ -45,7 +45,7 @@
 
     # Furthermore, the other assays will for now also be saved to .layers
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
-    for (i in 1:length(allAssayNames)) {
+    for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
             AnnData$layers$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
