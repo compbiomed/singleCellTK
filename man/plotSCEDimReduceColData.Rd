@@ -122,7 +122,7 @@ Default FALSE.}
 as the labels. If set to "none", no label will be plotted.}
 }
 \value{
-a ggplot of the reduced dimensions.
+a ggplot of the reduced dimension plot of coldata.
 }
 \description{
 Plot results of reduced dimensions data and

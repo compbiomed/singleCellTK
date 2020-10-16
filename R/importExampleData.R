@@ -37,6 +37,7 @@
 #'  68,579 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.}
 #' }
 #' @author Joshua D. Campbell, David Jenkins
+#' @return The specified \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @examples
 #' sce <- importExampleData("pbmc3k")
 #' @export

@@ -39,6 +39,11 @@ Default \code{"rownames"}.}
 
 \item{sep}{Character. Delimiter of the GMT file. Default \code{"\t"}.}
 }
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object
+ with gene set from \code{collectionName} output stored to the
+ \link[S4Vectors]{metadata} slot.
+}
 \description{
 Converts a list of gene sets stored in a GMT file into a
 \linkS4class{GeneSetCollection} and stores it in the metadata of the

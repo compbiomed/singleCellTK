@@ -193,6 +193,7 @@ generateMeta <- function(dropletSCE = NULL,
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.
 #' @param writeYAML Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 #' return character object.
+#' @return If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 #' @export
 getSceParams <- function(inSCE,
                          skip = c("scrublet", "runDecontX","runBarcodeRanksMetaOutput"),

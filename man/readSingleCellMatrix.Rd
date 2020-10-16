@@ -33,6 +33,9 @@ Default \code{NULL}.}
 feature (gene) index .npy file. Used only if \code{file} has .npz extension.
 Default \code{NULL}.}
 }
+\value{
+A \link[DelayedArray]{DelayedArray} object or matrix.
+}
 \description{
 Automatically detact the format of the input file and read
  the file.

@@ -87,6 +87,9 @@ violin plot. Options are "mean" or "median". Default NULL.}
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
 }
+\value{
+a ggplot of the violin plot.
+}
 \description{
 Visualizes values stored in any slot of a
  SingleCellExperiment object via a violin plot.
