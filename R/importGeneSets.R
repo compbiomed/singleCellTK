@@ -35,6 +35,9 @@
 #' \link{importGeneSetsFromCollection} for importing from
 #' \linkS4class{GeneSetCollection} objects, and
 #' \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#'  with gene set from \code{collectionName} output stored to the
+#'  \link[SummarizedExperiment]{metadata} slot.
 #' @examples
 #' data(scExample)
 #'
@@ -87,6 +90,9 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #' can point to different locations within \code{inSCE}. See
 #' \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#' with gene set from \code{collectionName} output stored to the
+#' \link[SummarizedExperiment]{metadata} slot.
 #' @details The gene identifiers in gene sets in \code{geneSetList} will be
 #' mapped to the rownames of \code{inSCE} using the \code{by} parameter and
 #' stored in a \linkS4class{GeneSetCollection} object from package
@@ -182,6 +188,9 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' in the \code{GeneSetCollection}.
 #' See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#' with gene set from \code{collectionName} output stored to the
+#' \link[SummarizedExperiment]{metadata} slot.
 #' @details The gene identifiers in gene sets in the
 #' \code{GeneSetCollection} will be mapped to the rownames of
 #' \code{inSCE} using the \code{by} parameter and
@@ -304,6 +313,9 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 #' of \code{inSCE}. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
 #' @param verbose Boolean. Whether to display progress. Default \code{TRUE}.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#' with gene set from \code{collectionName} output stored to the
+#' \link[SummarizedExperiment]{metadata} slot.
 #' @details The gene identifiers in gene sets from MSigDB will be retrieved
 #' using the \code{\link{msigdbr}} package. They will be mapped to the IDs in
 #' \code{inSCE} using the \code{by} parameter and
@@ -420,6 +432,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' @description Returns a vector of GeneSetCollections that have been
 #' imported and stored in \code{metadata(inSCE)$sctk$genesets}.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @return Character vector.
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromList} for importing from lists,
 #' \link{importGeneSetsFromGMT} for importing from GMT files,
@@ -456,6 +469,7 @@ sctkListGeneSetCollections <- function(inSCE) {
 #' @description Returns a data.frame that shows MSigDB categories and
 #' subcategories as well as descriptions for each. The entries in the ID
 #' column in this table can be used as input for \link{importGeneSetsFromMSigDB}.
+#' @return data.frame, containing MSigDB categories
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @export

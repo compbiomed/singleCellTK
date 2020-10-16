@@ -6,6 +6,7 @@
 #' used when running a differential expression analysis function.
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
 #' where to search for the labeling text. Default \code{NULL}.
+#' @return Stop point if found
 .checkDiffExpResultExists <- function(inSCE, useResult, labelBy = NULL){
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop('Given object is not a valid SingleCellExperiment object.')

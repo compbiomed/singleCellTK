@@ -28,6 +28,9 @@ It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).}
 \item{format}{The format of output. It currently supports flat files, rds files
 and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").}
 }
+\value{
+Generates a file containing data from \code{inSCE} as \code{format}.
+}
 \description{
 Export data in SingleCellExperiment object
 }

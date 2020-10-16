@@ -18,6 +18,7 @@
 #' @param compressionOpts Integer. Sets the compression level
 #' @param forceDense Default \code{False} Write sparse data as a dense matrix.
 #' Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.
+#' @return Generates a Python anndata object containing data from \code{inSCE}.
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoAnnData(sce=sce_chcl, compression="gzip")

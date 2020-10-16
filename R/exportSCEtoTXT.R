@@ -11,6 +11,7 @@
 #'  gzip compressed. \code{FALSE} otherwise. Default
 #'  \code{TRUE}.
 #' @param sample Name of the sample. It will be used as the prefix of file names.
+#' @return Generates text files containing data from \code{inSCE}.
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")

@@ -37,6 +37,11 @@ in the \code{GeneSetCollection}.
 See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
 }
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object
+with gene set from \code{collectionName} output stored to the
+\link[SummarizedExperiment]{metadata} slot.
+}
 \description{
 Converts a list of gene sets stored in a
 \linkS4class{GeneSetCollection} object and stores it in the metadata of the
