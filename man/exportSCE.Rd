@@ -29,7 +29,7 @@ It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).}
 and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").}
 }
 \value{
-Generates a file containing data from \code{inSCE} as \code{format}.
+Generates a file containing data from \code{inSCE}, in specified \code{format}.
 }
 \description{
 Export data in SingleCellExperiment object
