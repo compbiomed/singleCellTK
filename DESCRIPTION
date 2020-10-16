@@ -22,7 +22,6 @@ Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c(
              person(given=c("W.", "Evan"), family="Johnson", email="wej@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0002-6247-6595")),
              person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut")))
-Maintainer: David Jenkins <dfj@bu.edu>
 Depends:
     R (>= 4.0),
     SummarizedExperiment,
