@@ -34,6 +34,3 @@ Generates a file containing data from \code{inSCE} as \code{format}.
 \description{
 Export data in SingleCellExperiment object
 }
-\examples{
-exportSCE(mouseBrainSubsetSCE, format = "SCE")
-}

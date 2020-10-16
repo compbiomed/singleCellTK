@@ -50,6 +50,7 @@ overridden at function call.
 }
 \examples{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-
+}
 }

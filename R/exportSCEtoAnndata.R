@@ -21,8 +21,9 @@
 #' @return Generates a Python anndata object containing data from \code{inSCE}.
 #' @examples
 #' data(sce_chcl, package = "scds")
+#' \dontrun{
 #' exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-#'
+#' }
 #' @export
 exportSCEtoAnnData <- function(sce,
                                 useAssay = 'counts',

@@ -21,7 +21,7 @@
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' \donttest{
+#' \dontrun{
 #' sce <- runCellQC(sce)
 #' }
 #' @export
@@ -141,7 +141,7 @@ runCellQC <- function(inSCE,
 #' of \code{inSCE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' \donttest{
+#' \dontrun{
 #' sce <- runDropletQC(sce)
 #' }
 #' @export

@@ -38,7 +38,7 @@ empty droplets in single cell RNA-seq data
 }
 \examples{
 data(scExample, package = "singleCellTK")
-\donttest{
+\dontrun{
 sce <- runDropletQC(sce)
 }
 }
