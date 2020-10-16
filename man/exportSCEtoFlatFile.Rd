@@ -37,6 +37,7 @@ The items in the 'metadata' slot remain stored in list and are saved in an RDS f
 }
 \examples{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-
+}
 }

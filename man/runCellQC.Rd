@@ -55,7 +55,7 @@ A wrapper function to run several QC algorithms on a
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-\donttest{
+\dontrun{
 sce <- runCellQC(sce)
 }
 }

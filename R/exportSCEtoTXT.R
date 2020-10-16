@@ -14,8 +14,9 @@
 #' @return Generates text files containing data from \code{inSCE}.
 #' @examples
 #' data(sce_chcl, package = "scds")
+#' \dontrun{
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-#'
+#' }
 #' @export
 #' @importFrom SummarizedExperiment colData rowData
 exportSCEtoFlatFile <- function(sce,
