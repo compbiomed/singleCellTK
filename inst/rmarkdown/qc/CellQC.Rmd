@@ -111,7 +111,7 @@ if (skipCellData) {
   plotsQCMetrics<- tryCatch(
     {plotRunPerCellQCResults(sce.qc, 
                              sample = colData(sce.qc)$sample, 
-                             combinePlot="sample")},
+                             combinePlot="none")},
     error = function(e) {
       cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
       skipCellData <- TRUE
@@ -121,6 +121,10 @@ if (skipCellData) {
 }
 
 if (!skipCellData) {
+  
+  if (length(samples) == 1) {
+    plotsQCMetrics <- list(Violin=plotsQCMetrics)
+  }
   cat(description_runPerCellQC$introduction)
   cat(description_runPerCellQC$runPerCellQC)
   cat(description_runPerCellQC$plotRunPerCellQCResults)
@@ -154,8 +158,6 @@ cat("\n\n")
 cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
 
 runPerCellMeta <- sce.qc@metadata$scater
-# if(length(samples) == 1) {runPerCellMeta <- list(runPerCellMeta)}
-# x <- preprocessMeta(runPerCellMeta[[1]]$addPerCellQC)
 x <- preprocessMeta(runPerCellMeta[[samples[1]]]$addPerCellQC)
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
@@ -354,16 +356,10 @@ description_DoubletCells<- descriptionDoubletCells()
 ```
 
 ```{r, "DoubletCells", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
-plotDoubletCells<- suppressWarnings(plotDoubletCellsResults(inSCE = sce.qc, 
-                                                            reducedDimName=reduceDimUsed,
-                                                            sample = colData(sce.qc)[['sample']],
-                                                            combinePlot = "none"))
-plotDoubletCells <- formatPlotList(plotDoubletCells, samples)
-
 i="DoubletCells"
 cat(paste0('## ', i, ' \n'))
 
-doubletCellData <- c("scran_doubletCells_score")
+doubletCellData <- c("scran_doubletCells_score_log10")
 skipDoubletCell <- any(!doubletCellData %in% names(colData(sce.qc)))
 
 if (skipDoubletCell) {

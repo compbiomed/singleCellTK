@@ -95,6 +95,11 @@ if (skipRunEmpty) {
 }
 
 if(!skipRunEmpty) {
+  if(length(samples) == 1) {
+    plotsEmptyDrops$scatterEmptyDrops <- list(Sample = list(plotsEmptyDrops$scatterEmptyDrops))
+    names(plotsEmptyDrops$scatterEmptyDrops$Sample) <- samples
+  }
+
   cat(description_runEmptyDrops$introduction)
   cat(description_runEmptyDrops$runEmptyDrops)
   cat(description_runEmptyDrops$plotEmptyDropsResults)
@@ -112,7 +117,7 @@ for (i in seq_along(samples)) {
   cat("\n\n")
   
   cat("#### Total UMI counts vs Log-Probability \n")
-  print(plotsEmptyDrops$scatterEmptyDrops[[i]])
+  print(plotsEmptyDrops$scatterEmptyDrops$Sample[[i]])
   cat("\n\n")
   
   cat("#### Parameters \n\n")
@@ -165,7 +170,12 @@ if (skipBarcode) {
 }
 
 if(!skipBarcode) {
-  names(plotsBarcodeRank) <- samples
+  if(length(samples) == 1) {
+    plotsBarcodeRank <- list(Sample = list(plotsBarcodeRank))
+    names(plotsBarcodeRank$Sample) <- samples
+  }
+  
+  #names(plotsBarcodeRank) <- samples
   cat(description_runBarcodeRank$introduction)
   cat(description_runBarcodeRank$runBarcodeRankDrops)
   cat(description_runBarcodeRank$plotBarcodeRankDropsResults)
@@ -182,7 +192,7 @@ for (i in seq_along(samples)) {
   cat("\n\n")
   
   cat("#### Total UMI counts vs Rank {.tabset .tabset-fade} \n\n")
-  print(plotsBarcodeRank[[samples[i]]])
+  print(plotsBarcodeRank$Sample[[samples[i]]])
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")

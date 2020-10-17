@@ -28,12 +28,15 @@ It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).}
 \item{format}{The format of output. It currently supports flat files, rds files
 and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").}
 }
-<<<<<<< HEAD
-=======
 \value{
 Generates a file containing data from \code{inSCE}, in specified \code{format}.
 }
->>>>>>> compbiomed-master
 \description{
 Export data in SingleCellExperiment object
+}
+\examples{
+data(scExample)
+\dontrun{
+exportSCE(sce, format = "SCE")
+}
 }

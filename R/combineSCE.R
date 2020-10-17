@@ -14,9 +14,9 @@
 }
 
 .getDimUnion <- function(dataList){
-  Row <- vapply(dataList, function(x) {rownames(x)})
+  Row <- lapply(dataList, function(x) {rownames(x)})
   RowUnion <- base::Reduce(union, Row)
-  Col <- vapply(dataList, function(x) {colnames(x)})
+  Col <- lapply(dataList, function(x) {colnames(x)})
   ColUnion <- base::Reduce(union, Col)
   return(list(RowUnion, ColUnion))
 }
