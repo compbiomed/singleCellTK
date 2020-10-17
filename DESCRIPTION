@@ -122,7 +122,6 @@ Remotes:
     joshua-d-campbell/harmony,
     rz2333/mnormt@1.5-6,
     joshua-d-campbell/liger,
-    joshua-d-campbell/shiny-directory-input,
     campbio/celda@RELEASE_3_11
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
