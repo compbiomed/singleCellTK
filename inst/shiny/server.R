@@ -232,6 +232,7 @@ shinyServer(function(input, output, session) {
   updateAltExpInputs <- function(){
     options <- altExpNames(vals$counts)
     updateSelectInput(session, "clustScranSNNAltExp", choices = options)
+    updateSelectInput(session, "dimRedAltExpSelect", choices = options)
   }
   updateEnrichDB <- function(){
     if (internetConnection){
@@ -1881,6 +1882,29 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$dimRedAltExpSelect, {
+    if (!is.null(vals$counts) &&
+        !is.null(input$dimRedAltExpSelect)) {
+      ae <- altExp(vals$counts, input$dimRedAltExpSelect)
+      aeAssays <- assayNames(ae)
+      output$dimRedAltExpAssayUI <- renderUI({
+        selectInput("dimRedAltExpAssay", "Select the Assay in the subset",
+                    aeAssays)
+      })
+    }
+  })
+
+  output$dimRedNameUI <- renderUI({
+    if (input$dimRedAssayType == 1){
+      defaultText <- paste(input$dimRedAssaySelect, input$dimRedPlotMethod,
+                           sep = '_')
+    } else if (input$dimRedAssayType == 2){
+      defaultText <- paste(input$dimRedAltExpAssay, input$dimRedPlotMethod,
+                           sep = '_')
+    }
+    textInput('dimRedNameInput', "reducedDim Name:", defaultText)
+  })
+
   observeEvent(input$runDimred, {
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred", {
@@ -1895,61 +1919,111 @@ shinyServer(function(input, output, session) {
               "warning", showCancelButton = TRUE,
               confirmButtonText = "Overwrite",
               callbackR = function(x){if(isTRUE(x)){
+                dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
                 if (input$dimRedPlotMethod == "PCA"){
+                  if (input$dimRedAssayType == 1) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
-                                          reducedDimName = input$dimRedNameInput)
-                    updateReddimInputs()
+                                          reducedDimName = dimrednamesave)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAltExpAssay,
+                                          useAltExp = input$dimRedAltExpSelect,
+                                          reducedDimName = dimrednamesave)
+                  }
                 } else if (input$dimRedPlotMethod == "tSNE"){
+                  if (input$dimRedAssayType == 1) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = input$dimRedNameInput,
+                                           reducedDimName = dimrednamesave,
                                            perplexity = input$perplexityTSNE,
                                            n_iterations = input$iterTSNE)
-                    updateReddimInputs()
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  }
                 } else {
-                  if(is.na(input$alphaUMAP)){
+                  if (is.na(input$alphaUMAP)) {
                     stop("Learning rate (alpha) must be a numeric non-empty value!")
                   }
+                  if (input$dimRedAssayType == 1) {
                     vals$counts <- getUMAP(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = input$dimRedNameInput,
+                                           reducedDimName = dimrednamesave,
                                            nNeighbors = input$neighborsUMAP,
                                            nIterations = input$iterUMAP,
                                            minDist = input$mindistUMAP,
-                                           alpha = input$alphaUMAP
-                    )
-                    updateReddimInputs()
+                                           alpha = input$alphaUMAP)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  }
                 }
+                updateReddimInputs()
               }}
             )
           } else {
+            dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
             if (input$dimRedPlotMethod == "PCA"){
+              if (input$dimRedAssayType == 1) {
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = input$dimRedAssaySelect,
-                                      reducedDimName = input$dimRedNameInput)
-                updateReddimInputs()
+                                      reducedDimName = dimrednamesave)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAltExpAssay,
+                                      useAltExp = input$dimRedAltExpSelect,
+                                      reducedDimName = dimrednamesave)
+              }
             } else if (input$dimRedPlotMethod == "tSNE"){
+              if (input$dimRedAssayType == 1) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = input$dimRedNameInput,
+                                       reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
-                updateReddimInputs()
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              }
             } else {
-              if(is.na(input$alphaUMAP)){
+              if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
+              if (input$dimRedAssayType == 1) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = input$dimRedNameInput,
+                                       reducedDimName = dimrednamesave,
                                        nNeighbors = input$neighborsUMAP,
                                        nIterations = input$iterUMAP,
                                        minDist = input$mindistUMAP,
-                                       alpha = input$alphaUMAP
-                )
-                updateReddimInputs()
+                                       alpha = input$alphaUMAP)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              }
             }
+            updateReddimInputs()
           }
         }
       })
@@ -4495,6 +4569,7 @@ shinyServer(function(input, output, session) {
           kFilter = input$Srt3IntKFilter,
           ndims = input$Srt3IntNDims)
         vals$batchRes[[saveassayname]] <- 'altExp'
+        updateAltExpInputs()
         shinyalert::shinyalert('Success!', 'Seurat3 Integration completed.',
                                type = 'success')
       })
@@ -4647,7 +4722,7 @@ shinyServer(function(input, output, session) {
         isTRUE(overwrite)) {
       mat <- assay(inSCE[geneSet,], useAssay)
       assayList <- list()
-      assayList[[altExpName]] <- mat
+      assayList[[paste0(altExpName, useAssay)]] <- mat
       ae <- SingleCellExperiment(assays = assayList)
       altExp(inSCE, altExpName) <- ae
     }
@@ -4676,24 +4751,22 @@ shinyServer(function(input, output, session) {
                 HVGs <- getTopHVG(inSCE = vals$counts,
                                   method = input$hvgMethodFS,
                                   n = input$hvgNumberSelect)
-
                 #make sure no NA's are introduced in HVGs
                 HVGs <- stats::na.omit(HVGs)
-
-                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
-                                         input$hvgAltExpName, x)
+                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm,
+                                         HVGs, input$hvgAltExpName, x)
+                updateAltExpInputs()
             }
           })
       } else {
           HVGs <- getTopHVG(inSCE = vals$counts,
                             method = input$hvgMethodFS,
                             n = input$hvgNumberSelect)
-
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
-
           vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
                                    input$hvgAltExpName)
+          updateAltExpInputs()
       }
     } else {
       shinyalert::shinyalert(
