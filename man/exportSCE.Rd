@@ -34,3 +34,9 @@ Generates a file containing data from \code{inSCE}, in specified \code{format}.
 \description{
 Export data in SingleCellExperiment object
 }
+\examples{
+data(scExample)
+\dontrun{
+exportSCE(sce, format = "SCE")
+}
+}

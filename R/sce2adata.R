@@ -43,7 +43,7 @@
         }
     }
 
-    # Furthermore, the other assays will for now also be saved to .obsm
+    # Furthermore, the other assays will for now also be saved to .layers
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
     for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]

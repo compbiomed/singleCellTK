@@ -2553,7 +2553,7 @@ plotSCEBarAssayData <- function(inSCE,
         labelPositionY = rep(1, length(plotlist))
       }
 
-      for(x in 1:length(plotlist)){
+      for(x in seq_along(plotlist)){
         labeled <- plotlist[[x]] + cowplot::draw_plot_label(
           labels[x],
           x = labelPositionX[x],
