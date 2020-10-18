@@ -872,6 +872,7 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
+        updateAltExpInputs()
         updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))), selected = "sample")
         shinyjs::show(id="annotationData")
         js$enableTabs();
@@ -1230,11 +1231,14 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    showModal(filteringModal(colNames = names(colData(vals$counts))))
+    if (!is.null(vals$counts)) {
+      showModal(filteringModal(colNames = names(colData(vals$counts))))
+    }
   })
 
   observeEvent(input$addRowFilteringParam, {
-    if (!is.null(names(assays(vals$counts)))) {
+    if (!is.null(vals$counts) &&
+        !is.null(names(assays(vals$counts)))) {
       showModal(rowFilteringModal(assayInput = names(assays(vals$counts))))
     }
   })
@@ -4999,8 +5003,8 @@ shinyServer(function(input, output, session) {
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
                                      covariates = input$deCovar,
-                                     log2fcThreshold = input$mastFCThresh,
-                                     fdrThreshold = input$mastFDRThresh,
+                                     log2fcThreshold = input$deFCThresh,
+                                     fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$mastPosOnly,
                                      overwrite = overwrite)
       } else if(input$deCondMethod == 2){

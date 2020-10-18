@@ -158,6 +158,7 @@ shinyPanelDiffex <- fluidPage(
       tabsetPanel(
         tabPanel(
           "Adaptive thresholding",
+          p("This figure is for checking the selected assay, but not the generated result."),
           textOutput("deSanityWarnThresh"),
           plotOutput("deThreshplot")
         ),

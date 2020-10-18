@@ -101,6 +101,11 @@
     }
     ix1 <- colnames(inSCE) %in% cells1
     ix2 <- colnames(inSCE) %in% cells2
+    isec <- intersect(which(ix1), which(ix2))
+    if (length(isec) > 0) {
+      stop("Cell(s) selected for both conditions: ",
+           paste(colnames(inSCE)[isec], collapse = ", "))
+    }
     select <- list(ix1 = ix1, ix2 = ix2)
     if(!is.null(covariates)){
         for (c in covariates){
@@ -264,6 +269,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
     resultList$result <- deg
     resultList$method <- 'DESeq2'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -387,6 +393,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
     resultList$result <- deg
     resultList$method <- 'Limma'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -524,7 +531,6 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     if(isTRUE(onlyPos)){
       warning("ANOVA method does not generate log2FC value. `onlyPos` ",
               "argument ignored")
-      #deg <- deg[deg$Log2_FC > 0,]
     }
     if(!is.null(fdrThreshold)){
       deg <- deg[deg$FDR < fdrThreshold,]
@@ -536,6 +542,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
     resultList$result <- deg
     resultList$method <- 'ANOVA'
 
@@ -695,7 +702,9 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     fcHurdleSig <- fcHurdleSig[order(fcHurdleSig$FDR, na.last = TRUE),
     ]
     # Format output
-    resultList$result <- as.data.frame(fcHurdleSig)
+    deg <- as.data.frame(fcHurdleSig)
+    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    resultList$result <- deg
     resultList$method <- 'MAST'
 
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
