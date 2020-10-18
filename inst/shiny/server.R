@@ -5239,6 +5239,12 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("runFM", {
+        if(is.na(input$fmLogFC)){
+          stop("Log2FC must be a numeric non-empty value!")
+        }
+        if(is.na(input$fmFDR)){
+          stop("FDR must be a numeric non-empty value!")
+        }
         vals$counts <- findMarkerDiffExp(inSCE = vals$counts,
                                          method = input$fmMethod,
                                          useAssay = input$fmAssay,
@@ -5301,6 +5307,17 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts)) &&
        !is.null(input$fmHMAssay)){
+      withBusyIndicatorServer("plotFM", {
+        if(isTRUE(input$fmUseTopN)
+           && is.na(input$fmTopN)){
+          stop("Top N marker must be a numeric non-empty value")
+        }
+        if(is.na(input$fmHMFC)){
+          stop("Log2FC must be a numeric non-empty value!")
+        }
+        if(is.na(input$fmHMFDR)){
+          stop("FDR must be a numeric non-empty value!")
+        }
       inSCE <- vals$counts
       useAssay <- input$fmHMAssay
       orderBy <- input$fmHMOrder
@@ -5322,6 +5339,7 @@ shinyServer(function(input, output, session) {
                           fdrThreshold = fdrThreshold, decreasing = decreasing,
                           rowDataName = rowDataName, colDataName = colDataName)
       })
+    })
     }
   })
 
