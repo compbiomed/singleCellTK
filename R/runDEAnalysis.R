@@ -269,7 +269,9 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
-    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'DESeq2'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -393,7 +395,9 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
-    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'Limma'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -542,7 +546,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
-    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'ANOVA'
 
@@ -703,7 +709,9 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     ]
     # Format output
     deg <- as.data.frame(fcHurdleSig)
-    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'MAST'
 
