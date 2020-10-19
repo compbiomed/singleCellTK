@@ -20,7 +20,7 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
     #expecting logical vector
     biomarker <- lapply(pathwayNames, function(x) rownames(inSCE)[
       SingleCellExperiment::rowData(inSCE)[, x] == 1])
-    gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(inSCE, useAssay),
+    gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
                           biomarker, ...)
     rownames(gsvaRes) <- pathwayNames
   } else if (pathwaySource == "MSigDB c2 (Human, Entrez ID only)") {
@@ -28,11 +28,11 @@ gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
     c2BroadSets <- .myenv$c2BroadSets
     #expecting some genes in list are in the rownames
     if ("ALL" %in% pathwayNames) {
-      gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(inSCE, useAssay),
+      gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
                             c2BroadSets, ...)
     } else {
       c2sub <- c2BroadSets[base::setdiff(pathwayNames, "ALL")]
-      gsvaRes <- GSVA::gsva(SummarizedExperiment::assay(inSCE, useAssay),
+      gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
                             c2sub, ...)
     }
   } else{
