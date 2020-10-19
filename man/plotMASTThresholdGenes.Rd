@@ -4,12 +4,21 @@
 \alias{plotMASTThresholdGenes}
 \title{MAST Identify adaptive thresholds}
 \usage{
-plotMASTThresholdGenes(inSCE, useAssay = "logcounts", check_sanity = TRUE)
+plotMASTThresholdGenes(
+  inSCE,
+  useAssay = "logcounts",
+  isLogged = TRUE,
+  check_sanity = TRUE
+)
 }
 \arguments{
 \item{inSCE}{SingleCellExperiment object}
 
 \item{useAssay}{character, default \code{"logcounts"}}
+
+\item{isLogged}{Logical scalar. Whether the assay used for the analysis is
+logged. If not, will do a \code{log(assay + 1)} transformation. Default
+\code{TRUE}.}
 
 \item{check_sanity}{Logical scalar. Whether to perform MAST's sanity check
 to see if the counts are logged. Default \code{TRUE}}

@@ -118,8 +118,7 @@ Suggests:
     org.Mm.eg.db,
     stringr,
     harmony,
-    liger,
-    shinyDirectoryInput
+    liger
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
