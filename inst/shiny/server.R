@@ -2356,8 +2356,17 @@ shinyServer(function(input, output, session) {
       )
     ))
     withProgress(message = "Clustering Features", max = 1, value = 1, {
+      if (input$celdafeatureselect == "Celda"){
         vals$counts <- selectFeatures(as.matrix(counts(vals$counts)))
-        assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
+      }else if(input$celdafeatureselect == "SeuratFindHVG"){
+        vals$counts <- seuratNormalizeData(vals$counts, useAssay = "counts")
+        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData")
+        var_feats <- getTopHVG(sce_temp, method = "vst")
+        altexp <- vals$counts[var_feats]
+        counts(altexp) <- as.matrix(counts(altexp))
+        altExp(vals$counts, "featureSubset") <- altexp
+      }
+        #assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
         updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
         vals$counts <- recursiveSplitModule(vals$counts, initialL = input$celdaLinit, maxL = input$celdaLmax)
         output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
@@ -2400,7 +2409,7 @@ shinyServer(function(input, output, session) {
       removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
       appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
         panel(heading = sprintf("Cluster %s", i),
-          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i), height = 300)
+          plotlyOutput(outputId = sprintf("plot_K_umap_%s", i), height = 400)
           )
       ))
       withProgress(message = "Plotting Clusters", max = 1, value = 1, {
@@ -2427,11 +2436,18 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", max = input$celdaKselect, value = 1)
+    updateSelectInput(session, "celdaAssayUMAP", choices = names(assays(vals$counts)))
+    updateSelectInput(session, "celdaAssaytSNE", choices = names(assays(vals$counts)))
   })
 
   observeEvent(input$CeldaUmap, {
     withProgress(message = "Computing Umap", max = 1, value = 1, {
-      vals$counts <- celdaUmap(vals$counts)
+      vals$counts <- celdaUmap(vals$counts,
+                               useAssay = input$celdaAssayUMAP,
+                               maxCells = input$celdaUMAPmaxCells,
+                               minClusterSize = input$celdaUMAPminClusterSize,
+                               seed = input$celdaUMAPSeed
+      )
       output$celdaumapplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_UMAP", xlab = "UMAP_1",
         ylab = "UMAP_2", labelClusters = TRUE)})
     })
@@ -2441,7 +2457,13 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$CeldaTsne, {
     withProgress(message = "Computing Tsne", max = 1, value = 1, {
-      vals$counts <- celdaTsne(vals$counts)
+      vals$counts <- celdaTsne(vals$counts,
+                               useAssay = input$celdaAssaytSNE,
+                               maxCells = input$celdatSNEmaxCells,
+                               minClusterSize = input$celdatSNEminClusterSize,
+                               perplexity = input$celdatSNEPerplexity,
+                               maxIter = input$celdatSNEmaxIter,
+                               seed = input$celdatSNESeed)
       output$celdatsneplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_tSNE", xlab = "tSNE_1",
         ylab = "tSNE_2", labelClusters = TRUE)})
     })
@@ -2458,6 +2480,7 @@ shinyServer(function(input, output, session) {
     ), select = TRUE)
     withProgress(message = "Plotting Heatmap", max = 1, value = 1, {
       output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
+      showNotification("Heatmap complete.")
     })
     if (input$heatmap_module){
       appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Module Heatmap",

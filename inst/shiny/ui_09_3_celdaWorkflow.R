@@ -6,6 +6,7 @@ shinyPanelCelda <- fluidPage(
            fluidRow(
                column(4,
                    panel(
+                       selectInput("celdafeatureselect", "Choose Feature Selection Method:", choices = c("Celda", "SeuratFindHVG", "Scran")),
                        numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
                        numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
                        actionButton("celdamodsplit", "Recursive Module Split"),
@@ -60,12 +61,32 @@ shinyPanelCelda <- fluidPage(
                     fluidRow(
                         column(4,
                             panel(
+                                selectInput("celdaAssayUMAP", "Select Assay:",
+                                            choices = c()),
+                                numericInput("celdaUMAPmaxCells",
+                                             label =
+                                                 "Max.cells: Maximum number of cells to
+                                plot",
+                                             value = 25000,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdaUMAPminClusterSize",
+                                             label =
+                                                 "Min.cluster.size: Do not subsample cell
+                              clusters below this threshold",
+                                             value = 100,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdaUMAPSeed",
+                                             label =
+                                                 "Seed: ",
+                                             value = 12345),
                                 actionButton("CeldaUmap", "Run UMAP")
                             )
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdaumapplot", height = 300)
+                                plotlyOutput("celdaumapplot", height = 400)
                             )
                         )
                     )
@@ -74,12 +95,41 @@ shinyPanelCelda <- fluidPage(
                     fluidRow(
                         column(4,
                             panel(
+                                selectInput("celdaAssaytSNE", "Select Assay:",
+                                            choices = c()),
+                                numericInput("celdatSNEmaxCells",
+                                             label =
+                                                 "Max.cells: Maximum number of cells to
+                                plot",
+                                             value = 25000,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdatSNEminClusterSize",
+                                             label =
+                                                 "Min.cluster.size: Do not subsample cell
+                              clusters below this threshold",
+                                             value = 100,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdatSNEPerplexity",
+                                             label =
+                                                 "Perplexity: ",
+                                             value = 20),
+                                numericInput("celdatSNEmaxIter",
+                                             label =
+                                                 "Max.iter: Maximum number of iterations in
+                              tSNE generation",
+                                             value = 2500),
+                                numericInput("celdatSNESeed",
+                                             label =
+                                                 "Seed: ",
+                                             value = 12345),
                                 actionButton("CeldaTsne", "Run tSNE")
                             )
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdatsneplot", height = 300)
+                                plotlyOutput("celdatsneplot", height = 400)
                             )
                         )
                     )
@@ -117,7 +167,7 @@ shinyPanelCelda <- fluidPage(
                     ),
                     column(8,
                         panel(
-                            plotOutput("celdaprobmapplt", height = 300)
+                            plotOutput("celdaprobmapplt", height = 400)
                         )
                     )
                 )
