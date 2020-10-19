@@ -313,7 +313,7 @@ The usage of each argument is the same as running command line analysis. Here is
 
 ```
 docker run --rm -v /path/to/data:/SCTK_docker \
--it campbio/sctk_qc:1.7.5 \
+-it campbio/sctk_qc:1.7.6 \
 -b /SCTK_docker/cellranger \
 -P CellRangerV3 \
 -s pbmc_100x100 \
@@ -328,7 +328,7 @@ docker run --rm -v /path/to/data:/SCTK_docker \
 The Singulatiry image can easily be built using Docker Hub as a source:
 
 ```
-singularity pull docker://campbio/sctk_qc:1.7.5
+singularity pull docker://campbio/sctk_qc:1.7.6
 ```
 
 The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). 
@@ -337,7 +337,7 @@ It's recommended to re-set the home directory when you run singularity. Singular
 
 ```
 singularity run --home=/PathToSanitizedHome \
---bind /PathToData:/data sctk_qc_1.7.5.sif \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
@@ -358,7 +358,7 @@ Also, you might want to specify cpu architecture when run the Singularity image 
 #$ -pe omp 16
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 singularity run --home=/PathToSanitizedHome \
---bind /PathToData:/data sctk_qc_1.7.5.sif \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
