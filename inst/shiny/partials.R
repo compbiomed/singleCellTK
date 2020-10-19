@@ -217,13 +217,13 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
       } 
       appendTab("qcResPlotTabs", tabPanel(algo, 
                                           fluidPage(id = id, 
-                                                    plotOutput(outputId = plotIds[[algo]]),
+                                                    uiOutput(outputId = plotIds[[algo]]),
                                                     tabsetPanel(
                                                       id = paste0(algo, "Tabs")
                                                     )
                                           ), 
-                                 ),
-                select = selectTab
+      ),
+      select = selectTab
       )
     }
   }
