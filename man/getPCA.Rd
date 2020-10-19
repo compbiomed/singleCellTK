@@ -2,36 +2,54 @@
 % Please edit documentation in R/getPCA.R
 \name{getPCA}
 \alias{getPCA}
-\title{getPCA
-A wrapper to \link[scater]{runPCA} function to compute principal component analysis (PCA) from a given \code{SingleCellExperiment} object.}
+\title{Perform PCA on a SingleCellExperiment Object
+A wrapper to \link[scater]{runPCA} function to compute principal component
+analysis (PCA) from a given \linkS4class{SingleCellExperiment} object.}
 \usage{
 getPCA(
   inSCE,
   useAssay = "logcounts",
+  useAltExp = NULL,
   reducedDimName = "PCA",
   ndim = 50,
-  ntop = 500
+  scale = TRUE,
+  ntop = NULL
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Assay to use for PCA computation.}
+\item{useAssay}{Assay to use for PCA computation. If \code{useAltExp} is
+specified, \code{useAssay} has to exist in
+\code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
 
-\item{reducedDimName}{Name to use for the reduced output assay.}
+\item{useAltExp}{The subset to use for PCA computation, usually for the
+selected.variable features. Default \code{NULL}.}
 
-\item{ndim}{Number of principal components to obtain from the PCA computation. Default \code{50}.}
+\item{reducedDimName}{Name to use for the reduced output assay. Default
+\code{"PCA"}.}
 
-\item{ntop}{Number of top features to use with PCA. Default \code{500}.}
+\item{ndim}{Number of principal components to obtain from the PCA
+computation. Default \code{50}.}
+
+\item{scale}{Logical scalar, whether to standardize the expression values.
+Default \code{TRUE}.}
+
+\item{ntop}{Number of top features to use as a further variable feature
+selection. Default \code{NULL}.}
 }
 \value{
-A \code{SingleCellExperiment} object with stored PCA computation
+A \linkS4class{SingleCellExperiment} object with PCA computation
+updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-getPCA
-A wrapper to \link[scater]{runPCA} function to compute principal component analysis (PCA) from a given \code{SingleCellExperiment} object.
+Perform PCA on a SingleCellExperiment Object
+A wrapper to \link[scater]{runPCA} function to compute principal component
+analysis (PCA) from a given \linkS4class{SingleCellExperiment} object.
 }
 \examples{
-data(sce_chcl, package = "scds")
-sce_chcl <- getPCA(sce_chcl, useAssay = "logcounts")
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+logcounts(sce) <- log(counts(sce) + 1)
+sce <- getPCA(sce, ntop = 500)
 }

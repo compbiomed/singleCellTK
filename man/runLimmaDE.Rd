@@ -94,6 +94,7 @@ sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 library(scater)
 sce <- logNormCounts(sce)
 sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = 1:20, index2 = 21:40, analysisName = "Limma")
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ analysisName = "Limma")
 
 }

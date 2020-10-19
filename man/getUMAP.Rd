@@ -8,6 +8,7 @@ dimension reduction.}
 getUMAP(
   inSCE,
   useAssay = "counts",
+  useAltExp = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
   logNorm = TRUE,
@@ -23,49 +24,54 @@ getUMAP(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Indicate which assay to use. The default is "counts".}
+\item{useAssay}{Assay to use for UMAP computation. If \code{useAltExp} is
+specified, \code{useAssay} has to exist in
+\code{assays(altExp(inSCE, useAltExp))}. Default \code{"counts"}.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+\item{useAltExp}{The subset to use for UMAP computation, usually for the
+selected.variable features. Default \code{NULL}.}
 
-\item{reducedDimName}{a name to store the results of the dimension reduction
-coordinates obtained from this method. This is stored in the SingleCellExperiment
-object in the reducedDims slot. Default "UMAP".}
+\item{sample}{Character vector. Indicates which sample each cell belongs to.
+If given a single character, will take the annotation from
+\code{\link[SummarizedExperiment]{colData}}. Default \code{NULL}.}
+
+\item{reducedDimName}{A name to store the results of the dimension reduction
+coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
-generating the UMAP via scater::logNormCounts. Default TRUE.}
+generating the UMAP via \code{\link[scater]{logNormCounts}}. Default
+\code{TRUE}.}
 
-\item{nNeighbors}{The size of local neighborhood used for
-manifold approximation. Larger values result in more global
-views of the manifold, while smaller values result in more
-local data being preserved. Default 30.
- See `?uwot::umap` for more information.}
+\item{nNeighbors}{The size of local neighborhood used for manifold
+approximation. Larger values result in more global views of the manifold,
+while smaller values result in more local data being preserved. Default
+\code{30}. See `?uwot::umap` for more information.}
 
-\item{nIterations}{number of iterations performed during layout optimization.
-Default is 200.}
+\item{nIterations}{The number of iterations performed during layout
+optimization. Default is \code{200}.}
 
-\item{alpha}{initial value of "learning rate" of layout optimization. Default is 1.}
+\item{alpha}{The initial value of "learning rate" of layout optimization.
+Default is \code{1}.}
 
 \item{minDist}{The effective minimum distance between embedded points.
-Smaller values will result in a more clustered/clumped
-embedding where nearby points on the manifold are drawn
-closer together, while larger values will result on a more
-even dispersal of points. Default 0.01.
-See `?uwot::umap` for more information.}
+Smaller values will result in a more clustered/clumped embedding where nearby
+points on the manifold are drawn closer together, while larger values will
+result on a more even dispersal of points. Default \code{0.01}. See
+`?uwot::umap` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
-‘min_dist’, this determines how clustered/clumped the
-embedded points are. Default 1.
-See `?uwot::umap` for more information.}
+‘min_dist’, this determines how clustered/clumped the embedded points are.
+Default \code{1}. See `?uwot::umap` for more information.}
 
-\item{pca}{Logical. Whether to perform dimensionality reduction with PCA
-before UMAP.}
+\item{pca}{Logical. Whether to perform dimension reduction with PCA before
+UMAP. Default \code{TRUE}}
 
-\item{initialDims}{Number of dimensions from PCA to use as
-input in UMAP. Default 50.}
+\item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
+Default \code{50}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with the reduced
-dimensions updated under reducedDimName specified.
+A \linkS4class{SingleCellExperiment} object with UMAP computation
+updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
 Uniform Manifold Approximation and Projection(UMAP) algorithm for
