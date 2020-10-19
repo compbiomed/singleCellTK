@@ -126,7 +126,7 @@ source("ui_01_rowAnnotation.R", local = TRUE) #creates shinyPanelRowAnnotation v
 source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_cluster.R", local = TRUE) #creates shinyPanelCluster variable
-source("ui_celda.R", local = TRUE) #creates shinyPanelCelda variable
+source("ui_09_3_celdaWorkflow.R", local = TRUE) #creates shinyPanelCelda variable
 source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect variable
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
@@ -175,6 +175,7 @@ if (is.null(getShinyOption("includeVersion"))){
 shinyUI(
     navbarPage(
       tooltitle,
+      id = "navbar",
       # theme = shinytheme(shinyTheme),
       theme = shinytheme("yeti"),
       navbarMenu(
@@ -209,7 +210,7 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Gene Visualization", shinyPanelViewers),
-                 tabPanel("Cell Viewer", shinyPanelCellViewer),
+                 tabPanel("Cell Viewer", shinyPanelCellViewer, value = "CellViewer"),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
       footer = includeHTML("www/footer.html"),
       fluidRow(
@@ -219,6 +220,6 @@ shinyUI(
         )
       ),
       useShinyjs(),
-      extendShinyjs(text = jsCode)
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
     )
 )

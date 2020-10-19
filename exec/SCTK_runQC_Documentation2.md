@@ -324,21 +324,46 @@ docker run --rm -v /path/to/data:/SCTK_docker \
 The Singulatiry image can easily be built using Docker Hub as a source:
 
 ```
-singularity pull docker://campbio/sctk_qc:1.7.5
+singularity pull docker://campbio/sctk_qc:1.7.6
 ```
 
-The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
+The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). 
+
+It's recommended to re-set the home directory when you run singularity. Singularity will mount $HOME path on your machine by default, which might contain your personal R/Python library folder. If we don't re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from $HOME path on your machine, using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Besides, you can use argument --bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:
 
 ```
-singularity run sctk_qc_1.7.5.sif \
--b ./cellranger \
+singularity run --home=/PathToSanitizedHome \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
 -P CellRangerV3 \
--s pbmc_100x100 \
--o ./result/tenx_v3_pbmc \
--g ./mitochondrial_human_symbol.gmt
+-s gencodev34_pbmc_1k_v3 \
+-b /data/gencodev34_pbmc_1k_v3
+-o /data/result/gencodev34_pbmc_1k_v3 \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-n 15 \
+-T MulticoreParam
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
+Also, you might want to specify cpu architecture when run the Singularity image on BU SCC using '#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake' command. Because the python packages are compiled by SIMD instructions that are only compatible on these cpu architectures. If you are runnning singularity on other cluster, please contact IT helps about how to specify cpu architecture when you run the singularity image. One of the example is shown below:
+
+```
+#!/bin/bash
+#$ -cwd
+#$ -j y
+#$ -P camplab
+#$ -pe omp 16
+#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
+singularity run --home=/PathToSanitizedHome \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
+-P CellRangerV3 \
+-s gencodev34_pbmc_1k_v3 \
+-b /data/gencodev34_pbmc_1k_v3
+-o /data/result/gencodev34_pbmc_1k_v3 \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-n 15 \
+-T MulticoreParam
+```
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:
