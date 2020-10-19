@@ -5,6 +5,7 @@ options(shiny.autoreload = TRUE)
 
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
+source("shinyDirectoryInput.R", local = TRUE) # shinyDirectoryInput source code
 # R.utils::sourceDirectory("qc_help_pages")
 source("qc_help_pages/ui_decontX_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_help.R", local = TRUE) # creates several smaller UI components
@@ -260,8 +261,6 @@ shinyServer(function(input, output, session) {
 
   # Components for uploading directories if user is importing from a preprocessing step
   volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), shinyFiles::getVolumes()())
-  shinyFiles::shinyDirChoose(input, "base", roots = volumes, session = session, restrictions = system.file(package = "base"))
-  shinyFiles::shinyDirChoose(input, "sample", roots = volumes, session = session, restrictions = system.file(package = "base"))
 
   sample <- reactive(input$sample)
   output$sample <- renderText({
@@ -272,14 +271,8 @@ shinyServer(function(input, output, session) {
     shinyFiles::parseFilePaths(volumes, sampleFile())$datapath
   })
   output$base = renderText({
-    shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    readDirectoryInput(session, 'directory')
   })
-  importCR2Files <- reactiveValues(files = list(), id_count = 0)
-  importCR3Files <- reactiveValues(files = list(), id_count = 0)
-  importSSFiles <- reactiveValues(files = list(), id_count = 0)
-  importBUSFiles <- reactiveValues(files = list(), id_count = 0)
-  importSEQFiles <- reactiveValues(files = list(), id_count = 0)
-  importOptFiles <- reactiveValues(files = list(), id_count = 0)
 
   allImportEntries <- reactiveValues(samples=list(), id_count=0)
 
@@ -298,7 +291,7 @@ shinyServer(function(input, output, session) {
 
 
       h3("Base Directory"),
-      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      directoryInput('directory', label = 'Choose Directory', value = '~'),
 
       if (failed)
         div(tags$b("Please fill out all the required fields", style = "color: red;")),
@@ -335,7 +328,7 @@ shinyServer(function(input, output, session) {
   importCRSDir <- function(failed = FALSE) {
     modalDialog(
       h3("Sample Directory"),
-      shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
+      directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
       h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
       textInput("sSampleID", ""),
@@ -353,7 +346,7 @@ shinyServer(function(input, output, session) {
   importCRDDir <- function(failed = FALSE) {
     modalDialog(
       h3("Data Directory"),
-      shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+      directoryInput('directory', label = 'Choose Directory', value = '~'),
       h3("Sample Name"),
 
       textInput("dSampleID", "*This field is mandatory when uploading a data directory"),
@@ -371,7 +364,7 @@ shinyServer(function(input, output, session) {
   importCRBDir <- function(failed = FALSE) {
     modalDialog(
       h3("Base Directory"),
-      shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
+      directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
       wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
 
       tags$div(id = "bDirTable"),
@@ -396,9 +389,9 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$directory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'directory'),
+        path = choose.dir(default = readDirectoryInput(session, 'directory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'directory', value = path)
+        updateDirectoryInput(session, 'directory', value = path)
       }
     }
   )
@@ -413,9 +406,9 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$sDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'sDirectory'),
+        path = choose.dir(default = readDirectoryInput(session, 'sDirectory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'sDirectory', value = path)
+        updateDirectoryInput(session, 'sDirectory', value = path)
         if (!is.na(path)) {
           updateTextInput(session, "sSampleID", value = basename(path))
         }
@@ -433,11 +426,11 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$bDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path = shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'bDirectory'),
+        path = choose.dir(default = readDirectoryInput(session, 'bDirectory'),
                                                caption="Choose a directory")
-        shinyDirectoryInput::updateDirectoryInput(session, 'bDirectory', value = path)
+        updateDirectoryInput(session, 'bDirectory', value = path)
         # clear the previous table of sample names
-        prevPath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+        prevPath <- readDirectoryInput(session, 'bDirectory')
         count <- 0
         for (prev in list.dirs(prevPath, recursive = FALSE)) {
           count <- count+1
@@ -510,7 +503,7 @@ shinyServer(function(input, output, session) {
   # event listeners for Cell Ranger import modals' OK buttons
   # sample directory
   observeEvent(input$SDirOK, {
-    samplePath <- shinyDirectoryInput::readDirectoryInput(session, 'sDirectory')
+    samplePath <- readDirectoryInput(session, 'sDirectory')
     # make sure a directory is selected
     if (identical(samplePath, character(0))) {
       showModal(importCRSDir(failed = TRUE))
@@ -550,7 +543,7 @@ shinyServer(function(input, output, session) {
 
   # data directory
   observeEvent(input$DDirOK, {
-    dataPath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    dataPath <- readDirectoryInput(session, 'directory')
     if ((!nzchar(input$dSampleID)) || (identical(dataPath, character(0)))) {
       showModal(importCRDDir(failed = TRUE))
     } else {
@@ -561,7 +554,7 @@ shinyServer(function(input, output, session) {
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
         id <- paste0("dnewSampleCR3", allImportEntries$id_count)
-        entry <- list(type-"cellRanger3", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type="cellRanger3", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       }
@@ -587,7 +580,7 @@ shinyServer(function(input, output, session) {
 
   # base directory
   observeEvent(input$BDirOK, {
-    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'bDirectory')
+    basePath <- readDirectoryInput(session, 'bDirectory')
     # if the user doesn't specify a base directory, show the modal again with the warning message
     if (identical(basePath, character(0))) {
       showModal(importCRBDir(failed = TRUE))
@@ -665,13 +658,13 @@ shinyServer(function(input, output, session) {
             removeUI(
               selector = paste0("#", id_i)
             )
-            toRemove <- vector()
-            print(allImportEntries$samples)
-            for (entry in allImportEntries$samples) {
-              if (entry$id == id_i) {
-                toRemove <- c(toRemove, FALSE)
-              } else {
-                toRemove <- c(toRemove, TRUE)
+              toRemove <- vector()
+              for (entry in allImportEntries$samples) {
+                if (entry$id == id_i) {
+                  toRemove <- c(toRemove, FALSE)
+                } else {
+                  toRemove <- c(toRemove, TRUE)
+                }
               }
             }
             allImportEntries$samples <- allImportEntries$samples[toRemove]
@@ -685,7 +678,7 @@ shinyServer(function(input, output, session) {
   # event handler for pressing OK on the import modal
   observeEvent(input$modalOk, {
     samplePath <- shinyFiles::parseDirPath(volumes, input$sample)
-    basePath <- shinyDirectoryInput::readDirectoryInput(session, 'directory')
+    basePath <- readDirectoryInput(session, 'directory')
     curFiles <- list()
     if ((!nzchar(input$sampleName)) || (identical(basePath, character(0)))) {
       showModal(importModal(failed = TRUE))
@@ -835,6 +828,9 @@ shinyServer(function(input, output, session) {
   # Event handler for "Upload" button on import page
   observeEvent(input$uploadData, {
     withBusyIndicatorServer("uploadData", {
+      if (length(allImportEntries$samples) == 0) {
+        stop("You have not selected any samples to import.")
+      }
       sceObj <- importMultipleSources(allImportEntries)
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
@@ -1132,7 +1128,7 @@ shinyServer(function(input, output, session) {
         )
         useAssay <- input$qcAssaySelect
         qcSample <- colData(vals$original)[,input$qcSampleSelect]
-        if (qcSample == "None") {
+        if (length(qcSample)==1 && qcSample == "None") {
           qcSample <- NULL
         }
         algoList = list()
@@ -1182,10 +1178,16 @@ shinyServer(function(input, output, session) {
           vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
+                                 nNeighbors = input$UnNeighbors,
+                                 nIterations = input$UnIterations,
+                                 alpha = input$Ualpha,
+                                 minDist = input$UminDist,
+                                 spread = input$Uspread,
+                                 initialDims = input$UinitialDims
           )
         }
         updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
-        shinyjs::show(id = "qcPlotSection", anim = FALSE)
+        # shinyjs::show(id = "qcPlotSection", anim = FALSE)
       }
     })
   }))
@@ -1207,10 +1209,10 @@ shinyServer(function(input, output, session) {
         }
       }
       # only run getUMAP if there are no reducedDimNames
-      redDimName <- input$qcPlotRedDim
+      # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, redDimName)
+      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
       uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")
@@ -1226,6 +1228,10 @@ shinyServer(function(input, output, session) {
   #-----------#
   # FILTERING #
   #-----------#
+  shinyjs::onclick("colGT", shinyjs::toggle(id = "filterThreshGT",
+                                                anim = FALSE), add = TRUE)
+  shinyjs::onclick("colLT", shinyjs::toggle(id = "filterThreshLT",
+                                                anim = FALSE), add = TRUE)
 
   filteringParams <- reactiveValues(params = list(), id_count = 0)
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
@@ -1244,33 +1250,61 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterColSelect, {
+    # prep the modal - remove the threshold div and hide the categorical option
+    shinyjs::hide("convertFilterType")
     removeUI(selector = "#newThresh")
+    removeUI(selector = "div:has(>> #convertToCat)")
+    # check if column contains numerical values
     isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
     if (length(vals$counts[[input$filterColSelect]]) > 0) {
       if (isNum) {
-        minCol <- min(vals$counts[[input$filterColSelect]])
-        maxCol <- max(vals$counts[[input$filterColSelect]])
-        label_str <- sprintf("Please pick a number between %.5f and %.5f as a filtering threshold", minCol, maxCol)
-        insertUI(
-          selector = "#filterCriteria",
-          ui = tags$div(id="newThresh", numericInput("filterThresh", label_str, minCol, min = minCol, max = maxCol))
-        )
-      } else {
+        # (from partials) insertUI for choosing greater than and less than params
+        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
+        # if less than 25 unique categories, give categorical option
+        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+          insertUI(
+            selector = "#convertFilterType",
+            ui = checkboxInput("convertToCat", "Convert to categorical filter?")
+          )
+          shinyjs::show("convertFilterType")
+        }
+        
+      } else { # if non-numerical values, create checkbox input
         insertUI(
           selector = "#filterCriteria",
           ui = tags$div(id="newThresh",
                         checkboxGroupInput("filterThresh", "Please select which columns to keep:",
-                                           choiceNames = as.vector(unique(vals$counts[[input$filterColSelect]])),
-                                           choiceValues = as.vector(unique(vals$counts[[input$filterColSelect]]))
+                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
                         ),
           )
         )
       }
-    } else {
+    } else { # if no values in column, show error
       insertUI(
         selector = "#filterCriteria",
         ui = tags$div(id="newThresh", tags$b("This column does not have any filtering criteria", style = "color: red;"))
       )
+    }
+  })
+  
+  observeEvent(input$convertToCat, {
+    if (!is.null(input$filterColSelect)) {
+      removeUI(selector = "#newThresh")
+      if (input$convertToCat) {
+        insertUI(
+          selector = "#filterCriteria",
+          ui = tags$div(id="newThresh",
+                        checkboxGroupInput("filterThresh", "Please select which columns to keep:",
+                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
+                        )
+          )
+        )
+      } else {
+        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
+        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+          shinyjs::show("convertFilterType")
+        }
+      }
     }
   })
 
@@ -1288,17 +1322,44 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filtModalOK, {
-    if ((!nzchar(input$filterThresh)) || (is.null(input$filterColSelect))) {
+    if (is.null(input$filterThresh) && is.null(input$filterThreshGT) && is.null(input$filterThreshLT)) {
       showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
     } else {
       id <- paste0("filteringParam", filteringParams$id_count)
+      # figure out which options the user selected
+      criteriaGT <- NULL
+      criteriaLT <- NULL
+      categoricalCol = F
+      if (input$colGT) {
+        criteriaGT = input$filterThreshGT
+      }
+      if (input$colLT) {
+        criteriaLT = input$filterThreshLT
+      }
+      if (!is.null(input$convertToCat)) {
+        if (input$convertToCat==T) {
+          categoricalCol = T
+        }
+      }
       # new row in parameters table
-      addToColFilterParams(input$filterColSelect, input$filterThresh, id, filteringParams)
+      addToColFilterParams(name = input$filterColSelect, 
+                           categorial = categoricalCol, 
+                           criteria = input$filterThresh, 
+                           criteriaGT = criteriaGT, 
+                           criteriaLT = criteriaLT, 
+                           id = id, 
+                           paramsReactive = filteringParams)
       threshStr <- ""
-      if (is.numeric(input$filterThresh)) {
-        threshStr <- sprintf("> %.5f", input$filterThresh)
-      } else {
+      if (categoricalCol) {
         threshStr <- paste(input$filterThresh, collapse = ', ')
+      } else {
+        if (is.null(criteriaGT)) {
+          threshStr <- sprintf("< %.5f", input$filterThreshLT)
+        } else if (is.null(criteriaLT)) {
+          threshStr <- sprintf("> %.5f", input$filterThreshGT)
+        } else {
+          threshStr <- sprintf("> %.5f & < %.5f", input$filterThreshGT, input$filterThreshLT)
+        }
       }
 
       make3ColTableRow("#newFilteringParams", id, input$filterColSelect, threshStr)
@@ -7067,8 +7128,8 @@ shinyServer(function(input, output, session) {
     handlerExpr = {
       if (input$outputDirectory > 0) {
         # condition prevents handler execution on initial app launch
-        path <<- shinyDirectoryInput::choose.dir(default = shinyDirectoryInput::readDirectoryInput(session, 'outputDirectory'))
-        shinyDirectoryInput::updateDirectoryInput(session, 'outputDirectory', value = path)
+        path <<- choose.dir(default = readDirectoryInput(session, 'outputDirectory'))
+        updateDirectoryInput(session, 'outputDirectory', value = path)
       }
     }
   )
