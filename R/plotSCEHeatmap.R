@@ -109,6 +109,9 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string indicating the assay name that
 #' provides the expression level to plot.
+#' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
+#' transformation on the assay indicated by \code{useAssay}. Default
+#' \code{FALSE}.
 #' @param featureIndex A vector that can subset the input SCE object by rows
 #' (features). Alternatively, it can be a vector identifying features in
 #' another feature list indicated by \code{featureIndexBy}. Default \code{NULL}.
@@ -181,7 +184,8 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @export
 #' @author Yichen Wang
-plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
+plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
+                           featureIndex = NULL,
     cellIndex = NULL, featureIndexBy = 'rownames', cellIndexBy = 'rownames',
     featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
@@ -227,7 +231,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
              ', not found. ')
     }
     if(is.null(featureIndex)){
-        featureIndex <- 1:nrow(inSCE)
+        featureIndex <- seq_len(nrow(inSCE))
     } else {
         if(is.character(featureIndexBy) && length(featureIndexBy) == 1){
             if(!featureIndexBy == 'rownames'){
@@ -254,7 +258,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
         featureIndex <- which(featureIndex)
     }
     if(is.null(cellIndex)){
-        cellIndex <- 1:ncol(inSCE)
+        cellIndex <- seq_len(ncol(inSCE))
     } else {
         if(is.character(cellIndexBy) && length(cellIndexBy) == 1){
             if(!cellIndexBy == 'rownames'){
@@ -360,6 +364,9 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', featureIndex = NULL,
 
     # Extract
     mat <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
+    if (isTRUE(doLog)) {
+      mat <- log(mat + 1)
+    }
     ## rowData info
     rowDataExtract <- .extractSCEAnnotation(inSCE, 'row', rowDataName)
     rowDataColor <- dataAnnotationColor(inSCE, 'row')

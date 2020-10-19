@@ -20,15 +20,25 @@
                               colData = sce_coldata)
   colnames(sce) <- paste0(sampleName,"_",colnames(sce))
 
+  multi_Assay <- reticulate::py_to_r(anndata$layers$as_dict())
+  for(assay_name in names(multi_Assay)){
+    tryCatch({
+      SummarizedExperiment::assay(sce, assay_name, withDimnames = FALSE) <- t(reticulate::py_to_r(multi_Assay[[assay_name]]))
+      base::dimnames(SummarizedExperiment::assay(sce, assay_name)) <- base::dimnames(SummarizedExperiment::assay(sce, "counts"))
+    }, error = function(x){
+      error_message <- paste0("Warning: unable to add '",assay_name,"' from .layers AnnData slot to SCE assay. Skipping. ")
+      message(error_message)
+    })
+  }
+  
   multidim_observations <- reticulate::py_to_r(anndata$obsm_keys())
   for(obsm_name in multidim_observations){
     tryCatch({
-      reducedDims(sce)[[obsm_name]] <- reticulate::py_to_r(anndata$obsm[obsm_name])
+      SingleCellExperiment::reducedDims(sce)[[obsm_name]] <- reticulate::py_to_r(anndata$obsm[obsm_name])
     }, error = function(x){
-      error_message <- paste0("Warning: unable to add '",uns_name,"' from .obsm AnnData slot to SCE metadata. Skipping. ")
+      error_message <- paste0("Warning: unable to add '",obsm_name,"' from .obsm AnnData slot to SCE metadata. Skipping. ")
       message(error_message)
     })
-
   }
 
   unstructured_data <- reticulate::py_to_r(anndata$uns_keys())

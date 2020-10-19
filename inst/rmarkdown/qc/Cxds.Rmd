@@ -38,8 +38,8 @@ sce.qc<- params$object
 ```
 
 ```{r, "Cxds-desc", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_CxdsResults<- descriptionCXDS()
+description_CxdsResults<- descriptionCXDS()
 ```
 
 # {.unlisted .unnumbered .toc-ignore}
-`r descriprion_CxdsResults`
+`r description_CxdsResults`

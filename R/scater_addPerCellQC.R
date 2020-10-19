@@ -64,7 +64,8 @@ runPerCellQC <- function(inSCE,
   if(!is.null(geneSetCollection)) {
 
     ## Get the location where the gene set Ids are stored in SCE object
-    geneSetCollectionLocation <- sapply(geneSetCollection, GSEABase::description)
+    geneSetCollectionLocation <- vapply(geneSetCollection, GSEABase::description, 
+                                        FUN.VALUE = character(length(names(geneSetCollection))))
 
     ## If blank/null/NA, then set to rownames by default
     ix <- geneSetCollectionLocation == "" || is.na(geneSetCollectionLocation) || is.null(geneSetCollectionLocation)

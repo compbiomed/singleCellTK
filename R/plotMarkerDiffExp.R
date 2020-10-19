@@ -81,13 +81,15 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         }# else if(any(!SummarizedExperiment::colData(inSCE)[[cluster]] %in%
          #             orderBy)){
          #   stop('Invalid "orderBy", please input a vector of unique ordered ',
-         #        'cluster identifiers that match all clusters in colData(inSCE) ',
-         #        'specified by "cluster" to adjust the order of clusters.')
+         #        'cluster identifiers that match all clusters in ',
+         #        'colData(inSCE) specified by "cluster" to adjust the order ',
+         #        'of clusters.')
         #}
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
-    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
+    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
+            colnames(degFull)[seq_len(4)])){
         stop('"findMarker" result cannot be interpreted properly')
     }
     if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
@@ -117,9 +119,10 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     if (!is.null(topN)) {
       for (c in unique(degFull[[clusterName]])) {
         deg.cluster <- degFull[degFull[[clusterName]] == c,]
-        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC, decreasing = TRUE),]
+        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC,
+                                         decreasing = TRUE),]
         if (dim(deg.cluster)[1] > topN) {
-          deg.cluster <- deg.cluster[1:topN,]
+          deg.cluster <- deg.cluster[seq_len(topN),]
         }
         selected <- c(selected, deg.cluster$Gene)
       }
@@ -138,7 +141,8 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
             factor(degFull[[clusterName]], levels = z.order)
     } else {
-        SummarizedExperiment::rowData(inSCE)[[clusterName]] <- degFull[[clusterName]]
+        SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
+          degFull[[clusterName]]
     }
     y <- SummarizedExperiment::rowData(inSCE)[[clusterName]]
     if(!is.null(orderBy)){
@@ -165,12 +169,13 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
     featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
     hm <- plotSCEHeatmap(inSCE, useAssay = useAssay, colDataName = colDataName,
-        rowDataName = rowDataName, colSplitBy = colSplitBy, rowSplitBy = rowSplitBy,
-        featureAnnotations = featureAnnotations,
-        cellAnnotations = cellAnnotations,
-        featureAnnotationColor = featureAnnotationColor,
-        cellAnnotationColor = cellAnnotationColor,
-        cluster_row_slices = FALSE,
-        cluster_column_slices = FALSE, ...)
+                         rowDataName = rowDataName, colSplitBy = colSplitBy,
+                         rowSplitBy = rowSplitBy,
+                         featureAnnotations = featureAnnotations,
+                         cellAnnotations = cellAnnotations,
+                         featureAnnotationColor = featureAnnotationColor,
+                         cellAnnotationColor = cellAnnotationColor,
+                         cluster_row_slices = FALSE,
+                         cluster_column_slices = FALSE, ...)
     return(hm)
 }

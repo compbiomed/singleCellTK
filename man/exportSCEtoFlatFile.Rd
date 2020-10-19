@@ -27,6 +27,9 @@ gzip compressed. \code{FALSE} otherwise. Default
 
 \item{sample}{Name of the sample. It will be used as the prefix of file names.}
 }
+\value{
+Generates text files containing data from \code{inSCE}.
+}
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 \link[SingleCellExperiment]{SingleCellExperiment} to text files.
@@ -34,6 +37,7 @@ The items in the 'metadata' slot remain stored in list and are saved in an RDS f
 }
 \examples{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoFlatFile(sce_chcl, "sce_chcl")
-
+}
 }

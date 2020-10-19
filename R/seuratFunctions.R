@@ -273,7 +273,7 @@ seuratPlotHVG <- function(inSCE) {
 #' sce <- seuratFindHVG(sce, useAssay = "counts")
 #' sce <- seuratScaleData(sce, useAssay = "counts")
 #' sce <- seuratPCA(sce, useAssay = "counts")
-#' seuratReductionPlot(sce, useReductionPlot = "pca")
+#' seuratReductionPlot(sce, useReductionPlot = "pca")}
 #' @return plot object
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
@@ -493,6 +493,8 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param assaySlotSCE Selected assay to update in the input SingleCellExperiment object
 #' @param seuratDataSlot Selected data slot from the Seurat object. Default \code{"counts"}.
 #' @param seuratAssaySlot Selected assay from Seurat object. Default \code{"RNA"}.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
+#'  data from Seurat object appended to the \link[SummarizedExperiment]{assay} slot.
 #' @importFrom SummarizedExperiment assay<-
 .updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, seuratDataSlot = "counts", seuratAssaySlot = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL

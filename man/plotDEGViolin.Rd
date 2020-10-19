@@ -12,7 +12,9 @@ plotDEGViolin(
   labelBy = NULL,
   nrow = 6,
   ncol = 6,
-  defaultTheme = TRUE
+  defaultTheme = TRUE,
+  isLogged = TRUE,
+  check_sanity = TRUE
 )
 }
 \arguments{
@@ -35,6 +37,13 @@ where to search for the labeling text. Default \code{NULL}.}
 
 \item{defaultTheme}{Logical scalar. Whether to use default SCTK theme in
 ggplot. Default \code{TRUE}.}
+
+\item{isLogged}{Logical scalar. Whether the assay used for the analysis is
+logged. If not, will do a \code{log(assay + 1)} transformation. Default
+\code{TRUE}.}
+
+\item{check_sanity}{Logical scalar. Whether to perform MAST's sanity check
+to see if the counts are logged. Default \code{TRUE}}
 }
 \value{
 A ggplot object of violin plot

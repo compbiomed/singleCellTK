@@ -38,6 +38,9 @@ Default \code{"counts"}.}
 \item{forceDense}{Default \code{False} Write sparse data as a dense matrix.
 Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.}
 }
+\value{
+Generates a Python anndata object containing data from \code{inSCE}.
+}
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 \link[SingleCellExperiment]{SingleCellExperiment} to a Python annData object in the .h5ad format
@@ -47,6 +50,7 @@ overridden at function call.
 }
 \examples{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
-
+}
 }

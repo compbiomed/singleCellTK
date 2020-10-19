@@ -39,9 +39,10 @@
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' \donttest{
+#' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
@@ -205,7 +206,7 @@ plotRunPerCellQCResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
 
-    if(combinePlot == "sample" | length(samples) == 1){
+    if(combinePlot == "sample" | combinePlot == "none" | length(samples) == 1){
       violin.sum <- list(sum = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="sum",
@@ -268,6 +269,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.toppercent)
+      names(res.list) <- c("Sum", "Detected", "TopPercent")
 
       if (any(grepl(
         pattern="subsets_",
@@ -317,6 +319,8 @@ plotRunPerCellQCResults <- function(inSCE,
     if(combinePlot == "all"){
       plotlist <- c(merged.plots)
     }else if(combinePlot == "sample"){
+      plotlist <- c(merged.plots, list(Sample = plotlist))
+    }else if(combinePlot == "none"){
       plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {
@@ -371,6 +375,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -435,6 +440,7 @@ plotEmptyDropsResults <- function(inSCE,
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE=sce)
@@ -522,6 +528,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -790,6 +797,7 @@ plotScrubletResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -1142,6 +1150,7 @@ plotDoubletFinderResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -1389,6 +1398,7 @@ plotDoubletCellsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -1658,6 +1668,7 @@ plotCxdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -1928,6 +1939,7 @@ plotBcdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -2196,6 +2208,7 @@ plotScdsHybridResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")

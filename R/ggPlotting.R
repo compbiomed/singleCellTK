@@ -345,8 +345,7 @@
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
-#' @return a ggplot of the reduced dimensions.
-#' @export
+#' @return a ggplot of the reduced dimension plot of coldata.
 #' @examples
 #' plotSCEDimReduceColData(
 #'   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
@@ -361,6 +360,7 @@
 #'   reducedDimName = "TSNE_counts", bin = c(-Inf, 20, 25, +Inf),
 #'   xlab = "tSNE1", ylab = "tSNE2", labelClusters = FALSE
 #' )
+#' @export
 plotSCEDimReduceColData <- function(inSCE,
                                     sample = NULL,
                                     colorBy,
@@ -483,7 +483,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
-#' @return a ggplot of the reduced dimensions.
+#' @return a ggplot of the reduced dimension plot of feature data.
 #' @examples
 #' plotSCEDimReduceFeatures(
 #'   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
@@ -907,6 +907,7 @@ plotSCEScatter <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot of the violin plot of coldata.
 #' @examples
 #' plotSCEViolinColData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1060,6 +1061,7 @@ plotSCEViolinColData <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot of the violin plot of assay data.
 #' @examples
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1218,6 +1220,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot of the violin plot.
 #' @examples
 #' plotSCEViolin(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
@@ -1378,6 +1381,7 @@ plotSCEViolin <- function(inSCE,
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @return density plot, in .ggplot.
 .ggDensity <- function(value,
                        groupBy = NULL,
                        xlab = NULL,
@@ -1456,6 +1460,7 @@ plotSCEViolin <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot of the density plot of colData.
 #' @examples
 #' plotSCEDensityColData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1586,6 +1591,7 @@ plotSCEDensityColData <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot of the density plot of assay data.
 #' @examples
 #' plotSCEDensityAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -1720,6 +1726,7 @@ plotSCEDensityAssayData <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
+#' @return a ggplot object of the density plot.
 #' @examples
 #' plotSCEDensity(
 #'   inSCE = mouseBrainSubsetSCE, slot = "assays",
@@ -1882,6 +1889,7 @@ plotSCEDensity <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return a ggplot object of the scatter plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -2032,6 +2040,7 @@ plotEmptyDropsScatter <- function(inSCE,
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
 #'  Default TRUE.
+#' @return a ggplot object of the scatter plot.
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE=sce)
@@ -2287,7 +2296,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param combinePlot Boolean. If multiple plots are generated (multiple
 #'  samples, etc.), will combined plots using `cowplot::plot_grid`.
 #'  Default TRUE.
-
+#' @return a ggplot of the barplot of coldata.
 #' @examples
 #' plotSCEBarColData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -2390,6 +2399,7 @@ plotSCEBarColData <- function(inSCE,
 #' @param combinePlot Boolean. If multiple plots are generated (multiple
 #'  samples, etc.), will combined plots using `cowplot::plot_grid`.
 #'  Default TRUE.
+#' @return a ggplot of the barplot of assay data.
 #' @examples
 #' plotSCEBarAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
@@ -2543,7 +2553,7 @@ plotSCEBarAssayData <- function(inSCE,
         labelPositionY = rep(1, length(plotlist))
       }
 
-      for(x in 1:length(plotlist)){
+      for(x in seq_along(plotlist)){
         labeled <- plotlist[[x]] + cowplot::draw_plot_label(
           labels[x],
           x = labelPositionX[x],

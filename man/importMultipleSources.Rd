@@ -4,10 +4,13 @@
 \alias{importMultipleSources}
 \title{Imports samples from different sources and compiles them into a list of SCE objects}
 \usage{
-importMultipleSources(allImportEntries)
+importMultipleSources(allImportEntries, delayedArray = FALSE)
 }
 \arguments{
 \item{allImportEntries}{object containing the sources and parameters of all the samples being imported (from the UI)}
+
+\item{delayedArray}{Boolean. Whether to read the expression matrix as
+\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing

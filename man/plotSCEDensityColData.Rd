@@ -57,6 +57,9 @@ if set. Default NULL.}
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
 }
+\value{
+a ggplot of the density plot of colData.
+}
 \description{
 Visualizes values stored in the colData slot of a
  SingleCellExperiment object via a density plot.
