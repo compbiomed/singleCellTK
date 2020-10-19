@@ -71,7 +71,7 @@
             cells2 <- sort(setdiff(colnames(inSCE), cells1))
         }
     } else {
-        if(length(class) == 1 && class(class) == "character"){
+        if(length(class) == 1 && inherits(class, "character")){
             if(!class %in% names(SummarizedExperiment::colData(inSCE))){
                 stop("class: '", class, "' not found.")
             }
@@ -101,6 +101,11 @@
     }
     ix1 <- colnames(inSCE) %in% cells1
     ix2 <- colnames(inSCE) %in% cells2
+    isec <- intersect(which(ix1), which(ix2))
+    if (length(isec) > 0) {
+      stop("Cell(s) selected for both conditions: ",
+           paste(colnames(inSCE)[isec], collapse = ", "))
+    }
     select <- list(ix1 = ix1, ix2 = ix2)
     if(!is.null(covariates)){
         for (c in covariates){
@@ -125,6 +130,12 @@
 #' @param ... Other arguments passed to specific functions. Refer to
 #' \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
 #' \code{\link{runANOVA}}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "DESeq2")
 #' @return Input SCE object with \code{metadata(inSCE)} updated with name
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
 #' functions.
@@ -183,6 +194,13 @@ runDEAnalysis <- function(method = 'MAST', ...){
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "DESeq2")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -251,6 +269,9 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'DESeq2'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -304,6 +325,15 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' library(scater)
+#' sce <- logNormCounts(sce)
+#' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "Limma")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -365,6 +395,9 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'Limma'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -420,6 +453,15 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' library(scater)
+#' sce <- logNormCounts(sce)
+#' sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "ANOVA", fdrThreshold = NULL)
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -493,7 +535,6 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     if(isTRUE(onlyPos)){
       warning("ANOVA method does not generate log2FC value. `onlyPos` ",
               "argument ignored")
-      #deg <- deg[deg$Log2_FC > 0,]
     }
     if(!is.null(fdrThreshold)){
       deg <- deg[deg$FDR < fdrThreshold,]
@@ -505,6 +546,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     }
     # Format output
     deg <- deg[order(deg$FDR, na.last = TRUE),]
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
     resultList$result <- deg
     resultList$method <- 'ANOVA'
 
@@ -558,6 +602,16 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' value. Default \code{0.05}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
+#' to see if the counts are logged. Default \code{TRUE}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' logcounts(sce) <- log(counts(sce) + 1)
+#' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
+#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  analysisName = "MAST")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
@@ -571,7 +625,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     classGroup2 = NULL, analysisName, groupName1,
                     groupName2, covariates = NULL, onlyPos = FALSE,
                     log2fcThreshold = NULL, fdrThreshold = 0.05,
-                    overwrite = FALSE){
+                    overwrite = FALSE, check_sanity = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -597,9 +651,12 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                        condition = as.factor(cond),
                        ngeneson = rep("", (length(cells1) + length(cells2))),
                        stringsAsFactors = FALSE)
-    covariateDat <- data.frame(SummarizedExperiment::colData(inSCE[,subsetIdx])[,covariates,drop = FALSE])
+    covariateDat <-
+      data.frame(SummarizedExperiment::colData(inSCE[,subsetIdx])[,
+                                                                  covariates,
+                                                                  drop = FALSE])
     cdat <- cbind(cdat, covariateDat)
-    sca <- MAST::FromMatrix(mat, cdat)
+    sca <- MAST::FromMatrix(mat, cdat, check_sanity = check_sanity)
     cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
     SummarizedExperiment::colData(sca)$cngeneson <- scale(cdr2)
     cond <- factor(SummarizedExperiment::colData(sca)$condition)
@@ -651,7 +708,11 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     fcHurdleSig <- fcHurdleSig[order(fcHurdleSig$FDR, na.last = TRUE),
     ]
     # Format output
-    resultList$result <- as.data.frame(fcHurdleSig)
+    deg <- as.data.frame(fcHurdleSig)
+    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+    }
+    resultList$result <- deg
     resultList$method <- 'MAST'
 
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){

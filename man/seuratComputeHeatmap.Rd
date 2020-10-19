@@ -40,3 +40,14 @@ plot object
 seuratComputeHeatmap
 Computes the heatmap plot object from the pca slot in the input sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+heatmap <- seuratComputeHeatmap(sce, useAssay = "counts")
+seuratHeatmapPlot(heatmap)
+}
+}

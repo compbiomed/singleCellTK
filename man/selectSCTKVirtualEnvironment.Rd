@@ -9,6 +9,9 @@ selectSCTKVirtualEnvironment(envname = "sctk-reticulate")
 \arguments{
 \item{envname}{Character. Name of the virtual environment to activate.}
 }
+\value{
+None. Selects virtual environment.
+}
 \description{
 Selects a virtual environment with Python packages used in \code{\link{singleCellTK}}
 }

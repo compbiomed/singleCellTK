@@ -43,6 +43,7 @@
 #' @param rowIndexLocation Character. For Optimus output, The path to the
 #'  feature (gene) index .npy file. Used only if \code{file} has .npz extension.
 #'  Default \code{NULL}.
+#' @return A \link[DelayedArray]{DelayedArray} object or matrix.
 #' @examples
 #' mat <- readSingleCellMatrix(system.file("extdata/hgmm_1k_v3_20x20/outs/",
 #'     "filtered_feature_bc_matrix/matrix.mtx.gz", package = "singleCellTK"))

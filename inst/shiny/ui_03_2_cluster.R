@@ -29,43 +29,7 @@ shinyPanelCluster <- fluidPage(
             6,
             uiOutput("clustScranSNNMatUI"),
             uiOutput("clustScranSNNAltExpAssayUI")
-            #selectInput("clustScranSNNInType", "Select Input Matrix Type:",
-            #            c("Assay", "ReducedDim", "AltExp")),
-            #conditionalPanel(
-            #  "input.clustScranSNNInType == 'AltExp'",
-            #  uiOutput("clustScranSNNAltExpAssayUI")
-            #)
           ),
-          #column(
-          #  6,
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'Assay'",
-          #    selectInput("clustScranSNNAssay", "Select An Assay:", currassays)
-          #  ),
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'ReducedDim'",
-          #    selectInput("clustScranSNNReddim", "Select A ReducedDim:", currreddim)
-          #  ),
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'AltExp'",
-          #    selectInput("clustScranSNNAltExp", "Select An AltExp:", curraltExps)
-          #  )
-          #),
-          #column(
-          #  12,
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'Assay'",
-          #    helpText("An 'assay' contains full sized data matrix with all cells and features.")
-          #  ),
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'ReducedDim'",
-          #    helpText("A 'reducedDim' contains low-dimension representation of an assay.\n Dimension reduction has to be run in advance.")
-          #  ),
-          #  conditionalPanel(
-          #    "input.clustScranSNNInType == 'AltExp'",
-          #    helpText("An 'altExp' contains an assay with subseted features.")
-          #  )
-          #),
           column(
             4,
             numericInput("clustScranSNNK", "K value:", 10, min = 1, step = 1),
@@ -166,3 +130,4 @@ shinyPanelCluster <- fluidPage(
     )
   )
 )
+

@@ -22,7 +22,7 @@
 #' Alternatively NULL, in which case alternative experiments are not used.
 #' @param flatten Logical scalar indicating whether the nested \link[S4Vectors]{DataFrame-class}
 #' in the output should be flattened.
-#' @param detection.limit A numeric scalar specifying the lower detection limit for expression.
+#' @param detectionLimit A numeric scalar specifying the lower detection limit for expression.
 #' @param BPPARAM A \link[BiocParallel]{BiocParallelParam} object specifying
 #' whether the QC calculations should be parallelized.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
@@ -43,7 +43,7 @@ runPerCellQC <- function(inSCE,
     percent_top = c(50, 100, 200, 500),
     use_altexps = FALSE,
     flatten = TRUE,
-    detection.limit = 0,
+    detectionLimit = 0,
     BPPARAM = BiocParallel::SerialParam()
 ) {
 
@@ -64,7 +64,8 @@ runPerCellQC <- function(inSCE,
   if(!is.null(geneSetCollection)) {
 
     ## Get the location where the gene set Ids are stored in SCE object
-    geneSetCollectionLocation <- sapply(geneSetCollection, GSEABase::description)
+    geneSetCollectionLocation <- vapply(geneSetCollection, GSEABase::description, 
+                                        FUN.VALUE = character(length(names(geneSetCollection))))
 
     ## If blank/null/NA, then set to rownames by default
     ix <- geneSetCollectionLocation == "" || is.na(geneSetCollectionLocation) || is.null(geneSetCollectionLocation)
@@ -149,7 +150,7 @@ runPerCellQC <- function(inSCE,
                                 percent_top = percent_top,
                                 use_altexps = use_altexps,
                                 flatten = flatten,
-                                detection.limit = detection.limit,
+                                detection_limit = detectionLimit,
                                 BPPARAM = BPPARAM)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]

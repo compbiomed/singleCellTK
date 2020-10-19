@@ -106,19 +106,22 @@
     return(df)
 }
 
-#' @title Plot table of SCTK QC outputs.
-#' @description Plot QC metrics generated from QC algorithms via either kable or csv file.
+#' @title Generate table of SCTK QC outputs.
+#' @description  Creates a table of QC metrics generated from
+#'  QC algorithms via either kable or csv file.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
+#' \link[SummarizedExperiment]{assay} data and/or
+#' \link[SummarizedExperiment]{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #'  'counts'.
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
+#' @return A matrix/array object.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sampleSummaryStats(sce, simple = TRUE)
 #' @importFrom magrittr %>%
 #' @export

@@ -243,4 +243,4 @@ shinyPanelSeurat <- fluidPage(
                     style = "primary")
        )
     )
-# ----
+

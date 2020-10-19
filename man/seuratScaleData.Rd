@@ -37,3 +37,11 @@ Scaled \code{SingleCellExperiment} object
 seuratScaleData
 Scales the input sce object according to the input parameters
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+}
+}

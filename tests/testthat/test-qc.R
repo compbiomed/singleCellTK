@@ -3,7 +3,7 @@ library(singleCellTK)
 context("Testing dimensionality reduction algorithms")
 data(scExample, package = "singleCellTK")
 sceDroplet <- sce
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sampleVector <- c(rep("Sample1", 100), rep("Sample2", 95))
 sceres <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, sample = sampleVector, nNeighbors = 10, reducedDimName = "UMAP",
                 nIterations = 20, alpha = 1, minDist = 0.01, pca = TRUE, initialDims = 20)
@@ -81,11 +81,6 @@ test_that("Testing scrublet",{
   expect_equal(class(colData(sceres)$scrublet_call), 'logical')
   expect_equal(dim(reducedDim(sceres,'scrublet_TSNE')), c(ncol(sceres),2))
   expect_equal(dim(reducedDim(sceres,'scrublet_UMAP')), c(ncol(sceres),2))
-})
-
-test_that("Testing sampleSummaryStats",{
-  df <- sampleSummaryStats(sceres, simple = FALSE)
-   expect_equal(class(df), "matrix")
 })
 
 sceDroplet <- runDropletQC(sceDroplet)

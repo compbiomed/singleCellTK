@@ -2,13 +2,14 @@
 % Please edit documentation in R/sampleSummaryStats.R
 \name{sampleSummaryStats}
 \alias{sampleSummaryStats}
-\title{Plot table of SCTK QC outputs.}
+\title{Generate table of SCTK QC outputs.}
 \usage{
 sampleSummaryStats(inSCE, sample = NULL, useAssay = "counts", simple = TRUE)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-dimension reduction components or a variable with saved results. Required}
+\link[SummarizedExperiment]{assay} data and/or
+\link[SummarizedExperiment]{colData} data. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -19,11 +20,15 @@ dimension reduction components or a variable with saved results. Required}
 basic QC stats (ex. library size), or to generate a summary table of all
 QC stats stored in the inSCE.}
 }
+\value{
+A matrix/array object.
+}
 \description{
-Plot QC metrics generated from QC algorithms via either kable or csv file.
+Creates a table of QC metrics generated from
+ QC algorithms via either kable or csv file.
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sampleSummaryStats(sce, simple = TRUE)
 }

@@ -37,3 +37,4 @@ shinyPanelViewers <- fluidPage(
     )
   )
 )
+

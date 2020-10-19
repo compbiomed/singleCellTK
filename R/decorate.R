@@ -10,7 +10,7 @@
   # Patch delayed decorator.
   if (! is.null({pretty_patched = attr(decorator, 'calls')}))
     pretty_decorators = c(pretty_patched, pretty_decorators[-1])
-  
+
   # Handle operator precedence so that we can chain decorators.
   if (inherits(f, 'decorator'))
     .delayed_decorate(decorator, f, pretty_decorators)
@@ -29,7 +29,7 @@ print.decorated = function (x, useSource = TRUE, ...) {
     attr(bare, 'decorators') = NULL
     bare
   }
-  
+
   fun_def = utils::capture.output(print.function(bare(x), useSource = useSource, ...))
   for (decorator in attr(x, 'decorators'))
     cat(deparse(decorator), '%@%\n')
@@ -54,11 +54,12 @@ pretty_code = function (f) {
 .delayed_decorate = function (d1, d2, decorator_calls)
   structure(decorator(function (f) d1(d2(f))), calls = decorator_calls)
 
-#' 
+#'
 #' @name simpleLog
 #' @title A decorator that prints the arguments to the decorated function
 #' @param f A function to decorate
-#' 
+#' @return Prints message
+#'
 simpleLog <- decorator %@% function(f) {
   function(...) {
     message(deparse(match.call()))

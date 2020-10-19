@@ -34,8 +34,12 @@
 #'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
 #'     library(bladderbatch)
 #'     data(bladderdata)
-#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
-#'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
+#'     dat <- as(as(bladderEset, "SummarizedExperiment"),
+#'               "SingleCellExperiment")
+#'     plotBatchVariance(dat,
+#'                       useAssay="exprs",
+#'                       batch="batch",
+#'                       condition = "cancer")
 #'   }
 #' }
 #'
@@ -172,6 +176,9 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 #' @param xlab label for x-axis. Default \code{"batch"}.
 #' @param ylab label for y-axis. Default \code{"Feature Mean"}.
 #' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
+#' @examples
+#' data('sceBatches', package = 'singleCellTK')
+#' plotSCEBatchFeatureMean(sceBatches, useAssay = "logcounts")
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,

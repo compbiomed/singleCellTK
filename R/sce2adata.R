@@ -14,7 +14,7 @@
 .sce2adata <- function(SCE, useAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first
-    stopifnot(class(SCE) == "SingleCellExperiment")
+    stopifnot(inherits(SCE, "SingleCellExperiment"))
 
     # Extract information that correspond to AnnData structure
     X <- t(SummarizedExperiment::assay(SCE, useAssay))
@@ -37,18 +37,20 @@
     # }
     obsmNames <- SingleCellExperiment::reducedDimNames(SCE)
     if(length(obsmNames) > 0){
-        for (i in 1:length(obsmNames)) {
+        for (i in seq_along(obsmNames)) {
             AnnData$obsm$'__setitem__'(obsmNames[i],
-                                       SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
+                            SingleCellExperiment::reducedDim(SCE, obsmNames[i]))
         }
     }
 
-    # Furthermore, the other assays will for now also be saved to .obsm
+    # Furthermore, the other assays will for now also be saved to .layers
     allAssayNames <- SummarizedExperiment::assayNames(SCE)
-    for (i in 1:length(allAssayNames)) {
+    for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            AnnData$obsm$'__setitem__'(oneName, t(SummarizedExperiment::assay(SCE, oneName)))
+            AnnData$obsm$'__setitem__'(oneName,
+                                       t(SummarizedExperiment::assay(SCE,
+                                                                     oneName)))
         }
     }
     return(AnnData)

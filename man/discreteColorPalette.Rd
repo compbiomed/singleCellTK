@@ -30,6 +30,9 @@ A character vector of \code{n} hex color codes.
 \description{
 Three different generation methods are wrapped, including
 \code{\link[celda]{distinctColors}},
-\code{\link[randomcoloR]{distinctColorPalette}} and the \code{ggplot}
+[randomcoloR](SCTK_PerformingQC_Cell_V3.Rmd) and the \code{ggplot}
 default color generation.
+}
+\examples{
+discreteColorPalette(n = 3)
 }

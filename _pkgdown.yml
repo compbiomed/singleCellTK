@@ -28,13 +28,13 @@ reference:
     - runBBKNN
     - runHarmony
     - runLimmaBC
-    - runSeurat3Integration
     - runFastMNN
     - runLIGER
     - runMNNCorrect
     - runSCANORAMA
     - runSCMerge
     - runZINBWaVE
+    - seuratIntegration
   - title: Differential Expression
     contents:
     - runDESeq2

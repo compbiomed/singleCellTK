@@ -78,6 +78,9 @@ the relative heights for each plot.}
 \item{sampleRelWidths}{If there are multiple samples and combining by "all",
 the relative widths for each plot.}
 }
+\value{
+a ggplot object of the scatter plot.
+}
 \description{
 A plotting function which visualizes outputs from the
  runEmptyDrops function stored in the colData slot of the SingleCellExperiment

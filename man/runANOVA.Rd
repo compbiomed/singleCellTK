@@ -92,3 +92,13 @@ used.
 NOTE that ANOVA method does not produce Log2FC value, but P-value and FDR
 only.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+library(scater)
+sce <- logNormCounts(sce)
+sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ analysisName = "ANOVA", fdrThreshold = NULL)
+
+}

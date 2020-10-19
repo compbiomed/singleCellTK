@@ -37,8 +37,8 @@ require(ggplot2)
 ```
 
 ```{r, "Bcds-desc", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_BcdsResults<- descriptionBCDS()
+description_BcdsResults<- descriptionBCDS()
 ```
 
 # {.unlisted .unnumbered .toc-ignore}
-`r descriprion_BcdsResults`
+`r description_BcdsResults`
