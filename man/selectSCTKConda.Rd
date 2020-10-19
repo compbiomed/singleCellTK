@@ -9,6 +9,9 @@ selectSCTKConda(envname = "sctk-reticulate")
 \arguments{
 \item{envname}{Character. Name of the conda environment to activate.}
 }
+\value{
+None. Selects Conda environment.
+}
 \description{
 Selects a Conda environment with Python packages used in \code{\link{singleCellTK}}.
 }

@@ -29,9 +29,14 @@ cell count matrix data}
 \item{dataType}{Type of the input data. It can be one of "Droplet", "Cell" or "Both".}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 objects in sceList. The colData is merged.
 }
 \description{
 Generate manifest file for droplet and cell count data
+}
+\examples{
+data(scExample, package = "singleCellTK")
+generateMeta(sce, dir = ".", samplename = "Sample",
+ HTAN = TRUE)
 }

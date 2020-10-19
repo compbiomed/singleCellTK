@@ -211,9 +211,9 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
     algo <- algoList[[i]]
     id <- paste0(algo, "Tab")
     if (is.null(statuses[[algo]])) {
-      selectTab <- F
+      selectTab <- FALSE
       if (i == 1) {
-        selectTab <- T
+        selectTab <- TRUE
       } 
       appendTab("qcResPlotTabs", tabPanel(algo, 
                                           fluidPage(id = id, 
@@ -247,7 +247,7 @@ filteringModal <- function(failed=FALSE, colNames) {
 
 rowFilteringModal <- function(failed=FALSE, assayInput) {
   modalDialog(
-    h3("Select a Column"),
+    h3("Select an Assay"),
     selectInput("filterAssaySelect", "", assayInput),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),

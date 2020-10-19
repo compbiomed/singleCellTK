@@ -170,3 +170,4 @@ shinyPanelHeatmap <- fluidPage(
     #plotOutput("Heatmap")
   )
 )
+

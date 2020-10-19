@@ -22,7 +22,6 @@ Generates and stores variability data from scran::modelGeneVar in the input sing
 \examples{
 data(sce_chcl, package = "scds")
 sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-print(head(rowData(sce_chcl)))
 }
 \author{
 Irzam Sarfraz

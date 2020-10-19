@@ -28,7 +28,6 @@ Uses \link[scater]{logNormCounts} to log normalize input data
 \examples{
 data(sce_chcl, package = "scds")
 sce_chcl <- scater_logNormCounts(sce_chcl,"logcounts", "counts")
-print(sce_chcl)
 }
 \author{
 Irzam Sarfraz

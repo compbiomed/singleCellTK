@@ -16,9 +16,12 @@ combineSCE(sceList, by.r, by.c, combined)
 \item{combined}{logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 objects in sceList. The colData is merged.
 }
 \description{
 Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
+}
+\examples{
+combinedsce <- combineSCE(list(sce,sce), by.r = NULL, by.c = NULL, combined = TRUE)
 }

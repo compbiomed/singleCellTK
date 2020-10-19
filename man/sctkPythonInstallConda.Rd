@@ -8,7 +8,7 @@ sctkPythonInstallConda(
   envname = "sctk-reticulate",
   conda = "auto",
   packages = c("scipy", "numpy", "astroid", "six"),
-  pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "scgen", "anndata"),
+  pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata"),
   selectConda = TRUE,
   forge = FALSE,
   pipIgnoreInstalled = TRUE,
@@ -36,6 +36,9 @@ to install via pip due to compilation requirements).}
 \item{pythonVersion}{Passed to \code{python_version} variable in \code{\link[reticulate]{conda_install}}. Default NULL.}
 
 \item{...}{Other parameters to pass to \code{\link[reticulate]{conda_install}}.}
+}
+\value{
+None. Installation of Conda environment.
 }
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package

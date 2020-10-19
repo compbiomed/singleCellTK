@@ -4,15 +4,13 @@
 #' \linkS4class{SingleCellExperiment}
 #'
 #' @param inSCE Input SingleCellExperiment object.
-#' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the first
-#' assay in \code{inSCE} will be used. Default \code{NULL}.
+#' @param useAssay Indicate which assay to summarize. If \code{NULL}, then the
+#' first assay in \code{inSCE} will be used. Default \code{NULL}.
 #' @param sampleVariableName Variable name in \code{colData} denoting which
 #' sample each cell belongs to. If \code{NULL}, all cells will be assumed
 #' to come from the same sample. Default \code{"sample"}.
 #'
-#' @return A data.frame of summary metrics per sample.
-#' @importFrom Matrix colSums
-#' @importFrom DelayedArray colSums
+#' @return A data.frame object of summary metrics.
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
@@ -28,7 +26,8 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
     sampleVariable <- rep("Sample", ncol(inSCE))
   } else {
     if(!(sampleVariableName %in% colnames(colData(inSCE)))) {
-      stop(paste0("'", sampleVariableName, "' was not found in the 'colData' of 'inSCE'."))
+      stop("'", sampleVariableName, "' was not found in the 'colData' of ",
+           "'inSCE'.")
     }
     sampleVariable <- colData(inSCE)[,sampleVariableName]
   }
@@ -36,10 +35,12 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
   numCells <- table(sampleVariable)
   var <- colSums(SummarizedExperiment::assay(inSCE, useAssay))
   meanCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = mean)
-  medianCounts <- stats::aggregate(var, by = list(sampleVariable), FUN = stats::median)
+  medianCounts <- stats::aggregate(var, by = list(sampleVariable),
+                                   FUN = stats::median)
   var2 <- colSums(SummarizedExperiment::assay(inSCE, useAssay) > 0)
   meanDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = mean)
-  medianDetected <- stats::aggregate(var2, by = list(sampleVariable), FUN = stats::median)
+  medianDetected <- stats::aggregate(var2, by = list(sampleVariable),
+                                     FUN = stats::median)
 
   df <- data.frame("Sample" = names(numCells),
                    "Number of Cells" = as.integer(round(as.numeric(numCells))),
@@ -49,70 +50,6 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
                    "Median features detected per cell" = as.integer(round(medianDetected[,2])),
                    stringsAsFactors = FALSE, check.names = FALSE)
   return(df)
-}
-
-
-#' Filter Genes and Samples from a Single Cell Object
-#'
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. Required
-#' @param useAssay Indicate which assay to use for filtering. Default is
-#' "counts"
-#' @param deletesamples List of samples to delete from the object.
-#' @param removeNoExpress Remove genes that have no expression across all
-#' samples. The default is true
-#' @param removeBottom Fraction of low expression genes to remove from the
-#' single cell object. This occurs after removeNoExpress. The default is 0.50.
-#' @param minimumDetectGenes Minimum number of genes with at least 1
-#' count to include a sample in the single cell object. The default is 1700.
-#' @param filterSpike Apply filtering to Spike in controls (indicated by
-#' isSpike).
-#' The default is TRUE.
-#'
-#' @return The filtered single cell object.
-#' @export
-#' @examples
-#' \dontrun{
-#' data("mouseBrainSubsetSCE")
-#' mouseBrainSubsetSCE <- filterSCData(mouseBrainSubsetSCE,
-#'                                     deletesamples="X1772063061_G11")
-#' }
-filterSCData <- function(inSCE, useAssay="counts", deletesamples=NULL,
-                         removeNoExpress=TRUE, removeBottom=0.5,
-                         minimumDetectGenes=1700, filterSpike=TRUE){
-  #delete specified samples
-  inSCE <- inSCE[, !(colnames(inSCE) %in% deletesamples)]
-
-  if (filterSpike){
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE)))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
-                       decreasing = TRUE)[seq_len(nkeeprows)]
-  } else {
-    nkeeprows <- ceiling((1 - removeBottom) * as.numeric(nrow(inSCE))) -
-      sum(SingleCellExperiment::isSpike(inSCE))
-    tokeeprow <- order(rowSums(SummarizedExperiment::assay(inSCE, useAssay)),
-                       decreasing = TRUE)
-    tokeeprow <- setdiff(tokeeprow,
-                         which(SingleCellExperiment::isSpike(inSCE)))
-    tokeeprow <- tokeeprow[seq_len(nkeeprows)]
-    tokeeprow <- c(tokeeprow, which(SingleCellExperiment::isSpike(inSCE)))
-  }
-  tokeepcol <- colSums(SummarizedExperiment::assay(inSCE, useAssay) != 0) >=
-    minimumDetectGenes
-  inSCE <- inSCE[tokeeprow, tokeepcol]
-
-  #remove genes with no expression
-  if (removeNoExpress){
-    if (filterSpike){
-      inSCE <- inSCE[rowSums(SummarizedExperiment::assay(inSCE,
-                                                              useAssay)) != 0, ]
-    } else {
-      inSCE <- inSCE[(rowSums(
-        SummarizedExperiment::assay(inSCE, useAssay)) != 0 |
-          SingleCellExperiment::isSpike(inSCE)), ]
-    }
-  }
-
-  return(inSCE)
 }
 
 #' Generate a distinct palette for coloring different clusters
@@ -168,6 +105,47 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   return(col[seq_len(n)])
 }
 
+#' Generate given number of color codes
+#'
+#' @description Three different generation methods are wrapped, including
+#' \code{\link[celda]{distinctColors}},
+#' [randomcoloR](SCTK_PerformingQC_Cell_V3.Rmd) and the \code{ggplot}
+#' default color generation.
+#' @param n An integer, the number of color codes to generate.
+#' @param palette A single character string. Select the method, available
+#' options are \code{"ggplot"}, \code{"celda"} and \code{"random"}. Default
+#' \code{"random"}.
+#' @param seed An integer. Set the seed for random process that happens only in
+#' "random" generation. Default \code{12345}.
+#' @param ... Other arguments that are passed to the internal function,
+#' according to the method selected.
+#' @return A character vector of \code{n} hex color codes.
+#' @examples
+#' discreteColorPalette(n = 3)
+#' @export
+discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
+                                 seed = 12345, ...) {
+  palette <- match.arg(palette)
+  # Generate the colors
+  if (palette == "random") {
+    withr::with_seed(seed, {
+      # Using randomcoloR original codes here
+      km <- stats::kmeans(colorSpace, n, iter.max = 20)
+      colors <- unname(colorspace::hex(colorspace::LAB(km$centers)))
+      colors <- colors[order(colors)]
+    })
+  } else if (palette == "ggplot") {
+    hues <- seq(15, 375, length = n + 1)
+    colors <- grDevices::hcl(h = hues, l = 65, c = 100)[seq_len(n)]
+  } else if (palette == "celda") {
+    colors <- distinctColors(n, ...)
+  } else {
+    stop("Given palette '", palette, "' is not supported. Please choose from ",
+         "'ggplot', 'celda' or 'random'.")
+  }
+  return(colors)
+}
+
 #test shiny functions
 .testFunctions <- function(){
   if (interactive()){
@@ -197,13 +175,15 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
   chuN <- ceiling(dimN[2]/chuS) # number of chunks
   Mat <- list()
 
-  for (i in 1:chuN) {
+  for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
-      Mat[[i]] <- methods::as(x[, start:end], "Matrix") # Efficient way to convert DelayedArray to dgCMatrix
+      # Efficient way to convert DelayedArray to dgCMatrix
+      Mat[[i]] <- methods::as(x[, start:end], "Matrix")
     } else {
-      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix") # Convert dgTMatrix to dgCMatrix
+      # Convert dgTMatrix to dgCMatrix
+      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
     }
   }
   x <- do.call(base::cbind, Mat)
@@ -220,7 +200,7 @@ distinctColors <- function(n, hues = c("red", "cyan", "orange", "blue",
 #' resolved.
 #' @return The same matrix as input with rowname duplication resolved.
 featureNameDedup <- function(countmat){
-    if(!class(rownames(countmat)) == 'character'){
+    if(!inherits(rownames(countmat), "character")){
         stop("No character feature name found.")
     }
     gene.table <- table(rownames(countmat))
@@ -231,8 +211,7 @@ featureNameDedup <- function(countmat){
         for (genename in gene.duplicates.names){
             genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
             indices <- which(grepl(genename, rownames(countmat)))
-            num <- length(indices)
-            for (i in 1:num){
+            for (i in seq_along(indices)){
                 rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
             }
         }
@@ -261,6 +240,10 @@ featureNameDedup <- function(countmat){
 #' or to identify partial matches using \code{\link{grep}}. Default \code{TRUE}
 #' @param firstMatch A logical scalar. Whether to only identify the first
 #' matches or to return all plausible matches. Default \code{TRUE}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' retrieveSCEIndex(inSCE = sce, IDs = "ENSG00000205542",
+#'  axis = "row")
 #' @return A unique, non-NA numeric vector of indices for the matching
 #' features/cells in \code{inSCE}.
 #' @author Yusuke Koga, Joshua Campbell
@@ -344,14 +327,16 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 
-#backup or restore 'factor' columns in a dataframe (for use in col/row annotation editor)
+# backup or restore 'factor' columns in a dataframe
+# (for use in col/row annotation editor)
 .manageFactor <- function(df, operation = "backup"){
   if(operation == "backup"){
     data <- list()
     data$data_type <- list()
     data$df <- df
-    for (i in 1:length(colnames(data$df))) {
-      data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]), is.factor(data$df[,i]))
+    for (i in seq_along(colnames(data$df))) {
+      data$data_type[[colnames(data$df)[i]]] <- c(typeof(data$df[,i]),
+                                                  is.factor(data$df[,i]))
     }
     data$df <- .convertFactorToCharacter(df)
   }

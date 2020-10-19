@@ -9,7 +9,6 @@
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- scater_logNormCounts(sce_chcl,"logcounts", "counts")
-#' print(sce_chcl)
 scater_logNormCounts <- function(inSCE, logAssayName = "ScaterLogNormCounts", useAssay = "counts"){
   inSCE <- scater::logNormCounts(
     x = inSCE, 

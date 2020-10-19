@@ -7,7 +7,17 @@ shinyPanelDiffex <- fluidPage(
     fluidRow(
       panel(
         style = "margin:2px;",
-        selectInput("deAssay", "Select Assay:", currassays),
+        fluidRow(
+          column(
+            4,
+            selectInput('deMethod', "Choose analysis method",
+                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
+          ),
+          column(
+            4,
+            selectInput("deAssay", "Select Assay:", currassays)
+          )
+        ),
         radioButtons('deCondMethod', "Condition Selection:",
                      choiceNames = c("By annotations",
                                      "Manually select individual cells",
@@ -106,74 +116,39 @@ shinyPanelDiffex <- fluidPage(
         h4("Parameters:"),
         fluidRow(
           column(
-            width = 4,
-            selectInput('deMethod', "Choose analysis method",
-                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
-          ),
-          column(
-            width = 8,
-            style = 'margin-top: 32px;',
-            conditionalPanel(
-              condition = "input.deMethod == 'MAST'",
-              p("MAST requires 'logcounts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'DESeq2'",
-              p("DESeq2 requires integer 'counts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'Limma'",
-              p("Limma requires 'logcounts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'ANOVA'",
-              p("ANOVA does not produce Log2FC value.",
-                style = 'color:red;')
-            )
-          )
-        ),
-        fluidRow(
-          column(
             width = 3,
             numericInput("deFDRThresh", "Output FDR less than:",
                          min = 0.01, max = 1, step = 0.01, value = 0.05)
           ),
           column(
-            width = 6,
+            width = 3,
             numericInput("deFCThresh",
                          "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = 0)
-          )
-        ),
-        fluidRow(
-          column(
-            width = 4,
-            style = 'margin-top: 18px;',
-            checkboxInput("dePosOnly", "Only up-regulated genes",
-                          value = FALSE)
+                         min = 0, step = 0.05, value = 1)
           ),
           column(
             width = 3,
             selectInput("deCovar", "Select Covariates",
                         clusterChoice, multiple = TRUE)
+          ),
+          column(
+            width = 3,
+            style = 'margin-top: 18px;',
+            checkboxInput("dePosOnly", "Only up-regulated genes",
+                          value = FALSE)
           )
         ),
         fluidRow(
           column(
-            width = 6,
+            width = 3,
             textInput("deAnalysisName",
                       "Name of Differential Expression Analysis:",
                       placeholder = 'Required.')
           ),
           column(
-            width = 6,
+            width = 2,
             style = 'margin-top: 25px;',
-            withBusyIndicatorUI(
-              actionButton("runDE", "Run Differential Expression Analysis")
-            )
+            withBusyIndicatorUI(actionButton("runDE", "Run"))
           )
         )
       )
@@ -181,7 +156,11 @@ shinyPanelDiffex <- fluidPage(
     fluidRow(
       uiOutput("deResSelUI"),
       tabsetPanel(
-        tabPanel("Adaptive thresholding", plotOutput("deThreshplot")),
+        tabPanel(
+          "Adaptive thresholding",
+          textOutput("deSanityWarnThresh"),
+          plotOutput("deThreshplot")
+        ),
         tabPanel("Results Table",
                  DT::dataTableOutput("deResult"),
                  downloadButton("deDownload", "Download Result Table")),
@@ -189,72 +168,70 @@ shinyPanelDiffex <- fluidPage(
           "Violin Plot",
           panel(
             fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
+              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                   p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 70px;",
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
                   numericInput('deVioNRow', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 12px;",
                   p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 70px;",
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
                   numericInput('deVioNCol', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 10px;",
                   p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 20px;",
+              div(style="display: inline-block;vertical-align:center; width: 30px;",
                   uiOutput('deVioTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 40px;",
+              div(style="display: inline-block;vertical-align:center; width: 50px;",
                   p('genes'))
             ),
             fluidRow(
               column(
-                width = 5,
+                width = 3,
                 selectInput('deVioLabel', "Label features by",
                             c("Default ID", featureChoice))
               ),
               column(
-                width = 5,
-                style = 'margin-top: 15px;',
+                width = 2,
+                style = 'margin-top: 23px;',
                 withBusyIndicatorUI(actionButton('dePlotVio', 'Plot'))
               )
             )
-            #checkboxInput('deVioUseThresh', 'plot threshold values from adaptive thresholding',
-            #              value = FALSE, width = '800px')
           ),
+          textOutput("deSanityWarnViolin"),
           plotOutput("deViolinPlot", height = "800px")
         ),
         tabPanel(
           "Linear Model",
           panel(
             fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 80px;margin-left:10px",
+              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                   p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 70px;",
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
                   numericInput('deRegNRow', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 12px;",
                   p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 70px;",
-                  numericInput('deRegNcol', label = NULL, value = 6, min = 1)),
+              div(style="display: inline-block;vertical-align:center; width: 60px;",
+                  numericInput('deRegNCol', label = NULL, value = 6, min = 1)),
               div(style="display: inline-block;vertical-align:center; width: 10px;",
                   p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 20px;",
+              div(style="display: inline-block;vertical-align:center; width: 30px;",
                   uiOutput('deRegTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 40px;",
+              div(style="display: inline-block;vertical-align:center; width: 50px;",
                   p('genes'))
             ),
             fluidRow(
               column(
-                width = 5,
+                width = 3,
                 selectInput('deRegLabel', "Label features by",
                             c("Default ID", featureChoice))
               ),
               column(
-                width = 5,
-                style = 'margin-top: 15px;',
+                width = 2,
+                style = 'margin-top: 23px;',
                 withBusyIndicatorUI(actionButton('dePlotReg', 'Plot'))
               )
             ),
-            #checkboxInput('deRegUseThresh', 'plot threshold values from adaptive thresholding',
-            #              value = FALSE, width = '800px')
           ),
+          textOutput("deSanityWarnReg"),
           plotOutput("deRegPlot", height = "800px")
         ),
         tabPanel(
@@ -276,7 +253,7 @@ shinyPanelDiffex <- fluidPage(
               withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
             ),
             mainPanel(
-              plotOutput("deHeatmap", height = "800px")
+              plotOutput("deHeatmap", height = "600px")
             )
           )
         )
@@ -284,3 +261,4 @@ shinyPanelDiffex <- fluidPage(
     )
   )
 )
+

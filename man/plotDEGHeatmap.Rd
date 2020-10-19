@@ -93,6 +93,16 @@ selection while running the analysis called \code{"condition"}, and the
 annotations used from \code{colData(inSCE)} while setting the condition and
 covariates will also be added.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
+ groupName2 = "Sample2", index1 = 1:100, index2 = 101:190, analysisName = "DESeq2")
+plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1)
+}
+
+}
 \author{
 Yichen Wang
 }

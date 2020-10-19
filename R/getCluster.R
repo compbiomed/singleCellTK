@@ -62,7 +62,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
   graphClustAlgoList = list(walktrap = igraph::cluster_walktrap,
                             louvain = igraph::cluster_louvain,
                             infomap = igraph::cluster_infomap,
-                            fastGreedy = igraph::cluster_infomap,
+                            fastGreedy = igraph::cluster_fast_greedy,
                             labelProp = igraph::cluster_label_prop,
                             leadingEigen = igraph::cluster_leading_eigen)
   if (all(algorithm == c("walktrap", "louvain", "infomap", "fastGreedy",
@@ -84,7 +84,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified reducedDim '", useReducedDim, "' not found.")
     }
     g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
-                              type = weightType, assay.type = NULL)
+                              type = weightType)
   } else if (!is.null(useAltExp)) {
     if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
       stop("Specified altExp '", useAltExp, "' not found.")
@@ -150,11 +150,13 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
   if(all(algorithm == c("Hartigan-Wong", "Lloyd", "MacQueen"))){
     algorithm = "Hartigan-Wong"
   }
-  set.seed(seed)
   message(paste0(date(), " ... Running 'KMeans clustering'"))
   mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
-  clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
-                                nstart = nStart, algorithm = algorithm)
+  
+  clust.kmeans <- withr::with_seed(seed = seed,
+                {stats::kmeans(mat, centers = nCenters, iter.max = nIter,
+                        nstart = nStart, algorithm = algorithm)})
+  
   clust.kmeans <- factor(clust.kmeans$cluster)
   SummarizedExperiment::colData(inSCE)[[clusterName]] <- clust.kmeans
   return(inSCE)

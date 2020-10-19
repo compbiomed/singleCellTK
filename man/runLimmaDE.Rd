@@ -88,3 +88,13 @@ used.
 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 \code{classGroup2} will be used.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+library(scater)
+sce <- logNormCounts(sce)
+sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ analysisName = "Limma")
+
+}

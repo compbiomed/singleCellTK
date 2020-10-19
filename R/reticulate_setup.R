@@ -9,7 +9,6 @@ scipy <- NULL
 sparse <- NULL
 numpy <- NULL
 scnrm <- NULL
-scgen <- NULL
 sc <- NULL
 bbknn <- NULL
 pkg_resources <- NULL
@@ -22,7 +21,6 @@ ad <- NULL
   sparse <<- reticulate::import("scipy.sparse", delay_load = TRUE)
   numpy <<- reticulate::import("numpy", delay_load = TRUE)
   scnrm <<- reticulate::import("scanorama", delay_load = TRUE)
-  scgen <<- reticulate::import("scgen", delay_load = TRUE)
   sc <<- reticulate::import("scanpy", delay_load = TRUE)
   bbknn <<- reticulate::import("bbknn", delay_load = TRUE)
   pkg_resources <<- reticulate::import('pkg_resources',delay_load = TRUE)
@@ -46,6 +44,7 @@ ad <- NULL
 #'        to install via pip due to compilation requirements).
 #' @param pythonVersion Passed to \code{python_version} variable in \code{\link[reticulate]{conda_install}}. Default NULL.
 #' @param ... Other parameters to pass to \code{\link[reticulate]{conda_install}}.
+#' @return None. Installation of Conda environment.
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallConda(envname = "sctk-reticulate")
@@ -60,7 +59,7 @@ ad <- NULL
 sctkPythonInstallConda <- function(envname = "sctk-reticulate",
                                    conda = "auto",
                                    packages = c("scipy", "numpy", "astroid", "six"),
-                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "scgen","anndata"),
+                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata"),
                                    selectConda = TRUE,
                                    forge = FALSE,
                                    pipIgnoreInstalled = TRUE,
@@ -95,6 +94,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' @param packages Character Vector. List of packages to install.
 #' @param selectEnvironment Boolean. Run \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} after installing all packages to select the virtual environment. Default TRUE.
 #' @param python The path to a Python interpreter, to be used with the created virtual environment. When NULL, the Python interpreter associated with the current session will be used. Default NULL.
+#' @return None. Installation of virtual environment.
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallVirtualEnv(envname = "sctk-reticulate")
@@ -106,7 +106,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' going through the whole installation process again.
 #' @export
 sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
-                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "scgen","anndata"),
+                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "anndata"),
                                         selectEnvironment = TRUE,
                                         python = NULL) {
 
@@ -126,6 +126,7 @@ sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
 #' @title Selects a Conda environment
 #' @description Selects a Conda environment with Python packages used in \code{\link{singleCellTK}}.
 #' @param envname Character. Name of the conda environment to activate.
+#' @return None. Selects Conda environment.
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallConda(envname = "sctk-reticulate", selectConda = FALSE)
@@ -159,6 +160,7 @@ selectSCTKConda <- function(envname = "sctk-reticulate") {
 #' @title Selects a virtual environment
 #' @description Selects a virtual environment with Python packages used in \code{\link{singleCellTK}}
 #' @param envname Character. Name of the virtual environment to activate.
+#' @return None. Selects virtual environment.
 #' @examples
 #' \dontrun{
 #' sctkPythonInstallVirtualEnv(envname = "sctk-reticulate", selectEnvironment = FALSE)

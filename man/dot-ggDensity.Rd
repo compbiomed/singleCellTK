@@ -6,7 +6,7 @@
 \usage{
 .ggDensity(
   value,
-  groupby = NULL,
+  groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -20,7 +20,7 @@
 \arguments{
 \item{value}{Numeric value that will be plotted via density plot.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -41,6 +41,9 @@ when TRUE. Default TRUE.}
 
 \item{cutoff}{Numeric value. The plot will be annotated with a vertical line
 if set. Default NULL.}
+}
+\value{
+density plot, in .ggplot.
 }
 \description{
 Visualizes values stored in the specified slot of a
