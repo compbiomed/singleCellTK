@@ -7,6 +7,7 @@
 plotSCEHeatmap(
   inSCE,
   useAssay = "logcounts",
+  doLog = FALSE,
   featureIndex = NULL,
   cellIndex = NULL,
   featureIndexBy = "rownames",
@@ -40,6 +41,10 @@ plotSCEHeatmap(
 
 \item{useAssay}{character. A string indicating the assay name that
 provides the expression level to plot.}
+
+\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
+transformation on the assay indicated by \code{useAssay}. Default
+\code{FALSE}.}
 
 \item{featureIndex}{A vector that can subset the input SCE object by rows
 (features). Alternatively, it can be a vector identifying features in

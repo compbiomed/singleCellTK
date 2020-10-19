@@ -160,7 +160,7 @@ shinyPanelDiffex <- fluidPage(
           "Adaptive thresholding",
           p("This figure is for checking the selected assay, but not the generated result."),
           textOutput("deSanityWarnThresh"),
-          plotOutput("deThreshplot")
+          plotOutput("deThreshplot", height = 800)
         ),
         tabPanel("Results Table",
                  DT::dataTableOutput("deResult"),
@@ -239,6 +239,7 @@ shinyPanelDiffex <- fluidPage(
           "Heatmap",
           sidebarLayout(
             sidebarPanel(
+              checkboxInput('deHMDoLog', "Do log transformation", FALSE),
               checkboxInput('deHMPosOnly', "Only up-regulated",
                             value = FALSE),
               numericInput("deHMFC", "Aboslute log2FC value greater than:",
