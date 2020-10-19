@@ -45,13 +45,16 @@
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
+#' @param isLogged Logical scalar. Whether the assay used for the analysis is
+#' logged. If not, will do a \code{log(assay + 1)} transformation. Default
+#' \code{TRUE}.
 #' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of violin plot
 #' @export
 plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                           nrow = 6, ncol = 6, defaultTheme = TRUE,
-                          check_sanity = TRUE){
+                          isLogged = TRUE, check_sanity = TRUE){
   #TODO: DO we split the up/down regulation too?
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
@@ -85,6 +88,9 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                         levels = result$groupNames),
                      ngeneson = rep("", (length(cells1) + length(cells2))),
                      stringsAsFactors = FALSE)
+  if (!isTRUE(isLogged)) {
+    expres <- log(expres + 1)
+  }
   sca <- suppressMessages(MAST::FromMatrix(expres, cdat,
                                            check_sanity = check_sanity))
   if(threshP){
@@ -128,13 +134,16 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param ncol Integer. Number of columns in the plot grid. Default \code{6}.
 #' @param defaultTheme Logical scalar. Whether to use default SCTK theme in
 #' ggplot. Default \code{TRUE}.
+#' @param isLogged Logical scalar. Whether the assay used for the analysis is
+#' logged. If not, will do a \code{log(assay + 1)} transformation. Default
+#' \code{TRUE}.
 #' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of linear regression
 #' @export
 plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                               nrow = 6, ncol = 6, defaultTheme = TRUE,
-                              check_sanity = TRUE){
+                              isLogged = TRUE, check_sanity = TRUE){
   #TODO: DO we split the up/down regulation too?
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
@@ -167,6 +176,9 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                                         levels = result$groupNames),
                      ngeneson = rep("", (length(cells1) + length(cells2))),
                      stringsAsFactors = FALSE)
+  if (!isTRUE(isLogged)) {
+    expres <- log(expres + 1)
+  }
   sca <- suppressMessages(MAST::FromMatrix(expres, cData = cdat,
                                            check_sanity = check_sanity))
   cdr2 <- colSums(SummarizedExperiment::assay(sca) > 0)
@@ -233,6 +245,8 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' \code{runMAST()} has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
+#' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
+#' transformation on the assay used for the analysis. Default \code{FALSE}.
 #' @param onlyPos logical. Whether to only plot DEG with positive log2_FC
 #' value. Default \code{FALSE}.
 #' @param log2fcThreshold numeric. Only plot DEGs with the absolute values of
@@ -273,15 +287,17 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "DESeq2",
-#'  groupName2 = "Sample2", index1 = 1:100, index2 = 101:190, analysisName = "DESeq2")
-#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1)
+#' sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
+#'                      groupName1 = "Sample1", groupName2 = "Sample2",
+#'                      index1 = 1:100, index2 = 101:190,
+#'                      analysisName = "DESeq2")
+#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
 #' }
 #'
-#' @return A ComplexHeatmap::Heatmap object
+#' @return A \code{ComplexHeatmap::Heatmap} object
 #' @export
 #' @author Yichen Wang
-plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
+plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                            log2fcThreshold = 0.25, fdrThreshold = 0.05,
                            useAssay = NULL, featureAnnotations = NULL,
                            cellAnnotations = NULL,
@@ -389,7 +405,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     featureAnnotationColor <- list(regulation = lCol)
   }
   # Plot
-  hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay,
+  hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay, doLog = doLog,
                        featureIndex = gene.ix, cellIndex = cell.ix,
                        featureAnnotations = featureAnnotations,
                        cellAnnotations = cellAnnotations,
@@ -409,6 +425,9 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' \code{\link[MAST]{thresholdSCRNACountMatrix}}
 #' @param inSCE SingleCellExperiment object
 #' @param useAssay character, default \code{"logcounts"}
+#' @param isLogged Logical scalar. Whether the assay used for the analysis is
+#' logged. If not, will do a \code{log(assay + 1)} transformation. Default
+#' \code{TRUE}.
 #' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return Plot the thresholding onto the plotting region.
@@ -417,7 +436,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' data("mouseBrainSubsetSCE")
 #' plotMASTThresholdGenes(mouseBrainSubsetSCE)
 plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
-                                   check_sanity = TRUE){
+                                   isLogged = TRUE, check_sanity = TRUE){
   # data preparation
   expres <- SummarizedExperiment::assay(inSCE, useAssay)
   if(!is.matrix(expres)){
@@ -430,7 +449,8 @@ plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
                              fdata, check_sanity = check_sanity)
   SCENew <- SCENew[which(MAST::freq(SCENew) > 0), ]
   invisible(utils::capture.output(thres <- MAST::thresholdSCRNACountMatrix(
-    SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30)))
+    SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30,
+    data_log = isLogged)))
   # plotting
   graphics::par(mfrow = c(5, 4))
   graphics::plot(thres)
