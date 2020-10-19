@@ -85,12 +85,12 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       }
 
       for(assay in SummarizedExperiment::assayNames(newSce)) {
-        if(!base::inherits(SummarizedExperiment::assay(sce, assay), "dgCMatrix") && !isTRUE(delayedArray)) {
-          SummarizedExperiment::assay(sce, assay) <- .convertToMatrix(SummarizedExperiment::assay(sce, assay))
+        if(!base::inherits(SummarizedExperiment::assay(newSce, assay), "dgCMatrix") && !isTRUE(delayedArray)) {
+          SummarizedExperiment::assay(newSce, assay) <- .convertToMatrix(SummarizedExperiment::assay(newSce, assay))
         }
 
-        if(!base::inherits(SummarizedExperiment::assay(sce, assay), "DelayedArray") && isTRUE(delayedArray)) {
-          SummarizedExperiment::assay(sce, assay) <- DelayedArray::DelayedArray(SummarizedExperiment::assay(sce, assay))
+        if(!base::inherits(SummarizedExperiment::assay(newSce, assay), "DelayedArray") && isTRUE(delayedArray)) {
+          SummarizedExperiment::assay(newSce, assay) <- DelayedArray::DelayedArray(SummarizedExperiment::assay(newSce, assay))
         }
       }
       

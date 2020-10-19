@@ -872,6 +872,7 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
+        updateAltExpInputs()
         updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))), selected = "sample")
         shinyjs::show(id="annotationData")
         js$enableTabs();
@@ -1230,11 +1231,14 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    showModal(filteringModal(colNames = names(colData(vals$counts))))
+    if (!is.null(vals$counts)) {
+      showModal(filteringModal(colNames = names(colData(vals$counts))))
+    }
   })
 
   observeEvent(input$addRowFilteringParam, {
-    if (!is.null(names(assays(vals$counts)))) {
+    if (!is.null(vals$counts) &&
+        !is.null(names(assays(vals$counts)))) {
       showModal(rowFilteringModal(assayInput = names(assays(vals$counts))))
     }
   })
@@ -4999,8 +5003,8 @@ shinyServer(function(input, output, session) {
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
                                      covariates = input$deCovar,
-                                     log2fcThreshold = input$mastFCThresh,
-                                     fdrThreshold = input$mastFDRThresh,
+                                     log2fcThreshold = input$deFCThresh,
+                                     fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$mastPosOnly,
                                      overwrite = overwrite)
       } else if(input$deCondMethod == 2){
@@ -5083,13 +5087,15 @@ shinyServer(function(input, output, session) {
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnThresh <- renderText("")
+        isLogged <- TRUE
       } else {
-        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+        isLogged <- FALSE
       }
       output$deThreshplot <- renderPlot({
         plotMASTThresholdGenes(inSCE = vals$counts,
                                useAssay = input$deAssay,
-                               check_sanity = FALSE)
+                               check_sanity = FALSE, isLogged = isLogged)
       }, height = 800)
     }
   })
@@ -5146,14 +5152,16 @@ shinyServer(function(input, output, session) {
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnViolin <- renderText("")
+        isLogged <- TRUE
       } else {
-        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+        isLogged <- FALSE
       }
       output$deViolinPlot <- renderPlot({
         plotDEGViolin(inSCE = sce, useResult = useResult,
                       #threshP = input$deVioUseThresh,
                       nrow = nrow, ncol = ncol, labelBy = labelBy,
-                      check_sanity = FALSE)
+                      check_sanity = FALSE, isLogged = isLogged)
       })
     }
   })
@@ -5181,14 +5189,16 @@ shinyServer(function(input, output, session) {
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnReg <- renderText("")
+        isLogged <- TRUE
       } else {
-        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot anyway. ")
+        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+        isLogged <- FALSE
       }
       output$deRegPlot <- renderPlot({
         plotDEGRegression(inSCE = sce, useResult = useResult,
                           #threshP = input$deVioUseThresh,
                           nrow = nrow, ncol = ncol, labelBy = labelBy,
-                          check_sanity = FALSE)
+                          check_sanity = FALSE, isLogged = isLogged)
       })
     }
   })
@@ -5212,6 +5222,7 @@ shinyServer(function(input, output, session) {
        !input$deResSel == ""){
       sce <- vals$counts
       useResult <- input$deResSel
+      doLog <- input$deHMDoLog
       onlyPos <- input$deHMPosOnly
       log2fcThreshold <- input$deHMFC
       fdrThreshold <- input$deHMFDR
@@ -5220,8 +5231,8 @@ shinyServer(function(input, output, session) {
       colSplitBy <- input$deHMSplitCol
       rowSplitBy <- input$deHMSplitRow
       output$deHeatmap <- renderPlot({
-        plotDEGHeatmap(inSCE = sce, useResult = useResult, onlyPos = onlyPos,
-                       log2fcThreshold = log2fcThreshold,
+        plotDEGHeatmap(inSCE = sce, useResult = useResult, doLog = doLog,
+                       onlyPos = onlyPos, log2fcThreshold = log2fcThreshold,
                        fdrThreshold = fdrThreshold, rowDataName = rowDataName,
                        colDataName = colDataName, colSplitBy = colSplitBy,
                        rowSplitBy = rowSplitBy)
