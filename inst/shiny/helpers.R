@@ -207,71 +207,6 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 # QC/Filtering #
 #--------------#
-
-# combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
-#   if (combineP=="all") {
-#     output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
-#   } else {
-#     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
-#     removeUI(selector = paste0("#", plotIds[[algo]]))
-# 
-#     for (i in seq_along(sampleList)) {
-#       s <- sampleList[[i]]
-#       sID <- paste(c(algo, s, "Tab"), collapse = "")
-#       subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
-#       if (is.null(statuses[[algo]][[s]])) {
-#         if (i == 1) {
-#           appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
-#         } else {
-#           appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
-#         }
-#       }
-#       output[[subPlotID]] <- renderPlot(plots$Sample[[s]])
-#     }
-#   }
-# }
-
-
-# combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
-#   # idsToPlots <- list()
-#   if (combineP=="all") {
-#     output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
-#   } else {
-#     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
-#     output[[plotIds[[algo]]]] <- renderPlot(plots$Violin)
-#     
-#     for (i in seq_along(sampleList)) {
-#       local({
-#         s <- sampleList[[i]]
-#         sID <- paste(c(algo, s, "Tab"), collapse = "")
-#         if (is.null(statuses[[algo]][[s]])) {
-#           if (i == 1) {
-#             appendTab(tabsetID, tabPanel(s, fluidPage(id = sID)), select = TRUE)
-#           } else {
-#             appendTab(tabsetID, tabPanel(s, fluidPage(id = sID)), select = FALSE)
-#           }
-#           
-#         }
-#         
-#         for (subScore in names(plots$Sample[[s]])) {
-#           local({
-#             subPlotID <- paste(c(algo, s, subScore), collapse="")
-#             insertUI(
-#               selector = paste0("#", sID),
-#               ui = plotOutput(outputId = subPlotID)
-#             )
-#             # print(subPlotID)
-#             # print(subScore)
-#             # idsToPlots[[subPlotID]] <- plots$Sample[[s]][[subScore]]
-#             output[[subPlotID]] <- renderPlot(plots$Sample[[s]][[subScore]])
-#           })
-#         }
-#       })
-#     }
-#   }
-#   # return(idsToPlots)
-# }
-
 combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
   if (length(sampleList) == 1) {
     # Plot output code from https://gist.github.com/wch/5436415/
@@ -341,17 +276,12 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
       })
     }
   }
-  # return(idsToPlots)
 }
 
 
 arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
   uniqueSampleNames <- unique(sampleList)
   combineP <- "none"
-  # combineP <- "all"
-  # if (length(uniqueSampleNames) > 1) {
-  #   combineP <- "sample"
-  # }
   for (a in algoList) {
     if (a == "doubletCells") {
       dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
