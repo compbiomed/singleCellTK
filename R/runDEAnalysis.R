@@ -125,8 +125,9 @@
 
 #' Perform differential expression analysis on SCE with specified method
 #' Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
-#' @param method A single character for specific method. Choose from 'MAST',
-#' 'DESeq2', 'Limma', 'ANOVA'. Required
+#' @param method A single character for specific method. Choose from
+#' \code{"MAST"}, \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default
+#' \code{"MAST"}.
 #' @param ... Other arguments passed to specific functions. Refer to
 #' \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
 #' \code{\link{runANOVA}}
@@ -140,10 +141,8 @@
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
 #' functions.
 #' @export
-runDEAnalysis <- function(method = 'MAST', ...){
-    if(!method %in% c('MAST', 'DESeq2', 'Limma', 'ANOVA')){
-        stop("method should be one of: 'MAST', 'DESeq2', 'Limma', 'ANOVA'")
-    }
+runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA'), ...){
+    method <- match.arg(method)
     funcList <- list(MAST = runMAST,
                      DESeq2 = runDESeq2,
                      Limma = runLimmaDE,
