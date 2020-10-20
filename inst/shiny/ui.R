@@ -205,8 +205,7 @@ shinyUI(
       navbarMenu(
         "Curated Workflows",
         tabPanel("Celda", shinyPanelCelda),
-        tabPanel("Seurat", shinyPanelSeurat),
-        tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
+        tabPanel("Seurat", shinyPanelSeurat)
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
