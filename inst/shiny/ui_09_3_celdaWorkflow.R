@@ -6,7 +6,18 @@ shinyPanelCelda <- fluidPage(
            fluidRow(
                column(4,
                    panel(
-                       selectInput("celdafeatureselect", "Choose Feature Selection Method:", choices = c("Celda", "SeuratFindHVG", "Scran")),
+                       selectInput("celdafeatureselect", "Choose Feature Selection Method:",
+                                   choices = c("Celda", "SeuratFindHVG", "Scran")),
+                       conditionalPanel("input.celdafeatureselect == 'Celda'",
+                                        numericInput("celdarowcountsmin",
+                                                     "Number of counts per gene:", min = 1, max = 10, value = 3),
+                                        numericInput("celdacolcountsmin",
+                                                     "Number of counts per cell:", min = 1, max = 10, value = 3)
+                       ),
+                       conditionalPanel("input.celdafeatureselect != 'Celda'",
+                                        numericInput("celdafeaturenum",
+                                                     "Select number of variable features:", min = 1, max = 5000, value = 2000)
+                       ),
                        numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
                        numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
                        actionButton("celdamodsplit", "Recursive Module Split"),
@@ -65,8 +76,7 @@ shinyPanelCelda <- fluidPage(
                                             choices = c()),
                                 numericInput("celdaUMAPmaxCells",
                                              label =
-                                                 "Max.cells: Maximum number of cells to
-                                plot",
+                                                 "Max.cells: Maximum number of cells to plot",
                                              value = 25000,
                                              min = 1,
                                              step = 1),
@@ -81,6 +91,19 @@ shinyPanelCelda <- fluidPage(
                                              label =
                                                  "Seed: ",
                                              value = 12345),
+                                numericInput("celdaUMAPmindist",
+                                             label =
+                                                 "Min.dist: Effective minimum distance
+                                between embedded points",
+                                             value = 0.75),
+                                numericInput("celdaUMAPspread",
+                                             label =
+                                                 "Spread: ",
+                                             value = 1),
+                                numericInput("celdaUMAPnn",
+                                             label =
+                                                 "nNeighbors: ",
+                                             value = 30),
                                 actionButton("CeldaUmap", "Run UMAP")
                             )
                         ),

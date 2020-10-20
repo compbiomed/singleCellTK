@@ -2440,16 +2440,24 @@ shinyServer(function(input, output, session) {
     ))
     withProgress(message = "Clustering Features", max = 1, value = 1, {
       if (input$celdafeatureselect == "Celda"){
-        vals$counts <- selectFeatures(as.matrix(counts(vals$counts)))
+        vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
+                                      minCell = input$celdacolcountsmin)
       }else if(input$celdafeatureselect == "SeuratFindHVG"){
         vals$counts <- seuratNormalizeData(vals$counts, useAssay = "counts")
-        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData")
-        var_feats <- getTopHVG(sce_temp, method = "vst")
-        altexp <- vals$counts[var_feats]
+        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData", hvgNumber = input$celdafeaturenum)
+        altexp <- vals$counts[getTopHVG(sce_temp, method = "vst", n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
         altExp(vals$counts, "featureSubset") <- altexp
+      }else if(input$celdafeatureselect == "Scran"){
+        if (!("logcounts" %in% names(assays(vals$counts)))){
+          vals$counts <- scater::logNormCounts(vals$counts)
+        }
+        vals$counts <- scran_modelGeneVar(vals$counts, assayName = "logcounts")
+        altexp <- vals$counts[getTopHVG(vals$counts, method = "modelGeneVar", n = input$celdafeaturenum)]
+        counts(altexp) <- as.matrix(counts(altexp))
+        #assay(altexp, "counts", withDimnames = FALSE) <- counts(altexp)[which(rowSums(counts(altexp) > 0) > 0), ]
+        altExp(vals$counts, "featureSubset") <- altexp
       }
-        #assay(altExp(vals$counts), "normalizedCounts") <- normalizeCounts(counts(altExp(vals$counts)))
         updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
         vals$counts <- recursiveSplitModule(vals$counts, initialL = input$celdaLinit, maxL = input$celdaLmax)
         output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(vals$counts)})
@@ -2529,7 +2537,10 @@ shinyServer(function(input, output, session) {
                                useAssay = input$celdaAssayUMAP,
                                maxCells = input$celdaUMAPmaxCells,
                                minClusterSize = input$celdaUMAPminClusterSize,
-                               seed = input$celdaUMAPSeed
+                               seed = input$celdaUMAPSeed,
+                               minDist = input$celdaUMAPmindist,
+                               spread = input$celdaUMAPspread,
+                               nNeighbors = input$celdaUMAPnn
       )
       output$celdaumapplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_UMAP", xlab = "UMAP_1",
         ylab = "UMAP_2", labelClusters = TRUE)})
