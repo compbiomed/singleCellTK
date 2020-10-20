@@ -2377,9 +2377,9 @@ shinyServer(function(input, output, session) {
                                       minCell = input$celdacolcountsmin)
       }else if(input$celdafeatureselect == "SeuratFindHVG"){
         vals$counts <- seuratNormalizeData(vals$counts, useAssay = "counts")
-        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
+        vals$counts <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
                                   hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
-        altexp <- vals$counts[getTopHVG(sce_temp, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)]
+        altexp <- vals$counts[getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
         altExp(vals$counts, "featureSubset") <- altexp
       }else if(input$celdafeatureselect == "Scran"){
