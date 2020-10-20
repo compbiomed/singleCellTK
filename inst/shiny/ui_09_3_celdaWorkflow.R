@@ -8,11 +8,15 @@ shinyPanelCelda <- fluidPage(
                    panel(
                        selectInput("celdafeatureselect", "Choose Feature Selection Method:",
                                    choices = c("Celda", "SeuratFindHVG", "Scran")),
+                       conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
+                                        selectInput("celdaseurathvgmethod", "Select HVG method:",
+                                                    choices = c("vst", "dispersion", "mean.var.plot"))
+                       ),
                        conditionalPanel("input.celdafeatureselect == 'Celda'",
                                         numericInput("celdarowcountsmin",
-                                                     "Number of counts per gene:", min = 1, max = 10, value = 3),
+                                                     "Number of counts per gene:", value = 3),
                                         numericInput("celdacolcountsmin",
-                                                     "Number of counts per cell:", min = 1, max = 10, value = 3)
+                                                     "Number of counts per cell:", value = 3)
                        ),
                        conditionalPanel("input.celdafeatureselect != 'Celda'",
                                         numericInput("celdafeaturenum",
