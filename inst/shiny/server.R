@@ -2377,8 +2377,9 @@ shinyServer(function(input, output, session) {
                                       minCell = input$celdacolcountsmin)
       }else if(input$celdafeatureselect == "SeuratFindHVG"){
         vals$counts <- seuratNormalizeData(vals$counts, useAssay = "counts")
-        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData", hvgNumber = input$celdafeaturenum)
-        altexp <- vals$counts[getTopHVG(sce_temp, method = "vst", n = input$celdafeaturenum)]
+        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
+                                  hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
+        altexp <- vals$counts[getTopHVG(sce_temp, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
         altExp(vals$counts, "featureSubset") <- altexp
       }else if(input$celdafeatureselect == "Scran"){
@@ -2388,7 +2389,6 @@ shinyServer(function(input, output, session) {
         vals$counts <- scran_modelGeneVar(vals$counts, assayName = "logcounts")
         altexp <- vals$counts[getTopHVG(vals$counts, method = "modelGeneVar", n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
-        #assay(altexp, "counts", withDimnames = FALSE) <- counts(altexp)[which(rowSums(counts(altexp) > 0) > 0), ]
         altExp(vals$counts, "featureSubset") <- altexp
       }
         updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
