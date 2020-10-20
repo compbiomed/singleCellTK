@@ -2482,8 +2482,9 @@ shinyServer(function(input, output, session) {
                                       minCell = input$celdacolcountsmin)
       }else if(input$celdafeatureselect == "SeuratFindHVG"){
         vals$counts <- seuratNormalizeData(vals$counts, useAssay = "counts")
-        sce_temp <- seuratFindHVG(vals$counts, useAssay = "seuratNormData", hvgNumber = input$celdafeaturenum)
-        altexp <- vals$counts[getTopHVG(sce_temp, method = "vst", n = input$celdafeaturenum)]
+        vals$counts <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
+                                  hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
+        altexp <- vals$counts[getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
         altExp(vals$counts, "featureSubset") <- altexp
       }else if(input$celdafeatureselect == "Scran"){
@@ -2493,7 +2494,6 @@ shinyServer(function(input, output, session) {
         vals$counts <- scran_modelGeneVar(vals$counts, assayName = "logcounts")
         altexp <- vals$counts[getTopHVG(vals$counts, method = "modelGeneVar", n = input$celdafeaturenum)]
         counts(altexp) <- as.matrix(counts(altexp))
-        #assay(altexp, "counts", withDimnames = FALSE) <- counts(altexp)[which(rowSums(counts(altexp) > 0) > 0), ]
         altExp(vals$counts, "featureSubset") <- altexp
       }
         updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
@@ -3033,7 +3033,7 @@ shinyServer(function(input, output, session) {
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
                             xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
-                            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+                            transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
                             axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize,
                             conditionClass = pltVars$class, defaultTheme = as.logical(pltVars$defTheme))
@@ -3043,7 +3043,7 @@ shinyServer(function(input, output, session) {
                                       xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
                                       groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
                                       colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
-                                      dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+                                      dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
                                       axisLabelSize = input$adjustaxislabelsize, legendSize = input$adjustlegendsize,
                                       legendTitleSize = input$adjustlegendtitlesize)
       } else if (input$TypeSelect_Colorby == "Cell Annotation") {
@@ -3051,7 +3051,7 @@ shinyServer(function(input, output, session) {
                                      colorBy = input$AnnotationSelect_Colorby,groupBy = pltVars$groupby,legendTitle = legendname,
                                      title = input$adjusttitle,bin = pltVars$bin,transparency = input$adjustalpha,colorScale = colors,
                                      colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor, dotSize = input$adjustsize,
-                                     combinePlot = FALSE,axisSize = input$adjustaxissize,axisLabelSize = input$adjustaxislabelsize,
+                                     combinePlot = "none",axisSize = input$adjustaxissize,axisLabelSize = input$adjustaxislabelsize,
                                      legendSize = input$adjustlegendsize,legendTitleSize = input$adjustlegendtitlesize,conditionClass = pltVars$class)
       }else if(input$TypeSelect_Colorby == "Reduced Dimensions"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess, slot = "reducedDims",
@@ -3059,7 +3059,7 @@ shinyServer(function(input, output, session) {
                             colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
                             groupBy = pltVars$groupby, title = input$adjusttitle, legendTitle = legendname,
                             xlab = xname, ylab = yname, dotSize = input$adjustsize, bin = pltVars$bin,
-                            combinePlot = FALSE, axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+                            combinePlot = "none", axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                             legendSize = input$adjustlegendsize, legendTitleSize = input$adjustlegendtitlesize)
       }
     }else if(input$viewertabs == "Bar Plot"){
@@ -3067,65 +3067,45 @@ shinyServer(function(input, output, session) {
         a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
                                  useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
                                  feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
-                                 dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
+                                 dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
                                  axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-        a <- plotly::ggplotly(a)
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
         a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
                                coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
-                               transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
+                               transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
                                axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                                defaultTheme = as.logical(pltVars$defTheme))
-        a <- plotly::ggplotly(a)
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
-      if(input$vlnboxcheck == FALSE){
-        if(input$TypeSelect_Yaxis == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, violin = FALSE, box = TRUE,
-                                      useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-                                      feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
-                                      transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                                      axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                                      defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
-                                    coldata = input$AnnotationSelect_Yaxis, violin = FALSE,
-                                    box = TRUE, groupBy = pltVars$groupby, transparency = input$adjustalpha,
-                                    dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
-                                    axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }
-      }else if(input$vlnboxcheck == TRUE){
-        if(input$TypeSelect_Yaxis == "Expression Assays"){
-          a <- plotSCEViolinAssayData(vals$counts, violin = TRUE, box = FALSE,
-                                      useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
-                                      feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
-                                      transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = FALSE,
-                                      axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
-                                      defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-          a <- plotSCEViolinColData(vals$counts,title = input$adjusttitle,
-                                    coldata = input$AnnotationSelect_Yaxis, violin = TRUE,
-                                    box = FALSE, groupBy = pltVars$groupBy, transparency = input$adjustalpha,
-                                    dotSize = input$adjustsize, combinePlot = FALSE, axisSize = input$adjustaxissize,
-                                    axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
-          a <- a[[1]]
-          a <- plotly::ggplotly(a)
-        }
+      if(input$vlnboxcheck == TRUE){
+        vln <- TRUE
+        bx <- FALSE
+      }else if(input$vlnboxcheck == FALSE){
+        vln <- FALSE
+        bx <- TRUE
+      }
+      if(input$TypeSelect_Yaxis == "Expression Assays"){
+        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx,
+                                    useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
+                                    feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
+                                    transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+                                    axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
+                                    defaultTheme = as.logical(pltVars$defTheme))
+      }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
+        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
+                                  coldata = input$AnnotationSelect_Yaxis, violin = vln, box = bx,
+                                  groupBy = pltVars$groupby, transparency = input$adjustalpha,
+                                  dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
+                                  axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }
     }
-    if (input$TypeSelect_Colorby == "Single Color" && input$viewertabs == "Scatter Plot"){
-      a[[1]]$layers[[1]]$aes_params$colour <- input$Col
+    if (input$TypeSelect_Colorby == "Single Color"){
+      a$layers[[1]]$aes_params$colour <- input$Col
     }
     if (input$adjustgridlines == TRUE){
-      a <- a[[1]] + ggplot2::theme_bw()
-      a <- plotly::ggplotly(a)
+      a <- a + ggplot2::theme_bw()
     }
+    a <- plotly::ggplotly(a)
     plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
   output$scatter <- renderPlotly({cellviewer()})
