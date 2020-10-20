@@ -5130,7 +5130,7 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
-        vals$subDepth <- DownsampleDepth(originalData = vals$counts,
+        vals$subDepth <- downSampleDepth(originalData = vals$counts,
                                          useAssay = input$depthAssay,
                                          minCount = input$minCount,
                                          minCells = input$minCells,
