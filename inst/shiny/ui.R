@@ -203,7 +203,7 @@ shinyUI(
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
-        tabPanel("Celda", shinyPanelCelda),
+        tabPanel("Celda", value = "CeldaWorkflow", shinyPanelCelda),
         tabPanel("Seurat", shinyPanelSeurat)
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
