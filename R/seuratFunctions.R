@@ -20,11 +20,11 @@
 #' @param seuratObject seurat object which should be added to the metadata slot of sce object (copy from)
 #' @return Updated \code{SingleCellExperiment} object which now contains the seurat object in its metadata slot (excluding data matrices)
 .addSeuratToMetaDataSCE <- function(inSCE, seuratObject) {
-    seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
-    seuratObject@assays$RNA@data <- methods::new("dgCMatrix")
-    seuratObject@assays$RNA@scale.data <- matrix()
-    inSCE@metadata$seurat$obj <- seuratObject
-    return(inSCE)
+  seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
+  seuratObject@assays$RNA@data <- methods::new("dgCMatrix")
+  seuratObject@assays$RNA@scale.data <- matrix()
+  inSCE@metadata$seurat$obj <- seuratObject
+  return(inSCE)
 }
 
 #' .computeSignificantPC
@@ -32,14 +32,14 @@
 #' @param inSCE (sce) object with pca computed
 #' @return A numerical value indicating how many number of components are considered significant
 .computeSignificantPC <- function(inSCE) {
-    seuratObject <- convertSCEToSeurat(inSCE)
-    max_components <- 0
-    for (i in seq(seuratObject[["pca"]]@stdev)[-1]-1) {
-        if (abs(seuratObject[["pca"]]@stdev[i + 1] - seuratObject[["pca"]]@stdev[i]) > 0.1) {
-            max_components <- i
-        }
+  seuratObject <- convertSCEToSeurat(inSCE)
+  max_components <- 0
+  for (i in seq(seuratObject[["pca"]]@stdev)[-1]-1) {
+    if (abs(seuratObject[["pca"]]@stdev[i + 1] - seuratObject[["pca"]]@stdev[i]) > 0.1) {
+      max_components <- i
     }
-    return(max_components)
+  }
+  return(max_components)
 }
 
 #' seuratNormalizeData
@@ -58,11 +58,11 @@
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
 seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
-    seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
-    inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    inSCE@metadata$seurat$normAssay <- normAssayName
-    return(inSCE)
+  seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
+  inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  inSCE@metadata$seurat$normAssay <- normAssayName
+  return(inSCE)
 }
 
 #' seuratScaleData
@@ -144,14 +144,14 @@ seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000)
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) {
-    seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = FALSE)
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-
-    temp <- seuratObject@reductions$pca@cell.embeddings
-    rownames(temp) <- colnames(inSCE)
-    reducedDim(inSCE, reducedDimName) <- temp
-
-    return(inSCE)
+  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = FALSE)
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  
+  temp <- seuratObject@reductions$pca@cell.embeddings
+  rownames(temp) <- colnames(inSCE)
+  reducedDim(inSCE, reducedDimName) <- temp
+  
+  return(inSCE)
 }
 
 #' seuratICA
@@ -172,14 +172,14 @@ seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) 
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) {
-    seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), nics = as.double(nics), verbose = FALSE)
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-
-    temp <- seuratObject@reductions$ica@cell.embeddings
-    rownames(temp) <- colnames(inSCE)
-    reducedDim(inSCE, reducedDimName) <- temp
-
-    return(inSCE)
+  seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), nics = as.double(nics), verbose = FALSE)
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  
+  temp <- seuratObject@reductions$ica@cell.embeddings
+  rownames(temp) <- colnames(inSCE)
+  reducedDim(inSCE, reducedDimName) <- temp
+  
+  return(inSCE)
 }
 
 #' seuratComputeJackStraw
@@ -199,17 +199,17 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 #' @return Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
 #' @export
 seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
-    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-    if(is.null(seuratObject@reductions[["pca"]])) {
-      stop("'seuratPCA' must be run before JackStraw can be computed.")
-    }
-    if(is.null(dims)) {
-      dims <- ncol(seuratObject@reductions[["pca"]])
-    }
-    seuratObject <- Seurat::JackStraw(seuratObject, dims = as.double(dims))
-    seuratObject <- Seurat::ScoreJackStraw(seuratObject, dims = 1:dims)
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    return(inSCE)
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  if(is.null(seuratObject@reductions[["pca"]])) {
+    stop("'seuratPCA' must be run before JackStraw can be computed.")
+  }
+  if(is.null(dims)) {
+    dims <- ncol(seuratObject@reductions[["pca"]])
+  }
+  seuratObject <- Seurat::JackStraw(seuratObject, dims = as.double(dims))
+  seuratObject <- Seurat::ScoreJackStraw(seuratObject, dims = 1:dims)
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  return(inSCE)
 }
 
 #' seuratJackStrawPlot
@@ -252,13 +252,13 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL) {
 #' @return plot object
 #' @export
 seuratPlotHVG <- function(inSCE) {
-    seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::VariableFeaturePlot(seuratObject)
-    plot$labels$colour <- "Variable"
-    if(requireNamespace("stringr", quietly = TRUE)){
-      plot$data$colors <- stringr::str_to_title(plot$data$colors)
-    }
-    return(plot)
+  seuratObject <- convertSCEToSeurat(inSCE)
+  plot <- Seurat::VariableFeaturePlot(seuratObject)
+  plot$labels$colour <- "Variable"
+  if(requireNamespace("stringr", quietly = TRUE)){
+    plot$data$colors <- stringr::str_to_title(plot$data$colors)
+  }
+  return(plot)
 }
 
 #' seuratReductionPlot
@@ -277,16 +277,16 @@ seuratPlotHVG <- function(inSCE) {
 #' @return plot object
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
-    seuratObject <- convertSCEToSeurat(inSCE)
-    if(showLegend){
-      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
-    }else{
-      plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
-    }
-    if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
-        plot$data$ident <- seuratObject@meta.data$seurat_clusters
-    }
-    return(plot)
+  seuratObject <- convertSCEToSeurat(inSCE)
+  if(showLegend){
+    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
+  }else{
+    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
+  }
+  if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
+    plot$data$ident <- seuratObject@meta.data$seurat_clusters
+  }
+  return(plot)
 }
 
 
@@ -312,30 +312,30 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
 #' @return Updated sce object which now contains the computed clusters
 #' @export
 seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = 10, algorithm = c("louvain", "multilevel", "SLM"), groupSingletons = TRUE, resolution = 0.8, externalReduction = NULL) {
-
-
-    algorithm <- match.arg(algorithm)
-    useReduction <- match.arg(useReduction)
-
-    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-
-    if(!is.null(externalReduction)){
-      seuratObject@reductions <- list(pca = externalReduction)
-    }
-
-    seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction, dims = seq(dims))
-    no_algorithm <- 1
-    if (algorithm == "louvain") {
-        no_algorithm = 1
-    } else if (algorithm == "multilevel") {
-        no_algorithm = 2
-    } else if (algorithm == "SLM") {
-        no_algorithm = 3
-    }
-    seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
-    inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
-    return(inSCE)
+  
+  
+  algorithm <- match.arg(algorithm)
+  useReduction <- match.arg(useReduction)
+  
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+  }
+  
+  seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction, dims = seq(dims))
+  no_algorithm <- 1
+  if (algorithm == "louvain") {
+    no_algorithm = 1
+  } else if (algorithm == "multilevel") {
+    no_algorithm = 2
+  } else if (algorithm == "SLM") {
+    no_algorithm = 3
+  }
+  seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
+  inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
+  return(inSCE)
 }
 
 #' seuratRunTSNE
@@ -356,7 +356,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  
   return(inSCE)
 }
 
@@ -393,11 +393,11 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
                                   n.neighbors = nNeighbors,
                                   spread = spread)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-
+  
   temp <- seuratObject@reductions$umap@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  
   return(inSCE)
 }
 
@@ -407,10 +407,10 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param numberOfFeatures numerical value indicating how many feature names should be retrieved (default is 100)
 #' @return list() of variable feature names
 .seuratGetVariableFeatures <- function(inSCE, numberOfFeatures) {
-    seuratObject <- convertSCEToSeurat(inSCE)
-    if (length(seuratObject@assays$RNA@var.features) > 0) {
-        return(seuratObject@assays$RNA@var.features[1:numberOfFeatures])
-    }
+  seuratObject <- convertSCEToSeurat(inSCE)
+  if (length(seuratObject@assays$RNA@var.features) > 0) {
+    return(seuratObject@assays$RNA@var.features[1:numberOfFeatures])
+  }
 }
 
 #' seuratElbowPlot
@@ -430,16 +430,16 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @return plot object
 #' @export
 seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
-    seuratObject <- convertSCEToSeurat(inSCE)
-    plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
-    if(!is.null(significantPC)){
-      plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
-      plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point()
-    }
-    plot$labels$x <- "PC"
-    plot$labels$y <- "Standard Deviation"
-    plot$labels$colour <- "Significant"
-    return(plot)
+  seuratObject <- convertSCEToSeurat(inSCE)
+  plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
+  if(!is.null(significantPC)){
+    plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
+    plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point()
+  }
+  plot$labels$x <- "PC"
+  plot$labels$y <- "Standard Deviation"
+  plot$labels$colour <- "Significant"
+  return(plot)
 }
 
 #' seuratComputeHeatmap
@@ -482,8 +482,8 @@ seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica")
 #' @return modified plot object
 #' @export
 seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
-    componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
-    return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
+  componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
+  return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)], ncol = ncol, labels = labels))
 }
 
 #' .updateAssaySCE
@@ -539,7 +539,7 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @export
 #' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
-
+  
   if(!is.null(countsAssay) && !(countsAssay %in% names(assays(inSCE)))) {
     stop(paste0("'", countsAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
@@ -552,14 +552,14 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
     stop(paste0("'", scaledAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
-
+  
   # Seurat has a particular way of modifying row/colnames
   # Save row/colnames in metadata
   seuratRowNames <- gsub("_", "-", rownames(inSCE))
   seuratColNames <- gsub("_", "-", colnames(inSCE))
   inSCE@metadata$seurat$colNames <- seuratColNames
   inSCE@metadata$seurat$rowNames <- seuratRowNames
-
+  
   # Create Seurat object and Set counts assay
   # If no counts assay is supplied, the first assay is used
   if (!is.null(countsAssay) && countsAssay %in% names(assays(inSCE))) {
@@ -570,21 +570,21 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   rownames(temp) <- seuratRowNames
   colnames(temp) <- seuratColNames
   seuratObject <- Seurat::CreateSeuratObject(counts = temp)
-
+  
   # Set normalized assay
   if (!is.null(normAssay) && normAssay %in% names(assays(inSCE))) {
     seuratObject@assays$RNA@data <- .convertToMatrix(assay(inSCE, normAssay))
     rownames(seuratObject@assays$RNA@data) <- seuratRowNames
     colnames(seuratObject@assays$RNA@data) <- seuratColNames
   }
-
+  
   # Set Scaled Assay
   if (!is.null(scaledAssay) && scaledAssay %in% names(assays(inSCE))) {
     seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, scaledAssay))
     rownames(seuratObject@assays$RNA@scale.data) <- seuratRowNames
     colnames(seuratObject@assays$RNA@scale.data) <- seuratColNames
   }
-
+  
   if (!is.null(inSCE@metadata$seurat$obj)) {
     if(length(inSCE@metadata$seurat$obj@assays$RNA@var.features) > 0) {
       seuratObject@assays$RNA@var.features <- inSCE@metadata$seurat$obj@assays$RNA@var.features
@@ -626,14 +626,14 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
 seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts") {
-    seuratObject <- base::suppressWarnings(Seurat::SCTransform(
-                            object = convertSCEToSeurat(inSCE, useAssay),
-                            assay = "RNA",
-                            new.assay.name = "SCTransform",
-                            do.correct.umi = FALSE,
-                            verbose = TRUE))
-    inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
-    return(inSCE)
+  seuratObject <- base::suppressWarnings(Seurat::SCTransform(
+    object = convertSCEToSeurat(inSCE, useAssay),
+    assay = "RNA",
+    new.assay.name = "SCTransform",
+    do.correct.umi = FALSE,
+    verbose = TRUE))
+  inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
+  return(inSCE)
 }
 
 
@@ -691,7 +691,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
 #' @return A \code{SingleCellExperiment} object that contains the batch-corrected assay inside the \code{altExp} slot of the object
 #' @export
 seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = "SeuratIntegratedAssay", kAnchor, kFilter, kWeight, ndims = 10){
-   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
     stop(paste(useAssay, "not found in the input object assays"))
   }
   if(is.null(batch)){
@@ -700,36 +700,35 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   if(kAnchor == 0 || kFilter == 0 || kWeight == 0){
     stop("kAnchor, kFilter or kWeight cannot be zero. Please input correct parameters.")
   }
-
+  
   #create seurat object
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
   seuratObject@meta.data <- cbind(seuratObject@meta.data, colData(inSCE))
-
+  
   #split seurat object by batch variable
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
-
+  
   #find anchors
   seurat.anchors <- Seurat::FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
   seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
-
+  
   #store results back in altExp slot of sce object
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")))
   SummarizedExperiment::assayNames(altExp(inSCE,newAssayName)) <- newAssayName #remove this if counts in above line set to altExp
-
+  
   #store back colData from sce into the altExp slot
   colData(altExp(inSCE, newAssayName))<- colData(inSCE)
-
+  
   #counts <- assay(altExp(inSCE, newAssayName), "altExp")
   #remove NA values from counts and replace with zero so can be used properly by dgCMatrix
   counts <- assay(altExp(inSCE, newAssayName), newAssayName)
   counts[is.na(counts)] <- 0
-
+  
   #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
   assay(altExp(inSCE, newAssayName), newAssayName) <- counts
-
+  
   return(inSCE)
 }
-
