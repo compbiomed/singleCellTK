@@ -408,7 +408,7 @@ addToColFilterParams <- function(name, categorial, criteria, criteriaGT, criteri
 }
 
 addToRowFilterParams <- function(name, X, Y, id, paramsReactive) {
-  entry <- list(row=name, X=X, Y=Y, id=id)
+  entry <- reactiveValues(row=name, X=X, Y=Y, id=id)
   paramsReactive$params <- c(paramsReactive$params, list(entry))
   paramsReactive$id_count <- paramsReactive$id_count + 1
 }

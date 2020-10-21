@@ -1433,7 +1433,12 @@ shinyServer(function(input, output, session) {
       vals$counts <- addRowFiltersToSCE(vals$counts, rowFilteringParams)
       rowInput <- formatFilteringCriteria(rowFilteringParams$params)
       if (length(rowInput) > 0) {
-        vals$counts <- subsetSCERows(vals$counts, rowData = rowInput, returnAsAltExp = FALSE)
+        temp <- subsetSCERows(vals$counts, rowData = rowInput, returnAsAltExp = FALSE)
+        if (nrow(temp) == 0) {
+          stop("This filter will clear all rows. Filter has not been applied.")
+        } else {
+          vals$counts <- temp
+        }
       }
     })
   })
