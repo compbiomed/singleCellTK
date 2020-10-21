@@ -2,8 +2,24 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
-              "(help)", target = "_blank")),
+    br(),
+    tags$style(appCSS),
+    tags$div(style = "background-color:#ededed",
+      tags$div(
+        class = "container",
+        h3("Quick Guide"),
+        p("1. Users need to choose a method and the feature expression assay."),
+        p("   For 'MAST', 'Limma' and 'ANOVA', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred."),
+        p("2. Then user need to design the condition of interests and control, with the three methods provided. "),
+        p("3. Other parameters follows before finally run the analysis. "),
+        p("4. In the visualization section, the first 'Adaptive thresholding' tab reacts with the assay selected at the top, "),
+        p("   while the other tabs presents the results. "),
+        p("For the detail, please refer to the ",
+          tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
+          "help page", target = "_blank"), ". ")
+      )
+    ),
+    br(),
     fluidRow(
       panel(
         style = "margin:2px;",

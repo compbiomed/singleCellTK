@@ -106,7 +106,7 @@ shinyPanelBatchcorrect <- fluidPage(
         selectInput("batchCorrAssay", "Select Assay:", currassays),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("ComBat", "BBKNN", "FastMNN", "Harmony", "LIGER", "Limma",
+                    c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER", 
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
         # BBKNN ####
@@ -155,43 +155,43 @@ shinyPanelBatchcorrect <- fluidPage(
                     value = "FastMNN"),
           withBusyIndicatorUI(actionButton("FastMNNRun", "Run"))
         ),
-        # Harmony ####
-        conditionalPanel(
-          condition = "input.batchCorrMethods == 'Harmony'",
-          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runHarmony.html",
-                    "(help for Harmony)", target = "_blank")),
-          checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
-                        value = FALSE),
-          conditionalPanel(
-            condition = 'input.HarmonyPcInput == true',
-            selectInput('HarmonyReddim', "Select Reduced dimension:",
-                        currreddim)
-          ),
-          numericInput("HarmonyNComp", label = "Number of output dimension:",
-                       value = 50L, min = 2, max = 100000, step = 1),
-          textInput("HarmonyTheta", "Theta value", value = '5',
-                    placeholder = "Type a number"),
-          numericInput("HarmonyNIter", "Number of iteration",
-                       value = 10L, min = 1, step = 1),
-          textInput("HarmonySaveReddim", "ReducedDim Name to Use:",
-                    value = "Harmony"),
-          withBusyIndicatorUI(actionButton("HarmonyRun", "Run"))
-        ),
-        # LIGER ####
-        conditionalPanel(
-          condition = "input.batchCorrMethods == 'LIGER'",
-          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLIGER.html",
-                    "(help for LIGER)", target = "_blank")),
-          numericInput("ligerNComp", label = "Number of output dimension:",
-                       value = 20L, min = 2, max = 100000, step = 1),
-          numericInput("ligerLambda", label = "Lambda:",
-                       value = 5.0, min = 0, max = 100000, step = 0.1),
-          numericInput("ligerResolution", label = "Resolution:",
-                       value = 1.0, min = 0, max = 100000, step = 0.1),
-          textInput("ligerSaveReddim", "ReducedDim Name to Save:",
-                    value = "LIGER"),
-          withBusyIndicatorUI(actionButton("ligerRun", "Run"))
-        ),
+        # # Harmony ####
+        # conditionalPanel(
+        #   condition = "input.batchCorrMethods == 'Harmony'",
+        #   h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runHarmony.html",
+        #             "(help for Harmony)", target = "_blank")),
+        #   checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
+        #                 value = FALSE),
+        #   conditionalPanel(
+        #     condition = 'input.HarmonyPcInput == true',
+        #     selectInput('HarmonyReddim', "Select Reduced dimension:",
+        #                 currreddim)
+        #   ),
+        #   numericInput("HarmonyNComp", label = "Number of output dimension:",
+        #                value = 50L, min = 2, max = 100000, step = 1),
+        #   textInput("HarmonyTheta", "Theta value", value = '5',
+        #             placeholder = "Type a number"),
+        #   numericInput("HarmonyNIter", "Number of iteration",
+        #                value = 10L, min = 1, step = 1),
+        #   textInput("HarmonySaveReddim", "ReducedDim Name to Use:",
+        #             value = "Harmony"),
+        #   withBusyIndicatorUI(actionButton("HarmonyRun", "Run"))
+        # ),
+        # # LIGER ####
+        # conditionalPanel(
+        #   condition = "input.batchCorrMethods == 'LIGER'",
+        #   h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLIGER.html",
+        #             "(help for LIGER)", target = "_blank")),
+        #   numericInput("ligerNComp", label = "Number of output dimension:",
+        #                value = 20L, min = 2, max = 100000, step = 1),
+        #   numericInput("ligerLambda", label = "Lambda:",
+        #                value = 5.0, min = 0, max = 100000, step = 0.1),
+        #   numericInput("ligerResolution", label = "Resolution:",
+        #                value = 1.0, min = 0, max = 100000, step = 0.1),
+        #   textInput("ligerSaveReddim", "ReducedDim Name to Save:",
+        #             value = "LIGER"),
+        #   withBusyIndicatorUI(actionButton("ligerRun", "Run"))
+        # ),
         # Limma ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Limma'",
