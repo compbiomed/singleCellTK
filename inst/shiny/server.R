@@ -5313,7 +5313,7 @@ shinyServer(function(input, output, session) {
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
         if (input$useReadCount){
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = sum(SummarizedExperiment::assay(vals$counts, input$cellsAssay)),
@@ -5325,7 +5325,7 @@ shinyServer(function(input, output, session) {
                                            iterations = input$iterations)
         }
         else{
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = input$totalReads,
