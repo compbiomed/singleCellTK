@@ -2562,7 +2562,7 @@ shinyServer(function(input, output, session) {
     updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "danger"))
     shinyjs::enable(
       selector = "div[value='Visualization']")
-    updateNumericInput(session, "celdamodheatmapnum", max = input$celdaKselect, value = 1)
+    updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
     updateSelectInput(session, "celdaAssayUMAP", choices = names(assays(vals$counts)))
     updateSelectInput(session, "celdaAssaytSNE", choices = names(assays(vals$counts)))
   })
