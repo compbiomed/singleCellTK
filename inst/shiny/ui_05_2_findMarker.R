@@ -2,10 +2,12 @@ shinyPanelfindMarker <- fluidPage(
   tags$div(
     class = "container",
     h1("Find Marker"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
-              "(help)", target = "_blank")),
+    tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/find_marker.html",
+           "(help)", target = "_blank"),
     sidebarLayout(
       sidebarPanel(
+        p("For 'MAST' and 'Limma', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred.",
+          style = "color:grey;"),
         selectInput('fmAssay', "Select Assay", currassays),
         selectInput('fmMethod', "Select Differential Expression Method",
                     c("MAST", "DESeq2", "Limma")),

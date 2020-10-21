@@ -2,23 +2,25 @@
 shinyPanelCelda <- fluidPage(
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
     bsCollapse(id = "CeldaUI", open = "Data Input",
-        bsCollapsePanel("Identify # of Feature Modules",
+        bsCollapsePanel("Identify Number of Feature Modules",
            fluidRow(
                column(4,
                    panel(
+                       selectInput("celdaassayselect", "Choose an Assay:",
+                                   choices = c()),
                        selectInput("celdafeatureselect", "Choose Feature Selection Method:",
-                                   choices = c("Celda", "SeuratFindHVG", "Scran")),
+                                   choices = c("Simple Filter", "SeuratFindHVG", "Scran_modelGeneVar")),
                        conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
                                         selectInput("celdaseurathvgmethod", "Select HVG method:",
                                                     choices = c("vst", "dispersion", "mean.var.plot"))
                        ),
-                       conditionalPanel("input.celdafeatureselect == 'Celda'",
+                       conditionalPanel("input.celdafeatureselect == 'Simple Filter'",
                                         numericInput("celdarowcountsmin",
                                                      "Number of counts per gene:", value = 3),
                                         numericInput("celdacolcountsmin",
                                                      "Number of counts per cell:", value = 3)
                        ),
-                       conditionalPanel("input.celdafeatureselect != 'Celda'",
+                       conditionalPanel("input.celdafeatureselect != 'Simple Filter'",
                                         numericInput("celdafeaturenum",
                                                      "Select number of variable features:", min = 1, max = 5000, value = 2000)
                        ),
@@ -44,7 +46,7 @@ shinyPanelCelda <- fluidPage(
            ),
             style = "primary"),
 
-        bsCollapsePanel("Identify # of Cell Clusters",
+        bsCollapsePanel("Identify Number of Cell Clusters",
             fluidRow(
                 column(4,
                     panel(
@@ -113,7 +115,7 @@ shinyPanelCelda <- fluidPage(
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdaumapplot", height = 400)
+                                plotlyOutput("celdaumapplot", height = "auto")
                             )
                         )
                     )
@@ -156,7 +158,7 @@ shinyPanelCelda <- fluidPage(
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdatsneplot", height = 400)
+                                plotlyOutput("celdatsneplot", height = "auto")
                             )
                         )
                     )
@@ -194,7 +196,7 @@ shinyPanelCelda <- fluidPage(
                     ),
                     column(8,
                         panel(
-                            plotOutput("celdaprobmapplt", height = 400)
+                            plotOutput("celdaprobmapplt")
                         )
                     )
                 )

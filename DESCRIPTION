@@ -117,9 +117,7 @@ Suggests:
     xtable,
     spelling,
     org.Mm.eg.db,
-    stringr,
-    harmony,
-    liger
+    stringr
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
