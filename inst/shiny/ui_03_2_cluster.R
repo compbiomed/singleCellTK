@@ -2,7 +2,7 @@ shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
     h3("Clustering"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
+    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/clustering.html",
               "(help)", target = "_blank")),
     wellPanel(
       # CLUSTERING --> VISUALIZATION
@@ -17,7 +17,7 @@ shinyPanelCluster <- fluidPage(
                                          "MacQueen" = 9),
                            "Seurat" = c("louvain" = 10, "multilevel" = 11,
                                         "SLM" = 12)),
-                      )#selected = "Scran SNN")
+                      )
         )
       ),
       h4("Input Parameters:"),
@@ -111,6 +111,8 @@ shinyPanelCluster <- fluidPage(
       withBusyIndicatorUI(actionButton("clustRun", "Run"))
     ),
     h3("Visualization"),
+    p("A cluster annotation needs to be specified, and a dimension reduction has to be provided.",
+      style = "color:grey;"),
     panel(
       radioButtons("clustVisChoicesType", NULL,
                    c("Select from Current Results:" = 1,

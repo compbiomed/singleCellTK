@@ -70,15 +70,15 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "shapeBy",
                       choices = c("No Shape", pdataOptions))
     updateSelectInput(session, "scMergeCT",
-                      choices = c('None', pdataOptions))
+                      choices = c(pdataOptions))
     updateSelectInput(session, "combatCond",
-                      choices = c('None', pdataOptions))
+                      choices = c(pdataOptions))
     updateSelectInput(session, "batchCorrVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckCond",
-                      choices = c('None', pdataOptions))
+                      choices = c(pdataOptions))
     updateSelectInput(session, "clustVisCol", choices = pdataOptions)
     updateSelectInput(session, "deC1Class",
                       choices = c('None', pdataOptions))
@@ -224,7 +224,7 @@ shinyServer(function(input, output, session) {
     currreddim <- names(reducedDims(vals$counts))
     updateSelectInput(session, "delRedDimType", choices = currreddim)
     updateSelectInput(session, "FastMNNReddim", choices = currreddim)
-    updateSelectInput(session, "HarmonyReddim", choices = currreddim)
+    #updateSelectInput(session, "HarmonyReddim", choices = currreddim)
     updateSelectInput(session, "clustVisReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
     updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
@@ -4020,10 +4020,8 @@ shinyServer(function(input, output, session) {
           } else {
             cov <- input$combatCond
           }
-          print(input$combatParametric)
           par.prior <- ifelse(input$combatParametric == "Parametric",
                               TRUE, FALSE)
-          print(par.prior)
           vals$counts <- runComBat(inSCE = vals$counts,
                                    batch = input$batchCorrVar,
                                    useAssay = input$batchCorrAssay,
@@ -4065,35 +4063,35 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$HarmonyRun, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      withBusyIndicatorServer("HarmonyRun", {
-        saveassayname <- gsub(" ", "_", input$HarmonySaveReddim)
-        if(isTRUE(input$HarmonyPcInput)){
-          useAssay <- input$HarmonyReddim
-        } else {
-          useAssay <- input$batchCorrAssay
-        }
-        if(is.na(as.numeric(input$HarmonyTheta))){
-          stop("Theta value must be numeric.")
-        } else {
-          theta <- as.numeric(input$HarmonyTheta)
-        }
-        vals$counts <- runHarmony(vals$counts, useAssay = useAssay,
-                                  pcInput = input$HarmonyPcInput,
-                                  batch = input$batchCorrVar,
-                                  reducedDimName = saveassayname,
-                                  nComponents = input$HarmonyNComp,
-                                  theta = theta, nIter = input$HarmonyNIter)
-        shinyalert::shinyalert('Success!', 'Harmony completed.',
-                               type = 'success')
-        vals$batchRes[[saveassayname]] <- 'reddim'
-        updateReddimInputs()
-      })
-    }
-  })
+  # observeEvent(input$HarmonyRun, {
+  #   if (is.null(vals$counts)){
+  #     shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+  #   } else {
+  #     withBusyIndicatorServer("HarmonyRun", {
+  #       saveassayname <- gsub(" ", "_", input$HarmonySaveReddim)
+  #       if(isTRUE(input$HarmonyPcInput)){
+  #         useAssay <- input$HarmonyReddim
+  #       } else {
+  #         useAssay <- input$batchCorrAssay
+  #       }
+  #       if(is.na(as.numeric(input$HarmonyTheta))){
+  #         stop("Theta value must be numeric.")
+  #       } else {
+  #         theta <- as.numeric(input$HarmonyTheta)
+  #       }
+  #       vals$counts <- runHarmony(vals$counts, useAssay = useAssay,
+  #                                 pcInput = input$HarmonyPcInput,
+  #                                 batch = input$batchCorrVar,
+  #                                 reducedDimName = saveassayname,
+  #                                 nComponents = input$HarmonyNComp,
+  #                                 theta = theta, nIter = input$HarmonyNIter)
+  #       shinyalert::shinyalert('Success!', 'Harmony completed.',
+  #                              type = 'success')
+  #       vals$batchRes[[saveassayname]] <- 'reddim'
+  #       updateReddimInputs()
+  #     })
+  #   }
+  # })
 
   observeEvent(input$limmaRun, {
     if (is.null(vals$counts)){
@@ -4239,7 +4237,7 @@ shinyServer(function(input, output, session) {
                      value = 0, min = 0, step = 1),
 
         numericInput('Srt3IntNDims', "Number of Dimensions:",
-                     value = 0, min = 0, step = 1)
+                     value = 2, min = 2, step = 1)
 
       )
     }
@@ -4712,9 +4710,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDE, {
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
-    } else if(input$deAnalysisName == ""){
+    } else if(input$deAnalysisName == "" ||
+              input$deG1Name == "" ||
+              input$deG2Name == ""){
       shinyalert("Error!",
-                 "Please enter differential expression analysis name.",
+                 "The name of the two conditions and the whole analysis have to be specified!",
                  type = "error")
     } else {
       allRes <- names(metadata(vals$counts)$diffExp)
