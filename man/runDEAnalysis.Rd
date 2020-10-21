@@ -5,11 +5,12 @@
 \title{Perform differential expression analysis on SCE with specified method
 Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'}
 \usage{
-runDEAnalysis(method = "MAST", ...)
+runDEAnalysis(method = c("MAST", "DESeq2", "Limma", "ANOVA"), ...)
 }
 \arguments{
-\item{method}{A single character for specific method. Choose from 'MAST',
-'DESeq2', 'Limma', 'ANOVA'. Required}
+\item{method}{A single character for specific method. Choose from
+\code{"MAST"}, \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default
+\code{"MAST"}.}
 
 \item{...}{Other arguments passed to specific functions. Refer to
 \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},

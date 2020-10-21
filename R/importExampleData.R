@@ -49,6 +49,8 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
   scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
   tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
 
+  ExperimentHub::setExperimentHubOption("ASK", FALSE)
+  
   if(dataset %in% scRNAseqDatasets) {
     if(!("scRNAseq" %in% rownames(utils::installed.packages()))) {
       stop(paste0("Package 'scRNAseq' is not installed. Please install to load dataset '", dataset, "'."))
