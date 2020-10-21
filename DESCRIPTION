@@ -49,6 +49,7 @@ Imports:
     DESeq2,
     dplyr,
     DT,
+    ExperimentHub,
     fields,
     ggplot2,
     ggplotify,
