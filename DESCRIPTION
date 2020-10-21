@@ -118,6 +118,8 @@ Suggests:
     spelling,
     org.Mm.eg.db,
     stringr
+Remotes: 
+    campbio/celda
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
