@@ -4710,9 +4710,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDE, {
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
-    } else if(input$deAnalysisName == ""){
+    } else if(input$deAnalysisName == "" ||
+              input$deG1Name == "" ||
+              input$deG2Name == ""){
       shinyalert("Error!",
-                 "Please enter differential expression analysis name.",
+                 "The name of the two conditions and the whole analysis have to be specified!",
                  type = "error")
     } else {
       allRes <- names(metadata(vals$counts)$diffExp)

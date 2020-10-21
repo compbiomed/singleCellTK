@@ -106,7 +106,7 @@ shinyPanelBatchcorrect <- fluidPage(
         selectInput("batchCorrAssay", "Select Assay:", currassays),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER", 
+                    c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
         # BBKNN ####
@@ -314,6 +314,8 @@ shinyPanelBatchcorrect <- fluidPage(
               selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
               selectInput("batchCheckCond", "Additional Condition (optional)",
                 clusterChoice),
+              p("Only result generated in the current session will be presented. ",
+                style = "color:grey;"),
               uiOutput("batchCheckResUI"),
               withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
             )
