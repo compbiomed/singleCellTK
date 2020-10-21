@@ -2393,7 +2393,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- scater::logNormCounts(vals$counts, name = "ScaterLogNormCounts",
                                              exprs_values = input$celdaassayselect)
       }
-      vals$counts <- scran_modelGeneVar(vals$counts, assayName = "logcounts")
+      vals$counts <- scran_modelGeneVar(vals$counts, assayName = "ScaterLogNormCounts")
       altExp(vals$counts, "featureSubset") <- vals$counts[getTopHVG(vals$counts,
                                                           method = "modelGeneVar", n = input$celdafeaturenum)]
     }
