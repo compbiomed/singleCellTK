@@ -611,6 +611,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
       seuratObject@commands <- inSCE@metadata$seurat$obj@commands
     }
   }
+  
   return(seuratObject)
 }
 
@@ -703,6 +704,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   #create seurat object
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-", rownames(seuratObject@meta.data))
+  seuratObject@meta.data <- cbind(seuratObject@meta.data, colData(inSCE))
 
   #split seurat object by batch variable
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
