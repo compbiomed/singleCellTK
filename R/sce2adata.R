@@ -48,7 +48,7 @@
     for (i in seq_along(allAssayNames)) {
         oneName <- allAssayNames[i]
         if (!oneName == useAssay) {
-            AnnData$obsm$'__setitem__'(oneName,
+            AnnData$layers$'__setitem__'(oneName,
                                        t(SummarizedExperiment::assay(SCE,
                                                                      oneName)))
         }

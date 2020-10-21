@@ -138,7 +138,6 @@ source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer varia
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 
 jsCode <- "
 
