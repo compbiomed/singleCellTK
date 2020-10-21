@@ -59,7 +59,7 @@ ad <- NULL
 sctkPythonInstallConda <- function(envname = "sctk-reticulate",
                                    conda = "auto",
                                    packages = c("scipy", "numpy", "astroid", "six"),
-                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata", "umap-learn"),
+                                   pipPackages = c("scrublet", "scanpy", "bbknn", "scanorama", "anndata"),
                                    selectConda = TRUE,
                                    forge = FALSE,
                                    pipIgnoreInstalled = TRUE,
@@ -106,7 +106,7 @@ sctkPythonInstallConda <- function(envname = "sctk-reticulate",
 #' going through the whole installation process again.
 #' @export
 sctkPythonInstallVirtualEnv <- function(envname = "sctk-reticulate",
-                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "anndata", "umap-learn"),
+                                        packages = c("scipy", "numpy", "astroid", "six", "scrublet", "scanpy", "scanorama", "bbknn", "anndata"),
                                         selectEnvironment = TRUE,
                                         python = NULL) {
 
