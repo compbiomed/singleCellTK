@@ -200,157 +200,157 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
   return(inSCE)
 }
 
-#' Apply Harmony batch effect correction method to SingleCellExperiment object
-#'
-#' Harmony is an algorithm that projects cells into a shared embedding in which
-#' cells group by cell type rather than dataset-specific conditions.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
-#' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
-#' Default \code{"batch"}.
-#' @param reducedDimName A single character. The name for the corrected
-#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
-#' Default \code{"HARMONY"}.
-#' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
-#' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
-#' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
-#' @param nComponents An integer. The number of principle components or
-#' dimensionality to generate in the resulting matrix. If \code{pcInput} is set
-#' to \code{TRUE}, the output dimension will follow the low-dimension matrix,
-#' so this argument will be ignored. Default \code{50L}.
-#' @param nIter An integer. The max number of iterations to perform. Default
-#' \code{10L}.
-#' @param theta A Numeric scalar. Diversity clustering penalty parameter,
-#' Larger value results in more diverse clusters. Default \code{5}
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{reducedDim(inSCE, reducedDimName)} updated.
-#' @export
-#' @references Ilya Korsunsky, et al., 2019
-#' @examples
-#' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runHarmony(sceBatches, nComponents = 10L)
-runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
-                       batch = "batch", reducedDimName = "HARMONY",
-                       nComponents = 50L, theta = 5, nIter = 10L){
-  if (!requireNamespace("harmony", quietly = TRUE)) {
-    stop("The Harmony package is required to run this function. ",
-         "Install harmony with: ",
-         "devtools::install_github('joshua-d-campbell/harmony') ",
-         call. = FALSE)
-  }
-  ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(pcInput){
-    if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-      stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
-    }
-  } else {
-    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-      stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-    }
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found"))
-  }
-  reducedDimName <- gsub(' ', '_', reducedDimName)
-  nComponents <- as.integer(nComponents)
-  nIter <- as.integer(nIter)
-  ## Run algorithm
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  if(pcInput){
-    mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
-  } else{
-    sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay,
-                             ncomponents = nComponents)
-    mat <- SingleCellExperiment::reducedDim(sceTmp, 'PCA')
-  }
-  h <- harmony::HarmonyMatrix(mat, batchCol, do_pca = FALSE,
-                              theta = theta, max.iter.harmony = nIter)
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
-  return(inSCE)
-}
+# #' Apply Harmony batch effect correction method to SingleCellExperiment object
+# #'
+# #' Harmony is an algorithm that projects cells into a shared embedding in which
+# #' cells group by cell type rather than dataset-specific conditions.
+# #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+# #' @param useAssay A single character indicating the name of the assay requiring
+# #' batch correction. Default \code{"logcounts"}.
+# #' @param batch A single character indicating a field in
+# #' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+# #' Default \code{"batch"}.
+# #' @param reducedDimName A single character. The name for the corrected
+# #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+# #' Default \code{"HARMONY"}.
+# #' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
+# #' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
+# #' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
+# #' @param nComponents An integer. The number of principle components or
+# #' dimensionality to generate in the resulting matrix. If \code{pcInput} is set
+# #' to \code{TRUE}, the output dimension will follow the low-dimension matrix,
+# #' so this argument will be ignored. Default \code{50L}.
+# #' @param nIter An integer. The max number of iterations to perform. Default
+# #' \code{10L}.
+# #' @param theta A Numeric scalar. Diversity clustering penalty parameter,
+# #' Larger value results in more diverse clusters. Default \code{5}
+# #' @return The input \linkS4class{SingleCellExperiment} object with
+# #' \code{reducedDim(inSCE, reducedDimName)} updated.
+# #' @export
+# #' @references Ilya Korsunsky, et al., 2019
+# #' @examples
+# #' data('sceBatches', package = 'singleCellTK')
+# #' sceCorr <- runHarmony(sceBatches, nComponents = 10L)
+# runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
+#                        batch = "batch", reducedDimName = "HARMONY",
+#                        nComponents = 50L, theta = 5, nIter = 10L){
+#   if (!requireNamespace("harmony", quietly = TRUE)) {
+#     stop("The Harmony package is required to run this function. ",
+#          "Install harmony with: ",
+#          "devtools::install_github('joshua-d-campbell/harmony') ",
+#          call. = FALSE)
+#   }
+#   ## Input check
+#   if(!inherits(inSCE, "SingleCellExperiment")){
+#     stop("\"inSCE\" should be a SingleCellExperiment Object.")
+#   }
+#   if(pcInput){
+#     if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+#       stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
+#     }
+#   } else {
+#     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+#       stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
+#     }
+#   }
+#   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+#     stop(paste("\"batch\" name:", batch, "not found"))
+#   }
+#   reducedDimName <- gsub(' ', '_', reducedDimName)
+#   nComponents <- as.integer(nComponents)
+#   nIter <- as.integer(nIter)
+#   ## Run algorithm
+#   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
+#   if(pcInput){
+#     mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
+#   } else{
+#     sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay,
+#                              ncomponents = nComponents)
+#     mat <- SingleCellExperiment::reducedDim(sceTmp, 'PCA')
+#   }
+#   h <- harmony::HarmonyMatrix(mat, batchCol, do_pca = FALSE,
+#                               theta = theta, max.iter.harmony = nIter)
+#   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
+#   return(inSCE)
+# }
 
-#' Apply LIGER batch effect correction method to SingleCellExperiment object
-#'
-#' LIGER relies on integrative non-negative matrix factorization to identify
-#' shared and dataset-specific factors.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
-#' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
-#' Default \code{"batch"}.
-#' @param reducedDimName A single character. The name for the corrected
-#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
-#' Default \code{"LIGER"}.
-#' @param nComponents An integer. The number of principle components or
-#' dimensionality to generate in the resulting matrix. Default \code{20L}.
-#' @param lambda A numeric scalar. Algorithmic parameter, the penalty
-#' parameter which limits the dataset-specific component of the factorization.
-#' Default \code{5.0}.
-#' @param resolution A numeric scalar. Algorithmic paramter, the clustering
-#' resolution, increasing this increases the number of communities detected.
-#' Default \code{1.0}
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{reducedDim(inSCE, reducedDimName)} updated.
-#' @export
-#' @references Joshua Welch, et al., 2018
-#' @examples
-#' \dontrun{
-#' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runLIGER(sceBatches)
-#' }
-runLIGER <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
-                     reducedDimName = 'LIGER', nComponents = 20L, lambda = 5.0,
-                     resolution = 1.0){
-  if (!requireNamespace("liger", quietly = TRUE)) {
-    stop("The Liger package is required to run this function. ",
-         "Install liger with: ",
-         "devtools::install_github('joshua-d-campbell/liger') \n",
-         "NOTICE that the one on cran/BiocManager is not what we need.",
-         call. = FALSE)
-  }
-  if (!exists('createLiger', where=asNamespace('liger'), mode='function')) {
-    stop("You are using the wrong source of Liger, please reinstall with: ",
-         "devtools::install_github('joshua-d-campbell/liger') \n",
-         "NOTICE that the one on cran/BiocManager is not what we need.",
-         call. = FALSE)
-  }
-  ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found"))
-  }
-  reducedDimName <- gsub(' ', '_', reducedDimName)
+# #' Apply LIGER batch effect correction method to SingleCellExperiment object
+# #'
+# #' LIGER relies on integrative non-negative matrix factorization to identify
+# #' shared and dataset-specific factors.
+# #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+# #' @param useAssay A single character indicating the name of the assay requiring
+# #' batch correction. Default \code{"logcounts"}.
+# #' @param batch A single character indicating a field in
+# #' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+# #' Default \code{"batch"}.
+# #' @param reducedDimName A single character. The name for the corrected
+# #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+# #' Default \code{"LIGER"}.
+# #' @param nComponents An integer. The number of principle components or
+# #' dimensionality to generate in the resulting matrix. Default \code{20L}.
+# #' @param lambda A numeric scalar. Algorithmic parameter, the penalty
+# #' parameter which limits the dataset-specific component of the factorization.
+# #' Default \code{5.0}.
+# #' @param resolution A numeric scalar. Algorithmic paramter, the clustering
+# #' resolution, increasing this increases the number of communities detected.
+# #' Default \code{1.0}
+# #' @return The input \linkS4class{SingleCellExperiment} object with
+# #' \code{reducedDim(inSCE, reducedDimName)} updated.
+# #' @export
+# #' @references Joshua Welch, et al., 2018
+# #' @examples
+# #' \dontrun{
+# #' data('sceBatches', package = 'singleCellTK')
+# #' sceCorr <- runLIGER(sceBatches)
+# #' }
+# runLIGER <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
+#                      reducedDimName = 'LIGER', nComponents = 20L, lambda = 5.0,
+#                      resolution = 1.0){
+#   if (!requireNamespace("liger", quietly = TRUE)) {
+#     stop("The Liger package is required to run this function. ",
+#          "Install liger with: ",
+#          "devtools::install_github('joshua-d-campbell/liger') \n",
+#          "NOTICE that the one on cran/BiocManager is not what we need.",
+#          call. = FALSE)
+#   }
+#   if (!exists('createLiger', where=asNamespace('liger'), mode='function')) {
+#     stop("You are using the wrong source of Liger, please reinstall with: ",
+#          "devtools::install_github('joshua-d-campbell/liger') \n",
+#          "NOTICE that the one on cran/BiocManager is not what we need.",
+#          call. = FALSE)
+#   }
+#   ## Input check
+#   if(!inherits(inSCE, "SingleCellExperiment")){
+#     stop("\"inSCE\" should be a SingleCellExperiment Object.")
+#   }
+#   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+#     stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
+#   }
+#   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
+#     stop(paste("\"batch\" name:", batch, "not found"))
+#   }
+#   reducedDimName <- gsub(' ', '_', reducedDimName)
 
-  ## Run algorithm
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  batches <- unique(batchCol)
-  batchMatrices <- list()
-  for(i in seq_along(batches)){
-    b <- batches[i]
-    batchMatrices[[b]] <-
-      SummarizedExperiment::assay(inSCE, useAssay)[,batchCol == b]
-  }
-  ligerex <- liger::createLiger(batchMatrices)
-  ligerex <- liger::normalize(ligerex)
-  ligerex <- liger::selectGenes(ligerex)
-  ligerex <- liger::scaleNotCenter(ligerex)
-  ligerex <- liger::optimizeALS(ligerex, k = nComponents, lambda = lambda,
-                                resolution = resolution)
-  ligerex <- liger::quantile_norm(ligerex)
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- ligerex@H.norm
-  return(inSCE)
-}
+#   ## Run algorithm
+#   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
+#   batches <- unique(batchCol)
+#   batchMatrices <- list()
+#   for(i in seq_along(batches)){
+#     b <- batches[i]
+#     batchMatrices[[b]] <-
+#       SummarizedExperiment::assay(inSCE, useAssay)[,batchCol == b]
+#   }
+#   ligerex <- liger::createLiger(batchMatrices)
+#   ligerex <- liger::normalize(ligerex)
+#   ligerex <- liger::selectGenes(ligerex)
+#   ligerex <- liger::scaleNotCenter(ligerex)
+#   ligerex <- liger::optimizeALS(ligerex, k = nComponents, lambda = lambda,
+#                                 resolution = resolution)
+#   ligerex <- liger::quantile_norm(ligerex)
+#   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- ligerex@H.norm
+#   return(inSCE)
+# }
 
 #' Apply Limma's batch effect correction method to SingleCellExperiment object
 #'
@@ -721,8 +721,10 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     names(vars) <- rownames(inSCE)
     vars <- sort(vars, decreasing = TRUE)
     tmpSCE <- inSCE[names(vars)[seq_len(nHVG)],]
+  } else {
+    tmpSCE <- inSCE
   }
-  epsilon <- min(nrow(inSCE), epsilon)
+  epsilon <- min(nrow(tmpSCE), epsilon)
   tmpSCE <- zinbwave::zinbwave(tmpSCE, K = nComponents, epsilon = epsilon,
                                which_assay = useAssay,
                                X = paste('~', batch, sep = ''),

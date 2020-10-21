@@ -134,12 +134,10 @@ source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker varia
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
-source("ui_08_viewers.R", local = TRUE) #creates shinyPanelViewers variable
-source("ui_08_2_cellviewer_v2.R", local = TRUE) #creates shinyPanelCellViewer variable
+source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 
 jsCode <- "
 
@@ -204,13 +202,11 @@ shinyUI(
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
-        tabPanel("Celda", shinyPanelCelda),
-        tabPanel("Seurat", shinyPanelSeurat),
-        tabPanel("Bioconductor/OSCA", h1("Bioconductor/OSCA"))
+        tabPanel("Celda", value = "CeldaWorkflow", shinyPanelCelda),
+        tabPanel("Seurat", shinyPanelSeurat)
       ),
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
-                 tabPanel("Gene Visualization", shinyPanelViewers),
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
       footer = includeHTML("www/footer.html"),

@@ -6,6 +6,8 @@ shinyPanelFS_DimRed <- fluidPage(
             4,
             panel(
               heading = "Compute HVG",
+              p("Has to be run first before subsetting or plotting. ",
+                style = "color:grey;"),
               selectInput(
                 inputId = "hvgMethodFS",
                 label = "Select HVG method: ",

@@ -1,9 +1,4 @@
 exampleDatasets <- c() ## Need to add final small example data here
-if ("scRNAseq" %in% rownames(installed.packages())){
-  exampleDatasets <- c(exampleDatasets,
-                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
-}
 if ("TENxPBMCData" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "PBMC 3K (10X)" = "pbmc3k",
@@ -12,6 +7,12 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
                        "PBMC 8K (10X)" = "pbmc8k",
                        "PBMC 33K (10X)" = "pbmc33k",
                        "PBMC 68K (10X)" = "pbmc68k")
+}
+
+if ("scRNAseq" %in% rownames(installed.packages())){
+  exampleDatasets <- c(exampleDatasets,
+                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
 }
 
 shinyPanelImport <- fluidPage(
@@ -261,7 +262,7 @@ shinyPanelImport <- fluidPage(
     ),
     tags$hr(),
     wellPanel(
-      h4("Current Samples:"),
+      h4("Samples to Import:"),
       fluidRow(
         column(3, tags$b("Type")),
         column(3, tags$b("Location")),
@@ -277,7 +278,7 @@ shinyPanelImport <- fluidPage(
                                                  "Overwrite existing SCE object" = "overwriteSCE")
     ),
     withBusyIndicatorUI(
-      actionButton("uploadData", "Upload")
+      actionButton("uploadData", "Import")
     ),
     
     tags$div(

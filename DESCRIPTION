@@ -49,6 +49,7 @@ Imports:
     DESeq2,
     dplyr,
     DT,
+    ExperimentHub,
     fields,
     ggplot2,
     ggplotify,
@@ -116,10 +117,7 @@ Suggests:
     xtable,
     spelling,
     org.Mm.eg.db,
-    stringr,
-    harmony,
-    liger,
-    shinyDirectoryInput
+    stringr
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
