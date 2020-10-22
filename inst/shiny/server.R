@@ -2495,12 +2495,6 @@ shinyServer(function(input, output, session) {
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
   })
-  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-
-  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-    return(plotGridSearchPerplexityDiff(modsplit()))
-  })
-  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
 
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
