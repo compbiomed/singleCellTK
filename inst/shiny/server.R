@@ -2532,6 +2532,22 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(selector = "div[value='Identify Number of Cell Clusters']")
   })
 
+  celdaKplots <- reactive({
+    for (i in runParams(cellsplit())$K){
+      removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
+      appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
+                                                           panel(heading = sprintf("Cluster %s", i),
+                                                                 plotlyOutput(outputId = paste0("plot_K_umap_", i), height = "auto")
+                                                           )
+      ))
+      celdaKlist[[paste0("Cluster", i)]] <- subsetCeldaList(cellsplit(), params = list(K = i))
+      celdaKlist[[paste0("Cluster", i)]] <- plotDimReduceCluster(celdaKlist[[paste0("Cluster", i)]], dim1= reducedDim(altExp(temp_umap), "celda_UMAP")[, 1],
+                                                                 dim2 = reducedDim(altExp(temp_umap), "celda_UMAP")[, 2], labelClusters = TRUE)
+      output[[paste0("plot_K_umap_", i)]] <- renderPlotly({celdaKlist[[paste0("Cluster", i)]]})
+      shinyjs::enable(selector = sprintf(".celda_cellsplit_plots a[data-value='Cluster %s']", i))
+    }
+  })
+
   observeEvent(input$celdacellsplit, {
     removeTab(inputId = "celdaCellsplitTabset", target = "Perplexity Plot")
     appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = "Perplexity Plot",
@@ -2544,23 +2560,6 @@ shinyServer(function(input, output, session) {
       cellsplit(recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
-
-      #cellsplit_plots <- lapply(runParams(cellsplit())$K, function(i){
-
-      #})
-      for (i in runParams(cellsplit())$K){
-          removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
-          appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
-                                                               panel(heading = sprintf("Cluster %s", i),
-                                                                     plotlyOutput(outputId = paste0("plot_K_umap_", i), height = "auto")
-                                                               )
-          ))
-          celdaKlist[[paste0("Cluster", i)]] <- subsetCeldaList(cellsplit(), params = list(K = i))
-          celdaKlist[[paste0("Cluster", i)]] <- plotDimReduceCluster(celdaKlist[[paste0("Cluster", i)]], dim1= reducedDim(altExp(temp_umap), "celda_UMAP")[, 1],
-                               dim2 = reducedDim(altExp(temp_umap), "celda_UMAP")[, 2], labelClusters = TRUE)
-          output[[paste0("plot_K_umap_", i)]] <- renderPlotly({celdaKlist[[paste0("Cluster", i)]]})
-          shinyjs::enable(selector = sprintf(".celda_cellsplit_plots a[data-value='Cluster %s']", i))
-      }
     })
     shinyjs::enable(selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
     shinyjs::show(selector = ".celda_cellsplit_plots")
