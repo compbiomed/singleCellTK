@@ -531,10 +531,12 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
+#' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
+#' }
 #' @export
 plotScrubletResults <- function(inSCE,
                                 sample=NULL,
