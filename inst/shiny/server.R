@@ -2449,7 +2449,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
-    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
