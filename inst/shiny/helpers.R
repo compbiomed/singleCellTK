@@ -207,7 +207,7 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 # QC/Filtering #
 #--------------#
-combineQCMPlots <- function(output, combineP, sampleList, plots, plotIds) {
+combineQCMPlots <- function(input, output, combineP, sampleList, plots, plotIds, statuses) {
   if (length(sampleList) == 1) {
     # Plot output code from https://gist.github.com/wch/5436415/
     output[[plotIds$QCMetrics]] <- renderUI({
@@ -232,11 +232,12 @@ combineQCMPlots <- function(output, combineP, sampleList, plots, plotIds) {
       })
     }
   } else {
-    
     output[[plotIds$QCMetrics]] <- renderUI({
       plot_output_list <- lapply(names(plots$Violin), function(subScore) {
         subPlotID <- paste0("QCMetrics", subScore)
-        plotOutput(subPlotID)
+        if (is.null(input$subScore)){
+          plotOutput(subPlotID)
+        }
       })
       
       # Convert the list to a tagList - this is necessary for the list of items
@@ -329,7 +330,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
 }
 
 
-arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
+arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, statuses, redDimName) {
   uniqueSampleNames <- unique(sampleList)
   combineP <- "none"
   for (a in algoList) {
@@ -355,7 +356,7 @@ arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuse
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
-      combineQCMPlots(output, combineP, uniqueSampleNames, qcmPlots, plotIDs)
+      combineQCMPlots(input, output, combineP, uniqueSampleNames, qcmPlots, plotIDs, statuses)
       
     } else if (a == "scrublet") {
       sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
