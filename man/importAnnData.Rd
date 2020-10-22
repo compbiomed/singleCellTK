@@ -30,7 +30,7 @@ Can be one of -
 }}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object. Default \code{TRUE}.}
+\link{DelayedArray} object. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object.

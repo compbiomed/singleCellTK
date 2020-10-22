@@ -60,7 +60,7 @@ indicate the correct rows to keep. The various methods,
 with one another. If \code{returnAsAltExp} is set to \code{TRUE},
 then the returned object will have the same number of rows as the input
 \code{inSCE} as the subsetted object will be stored in the
-\code{\link[SingleCellExperiment]{altExp}} slot.
+\code{\link{altExp}} slot.
 }
 \examples{
 data(scExample)

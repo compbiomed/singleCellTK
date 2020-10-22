@@ -25,7 +25,7 @@ low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 Default \code{"fastMNN"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+\code{\link{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{pcInput}{A logical scalar. Whether to use a low-dimension matrix for

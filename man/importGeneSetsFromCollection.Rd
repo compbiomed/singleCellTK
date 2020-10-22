@@ -15,7 +15,7 @@ importGeneSetsFromCollection(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{geneSetCollection}{A \linkS4class{GeneSetCollection} object. See
-\link[GSEABase]{GeneSetCollection} for more details.}
+\link{GeneSetCollection} for more details.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
 If this collection already exists in \code{inSCE}, then these gene sets will
@@ -40,7 +40,7 @@ Default \code{"rownames"}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
 with gene set from \code{collectionName} output stored to the
-\link[S4Vectors]{metadata} slot.
+\link{metadata} slot.
 }
 \description{
 Converts a list of gene sets stored in a
