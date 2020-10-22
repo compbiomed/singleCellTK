@@ -45,7 +45,7 @@
 #' @param BPPARAM See \link[DropletUtils]{emptyDrops} for more information.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  \link[DropletUtils]{emptyDrops} output table appended to the
-#'  \link[SummarizedExperiment]{colData} slot. The columns include
+#'  \link{colData} slot. The columns include
 #'  \emph{emptyDrops_total}, \emph{emptyDrops_logprob},
 #'  \emph{emptyDrops_pvalue}, \emph{emptyDrops_limited}, \emph{emptyDrops_fdr}.
 #'  Please refer to the documentation of \link[DropletUtils]{emptyDrops} for

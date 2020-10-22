@@ -46,7 +46,7 @@
 #' @param df See \link[DropletUtils]{emptyDrops} for more information. Default \code{20}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  \link[DropletUtils]{barcodeRanks} output table appended to the
-#'  \link[SummarizedExperiment]{colData} slot. The columns include
+#'  \link{colData} slot. The columns include
 #'  \emph{dropletUtils_BarcodeRank_Knee} and \emph{dropletUtils_BarcodeRank_Knee}
 #'  Please refer to the documentation of \link[DropletUtils]{barcodeRanks} for
 #'  details.

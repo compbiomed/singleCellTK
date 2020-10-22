@@ -91,7 +91,7 @@
 #' @param dataType can be "filtered" or "raw". Default \code{"filtered"}.
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @details
 #' \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
 #' counts matrix stored as "cm" in the DropEst rds output.

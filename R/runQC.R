@@ -16,7 +16,7 @@
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -137,7 +137,7 @@ runCellQC <- function(inSCE,
 #'  matrix for droplets.
 #' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")

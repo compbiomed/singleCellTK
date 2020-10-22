@@ -6,20 +6,20 @@
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param useAssay A single \code{character}, specifying which
-#' \code{\link[SummarizedExperiment]{assay}} to perform the clustering algorithm
+#' \code{\link{assay}} to perform the clustering algorithm
 #' on. Default \code{NULL}.
 #' @param useReducedDim A single \code{character}, specifying which
-#' low-dimension representation (\code{\link[SingleCellExperiment]{reducedDim}})
+#' low-dimension representation (\code{\link{reducedDim}})
 #' to perform the clustering algorithm on. Default \code{NULL}.
 #' @param useAltExp A single \code{character}, specifying the assay which
-#' \code{\link[SingleCellExperiment]{altExp}} to perform the clustering
+#' \code{\link{altExp}} to perform the clustering
 #' algorithm on. Default \code{NULL}.
 #' @param altExpAssay A single \code{character}, specifying which
-#' \code{\link[SummarizedExperiment]{assay}} in the chosen
-#' \code{\link[SingleCellExperiment]{altExp}} to work on. Only used when
+#' \code{\link{assay}} in the chosen
+#' \code{\link{altExp}} to work on. Only used when
 #' \code{useAltExp} is set. Default \code{"counts"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+#' the cluster label in \code{\link{colData}}. Default
 #' \code{"scranSNN_cluster"}.
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
@@ -109,7 +109,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
 #' low-dimension representation to perform the clustering algorithm on. Default
 #' \code{"PCA"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+#' the cluster label in \code{\link{colData}}. Default
 #' \code{"scranSNN_cluster"}.
 #' @param nCenters An \code{integer}, the number of centroids (clusters).
 #' @param nIter An \code{integer}, the maximum number of iterations allowed.
