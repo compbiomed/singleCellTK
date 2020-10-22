@@ -2373,7 +2373,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
-    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
@@ -2419,12 +2419,6 @@ shinyServer(function(input, output, session) {
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
   })
-  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-
-  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-    return(plotGridSearchPerplexityDiff(modsplit()))
-  })
-  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
 
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
