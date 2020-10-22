@@ -2560,11 +2560,17 @@ shinyServer(function(input, output, session) {
   output$celdaKplots <- renderUI({
     if (!is.null(vals$counts)){
       if (!is.null(cellsplit())){
+        clusterlist <- runParams(cellsplit())$K
         plot_output_list <- lapply(runParams(cellsplit())$K, function(i){
           plotname <- paste0("Cluster", i)
-          plotlyOutput(plotname)
+          tabPanel(title = sprintf("Cluster %s", i),
+                   panel(heading = sprintf("Cluster %s", i),
+                    plotlyOutput(plotname)
+                   )
+          )
         })
-        do.call(tagList, plot_output_list)
+        myTabs <- lapply(clusterlist, tabPanel)
+        do.call(tabsetPanel, plot_output_list)
       }
     }
   })
@@ -2654,8 +2660,8 @@ shinyServer(function(input, output, session) {
     ), select = TRUE)
     withBusyIndicatorServer("celdaheatmapbtn", {
       if (is.null(celdaheatmap())){
-        celdaheatmap <- celdaHeatmap(vals$counts)
-        output$celdaheatmapplt <- renderPlot({plot(celdaheatmap)})
+        celdaheatmap(celdaHeatmap(vals$counts))
+        output$celdaheatmapplt <- renderPlot({plot(celdaheatmap())})
         showNotification("Heatmap complete.")
       }
       if (input$heatmap_module){

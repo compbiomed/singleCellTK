@@ -75,9 +75,7 @@ shinyPanelCelda <- fluidPage(
                                              )
                                     ),
                                     tabPanel("UMAP Plots",
-                                             panel(
-                                                 uiOutput("celdaKplots")
-                                             )
+                                            uiOutput("celdaKplots")
                                     )
                                 )
                                 )
