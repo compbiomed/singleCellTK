@@ -904,7 +904,7 @@ shinyServer(function(input, output, session) {
     } else {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
-      if (!nzchar(input$gsCollectionNameText)) {
+      if (nzchar(input$gsCollectionNameText)) {
         vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
       } else if (input$gsExisting != "None") {
         vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsExisting)
@@ -935,7 +935,6 @@ shinyServer(function(input, output, session) {
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
         handleGSPasteOption()
       }
-      newGSchoices <- sctkListGeneSetCollections(vals$original)
     })
   })
 
@@ -1097,7 +1096,40 @@ shinyServer(function(input, output, session) {
     }
     return(FALSE)
   }
-
+  
+  updateQCPlots <- function() {
+    # get selected sample from run QC section
+    if (!is.null(vals$counts)) {
+      qcSample <- input$qcSampleSelect
+      if (qcSample == "None") {
+        qcSample <- NULL
+      } else {
+        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
+      }
+      # build list of selected algos
+      algoList = list()
+      for (algo in qc_choice_list) {
+        if (input[[algo]]) {
+          algoList <- c(algoList, algo)
+        }
+      }
+      # only run getUMAP if there are no reducedDimNames
+      # redDimName <- input$qcPlotRedDim
+      # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
+      showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
+      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
+      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
+      for (algo in algoList) {
+        qc_algo_status[[algo]] <- list(self="done")
+        if (length(uniqueSampleNames) > 1) {
+          for (s in uniqueSampleNames) {
+            qc_algo_status[[algo]][[s]] = TRUE
+          }
+        }
+      }
+    }
+  }
+  
   observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
@@ -1129,6 +1161,10 @@ shinyServer(function(input, output, session) {
         qcSample <- colData(vals$original)[,input$qcSampleSelect]
         if (length(qcSample)==1 && qcSample == "None") {
           qcSample <- NULL
+        }
+        qcCollName <- NULL
+        if (input$QCMgeneSets != "None") {
+          qcCollName <- input$QCMgeneSets
         }
         algoList = list()
         paramsList <- list()
@@ -1169,6 +1205,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
+                                 collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
@@ -1185,44 +1222,10 @@ shinyServer(function(input, output, session) {
                                  initialDims = input$UinitialDims
           )
         }
-        updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
-        # shinyjs::show(id = "qcPlotSection", anim = FALSE)
+        updateQCPlots()
       }
     })
   }))
-
-  observeEvent(input$qcPlotRedDim, {
-    # get selected sample from run QC section
-    if (!is.null(vals$counts)) {
-      qcSample <- input$qcSampleSelect
-      if (qcSample == "None") {
-        qcSample <- NULL
-      } else {
-        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
-      }
-      # build list of selected algos
-      algoList = list()
-      for (algo in qc_choice_list) {
-        if (input[[algo]]) {
-          algoList <- c(algoList, algo)
-        }
-      }
-      # only run getUMAP if there are no reducedDimNames
-      # redDimName <- input$qcPlotRedDim
-      # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
-      showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
-      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
-      for (algo in algoList) {
-        qc_algo_status[[algo]] <- list(self="done")
-        if (length(uniqueSampleNames) > 1) {
-          for (s in uniqueSampleNames) {
-            qc_algo_status[[algo]][[s]] = TRUE
-          }
-        }
-      }
-    }
-  })
 
   #-----------#
   # FILTERING #
