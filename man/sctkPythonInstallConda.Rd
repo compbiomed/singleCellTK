@@ -33,16 +33,16 @@ sctkPythonInstallConda(
 The FALSE option is useful for situations where you don't want a pip install to attempt an overwrite of a conda binary package (e.g. SciPy on Windows which is very difficult
 to install via pip due to compilation requirements).}
 
-\item{pythonVersion}{Passed to \code{python_version} variable in \code{\link[reticulate]{conda_install}}. Default NULL.}
+\item{pythonVersion}{Passed to \code{python_version} variable in \code{\link{conda_install}}. Default NULL.}
 
-\item{...}{Other parameters to pass to \code{\link[reticulate]{conda_install}}.}
+\item{...}{Other parameters to pass to \code{\link{conda_install}}.}
 }
 \value{
 None. Installation of Conda environment.
 }
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package
-using \code{\link[reticulate]{conda_install}} from package \code{\link{reticulate}}. This
+using \code{\link{conda_install}} from package \code{\link{reticulate}}. This
 will create a new Conda environment with the name \code{envname} if not already present.
 Note that Anaconda or Miniconda already need to be installed on the local system.
 }
@@ -52,8 +52,8 @@ sctkPythonInstallConda(envname = "sctk-reticulate")
 }
 }
 \seealso{
-See \code{\link[reticulate]{conda_create}} for more information on creating a Conda environment.
-See \code{\link[reticulate]{conda_install}} for more description of the installation parameters.
+See \code{\link{conda_create}} for more information on creating a Conda environment.
+See \code{\link{conda_install}} for more description of the installation parameters.
 See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
 See \code{\link[singleCellTK]{selectSCTKConda}} for reloading the Conda environment if R is restarted without
 going through the whole installation process again.

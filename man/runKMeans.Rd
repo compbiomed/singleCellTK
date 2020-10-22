@@ -24,7 +24,7 @@ low-dimension representation to perform the clustering algorithm on. Default
 \code{"PCA"}.}
 
 \item{clusterName}{A single \code{character}, specifying the name to store
-the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+the cluster label in \code{\link{colData}}. Default
 \code{"scranSNN_cluster"}.}
 
 \item{nCenters}{An \code{integer}, the number of centroids (clusters).}

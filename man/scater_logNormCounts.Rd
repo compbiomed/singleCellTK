@@ -3,7 +3,7 @@
 \name{scater_logNormCounts}
 \alias{scater_logNormCounts}
 \title{scater_logNormCounts
-Uses \link[scater]{logNormCounts} to log normalize input data}
+Uses \link{logNormCounts} to log normalize input data}
 \usage{
 scater_logNormCounts(
   inSCE,
@@ -23,7 +23,7 @@ inSCE Updated SingleCellExperiment object that contains the new log normalized d
 }
 \description{
 scater_logNormCounts
-Uses \link[scater]{logNormCounts} to log normalize input data
+Uses \link{logNormCounts} to log normalize input data
 }
 \examples{
 data(sce_chcl, package = "scds")

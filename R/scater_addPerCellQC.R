@@ -9,7 +9,7 @@
 #' If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different
 #' gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(inSCE)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(inSCE)}. Default 'rownames'.
 #' @param geneSetCollection Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{inSCE} should be in the \code{description} slot of each gene set and should follow the
-#' same notation as \code{geneSetListLocation}. The function \link[GSEABase]{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
+#' same notation as \code{geneSetListLocation}. The function \link{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
 #' of the gene IDs in \code{inSCE}. These gene sets will be included with those from \code{geneSetList} if both parameters are provided.
 #' @param percent_top An integer vector. Each element is treated as a
 #' number of top genes to compute the percentage of library size occupied by
@@ -23,10 +23,10 @@
 #' @param flatten Logical scalar indicating whether the nested \link[S4Vectors]{DataFrame-class}
 #' in the output should be flattened.
 #' @param detectionLimit A numeric scalar specifying the lower detection limit for expression.
-#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam} object specifying
+#' @param BPPARAM A \link{BiocParallelParam} object specifying
 #' whether the QC calculations should be parallelized.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#'  cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
+#'  cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' mito.ix = grep("^MT-", rowData(sce)$feature_name)

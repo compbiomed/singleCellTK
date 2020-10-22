@@ -52,7 +52,7 @@
 #'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  'decontX_Contamination' and 'decontX_Clusters' added to the
-#'  \link[SummarizedExperiment]{colData} slot. Additionally, the
+#'  \link{colData} slot. Additionally, the
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
 #' data(scExample, package = "singleCellTK")

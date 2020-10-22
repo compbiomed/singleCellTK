@@ -29,7 +29,7 @@ matrix for droplets.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
- specified algorithms in the \link[SummarizedExperiment]{colData}
+ specified algorithms in the \link{colData}
 of \code{inSCE}.
 }
 \description{

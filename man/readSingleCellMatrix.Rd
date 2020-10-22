@@ -23,7 +23,7 @@ will convert to a sparse format which should be used
 for datasets with large numbers of cells.  Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{TRUE}.}
 
 \item{colIndexLocation}{Character. For Optimus output, the path to the
 barcode index .npy file. Used only if \code{file} has .npz extension.
@@ -34,7 +34,7 @@ feature (gene) index .npy file. Used only if \code{file} has .npz extension.
 Default \code{NULL}.}
 }
 \value{
-A \link[DelayedArray]{DelayedArray} object or matrix.
+A \link{DelayedArray} object or matrix.
 }
 \description{
 Automatically detact the format of the input file and read

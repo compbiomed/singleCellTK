@@ -2,7 +2,7 @@
 #' @title Retrieve example datasets
 #' @description Retrieves published example datasets stored in
 #' \link[SingleCellExperiment]{SingleCellExperiment} using the
-#' \link[scRNAseq]{scRNAseq} and
+#' \link{scRNAseq} and
 #' \link[TENxPBMCData]{TENxPBMCData} packages. See 'Details' for a
 #' list of available datasets.
 #' @param dataset Character. Name of the dataset to retrieve.
@@ -12,16 +12,16 @@
 #'   \code{"matrix"} will store the data in a standard matrix. Default
 #'   \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'   \link[DelayedArray]{DelayedArray} object or not. Default \code{FALSE}.
+#'   \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @details See the list below for the available datasets and their
 #' descriptions.
 #' \describe{
 #' \item{"fluidigm_pollen"}{Retrieved with
-#' \code{\link[scRNAseq]{ReprocessedFluidigmData}}. Returns a dataset of 65
+#' \code{\link{ReprocessedFluidigmData}}. Returns a dataset of 65
 #'  human neural cells from Pollen et al. (2014), each sequenced at high and low
 #'  coverage (SRA accession SRP041736).}
 #' \item{"allen_tasic"}{Retrieved with
-#' \code{\link[scRNAseq]{ReprocessedAllenData}}. Returns a dataset of 379 mouse
+#' \code{\link{ReprocessedAllenData}}. Returns a dataset of 379 mouse
 #' brain cells from Tasic et al. (2016).}
 #' \item{"pbmc3k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.
 #'  2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.}
