@@ -207,6 +207,57 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 # QC/Filtering #
 #--------------#
+combineQCMPlots <- function(output, combineP, sampleList, plots, plotIds) {
+  if (length(sampleList) == 1) {
+    # Plot output code from https://gist.github.com/wch/5436415/
+    output[[plotIds$QCMetrics]] <- renderUI({
+      plot_output_list <- lapply(names(plots), function(subScore) {
+        subPlotID <- paste0("QCMetrics", subScore)
+        plotOutput(subPlotID)
+      })
+      
+      # Convert the list to a tagList - this is necessary for the list of items
+      # to display properly.
+      do.call(tagList, plot_output_list)
+    })
+    
+    for (subScore in names(plots)) {
+      # Need local so that each item gets its own number. Without it, the value
+      # of i in the renderPlot() will be the same across all instances, because
+      # of when the expression is evaluated.
+      local({
+        my_subScore <- subScore
+        subPlotID <- paste0("QCMetrics", subScore)
+        output[[subPlotID]] <- renderPlot(plots[[my_subScore]])
+      })
+    }
+  } else {
+    
+    output[[plotIds$QCMetrics]] <- renderUI({
+      plot_output_list <- lapply(names(plots$Violin), function(subScore) {
+        subPlotID <- paste0("QCMetrics", subScore)
+        plotOutput(subPlotID)
+      })
+      
+      # Convert the list to a tagList - this is necessary for the list of items
+      # to display properly.
+      do.call(tagList, plot_output_list)
+    })
+    
+    for (subScore in names(plots$Violin)) {
+      # Need local so that each item gets its own number. Without it, the value
+      # of i in the renderPlot() will be the same across all instances, because
+      # of when the expression is evaluated.
+      local({
+        my_subScore <- subScore
+        subPlotID <- paste0("QCMetrics", my_subScore)
+        
+        output[[subPlotID]] <- renderPlot(plots$Violin[[my_subScore]])
+      })
+    }
+  }
+}
+
 combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
   if (length(sampleList) == 1) {
     # Plot output code from https://gist.github.com/wch/5436415/
@@ -235,7 +286,6 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
     mainPlotID <- paste0(plotIds[[algo]], "Main")
     output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
-    
     output[[mainPlotID]] <- renderPlot(plots$Violin)
     
     for (i in seq_along(sampleList)) {
@@ -305,7 +355,7 @@ arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuse
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs, statuses)
+      combineQCMPlots(output, combineP, uniqueSampleNames, qcmPlots, plotIDs)
       
     } else if (a == "scrublet") {
       sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
@@ -358,7 +408,7 @@ addToColFilterParams <- function(name, categorial, criteria, criteriaGT, criteri
 }
 
 addToRowFilterParams <- function(name, X, Y, id, paramsReactive) {
-  entry <- list(row=name, X=X, Y=Y, id=id)
+  entry <- reactiveValues(row=name, X=X, Y=Y, id=id)
   paramsReactive$params <- c(paramsReactive$params, list(entry))
   paramsReactive$id_count <- paramsReactive$id_count + 1
 }
