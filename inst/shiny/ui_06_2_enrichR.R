@@ -8,8 +8,7 @@ shinyPanelEnrichR <- fluidPage(
         h3("Choose data source:"),
         radioButtons(
           "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
-                                            "Upload file" = "geneFile",
-                                            "Saved top genes" = "biomarker")
+                                            "Upload file" = "geneFile")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
