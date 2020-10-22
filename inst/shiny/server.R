@@ -1327,7 +1327,7 @@ shinyServer(function(input, output, session) {
       # figure out which options the user selected
       criteriaGT <- NULL
       criteriaLT <- NULL
-      categoricalCol = F
+      categoricalCol = FALSE
       if (input$colGT) {
         criteriaGT = input$filterThreshGT
       }
