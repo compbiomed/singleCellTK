@@ -2594,7 +2594,7 @@ shinyServer(function(input, output, session) {
       }
     })
     #shinyjs::enable(selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
-    #shinyjs::show(selector = ".celda_cellsplit_plots")
+    shinyjs::show(selector = ".celda_cellsplit_plots")
     showNotification("Cell Clustering Complete.")
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     shinyjs::show(id = "celdaKselect")
@@ -2653,7 +2653,7 @@ shinyServer(function(input, output, session) {
       )
     ), select = TRUE)
     withBusyIndicatorServer("celdaheatmapbtn", {
-      if (is.null(celdaheatmap)){
+      if (is.null(celdaheatmap())){
         celdaheatmap <- celdaHeatmap(vals$counts)
         output$celdaheatmapplt <- renderPlot({plot(celdaheatmap)})
         showNotification("Heatmap complete.")

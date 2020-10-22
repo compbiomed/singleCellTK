@@ -67,15 +67,19 @@ shinyPanelCelda <- fluidPage(
                 #            #    ))
                 #            #)
                             hidden(
-                                tabsetPanel(
+                                tags$div(class = "celda_cellsplit_plots",
+                                    tabsetPanel(
                                     tabPanel("Perplexity Plot",
                                              panel(
                                                  plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
                                              )
                                     ),
                                     tabPanel("UMAP Plots",
-                                             uiOutput("celdaKplots")
+                                             panel(
+                                                 uiOutput("celdaKplots")
+                                             )
                                     )
+                                )
                                 )
                             )
                         )
