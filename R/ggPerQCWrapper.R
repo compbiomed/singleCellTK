@@ -44,7 +44,6 @@
 #' data(scExample, package="singleCellTK")
 #' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE=sce)
 #' }
