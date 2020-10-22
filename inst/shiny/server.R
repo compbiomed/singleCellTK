@@ -72,13 +72,13 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "scMergeCT",
                       choices = c(pdataOptions))
     updateSelectInput(session, "combatCond",
-                      choices = c(pdataOptions))
+                      choices = c("None", pdataOptions))
     updateSelectInput(session, "batchCorrVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckCond",
-                      choices = c(pdataOptions))
+                      choices = c("None", pdataOptions))
     updateSelectInput(session, "clustVisCol", choices = pdataOptions)
     updateSelectInput(session, "deC1Class",
                       choices = c('None', pdataOptions))
@@ -1989,61 +1989,111 @@ shinyServer(function(input, output, session) {
               "warning", showCancelButton = TRUE,
               confirmButtonText = "Overwrite",
               callbackR = function(x){if(isTRUE(x)){
+                dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
                 if (input$dimRedPlotMethod == "PCA"){
-                  vals$counts <- getPCA(inSCE = vals$counts,
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = input$dimRedNameInput)
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAssaySelect,
+                                          reducedDimName = dimrednamesave)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAltExpAssay,
+                                          useAltExp = input$dimRedAltExpSelect,
+                                          reducedDimName = dimrednamesave)
+                  }
                 } else if (input$dimRedPlotMethod == "tSNE"){
-                  vals$counts <- getTSNE(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = input$dimRedNameInput,
-                                         perplexity = input$perplexityTSNE,
-                                         n_iterations = input$iterTSNE)
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  }
                 } else {
-                  if(is.na(input$alphaUMAP)){
+                  if (is.na(input$alphaUMAP)) {
                     stop("Learning rate (alpha) must be a numeric non-empty value!")
                   }
-                  vals$counts <- getUMAP(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = input$dimRedNameInput,
-                                         nNeighbors = input$neighborsUMAP,
-                                         nIterations = input$iterUMAP,
-                                         minDist = input$mindistUMAP,
-                                         alpha = input$alphaUMAP
-                  )
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  }
                 }
+                updateReddimInputs()
               }}
             )
           } else {
+            dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
             if (input$dimRedPlotMethod == "PCA"){
-              vals$counts <- getPCA(inSCE = vals$counts,
-                                    useAssay = input$dimRedAssaySelect,
-                                    reducedDimName = input$dimRedNameInput)
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = dimrednamesave)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAltExpAssay,
+                                      useAltExp = input$dimRedAltExpSelect,
+                                      reducedDimName = dimrednamesave)
+              }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              vals$counts <- getTSNE(inSCE = vals$counts,
-                                     useAssay = input$dimRedAssaySelect,
-                                     reducedDimName = input$dimRedNameInput,
-                                     perplexity = input$perplexityTSNE,
-                                     n_iterations = input$iterTSNE)
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              }
             } else {
-              if(is.na(input$alphaUMAP)){
+              if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              vals$counts <- getUMAP(inSCE = vals$counts,
-                                     useAssay = input$dimRedAssaySelect,
-                                     reducedDimName = input$dimRedNameInput,
-                                     nNeighbors = input$neighborsUMAP,
-                                     nIterations = input$iterUMAP,
-                                     minDist = input$mindistUMAP,
-                                     alpha = input$alphaUMAP
-              )
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              }
             }
+            updateReddimInputs()
           }
         }
       })
@@ -4420,19 +4470,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  addAltExp <- function(inSCE, useAssay, geneSet, altExpName,
-                        overwrite = FALSE){
-    if ((!altExpName %in% altExpNames(inSCE)) ||
-        isTRUE(overwrite)) {
-      mat <- assay(inSCE[geneSet,], useAssay)
-      assayList <- list()
-      assayList[[altExpName]] <- mat
-      ae <- SingleCellExperiment(assays = assayList)
-      altExp(inSCE, altExpName) <- ae
-    }
-    return(inSCE)
-  }
-
   observeEvent(input$hvgSubsetRun, {
     withBusyIndicatorServer("hvgSubsetRun", {
       if (isTRUE(vals$hvgCalculated$status) &&
@@ -4458,9 +4495,11 @@ shinyServer(function(input, output, session) {
 
                 #make sure no NA's are introduced in HVGs
                 HVGs <- stats::na.omit(HVGs)
-
-                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
-                                         input$hvgAltExpName, x)
+                vals$counts <- subsetSCERows(vals$counts,
+                                             which(rownames(vals$counts) %in% HVGs),
+                                             returnAsAltExp = TRUE,
+                                             altExpName = input$hvgAltExpName)
+                updateAltExpInputs()
               }
             })
         } else {
@@ -4470,9 +4509,11 @@ shinyServer(function(input, output, session) {
 
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
-
-          vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
-                                   input$hvgAltExpName)
+          vals$counts <- subsetSCERows(vals$counts,
+                                       which(rownames(vals$counts) %in% HVGs),
+                                       returnAsAltExp = TRUE,
+                                       altExpName = input$hvgAltExpName)
+          updateAltExpInputs()
         }
       } else {
         shinyalert::shinyalert(
@@ -5356,7 +5397,7 @@ shinyServer(function(input, output, session) {
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
         if (input$useReadCount){
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = sum(SummarizedExperiment::assay(vals$counts, input$cellsAssay)),
@@ -5368,7 +5409,7 @@ shinyServer(function(input, output, session) {
                                            iterations = input$iterations)
         }
         else{
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = input$totalReads,
