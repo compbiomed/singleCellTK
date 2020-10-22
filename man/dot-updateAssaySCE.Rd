@@ -26,7 +26,7 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
- data from Seurat object appended to the \link[SummarizedExperiment]{assay} slot.
+ data from Seurat object appended to the \link{assay} slot.
 }
 \description{
 .updateAssaySCE

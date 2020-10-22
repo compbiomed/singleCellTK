@@ -83,7 +83,7 @@
 #'   with the sample name appended to each colname in colData
 #' }
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object. Default \code{TRUE}.
+#'  \link{DelayedArray} object. Default \code{TRUE}.
 #' @details
 #' \code{importAnnData} converts scRNA-seq data in the AnnData format to the
 #' \code{SingleCellExperiment} object. The .X slot in AnnData is transposed to the features x cells

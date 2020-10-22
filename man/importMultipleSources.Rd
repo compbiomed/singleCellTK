@@ -10,7 +10,7 @@ importMultipleSources(allImportEntries, delayedArray = FALSE)
 \item{allImportEntries}{object containing the sources and parameters of all the samples being imported (from the UI)}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing

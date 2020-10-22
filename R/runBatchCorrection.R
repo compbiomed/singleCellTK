@@ -7,7 +7,7 @@
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param reducedDimName A single character. The name for the corrected
 #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -71,7 +71,7 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param par.prior A logical scalar. TRUE indicates parametric adjustments
 #' will be used, FALSE indicates non-parametric adjustments will be used.
@@ -83,7 +83,7 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @param ref.batch If given, will use the selected batch as a reference for
 #' batch adjustment. Default \code{NULL}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' be saved to \code{\link{assay}}. Default
 #' \code{"ComBat"}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
@@ -143,7 +143,7 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' batch correction. Default \code{"logcounts"}. Alternatively, see
 #' \code{pcInput} parameter.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param reducedDimName A single character. The name for the corrected
 #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -208,7 +208,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 # #' @param useAssay A single character indicating the name of the assay requiring
 # #' batch correction. Default \code{"logcounts"}.
 # #' @param batch A single character indicating a field in
-# #' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+# #' \code{\link{colData}} that annotates the batches.
 # #' Default \code{"batch"}.
 # #' @param reducedDimName A single character. The name for the corrected
 # #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -282,7 +282,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 # #' @param useAssay A single character indicating the name of the assay requiring
 # #' batch correction. Default \code{"logcounts"}.
 # #' @param batch A single character indicating a field in
-# #' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+# #' \code{\link{colData}} that annotates the batches.
 # #' Default \code{"batch"}.
 # #' @param reducedDimName A single character. The name for the corrected
 # #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -360,10 +360,10 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' be saved to \code{\link{assay}}. Default
 #' \code{"LIMMA"}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
@@ -408,7 +408,7 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param k An integer. Specifies the number of nearest neighbours to
 #' consider when defining MNN pairs. This should be interpreted as the minimum
@@ -423,7 +423,7 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' which may be more accurate but comes at the cost of precision. Default
 #' \code{0.1}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' be saved to \code{\link{assay}}. Default
 #' \code{"MNN"}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
@@ -467,7 +467,7 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param SIGMA A numeric scalar. Algorithmic parameter, correction smoothing
 #' parameter on Gaussian kernel. Default \code{15}.
@@ -476,7 +476,7 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @param KNN An integer. Algorithmic parameter, number of nearest neighbors to
 #' use for matching. Default \code{20L}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' be saved to \code{\link{assay}}. Default
 #' \code{"SCANORAMA"}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
@@ -558,7 +558,7 @@ integrated = integrated[:, orderIdx]
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param kmeansK An integer vector. Indicating the kmeans' K-value for each
 #' batch (i.e. how many subclusters in each batch should exist), in order to
@@ -576,7 +576,7 @@ integrated = integrated[:, orderIdx]
 #' @param nCores An integer. The number of cores of processors to allocate for
 #' the task. Default \code{1L}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+#' be saved to \code{\link{assay}}. Default
 #' \code{"scMerge"}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
@@ -672,7 +672,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' batch correction. Note that ZINBWaVE works for counts (integer) input rather
 #' than logcounts that other methods prefer. Default \code{"counts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+#' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
 #' @param nHVG An integer. Number of highly variable genes to use when fitting
 #' the model. Default \code{1000L}.

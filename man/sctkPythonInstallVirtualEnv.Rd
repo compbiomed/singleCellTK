@@ -26,7 +26,7 @@ None. Installation of virtual environment.
 }
 \description{
 Install all Python packages used in the \code{\link{singleCellTK}} package
-using \code{\link[reticulate]{virtualenv_install}} from package \code{\link{reticulate}}. This
+using \code{\link{virtualenv_install}} from package \code{\link{reticulate}}. This
 will create a new virtual environment with the name \code{envname} if not already present.
 }
 \examples{
@@ -35,8 +35,8 @@ sctkPythonInstallVirtualEnv(envname = "sctk-reticulate")
 }
 }
 \seealso{
-See \code{\link[reticulate]{virtualenv_create}} for more information on creating a Conda environment.
-See \code{\link[reticulate]{virtualenv_install}} for more description of the installation parameters.
+See \code{\link{virtualenv_create}} for more information on creating a Conda environment.
+See \code{\link{virtualenv_install}} for more description of the installation parameters.
 See \url{https://rstudio.github.io/reticulate/} for more information on package \code{\link{reticulate}}.
 See \code{\link[singleCellTK]{selectSCTKVirtualEnvironment}} for reloading the virtual environment if R is restarted without
 going through the whole installation process again.

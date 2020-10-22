@@ -494,7 +494,7 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @param seuratDataSlot Selected data slot from the Seurat object. Default \code{"counts"}.
 #' @param seuratAssaySlot Selected assay from Seurat object. Default \code{"RNA"}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#'  data from Seurat object appended to the \link[SummarizedExperiment]{assay} slot.
+#'  data from Seurat object appended to the \link{assay} slot.
 #' @importFrom SummarizedExperiment assay<-
 .updateAssaySCE <- function(inSCE, seuratObject, assaySlotSCE, seuratDataSlot = "counts", seuratAssaySlot = "RNA") {
   assay(inSCE, assaySlotSCE) <- NULL

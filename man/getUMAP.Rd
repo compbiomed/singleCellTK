@@ -33,13 +33,13 @@ selected.variable features. Default \code{NULL}.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 If given a single character, will take the annotation from
-\code{\link[SummarizedExperiment]{colData}}. Default \code{NULL}.}
+\code{\link{colData}}. Default \code{NULL}.}
 
 \item{reducedDimName}{A name to store the results of the dimension reduction
 coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
-generating the UMAP via \code{\link[scater]{logNormCounts}}. Default
+generating the UMAP via \code{\link{logNormCounts}}. Default
 \code{TRUE}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
@@ -60,7 +60,7 @@ result on a more even dispersal of points. Default \code{0.01}. See
 `?uwot::umap` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
-‘min_dist’, this determines how clustered/clumped the embedded points are.
+minDist, this determines how clustered/clumped the embedded points are.
 Default \code{1}. See `?uwot::umap` for more information.}
 
 \item{pca}{Logical. Whether to perform dimension reduction with PCA before

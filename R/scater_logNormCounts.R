@@ -1,5 +1,5 @@
 #' scater_logNormCounts
-#' Uses \link[scater]{logNormCounts} to log normalize input data
+#' Uses \link{logNormCounts} to log normalize input data
 #' @param inSCE Input SingleCellExperiment object
 #' @param logAssayName New assay name for log normalized data
 #' @param useAssay Input assay 

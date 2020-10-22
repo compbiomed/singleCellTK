@@ -22,7 +22,7 @@ runComBat(
 batch correction. Default \code{"logcounts"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+\code{\link{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{par.prior}{A logical scalar. TRUE indicates parametric adjustments
@@ -39,7 +39,7 @@ Default \code{FALSE}.}
 batch adjustment. Default \code{NULL}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+be saved to \code{\link{assay}}. Default
 \code{"ComBat"}.}
 }
 \value{

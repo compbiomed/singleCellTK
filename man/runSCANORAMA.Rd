@@ -22,7 +22,7 @@ runSCANORAMA(
 batch correction. Default \code{"logcounts"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+\code{\link{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{SIGMA}{A numeric scalar. Algorithmic parameter, correction smoothing
@@ -35,7 +35,7 @@ minimum cutoff. Default \code{0.1}.}
 use for matching. Default \code{20L}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link[SummarizedExperiment]{assay}}. Default
+be saved to \code{\link{assay}}. Default
 \code{"SCANORAMA"}.}
 }
 \value{
