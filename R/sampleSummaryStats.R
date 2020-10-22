@@ -110,8 +110,7 @@
 #' @description  Creates a table of QC metrics generated from
 #'  QC algorithms via either kable or csv file.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link[SummarizedExperiment]{assay} data and/or
-#' \link[SummarizedExperiment]{colData} data. Required.
+#' \link{assay} data and/or \link{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #'  'counts'.

@@ -40,7 +40,7 @@
 #' @param axis Choose from \code{"col"} or \code{"row"}.
 #' @param colorGen A function that generates color code vector by giving an
 #' integer for the number of colors. Alternatively,
-#' \code{\link[grDevices]{rainbow}}. Default \code{\link{distinctColors}}.
+#' \code{\link{rainbow}}. Default \code{\link{distinctColors}}.
 #' @return A \code{list} object containing distinct colors mapped to all
 #' possible categorical entries in \code{rowData(inSCE)} or
 #' \code{colData(inSCE)}.

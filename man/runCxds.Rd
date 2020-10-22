@@ -42,7 +42,7 @@ Default NULL.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \link[scds]{cxds} output appended to the
- \link[SummarizedExperiment]{colData} slot. The columns include
+ \link{colData} slot. The columns include
  \emph{cxds_score} and optionally \emph{cxds_call}.
  Please refer to the documentation of \link[scds]{cxds} for details.
 }

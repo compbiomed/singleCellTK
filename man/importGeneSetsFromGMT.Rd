@@ -15,7 +15,7 @@ importGeneSetsFromGMT(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{file}{Character. Path to GMT file. See \link[GSEABase]{getGmt} for
+\item{file}{Character. Path to GMT file. See \link{getGmt} for
 more information on reading GMT files.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
@@ -42,7 +42,7 @@ Default \code{"rownames"}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
  with gene set from \code{collectionName} output stored to the
- \link[S4Vectors]{metadata} slot.
+ \link{metadata} slot.
 }
 \description{
 Converts a list of gene sets stored in a GMT file into a

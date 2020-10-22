@@ -164,10 +164,10 @@
 #' Default \code{FALSE}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @param feNotFirstCol Boolean. \code{TRUE} if first column of
 #'  sparse_counts_genes.csv
 #' is row index and it will be removed. \code{FALSE} the first column will

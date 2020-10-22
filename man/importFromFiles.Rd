@@ -42,11 +42,11 @@ frames instead of file paths. The default is FALSE.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
-\link[Matrix]{readMM} function), or "matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{TRUE}.}
 
 \item{annotFileHeader}{Whether there's a header (colnames) in the cell annotation file. Default is FALSE}
 
