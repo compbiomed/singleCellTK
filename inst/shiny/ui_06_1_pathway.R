@@ -8,8 +8,6 @@ shinyPanelPathway <- fluidPage(
       sidebarPanel(
         selectInput("pathwayAssay", "Select Assay:", currassays),
         selectInput("pathwayMethod", "Select Method:", "GSVA"),
-        radioButtons("genelistSource", "Gene list source:",
-                     c("Manual Input", "MSigDB c2 (Human, Entrez ID only)")),
         uiOutput("selectPathwayGeneLists"),
         uiOutput("selectNumTopPaths"),
         selectInput("pathwayPlotVar",
