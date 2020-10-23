@@ -2,7 +2,7 @@
 % Please edit documentation in R/scran_doubletCells.R
 \name{runDoubletCells}
 \alias{runDoubletCells}
-\title{Detect doublet cells using \link[scran]{doubletCells}.}
+\title{Detect doublet cells using \link[scDblFinder]{scDblFinder}.}
 \usage{
 runDoubletCells(
   inSCE,
@@ -11,16 +11,6 @@ runDoubletCells(
   nNeighbors = 50,
   simDoublets = max(10000, ncol(inSCE)),
   seed = 12345,
-  size.factors.norm = NULL,
-  size.factors.content = NULL,
-  subset.row = NULL,
-  block = 10000,
-  d = 50,
-  force.match = FALSE,
-  force.k = 20,
-  force.ndist = 3,
-  BNPARAM = BiocNeighbors::KmknnParam(),
-  BSPARAM = BiocSingular::bsparam(),
   BPPARAM = BiocParallel::SerialParam()
 )
 }
@@ -28,7 +18,7 @@ runDoubletCells(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[scran]{doubletCells} will be run on cells from each sample separately.}
+\link[scDblFinder]{scDblFinder} will be run on cells from each sample separately.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use.}
 
@@ -40,37 +30,6 @@ detection. Default 10000.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 
-\item{size.factors.norm}{A numeric vector of size factors for normalization
-of \code{x} prior to PCA and distance calculations. If \code{NULL}, defaults
-to size factors derived from the library sizes of \code{x}. For the SingleCellExperiment
-method, the default values are taken from \code{\link{sizeFactors}(x)}, if they are available.}
-
-\item{size.factors.content}{A numeric vector of size factors for RNA content
-normalization of \code{x} prior to simulating doublets. #' This is orthogonal to
-the values in \code{size.factors.norm}}
-
-\item{subset.row}{See \code{?"\link{scran-gene-selection}"}.}
-
-\item{block}{An integer scalar controlling the rate of doublet generation,
-to keep memory usage low.}
-
-\item{d}{An integer scalar specifying the number of components to retain after the PCA.}
-
-\item{force.match}{A logical scalar indicating whether remapping of simulated
-doublets to original cells should be performed.}
-
-\item{force.k}{An integer scalar specifying the number of neighbours to use for
-remapping if \code{force.match=TRUE}.}
-
-\item{force.ndist}{A numeric scalar specifying the bandwidth for remapping
-if \code{force.match=TRUE}.}
-
-\item{BNPARAM}{A \code{\link[BiocNeighbors]{BiocNeighborParam}} object specifying the nearest neighbor algorithm.
-This should be an algorithm supported by \code{\link[BiocNeighbors]{findNeighbors}}.}
-
-\item{BSPARAM}{A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to
-use for PCA, if \code{d} is not \code{NA}.}
-
 \item{BPPARAM}{A \code{\link{BiocParallelParam}} object specifying whether the
 neighbour searches should be parallelized.}
 }
@@ -80,13 +39,13 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with the
  \link{colData} slot.
 }
 \description{
-A wrapper function for \link[scran]{doubletCells}. Identify
+A wrapper function for \link[scDblFinder]{scDblFinder}. Identify
  potential doublet cells based on simulations of putative doublet expression
  profiles. Generate a doublet score for each cell.
 }
 \details{
-This function is a wrapper function for \link[scran]{doubletCells}.
- \code{runDoubletCells} runs \link[scran]{doubletCells} for each
+This function is a wrapper function for \link[scDblFinder]{scDblFinder}.
+ \code{runDoubletCells} runs \link[scDblFinder]{scDblFinder} for each
  \code{sample} within \code{inSCE} iteratively. The
  resulting doublet scores for all cells will be appended to the
  \link{colData} of \code{inSCE}.

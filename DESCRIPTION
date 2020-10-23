@@ -105,7 +105,8 @@ Imports:
     yaml,
     rmarkdown,
     magrittr,
-    kableExtra
+    kableExtra,
+    scDblFinder
 RoxygenNote: 7.1.1
 Suggests:
     testthat,

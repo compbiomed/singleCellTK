@@ -51,7 +51,7 @@ test_that(desc = "Testing plotSCEViolin functions", {
 sceres <- sceres[, colData(sceres)$type != 'EmptyDroplet']
 sceres <- runCellQC(sceres, algorithms = c("QCMetrics", "cxds", "bcds", "cxds_bcds_hybrid",
                                               "doubletFinder", "decontX"))
-sceres <- runDoubletCells(sceres, size.factors.norm = rep(1, ncol(sceres)))
+sceres <- runDoubletCells(sceres)
 
 
 context("Testing QC functions")
