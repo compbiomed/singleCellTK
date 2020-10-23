@@ -55,8 +55,8 @@ nature of the data. The model also accounts for the difference in library
 sizes and optionally for batch effects and/or other covariates.
 }
 \examples{
+data('sceBatches', package = 'singleCellTK')
 \dontrun{
-    data('sceBatches', package = 'singleCellTK')
     sceCorr <- runZINBWaVE(sceBatches, nIter = 5)
 }
 }

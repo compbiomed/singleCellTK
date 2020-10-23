@@ -48,24 +48,24 @@ test_that(desc = "Testing importSTARSolo", {
   
   expect_true(validObject(sce))
 })
+# 
+# test_that(desc = "Testing importOptimus", {
+#   if (!reticulate::py_module_available("scipy.sparse") || (!reticulate::py_module_available("numpy"))){
+#     skip("scipy.sparse or numpy not available. Skipping testing importOptimus")
+#   }
+#   sce <- importOptimus(OptimusDirs = system.file("extdata/Optimus_20x1000",package = "singleCellTK"),
+#                        samples = "Optimus_20x1000")
+#   expect_true(validObject(sce))
+# }) 
 
-test_that(desc = "Testing importOptimus", {
-  if (!reticulate::py_module_available("scipy.sparse") || (!reticulate::py_module_available("numpy"))){
-    skip("scipy.sparse or numpy not available. Skipping testing importOptimus")
-  }
-  sce <- importOptimus(OptimusDirs = system.file("extdata/Optimus_20x1000",package = "singleCellTK"),
-                       samples = "Optimus_20x1000")
-  expect_true(validObject(sce))
-}) 
-
-test_that(desc = "Testing importAnnData", {
-  if (!reticulate::py_module_available("anndata")){
-    skip("'anndata' not available. Skipping testing importAnnData")
-  }
-  sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
-                       sampleNames = 'pbmc3k_20by20')
-  expect_true(validObject(sce))
-})
+# test_that(desc = "Testing importAnnData", {
+#   if (!reticulate::py_module_available("anndata")){
+#     skip("'anndata' not available. Skipping testing importAnnData")
+#   }
+#   sce <- importAnnData(sampleDirs = system.file("extdata/annData_pbmc_3k", package = "singleCellTK"),
+#                        sampleNames = 'pbmc3k_20by20')
+#   expect_true(validObject(sce))
+# })
 ##################################
 ## Importing Gene Set Functions
 ##################################

@@ -59,7 +59,9 @@ scRNA-Seq data.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runSCMerge(sceBatches)
+}
 }
 \references{
 Hoa, et al., 2020

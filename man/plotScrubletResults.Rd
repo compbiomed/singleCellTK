@@ -140,8 +140,10 @@ A wrapper function which visualizes outputs from the
 }
 \examples{
 data(scExample, package="singleCellTK")
+\dontrun{
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runScrublet(sce)
 plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
+}
 }
