@@ -2451,8 +2451,6 @@ shinyServer(function(input, output, session) {
     updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "danger"))
     shinyjs::enable(
       selector = "div[value='Visualization']")
-    shinyjs::show(selector = ".celda_heatmap_plots")
-    shinyjs::show(selector = ".celda_probmap_plots")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
   })
 
