@@ -2,7 +2,7 @@ shinyPanelfindMarker <- fluidPage(
   tags$div(
     class = "container",
     h1("Find Marker"),
-    tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/find_marker.html",
+    tags$a(href = "https://www.sctk.science/articles/tab05_find-marker",
            "(help)", target = "_blank"),
     sidebarLayout(
       sidebarPanel(
