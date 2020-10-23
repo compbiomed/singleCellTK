@@ -359,7 +359,7 @@ description_DoubletCells<- descriptionDoubletCells()
 i="DoubletCells"
 cat(paste0('## ', i, ' \n'))
 
-doubletCellData <- c("scran_doubletCells_score_log10")
+doubletCellData <- c("scran_doubletCells_score")
 skipDoubletCell <- any(!doubletCellData %in% names(colData(sce.qc)))
 
 if (skipDoubletCell) {

@@ -138,6 +138,8 @@ A wrapper function that calls \code{scrub_doublets} from python
 }
 \examples{
 data(scExample, package = "singleCellTK")
+\dontrun{
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runScrublet(sce)
+}
 }

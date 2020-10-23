@@ -95,14 +95,14 @@ choose.dir.darwin <- function(default = NA, caption = NA) {
     prompt = ''
   }
   args = sub('{{prompt}}', prompt, args, fixed = TRUE)
-
+  
   if (!is.null(default) && !is.na(default) && nzchar(default)) {
     default = sprintf(' default location \\"%s\\"', path.expand(default))
   } else {
     default = ''
   }
   args = sub('{{default}}', default, args, fixed = TRUE)
-
+  
   suppressWarnings({
     path = system2(command, args = args, stderr = TRUE)
   })

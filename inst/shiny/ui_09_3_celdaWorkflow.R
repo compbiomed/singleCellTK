@@ -19,9 +19,9 @@ shinyPanelCelda <- fluidPage(
                        ),
                        conditionalPanel("input.celdafeatureselect == 'Simple Filter'",
                                         numericInput("celdarowcountsmin",
-                                                     "Number of counts per gene:", value = 3),
+                                                     "Keep features with this many counts:", value = 3),
                                         numericInput("celdacolcountsmin",
-                                                     "Number of counts per cell:", value = 3)
+                                                     "In at least this many cells:", value = 3)
                        ),
                        conditionalPanel("input.celdafeatureselect != 'Simple Filter'",
                                         numericInput("celdafeaturenum",
