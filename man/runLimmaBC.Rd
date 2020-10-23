@@ -30,7 +30,9 @@ removes the component due to the batch effects.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
+\dontrun{
 sceCorr <- runLimmaBC(sceBatches)
+}
 }
 \references{
 Gordon K Smyth, et al., 2003
