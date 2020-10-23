@@ -4895,6 +4895,14 @@ shinyServer(function(input, output, session) {
         HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
       }
   })
+  
+  observeEvent(input$navbar, {
+    if(!is.null(vals$counts)){
+      if(input$navbar == "GSVA"){
+        updateSelectInput(session, "pathwayPlotVar", choices = colnames(colData(vals$counts)))
+      }
+    }
+  })
 
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
@@ -5118,6 +5126,15 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
+        if(is.na(input$minCount)){
+          stop("Minimum readcount must be a non-empty numeric value!")
+        }
+        if(is.na(input$minCells)){
+          stop("Minimum number of cells must be a non-empty numeric value!")
+        }
+        if(is.na(input$iterations)){
+          stop("Number of bootstrap iterations must be a non-empty numeric value!")
+        }
         vals$subDepth <- downSampleDepth(originalData = vals$counts,
                                          useAssay = input$depthAssay,
                                          minCount = input$minCount,
@@ -5165,6 +5182,15 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
+        if(is.na(input$minCellNum)
+           || is.na(input$maxCellNum)
+           || is.na(input$iterations)
+           || is.na(input$totalReads)
+           || is.na(input$minCount)
+           || is.na(input$minCells)
+           || is.na(input$depthResolution)){
+          stop("One or more parameter values are empty!")
+        }
         if (input$useReadCount){
           vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
@@ -5228,6 +5254,11 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSnapshot", {
+        if(is.na(input$numCellsSnap)
+           || is.na(input$numReadsSnap)
+           || is.na(input$iterationsSnap)){
+          stop("One or more parameter values are empty!")
+        }
         vals$snapshot <- iterateSimulations(originalData = vals$counts,
                                             useAssay = input$snapshotAssay,
                                             realLabels = input$selectSnapshotCondition,
