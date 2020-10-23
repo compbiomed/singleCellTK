@@ -1082,7 +1082,7 @@ shinyServer(function(input, output, session) {
     }
     return(FALSE)
   }
-  
+
   updateQCPlots <- function() {
     # get selected sample from run QC section
     if (!is.null(vals$counts)) {
@@ -1115,7 +1115,7 @@ shinyServer(function(input, output, session) {
       }
     }
   }
-  
+
   observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
@@ -2344,7 +2344,6 @@ shinyServer(function(input, output, session) {
 
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
-  celdaheatmap <- reactiveVal(NULL)
 
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
@@ -2422,10 +2421,11 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$celdacellsplit, {
     withBusyIndicatorServer("celdacellsplit", {
-      temp_umap <- celdaUmap(vals$counts)
       cellsplit(recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
+      temp_umap <- celdaUmap(vals$counts)
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
+      output$plot_cellsplit_perpdiff <- renderPlotly({plotGridSearchPerplexityDiff(cellsplit())})
       for (i in runParams(cellsplit())$K){
         local({
           my_i <- i
@@ -2452,14 +2452,15 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
-    updateSelectInput(session, "celdaAssayUMAP", choices = names(assays(vals$counts)))
-    updateSelectInput(session, "celdaAssaytSNE", choices = names(assays(vals$counts)))
   })
+
+  output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
+  output$celdaprobmapplt <- renderPlot({celdaProbabilityMap(vals$counts)})
 
   observeEvent(input$CeldaUmap, {
     withBusyIndicatorServer("CeldaUmap", {
       vals$counts <- celdaUmap(vals$counts,
-                               useAssay = input$celdaAssayUMAP,
+                               useAssay = input$celdaassayselect,
                                maxCells = input$celdaUMAPmaxCells,
                                minClusterSize = input$celdaUMAPminClusterSize,
                                seed = input$celdaUMAPSeed,
@@ -2476,7 +2477,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$CeldaTsne, {
     withBusyIndicatorServer("CeldaTsne", {
       vals$counts <- celdaTsne(vals$counts,
-                               useAssay = input$celdaAssaytSNE,
+                               useAssay = input$celdaassayselect,
                                maxCells = input$celdatSNEmaxCells,
                                minClusterSize = input$celdatSNEminClusterSize,
                                perplexity = input$celdatSNEPerplexity,
@@ -2488,43 +2489,9 @@ shinyServer(function(input, output, session) {
     showNotification("Tsne complete.")
   })
 
-  observeEvent(input$celdaheatmapbtn, {
-    removeTab(inputId = "celdaHeatmapTabset", target = "Heatmap")
-    removeTab(inputId = "celdaHeatmapTabset", target = "Module Heatmap")
-    appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Heatmap",
-      panel(heading = "Heatmap",
-        plotOutput(outputId = "celdaheatmapplt")
-      )
-    ), select = TRUE)
-    withBusyIndicatorServer("celdaheatmapbtn", {
-      if (is.null(celdaheatmap())){
-        celdaheatmap(celdaHeatmap(vals$counts))
-        output$celdaheatmapplt <- renderPlot({plot(celdaheatmap())})
-        showNotification("Heatmap complete.")
-      }
-      if (input$heatmap_module){
-        appendTab(inputId = "celdaHeatmapTabset", tabPanel(title = "Module Heatmap",
-                                                           panel(heading = "Module Heatmap",
-                                                                 plotOutput(outputId = "celdamodheatmapplt")
-                                                           )
-        ))
-        output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
-      }
-    })
-    shinyjs::enable(
-      selector = ".celda_heatmap_plots a[data-value='Heatmap']")
-    shinyjs::toggleState(
-      selector = ".celda_heatmap_plots a[data-value='Module Heatmap']",
-      condition = input$celdamodheatmap)
-    shinyjs::show(selector = ".celda_heatmap_plots")
+  observeEvent(input$celdamodheatmapbtn,{
+    output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
     showNotification("Module heatmap complete.")
-  })
-
-  observeEvent(input$celdaprobplotbtn, {
-    withBusyIndicatorServer("celdaprobplotbtn", {
-      output$celdaprobmapplt <- renderPlot({celdaProbabilityMap(vals$counts)})
-    })
-    showNotification("Probability map complete.")
   })
 
   observe({
@@ -2548,16 +2515,6 @@ shinyServer(function(input, output, session) {
         selector = ".celda_modsplit_plots a[data-value='Perplexity Plot']")
       shinyjs::disable(
         selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
-
-      #Disable plots inside Cellsplit subtab
-      #shinyjs::disable(
-      #  selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
-
-      #Disable plots inside Heatmap subtab
-      shinyjs::disable(
-        selector = ".celda_heatmap_plots a[data-value='Heatmap']")
-      shinyjs::disable(
-        selector = ".celda_heatmap_plots a[data-value='Module Heatmap']")
     }
   })
 
@@ -4924,28 +4881,15 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   output$selectPathwayGeneLists <- renderUI({
-    if (input$genelistSource == "Manual Input"){
       if (!is.null(vals$counts)){
-        #fn to check if each column is 1 and 0 only
-        biomarkercols <- names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE))
-        selectizeInput("pathwayGeneLists", "Select Gene List(s):",
-                       biomarkercols, multiple = TRUE)
+        if (!is.null(metadata(vals$original)$sctk$genesets)) {
+          newGSchoices <- sctkListGeneSetCollections(vals$original)
+          selectizeInput("pathwayGeneLists", "Select Gene List(s):",
+                         choices = newGSchoices, multiple = TRUE)
+        }
       } else {
-        h4("Note: upload data.")
+        HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
       }
-    } else {
-      selectInput("pathwayGeneLists", "Select Gene List(s):",
-                  c("ALL", names(c2BroadSets)), multiple = TRUE)
-    }
-  })
-
-  output$selectNumTopPaths <- renderUI({
-    if (!is.null(input$pathwayGeneLists)) {
-      if ("ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
-                    max = length(c2BroadSets), value = 25, step = 5)
-      }
-    }
   })
 
   observeEvent(input$pathwayRun, {
@@ -4953,9 +4897,22 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
+        #checks
+        if(is.null(input$pathwayPlotVar)){
+          stop("Must select a condition variable!")
+        }
+        if(is.null(input$pathwayGeneLists)){
+          stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
+        }
+        conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
+        if(nlevels(conditionFactor)<=1){
+          stop("Condition variable must have atleast two levels!")
+        }
+        #update metadata of vals$counts
+        metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
+        #call gsva
         vals$gsvaRes <- gsvaSCE(inSCE = vals$counts,
                                 useAssay = input$pathwayAssay,
-                                pathwaySource = input$genelistSource,
                                 pathwayNames = input$pathwayGeneLists)
       })
     }
@@ -4963,7 +4920,11 @@ shinyServer(function(input, output, session) {
 
   observe({
     if (length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsvaRes))){
-      fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+      conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
+      if(nlevels(conditionFactor)<=1){
+        stop("Condition variable must have atleast two levels!")
+      }
+      fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~conditionFactor))
       fit <- limma::eBayes(fit)
       toptableres <- limma::topTable(fit, number = nrow(vals$gsvaRes))
       temptable <- cbind(rownames(toptableres), toptableres)
@@ -4977,23 +4938,13 @@ shinyServer(function(input, output, session) {
 
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsvaLimma)){
-      if (!is.null(input$pathwayGeneLists) & "ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        vals$gsvaLimma[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma)), , drop = FALSE]
-      } else {
         vals$gsvaLimma
-      }
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
 
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsvaRes))){
-      if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsvaLimma))){
-        tempgsvares <- vals$gsvaRes[as.character(vals$gsvaLimma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma))]), , drop = FALSE]
-      } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & !("ALL" %in% input$pathwayGeneLists)) {
         tempgsvares <- vals$gsvaRes
-      } else {
-        tempgsvares <- vals$gsvaRes[1:input$pickNtopPaths, , drop = FALSE]
-      }
       if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = FALSE]
         gsvaPlot(inSCE = vals$counts,
@@ -5013,15 +4964,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$savePathway, {
     if (!(is.null(vals$gsvaRes))){
       if (all(colnames(vals$counts) == colnames(vals$gsvaRes))){
-        #if we have limma results
         if (!(is.null(vals$gsvaLimma))){
-          tempdf <- DataFrame(t(vals$gsvaRes[vals$gsvaLimma$Pathway[1:input$pickNtopPaths], , drop = FALSE]))
-        } else {
-          tempdf <- DataFrame(t(vals$gsvaRes[1:input$pickNtopPaths, , drop = FALSE]))
+          tempdf <- DataFrame(t(vals$gsvaRes[, , drop = FALSE]))
+          tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
+          colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
+          #updateColDataNames()
         }
-        tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
-        colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
-        updateColDataNames()
       }
     } else {
       shinyalert::shinyalert("Error!", "Run pathway first.", type = "error")

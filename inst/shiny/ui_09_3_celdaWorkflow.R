@@ -32,7 +32,7 @@ shinyPanelCelda <- fluidPage(
                        actionButton("celdamodsplit", "Recursive Module Split"),
                        hidden(
                            numericInput("celdaLselect", "Select Number of Feature Modules:", min = 1, max = 100, value = 25),
-                           actionButton("celdaLbtn", "Select # of Modules")
+                           actionButton("celdaLbtn", "Select Number of Modules")
                        )
                    )
                ),
@@ -58,17 +58,13 @@ shinyPanelCelda <- fluidPage(
                         actionButton("celdacellsplit", "Recursive Cell Split"),
                         hidden(
                             numericInput("celdaKselect", "Select Number of Cell Clusters:", min = 2, max = 20, value = 10),
-                            actionButton("celdaKbtn", "Select # of Clusters")
+                            actionButton("celdaKbtn", "Select Number of Clusters")
                         )
                     )
                 ),
                 column(8,
                     fluidRow(
                         column(12,
-                #            #hidden(
-                #            #    tags$div(class = "celda_cellsplit_plots", tabsetPanel(id = "celdaCellsplitTabset", type = "tabs"
-                #            #    ))
-                #            #)
                             hidden(
                                 tags$div(class = "celda_cellsplit_plots",
                                     tabsetPanel(
@@ -77,7 +73,12 @@ shinyPanelCelda <- fluidPage(
                                                  plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
                                              )
                                     ),
-                                    tabPanel("UMAP Plots",
+                                    tabPanel("Perplexity Diff Plot",
+                                             panel(
+                                                 plotlyOutput(outputId = "plot_cellsplit_perpdiff", height = "auto")
+                                             )
+                                    ),
+                                    tabPanel("Preliminary UMAP Plots",
                                             uiOutput("celdaKplots")
                                     )
                                 )
@@ -95,8 +96,6 @@ shinyPanelCelda <- fluidPage(
                     fluidRow(
                         column(4,
                             panel(
-                                selectInput("celdaAssayUMAP", "Select Assay:",
-                                            choices = c()),
                                 numericInput("celdaUMAPmaxCells",
                                              label =
                                                  "Max.cells: Maximum number of cells to plot",
@@ -141,8 +140,6 @@ shinyPanelCelda <- fluidPage(
                     fluidRow(
                         column(4,
                             panel(
-                                selectInput("celdaAssaytSNE", "Select Assay:",
-                                            choices = c()),
                                 numericInput("celdatSNEmaxCells",
                                              label =
                                                  "Max.cells: Maximum number of cells to
@@ -181,41 +178,34 @@ shinyPanelCelda <- fluidPage(
                     )
                 ),
                 tabPanel("Heatmap",
-                    fluidRow(
-                        column(4,
-                            panel(
-                                actionButton("celdaheatmapbtn", "Plot Heatmap"),
-                                materialSwitch(inputId = "heatmap_module", label = "Display module heatmap?", value = TRUE),
-                                conditionalPanel(
-                                    condition = 'input.heatmap_module == true',
-                                    numericInput(inputId = "celdamodheatmapnum",
-                                        label = "Select module to display on heatmap:", value = 10, step = 1),
-                                ),
-                            )
-                        ),
-                        column(8,
-                            fluidRow(
-                                column(12,
-                                    hidden(
-                                        tags$div(class = "celda_heatmap_plots", tabsetPanel(id = "celdaHeatmapTabset", type = "tabs"
-                                        ))
+                         fluidRow(
+                             panel(
+                                 plotOutput("celdaheatmapplt")
+                             )
+                         )
+                ),
+                tabPanel("Module Heatmap",
+                         fluidRow(
+                             column(4,
+                                    panel(
+                                        numericInput(inputId = "celdamodheatmapnum",
+                                                     label = "Select module to display on heatmap:", value = 10, step = 1),
+                                        actionButton("celdamodheatmapbtn", "Plot Module Heatmap")
                                     )
-                                )
-                            )
-                        )
-                    )
+                             ),
+                             column(8,
+                                    panel(
+                                        plotOutput(outputId = "celdamodheatmapplt") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                    )
+                             )
+                         )
                 ),
                 tabPanel("Probablity Map",
-                    column(4,
-                        panel(
-                            actionButton("celdaprobplotbtn", "Plot Probability Map")
+                        fluidRow(
+                            panel(
+                                plotOutput("celdaprobmapplt")
+                            )
                         )
-                    ),
-                    column(8,
-                        panel(
-                            plotOutput("celdaprobmapplt")
-                        )
-                    )
                 )
             ),
             style = "primary")
