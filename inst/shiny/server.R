@@ -2344,7 +2344,6 @@ shinyServer(function(input, output, session) {
 
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
-  celdaheatmap <- reactiveVal(NULL)
 
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
