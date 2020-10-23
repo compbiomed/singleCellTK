@@ -162,7 +162,8 @@ shinyPanelQC <- fluidPage(
           selectInput("qcSampleSelect", "Select variable containing sample labels", list()),
 
           tags$hr(), # UMAP params
-          h4("UMAP Parameters"),
+          h4("Quick UMAP Parameters"),
+          textInput("QCUMAPName", "UMAP Name (default 'QC_UMAP')", value = "QC_UMAP"),
           numericInput("UnNeighbors", "Size of local neighborhood used for manifold approximation (default 30)", 30),
           numericInput("UnIterations", "Number of iterations performed during layout optimization (default 200)", 200),
           numericInput("Ualpha", 'Initial value of "learning rate" (default 1)', 1),
