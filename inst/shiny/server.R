@@ -2334,30 +2334,6 @@ shinyServer(function(input, output, session) {
   # Page 3.2: Celda
   #-----------------------------------------------------------------------------
 
-  # onclick buttons
-  shinyjs::onclick("celdaBasicSet",
-                   shinyjs::toggle(id = "celdaCollapse1",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("celdaAdvSet",
-                   shinyjs::toggle(id = "celdaCollapse2",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::addClass(id = "celdaBasicSet", class = "btn-block")
-  shinyjs::addClass(id = "celdaAdvSet", class = "btn-block")
-
-  shinyjs::onclick("celdaBasicSetGS",
-                   shinyjs::toggle(id = "celdaCollapseGS1",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::onclick("celdaAdvSetGS",
-                   shinyjs::toggle(id = "celdaCollapseGS2",
-                                   anim = TRUE), add = TRUE)
-  shinyjs::addClass(id = "celdaBasicSetGS", class = "btn-block")
-  shinyjs::addClass(id = "celdaAdvSetGS", class = "btn-block")
-
-  # shinyjs::onclick("celdatSNESet",
-  #   shinyjs::toggle(id = "celdaCollapsetSNE",
-  #     anim = TRUE), add = TRUE)
-  # shinyjs::addClass(id = "celdatSNESet", class = "btn-block")
-
   observeEvent(input$navbar, {
     if(!is.null(vals$counts)){
       if(input$navbar == "CeldaWorkflow"){
@@ -2369,11 +2345,10 @@ shinyServer(function(input, output, session) {
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
   celdaheatmap <- reactiveVal(NULL)
-  #celdaKlist <- reactiveValues()
 
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
-    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Diff Plot")
+    removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
@@ -2419,12 +2394,6 @@ shinyServer(function(input, output, session) {
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
   })
-  output$modsplitplot <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-
-  modsplitdiff <- eventReactive(input$celdamodsplitdiff,{
-    return(plotGridSearchPerplexityDiff(modsplit()))
-  })
-  output$modsplitplotdiff <- renderPlotly({modsplitdiff()})
 
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
@@ -2432,22 +2401,6 @@ shinyServer(function(input, output, session) {
     updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Feature Modules" = "danger"))
     shinyjs::enable(selector = "div[value='Identify Number of Cell Clusters']")
   })
-
-  #celdaKplot <- reactive({
-  #  for (i in runParams(cellsplit())$K){
-  #    removeTab(inputId = "celdaCellsplitTabset", target = sprintf("Cluster %s", i))
-  #    appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = sprintf("Cluster %s", i),
-  #                                                         panel(heading = sprintf("Cluster %s", i),
-  #                                                               plotlyOutput(outputId = paste0("plot_K_umap_", i), height = "auto")
-  #                                                         )
-  #    ))
-  #    celdaKlist[[paste0("Cluster", i)]] <- subsetCeldaList(cellsplit(), params = list(K = i))
-  #    celdaKlist[[paste0("Cluster", i)]] <- plotDimReduceCluster(celdaKlist[[paste0("Cluster", i)]], dim1= reducedDim(altExp(temp_umap), "celda_UMAP")[, 1],
-  #                                                               dim2 = reducedDim(altExp(temp_umap), "celda_UMAP")[, 2], labelClusters = TRUE)
-  #    output[[paste0("plot_K_umap_", i)]] <- renderPlotly({celdaKlist[[paste0("Cluster", i)]]})
-  #    shinyjs::enable(selector = sprintf(".celda_cellsplit_plots a[data-value='Cluster %s']", i))
-  #  }
-  #})
 
   output$celdaKplots <- renderUI({
     if (!is.null(vals$counts)){
@@ -2468,12 +2421,6 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$celdacellsplit, {
-    #removeTab(inputId = "celdaCellsplitTabset", target = "Perplexity Plot")
-    #appendTab(inputId = "celdaCellsplitTabset", tabPanel(title = "Perplexity Plot",
-    #  panel(heading = "Perplexity Plot",
-    #    plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
-    #  )
-    #), select = TRUE)
     withBusyIndicatorServer("celdacellsplit", {
       temp_umap <- celdaUmap(vals$counts)
       cellsplit(recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
@@ -2491,7 +2438,6 @@ shinyServer(function(input, output, session) {
         })
       }
     })
-    #shinyjs::enable(selector = ".celda_cellsplit_plots a[data-value='Perplexity Plot']")
     shinyjs::show(selector = ".celda_cellsplit_plots")
     showNotification("Cell Clustering Complete.")
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
