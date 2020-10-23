@@ -1103,7 +1103,7 @@ shinyServer(function(input, output, session) {
       # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
+      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, input$QCUMAPName)
       uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")
@@ -1195,9 +1195,8 @@ shinyServer(function(input, output, session) {
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP if no UMAP
-        if (!("UMAP" %in% redDimList)) {
-          vals$counts <- getUMAP(inSCE = vals$counts,
+        # run getUMAP
+        vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
                                  nNeighbors = input$UnNeighbors,
@@ -1205,9 +1204,9 @@ shinyServer(function(input, output, session) {
                                  alpha = input$Ualpha,
                                  minDist = input$UminDist,
                                  spread = input$Uspread,
-                                 initialDims = input$UinitialDims
-          )
-        }
+                                 initialDims = input$UinitialDims,
+                                 reducedDimName = input$QCUMAPName
+        )
         updateQCPlots()
       }
     })
@@ -1301,8 +1300,8 @@ shinyServer(function(input, output, session) {
     insertUI(
       selector = "#rowFilterCriteria",
       ui = tags$div(id="newThresh",
-                    numericInput("filterThreshX", "Number of counts per cell", 0),
-                    numericInput("filterThreshY", "Number of cells", 0),
+                    numericInput("filterThreshX", "Keep features with this many counts:", 0),
+                    numericInput("filterThreshY", "In at least this many cells:", 0),
       )
     )
 
