@@ -73,7 +73,7 @@ runCxds <- function(inSCE,
         counts(sceSample) <- .convertToMatrix(mat)
 
         result <- NULL
-        nGene <- 500
+        nGene <- ntop
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds(sce = sceSample,
                                                            ntop = nGene,
@@ -94,7 +94,7 @@ runCxds <- function(inSCE,
           }
         } else {
           output[sceSampleInd, ] <- NA
-          warning(paste0("'cxds' from package 'scds' did not complete successfully for sample", samples[i]))
+          warning(paste0("'cxds' from package 'scds' did not complete successfully for sample: ", samples[i]))
         }
     }
 
@@ -188,7 +188,7 @@ runBcds <- function(inSCE,
         counts(sceSample) <- .convertToMatrix(mat)
 
         result <- NULL
-        nGene <- 500
+        nGene <- ntop
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed,
             scds::bcds(sce = sceSample,
@@ -213,7 +213,7 @@ runBcds <- function(inSCE,
           }
         } else {
           output[sceSampleInd, ] <- NA
-          warning(paste0("'bcds' from package 'scds' did not complete successfully for sample", samples[i]))
+          warning(paste0("'bcds' from package 'scds' did not complete successfully for sample: ", samples[i]))
         }
 
     }
@@ -306,16 +306,31 @@ runCxdsBcdsHybrid <- function(inSCE,
         mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
         counts(sceSample) <- .convertToMatrix(mat)
 
+        # Get ntop from Args list if they are available, otherwise use 
+        # the 'ntop' parameter
         result <- NULL
-        nGene <- 500
+        nGene.cxds <- nTop
+        if(!is.null(cxdsArgs[["ntop"]])) {
+            nGene.cxds <- cxdsArgs[["ntop"]]
+            cxdsArgs[["ntop"]] <- NULL
+        } 
+        nGene.bcds <- nTop
+        if(!is.null(bcdsArgs[["ntop"]])) {
+            nGene.bcds <- bcdsArgs[["ntop"]]
+            bcdsArgs[["ntop"]] <- NULL
+        }
+        
+        nGene <- min(nGene.cxds, nGene.bcds)
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
-                                                                       cxdsArgs=c(list(ntop = nGene), cxdsArgs),
-                                                                       bcdsArgs=c(list(ntop = nGene), bcdsArgs),
+                                                                       cxdsArgs=c(list(ntop = nGene.cxds), cxdsArgs),
+                                                                       bcdsArgs=c(list(ntop = nGene.bcds), bcdsArgs),
                                                                        verb = verb,
                                                                        estNdbl = estNdbl,
                                                                        force = force))}, silent = TRUE)
           nGene <- nGene - 100
+          nGene.bcds <- nGene.bcds - 100
+          nGene.cxds <- nGene.cxds - 100
         }
 
         if (!inherits(result, "try-error") & !is.null(result)) {
@@ -328,7 +343,7 @@ runCxdsBcdsHybrid <- function(inSCE,
           }
         } else {
           output[sceSampleInd, ] <- NA
-          warning(paste0("'cxds_bcds_hybrid' from package 'scds' did not complete successfully for sample", samples[i]))
+          warning(paste0("'cxds_bcds_hybrid' from package 'scds' did not complete successfully for sample: ", samples[i]))
         }
     }
 
