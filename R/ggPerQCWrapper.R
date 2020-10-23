@@ -324,6 +324,8 @@ plotRunPerCellQCResults <- function(inSCE,
     }
   } else {
     plotlist <- unlist(plotlist, recursive=FALSE)
+    plotLabels <- "none"
+    relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -718,6 +720,8 @@ plotScrubletResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -1072,6 +1076,8 @@ plotDoubletFinderResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1321,6 +1327,8 @@ plotDoubletCellsResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1591,6 +1599,8 @@ plotCxdsResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1861,6 +1871,8 @@ plotBcdsResults <- function(inSCE,
     plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
     plotlist <- unlist(plotlist, recursive=FALSE)
+    plotLabels <- "none"
+    relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -2131,6 +2143,8 @@ plotScdsHybridResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -2398,6 +2412,8 @@ plotDecontXResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
