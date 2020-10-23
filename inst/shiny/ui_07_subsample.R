@@ -1,6 +1,6 @@
 shinyPanelSubsample <- fluidPage(
   tags$h1("Sample Size Calculator"),
-  h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v09-tab07_Sample-Size.html",
+  h5(tags$a(href = "https://www.sctk.science/articles/tab07_sample-size",
             "(help)", target = "_blank")),
   tabsetPanel(
     tabPanel(

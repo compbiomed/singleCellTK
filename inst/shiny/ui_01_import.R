@@ -26,7 +26,7 @@ shinyPanelImport <- fluidPage(
       p("Filter, cluster, and analyze single cell RNA-Seq data"),
       p(
         "Need help?",
-        tags$a(href = "https://compbiomed.github.io/sctk_docs/",
+        tags$a(href = "https://www.sctk.science/index.html",
                "Read the docs.", target = "_blank")
       )
     )
@@ -35,12 +35,12 @@ shinyPanelImport <- fluidPage(
   tags$div(
     class = "container",
     h1("Upload"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
+    h5(tags$a(href = "https://www.sctk.science/articles/tab01_upload",
               "(help)", target = "_blank")),
     tags$hr(),
     hidden(wellPanel(id = "annotationData",
                      h3("Data summary"),
-                     tableOutput("summarycontents"))), 
+                     tableOutput("summarycontents"))),
 
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Import from a preprocessing tool" = 'directory',
@@ -280,7 +280,7 @@ shinyPanelImport <- fluidPage(
     withBusyIndicatorUI(
       actionButton("uploadData", "Import")
     ),
-    
+
     tags$div(
       class = "container",
       p("")

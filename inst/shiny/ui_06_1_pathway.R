@@ -2,14 +2,12 @@ shinyPanelPathway <- fluidPage(
   tags$div(
     class = "container",
     h1("Pathway Activity Analysis"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v08-tab06_Pathway-Activity-Analysis.html",
+    h5(tags$a(href = "https://www.sctk.science/articles/tab06_pathway-activity-analysis",
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         selectInput("pathwayAssay", "Select Assay:", currassays),
         selectInput("pathwayMethod", "Select Method:", "GSVA"),
-        radioButtons("genelistSource", "Gene list source:",
-                     c("Manual Input", "MSigDB c2 (Human, Entrez ID only)")),
         uiOutput("selectPathwayGeneLists"),
         uiOutput("selectNumTopPaths"),
         selectInput("pathwayPlotVar",
