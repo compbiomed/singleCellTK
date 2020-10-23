@@ -4945,7 +4945,7 @@ shinyServer(function(input, output, session) {
           stop("Must select a condition variable!")
         }
         if(is.null(input$pathwayGeneLists)){
-          stop("Must select atleast one gene list!")
+          stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
         }
         conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
         if(nlevels(conditionFactor)<=1){
