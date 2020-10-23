@@ -1,6 +1,10 @@
 shinyPanelCellViewer <- fluidPage(tags$div(
   class = "container",
   h1("Cell Viewer"),
+  p("Plotting tools for data visualization.",
+    style = "color:grey;"),
+  h5(tags$a(href = "https://www.sctk.science/articles/tab08_cellviewer",
+            "(help)", target = "_blank")),
   radioGroupButtons(
     "viewertabs",
     choices = c("Scatter Plot", "Bar Plot", "Violin/Box Plot"),
@@ -194,7 +198,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
             c("ggplot", "celda", "random")
           ),
           uiOutput("categoricalColorUI")
-        )), 
+        )),
         conditionalPanel(
           id="binningConditional",
           condition = sprintf("input['%s'] == 'Continuous' && input['%s'] != 'Single Color'", "SelectColorType", "TypeSelect_Colorby"),

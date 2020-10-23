@@ -1,4 +1,7 @@
 shinyPanelFS_DimRed <- fluidPage(
+  h1("Feature Selection & Dimensionality Reduction"),
+  h5(tags$a(href = "https://www.sctk.science/articles/tab04_fs-dimred",
+            "(help)", target = "_blank")),
   tabsetPanel(
     tabPanel("Feature Selection",
              fluidRow(

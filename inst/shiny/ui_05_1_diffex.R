@@ -2,7 +2,7 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/differential_expression.html",
+    tags$a(href = "https://www.sctk.science/articles/tab05_differential-expression",
            "(help)", target = "_blank"),
     fluidRow(
       panel(
