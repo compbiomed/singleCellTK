@@ -1,8 +1,8 @@
 shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
-    h1("Visualization & Clustering"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Dimensionality-Reduction-and-Clustering.html",
+    h1("Clustering"),
+    h5(tags$a(href = "https://www.sctk.science/articles/tab03_clustering",
               "(help)", target = "_blank")),
     tabsetPanel(
       tabPanel(
@@ -246,7 +246,7 @@ shinyPanelCluster <- fluidPage(
 # output$dendroRedDim <- renderUI({
 #   selectInput("dendroRedDim", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
 # })
-# 
+#
 # observeEvent(input$dendroPlot, {
 #   withBusyIndicatorServer(input$dendroPlot, {
 #     if (is.null(vals$counts)){
@@ -281,4 +281,4 @@ shinyPanelCluster <- fluidPage(
 #   vals$dendrogram
 # }, height = 600)
 #
- 
+

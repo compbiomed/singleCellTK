@@ -2,7 +2,8 @@ shinyPanelEnrichR <- fluidPage(
   tags$div(
     class = "container",
     h1("Gene Set Enrichment Analysis using enrichR"),
-    h5(tags$a(href = "", "(help)", target = "_blank")),
+    h5(tags$a(href = "https://www.sctk.science/articles/tab06_enrichR",
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         h3("Choose data source:"),
