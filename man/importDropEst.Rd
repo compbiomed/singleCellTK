@@ -23,7 +23,7 @@ importDropEst(
 Default "sample".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count matrix,

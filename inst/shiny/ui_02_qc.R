@@ -175,14 +175,6 @@ shinyPanelQC <- fluidPage(
           tags$div(id = "qcPageErrors"),
         ),
         mainPanel(
-          shinyjs::hidden(
-            tags$div(id = "qcPlotSection",
-                     tags$hr(), # start plot subsection
-                     h4("Plot Parameters"),
-                     selectInput("qcPlotRedDim", "Select an ReducedDim obejct", list()),
-                     # withBusyIndicatorUI(actionButton("plotQC", "Plot")),
-            )
-          ),
           tabsetPanel(
             id = "qcResPlotTabs"
           )

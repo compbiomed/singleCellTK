@@ -19,7 +19,7 @@ runBBKNN(
 batch correction. Default \code{"logcounts"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+\code{\link{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{reducedDimName}{A single character. The name for the corrected

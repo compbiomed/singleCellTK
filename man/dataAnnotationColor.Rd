@@ -15,7 +15,7 @@ dataAnnotationColor(inSCE, axis = NULL, colorGen = distinctColors)
 
 \item{colorGen}{A function that generates color code vector by giving an
 integer for the number of colors. Alternatively,
-\code{\link[grDevices]{rainbow}}. Default \code{\link{distinctColors}}.}
+\code{\link{rainbow}}. Default \code{\link{distinctColors}}.}
 }
 \value{
 A \code{list} object containing distinct colors mapped to all

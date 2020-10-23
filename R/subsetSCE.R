@@ -6,7 +6,7 @@
 #' with one another. If \code{returnAsAltExp} is set to \code{TRUE},
 #' then the returned object will have the same number of rows as the input
 #' \code{inSCE} as the subsetted object will be stored in the
-#' \code{\link[SingleCellExperiment]{altExp}} slot.
+#' \code{\link{altExp}} slot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param index Integer vector. Vector of indicies indicating which rows
 #' to keep. If \code{NULL}, this will not be used for subsetting.

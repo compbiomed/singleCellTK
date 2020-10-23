@@ -72,13 +72,13 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "scMergeCT",
                       choices = c(pdataOptions))
     updateSelectInput(session, "combatCond",
-                      choices = c(pdataOptions))
+                      choices = c("None", pdataOptions))
     updateSelectInput(session, "batchCorrVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckVar",
                       choices = pdataOptions)
     updateSelectInput(session, "batchCheckCond",
-                      choices = c(pdataOptions))
+                      choices = c("None", pdataOptions))
     updateSelectInput(session, "clustVisCol", choices = pdataOptions)
     updateSelectInput(session, "deC1Class",
                       choices = c('None', pdataOptions))
@@ -105,8 +105,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "selectSnapshotCondition",
                       choices = pdataOptions)
     updateSelectInput(session, "annotModifyChoice",
-                      choices = c("none", pdataOptions))
-    updateSelectInput(session, "visCondn",
                       choices = c("none", pdataOptions))
     updateSelectInput(session, "hmCellCol",
                       choices = pdataOptions)
@@ -152,16 +150,6 @@ shinyServer(function(input, output, session) {
 
   updateNumSamples <- function(){
     numsamples <- ncol(vals$counts)
-    updateSelectInput(session, "Knumber",
-                      choices = 1:numsamples)
-    updateSelectInput(session, "Cnumber",
-                      choices = 1:numsamples)
-    # updateSelectInput(session, "pcX",
-    #                   choices = paste("PC", 1:numsamples, sep = ""),
-    #                   selected = "PC1")
-    # updateSelectInput(session, "pcY",
-    #                   choices = paste("PC", 1:numsamples, sep = ""),
-    #                   selected = "PC2")
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
@@ -182,8 +170,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
     updateSelectInput(session, "qcAssaySelect", choices = currassays)
-    updateSelectInput(session, "visAssaySelect", choices = currassays)
-    updateSelectInput(session, "enrichAssay", choices = currassays)
     updateSelectInput(session, "celdaAssay", choices = currassays)
     updateSelectInput(session, "celdaAssayGS", choices = currassays)
     updateSelectInput(session, "celdaAssaytSNE", choices = currassays)
@@ -904,7 +890,7 @@ shinyServer(function(input, output, session) {
     } else {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
-      if (!nzchar(input$gsCollectionNameText)) {
+      if (nzchar(input$gsCollectionNameText)) {
         vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
       } else if (input$gsExisting != "None") {
         vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsExisting)
@@ -935,7 +921,6 @@ shinyServer(function(input, output, session) {
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
         handleGSPasteOption()
       }
-      newGSchoices <- sctkListGeneSetCollections(vals$original)
     })
   })
 
@@ -1097,7 +1082,40 @@ shinyServer(function(input, output, session) {
     }
     return(FALSE)
   }
-
+  
+  updateQCPlots <- function() {
+    # get selected sample from run QC section
+    if (!is.null(vals$counts)) {
+      qcSample <- input$qcSampleSelect
+      if (qcSample == "None") {
+        qcSample <- NULL
+      } else {
+        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
+      }
+      # build list of selected algos
+      algoList = list()
+      for (algo in qc_choice_list) {
+        if (input[[algo]]) {
+          algoList <- c(algoList, algo)
+        }
+      }
+      # only run getUMAP if there are no reducedDimNames
+      # redDimName <- input$qcPlotRedDim
+      # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
+      showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
+      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
+      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
+      for (algo in algoList) {
+        qc_algo_status[[algo]] <- list(self="done")
+        if (length(uniqueSampleNames) > 1) {
+          for (s in uniqueSampleNames) {
+            qc_algo_status[[algo]][[s]] = TRUE
+          }
+        }
+      }
+    }
+  }
+  
   observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
@@ -1129,6 +1147,10 @@ shinyServer(function(input, output, session) {
         qcSample <- colData(vals$original)[,input$qcSampleSelect]
         if (length(qcSample)==1 && qcSample == "None") {
           qcSample <- NULL
+        }
+        qcCollName <- NULL
+        if (input$QCMgeneSets != "None") {
+          qcCollName <- input$QCMgeneSets
         }
         algoList = list()
         paramsList <- list()
@@ -1169,6 +1191,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
+                                 collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
@@ -1185,44 +1208,10 @@ shinyServer(function(input, output, session) {
                                  initialDims = input$UinitialDims
           )
         }
-        updateSelectInput(session, "qcPlotRedDim", choices = c(redDimList, "UMAP"))
-        # shinyjs::show(id = "qcPlotSection", anim = FALSE)
+        updateQCPlots()
       }
     })
   }))
-
-  observeEvent(input$qcPlotRedDim, {
-    # get selected sample from run QC section
-    if (!is.null(vals$counts)) {
-      qcSample <- input$qcSampleSelect
-      if (qcSample == "None") {
-        qcSample <- NULL
-      } else {
-        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
-      }
-      # build list of selected algos
-      algoList = list()
-      for (algo in qc_choice_list) {
-        if (input[[algo]]) {
-          algoList <- c(algoList, algo)
-        }
-      }
-      # only run getUMAP if there are no reducedDimNames
-      # redDimName <- input$qcPlotRedDim
-      # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
-      showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
-      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
-      for (algo in algoList) {
-        qc_algo_status[[algo]] <- list(self="done")
-        if (length(uniqueSampleNames) > 1) {
-          for (s in uniqueSampleNames) {
-            qc_algo_status[[algo]][[s]] = TRUE
-          }
-        }
-      }
-    }
-  })
 
   #-----------#
   # FILTERING #
@@ -1327,7 +1316,7 @@ shinyServer(function(input, output, session) {
       # figure out which options the user selected
       criteriaGT <- NULL
       criteriaLT <- NULL
-      categoricalCol = F
+      categoricalCol = FALSE
       if (input$colGT) {
         criteriaGT = input$filterThreshGT
       }
@@ -1925,17 +1914,9 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 3: DR & Clustering
+  # Page 3: dimRed ####
   #-----------------------------------------------------------------------------
 
-  #Sidebar buttons functionality - not an accordion
-  shinyjs::onclick("c_button2", shinyjs::toggle(id = "c_collapse2",
-                                                anim = TRUE), add = TRUE)
-  shinyjs::onclick("c_button3", shinyjs::toggle(id = "c_collapse3",
-                                                anim = TRUE), add = TRUE)
-  shinyjs::addClass(id = "c_button1", class = "btn-block")
-  shinyjs::addClass(id = "c_button2", class = "btn-block")
-  shinyjs::addClass(id = "c_button3", class = "btn-block")
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
@@ -1986,173 +1967,116 @@ shinyServer(function(input, output, session) {
               "warning", showCancelButton = TRUE,
               confirmButtonText = "Overwrite",
               callbackR = function(x){if(isTRUE(x)){
+                dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
                 if (input$dimRedPlotMethod == "PCA"){
-                  vals$counts <- getPCA(inSCE = vals$counts,
-                                        useAssay = input$dimRedAssaySelect,
-                                        reducedDimName = input$dimRedNameInput)
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAssaySelect,
+                                          reducedDimName = dimrednamesave)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getPCA(inSCE = vals$counts,
+                                          useAssay = input$dimRedAltExpAssay,
+                                          useAltExp = input$dimRedAltExpSelect,
+                                          reducedDimName = dimrednamesave)
+                  }
                 } else if (input$dimRedPlotMethod == "tSNE"){
-                  vals$counts <- getTSNE(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = input$dimRedNameInput,
-                                         perplexity = input$perplexityTSNE,
-                                         n_iterations = input$iterTSNE)
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  }
                 } else {
-                  if(is.na(input$alphaUMAP)){
+                  if (is.na(input$alphaUMAP)) {
                     stop("Learning rate (alpha) must be a numeric non-empty value!")
                   }
-                  vals$counts <- getUMAP(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect,
-                                         reducedDimName = input$dimRedNameInput,
-                                         nNeighbors = input$neighborsUMAP,
-                                         nIterations = input$iterUMAP,
-                                         minDist = input$mindistUMAP,
-                                         alpha = input$alphaUMAP
-                  )
-                  updateReddimInputs()
+                  if (input$dimRedAssayType == 1) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  } else if (input$dimRedAssayType == 2) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay,
+                                           useAltExp = input$dimRedAltExpSelect,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  }
                 }
+                updateReddimInputs()
               }}
             )
           } else {
+            dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
             if (input$dimRedPlotMethod == "PCA"){
-              vals$counts <- getPCA(inSCE = vals$counts,
-                                    useAssay = input$dimRedAssaySelect,
-                                    reducedDimName = input$dimRedNameInput)
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAssaySelect,
+                                      reducedDimName = dimrednamesave)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getPCA(inSCE = vals$counts,
+                                      useAssay = input$dimRedAltExpAssay,
+                                      useAltExp = input$dimRedAltExpSelect,
+                                      reducedDimName = dimrednamesave)
+              }
             } else if (input$dimRedPlotMethod == "tSNE"){
-              vals$counts <- getTSNE(inSCE = vals$counts,
-                                     useAssay = input$dimRedAssaySelect,
-                                     reducedDimName = input$dimRedNameInput,
-                                     perplexity = input$perplexityTSNE,
-                                     n_iterations = input$iterTSNE)
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              }
             } else {
-              if(is.na(input$alphaUMAP)){
+              if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              vals$counts <- getUMAP(inSCE = vals$counts,
-                                     useAssay = input$dimRedAssaySelect,
-                                     reducedDimName = input$dimRedNameInput,
-                                     nNeighbors = input$neighborsUMAP,
-                                     nIterations = input$iterUMAP,
-                                     minDist = input$mindistUMAP,
-                                     alpha = input$alphaUMAP
-              )
-              updateReddimInputs()
+              if (input$dimRedAssayType == 1) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              } else if (input$dimRedAssayType == 2) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay,
+                                       useAltExp = input$dimRedAltExpSelect,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              }
             }
+            updateReddimInputs()
           }
         }
       })
     }
   })
-
-  output$usingReducedDims <- renderUI({
-    req(vals$counts)
-    selectInput("usingReducedDims", "Select Reduced Dimension Data:", names(reducedDims(vals$counts)))
-  })
-
-  output$dimRedAxisSettings <- renderUI({
-    req(vals$counts)
-    req(input$usingReducedDims)
-    if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
-      pcComponents <- colnames(reducedDim(vals$counts, input$usingReducedDims))
-      pcComponentsSelectedX <- pcComponents[1]
-      pcComponentsSelectedY <- pcComponents[2]
-      tagList(
-        checkboxInput("checkAxis", label = "Modify axes", value = FALSE),
-        conditionalPanel(
-          condition = "input.checkAxis == true",
-          h4("Axis Settings"),
-          selectInput("pcX", "X Axis:", pcComponents),
-          selectInput("pcY", "Y Axis:", pcComponents, selected = pcComponentsSelectedY)
-        )
-      )
-    }
-  })
-
-  observeEvent(input$cUpdatePlot, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    }  else {
-      withBusyIndicatorServer("cUpdatePlot", {
-        if (input$colorBy != "Gene Expression") {
-          if (input$axisNames == TRUE) {
-            if (input$dimRedAxis1 == "" & input$dimRedAxis2 == "") {
-              shinyalert::shinyalert("Error", text = "Enter axis names", type = "error")
-            } else {
-              comp1 <- input$dimRedAxis1
-              comp2 <- input$dimRedAxis2
-            }
-          } else {
-            comp1 <- NULL
-            comp2 <- NULL
-          }
-          #shinyjs doesn't have any visibility functions so have used the following conditions
-          if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
-            vals$pcX <- input$pcX
-            vals$pcY <- input$pcY
-          } else {
-            vals$pcX <- NULL
-            vals$pcY <- NULL
-          }
-          vals$dimRedPlot <- singleCellTK::plotDimRed(inSCE = vals$counts,
-                                                      colorBy = input$colorBy,
-                                                      shape = input$shapeBy,
-                                                      useAssay = input$dimRedAssaySelect,
-                                                      reducedDimName = input$usingReducedDims,
-                                                      comp1 = comp1,
-                                                      comp2 = comp2,
-                                                      pcX = vals$pcX,
-                                                      pcY = vals$pcY
-          )
-        }
-      })
-    }
-  })
-
-  # This code is commented out b/c it was causing a major lag whenever anything else was being
-  # updated. Maybe it needs to be changed to observeEvent? - Josh
-  # observe({
-  #   output$geneExpPlot <- renderPlot({
-  #   if (input$colorGeneBy == "Manual Input") {
-  #     if (is.null(input$colorGenes)){
-  #       ggplot2::ggplot() + ggplot2::theme_bw() +
-  #         ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white")) +
-  #         ggplot2::theme(panel.border = ggplot2::element_rect(colour = "white"))
-  #     } else {
-  #       if (input$axisNames == TRUE) {
-  #         if (input$dimRedAxis1 == "" & input$dimRedAxis2 == "") {
-  #           shinyalert::shinyalert("Error", text = "Enter axis names", type = "error")
-  #         } else {
-  #           comp1 <- input$dimRedAxis1
-  #           comp2 <- input$dimRedAxis2
-  #         }
-  #       } else {
-  #         comp1 <- NULL
-  #         comp2 <- NULL
-  #       }
-  #       #shinyjs doesn't have any visibility functions so have used the following conditions
-  #       if (any(grepl("PC*", colnames(reducedDim(vals$counts, input$usingReducedDims))))){
-  #         vals$pcX <- input$pcX
-  #         vals$pcY <- input$pcY
-  #       } else {
-  #         vals$pcX <- NULL
-  #         vals$pcY <- NULL
-  #       }
-  #       vals$dimRedPlot_geneExp <- singleCellTK::plotBiomarker(inSCE = vals$counts,
-  #                                                              gene = input$colorGenes,
-  #                                                              binary = input$colorBinary,
-  #                                                              shape = input$shapeBy,
-  #                                                              useAssay = input$dimRedAssaySelect,
-  #                                                              reducedDimName = input$usingReducedDims,
-  #                                                              comp1 = comp1, comp2 = comp2,
-  #                                                              x = vals$pcX, y = vals$pcY)
-  #       vals$dimRedPlot_geneExp
-  #     }
-  #   }
-  # })
-  # })
 
   #-----------------------------------------------------------------------------
   # Page 3: Clustering ####
@@ -4280,7 +4204,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 4.1: Feature Selection
+  # Page 4.1: Feature Selection ####
   #-----------------------------------------------------------------------------
 
   observeEvent(input$findHvgButtonFS, {
@@ -4363,19 +4287,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  addAltExp <- function(inSCE, useAssay, geneSet, altExpName,
-                        overwrite = FALSE){
-    if ((!altExpName %in% altExpNames(inSCE)) ||
-        isTRUE(overwrite)) {
-      mat <- assay(inSCE[geneSet,], useAssay)
-      assayList <- list()
-      assayList[[altExpName]] <- mat
-      ae <- SingleCellExperiment(assays = assayList)
-      altExp(inSCE, altExpName) <- ae
-    }
-    return(inSCE)
-  }
-
   observeEvent(input$hvgSubsetRun, {
     withBusyIndicatorServer("hvgSubsetRun", {
       if (isTRUE(vals$hvgCalculated$status) &&
@@ -4401,9 +4312,11 @@ shinyServer(function(input, output, session) {
 
                 #make sure no NA's are introduced in HVGs
                 HVGs <- stats::na.omit(HVGs)
-
-                vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
-                                         input$hvgAltExpName, x)
+                vals$counts <- subsetSCERows(vals$counts,
+                                             which(rownames(vals$counts) %in% HVGs),
+                                             returnAsAltExp = TRUE,
+                                             altExpName = input$hvgAltExpName)
+                updateAltExpInputs()
               }
             })
         } else {
@@ -4413,9 +4326,11 @@ shinyServer(function(input, output, session) {
 
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
-
-          vals$counts <- addAltExp(vals$counts, input$assaySelectFS_Norm, HVGs,
-                                   input$hvgAltExpName)
+          vals$counts <- subsetSCERows(vals$counts,
+                                       which(rownames(vals$counts) %in% HVGs),
+                                       returnAsAltExp = TRUE,
+                                       altExpName = input$hvgAltExpName)
+          updateAltExpInputs()
         }
       } else {
         shinyalert::shinyalert(
@@ -5299,7 +5214,7 @@ shinyServer(function(input, output, session) {
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
         if (input$useReadCount){
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = sum(SummarizedExperiment::assay(vals$counts, input$cellsAssay)),
@@ -5311,7 +5226,7 @@ shinyServer(function(input, output, session) {
                                            iterations = input$iterations)
         }
         else{
-          vals$subCells <- DownsampleCells(originalData = vals$counts,
+          vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
                                            realLabels = input$selectCellNumCondition,
                                            totalReads = input$totalReads,

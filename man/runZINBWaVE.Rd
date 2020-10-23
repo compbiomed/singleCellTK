@@ -23,7 +23,7 @@ batch correction. Note that ZINBWaVE works for counts (integer) input rather
 than logcounts that other methods prefer. Default \code{"counts"}.}
 
 \item{batch}{A single character indicating a field in
-\code{\link[SummarizedExperiment]{colData}} that annotates the batches.
+\code{\link{colData}} that annotates the batches.
 Default \code{"batch"}.}
 
 \item{nHVG}{An integer. Number of highly variable genes to use when fitting

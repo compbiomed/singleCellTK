@@ -72,16 +72,16 @@
 #' This should be an algorithm supported by \code{\link[BiocNeighbors]{findNeighbors}}.
 #' @param BSPARAM A \code{\link[BiocSingular]{BiocSingularParam}} object specifying the algorithm to
 #'  use for PCA, if \code{d} is not \code{NA}.
-#' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam}} object specifying whether the
+#' @param BPPARAM A \code{\link{BiocParallelParam}} object specifying whether the
 #'  neighbour searches should be parallelized.
 #' @details This function is a wrapper function for \link[scran]{doubletCells}.
 #'  \code{runDoubletCells} runs \link[scran]{doubletCells} for each
 #'  \code{sample} within \code{inSCE} iteratively. The
 #'  resulting doublet scores for all cells will be appended to the
-#'  \link[SummarizedExperiment]{colData} of \code{inSCE}.
+#'  \link{colData} of \code{inSCE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with the
 #'  'scran_doubletCells_score' column added to the
-#'  \link[SummarizedExperiment]{colData} slot.
+#'  \link{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
 #'  \url{https://ltla.github.io/SingleCellThoughts/software/
 #' doublet_detection/bycell.html}

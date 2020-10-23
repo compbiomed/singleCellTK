@@ -18,7 +18,7 @@
 #' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds} output appended to the
-#'  \link[SummarizedExperiment]{colData} slot. The columns include
+#'  \link{colData} slot. The columns include
 #'  \emph{cxds_score} and optionally \emph{cxds_call}.
 #'  Please refer to the documentation of \link[scds]{cxds} for details.
 #' @examples
@@ -130,7 +130,7 @@ runCxds <- function(inSCE,
 #' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{bcds} output appended to the
-#'  \link[SummarizedExperiment]{colData} slot. The columns include
+#'  \link{colData} slot. The columns include
 #'  \emph{bcds_score} and optionally \emph{bcds_call}.
 #'  Please refer to the documentation of \link[scds]{bcds} for details.
 #' @examples
@@ -250,7 +250,7 @@ runBcds <- function(inSCE,
 #' @param useAssay  A string specifying which assay in the SCE to use.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  \link[scds]{cxds_bcds_hybrid} output appended to the
-#'  \link[SummarizedExperiment]{colData} slot. The columns include
+#'  \link{colData} slot. The columns include
 #'  \emph{hybrid_score} and optionally \emph{hybrid_call}.
 #'  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
 #'  details.
