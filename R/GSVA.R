@@ -12,7 +12,7 @@
 #' @export
 gsvaSCE <- function(inSCE, useAssay = "logcounts",
                     pathwayNames, ...){
-    biomarker <- metadata(inSCE)$sctk$genesets[[pathwayNames]]
+    biomarker <- S4Vectors::metadata(inSCE)$sctk$genesets[[pathwayNames]]
     gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
                           biomarker, ...)
     rownames(gsvaRes) <- pathwayNames

@@ -215,7 +215,9 @@
 }
 
 #' Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
-#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects
+#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects. 
+#' Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format. 
+#' It does not support combining SCE with assay in delayedArray format. 
 #' @param by.r Specifications of the columns used for merging rowData. See 'Details'.
 #' @param by.c Specifications of the columns used for merging colData. See 'Details'.
 #' @param combined logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.

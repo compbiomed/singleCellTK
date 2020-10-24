@@ -258,7 +258,7 @@ if (dataType == "Both") {
                          'the length of "--sample"!')   
 
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
         }  
             }
@@ -306,7 +306,7 @@ if (dataType == "Cell") {
                          'the length of "--sample"!')    
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
             }
         }
@@ -349,7 +349,7 @@ if (dataType == "Droplet") {
                          'the length of "--sample"!')    
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
             }
         }       
