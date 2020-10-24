@@ -40,7 +40,7 @@ This pipeline can currently import data from the following tools:
 * [STARsolo](https://github.com/alexdobin/STAR/releases)
 * [Human Cell Atlas (HCA) Optimus pipeline](https://data.humancellatlas.org/pipelines/optimus-workflow)
 * [BUStools](https://github.com/BUStools/bustools)
-* [SEQC](https://github.com/ambrosejcarr/seqc)
+* [SEQC](https://github.com/dpeerlab/seqc)
 * [SingleCellExperiment object](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) saved in RDS file
 * SingleCellExperiment object saved in [AnnData](https://github.com/theislab/anndata) hdf5 file
 * Droplet / Cell matrix saved in txt/mtx files
