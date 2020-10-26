@@ -196,7 +196,7 @@ shinyUI(
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",
-        tabPanel("GSVA", shinyPanelPathway),
+        tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
         tabPanel("EnrichR", shinyPanelEnrichR)
       ),
       tabPanel("Sample Size Calculator", shinyPanelSubsample),

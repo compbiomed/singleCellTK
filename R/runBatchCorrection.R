@@ -371,7 +371,9 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @references Gordon K Smyth, et al., 2003
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runLimmaBC(sceBatches)
+#' }
 runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
                        batch = "batch") {
   ## Input check
@@ -431,7 +433,9 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' @references Lun ATL, et al., 2016 & 2018
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runMNNCorrect(sceBatches)
+#' }
 runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                           assayName = 'MNN', k = 20L, sigma = 0.1){
   ## Input check
@@ -584,7 +588,9 @@ integrated = integrated[:, orderIdx]
 #' @references Hoa, et al., 2020
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
+#' \dontrun{
 #' sceCorr <- runSCMerge(sceBatches)
+#' }
 runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                        assayName = "scMerge", seg = NULL, kmeansK = NULL,
                        cellType = 'cell_type',
@@ -691,8 +697,8 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' @export
 #' @references Pollen, Alex A et al., 2014
 #' @examples
+#' data('sceBatches', package = 'singleCellTK')
 #' \dontrun{
-#'     data('sceBatches', package = 'singleCellTK')
 #'     sceCorr <- runZINBWaVE(sceBatches, nIter = 5)
 #' }
 runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',

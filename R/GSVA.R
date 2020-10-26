@@ -4,40 +4,18 @@
 #'
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
-#' @param pathwaySource The pathway source if "Manual Input", the pathwayNames
-#' should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
-#' Entrez ID only)", the pathwayNames should be pathways from MSigDB c2 or "ALL"
-#' to run on all available pathways.
 #' @param pathwayNames List of pathway names to run, depending on pathwaySource
 #' parameter.
 #' @param ... Parameters to pass to gsva()
 #'
 #' @return gsvaSCE(): A data.frame of pathway activity scores from GSVA.
 #' @export
-gsvaSCE <- function(inSCE, useAssay = "logcounts", pathwaySource,
+gsvaSCE <- function(inSCE, useAssay = "logcounts",
                     pathwayNames, ...){
-  if (pathwaySource == "Manual Input"){
-    #expecting logical vector
-    biomarker <- lapply(pathwayNames, function(x) rownames(inSCE)[
-      SingleCellExperiment::rowData(inSCE)[, x] == 1])
+    biomarker <- S4Vectors::metadata(inSCE)$sctk$genesets[[pathwayNames]]
     gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
                           biomarker, ...)
     rownames(gsvaRes) <- pathwayNames
-  } else if (pathwaySource == "MSigDB c2 (Human, Entrez ID only)") {
-    utils::data("c2BroadSets", package = "GSVAdata", envir = .myenv)
-    c2BroadSets <- .myenv$c2BroadSets
-    #expecting some genes in list are in the rownames
-    if ("ALL" %in% pathwayNames) {
-      gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
-                            c2BroadSets, ...)
-    } else {
-      c2sub <- c2BroadSets[base::setdiff(pathwayNames, "ALL")]
-      gsvaRes <- GSVA::gsva(as.matrix(SummarizedExperiment::assay(inSCE, useAssay)),
-                            c2sub, ...)
-    }
-  } else{
-    stop("ERROR: Unsupported gene list source ", pathwaySource)
-  }
   return(gsvaRes)
 }
 

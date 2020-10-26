@@ -60,7 +60,7 @@ shinyPanelFS_DimRed <- fluidPage(
              )
     ),
     tabPanel(
-      "Run New Dimensional Reduction",
+      "Dimension Reduction",
       # SHINYJS COLLAPSE --------------------------
       # Section 1 - Assay Settings
       # open by default

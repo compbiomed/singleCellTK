@@ -5,7 +5,7 @@
 \alias{gsvaPlot}
 \title{Run GSVA analysis on a \linkS4class{SingleCellExperiment} object}
 \usage{
-gsvaSCE(inSCE, useAssay = "logcounts", pathwaySource, pathwayNames, ...)
+gsvaSCE(inSCE, useAssay = "logcounts", pathwayNames, ...)
 
 gsvaPlot(
   inSCE,
@@ -21,11 +21,6 @@ gsvaPlot(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
-
-\item{pathwaySource}{The pathway source if "Manual Input", the pathwayNames
-should be rowData annotations that are (0,1) vectors. If, "MSigDB c2 (Human,
-Entrez ID only)", the pathwayNames should be pathways from MSigDB c2 or "ALL"
-to run on all available pathways.}
 
 \item{pathwayNames}{List of pathway names to run, depending on pathwaySource
 parameter.}

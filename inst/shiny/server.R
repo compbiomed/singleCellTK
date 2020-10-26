@@ -992,7 +992,7 @@ shinyServer(function(input, output, session) {
                        bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp", estNdbl="BCestNdbl"),
 
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
-                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", namx="BC2nmax", varImp="BC2varImp"),
+                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", nmax="BC2nmax", varImp="BC2varImp"),
                                                verb="CXBCverb", estNdbl="CXBCestNdbl"),
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
@@ -1103,7 +1103,7 @@ shinyServer(function(input, output, session) {
       # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, "UMAP")
+      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, input$QCUMAPName)
       uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")
@@ -1188,6 +1188,11 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
+        print(table(qcSample))
+        print(algoList)
+        print(input$qcAssaySelect)
+        print(qcCollName)
+        print(paramsList)
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
@@ -1195,9 +1200,8 @@ shinyServer(function(input, output, session) {
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP if no UMAP
-        if (!("UMAP" %in% redDimList)) {
-          vals$counts <- getUMAP(inSCE = vals$counts,
+        # run getUMAP
+        vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
                                  nNeighbors = input$UnNeighbors,
@@ -1205,9 +1209,9 @@ shinyServer(function(input, output, session) {
                                  alpha = input$Ualpha,
                                  minDist = input$UminDist,
                                  spread = input$Uspread,
-                                 initialDims = input$UinitialDims
-          )
-        }
+                                 initialDims = input$UinitialDims,
+                                 reducedDimName = input$QCUMAPName
+        )
         updateQCPlots()
       }
     })
@@ -1301,8 +1305,8 @@ shinyServer(function(input, output, session) {
     insertUI(
       selector = "#rowFilterCriteria",
       ui = tags$div(id="newThresh",
-                    numericInput("filterThreshX", "Number of counts per cell", 0),
-                    numericInput("filterThreshY", "Number of cells", 0),
+                    numericInput("filterThreshX", "Keep features with this many counts:", 0),
+                    numericInput("filterThreshY", "In at least this many cells:", 0),
       )
     )
 
@@ -4881,26 +4885,21 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   output$selectPathwayGeneLists <- renderUI({
-    if (input$genelistSource == "Manual Input"){
       if (!is.null(vals$counts)){
-        #fn to check if each column is 1 and 0 only
-        biomarkercols <- names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE))
-        selectizeInput("pathwayGeneLists", "Select Gene List(s):",
-                       biomarkercols, multiple = TRUE)
+        if (!is.null(metadata(vals$original)$sctk$genesets)) {
+          newGSchoices <- sctkListGeneSetCollections(vals$original)
+          selectizeInput("pathwayGeneLists", "Select Gene List(s):",
+                         choices = newGSchoices, multiple = TRUE)
+        }
       } else {
-        h4("Note: upload data.")
+        HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
       }
-    } else {
-      selectInput("pathwayGeneLists", "Select Gene List(s):",
-                  c("ALL", names(c2BroadSets)), multiple = TRUE)
-    }
   })
-
-  output$selectNumTopPaths <- renderUI({
-    if (!is.null(input$pathwayGeneLists)) {
-      if ("ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        sliderInput("pickNtopPaths", "Number of top pathways:", min = 5,
-                    max = length(c2BroadSets), value = 25, step = 5)
+  
+  observeEvent(input$navbar, {
+    if(!is.null(vals$counts)){
+      if(input$navbar == "GSVA"){
+        updateSelectInput(session, "pathwayPlotVar", choices = colnames(colData(vals$counts)))
       }
     }
   })
@@ -4910,9 +4909,22 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
+        #checks
+        if(is.null(input$pathwayPlotVar)){
+          stop("Must select a condition variable!")
+        }
+        if(is.null(input$pathwayGeneLists)){
+          stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
+        }
+        conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
+        if(nlevels(conditionFactor)<=1){
+          stop("Condition variable must have atleast two levels!")
+        }
+        #update metadata of vals$counts
+        metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
+        #call gsva
         vals$gsvaRes <- gsvaSCE(inSCE = vals$counts,
                                 useAssay = input$pathwayAssay,
-                                pathwaySource = input$genelistSource,
                                 pathwayNames = input$pathwayGeneLists)
       })
     }
@@ -4920,7 +4932,11 @@ shinyServer(function(input, output, session) {
 
   observe({
     if (length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsvaRes))){
-      fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~factor(colData(vals$counts)[, input$pathwayPlotVar])))
+      conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
+      if(nlevels(conditionFactor)<=1){
+        stop("Condition variable must have atleast two levels!")
+      }
+      fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~conditionFactor))
       fit <- limma::eBayes(fit)
       toptableres <- limma::topTable(fit, number = nrow(vals$gsvaRes))
       temptable <- cbind(rownames(toptableres), toptableres)
@@ -4934,23 +4950,13 @@ shinyServer(function(input, output, session) {
 
   output$pathwaytable <- DT::renderDataTable({
     if (!is.null(vals$gsvaLimma)){
-      if (!is.null(input$pathwayGeneLists) & "ALL" %in% input$pathwayGeneLists & input$genelistSource == "MSigDB c2 (Human, Entrez ID only)"){
-        vals$gsvaLimma[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma)), , drop = FALSE]
-      } else {
         vals$gsvaLimma
-      }
     }
   }, options = list(scrollX = TRUE, pageLength = 30))
 
   output$pathwayPlot <- renderPlot({
     if (!(is.null(vals$gsvaRes))){
-      if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & "ALL" %in% input$pathwayGeneLists & !(is.null(vals$gsvaLimma))){
-        tempgsvares <- vals$gsvaRes[as.character(vals$gsvaLimma$Pathway[1:min(input$pickNtopPaths, nrow(vals$gsvaLimma))]), , drop = FALSE]
-      } else if (input$genelistSource == "MSigDB c2 (Human, Entrez ID only)" & !("ALL" %in% input$pathwayGeneLists)) {
         tempgsvares <- vals$gsvaRes
-      } else {
-        tempgsvares <- vals$gsvaRes[1:input$pickNtopPaths, , drop = FALSE]
-      }
       if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
         tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = FALSE]
         gsvaPlot(inSCE = vals$counts,
@@ -4970,15 +4976,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$savePathway, {
     if (!(is.null(vals$gsvaRes))){
       if (all(colnames(vals$counts) == colnames(vals$gsvaRes))){
-        #if we have limma results
         if (!(is.null(vals$gsvaLimma))){
-          tempdf <- DataFrame(t(vals$gsvaRes[vals$gsvaLimma$Pathway[1:input$pickNtopPaths], , drop = FALSE]))
-        } else {
-          tempdf <- DataFrame(t(vals$gsvaRes[1:input$pickNtopPaths, , drop = FALSE]))
+          tempdf <- DataFrame(t(vals$gsvaRes[, , drop = FALSE]))
+          tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
+          colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
+          #updateColDataNames()
         }
-        tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
-        colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
-        updateColDataNames()
       }
     } else {
       shinyalert::shinyalert("Error!", "Run pathway first.", type = "error")
@@ -5123,6 +5126,15 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
+        if(is.na(input$minCount)){
+          stop("Minimum readcount must be a non-empty numeric value!")
+        }
+        if(is.na(input$minCells)){
+          stop("Minimum number of cells must be a non-empty numeric value!")
+        }
+        if(is.na(input$iterations)){
+          stop("Number of bootstrap iterations must be a non-empty numeric value!")
+        }
         vals$subDepth <- downSampleDepth(originalData = vals$counts,
                                          useAssay = input$depthAssay,
                                          minCount = input$minCount,
@@ -5170,6 +5182,15 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
+        if(is.na(input$minCellNum)
+           || is.na(input$maxCellNum)
+           || is.na(input$iterations)
+           || is.na(input$totalReads)
+           || is.na(input$minCount)
+           || is.na(input$minCells)
+           || is.na(input$depthResolution)){
+          stop("One or more parameter values are empty!")
+        }
         if (input$useReadCount){
           vals$subCells <- downSampleCells(originalData = vals$counts,
                                            useAssay = input$cellsAssay,
@@ -5233,6 +5254,11 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSnapshot", {
+        if(is.na(input$numCellsSnap)
+           || is.na(input$numReadsSnap)
+           || is.na(input$iterationsSnap)){
+          stop("One or more parameter values are empty!")
+        }
         vals$snapshot <- iterateSimulations(originalData = vals$counts,
                                             useAssay = input$snapshotAssay,
                                             realLabels = input$selectSnapshotCondition,

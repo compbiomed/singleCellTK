@@ -124,6 +124,9 @@ if (!skipCellData) {
   
   if (length(samples) == 1) {
     plotsQCMetrics <- list(Violin=plotsQCMetrics)
+    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "TopPercent"] <- "Gene_Subset_Top50_Percent"
+    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Gene_Subset_Sum"
+    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Gene_Subset_Features"
   }
   cat(description_runPerCellQC$introduction)
   cat(description_runPerCellQC$runPerCellQC)
@@ -359,7 +362,7 @@ description_DoubletCells<- descriptionDoubletCells()
 i="DoubletCells"
 cat(paste0('## ', i, ' \n'))
 
-doubletCellData <- c("scran_doubletCells_score_log10")
+doubletCellData <- c("scran_doubletCells_score")
 skipDoubletCell <- any(!doubletCellData %in% names(colData(sce.qc)))
 
 if (skipDoubletCell) {

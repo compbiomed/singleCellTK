@@ -44,7 +44,6 @@
 #' data(scExample, package="singleCellTK")
 #' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE=sce)
 #' }
@@ -325,6 +324,8 @@ plotRunPerCellQCResults <- function(inSCE,
     }
   } else {
     plotlist <- unlist(plotlist, recursive=FALSE)
+    plotLabels <- "none"
+    relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -531,10 +532,12 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
+#' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
+#' }
 #' @export
 plotScrubletResults <- function(inSCE,
                                 sample=NULL,
@@ -717,6 +720,8 @@ plotScrubletResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -1071,6 +1076,8 @@ plotDoubletFinderResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1109,7 +1116,6 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param logScore Boolean. If TRUE, the log normalized doublet score will be used.
 #' @param reducedDimName Saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -1166,7 +1172,6 @@ plotDoubletCellsResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    logScore=TRUE,
                                     reducedDimName=NULL,
                                     xlab=NULL,
                                     ylab=NULL,
@@ -1205,13 +1210,9 @@ plotDoubletCellsResults <- function(inSCE,
   }
   sampleVector <- sample
 
-  if (logScore) {
-    coldata = "scran_doubletCells_score_log10"
-    titleDoubletCells <- "DoubletCells Doublet Score, log10"
-  } else {
-    coldata = "scran_doubletCells_score"
-    titleDoubletCells <- "DoubletCells Doublet Score"
-  }
+
+  coldata = "scran_doubletCells_score"
+  titleDoubletCells <- "DoubletCells Doublet Score"
 
   samples <- unique(sample)
   if (length(samples) > 1) {
@@ -1320,6 +1321,8 @@ plotDoubletCellsResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1590,6 +1593,8 @@ plotCxdsResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1860,6 +1865,8 @@ plotBcdsResults <- function(inSCE,
     plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
     plotlist <- unlist(plotlist, recursive=FALSE)
+    plotLabels <- "none"
+    relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -2130,6 +2137,8 @@ plotScdsHybridResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -2397,6 +2406,8 @@ plotDecontXResults <- function(inSCE,
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
       plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
