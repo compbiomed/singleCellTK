@@ -5666,6 +5666,7 @@ shinyServer(function(input, output, session) {
       #enable downstream analysis
       shinyjs::show(
         selector = "div[value='Downstream Analysis']")
+      updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "success"))
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
@@ -5937,13 +5938,11 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$da1,{
-    shinyjs::hide(
-      selector = "div[value='Downstream Analysis']")
-    # showTab(inputId = "navbar",
-    #         target = "Differential Expression",
-    #         select = TRUE,
-    #         session = session)
+  observeEvent(input$SeuratDE,{
+    showTab(inputId = "navbar",
+            target = "Differential Expression",
+            select = TRUE,
+            session = session)
   })
 
   #-----------------------------------------------------------------------------

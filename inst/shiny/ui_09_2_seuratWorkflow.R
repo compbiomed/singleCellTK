@@ -247,23 +247,25 @@ shinyPanelSeurat <- fluidPage(
             
             hidden(bsCollapsePanel("Downstream Analysis",
                             fluidRow(
-                                column(6,
+                                column(1),
+                                column(5,
                                        fluidRow(
                                            panel(
                                                heading = "Differential Expression",
-                                               h5("Differential Expression can be used:"),
-                                               actionButton(inputId = "da1", label = "Go DE!")
+                                               h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks:"),
+                                               actionButton(inputId = "SeuratDE", label = "Go DE!")
                                            )
                                        )
                                        ),
-                                column(6,
+                                column(5,
                                        fluidRow(
                                            panel(
                                                heading = "Marker Selection",
                                                h5("Differential Expression can be used:"),
                                                actionButton(inputId = "da2", label = "Go MS!")
                                            )
-                                       ))
+                                       )),
+                                column(1)
                             ),
                             style = "primary")
         )
