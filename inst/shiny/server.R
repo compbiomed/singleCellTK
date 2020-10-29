@@ -18,6 +18,10 @@ source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several sma
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  
+  #load modules
+  callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
+  
   # library(fs)
   # library(shinyFiles)
 
@@ -5936,13 +5940,6 @@ shinyServer(function(input, output, session) {
       shinyjs::disable(
         selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
     }
-  })
-
-  observeEvent(input$SeuratDE,{
-    showTab(inputId = "navbar",
-            target = "Differential Expression",
-            select = TRUE,
-            session = session)
   })
 
   #-----------------------------------------------------------------------------
