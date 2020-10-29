@@ -1,0 +1,59 @@
+---
+title: Importing Single Cell Data
+---
+
+This page is the landing page of the SCTK application.  On this page, the user has the ability to import single cell data in a variety of different ways. The samples are all added to a table on the bottom of the page and are uploaded at once.  Below is a guide to the different ways the user can import data.
+
+![](ui_screenshots/upload_landing.png)
+
+## Import from a prerocessing tool
+Results from the following preprocessing tools are supported for import in SCTK: Cell Ranger (versions 2 and 3), STARsolo, BUStools, SEQC, and Optimus. To import data from these tools, first the user must select which tool they would like to use the results of. Then, the user must specify the path(s) to the files or directories required for whichever tool they have selected by clicking the "Add a Sample" button.
+
+### Cell Ranger
+The import procedure for Cell Ranger versions 2 and 3 are the same. To import a Cell Ranger sample, the user must select how they would like to import the sample: select a base directory that holds multiple sample directories, select a single sample directory, or select a directory holding the data files for a sample. Depending on this selection, the user must then provide the apprpriate directory paths and sample names and then click "OK."
+
+![](ui_screenshots/upload_CR.png)  
+
+![](ui_screenshots/upload_CR_base.png){width=400px} ![](ui_screenshots/upload_CR_data.png){width=400px}  
+![](ui_screenshots/upload_CR_sample.png){width=400px}
+
+### STARsolo
+To import a STARsolo sample, the user must select the parent directory of the "/Gene" directory for the sample they want to import, give the sample a name, and click "OK."
+
+![](ui_screenshots/upload_star_main.png){width=450px} ![](ui_screenshots/upload_star.png){width=450px}
+
+### BUStools
+To import a BUStools sample, the user must point to the "/genecount" directory for the sample they want to import, give the sample a name, and click "OK."
+
+![](ui_screenshots/upload_bus_main.png){width=450px} ![](ui_screenshots/upload_bus.png){width=450px}
+
+### SEQC
+To import a SEQC sample, the user must point to the directory that contains the barcodes, gene, and matrix files for the sample they want to import and give the sample a name. This tool additionally needs the user to specify a "Sample ID" which is what the name of the sample is as it appears in the names of its data files (e.g. for a file called "pbmc_1k_sparse_counts_barcodes.csv" the sample ID is "pbmc_1k"). Then the user must click "OK."
+
+![](ui_screenshots/upload_seq_main.png){width=450px} ![](ui_screenshots/upload_seq.png){width=450px}
+
+### Optimus
+To import an Optimus sample, the user must select the directory that contains the following four directories for the sample they want to import: "call-MergeCountFiles", "call-MergeCellMetrics", "call-MergeGeneMetrics", "call-RunEmptyDrops." Then the user must prove a sample name and click "OK."
+
+![](ui_screenshots/upload_opt_main.png){width=450px} ![](ui_screenshots/upload_opt.png){width=450px}
+
+
+## Import Tab-Separated Data
+To import tab-separated data, the user must provide a counts file (.csv or .tsv) and specify what type of input assay it is. The user can optionally also provide cell annotation and feature files (also .csv or .tsv). The user must then click "Add to Sample List" to add it to the table of samples.
+
+![](ui_screenshots/upload_files.png)
+
+## Upload an RDS File
+To import a sample from an RDS file, the user must simply select which RDS file to import and click "Add to Sample List."
+
+![](ui_screenshots/upload_rds.png)
+
+## Use Example Data
+The user can also opt to import and work with example datasets. To do so, the user must select which dataset they would like to use from the dropdown menu and click "Add to Sample List."
+
+![](ui_screenshots/upload_example.png)
+
+## Complete Upload
+To complete the upload process, the user must click "Upload" at the bottom of the page. This will import all the samples that have been accumulated in the table labelled "Current Samples" and combine them into a single SCE object.
+
+![](ui_screenshots/upload_complete.png)
