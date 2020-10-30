@@ -6273,7 +6273,6 @@ shinyServer(function(input, output, session) {
     showNotification("Changes saved successfully.")
   })
 
-
   #-----------------------------------------------------------------------------
   # Page: Row Annotation (rowData)
   #-----------------------------------------------------------------------------
