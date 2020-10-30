@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run GSVA analysis on a SCtkExperiment object. — gsvaSCE • singleCellTK</title>
+<title>Run GSVA analysis on a SingleCellExperiment object — gsvaSCE • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Run GSVA analysis on a SCtkExperiment object. — gsvaSCE" />
-<meta property="og:description" content="Run GSVA analysis on a SCtkExperiment object." />
+<meta property="og:title" content="Run GSVA analysis on a SingleCellExperiment object — gsvaSCE" />
+<meta property="og:description" content="Run GSVA analysis on a SingleCellExperiment object" />
 
 
 
@@ -79,11 +79,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -92,7 +107,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -110,7 +125,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -138,13 +183,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run GSVA analysis on a SCtkExperiment object.</h1>
+    <h1>Run GSVA analysis on a SingleCellExperiment object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/GSVA.R'><code>R/GSVA.R</code></a></small>
     <div class="hidden name"><code>gsvaSCE.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Run GSVA analysis on a SCtkExperiment object.</p>
+    <p>Run GSVA analysis on a SingleCellExperiment object</p>
     </div>
 
     <pre class="usage"><span class='fu'>gsvaSCE</span>(<span class='no'>inSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='no'>pathwaySource</span>, <span class='no'>pathwayNames</span>, <span class='no'>...</span>)
@@ -164,7 +209,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object. Required</p></td>
+      <td><p>Input SingleCellExperiment object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>

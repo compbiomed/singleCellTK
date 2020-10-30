@@ -82,11 +82,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -95,7 +110,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -113,7 +128,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -163,7 +208,8 @@
   <span class='kw'>retRes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>nmax</span> <span class='kw'>=</span> <span class='st'>"tune"</span>,
   <span class='kw'>varImp</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>estNdbl</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -213,6 +259,10 @@ Default NULL.</p></td>
       <th>estNdbl</th>
       <td><p>See <a href='https://rdrr.io/pkg/scds/man/bcds.html'>bcds</a> for more information. Default <code>FALSE</code>.</p></td>
     </tr>
+    <tr>
+      <th>useAssay</th>
+      <td><p>A string specifying which assay in the SCE to use.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -226,7 +276,7 @@ Default NULL.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runBcds</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:57:33 2020 ... Running 'bcds'</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runBcds</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:28 2020 ... Running 'bcds'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -80,11 +80,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -93,7 +108,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -111,7 +126,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -160,19 +205,25 @@
   <span class='kw'>labelClusters</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>axisLabelSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>dim1</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>dim2</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>bin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>binLabel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>dotSize</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>transparency</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>colorScale</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>colorLow</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
   <span class='kw'>colorMid</span> <span class='kw'>=</span> <span class='st'>"gray"</span>,
   <span class='kw'>colorHigh</span> <span class='kw'>=</span> <span class='st'>"blue"</span>,
   <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
-  <span class='kw'>legendTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>legendTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legendTitleSize</span> <span class='kw'>=</span> <span class='fl'>12</span>,
+  <span class='kw'>legendSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -180,8 +231,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required</p></td>
+      <td><p>Input SingleCellExperiment object with saved
+dimension reduction components or a variable with saved results. Required</p></td>
     </tr>
     <tr>
       <th>sample</th>
@@ -201,8 +252,8 @@ components or a variable with saved results. Required</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Saved dimension reduction name in the SCtkExperiment
-object. Required.</p></td>
+      <td><p>Saved dimension reduction name in the
+SingleCellExperiment object. Required.</p></td>
     </tr>
     <tr>
       <th>conditionClass</th>
@@ -222,6 +273,14 @@ Default FALSE.</p></td>
     <tr>
       <th>ylab</th>
       <td><p>Character vector. Label for y-axis. Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>axisSize</th>
+      <td><p>Size of x/y-axis ticks. Default 10.</p></td>
+    </tr>
+    <tr>
+      <th>axisLabelSize</th>
+      <td><p>Size of x/y-axis labels. Default 10.</p></td>
     </tr>
     <tr>
       <th>dim1</th>
@@ -254,22 +313,28 @@ Default NULL.</p></td>
       <td><p>Transparency of the dots, values will be 0-1. Default 1.</p></td>
     </tr>
     <tr>
+      <th>colorScale</th>
+      <td><p>Vector. Needs to be same length as the
+number of unique levels of `colorBy`. Will be used only if
+conditionClass = "factor" or "character". Default NULL.</p></td>
+    </tr>
+    <tr>
       <th>colorLow</th>
       <td><p>Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
-Default 'white'.</p></td>
+Default 'white'. Will be used only if conditionClass = "numeric".</p></td>
     </tr>
     <tr>
       <th>colorMid</th>
       <td><p>Character. A color available from `colors()`.
 The color will be used to signify the midpoint on the scale.
-Default 'gray'.</p></td>
+Default 'gray'. Will be used only if conditionClass = "numeric".</p></td>
     </tr>
     <tr>
       <th>colorHigh</th>
       <td><p>Character. A color available from `colors()`.
 The color will be used to signify the highest values on the scale.
-Default 'blue'.</p></td>
+Default 'blue'. Will be used only if conditionClass = "numeric".</p></td>
     </tr>
     <tr>
       <th>defaultTheme</th>
@@ -287,6 +352,20 @@ when TRUE. Default TRUE.</p></td>
     <tr>
       <th>legendTitle</th>
       <td><p>title of legend. Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>legendTitleSize</th>
+      <td><p>size of legend title. Default 12.</p></td>
+    </tr>
+    <tr>
+      <th>legendSize</th>
+      <td><p>size of legend. Default 10.</p></td>
+    </tr>
+    <tr>
+      <th>combinePlot</th>
+      <td><p>Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.</p></td>
     </tr>
     </table>
 

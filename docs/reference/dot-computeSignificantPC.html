@@ -82,11 +82,26 @@ Computes the significant principal components from an input sce object (must con
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -95,7 +110,7 @@ Computes the significant principal components from an input sce object (must con
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -113,7 +128,37 @@ Computes the significant principal components from an input sce object (must con
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -165,7 +210,7 @@ Computes the significant principal components from an input sce object (must con
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>max_components a numerical value indicating how many number of components are considered significant</p>
+    <p>A numerical value indicating how many number of components are considered significant</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

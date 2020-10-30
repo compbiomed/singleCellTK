@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object — alignSingleCellData • singleCellTK</title>
+<title>Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object — alignSingleCellData • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object — alignSingleCellData" />
-<meta property="og:description" content="Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object" />
+<meta property="og:title" content="Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object — alignSingleCellData" />
+<meta property="og:description" content="Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object" />
 
 
 
@@ -79,11 +79,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -92,7 +107,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -110,7 +125,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -138,13 +183,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object</h1>
+    <h1>Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/alignSingleCellData.R'><code>R/alignSingleCellData.R</code></a></small>
     <div class="hidden name"><code>alignSingleCellData.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Align Single Cell RNA-Seq Data and Create a SCtkExperiment Object</p>
+    <p>Align Single Cell RNA-Seq Data and Create a SingleCellExperiment Object</p>
     </div>
 
     <pre class="usage"><span class='fu'>alignSingleCellData</span>(

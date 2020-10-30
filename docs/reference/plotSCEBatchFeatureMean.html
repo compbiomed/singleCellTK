@@ -79,11 +79,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -92,7 +107,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -110,7 +125,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -167,23 +212,24 @@
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>The name of the assay that stores the value to plot. Use
-<code>useReddim</code> for dimension reduced matrix instead. Default <code>NULL</code>.</p></td>
+      <td><p>A single character. The name of the assay that stores the
+value to plot. For <code>useReddim</code> and <code>useAltExp</code> also. Default
+<code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>useReddim</th>
-      <td><p>The name of the dimension reduced matrix that stores the
-value to plot. Default <code>NULL</code>.</p></td>
+      <td><p>A single character. The name of the dimension reduced
+matrix that stores the value to plot. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>useAltExp</th>
-      <td><p>The name of the alternative experiment that stores an assay
-of the value to plot. Default <code>NULL</code>.</p></td>
+      <td><p>A single character. The name of the alternative experiment
+that stores an assay of the value to plot. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>The column name of <code>colData(inSCE)</code> that indicates the
-batch annotation. Default <code>"batch"</code>.</p></td>
+      <td><p>A single character. The name of batch annotation column in
+<code>colData(inSCE)</code>. Default <code>"batch"</code>.</p></td>
     </tr>
     <tr>
       <th>xlab</th>

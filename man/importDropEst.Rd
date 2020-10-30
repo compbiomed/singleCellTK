@@ -2,7 +2,7 @@
 % Please edit documentation in R/importDropEst.R
 \name{importDropEst}
 \alias{importDropEst}
-\title{Create a SingleCellExperiment Object from DropEst output}
+\title{Create a SCE Object from DropEst output}
 \usage{
 importDropEst(
   sampleDirs = NULL,
@@ -13,14 +13,15 @@ importDropEst(
 )
 }
 \arguments{
-\item{sampleDirs}{A path to the directory containing the data files. Default "./".}
+\item{sampleDirs}{a vector of paths to the sample directories containing the cell.counts.rds file. 
+Default is current working directory.}
 
 \item{dataType}{can be "filtered" or "raw". Default \code{"filtered"}.}
 
 \item{rdsFileName}{File name prefix of the DropEst RDS output. default is "cell.counts"}
 
-\item{sampleNames}{A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".}
+\item{sampleNames}{a vector of  sample names corresponding to the sample directories.
+Default "sample". The sample name will be prepended to cell barcode IDs.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
@@ -30,10 +31,8 @@ A \code{SingleCellExperiment} object containing the count matrix,
  the feature annotations from DropEst as ColData, and any metadata from DropEst
 }
 \description{
-imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as
-SCE coldata, in addition to any metadata.
+imports the RDS file created by DropEst and
+creates a \link[SingleCellExperiment]{SingleCellExperiment} object from either the raw or filtered counts matrix.
 }
 \details{
 \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered

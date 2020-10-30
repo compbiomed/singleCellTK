@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a SingleCellExperiment Object from DropEst output — importDropEst • singleCellTK</title>
+<title>Create a SCE Object from DropEst output — importDropEst • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="Create a SingleCellExperiment Object from DropEst output — importDropEst" />
-<meta property="og:description" content="imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as
-SCE coldata, in addition to any metadata." />
+<meta property="og:title" content="Create a SCE Object from DropEst output — importDropEst" />
+<meta property="og:description" content="imports the RDS file created by DropEst and
+creates a SingleCellExperiment object from either the raw or filtered counts matrix." />
 
 
 
@@ -82,11 +80,26 @@ SCE coldata, in addition to any metadata." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -95,7 +108,7 @@ SCE coldata, in addition to any metadata." />
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -113,7 +126,37 @@ SCE coldata, in addition to any metadata." />
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -141,16 +184,14 @@ SCE coldata, in addition to any metadata." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a SingleCellExperiment Object from DropEst output</h1>
+    <h1>Create a SCE Object from DropEst output</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/importDropEst.R'><code>R/importDropEst.R</code></a></small>
     <div class="hidden name"><code>importDropEst.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
-create a SingleCellExperiment object from either the raw or filtered counts matrix.
-Additionally parse through the RDS to obtain appropriate feature annotations as
-SCE coldata, in addition to any metadata.</p>
+    <p>imports the RDS file created by DropEst and
+creates a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object from either the raw or filtered counts matrix.</p>
     </div>
 
     <pre class="usage"><span class='fu'>importDropEst</span>(
@@ -166,7 +207,8 @@ SCE coldata, in addition to any metadata.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sampleDirs</th>
-      <td><p>A path to the directory containing the data files. Default "./".</p></td>
+      <td><p>a vector of paths to the sample directories containing the cell.counts.rds file. 
+Default is current working directory.</p></td>
     </tr>
     <tr>
       <th>dataType</th>
@@ -178,8 +220,8 @@ SCE coldata, in addition to any metadata.</p>
     </tr>
     <tr>
       <th>sampleNames</th>
-      <td><p>A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".</p></td>
+      <td><p>a vector of  sample names corresponding to the sample directories.
+Default "sample". The sample name will be prepended to cell barcode IDs.</p></td>
     </tr>
     <tr>
       <th>delayedArray</th>

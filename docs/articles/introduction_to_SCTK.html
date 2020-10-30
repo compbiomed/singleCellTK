@@ -38,11 +38,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -51,7 +66,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -69,7 +84,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -94,7 +139,7 @@
 
       
 
-      </header><script src="introduction_to_SCTK_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="introduction_to_SCTK_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to singleCellTK - Basic Analysis Workflow</h1>
@@ -135,9 +180,9 @@
 <div id="cell-qc" class="section level3">
 <h3 class="hasAnchor">
 <a href="#cell-qc" class="anchor"></a>Cell QC</h3>
-<div class="sourceCode" id="cb5"><html><body><pre class="r">sce &lt;- runCellQC(sce,
-                algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
-                "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX")</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span>(<span class="no">sce</span>,
+                <span class="kw">algorithms</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"QCMetrics"</span>, <span class="st">"doubletCells"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>,
+                <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"scrublet"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>))</pre></body></html></div>
 </div>
 <div id="droplet-qc" class="section level3">
 <h3 class="hasAnchor">
@@ -149,12 +194,18 @@
 <div id="visualize-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualize-results" class="anchor"></a>Visualize Results</h2>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plotUMAP.html">plotUMAP</a></span>(<span class="no">sce</span>, <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"scrublet_UMAP"</span>, <span class="kw">runUMAP</span> <span class="kw">=</span> <span class="fl">FALSE</span>,<span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/plotUMAP.html">plotUMAP</a></span>(<span class="no">sce</span>, <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"scrublet_UMAP"</span>, <span class="kw">runUMAP</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>)</pre></body></html></div>
 </div>
 <div id="export-sce-as-text-file" class="section level2">
 <h2 class="hasAnchor">
 <a href="#export-sce-as-text-file" class="anchor"></a>Export SCE as text file</h2>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../reference/exportSCEtoFlatFile.html">exportSCEtoFlatFile</a></span>(<span class="no">sce</span>, <span class="st">"example_sce"</span>)</pre></body></html></div>
+<p>The SingleCellExperiment object which contains QC metrics can be exported as rds, h5 or text files. More information about output format can be found in <a href="./run_qc.html">Quality Control</a>. Also, refer documentation <a href="./exportSCEtoAnnData.html">exportSCEtoAnnData</a> and <a href="./exportSCEtoFlatFile.html">exportSCEtoFlatFile</a>.</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co">## TXT files</span>
+<span class="fu"><a href="../reference/exportSCEtoFlatFile.html">exportSCEtoFlatFile</a></span>(<span class="kw">sce</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">outputDir</span> <span class="kw">=</span> <span class="st">"example_sce"</span>)
+<span class="co">## h5 files</span>
+<span class="fu"><a href="../reference/exportSCEtoAnnData.html">exportSCEtoAnnData</a></span>(<span class="kw">sce</span> <span class="kw">=</span> <span class="no">sce</span>, <span class="kw">outputDir</span> <span class="kw">=</span> <span class="st">"example_sce"</span>)
+<span class="co">## rds</span>
+<span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(<span class="no">sce</span>, <span class="kw">file</span><span class="kw">=</span><span class="st">"example_sce/example_sce.rds"</span>)</pre></body></html></div>
 </div>
 <div id="vignettes" class="section level2">
 <h2 class="hasAnchor">
@@ -164,29 +215,29 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<pre><code>## R version 3.6.3 (2020-02-29)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 18363)
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Sierra 10.12.6
 ## 
 ## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] LC_COLLATE=English_United States.1252 
-## [2] LC_CTYPE=English_United States.1252   
-## [3] LC_MONETARY=English_United States.1252
-## [4] LC_NUMERIC=C                          
-## [5] LC_TIME=English_United States.1252    
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] rprojroot_1.3-2  digest_0.6.25    crayon_1.3.4     assertthat_0.2.1
-##  [5] MASS_7.3-51.6    R6_2.4.1         backports_1.1.7  magrittr_1.5    
-##  [9] evaluate_0.14    stringi_1.4.6    rlang_0.4.6      rstudioapi_0.11 
-## [13] fs_1.4.1         rmarkdown_2.3    pkgdown_1.5.1    desc_1.2.0      
-## [17] tools_3.6.3      stringr_1.4.0    yaml_2.2.1       xfun_0.15       
-## [21] compiler_3.6.3   memoise_1.1.0    htmltools_0.5.0  knitr_1.29</code></pre>
+##  [1] Rcpp_1.0.3       rprojroot_1.3-2  crayon_1.3.4     digest_0.6.23   
+##  [5] assertthat_0.2.1 MASS_7.3-51.5    R6_2.4.1         backports_1.1.5 
+##  [9] magrittr_1.5     evaluate_0.14    stringi_1.4.3    rlang_0.4.7     
+## [13] rstudioapi_0.10  fs_1.3.1         rmarkdown_2.3    pkgdown_1.5.1   
+## [17] desc_1.2.0       tools_3.6.1      stringr_1.4.0    yaml_2.2.1      
+## [21] xfun_0.16        compiler_3.6.1   memoise_1.1.0    htmltools_0.4.0 
+## [25] knitr_1.29</code></pre>
 </div>
   </div>
 

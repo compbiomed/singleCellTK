@@ -82,11 +82,26 @@ Extracts the top variable genes from an input singleCellExperiment object" />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -95,7 +110,7 @@ Extracts the top variable genes from an input singleCellExperiment object" />
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -113,7 +128,37 @@ Extracts the top variable genes from an input singleCellExperiment object" />
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -178,9 +223,7 @@ either Seurat "vst", "mean.var.plot", "dispersion" or Scran "modelGeneVar"</p></
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sce_chcl</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"scds"</span>)
-<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='scran_modelGeneVar.html'>scran_modelGeneVar</a></span>(<span class='no'>sce_chcl</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: collapsing to unique 'x' values</span></div><div class='input'><span class='no'>topGenes</span> <span class='kw'>&lt;-</span> <span class='fu'>getTopHVG</span>(<span class='no'>sce_chcl</span>, <span class='st'>"modelGeneVar"</span>, <span class='fl'>10</span>) <span class='co'>#return top 10 variable genes</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>topGenes</span>)</div><div class='output co'>#&gt;  [1] "GNB2L1"       "CTSG"         "AZU1"         "RPL13"        "C17orf76-AS1"
-#&gt;  [6] "PPT1"         "ATP5B"        "PRAME"        "SNHG5"        "RPS16"       </div></pre>
+<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='scran_modelGeneVar.html'>scran_modelGeneVar</a></span>(<span class='no'>sce_chcl</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: collapsing to unique 'x' values</span></div><div class='input'><span class='no'>topGenes</span> <span class='kw'>&lt;-</span> <span class='fu'>getTopHVG</span>(<span class='no'>sce_chcl</span>, <span class='st'>"modelGeneVar"</span>, <span class='fl'>10</span>) <span class='co'>#return top 10 variable genes</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

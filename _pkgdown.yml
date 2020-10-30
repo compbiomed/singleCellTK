@@ -68,14 +68,16 @@ navbar:
       href: articles/introduction_to_SCTK.html
     - text: "Shell Command Line Analysis"
       menu:
+        - text: "Import data into SCTK"
+          href: articles/import_scRNAseq_data_as_SCE_Commandline.html
         - text: "Quality Control"
-          href: articles/run_qc.html
+          href: articles/run_qcCommandline.html
     - text: "R Console Analysis"
       menu:
         - text: "Import data into SCTK"
-          href: articles/import_scRNAseq_data_as_SCE.html
+          href: articles/import_scRNAseq_data_as_SCE_Console.html
         - text: "Quality Control"
-          href: articles/run_qc.html
+          href: articles/run_qcConsole.html
         - text: "Normalization"
           href: articles/normalization.html
         - text: "Batch Correction"

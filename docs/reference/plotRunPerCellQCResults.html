@@ -81,11 +81,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -94,7 +109,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -112,7 +127,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -155,13 +200,23 @@
   <span class='no'>inSCE</span>,
   <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>violin</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>boxplot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>dots</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>dotSize</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>dotSize</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
+  <span class='kw'>axisLabelSize</span> <span class='kw'>=</span> <span class='fl'>18</span>,
   <span class='kw'>transparency</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='fl'>18</span>,
+  <span class='kw'>relHeights</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>, <span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>relWidths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>),
+  <span class='kw'>plotLabels</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>plotLabelSize</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+  <span class='kw'>samplePerColumn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sampleRelHeights</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>sampleRelWidths</span> <span class='kw'>=</span> <span class='fl'>1</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -169,8 +224,9 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results from runPerCellQC. Required.</p></td>
+      <td><p>Input SingleCellExperiment object with saved
+dimension reduction components or a variable with saved results from
+runPerCellQC. Required.</p></td>
     </tr>
     <tr>
       <th>sample</th>
@@ -182,6 +238,11 @@ Default NULL.</p></td>
       <td><p>Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>combinePlot</th>
+      <td><p>Must be either "all" or "sample". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "all".</p></td>
     </tr>
     <tr>
       <th>violin</th>
@@ -203,7 +264,11 @@ Default TRUE.</p></td>
     </tr>
     <tr>
       <th>axisSize</th>
-      <td><p>Size of x/y-axis labels. Default 10.</p></td>
+      <td><p>Size of x/y-axis ticks. Default 15.</p></td>
+    </tr>
+    <tr>
+      <th>axisLabelSize</th>
+      <td><p>Size of x/y-axis labels. Default 18.</p></td>
     </tr>
     <tr>
       <th>transparency</th>
@@ -214,14 +279,50 @@ Default TRUE.</p></td>
       <td><p>Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.</p></td>
     </tr>
+    <tr>
+      <th>titleSize</th>
+      <td><p>Size of title of plot. Default 18.</p></td>
+    </tr>
+    <tr>
+      <th>relHeights</th>
+      <td><p>Relative heights of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>relWidths</th>
+      <td><p>Relative widths of plots when combine is set.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabels</th>
+      <td><p>labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>plotLabelSize</th>
+      <td><p>size of labels</p></td>
+    </tr>
+    <tr>
+      <th>samplePerColumn</th>
+      <td><p>If TRUE, when there are multiple samples and combining by "all",
+the output .ggplot will have plots from each sample on a single column. Default TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelHeights</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative heights for each plot.</p></td>
+    </tr>
+    <tr>
+      <th>sampleRelWidths</th>
+      <td><p>If there are multiple samples and combining by "all",
+the relative widths for each plot.</p></td>
+    </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runPerCellQC.html'>runPerCellQC</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:56:49 2020 ... Running 'perCellQCMetrics'</span></div><div class='input'><span class='fu'>plotRunPerCellQCResults</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>)</div><div class='output co'>#&gt; $sum</div><div class='img'><img src='plotRunPerCellQCResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span><span class='kw'>=</span><span class='st'>"singleCellTK"</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>"EmptyDroplet"</span>]
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>, <span class='kw'>useAssay</span><span class='kw'>=</span><span class='st'>"counts"</span>, <span class='kw'>reducedDimName</span><span class='kw'>=</span><span class='st'>"UMAP"</span>)</div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='runPerCellQC.html'>runPerCellQC</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:03 2020 ... Running 'perCellQCMetrics'</span></div><div class='input'><span class='fu'>plotRunPerCellQCResults</span>(<span class='kw'>inSCE</span><span class='kw'>=</span><span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ignoring unknown parameters: fun, fun.min, fun.max</span></div><div class='output co'>#&gt; <span class='message'>No summary function supplied, defaulting to `mean_se()</span></div><div class='output co'>#&gt; $sum</div><div class='img'><img src='plotRunPerCellQCResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
 #&gt; $detected</div><div class='img'><img src='plotRunPerCellQCResults-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 
 #&gt; $toppercent</div><div class='img'><img src='plotRunPerCellQCResults-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div><div class='input'># }
 </div></pre>

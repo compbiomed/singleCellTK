@@ -80,11 +80,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -93,7 +108,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -111,7 +126,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -160,10 +205,12 @@
   <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>axisSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>axisLabelSize</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>title</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cutoff</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>titleSize</span> <span class='kw'>=</span> <span class='fl'>18</span>,
+  <span class='kw'>cutoff</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>combinePlot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,8 +218,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object with saved dimension reduction
-components or a variable with saved results. Required</p></td>
+      <td><p>Input SingleCellExperiment object with saved
+dimension reduction components or a variable with saved results. Required</p></td>
     </tr>
     <tr>
       <th>slot</th>
@@ -212,6 +259,10 @@ object, or can be retrieved from the colData slot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisSize</th>
+      <td><p>Size of x/y-axis ticks. Default 10.</p></td>
+    </tr>
+    <tr>
+      <th>axisLabelSize</th>
       <td><p>Size of x/y-axis labels. Default 10.</p></td>
     </tr>
     <tr>
@@ -232,13 +283,19 @@ when TRUE. Default TRUE.</p></td>
       <td><p>Numeric value. The plot will be annotated with a vertical line
 if set. Default NULL.</p></td>
     </tr>
+    <tr>
+      <th>combinePlot</th>
+      <td><p>Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.</p></td>
+    </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>plotSCEDensity</span>(
   <span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>mouseBrainSubsetSCE</span>, <span class='kw'>slot</span> <span class='kw'>=</span> <span class='st'>"assays"</span>,
-  <span class='kw'>annotation</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>feature</span> <span class='kw'>=</span> <span class='st'>"Sox2"</span>, <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='st'>"sex"</span>
+  <span class='kw'>annotation</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>feature</span> <span class='kw'>=</span> <span class='st'>"Apoe"</span>, <span class='kw'>groupby</span> <span class='kw'>=</span> <span class='st'>"sex"</span>
 )</div><div class='img'><img src='plotSCEDensity-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

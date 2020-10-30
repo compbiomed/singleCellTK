@@ -82,11 +82,26 @@ downstream quality control and analysis functions in singleCellTK." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -95,7 +110,7 @@ downstream quality control and analysis functions in singleCellTK." />
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -113,7 +128,37 @@ downstream quality control and analysis functions in singleCellTK." />
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -216,7 +261,7 @@ analysis functions such as <a href='runCellQC.html'>runCellQC</a>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>GSEABase</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: annotate</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: XML</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: graph</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: 'graph'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:XML':</span>
+#&gt; <span class='message'>Attaching package: ‘graph’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:XML’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    addNode</span></div><div class='input'><span class='no'>gs1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span>(<span class='kw'>setName</span> <span class='kw'>=</span> <span class='st'>"geneset1"</span>, <span class='kw'>geneIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='fl'>1</span>:<span class='fl'>10</span>])
 <span class='no'>gs2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span>(<span class='kw'>setName</span> <span class='kw'>=</span> <span class='st'>"geneset2"</span>, <span class='kw'>geneIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='fl'>11</span>:<span class='fl'>20</span>])

@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get and plot PCA components for a SCtkE object — getPCA • singleCellTK</title>
+<title>getPCA
+A wrapper to <a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a> function to compute principal component analysis (PCA) from a given <code>SingleCellExperiment</code> object. — getPCA • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,10 @@
 
 
 
-<meta property="og:title" content="Get and plot PCA components for a SCtkE object — getPCA" />
-<meta property="og:description" content="Selects the 500 most variable genes in the SCE, performs
-PCA based on them and stores the values in the reducedDims slot of
-the SCE object." />
+<meta property="og:title" content="getPCA
+A wrapper to <a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a> function to compute principal component analysis (PCA) from a given <code>SingleCellExperiment</code> object. — getPCA" />
+<meta property="og:description" content="getPCA
+A wrapper to runPCA function to compute principal component analysis (PCA) from a given SingleCellExperiment object." />
 
 
 
@@ -81,11 +82,26 @@ the SCE object." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -94,7 +110,7 @@ the SCE object." />
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -112,7 +128,37 @@ the SCE object." />
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -140,56 +186,57 @@ the SCE object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get and plot PCA components for a SCtkE object</h1>
+    <h1>getPCA
+A wrapper to <a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a> function to compute principal component analysis (PCA) from a given <code>SingleCellExperiment</code> object.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/getPCA.R'><code>R/getPCA.R</code></a></small>
     <div class="hidden name"><code>getPCA.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Selects the 500 most variable genes in the SCE, performs
-PCA based on them and stores the values in the reducedDims slot of
-the SCE object.</p>
+    <p>getPCA
+A wrapper to <a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a> function to compute principal component analysis (PCA) from a given <code>SingleCellExperiment</code> object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getPCA</span>(<span class='no'>inSCE</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>, <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"PCA"</span>)</pre>
+    <pre class="usage"><span class='fu'>getPCA</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
+  <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"PCA"</span>,
+  <span class='kw'>ndim</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>ntop</span> <span class='kw'>=</span> <span class='fl'>500</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input SCtkExperiment object. Required</p></td>
+      <td><p>Input <code>SingleCellExperiment</code> object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>Indicate which assay to use for PCA. Default is "counts"</p></td>
+      <td><p>Assay to use for PCA computation.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Store the PCA data with this name. The default is PCA.
-The toolkit will store data with the pattern &lt;ASSAY&gt;_&lt;ALGORITHM&gt;.</p></td>
+      <td><p>Name to use for the reduced output assay.</p></td>
+    </tr>
+    <tr>
+      <th>ndim</th>
+      <td><p>Number of principal components to obtain from the PCA computation. Default <code>50</code>.</p></td>
+    </tr>
+    <tr>
+      <th>ntop</th>
+      <td><p>Number of top features to use with PCA. Default <code>500</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A SCtkE object with the specified reducedDim and
-pcaVariances updated</p>
+    <p>A <code>SingleCellExperiment</code> object with stored PCA computation</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"mouseBrainSubsetSCE"</span>)
-<span class='co'>#add a CPM assay</span>
-<span class='fu'>assay</span>(<span class='no'>mouseBrainSubsetSCE</span>, <span class='st'>"cpm"</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'>assay</span>(<span class='no'>mouseBrainSubsetSCE</span>,
-                                                 <span class='st'>"counts"</span>),
-                                           <span class='fl'>2</span>, <span class='kw'>function</span>(<span class='no'>x</span>) {
-                                             <span class='no'>x</span> / (<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>x</span>) / <span class='fl'>1000000</span>)
-                                           })
-<span class='no'>mouseBrainSubsetSCE</span> <span class='kw'>&lt;-</span> <span class='fu'>getPCA</span>(<span class='no'>mouseBrainSubsetSCE</span>,
-                              <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"cpm"</span>,
-                              <span class='kw'>reducedDimName</span> <span class='kw'>=</span> <span class='st'>"PCA_cpm"</span>)
-<span class='fu'>reducedDims</span>(<span class='no'>mouseBrainSubsetSCE</span>)</div><div class='output co'>#&gt; List of length 5
-#&gt; names(5): PCA_counts PCA_logcounts TSNE_counts TSNE_logcounts PCA_cpm</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sce_chcl</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"scds"</span>)
+<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>getPCA</span>(<span class='no'>sce_chcl</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

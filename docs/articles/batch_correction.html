@@ -48,7 +48,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -63,7 +66,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -136,7 +139,7 @@
 
       
 
-      </header><script src="batch_correction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="batch_correction_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Batch Correction on SingleCellExperiment Object</h1>
@@ -348,14 +351,14 @@ Davide Risso et al., 2018
 <li>The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages.</li>
 <li>For using method “BBKNN”, “Scanorama” and “scGen”, the corresponding Python3 modules has to be installed</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">pip</span> install scanpy bbknn scanorama scgen</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">pip</span> install scanpy bbknn scanorama scgen</span></code></pre></div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The script will automatically try to install the “singleCellTK” package from Bioconductor if not available. However, currently this code is only located on a development branch which needs to be installed from GitHub:</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">devtools</span>)
-<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK@devel"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"compbiomed/singleCellTK@devel"</span>)</pre></body></html></div>
 </div>
 <div id="running-the-pipeline" class="section level2">
 <h2 class="hasAnchor">
@@ -425,10 +428,10 @@ Davide Risso et al., 2018
 ## dim: 800 800 
 ## metadata(0):
 ## assays(2): counts logcounts
-## rownames(800): RNF130 CERS4 ... ILF3 HEXB
+## rownames(800): PTCRA YME1L1 ... HS2ST1 ARL8A
 ## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
-## colnames(800): pbmc8k_CGGACACCAAATTGCC-1 pbmc6k_CACTTTGACAGGAG-1 ...
-##   pbmc8k_GCTTGAAGTCTTGTCC-1 pbmc6k_ATGATATGGACTAC-1
+## colnames(800): pbmc6k_ACAATTGAGAGGCA-1 pbmc8k_AAGACCTGTCCATGAT-1 ...
+##   pbmc8k_ATCCACCCAATCGGTT-1 pbmc6k_TACGACGAGACAAA-1
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## spikeNames(0):
@@ -448,10 +451,10 @@ Davide Risso et al., 2018
 ## dim: 800 800 
 ## metadata(0):
 ## assays(3): counts logcounts LIMMA
-## rownames(800): RNF130 CERS4 ... ILF3 HEXB
+## rownames(800): PTCRA YME1L1 ... HS2ST1 ARL8A
 ## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol
-## colnames(800): pbmc8k_CGGACACCAAATTGCC-1 pbmc6k_CACTTTGACAGGAG-1 ...
-##   pbmc8k_GCTTGAAGTCTTGTCC-1 pbmc6k_ATGATATGGACTAC-1
+## colnames(800): pbmc6k_ACAATTGAGAGGCA-1 pbmc8k_AAGACCTGTCCATGAT-1 ...
+##   pbmc8k_ATCCACCCAATCGGTT-1 pbmc6k_TACGACGAGACAAA-1
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## spikeNames(0):

@@ -80,11 +80,26 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/introduction_to_SCTK.html">Introduction to SingleCellToolKit</a>
+  <a href="../articles/introduction_to_SCTK.html">General Workflow</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Command Line Analysis
+    Shell Command Line Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+    </li>
+    <li>
+      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Console Analysis
      
     <span class="caret"></span>
   </a>
@@ -93,7 +108,7 @@
       <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qc.html">Quality Control</a>
+      <a href="../articles/run_qcConsole.html">Quality Control</a>
     </li>
     <li>
       <a href="../articles/normalization.html">Normalization</a>
@@ -111,7 +126,37 @@
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
+      <a href="../articles/find_marker.html">Find Marker via DE</a>
+    </li>
+    <li>
       <a href="../articles/visualize_results.html">Visualize Results</a>
+    </li>
+    <li>
+      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Shiny UI Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    </li>
+    <li>
+      <a href="../articles/ui_clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+    </li>
+    <li>
+      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    </li>
+    <li>
+      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
   </ul>
 </li>
@@ -149,7 +194,22 @@
  potential contamination from experimental factors such as ambient RNA.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runDecontX</span>(<span class='no'>inSCE</span>, <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>runDecontX</span>(
+  <span class='no'>inSCE</span>,
+  <span class='kw'>sample</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
+  <span class='kw'>z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxIter</span> <span class='kw'>=</span> <span class='fl'>500</span>,
+  <span class='kw'>delta</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>10</span>),
+  <span class='kw'>estimateDelta</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>convergence</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='kw'>iterLogLik</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>varGenes</span> <span class='kw'>=</span> <span class='fl'>5000</span>,
+  <span class='kw'>dbscanEps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>12345</span>,
+  <span class='kw'>logfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,8 +230,79 @@ sample separately.</p></td>
 'counts'.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional arguments to pass to <a href='https://rdrr.io/pkg/celda/man/decontX.html'>decontX</a>.</p></td>
+      <th>z</th>
+      <td><p>Numeric or character vector. Cell cluster labels. If NULL,
+PCA will be used to reduce the dimensionality of the dataset initially,
+'<a href='https://rdrr.io/pkg/uwot/man/umap.html'>umap</a>' from the 'uwot' package
+will be used to further reduce the dataset to 2 dimenions and
+the '<a href='https://rdrr.io/pkg/dbscan/man/dbscan.html'>dbscan</a>' function from the 'dbscan' package
+will be used to identify clusters of broad cell types. Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>maxIter</th>
+      <td><p>Integer. Maximum iterations of the EM algorithm. Default 500.</p></td>
+    </tr>
+    <tr>
+      <th>delta</th>
+      <td><p>Numeric Vector of length 2. Concentration parameters for
+the Dirichlet prior for the contamination in each cell. The first element
+is the prior for the native counts while the second element is the prior for
+the contamination counts. These essentially act as pseudocounts for the
+native and contamination in each cell. If <code>estimateDelta = TRUE</code>,
+this is only used to produce a random sample of proportions for an initial
+value of contamination in each cell. Then
+<code><a href='https://rdrr.io/pkg/MCMCprecision/man/fit_dirichlet.html'>fit_dirichlet</a></code> is used to update
+<code>delta</code> in each iteration.
+If <code>estimateDelta = FALSE</code>, then <code>delta</code> is fixed with these
+values for the entire inference procedure. Fixing <code>delta</code> and
+setting a high number in the second element will force <code>decontX</code>
+to be more aggressive and estimate higher levels of contamination at
+the expense of potentially removing native expression.
+Default <code><a href='https://rdrr.io/r/base/c.html'>c(10, 10)</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>estimateDelta</th>
+      <td><p>Boolean. Whether to update <code>delta</code> at each
+iteration.</p></td>
+    </tr>
+    <tr>
+      <th>convergence</th>
+      <td><p>Numeric. The EM algorithm will be stopped if the maximum
+difference in the contamination estimates between the previous and
+current iterations is less than this. Default 0.001.</p></td>
+    </tr>
+    <tr>
+      <th>iterLogLik</th>
+      <td><p>Integer. Calculate log likelihood every <code>iterLogLik</code>
+iteration. Default 10.</p></td>
+    </tr>
+    <tr>
+      <th>varGenes</th>
+      <td><p>Integer. The number of variable genes to use in
+dimensionality reduction before clustering. Variability is calcualted using
+<code><a href='https://rdrr.io/pkg/scran/man/modelGeneVar.html'>modelGeneVar</a></code> function from the 'scran' package.
+Used only when z is not provided. Default 5000.</p></td>
+    </tr>
+    <tr>
+      <th>dbscanEps</th>
+      <td><p>Numeric. The clustering resolution parameter
+used in '<a href='https://rdrr.io/pkg/dbscan/man/dbscan.html'>dbscan</a>' to estimate broad cell clusters.
+Used only when z is not provided. Default 1.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Integer. Passed to <a href='https://withr.r-lib.org/reference/with_seed.html'>with_seed</a>. For reproducibility,
+a default value of 12345 is used. If NULL, no calls to
+<a href='https://withr.r-lib.org/reference/with_seed.html'>with_seed</a> are made.</p></td>
+    </tr>
+    <tr>
+      <th>logfile</th>
+      <td><p>Character. Messages will be redirected to a file named
+`logfile`. If NULL, messages will be printed to stdout.  Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical. Whether to print log messages. Default TRUE.</p></td>
     </tr>
     </table>
 
@@ -185,7 +316,7 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='no'>sce</span>[, <span class='fu'>colData</span>(<span class='no'>sce</span>)$<span class='no'>type</span> <span class='kw'>!=</span> <span class='st'>'EmptyDroplet'</span>]
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDecontX</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:08 2020 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:08 2020 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:08 2020 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by 'spam'</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Tue Jun 30 16:58:12 2020 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 4.254559 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div></pre>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runDecontX</span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:52 2020 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:52 2020 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:52 2020 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘spam’</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:12:55 2020 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 2.930959 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
