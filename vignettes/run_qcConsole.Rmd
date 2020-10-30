@@ -1,6 +1,5 @@
 ---
 title: "Quality Control in R console"
-author: "Rui Hong"
 ---
 <style>
 body {
@@ -28,7 +27,7 @@ library(dplyr)
 
 singleCellTK takes in a `SingleCellExperiment` object from the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the `BiocFileCache`(https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html) package.
 
-```{r, message=FALSE, echo=TRUE, eval=FALSE, warning=FALSE}
+```{r, message=FALSE, echo=TRUE, eval=TRUE, warning=FALSE}
 # Install BiocFileCache if is it not already
 if (!requireNamespace("BiocFileCache", quietly = TRUE)) {
   if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -59,13 +58,10 @@ singleCellTK also supports the importing of single-cell data from the following 
 
 All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.
 
-```{r rundropletqc, eval=FALSE, message = TRUE}
+```{r rundropletqc, eval=TRUE, message = TRUE}
 pbmc4k.droplet <- runDropletQC(pbmc4k.droplet)
 ```
 
-```{r echo=FALSE, eval=TRUE}
-pbmc4k.droplet <- readRDS("/Users/rz2333/Downloads/Study/BU/Josh/git/singleCellTK/pbmc.droplet.rds")
-```
 If users choose to only run a specific set of algorithms, they can specify which to run with the algorithms parameter.
 
 When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.
@@ -74,7 +70,7 @@ When quality control functions are run in singleCellTK, the output of the functi
 head(colData(pbmc4k.droplet), 5)
 ```
 
-```{r, coldata_drop2, echo=TRUE, eval=FALSE}
+```{r, coldata_drop2, echo=TRUE, eval=TRUE}
 df.matrix <- head(colData(pbmc4k.droplet), 5)
 df.matrix %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
@@ -117,7 +113,7 @@ emptyDropsResults <- plotEmptyDropsResults(
 )
 ```
 
-```{r scatter_emptydrops, fig.height = 6, fig.width = 8, fig.align="center"}
+```{r scatter_emptydrops, fig.height = 4, fig.width = 8, fig.align="center"}
 emptyDropsResults$scatterEmptyDrops
 ```
 <br />
@@ -127,7 +123,7 @@ Data points are colored by FDR values, where we see a small portion of the datas
 
 [BarcodeRanks](https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html) from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The lower parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.
 
-```{r run_kneeplot_barcoderank, message=FALSE, warning=FALSE, fig.align="center", fig.height = 6, fig.width = 8}
+```{r run_kneeplot_barcoderank, message=FALSE, warning=FALSE, fig.align="center", fig.height = 4, fig.width = 8}
 plotBarcodeRankScatter(
   inSCE = pbmc4k.droplet,
   title = "BarcodeRanks Rank Plot",
@@ -163,7 +159,7 @@ dim(pbmc4k.droplet)
 
 We can compare the average total UMI counts per cell before and after cell filtration:
 
-```{r, "Count Violin after filtering", eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE}
+```{r, "Count Violin after filtering", eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align="center"}
 p1 <- plotSCEViolinColData(pbmc4k.droplet.prefilt, coldata = "sum", summary = "mean", title = "Pre-filter", ylab = "Total counts")
 p2 <- plotSCEViolinColData(pbmc4k.droplet, coldata = "sum", summary = "mean", title = "Post-filter", ylab = "Total counts")
 plot(cowplot::plot_grid(p1, p2, ncol = 2))
@@ -213,7 +209,7 @@ pbmc4k.droplet <- runBarcodeRankDrops(
 We will use a filtered form of the PBMC 3K and 6K dataset from the package [TENxPBMCData](http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html), which is available from the `importExampleData` function. We will combine these datasets together into a single SingleCellExperiment object.
 
 
-```{r load_data2, eval=FALSE, message=FALSE}
+```{r load_data2, eval=TRUE, message=FALSE}
 pbmc3k <- importExampleData(dataset = "pbmc3k")
 pbmc6k <- importExampleData(dataset = "pbmc6k")
 
@@ -231,7 +227,7 @@ SCTK utilizes dimensionality reduction techniques such as TSNE and UMAP for visu
 The `sample` parameter may be specified if multiple samples exist in the SingleCellExperiment object. Here, we will use the sample vector stored in the colData of the SingleCellExperiment object.
 
 
-```{r dimensionalityreduction, eval=FALSE, warning=FALSE, message=FALSE}
+```{r dimensionalityreduction, eval=TRUE, warning=FALSE, message=FALSE}
 # UMAP:
 pbmc.combined <- getUMAP(inSCE = pbmc.combined, useAssay = "counts", logNorm = TRUE, sample = sample.vector)
 
@@ -248,19 +244,13 @@ Users may set a `sample` parameter if you would like to compare between multiple
 If the user wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the SingleCellExperiment object using `importGeneSets` functions can be set as `collectionName`. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene symbols may be set as `geneSetList`, or the user may instead use the `geneSetCollection` parameter to supply a `GeneSetCollection` object from the [GSEABase](https://bioconductor.org/packages/release/bioc/html/GSEABase.html) package.
 
 
-```{r load_geneset, eval=FALSE,  message = FALSE}
+```{r load_geneset, eval=TRUE,  message = FALSE}
 pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
 
 set.seed(12345)
 pbmc.combined <- runCellQC(pbmc.combined, sample = sample.vector, collectionName = "mito")
 ```
 
-```{r echo=FALSE, eval=TRUE}
-### subset 1000 cells and runcellQC done
-pbmc.combined <- readRDS('/Users/rz2333/Downloads/Study/BU/Josh/git/singleCellTK/pbmc.cell.rds')
-sample.vector <- colData(pbmc.combined)$sample
-
-```
 If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter.
 
 When quality control functions are run in singleCellTK, the output of the function is stored in the `colData` slot of the `SingleCellExperiment` object.
@@ -479,7 +469,7 @@ In droplet-based single cell technologies, ambient RNA that may have been releas
 
 The wrapper function plotDecontXResults can be used to plot the QC outputs from the DecontX algorithm.
 
-```{r umap_decontx_plots, warning=FALSE, message=FALSE}
+```{r umap_decontx_plots, warning=FALSE, message=FALSE, fig.wide = TRUE, fig.height = 10, fig.width = 14}
 decontxResults <- plotDecontXResults(
   inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
   reducedDimName = "UMAP", combinePlot = "all",

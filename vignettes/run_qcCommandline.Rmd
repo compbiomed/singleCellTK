@@ -135,7 +135,7 @@ Rscript SCTK_runQC.R \
 ```
 
 As shown in the **Import data into SCTK** section, -b specify the base path and usually it's the folder where you ran 10x cellranger count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:
-
+```
 ├── BasePath
 └── SampleName 
     ├── outs
@@ -148,7 +148,7 @@ As shown in the **Import data into SCTK** section, -b specify the base path and 
     |   |   ├── features.tsv.gz
     |   |   └── matrix.mtx.gz
         ...
-        
+```
 
 2. If the cellranger count output have been moved out of the default [cellranger output directory](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview), you can specified input using -R and -C:
 ```{r eval=FALSE}

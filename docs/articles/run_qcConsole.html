@@ -139,11 +139,11 @@
 
       
 
-      </header><script src="run_qcConsole_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="run_qcConsole_files/header-attrs-2.4/header-attrs.js"></script><script src="run_qcConsole_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="run_qcConsole_files/kePrint-0.0.1/kePrint.js"></script><link href="run_qcConsole_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Quality Control in R console</h1>
-                        <h4 class="author">Rui Hong</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/run_qcConsole.Rmd"><code>vignettes/run_qcConsole.Rmd</code></a></small>
@@ -162,187 +162,9 @@ text-align: justify}
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data.</p>
 <p>The package can be loaded using the <code>library</code> command.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
-<span class="no">runBarcodeRankDrops</span></pre></body></html></div>
-<pre><code>## function(inSCE,
-##                                 sample = NULL,
-##                                 useAssay = "counts",
-##                                 lower = 100,
-##                                 fitBounds = NULL,
-##                                 df = 20
-## ) {
-##   if(!is.null(sample)) {
-##     if(length(sample) != ncol(inSCE)) {
-##       stop("'sample' must be the same length as the number of columns in 'inSCE'")
-##     }
-##   } else {
-##     sample = rep(1, ncol(inSCE))
-##   }
-##   
-##   message(paste0(date(), " ... Running 'barcodeRanks'"))
-##   
-##   ##  Getting current arguments values
-##   #argsList &lt;- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
-##   argsList &lt;- mget(names(formals()),sys.frame(sys.nframe()))
-##   
-##   rank &lt;- list()
-##   
-##   ## Define result matrix for all samples
-##   output &lt;- S4Vectors::DataFrame(row.names = colnames(inSCE),
-##                                  dropletUtils_BarcodeRank_Knee = integer(ncol(inSCE)),
-##                                  dropletUtils_BarcodeRank_Inflection = integer(ncol(inSCE)))
-##   
-##   ## Loop through each sample and run barcodeRank
-##   samples &lt;- unique(sample)
-##   metaOutList &lt;- list()
-##   for (i in seq_len(length(samples))) {
-##     sceSampleInd &lt;- sample == samples[i]
-##     sceSample &lt;- inSCE[, sceSampleInd]
-##     
-##     ## Define meta matrix for each subinSCE
-##     metaOutput &lt;- S4Vectors::DataFrame(row.names = colnames(sceSample),
-##                                        dropletUtils_barcodeRank_rank = integer(ncol(sceSample)),
-##                                        dropletUtils_barcodeRank_total = integer(ncol(sceSample)),
-##                                        dropletUtils_barcodeRank_fitted = integer(ncol(sceSample)),
-##                                        dropletUtils_barcodeRank_knee = integer(ncol(sceSample)),
-##                                        dropletUtils_barcodeRank_inflection = integer(ncol(sceSample)),
-##                                        sample = colData(sceSample)[["sample"]])
-##     
-##     mat &lt;- SummarizedExperiment::assay(sceSample, i = useAssay)
-##     result &lt;- .runBarcodeRankDrops(barcode.matrix = mat, lower=lower,
-##                                    fit.bounds=fitBounds,
-##                                    df=df)
-##     
-##     result.matrix &lt;- result$matrix
-##     output[sceSampleInd, ] &lt;- result.matrix[, c("dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection")]
-##     
-##     metaCols &lt;- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", 
-##                   "dropletUtils_barcodeRank_fitted")
-##     metaOutput[sceSampleInd, metaCols] &lt;- result.matrix[, metaCols]
-##     metaOutput[sceSampleInd,"dropletUtils_barcodeRank_knee"] &lt;- rep(result$knee, sum(sceSampleInd))
-##     metaOutput[sceSampleInd,"dropletUtils_barcodeRank_inflection"] &lt;- rep(result$inflection, sum(sceSampleInd))
-##     
-##     # Remove duplicated Rank
-##     metaOutput &lt;- metaOutput[!duplicated(metaOutput$dropletUtils_barcodeRank_rank), ]
-##     
-##     metaOutList[[samples[i]]] &lt;- metaOutput
-##   }
-##   
-##   colData(inSCE) = cbind(colData(inSCE), output)
-##   S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput &lt;- metaOutList
-##   
-##   inSCE@metadata$runBarcodeRankDrops &lt;- argsList[-1]
-##   inSCE@metadata$runBarcodeRankDrops$packageVersion &lt;- utils::packageDescription("DropletUtils")$Version
-##   
-##   return(inSCE)
-## }
-## &lt;bytecode: 0x7fe06e387920&gt;
-## &lt;environment: namespace:singleCellTK&gt;</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">plotBarcodeRankScatter</span></pre></body></html></div>
-<pre><code>## function(inSCE,
-##                                    sample = NULL,
-##                                    defaultTheme = TRUE,
-##                                    dotSize = 1,
-##                                    title = NULL,
-##                                    titleSize = 18,
-##                                    xlab = NULL,
-##                                    ylab = NULL,
-##                                    axisSize = 12,
-##                                    axisLabelSize = 15,
-##                                    legendSize = 10,
-##                                    combinePlot = NULL,
-##                                    sampleRelHeights = 1,
-##                                    sampleRelWidths = 1){
-##     if (!is.null(sample)) {
-##         if (length(sample) != ncol(inSCE)) {
-##             stop(
-##                 "'sample' must be the same length as the number",
-##                 " of columns in 'inSCE'"
-##             )
-##         }
-##     } else {
-##         sample &lt;- rep(1, ncol(inSCE))
-##     }
-## 
-##     samples &lt;- unique(sample)
-##     meta &lt;- S4Vectors::metadata(inSCE)$runBarcodeRanksMetaOutput
-##   plotlist &lt;- lapply(samples, function(x){
-## 
-##     sampleMeta &lt;- meta[[x]]
-##     knee &lt;- sampleMeta$dropletUtils_barcodeRank_knee
-##     inflection &lt;- sampleMeta$dropletUtils_barcodeRank_inflection
-##     df &lt;- data.frame(rank = sampleMeta$dropletUtils_barcodeRank_rank,
-##                      umi = sampleMeta$dropletUtils_barcodeRank_total)
-##     
-##     
-##     p &lt;- ggplot2::ggplot(df, ggplot2::aes_string(x="rank", y="umi")) +
-##       ggplot2::geom_point(size=dotSize, shape=20) +
-##       ggplot2::scale_x_log10() +
-##       ggplot2::scale_y_log10()
-##     
-##     p &lt;- p + ggplot2::geom_hline(ggplot2::aes(yintercept=knee, linetype = "Knee"), colour = 'red') +
-##       ggplot2::geom_hline(ggplot2::aes(yintercept=inflection, linetype = "Inflection"), colour= 'blue') +
-##       ggplot2::scale_linetype_manual(name = "", values = c(2, 2),
-##                                      guide = ggplot2::guide_legend(label.theme = ggplot2::element_text(size = legendSize),
-##                                                                    override.aes = list(color = c("blue", "red"))))
-##     
-##     if (defaultTheme == TRUE) {
-##       p &lt;- .ggSCTKTheme(p)
-##     }
-##     if (!is.null(title)) {
-##       p &lt;- p + ggplot2::ggtitle(label = title) +
-##         ggplot2::theme(plot.title = ggplot2::element_text(
-##           hjust = 0.5,
-##           size = titleSize
-##         ))
-##     }
-##     if (!is.null(xlab)) {
-##       p &lt;- p + ggplot2::xlab(xlab) +
-##         ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
-##                        axis.text.x = ggplot2::element_text(size = axisSize))
-##     }else{
-##       p &lt;- p + ggplot2::xlab("Rank") +
-##         ggplot2::theme(axis.title.x = ggplot2::element_text(size = axisLabelSize),
-##                        axis.text.x = ggplot2::element_text(size = axisSize))
-##     }
-##     
-##     if (!is.null(ylab)) {
-##       p &lt;- p + ggplot2::ylab(ylab) +
-##         ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
-##                        axis.text.y = ggplot2::element_text(size = axisSize))
-##     }else{
-##       p &lt;- p + ggplot2::ylab("Total UMI Counts") +
-##         ggplot2::theme(axis.title.y = ggplot2::element_text(size = axisLabelSize),
-##                        axis.text.y = ggplot2::element_text(size = axisSize))
-##     }
-##     return(p)
-##   })
-##   if (length(unique(samples)) &gt; 1) {
-##       names(plotlist) &lt;- samples
-##       plotlist &lt;- list(Sample = plotlist)
-##   } else {
-##       plotlist &lt;- plotlist[[1]]
-##   }
-##   
-##   ##Needs to be turned off for Shiny User Interface
-##   if(!is.null(combinePlot)){
-##       if(combinePlot %in% c("all") &amp;&amp; length(unique(sample)) &gt; 1){
-##           return(cowplot::plot_grid(plotlist = unlist(plotlist,
-##           recursive = FALSE),
-##           align = "h",
-##           vjust = 0,
-##           rel_heights = sampleRelHeights,
-##           rel_widths = sampleRelWidths))
-##       }else if(combinePlot == "sample"){
-##           return(plotlist)
-##       }
-##   }
-##   return(plotlist)
-##   
-## }
-## &lt;bytecode: 0x7fe06f12d738&gt;
-## &lt;environment: namespace:singleCellTK&gt;</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></pre></div>
 </div>
 <div id="running-quality-control-of-droplet-raw-count-data-with-singlecelltk" class="section level2">
 <h2 class="hasAnchor">
@@ -351,42 +173,441 @@ text-align: justify}
 <h3 class="hasAnchor">
 <a href="#load-pbmc4k-data-from-10x" class="anchor"></a>Load PBMC4k data from 10X</h3>
 <p>singleCellTK takes in a <code>SingleCellExperiment</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the <code>BiocFileCache</code>(<a href="https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html" class="uri">https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html</a>) package.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co"># Install BiocFileCache if is it not already</span>
-<span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocFileCache"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>)) {
-  <span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>)) {
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
-  }
-  <span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"BiocFileCache"</span>)
-}
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Install BiocFileCache if is it not already</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocFileCache"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"BiocFileCache"</span><span class="op">)</span>
+<span class="op">}</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"BiocFileCache"</span>)
-<span class="no">bfc</span> <span class="kw">&lt;-</span> <span class="kw pkg">BiocFileCache</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html">BiocFileCache</a></span>(<span class="st">"raw_data"</span>, <span class="kw">ask</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="no">raw.path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html">bfcrpath</a></span>(<span class="no">bfc</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"BiocFileCache"</span><span class="op">)</span>
+<span class="va">bfc</span> <span class="op">&lt;-</span> <span class="fu">BiocFileCache</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html">BiocFileCache</a></span><span class="op">(</span><span class="st">"raw_data"</span>, ask <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">raw.path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html">bfcrpath</a></span><span class="op">(</span><span class="va">bfc</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span>
   <span class="st">"http://cf.10xgenomics.com/samples"</span>,
   <span class="st">"cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz"</span>
-))
-<span class="fu"><a href="https://rdrr.io/r/utils/untar.html">untar</a></span>(<span class="no">raw.path</span>, <span class="kw">exdir</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(), <span class="st">"pbmc4k"</span>))
+<span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/untar.html">untar</a></span><span class="op">(</span><span class="va">raw.path</span>, exdir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"pbmc4k"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">fname</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(), <span class="st">"pbmc4k/raw_gene_bc_matrices/GRCh38"</span>)
-<span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="kw pkg">DropletUtils</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/DropletUtils/man/read10xCounts.html">read10xCounts</a></span>(<span class="no">fname</span>, <span class="kw">col.names</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="va">fname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"pbmc4k/raw_gene_bc_matrices/GRCh38"</span><span class="op">)</span>
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu">DropletUtils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DropletUtils/man/read10xCounts.html">read10xCounts</a></span><span class="op">(</span><span class="va">fname</span>, col.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co">### change the sample column</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="fu">colData</span>(<span class="no">pbmc4k.droplet</span>)) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sample"</span>, <span class="st">"Barcode"</span>)
-<span class="fu">colData</span>(<span class="no">pbmc4k.droplet</span>)$<span class="no">sample</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="st">"pbmc4k"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="fu">colData</span>(<span class="no">pbmc4k.droplet</span>)))</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Barcode"</span><span class="op">)</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"pbmc4k"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="./import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a> for deailed instruction.</p>
 </div>
 <div id="rundropletqc" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rundropletqc" class="anchor"></a>runDropletQC</h3>
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span>(<span class="no">pbmc4k.droplet</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></pre></div>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the algorithms parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">colData</span>(<span class="no">pbmc4k.droplet</span>), <span class="fl">5</span>)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">df.matrix</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">colData</span>(<span class="no">pbmc4k.droplet</span>), <span class="fl">5</span>)
-<span class="no">df.matrix</span> <span class="kw">%&gt;%</span>
-  <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">format</span> <span class="kw">=</span> <span class="st">"html"</span>) <span class="kw">%&gt;%</span> <span class="kw pkg">kableExtra</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span>() <span class="kw">%&gt;%</span>
-  <span class="kw pkg">kableExtra</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/scroll_box.html">scroll_box</a></span>(<span class="kw">width</span> <span class="kw">=</span> <span class="st">"80%"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">df.matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span>
+<span class="va">df.matrix</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/scroll_box.html">scroll_box</a></span><span class="op">(</span>width <span class="op">=</span> <span class="st">"80%"</span><span class="op">)</span></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
+<table class="table table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+sample
+</th>
+<th style="text-align:left;">
+Barcode
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Knee
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Inflection
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Knee.1
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Inflection.1
+</th>
+<th style="text-align:right;">
+sum
+</th>
+<th style="text-align:right;">
+detected
+</th>
+<th style="text-align:right;">
+percent_top_50
+</th>
+<th style="text-align:right;">
+percent_top_100
+</th>
+<th style="text-align:right;">
+percent_top_200
+</th>
+<th style="text-align:right;">
+percent_top_500
+</th>
+<th style="text-align:right;">
+total
+</th>
+<th style="text-align:right;">
+dropletUtils_emptyDrops_total
+</th>
+<th style="text-align:right;">
+dropletUtils_emptyDrops_logprob
+</th>
+<th style="text-align:right;">
+dropletUtils_emptyDrops_pvalue
+</th>
+<th style="text-align:left;">
+dropletUtils_emptyDrops_limited
+</th>
+<th style="text-align:right;">
+dropletUtils_emptyDrops_fdr
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Knee.2
+</th>
+<th style="text-align:right;">
+dropletUtils_BarcodeRank_Inflection.2
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AAACCTGAGAAACCAT-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+AAACCTGAGAAACCAT-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAACCTGAGAAACCGC-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+AAACCTGAGAAACCGC-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAACCTGAGAAACCTA-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+AAACCTGAGAAACCTA-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAACCTGAGAAACGAG-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+AAACCTGAGAAACGAG-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAACCTGAGAAACGCC-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+AAACCTGAGAAACGCC-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>A summary of all outputs is shown below:</p>
 <table class="table">
 <colgroup>
@@ -456,26 +677,29 @@ text-align: justify}
 <a href="#emptydrops" class="anchor"></a>EmptyDrops</h4>
 <p>It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the <a href="https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html">EmptyDrops</a> algorithm from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package to test for empty droplets.</p>
 <p>The wrapper function <code>plotEmptyDropsResults</code> can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">emptyDropsResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotEmptyDropsResults.html">plotEmptyDropsResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc4k.droplet</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">20</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="kw">NULL</span>,
-  <span class="kw">fdrCutoff</span> <span class="kw">=</span> <span class="fl">0.01</span>,
-  <span class="kw">dotSize</span> <span class="kw">=</span> <span class="fl">0.5</span>,
-  <span class="kw">defaultTheme</span> <span class="kw">=</span> <span class="fl">TRUE</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">emptyDropsResults</span>$<span class="no">scatterEmptyDrops</span></pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="va">emptyDropsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotEmptyDropsResults.html">plotEmptyDropsResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">20</span>,
+  sample <span class="op">=</span> <span class="cn">NULL</span>,
+  fdrCutoff <span class="op">=</span> <span class="fl">0.01</span>,
+  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
+  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">emptyDropsResults</span><span class="op">$</span><span class="va">scatterEmptyDrops</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/scatter_emptydrops-1.png" width="768" style="display: block; margin: auto;"><br> Data points are colored by FDR values, where we see a small portion of the dataset contains barcodes that do not meet the threshold.</p>
 </div>
 <div id="barcoderanks" class="section level4">
 <h4 class="hasAnchor">
 <a href="#barcoderanks" class="anchor"></a>BarcodeRanks</h4>
 <p><a href="https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html">BarcodeRanks</a> from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The lower parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc4k.droplet</span>,
-  <span class="kw">title</span> <span class="kw">=</span> <span class="st">"BarcodeRanks Rank Plot"</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">14</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
+  title <span class="op">=</span> <span class="st">"BarcodeRanks Rank Plot"</span>,
+  legendSize <span class="op">=</span> <span class="fl">14</span>
+<span class="op">)</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/run_kneeplot_barcoderank-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>The total UMI count of each barcode is plotted against its rank, where we see a steep dropoff of UMI counts around the inflection point, where we see a separation between cell containing and empty droplets.</p>
 </div>
@@ -484,20 +708,24 @@ text-align: justify}
 <h3 class="hasAnchor">
 <a href="#filtering-the-dataset" class="anchor"></a>Filtering the dataset</h3>
 <p>SingleCellExperiment objects can be subset by its colData using <code>subsetSCECols</code>. The <code>colData</code> parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the colData of the SingleCellExperiment object. For example, if x is a numeric vector in colData, then “x &lt; 5” will return all columns with x less than 5. The <code>index</code> parameter takes in a vector of indices which should be kept, while <code>bool</code> takes in a vector of TRUE or FALSE which should be the same length as the number of columns in the SingleCellExperiment object.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">#Before filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc4k.droplet</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="co">#Before filtering:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></pre></div>
 <pre><code>## [1]  33694 737280</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc4k.droplet</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'dropletUtils_BarcodeRank_Inflection == 1'</span>)
-<span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc4k.droplet</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)'</span>)
-<span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc4k.droplet</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'pbmc4k.droplet$dropletUtils_emptyDrops_fdr &lt; 0.01'</span>)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">#After filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc4k.droplet</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'dropletUtils_BarcodeRank_Inflection == 1'</span><span class="op">)</span>
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)'</span><span class="op">)</span>
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'pbmc4k.droplet$dropletUtils_emptyDrops_fdr &lt; 0.01'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="co">#After filtering:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></pre></div>
 <pre><code>## [1] 33694  4183</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">p1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span>(<span class="no">pbmc4k.droplet.prefilt</span>, <span class="kw">coldata</span> <span class="kw">=</span> <span class="st">"sum"</span>, <span class="kw">summary</span> <span class="kw">=</span> <span class="st">"mean"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Pre-filter"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Total counts"</span>)
-<span class="no">p2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span>(<span class="no">pbmc4k.droplet</span>, <span class="kw">coldata</span> <span class="kw">=</span> <span class="st">"sum"</span>, <span class="kw">summary</span> <span class="kw">=</span> <span class="st">"mean"</span>, <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Post-filter"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Total counts"</span>)
-<span class="kw pkg">cowplot</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span>(<span class="no">p1</span>, <span class="no">p2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
-<p><img src="run_qcConsole_files/figure-html/Count%20Violin%20after%20filtering-1.png" width="700"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Post-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></pre></div>
+<p><img src="run_qcConsole_files/figure-html/Count%20Violin%20after%20filtering-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For additional cell-filtered quality control with singleCellTK, please refer to “Running quality control of cell-filtered single cell data with singleCellTK”.</p>
 </div>
 <div id="running-individual-qc-methods" class="section level3">
@@ -509,23 +737,25 @@ text-align: justify}
 <a href="#runemptydrops" class="anchor"></a>runEmptyDrops</h4>
 <p>The wrapper function <code>runEmptyDrops</code> can be used to separately run the EmptyDrops algorithm on its own.</p>
 <p>In runEmptyDrops, the <code>lower</code> parameter is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets. The <code>niters</code> parameter is the number of iterations the function will run for the calculation. <code>testAmbient</code> indicates whether results should be returned for barcodes that have a total UMI count below what is specified in <code>lower</code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runEmptyDrops.html">runEmptyDrops</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc4k.droplet</span>,
-  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
-  <span class="kw">lower</span> <span class="kw">=</span> <span class="fl">100</span>,
-  <span class="kw">niters</span> <span class="kw">=</span> <span class="fl">10000</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runEmptyDrops.html">runEmptyDrops</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  lower <span class="op">=</span> <span class="fl">100</span>,
+  niters <span class="op">=</span> <span class="fl">10000</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="runbarcoderankdrops" class="section level4">
 <h4 class="hasAnchor">
 <a href="#runbarcoderankdrops" class="anchor"></a>runBarcodeRankDrops</h4>
 <p>The wrapper function <code>runBarcodeRankDrops</code> can be used to separately run the BarcodeRanks algorithm on its own.</p>
 <p>The <code>lower</code> parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc4k.droplet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runBarcodeRankDrops.html">runBarcodeRankDrops</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc4k.droplet</span>,
-  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
-  <span class="kw">fitBounds</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">df</span> <span class="kw">=</span> <span class="fl">20</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runBarcodeRankDrops.html">runBarcodeRankDrops</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  fitBounds <span class="op">=</span> <span class="cn">NULL</span>, df <span class="op">=</span> <span class="fl">20</span>
+<span class="op">)</span></pre></div>
 <p><br><br></p>
 </div>
 </div>
@@ -537,12 +767,13 @@ text-align: justify}
 <h3 class="hasAnchor">
 <a href="#load-pbmc-data-from-10x" class="anchor"></a>Load PBMC data from 10X</h3>
 <p>We will use a filtered form of the PBMC 3K and 6K dataset from the package <a href="http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>, which is available from the <code>importExampleData</code> function. We will combine these datasets together into a single SingleCellExperiment object.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="kw">dataset</span> <span class="kw">=</span> <span class="st">"pbmc3k"</span>)
-<span class="no">pbmc6k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="kw">dataset</span> <span class="kw">=</span> <span class="st">"pbmc6k"</span>)
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
+<span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc6k"</span><span class="op">)</span>
 
-<span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="kw pkg">BiocGenerics</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html">cbind</a></span>(<span class="no">pbmc3k</span>, <span class="no">pbmc6k</span>)
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu">BiocGenerics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html">cbind</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="va">pbmc6k</span><span class="op">)</span>
 
-<span class="no">sample.vector</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span></pre></body></html></div>
+<span class="va">sample.vector</span> <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></pre></div>
 <p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="./import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a> for deailed instruction.</p>
 </div>
 <div id="run-dimensionality-reduction" class="section level3">
@@ -550,11 +781,12 @@ text-align: justify}
 <a href="#run-dimensionality-reduction" class="anchor"></a>Run Dimensionality Reduction</h3>
 <p>SCTK utilizes dimensionality reduction techniques such as TSNE and UMAP for visualizing single-cell data. The user can modify the dimensions by adjusting the parameters within the function. The <code>logNorm</code> parameter should be set to TRUE for normalization prior to running dimensionality reduction.</p>
 <p>The <code>sample</code> parameter may be specified if multiple samples exist in the SingleCellExperiment object. Here, we will use the sample vector stored in the colData of the SingleCellExperiment object.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co"># UMAP:</span>
-<span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>, <span class="kw">logNorm</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="no">sample.vector</span>)
+<div class="sourceCode" id="cb18"><pre class="downlit">
+<span class="co"># UMAP:</span>
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, logNorm <span class="op">=</span> <span class="cn">TRUE</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span>
 
 <span class="co"># TSNE (not run):</span>
-<span class="co"># pbmc &lt;- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)</span></pre></body></html></div>
+<span class="co"># pbmc &lt;- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)</span></pre></div>
 </div>
 <div id="runcellqc" class="section level3">
 <h3 class="hasAnchor">
@@ -562,13 +794,15 @@ text-align: justify}
 <p>All of the droplet-based QC algorithms are able to be run under the wrapper function <code>runCellQC</code>. By default all possible QC algorithms will be run.</p>
 <p>Users may set a <code>sample</code> parameter if you would like to compare between multiple samples. Here, we will use the sample vector stored in the SingleCellExperiment object.</p>
 <p>If the user wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the SingleCellExperiment object using <code>importGeneSets</code> functions can be set as <code>collectionName</code>. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene symbols may be set as <code>geneSetList</code>, or the user may instead use the <code>geneSetCollection</code> parameter to supply a <code>GeneSetCollection</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">GSEABase</a> package.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">collectionName</span> <span class="kw">=</span> <span class="st">"mito"</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/mito_subset.gmt"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"singleCellTK"</span>))
+<div class="sourceCode" id="cb19"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/mito_subset.gmt"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">12345</span>)
-<span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span>(<span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="no">sample.vector</span>, <span class="kw">collectionName</span> <span class="kw">=</span> <span class="st">"mito"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></pre></div>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">colData</span>(<span class="no">pbmc.combined</span>), <span class="fl">5</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table">
 <thead><tr>
@@ -918,8 +1152,8 @@ pbmc6k-1
 <colgroup>
 <col width="29%">
 <col width="45%">
-<col width="14%">
-<col width="11%">
+<col width="13%">
+<col width="10%">
 </colgroup>
 <thead><tr class="header">
 <th>QC output</th>
@@ -1033,7 +1267,8 @@ pbmc6k-1
 </tbody>
 </table>
 <p>The names of the reducedDims of the <code>SingleCellExperiment</code> object are stored in the <code>reducedDims</code> slot.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu">reducedDims</span>(<span class="no">pbmc.combined</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit">
+<span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></pre></div>
 <pre><code>## List of length 6
 ## names(6): UMAP scrublet_TSNE ... decontX_pbmc6k_UMAP decontX_pbmc3k_UMAP</code></pre>
 <p><br></p>
@@ -1050,8 +1285,10 @@ pbmc6k-1
 <a href="#runpercellqc" class="anchor"></a>runPerCellQC</h5>
 <p>SingleCellTK utilizes the <a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a> package to compute cell-level QC metrics.</p>
 <p>The wrapper function plotRunPerCellQCResults can be used to plot the general QC outputs.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">runpercellqc.results</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="no">sample.vector</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>, <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">8</span>, <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">9</span>, <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">20</span>)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">runpercellqc.results</span></pre></body></html></div>
+<div class="sourceCode" id="cb23"><pre class="downlit">
+<span class="va">runpercellqc.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>, axisSize <span class="op">=</span> <span class="fl">8</span>, axisLabelSize <span class="op">=</span> <span class="fl">9</span>, titleSize <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit">
+<span class="va">runpercellqc.results</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
 </div>
 </div>
@@ -1065,21 +1302,24 @@ pbmc6k-1
 <p><a href="https://github.com/swolock/scrublet/blob/master/examples/scrublet_basics.ipynb">Scrublet</a> aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.</p>
 <p>The wrapper function <code>plotScrubletResults</code> can be used to plot the results from the Scrublet algorithm.</p>
 <p>The names of the reducedDims of the <code>SingleCellExperiment</code> object are stored in the <code>reducedDims</code> slot. Here, we will use the UMAP coordinates generated from <code>getUMAP</code> above.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu">reducedDims</span>(<span class="no">pbmc.combined</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb25"><pre class="downlit">
+<span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></pre></div>
 <pre><code>## List of length 6
 ## names(6): UMAP scrublet_TSNE ... decontX_pbmc6k_UMAP decontX_pbmc3k_UMAP</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">scrublet.results</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotScrubletResults.html">plotScrubletResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">scrublet.results</span></pre></body></html></div>
+<div class="sourceCode" id="cb27"><pre class="downlit">
+<span class="va">scrublet.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScrubletResults.html">plotScrubletResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb28"><pre class="downlit">
+<span class="va">scrublet.results</span> </pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_scrublet-1.png" width="960"></p>
 </div>
 <div id="doubletcells" class="section level5">
@@ -1087,16 +1327,18 @@ pbmc6k-1
 <a href="#doubletcells" class="anchor"></a>DoubletCells</h5>
 <p><a href="https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html">DoubletCells</a> is a doublet detection algorithm in the scran package. DoubletCells aims to detect doublets by creating a simulated doublet from existing cells and projecting it to the same PCA space as the cells.</p>
 <p>The wrapper function plotDoubletCellsResults can be used to plot the QC outputs from the DoubletCells algorithm.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">doubletcells.results</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletCellsResults.html">plotDoubletCellsResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">doubletcells.results</span></pre></body></html></div>
+<div class="sourceCode" id="cb29"><pre class="downlit">
+<span class="va">doubletcells.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletCellsResults.html">plotDoubletCellsResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb30"><pre class="downlit">
+<span class="va">doubletcells.results</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_doubletcells-1.png" width="960"></p>
 </div>
 <div id="doubletfinder" class="section level5">
@@ -1104,18 +1346,20 @@ pbmc6k-1
 <a href="#doubletfinder" class="anchor"></a>DoubletFinder</h5>
 <p><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder">DoubletFinder</a> is a doublet detection algorithm which depends on the single cell analysis package Seurat.</p>
 <p>The wrapper function plotDoubletFinderResults can be used to plot the QC outputs from the DoubletFinder algorithm.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">doubletFinderResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletFinderResults.html">plotDoubletFinderResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>,
-  <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">doubletFinderResults</span></pre></body></html></div>
+<div class="sourceCode" id="cb31"><pre class="downlit">
+<span class="va">doubletFinderResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletFinderResults.html">plotDoubletFinderResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
+  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit">
+<span class="va">doubletFinderResults</span> </pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_doubletfinder-1.png" width="1056"></p>
 </div>
 <div id="scds-cxds" class="section level5">
@@ -1123,17 +1367,19 @@ pbmc6k-1
 <a href="#scds-cxds" class="anchor"></a>SCDS, CXDS</h5>
 <p>CXDS, or co-expression based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which employs a binomial model for the co-expression of pairs of genes to determine doublets.</p>
 <p>The wrapper function <code>plotCxdsResults</code> can be used to plot the QC outputs from the CXDS algorithm.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">cxdsResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotCxdsResults.html">plotCxdsResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">cxdsResults</span></pre></body></html></div>
+<div class="sourceCode" id="cb33"><pre class="downlit">
+<span class="va">cxdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotCxdsResults.html">plotCxdsResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit">
+<span class="va">cxdsResults</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_cxds-1.png" width="1056"></p>
 </div>
 <div id="scds-bcds" class="section level5">
@@ -1141,17 +1387,19 @@ pbmc6k-1
 <a href="#scds-bcds" class="anchor"></a>SCDS, BCDS</h5>
 <p>BCDS, or binary classification based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which uses a binary classification approach to determine doublets.</p>
 <p>The wrapper function plotBCDSResults can be used to plot the QC outputs from the BCDS algorithm</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">bcdsResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotBcdsResults.html">plotBcdsResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">bcdsResults</span></pre></body></html></div>
+<div class="sourceCode" id="cb35"><pre class="downlit">
+<span class="va">bcdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotBcdsResults.html">plotBcdsResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit">
+<span class="va">bcdsResults</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_bcds-1.png" width="1056"></p>
 </div>
 <div id="scds-cxds-bcds-hybrid" class="section level5">
@@ -1159,16 +1407,18 @@ pbmc6k-1
 <a href="#scds-cxds-bcds-hybrid" class="anchor"></a>SCDS, CXDS-BCDS hybrid</h5>
 <p>The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms from the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package.</p>
 <p>The wrapper function plotScdsHybridResults can be used to plot the QC outputs from the CXDS-BCDS hybrid algorithm.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">bcdsCxdsHybridResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotScdsHybridResults.html">plotScdsHybridResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">bcdsCxdsHybridResults</span></pre></body></html></div>
+<div class="sourceCode" id="cb37"><pre class="downlit">
+<span class="va">bcdsCxdsHybridResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScdsHybridResults.html">plotScdsHybridResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit">
+<span class="va">bcdsCxdsHybridResults</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/plot_umap_hybrid-1.png" width="1056"></p>
 </div>
 </div>
@@ -1180,16 +1430,18 @@ pbmc6k-1
 <a href="#decontx" class="anchor"></a>DecontX</h5>
 <p>In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, available from the <a href="https://bioconductor.org/packages/release/bioc/html/celda.html">celda</a>, is a Bayesian method for the identification of the contamination level at a cellular level.</p>
 <p>The wrapper function plotDecontXResults can be used to plot the QC outputs from the DecontX algorithm.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">decontxResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"UMAP"</span>, <span class="kw">combinePlot</span> <span class="kw">=</span> <span class="st">"all"</span>,
-  <span class="kw">titleSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisLabelSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">axisSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendSize</span> <span class="kw">=</span> <span class="fl">13</span>,
-  <span class="kw">legendTitleSize</span> <span class="kw">=</span> <span class="fl">13</span>
-)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">decontxResults</span></pre></body></html></div>
+<div class="sourceCode" id="cb39"><pre class="downlit">
+<span class="va">decontxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
+  titleSize <span class="op">=</span> <span class="fl">13</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
+  axisSize <span class="op">=</span> <span class="fl">13</span>,
+  legendSize <span class="op">=</span> <span class="fl">13</span>,
+  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
+<span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb40"><pre class="downlit">
+<span class="va">decontxResults</span></pre></div>
 <p><img src="run_qcConsole_files/figure-html/plots_umap_decontx-1.png" width="864"></p>
 </div>
 </div>
@@ -1198,17 +1450,22 @@ pbmc6k-1
 <h3 class="hasAnchor">
 <a href="#filtering-the-dataset-1" class="anchor"></a>Filtering the dataset</h3>
 <p>SingleCellExperiment objects can be subset by its colData using <code>subsetSCECols</code>. The usage of each argument is described in the <strong>Quality Control of Droplet Counts Data</strong> section above.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">#Before filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc.combined</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb41"><pre class="downlit">
+<span class="co">#Before filtering:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></pre></div>
 <pre><code>## [1] 32738  1000</code></pre>
 <p>Remove barcodes with high mitochondrial gene expression:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc.combined</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'subsets_mito_percent &lt; 20'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb43"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'subsets_mito_percent &lt; 20'</span><span class="op">)</span></pre></div>
 <p>Remove detected doublets from Scrublet:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc.combined</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'scrublet_call == FALSE'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb44"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'scrublet_call == FALSE'</span><span class="op">)</span></pre></div>
 <p>Remove cells with high levels of ambient RNA contamination:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span>(<span class="no">pbmc.combined</span>, <span class="kw">colData</span> <span class="kw">=</span> <span class="st">'decontX_contamination &lt; 0.5'</span>)</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="co">#After filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">pbmc.combined</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb45"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'decontX_contamination &lt; 0.5'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb46"><pre class="downlit">
+<span class="co">#After filtering:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></pre></div>
 <pre><code>## [1] 32738   989</code></pre>
 </div>
 <div id="running-individual-qc-methods-1" class="section level3">
@@ -1226,10 +1483,11 @@ pbmc6k-1
 <p><code>detected</code> contains the total number of features for each cell.</p>
 <p><code>percent_top_X</code> contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.</p>
 <p>The <code>subsets_</code> columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named <code>mito</code> was used, <code>subsets_mito_sum</code> would contains the total number of mitochondrial counts for each cell.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
-  <span class="kw">collectionName</span> <span class="kw">=</span> <span class="st">"mito"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb48"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></pre></div>
 </div>
 <div id="runscrublet" class="section level4">
 <h4 class="hasAnchor">
@@ -1238,83 +1496,91 @@ pbmc6k-1
 <p>The <code>sample</code> parameter indicates what sample each cell originated from. It can be set to <code>NULL</code> if all cells in the dataset came from the same sample.</p>
 <p>Scrublet also has a large set of parameters that the user can adjust; please refer to the Scrublet website for more details.</p>
 <p>The Scrublet outputs are <code>scrublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet, and the <code>scrublet_label</code>, which is the assignment of whether the cell is a doublet.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runScrublet.html">runScrublet</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb49"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScrublet.html">runScrublet</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="rundoubletcells" class="section level4">
 <h4 class="hasAnchor">
 <a href="#rundoubletcells" class="anchor"></a>runDoubletCells</h4>
 <p>The wrapper function <code>runBarcodeRankDrops</code> can be used to separately run the DoubletCells algorithm on its own. The <code>nNeighbors</code> parameter is the number of nearest neighbor used to calculate the density for doublet detection. <code>simDoublets</code> is used to determine the number of simulated doublets used for doublet detection.</p>
 <p>The output of DoubletCells is a <code>scran_doubletCells_Score</code>. The doublet score of a droplet will be higher if the it is deemed likely to be a doublet.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDoubletCells.html">runDoubletCells</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb50"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDoubletCells.html">runDoubletCells</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></pre></div>
 </div>
 <div id="rundoubletfinder" class="section level4">
 <h4 class="hasAnchor">
 <a href="#rundoubletfinder" class="anchor"></a>runDoubletFinder</h4>
 <p>The wrapper function <code>runDoubletFinder</code> can be used to separately run the DoubletFinder algorithm on its own. <code>runDoubletFinder</code> relies on a parameter (in Seurat) called resolution to determine cells that may be doublets. Users will be able to manipulate the resolution parameter through <code>seuratRes</code>. If multiple numeric vectors are stored in <code>seuratRes</code>, there will be multiple label/scores. The <code>seuratNfeatures</code> parameter determines the number of features that is used in the <code>FindVariableFeatures</code> function in Seurat. <code>seuratPcs</code> parameter determines the number of dimensions used in the <code>FindNeighbors</code> function in Seurat. The <code>formationRate</code> parameter is the estimated doublet detection rate in the dataset. aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.</p>
 <p>The DoubletFinder outputs are <code>doubletFinder_doublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet, and the <code>doubletFinder_doublet_label</code>, which is the assignment of whether the cell is a doublet.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDoubletFinder.html">runDoubletFinder</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>,
-  <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">seuratRes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.0</span>), <span class="kw">seuratPcs</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">15</span>,
-  <span class="kw">seuratNfeatures</span> <span class="kw">=</span> <span class="fl">2000</span>,
-  <span class="kw">formationRate</span> <span class="kw">=</span> <span class="fl">0.075</span>, <span class="kw">seed</span> <span class="kw">=</span> <span class="fl">12345</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb51"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDoubletFinder.html">runDoubletFinder</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  seuratRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span>, seuratPcs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,
+  seuratNfeatures <span class="op">=</span> <span class="fl">2000</span>,
+  formationRate <span class="op">=</span> <span class="fl">0.075</span>, seed <span class="op">=</span> <span class="fl">12345</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="runcxds" class="section level4">
 <h4 class="hasAnchor">
 <a href="#runcxds" class="anchor"></a>runCXDS</h4>
 <p>The wrapper function <code>runCxds</code> can be used to separately run the CXDS algorithm on its own. In <code>runCxds</code>, the <code>ntop</code> parameter is the number of top variance genes to consider. The <code>binThresh</code> parameter is the minimum counts a gene needs to have to be included in the analysis. <code>verb</code> determines whether progress messages will be displayed or not. <code>retRes</code> will determine whether the gene pair results should be returned or not. The user may set the estimated number of doublets with estNdbl.</p>
 <p>The output of <code>runCxds</code> is the doublet score, <code>scds_cxds_score</code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCxds.html">runCxds</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">ntop</span> <span class="kw">=</span> <span class="fl">500</span>, <span class="kw">binThresh</span> <span class="kw">=</span> <span class="fl">0</span>,
-  <span class="kw">verb</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">retRes</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">estNdbl</span> <span class="kw">=</span> <span class="fl">FALSE</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb52"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxds.html">runCxds</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  ntop <span class="op">=</span> <span class="fl">500</span>, binThresh <span class="op">=</span> <span class="fl">0</span>,
+  verb <span class="op">=</span> <span class="cn">FALSE</span>, retRes <span class="op">=</span> <span class="cn">FALSE</span>, estNdbl <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="runbcds" class="section level4">
 <h4 class="hasAnchor">
 <a href="#runbcds" class="anchor"></a>runBCDS</h4>
 <p>The wrapper function <code>runBcds</code> can be used to separately run the BCDS algorithm on its own. In <code>runBcds</code>, the <code>ntop</code> parameter is the number of top variance genes to consider. The <code>srat</code> parameter is the ratio between original number of cells and simulated doublets. The <code>nmax</code> parameter is the maximum number of cycles that the algorithm should run through. If set to <code>tune</code>, this will be automatic. The <code>varImp</code> parameter determines if the variable importance should be returned or not.</p>
 <p>The output of <code>runBcds</code> is scds_bcds_score, which is the likelihood that a cell is a doublet.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runBcds.html">runBcds</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">seed</span> <span class="kw">=</span> <span class="fl">12345</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">ntop</span> <span class="kw">=</span> <span class="fl">500</span>, <span class="kw">srat</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">nmax</span> <span class="kw">=</span> <span class="st">"tune"</span>, <span class="kw">varImp</span> <span class="kw">=</span> <span class="fl">FALSE</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb53"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runBcds.html">runBcds</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, seed <span class="op">=</span> <span class="fl">12345</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  ntop <span class="op">=</span> <span class="fl">500</span>, srat <span class="op">=</span> <span class="fl">1</span>, nmax <span class="op">=</span> <span class="st">"tune"</span>, varImp <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="runcxdsbcdshybrid" class="section level4">
 <h4 class="hasAnchor">
 <a href="#runcxdsbcdshybrid" class="anchor"></a>runCxdsBcdsHybrid</h4>
 <p>The wrapper function <code>runCxdsBcdsHybrid</code> can be used to separately run the CXDS-BCDS hybrid algorithm on its own.</p>
 <p>All parameters from the <code>runBCDS</code> and <code>runBCDS</code> functions may be applied to this function in the cxdsArgs and bcdsArgs parameters, respectively. The output of <code>runCxdsBcdsHybrid</code> is the doublet score, <code>scds_hybrid_score</code>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span>(
-  <span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>,
-  <span class="kw">seed</span> <span class="kw">=</span> <span class="fl">12345</span>, <span class="kw">nTop</span> <span class="kw">=</span> <span class="fl">500</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb54"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  seed <span class="op">=</span> <span class="fl">12345</span>, nTop <span class="op">=</span> <span class="fl">500</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="rundecontx" class="section level4">
 <h4 class="hasAnchor">
 <a href="#rundecontx" class="anchor"></a>runDecontX</h4>
 <p>The outputs of <code>runDecontX</code> are <code>decontX_contamination</code> and <code>decontX_clusters</code>.</p>
 <p>The wrapper function <code>runDecontX</code> can be used to separately run the DecontX algorithm on its own. <code>decontX_contamination</code> is a numeric vector which characterizes the level of contamination in each cell. Clustering is performed as part of the <code>runDecontX</code> algorithm. <code>decontX_clusters</code> is the resulting cluster assignment, which can also be labeled on the plot.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">pbmc.combined</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDecontX.html">runDecontX</a></span>(<span class="no">pbmc.combined</span>, <span class="kw">sample</span> <span class="kw">=</span> <span class="fu">colData</span>(<span class="no">pbmc.combined</span>)$<span class="no">sample</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb55"><pre class="downlit">
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDecontX.html">runDecontX</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></pre></div>
 </div>
 </div>
 </div>
 <div id="session-information" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session Information</h1>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
-<pre><code>## R version 3.6.1 (2019-07-05)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS Sierra 10.12.6
+<div class="sourceCode" id="cb56"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<pre><code>## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.7
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -1324,42 +1590,40 @@ pbmc6k-1
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] dplyr_1.0.2                 singleCellTK_1.7.6         
-##  [3] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1
-##  [5] DelayedArray_0.12.1         BiocParallel_1.18.1        
-##  [7] matrixStats_0.55.0          Biobase_2.46.0             
-##  [9] GenomicRanges_1.38.0        GenomeInfoDb_1.22.0        
-## [11] IRanges_2.20.1              S4Vectors_0.24.1           
-## [13] BiocGenerics_0.32.0        
+##  [1] dplyr_1.0.2                 singleCellTK_1.99.1        
+##  [3] SingleCellExperiment_1.10.1 SummarizedExperiment_1.18.2
+##  [5] DelayedArray_0.14.1         matrixStats_0.57.0         
+##  [7] Biobase_2.48.0              GenomicRanges_1.40.0       
+##  [9] GenomeInfoDb_1.24.2         IRanges_2.22.2             
+## [11] S4Vectors_0.26.1            BiocGenerics_0.34.0        
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-6           fs_1.3.1               webshot_0.5.2         
-##  [4] httr_1.4.1             rprojroot_1.3-2        tools_3.6.1           
-##  [7] backports_1.1.5        R6_2.4.1               HDF5Array_1.14.1      
-## [10] lazyeval_0.2.2         colorspace_1.4-1       withr_2.1.2           
-## [13] tidyselect_1.1.0       compiler_3.6.1         rvest_0.3.5           
-## [16] xml2_1.3.2             desc_1.2.0             labeling_0.3          
-## [19] scales_1.1.0           readr_1.3.1            pkgdown_1.5.1         
-## [22] stringr_1.4.0          digest_0.6.23          rmarkdown_2.3         
-## [25] R.utils_2.9.2          XVector_0.26.0         pkgconfig_2.0.3       
-## [28] htmltools_0.4.0        limma_3.42.0           highr_0.8             
-## [31] rlang_0.4.7            rstudioapi_0.10        farver_2.0.1          
-## [34] generics_0.0.2         jsonlite_1.6           R.oo_1.23.0           
-## [37] RCurl_1.95-4.12        magrittr_1.5           kableExtra_1.1.0      
-## [40] GenomeInfoDbData_1.2.2 Matrix_1.2-18          Rcpp_1.0.3            
-## [43] munsell_0.5.0          Rhdf5lib_1.8.0         reticulate_1.14       
-## [46] lifecycle_0.2.0        R.methodsS3_1.7.1      stringi_1.4.3         
-## [49] yaml_2.2.1             edgeR_3.28.0           MASS_7.3-51.5         
-## [52] zlibbioc_1.32.0        rhdf5_2.30.1           plyr_1.8.5            
-## [55] grid_3.6.1             ggrepel_0.8.1          dqrng_0.2.1           
-## [58] crayon_1.3.4           lattice_0.20-38        cowplot_1.0.0         
-## [61] hms_0.5.2              locfit_1.5-9.1         knitr_1.29            
-## [64] pillar_1.4.3           reshape2_1.4.3         glue_1.4.2            
-## [67] evaluate_0.14          vctrs_0.3.4            gtable_0.3.0          
-## [70] purrr_0.3.3            assertthat_0.2.1       ggplot2_3.2.1         
-## [73] xfun_0.16              DropletUtils_1.6.1     GSVAdata_1.22.0       
-## [76] viridisLite_0.3.0      tibble_3.0.3           memoise_1.1.0         
-## [79] ellipsis_0.3.0</code></pre>
+##  [1] httr_1.4.2             edgeR_3.30.3           viridisLite_0.3.0     
+##  [4] jsonlite_1.7.1         R.utils_2.10.1         assertthat_0.2.1      
+##  [7] highr_0.8              dqrng_0.2.1            GenomeInfoDbData_1.2.3
+## [10] ggrepel_0.8.2          yaml_2.2.1             pillar_1.4.6          
+## [13] backports_1.1.10       lattice_0.20-41        glue_1.4.2            
+## [16] limma_3.44.3           reticulate_1.16        digest_0.6.25         
+## [19] XVector_0.28.0         rvest_0.3.6            GSVAdata_1.24.0       
+## [22] colorspace_1.4-1       cowplot_1.1.0          htmltools_0.5.0       
+## [25] Matrix_1.2-18          R.oo_1.24.0            pkgconfig_2.0.3       
+## [28] zlibbioc_1.34.0        purrr_0.3.4            webshot_0.5.2         
+## [31] scales_1.1.1           HDF5Array_1.16.1       BiocParallel_1.22.0   
+## [34] tibble_3.0.4           farver_2.0.3           ggplot2_3.3.2         
+## [37] generics_0.0.2         ellipsis_0.3.1         withr_2.3.0           
+## [40] magrittr_1.5           crayon_1.3.4           memoise_1.1.0         
+## [43] evaluate_0.14          R.methodsS3_1.8.1      fs_1.5.0              
+## [46] xml2_1.3.2             textshaping_0.1.2      tools_4.0.3           
+## [49] lifecycle_0.2.0        stringr_1.4.0          Rhdf5lib_1.10.1       
+## [52] DropletUtils_1.8.0     munsell_0.5.0          locfit_1.5-9.4        
+## [55] kableExtra_1.2.1       compiler_4.0.3         pkgdown_1.6.1         
+## [58] systemfonts_0.3.2      rlang_0.4.8            rhdf5_2.32.4          
+## [61] grid_4.0.3             RCurl_1.98-1.2         rstudioapi_0.11       
+## [64] labeling_0.3           bitops_1.0-6           rmarkdown_2.4         
+## [67] gtable_0.3.0           R6_2.4.1               knitr_1.30            
+## [70] rprojroot_1.3-2        ragg_0.4.0             desc_1.2.0            
+## [73] stringi_1.5.3          Rcpp_1.0.5             vctrs_0.3.4           
+## [76] tidyselect_1.1.0       xfun_0.18</code></pre>
 </div>
   </div>
 
@@ -1378,7 +1642,7 @@ pbmc6k-1
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
