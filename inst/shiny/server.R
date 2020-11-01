@@ -1980,12 +1980,14 @@ shinyServer(function(input, output, session) {
                   if (input$dimRedAssayType == 1) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
-                                          reducedDimName = dimrednamesave)
+                                          reducedDimName = dimrednamesave,
+                                          ndim = input$dimRedNumberDims)
                   } else if (input$dimRedAssayType == 2) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAltExpAssay,
                                           useAltExp = input$dimRedAltExpSelect,
-                                          reducedDimName = dimrednamesave)
+                                          reducedDimName = dimrednamesave,
+                                          ndim = input$dimRedNumberDims)
                   }
                 } else if (input$dimRedPlotMethod == "tSNE"){
                   if (input$dimRedAssayType == 1) {
