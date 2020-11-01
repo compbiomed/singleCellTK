@@ -63,6 +63,33 @@ shinyPanelFS_DimRed <- fluidPage(
       "Dimensionality Reduction",
       tabsetPanel(      
         tabPanel("PCA/ICA",
+                 tabsetPanel(
+                   tabPanel("PCA",
+                            fluidRow(
+                              column(4,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Options",
+                                                    actionButton("asd23", label = "23ads")
+                                                    ),
+                                              panel(heading = "Available reducedDims",
+                                                    actionButton("asd2342", label = "asd233")
+                                                    )
+                                              )
+                                     )),
+                              column(8,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Plot",
+                                                    plotlyOutput(outputId = "plot_dimRed_pca")
+                                                    )
+                                              )
+                                     )
+                                     )
+                            )),
+                   tabPanel("ICA",
+                            textOutput("asdw2"))
+                 ),
                  # SHINYJS COLLAPSE --------------------------
                  # Section 1 - Assay Settings
                  # open by default
@@ -172,7 +199,12 @@ shinyPanelFS_DimRed <- fluidPage(
                  )
                  ),
         tabPanel("tSNE/UMAP",
-                 actionButton("asd", "asdd"))
+                 tabsetPanel(
+                   tabPanel("tSNE",
+                            textOutput("asd44")),
+                   tabPanel("UMAP",
+                            textOutput("asdw2"))
+                 ))
         )
     )
   )
