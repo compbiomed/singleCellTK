@@ -69,26 +69,95 @@ shinyPanelFS_DimRed <- fluidPage(
                               column(4,
                                      fluidRow(
                                        column(12,
-                                              panel(heading = "Options",
-                                                    actionButton("asd23", label = "23ads")
+                                              panel(heading = "PCA Options",
+                                                    radioButtons(
+                                                      inputId = "dimRedPCA_assayType",
+                                                      label = "Select assay type:",
+                                                      choices = c("Use full-sized assay",
+                                                                  "Use subset"),
+                                                      selected = "Use full-sized assay"
                                                     ),
-                                              panel(heading = "Available reducedDims",
-                                                    actionButton("asd2342", label = "asd233")
+                                                    selectInput(
+                                                      inputId = "dimRedPCA_assayName",
+                                                      label = "Select assay:",
+                                                      choices = NULL
+                                                    ),
+                                                    selectInput(
+                                                      inputId = "dimRedPCA_method",
+                                                      label = "Select method:",
+                                                      choices = c("Scran - PCA",
+                                                                  "Seurat - PCA")
+                                                    ),
+                                                    numericInput(
+                                                      inputId = "dimRedPCA_noDims",
+                                                      label = "Number of dimensions:",
+                                                      value = 50
+                                                    ),
+                                                    textInput(
+                                                      inputId = "dimRedPCA_redDimName",
+                                                      label = "Name for reducedDim:"
+                                                    )
+                                                    ),
+                                              panel(heading = "reducedDims Options",
+                                                    h4("Available reducedDims:"),
+                                                    br(),
+                                                    h4("Remove reducedDims:"),
+                                                    selectInput(
+                                                      inputId = "dimRedPCA_selectRemoveDimRed",
+                                                      label = "Select reducedDim to remove:",
+                                                      choices = NULL
+                                                    ),
+                                                    actionButton(
+                                                      inputId = "dimRedPCA_runRemoveDimRed",
+                                                      label = "Delete"
+                                                    )
                                                     )
                                               )
                                      )),
                               column(8,
                                      fluidRow(
                                        column(12,
-                                              panel(heading = "Plot",
-                                                    plotlyOutput(outputId = "plot_dimRed_pca")
-                                                    )
+                                              tabsetPanel(id = "dimRedPCA_plotTabset", type = "tabs",
+                                                          tabPanel(
+                                                            title = "PCA Plot",
+                                                            panel(heading = "Plot",
+                                                                  plotlyOutput(outputId = "plot_dimRed_pca")
+                                                            )
+                                                          ),
+                                                          tabPanel(
+                                                            title = "ElbowPlot",
+                                                            panel(heading = "Plot",
+                                                                  plotlyOutput(outputId = "plot_dimRed_pcaElbow")
+                                                            )
+                                                          )
+                                              )
                                               )
                                      )
                                      )
                             )),
                    tabPanel("ICA",
-                            textOutput("asdw2"))
+                            fluidRow(
+                              column(4,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Options",
+                                                    actionButton("asd235", label = "23ads")
+                                              ),
+                                              panel(heading = "Available reducedDims",
+                                                    actionButton("asd23426", label = "asd233")
+                                              )
+                                       )
+                                     )),
+                              column(8,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Plot",
+                                                    plotlyOutput(outputId = "plot_dimRed_ica")
+                                              )
+                                       )
+                                     )
+                              )
+                            ))
                  ),
                  # SHINYJS COLLAPSE --------------------------
                  # Section 1 - Assay Settings
@@ -201,9 +270,51 @@ shinyPanelFS_DimRed <- fluidPage(
         tabPanel("tSNE/UMAP",
                  tabsetPanel(
                    tabPanel("tSNE",
-                            textOutput("asd44")),
+                            fluidRow(
+                              column(4,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Options",
+                                                    actionButton("asd23", label = "23ads")
+                                              ),
+                                              panel(heading = "Available reducedDims",
+                                                    actionButton("asd2342", label = "asd233")
+                                              )
+                                       )
+                                     )),
+                              column(8,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Plot",
+                                                    plotlyOutput(outputId = "plot_dimRed_tsne")
+                                              )
+                                       )
+                                     )
+                              )
+                            )),
                    tabPanel("UMAP",
-                            textOutput("asdw2"))
+                            fluidRow(
+                              column(4,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Options",
+                                                    actionButton("asd235", label = "23ads")
+                                              ),
+                                              panel(heading = "Available reducedDims",
+                                                    actionButton("asd23426", label = "asd233")
+                                              )
+                                       )
+                                     )),
+                              column(8,
+                                     fluidRow(
+                                       column(12,
+                                              panel(heading = "Plot",
+                                                    plotlyOutput(outputId = "plot_dimRed_umap")
+                                              )
+                                       )
+                                     )
+                              )
+                            ))
                  ))
         )
     )
