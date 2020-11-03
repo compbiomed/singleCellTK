@@ -21,6 +21,17 @@ shinyPanelDiffex <- fluidPage(
             selectInput("deAssay", "Select Assay:", currassays)
           )
         ),
+        useShinyjs(),
+        actionButton("deViewThresh", label = "View Thresholding"),
+        shinyjs::hidden(
+          wellPanel(
+            id = "deThreshpanel",
+            textOutput("deSanityWarnThresh"),
+            uiOutput("deThreshPlotDiv"),
+            #plotOutput("deThreshplot"),
+            actionButton("deHideThresh", label = "Hide")
+            )
+          ),
         h3("Condition Setting"),
         p("Three approaches of setting provided for flexibility. ",
           style = "color:grey;"),
@@ -165,11 +176,29 @@ shinyPanelDiffex <- fluidPage(
       uiOutput("deResSelUI"),
       tabsetPanel(
         tabPanel(
-          "Adaptive thresholding",
+          "Heatmap",
           panel(
-            p("This figure is for checking the selected assay, but not the generated result."),
-            textOutput("deSanityWarnThresh"),
-            plotOutput("deThreshplot", height = 800)
+            sidebarLayout(
+              sidebarPanel(
+                checkboxInput('deHMDoLog', "Do log transformation", FALSE),
+                checkboxInput('deHMPosOnly', "Only up-regulated",
+                              value = FALSE),
+                numericInput("deHMFC", "Aboslute log2FC value greater than:",
+                             value = 1, min = 0, step = 0.05),
+                numericInput("deHMFDR", "FDR value less than", value = 0.05,
+                             max = 1, step = 0.01),
+                selectInput("deHMcolData", "Additional cell annotation",
+                            choices = clusterChoice, multiple = TRUE),
+                selectInput("deHMrowData", "Additional feature annotation",
+                            choices = featureChoice, multiple = TRUE),
+                uiOutput('deHMSplitColUI'),
+                uiOutput('deHMSplitRowUI'),
+                withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
+              ),
+              mainPanel(
+                plotOutput("deHeatmap", height = "600px")
+              )
+            )
           )
         ),
         tabPanel("Results Table",
@@ -244,32 +273,6 @@ shinyPanelDiffex <- fluidPage(
           ),
           textOutput("deSanityWarnReg"),
           plotOutput("deRegPlot", height = "800px")
-        ),
-        tabPanel(
-          "Heatmap",
-          panel(
-            sidebarLayout(
-              sidebarPanel(
-                checkboxInput('deHMDoLog', "Do log transformation", FALSE),
-                checkboxInput('deHMPosOnly', "Only up-regulated",
-                              value = FALSE),
-                numericInput("deHMFC", "Aboslute log2FC value greater than:",
-                             value = 1, min = 0, step = 0.05),
-                numericInput("deHMFDR", "FDR value less than", value = 0.05,
-                             max = 1, step = 0.01),
-                selectInput("deHMcolData", "Additional cell annotation",
-                            choices = clusterChoice, multiple = TRUE),
-                selectInput("deHMrowData", "Additional feature annotation",
-                            choices = featureChoice, multiple = TRUE),
-                uiOutput('deHMSplitColUI'),
-                uiOutput('deHMSplitRowUI'),
-                withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
-              ),
-              mainPanel(
-                plotOutput("deHeatmap", height = "600px")
-              )
-            )
-          )
         )
       )
     )

@@ -4305,6 +4305,58 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
+  ## DE - Thresholding Vis ####
+
+  observeEvent(input$deViewThresh, {
+    if (!is.null(vals$counts) &&
+        !is.null(input$deAssay)) {
+      shinyjs::showElement(id= "deThreshpanel")
+    }
+  })
+
+  # Threshold adapting plot
+  observeEvent(input$deAssay, {
+    if(!is.null(vals$counts)){
+      # MAST style sanity check for whether logged or not
+      x <- assay(vals$counts, input$deAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        output$deSanityWarnThresh <- renderText("")
+        isLogged <- TRUE
+      } else {
+        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+        isLogged <- FALSE
+      }
+      output$deThreshPlotDiv <- renderUI({
+        div(
+          style = "height:300px;background-color: yellow;",
+          plotOutput("deThreshplot"))
+      })
+      thres.grob <- plotMASTThresholdGenes(inSCE = vals$counts,
+                                           useAssay = input$deAssay,
+                                           check_sanity = FALSE,
+                                           isLogged = isLogged,
+                                           doPlot = FALSE)
+      nSub <- tail(strsplit(thres.grob$childrenOrder, split = '-'),
+                   n = 1)[[1]][3]
+      plotHeight <- ceiling(as.numeric(nSub) / 4) * 240
+
+      output$deThreshPlotDiv <- renderUI({
+        div(
+          style = paste0("height: ", plotHeight, "px;background-color: yellow;"),
+          plotOutput("deThreshplot"))
+      })
+      output$deThreshplot <- renderPlot({
+        grid.draw(thres.grob)
+      }, height = plotHeight)
+    }
+
+  })
+
+  observeEvent(input$deHideThresh, {
+    shinyjs::hideElement(id= "deThreshpanel")
+  })
+
   ## DE - condition determination method1 ####
   output$deC1G1UI <- renderUI({
     if(!is.null(vals$counts) &
@@ -4606,27 +4658,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Threshold adapting plot
-  observeEvent(input$deAssay, {
-    if(!is.null(vals$counts)){
-      # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, input$deAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnThresh <- renderText("")
-        isLogged <- TRUE
-      } else {
-        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
-      }
-      output$deThreshplot <- renderPlot({
-        plotMASTThresholdGenes(inSCE = vals$counts,
-                               useAssay = input$deAssay,
-                               check_sanity = FALSE, isLogged = isLogged)
-      }, height = 800)
-    }
-  })
-
   # Data table
   output$deResult <- DT::renderDataTable({
     if(!is.null(input$deResSel)){
@@ -4895,7 +4926,7 @@ shinyServer(function(input, output, session) {
         HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
       }
   })
-  
+
   observeEvent(input$navbar, {
     if(!is.null(vals$counts)){
       if(input$navbar == "GSVA"){

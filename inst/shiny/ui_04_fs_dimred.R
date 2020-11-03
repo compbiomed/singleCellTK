@@ -112,30 +112,29 @@ shinyPanelFS_DimRed <- fluidPage(
                       id = "c-collapse-run-options", class = "collapse",
                       conditionalPanel(
                         condition = "input.dimRedPlotMethod == 'PCA'",
-                        HTML('<p style="color:rgb(255,0,0);">
-                                No parameters available for PCA
-                              </p>')
+                        numericInput("pcaNDim", "Number of Dimension", 50,
+                                     min = 2, step = 1),
                       ),
                       conditionalPanel(
                         condition = "input.dimRedPlotMethod == 'UMAP'",
                         checkboxInput("logNormUMAP", " Log Normalize the data",
                                       TRUE),
-                        sliderInput("iterUMAP", "# of iterations", min = 50,
-                                    max = 500, value = 200),
-                        sliderInput("neighborsUMAP", "# of nearest neighbors",
-                                    min = 2, max = 100, value = 5),
-                        sliderInput("mindistUMAP",
-                                    "minimum distance between points",
-                                    min = 0.001, max = 0.1, value = 0.01),
+                        numericInput("iterUMAP", "# of iterations", min = 50,
+                                     max = 500, value = 200),
+                        numericInput("neighborsUMAP", "# of nearest neighbors",
+                                     min = 2, max = 100, value = 5),
+                        numericInput("mindistUMAP",
+                                     "minimum distance between points",
+                                     min = 0.001, max = 0.1, value = 0.01),
                         numericInput("alphaUMAP", "learning rate(alpha)",
                                      value = 1)
                       ),
                       conditionalPanel(
                         condition = "input.dimRedPlotMethod == 'tSNE'",
-                        sliderInput("iterTSNE", "# of iterations", min = 100,
-                                    max = 2000, value = 1000),
-                        sliderInput("perplexityTSNE", "Perplexity paramter",
-                                    min = 5, max = 50, value = 5)
+                        numericInput("iterTSNE", "# of iterations", min = 100,
+                                     max = 2000, value = 1000),
+                        numericInput("perplexityTSNE", "Perplexity paramter",
+                                     min = 5, max = 50, value = 5)
                       )
                     )
                   )
