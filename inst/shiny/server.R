@@ -4327,11 +4327,6 @@ shinyServer(function(input, output, session) {
         output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
         isLogged <- FALSE
       }
-      output$deThreshPlotDiv <- renderUI({
-        div(
-          style = "height:300px;background-color: yellow;",
-          plotOutput("deThreshplot"))
-      })
       thres.grob <- plotMASTThresholdGenes(inSCE = vals$counts,
                                            useAssay = input$deAssay,
                                            check_sanity = FALSE,
@@ -4343,7 +4338,7 @@ shinyServer(function(input, output, session) {
 
       output$deThreshPlotDiv <- renderUI({
         div(
-          style = paste0("height: ", plotHeight, "px;background-color: yellow;"),
+          style = paste0("height: ", plotHeight, "px;"),
           plotOutput("deThreshplot"))
       })
       output$deThreshplot <- renderPlot({
@@ -4623,6 +4618,19 @@ shinyServer(function(input, output, session) {
         text = "Differential expression analysis completed.",
         type = "success"
       )
+      sce <- vals$counts
+      useResult <- input$deAnalysisName
+      onlyPos <- input$dePosOnly
+      log2fcThreshold <- input$deFCThresh
+      fdrThreshold <- input$deFDRThresh
+      colSplitBy <- "condition"
+      rowSplitBy <- "regulation"
+      output$deHeatmap <- renderPlot({
+        plotDEGHeatmap(inSCE = sce, useResult = useResult,
+                       onlyPos = onlyPos, log2fcThreshold = log2fcThreshold,
+                       fdrThreshold = fdrThreshold, colSplitBy = colSplitBy,
+                       rowSplitBy = rowSplitBy)
+      })
     })
   }
 
@@ -4863,18 +4871,9 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$fmHMAssayUI <- renderUI({
-    if(!is.null(vals$counts)){
-      allAssay <- assayNames(vals$counts)
-      selectInput('fmHMAssay', "Assay to plot", allAssay,
-                  selected = input$fmAssay)
-    }
-  })
-
   observeEvent(input$plotFM, {
     if(!is.null(vals$counts) &&
-       'findMarker' %in% names(metadata(vals$counts)) &&
-       !is.null(input$fmHMAssay)){
+       'findMarker' %in% names(metadata(vals$counts))){
       withBusyIndicatorServer("plotFM", {
         if(isTRUE(input$fmUseTopN)
            && is.na(input$fmTopN)){
@@ -4887,7 +4886,6 @@ shinyServer(function(input, output, session) {
           stop("FDR must be a numeric non-empty value!")
         }
       inSCE <- vals$counts
-      useAssay <- input$fmHMAssay
       orderBy <- input$fmHMOrder
       log2fcThreshold <- input$fmHMFC
       fdrThreshold <- input$fmHMFDR
@@ -4902,7 +4900,7 @@ shinyServer(function(input, output, session) {
       # Take value before rendering plot, so that the plot doesnt auto re-render
       # while we tweak the parameter
       output$fmHeatmap <- renderPlot({
-        plotMarkerDiffExp(inSCE = inSCE, useAssay = useAssay, orderBy = orderBy,
+        plotMarkerDiffExp(inSCE = inSCE, orderBy = orderBy,
                           log2fcThreshold = log2fcThreshold, topN = topN,
                           fdrThreshold = fdrThreshold, decreasing = decreasing,
                           rowDataName = rowDataName, colDataName = colDataName)

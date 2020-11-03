@@ -6,7 +6,6 @@
 \usage{
 plotMarkerDiffExp(
   inSCE,
-  useAssay = "logcounts",
   orderBy = "size",
   log2fcThreshold = 1,
   fdrThreshold = 0.05,
@@ -25,9 +24,6 @@ plotMarkerDiffExp(
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
-
-\item{useAssay}{character. A string specifying which assay to use for the
-expression values. Default \code{"logcounts"}.}
 
 \item{orderBy}{The ordering method of the clusters on the splitted heatmap.
 Can be chosen from \code{"size"} or \code{"name"}, specified with vector of

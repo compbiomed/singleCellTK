@@ -6,8 +6,8 @@
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
 #' @param method A single character for specific differential expression
-#' analysis method. Choose from 'MAST', 'DESeq2', 'Limma', 'ANOVA'. Default
-#' \code{"MAST"}.
+#' analysis method. Choose from \code{'MAST'}, \code{'DESeq2'}, \code{'Limma'}.
+#' Default \code{"MAST"}.
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
@@ -24,7 +24,8 @@
 #' regulated DEGs for each cluster.
 #' @export
 #' @author Yichen Wang
-findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
+findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
+                              method = c('MAST', "DESeq2", "Limma"),
                               cluster = 'cluster', covariates = NULL,
                               log2fcThreshold = 0.25, fdrThreshold = 0.05){
     # Input checks
@@ -34,12 +35,8 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
         stop('"useAssay" name: ', useAssay, ' not found.')
     }
-    if(!method %in% c("MAST", "DESeq2", "Limma")){
-        stop('Method: "', method, '" not accepted. Choose from ',
-             '"MAST", "DESeq2", "Limma"')
-    } else {
-        message("Running with ", method)
-    }
+    method <- match.arg(method)
+    message("Running with ", method)
     ## Check whether use colData or customized vector/factor
     if(is.character(cluster) && length(cluster) == 1){
         if(!cluster %in% names(SummarizedExperiment::colData(inSCE))){
@@ -94,7 +91,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', method = 'MAST',
         S4Vectors::metadata(inSCE)$diffExp <- NULL
     }
     degFull <- degFull[stats::complete.cases(degFull),]
-
+    attr(degFull, "useAssay") <- useAssay
     S4Vectors::metadata(inSCE)$findMarker <- degFull
     return(inSCE)
 }

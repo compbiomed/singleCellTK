@@ -31,7 +31,6 @@ shinyPanelfindMarker <- fluidPage(
               position = 'right',
               sidebarPanel(
                 shinyjs::useShinyjs(),
-                uiOutput('fmHMAssayUI'),
                 radioButtons('fmHMOrder', "Order blocks by",
                              c("size", "name")),
                 checkboxInput("fmHMdec", "Decreasing", TRUE),

@@ -10,7 +10,7 @@ on each cluster against all the others.}
 findMarkerDiffExp(
   inSCE,
   useAssay = "logcounts",
-  method = "MAST",
+  method = c("MAST", "DESeq2", "Limma"),
   cluster = "cluster",
   covariates = NULL,
   log2fcThreshold = 0.25,
@@ -24,8 +24,8 @@ findMarkerDiffExp(
 MAST calculations. Default \code{"logcounts"}.}
 
 \item{method}{A single character for specific differential expression
-analysis method. Choose from 'MAST', 'DESeq2', 'Limma', 'ANOVA'. Default
-\code{"MAST"}.}
+analysis method. Choose from \code{'MAST'}, \code{'DESeq2'}, \code{'Limma'}.
+Default \code{"MAST"}.}
 
 \item{cluster}{One single character to specify a column in
 \code{colData(inSCE)} for the clustering label. Alternatively, a vector or

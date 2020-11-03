@@ -12,8 +12,6 @@
 #' two annotations. Additional legends can be added and the splitting can be
 #' canceled.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for the
-#' expression values. Default \code{"logcounts"}.
 #' @param log2fcThreshold Only use DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.
@@ -57,7 +55,7 @@
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
 #' @export
-plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
+plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
     log2fcThreshold = 1, fdrThreshold = 0.05, topN = 10, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
     cellAnnotations = NULL, featureAnnotationColor = NULL,
@@ -88,6 +86,7 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
+    useAssay <- attr(degFull, "useAssay")
     if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
             colnames(degFull)[seq_len(4)])){
         stop('"findMarker" result cannot be interpreted properly')
