@@ -4209,35 +4209,11 @@ shinyServer(function(input, output, session) {
         HVGs <- getTopHVG(inSCE = vals$counts,
                           method = input$hvgMethodFS,
                           n = input$hvgNoFeaturesViewFS)
-        if (input$hvgMethodFS == "vst") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
-          labeling <- "Standardized Variance"
-        } else if (input$hvgMethodFS == "mean.var.plot") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
-          labeling <- "Dispersion"
-        } else if (input$hvgMethodFS == "dispersion") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
-          labeling <- "Dispersion"
-        } else if (input$hvgMethodFS == "modelGeneVar") {
-          x <- rowData(vals$counts)$scran_modelGeneVar_mean
-          y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
-          labeling <- "Variance"
-        }
-        vals$vfplot <- ggplot() +
-          geom_point(aes(x = x, y = y)) +
-          geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                         y = subset(y, rownames(vals$counts) %in% HVGs)),
-                     colour = "red") +
-          geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                         y = subset(y, rownames(vals$counts) %in% HVGs),
-                         label = subset(rownames(vals$counts),
-                                        rownames(vals$counts) %in% HVGs)),
-                     colour = "red",
-                     size = 2) +
-          labs(x = "Mean", y = labeling)
+        vals$vfplot <- plotTopHVG(
+          inSCE =  vals$counts,
+          method = input$hvgMethodFS,
+          hvgList = HVGs
+        )
         output$plotFS <- renderPlot({
           if (!is.null(vals$vfplot)) {
             vals$vfplot
