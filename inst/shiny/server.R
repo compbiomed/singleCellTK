@@ -2027,6 +2027,7 @@ shinyServer(function(input, output, session) {
                                            alpha = input$alphaUMAP)
                   }
                 }
+                
                 updateReddimInputs()
               }}
             )
@@ -2086,6 +2087,24 @@ shinyServer(function(input, output, session) {
         }
       })
     }
+    
+    
+    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
+                                                            panel(heading = "PCA Plot",
+                                                                  plotlyOutput(outputId = "plotDimRed_pca")
+                                                            )
+    ), select = TRUE)
+    
+    
+    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+      redDimName <- gsub(" ", "_", input$dimRedNameInput)
+      output$plotDimRed_pca <- renderPlotly({
+        plotly::ggplotly(plotDimRed(
+          inSCE = vals$counts,
+          useReduction = redDimName
+        ))
+      })
+    })
   })
 
   #-----------------------------------------------------------------------------

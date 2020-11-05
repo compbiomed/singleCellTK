@@ -63,102 +63,56 @@ shinyPanelFS_DimRed <- fluidPage(
       "Dimensionality Reduction",
       tabsetPanel(      
         tabPanel("PCA/ICA",
-                 tabsetPanel(
-                   tabPanel("PCA",
                             fluidRow(
                               column(4,
                                      fluidRow(
                                        column(12,
                                               panel(heading = "PCA Options",
                                                     radioButtons(
-                                                      inputId = "dimRedPCA_assayType",
+                                                      inputId = "dimRedPCAICA_assayType",
                                                       label = "Select assay type:",
                                                       choices = c("Use full-sized assay",
                                                                   "Use subset"),
                                                       selected = "Use full-sized assay"
                                                     ),
                                                     selectInput(
-                                                      inputId = "dimRedPCA_assayName",
+                                                      inputId = "dimRedPCAICA_assayName",
                                                       label = "Select assay:",
                                                       choices = NULL
                                                     ),
                                                     selectInput(
-                                                      inputId = "dimRedPCA_method",
+                                                      inputId = "dimRedPCAICA_method",
                                                       label = "Select method:",
                                                       choices = c("Scran - PCA",
-                                                                  "Seurat - PCA")
+                                                                  "Seurat - PCA",
+                                                                  "Seurat - ICA")
                                                     ),
                                                     numericInput(
-                                                      inputId = "dimRedPCA_noDims",
+                                                      inputId = "dimRedPCAICA_noDims",
                                                       label = "Number of dimensions:",
                                                       value = 50
                                                     ),
                                                     textInput(
-                                                      inputId = "dimRedPCA_redDimName",
+                                                      inputId = "dimRedPCAICA_redDimName",
                                                       label = "Name for reducedDim:"
                                                     )
-                                                    ),
-                                              panel(heading = "reducedDims Options",
-                                                    h4("Available reducedDims:"),
-                                                    br(),
-                                                    h4("Remove reducedDims:"),
-                                                    selectInput(
-                                                      inputId = "dimRedPCA_selectRemoveDimRed",
-                                                      label = "Select reducedDim to remove:",
-                                                      choices = NULL
-                                                    ),
-                                                    actionButton(
-                                                      inputId = "dimRedPCA_runRemoveDimRed",
-                                                      label = "Delete"
-                                                    )
                                                     )
                                               )
                                      )),
                               column(8,
                                      fluidRow(
                                        column(12,
-                                              tabsetPanel(id = "dimRedPCA_plotTabset", type = "tabs",
-                                                          tabPanel(
-                                                            title = "PCA Plot",
-                                                            panel(heading = "Plot",
-                                                                  plotlyOutput(outputId = "plot_dimRed_pca")
-                                                            )
-                                                          ),
-                                                          tabPanel(
-                                                            title = "ElbowPlot",
-                                                            panel(heading = "Plot",
-                                                                  plotlyOutput(outputId = "plot_dimRed_pcaElbow")
-                                                            )
-                                                          )
-                                              )
+                                              #hidden(
+                                                tags$div(
+                                                  class = "seurat_pca_plots", 
+                                                  tabsetPanel(id = "dimRedPCAICA_plotTabset", 
+                                                              type = "tabs"
+                                                              )
+                                                )#)
                                               )
                                      )
                                      )
-                            )),
-                   tabPanel("ICA",
-                            fluidRow(
-                              column(4,
-                                     fluidRow(
-                                       column(12,
-                                              panel(heading = "Options",
-                                                    actionButton("asd235", label = "23ads")
-                                              ),
-                                              panel(heading = "Available reducedDims",
-                                                    actionButton("asd23426", label = "asd233")
-                                              )
-                                       )
-                                     )),
-                              column(8,
-                                     fluidRow(
-                                       column(12,
-                                              panel(heading = "Plot",
-                                                    plotlyOutput(outputId = "plot_dimRed_ica")
-                                              )
-                                       )
-                                     )
-                              )
-                            ))
-                 ),
+                            ),
                  # SHINYJS COLLAPSE --------------------------
                  # Section 1 - Assay Settings
                  # open by default
