@@ -161,6 +161,7 @@ shinyServer(function(input, output, session) {
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInput(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
     updateSelectInput(session, "batchCorrAssay", choices = currassays)
     updateSelectInput(session, "batchCheckAssay", choices = currassays)
     updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
@@ -224,6 +225,7 @@ shinyServer(function(input, output, session) {
     options <- altExpNames(vals$counts)
     updateSelectInput(session, "clustScranSNNAltExp", choices = options)
     updateSelectInput(session, "dimRedAltExpSelect", choices = options)
+    updateSelectInput(session, "dimRedAltExpSelect_tsneUmap", choices = options)
   }
   updateEnrichDB <- function(){
     if (internetConnection){
@@ -2088,6 +2090,9 @@ shinyServer(function(input, output, session) {
       })
     }
     
+    
+    #extra code added by irzam starts here:
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
     
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
                                                             panel(heading = "PCA Plot",
