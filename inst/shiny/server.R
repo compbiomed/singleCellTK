@@ -1962,6 +1962,17 @@ shinyServer(function(input, output, session) {
     }
     textInput('dimRedNameInput', "reducedDim Name:", defaultText)
   })
+  
+  output$dimRedNameUI_tsneUmap <- renderUI({
+    if (input$dimRedAssayType_tsneUmap == 1){
+      defaultText <- paste(input$dimRedAssaySelect_tsneUmap, input$dimRedPlotMethod_tsneUmap,
+                           sep = '_')
+    } else if (input$dimRedAssayType_tsneUmap == 2){
+      defaultText <- paste(input$dimRedAltExpAssay_tsneUmap, input$dimRedPlotMethod_tsneUmap,
+                           sep = '_')
+    }
+    textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
+  })
 
   observeEvent(input$runDimred, {
     if (!is.null(vals$counts)){
@@ -2091,6 +2102,8 @@ shinyServer(function(input, output, session) {
     }
     
     
+    
+    
     #extra code added by irzam starts here:
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
     
@@ -2104,6 +2117,133 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput)
       output$plotDimRed_pca <- renderPlotly({
+        plotly::ggplotly(plotDimRed(
+          inSCE = vals$counts,
+          useReduction = redDimName
+        ))
+      })
+    })
+  })
+  
+  observeEvent(input$runDimred_tsneUmap, {
+    if (!is.null(vals$counts)){
+      withBusyIndicatorServer("runDimred_tsneUmap", {
+        if (input$dimRedNameInput_tsneUmap == ""){
+          shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
+        } #check for named entered and if its a duplicate
+        else if (!is.null(input$dimRedNameInput_tsneUmap)){
+          if (input$dimRedNameInput_tsneUmap %in% names(reducedDims(vals$counts))){
+            shinyalert(
+              "Warning",
+              "Name already exits. Overwrite?",
+              "warning", showCancelButton = TRUE,
+              confirmButtonText = "Overwrite",
+              callbackR = function(x){if(isTRUE(x)){
+                dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+                if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
+                  if (input$dimRedAssayType_tsneUmap == 1) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  }
+                } else {
+                  if (is.na(input$alphaUMAP)) {
+                    stop("Learning rate (alpha) must be a numeric non-empty value!")
+                  }
+                  if (input$dimRedAssayType_tsneUmap == 1) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  }
+                }
+                
+                updateReddimInputs()
+              }}
+            )
+          } else {
+            dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+            if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
+              if (input$dimRedAssayType_tsneUmap == 1) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect_tsneUmap,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              } else if (input$dimRedAssayType_tsneUmap == 2) {
+                vals$counts <- getTSNE(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                       reducedDimName = dimrednamesave,
+                                       perplexity = input$perplexityTSNE,
+                                       n_iterations = input$iterTSNE)
+              }
+            } else {
+              if (is.na(input$alphaUMAP)) {
+                stop("Learning rate (alpha) must be a numeric non-empty value!")
+              }
+              if (input$dimRedAssayType_tsneUmap == 1) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAssaySelect_tsneUmap,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              } else if (input$dimRedAssayType_tsneUmap == 2) {
+                vals$counts <- getUMAP(inSCE = vals$counts,
+                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                       reducedDimName = dimrednamesave,
+                                       nNeighbors = input$neighborsUMAP,
+                                       nIterations = input$iterUMAP,
+                                       minDist = input$mindistUMAP,
+                                       alpha = input$alphaUMAP)
+              }
+            }
+            updateReddimInputs()
+          }
+        }
+      })
+    }
+    
+    
+    
+    
+    #extra code added by irzam starts here:
+    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
+    
+    appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
+                                                            panel(heading = "tSNE Plot",
+                                                                  plotlyOutput(outputId = "plotDimRed_tsneUmap")
+                                                            )
+    ), select = TRUE)
+    
+    
+    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+      redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+      output$plotDimRed_tsneUmap <- renderPlotly({
         plotly::ggplotly(plotDimRed(
           inSCE = vals$counts,
           useReduction = redDimName
