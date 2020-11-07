@@ -418,7 +418,7 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param inSCE (sce) object from which to compute the elbow plot (pca should be computed)
 #' @param significantPC Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.
 #' @param reduction Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.
-#' @param externalReduction Pass an externally computed PCA reduction created by \code{CreateDimReducObject} method.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -456,6 +456,7 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
 #' @param fast See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param combine See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param raster See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -468,9 +469,12 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
 #' }
 #' @return plot object
 #' @export
-seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = NULL, nfeatures = 30, fast = TRUE, combine = TRUE, raster = TRUE) {
+seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = NULL, nfeatures = 30, fast = TRUE, combine = TRUE, raster = TRUE, externalReduction = NULL) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+  }
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }

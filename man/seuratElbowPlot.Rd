@@ -19,7 +19,7 @@ seuratElbowPlot(
 
 \item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
 
-\item{externalReduction}{Pass an externally computed PCA reduction created by \code{CreateDimReducObject} method.}
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object
