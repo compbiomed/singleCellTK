@@ -160,6 +160,7 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
+    updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
     updateSelectInput(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
     updateSelectInput(session, "batchCorrAssay", choices = currassays)
@@ -1699,6 +1700,13 @@ shinyServer(function(input, output, session) {
       data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
     }
   })
+  
+  output$assaysList <- renderTable({
+    req(vals$counts)
+    if (!is.null(vals$counts)){
+      data.table("Assays" = assayNames(vals$counts))
+    }
+  })
 
   observeEvent(input$modifyAssaySelect,{
     if (input$assayModifyAction == "log"){
@@ -1929,14 +1937,20 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$delRedDim, {
     req(vals$counts)
-    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
-                             type = "error")
-    } else {
-      withBusyIndicatorServer("delRedDim", {
-        reducedDim(vals$counts, input$delRedDimType) <- NULL
-        updateReddimInputs()
-      })
+    if(input$rmDataTypeSelect == "assays"){
+      assay(vals$counts, input$delAssayType) <- NULL
+      updateAssayInputs()
+    }
+    else{
+      if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
+        shinyalert::shinyalert("Error!", "reducedDim does not exist!",
+                               type = "error")
+      } else {
+        withBusyIndicatorServer("delRedDim", {
+          reducedDim(vals$counts, input$delRedDimType) <- NULL
+          updateReddimInputs()
+        })
+      }
     }
   })
 
