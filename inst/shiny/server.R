@@ -2105,8 +2105,18 @@ shinyServer(function(input, output, session) {
     
     
     #extra code added by irzam starts here:
+    redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+    new_pca <- CreateDimReducObject(
+      embeddings = redDim, 
+      assay = "RNA",
+      loadings = attr(redDim, "rotation"),
+      stdev = as.numeric(attr(redDim, "percentVar")), 
+      key = "PC_")
+    
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Heatmap Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
     
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
                                                             panel(heading = "PCA Plot",
@@ -2130,13 +2140,7 @@ shinyServer(function(input, output, session) {
                                                           )
       ))
       
-      redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-        new_pca <- CreateDimReducObject(
-          embeddings = redDim, 
-          assay = "RNA",
-          stdev = as.numeric(attr(redDim, "percentVar")), 
-          key = "PC_")
         
         output$plotDimRed_elbow <- renderPlotly({
           seuratElbowPlot(inSCE = vals$counts,
@@ -2177,12 +2181,6 @@ shinyServer(function(input, output, session) {
         ))
         
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          new_pca <- CreateDimReducObject(
-            embeddings = redDim, 
-            assay = "RNA",
-            loadings = attr(redDim, "rotation"),
-            stdev = as.numeric(attr(redDim, "percentVar")), 
-            key = "PC_")
           vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                           useAssay = input$dimRedAssaySelect,
                                                                           useReduction = "pca",
@@ -2198,6 +2196,23 @@ shinyServer(function(input, output, session) {
                               labels = c("PC1", "PC2", "PC3", "PC4"))
           })
         })
+        
+          appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
+                                                              panel(heading = "JackStraw Plot",
+                                                                    plotlyOutput(outputId = "plot_jackstraw_dimRed")
+                                                              )
+          ))
+          
+          withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+            vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                  useAssay = input$dimRedAssaySelect,
+                                                  dims = 10,
+                                                  externalReduction = new_pca)
+            output$plot_jackstraw_dimRed <- renderPlotly({
+              plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                                                   dims = 10))
+            })
+          })
   })
   
   observeEvent(input$runDimred_tsneUmap, {

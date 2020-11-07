@@ -187,6 +187,7 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 #' @param inSCE (sce) object on which to compute and store jackstraw plot
 #' @param useAssay Assay containing scaled counts to use in JackStraw calculation.
 #' @param dims Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -198,8 +199,17 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 #' }
 #' @return Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
 #' @export
-seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
+seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL, externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  if(!is.null(externalReduction)){
+    seuratObject <- FindVariableFeatures(seuratObject)
+    seuratObject <- ScaleData(seuratObject)
+    seuratObject@reductions <- list(pca = externalReduction)
+    seuratObject@reductions$pca@feature.loadings <- seuratObject@reductions$pca@feature.loadings[match(rownames(GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")), rownames(seuratObject@reductions$pca@feature.loadings)),]
+    seuratObject@commands$RunPCA.RNA <- seuratObject@commands$NormalizeData.RNA
+    seuratObject@commands$RunPCA.RNA@params$rev.pca <- FALSE
+    seuratObject@commands$RunPCA.RNA@params$weight.by.var <- TRUE
+    }
   if(is.null(seuratObject@reductions[["pca"]])) {
     stop("'seuratPCA' must be run before JackStraw can be computed.")
   }
@@ -216,6 +226,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
 #' Computes the plot object for jackstraw plot from the pca slot in the input sce object
 #' @param inSCE (sce) object from which to compute the jackstraw plot (pca should be computed)
 #' @param dims Number of components to plot in Jackstraw. If \code{NULL}, then all components are plotted Default \code{NULL}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -228,8 +239,11 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL) {
 #' }
 #' @return plot object
 #' @export
-seuratJackStrawPlot <- function(inSCE, dims = NULL) {
+seuratJackStrawPlot <- function(inSCE, dims = NULL, externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+  }
   if(is.null(seuratObject@reductions[["pca"]])) {
     stop("'seuratPCA' must be run before JackStraw can be computed.")
   }
