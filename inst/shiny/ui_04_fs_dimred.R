@@ -106,74 +106,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                               )
                                      )
                                      )
-                            ),
-                 # SHINYJS COLLAPSE --------------------------
-                 # Section 1 - Assay Settings
-                 # open by default
-                 tags$div(
-                   id = "dimred",
-                   wellPanel(
-                     fluidRow(
-                       column(
-                         8,
-                         wellPanel(
-                           fluidRow(
-                             column(
-                               6,
-                               tags$h4("Select:")
-                               
-                               # Note: Removed "Dendrogram" option from method select
-                               # to disable conditionalPanels.
-                               
-                             ),
-                             column(
-                               6,
-                               tags$h4("DR Options:"),
-                               
-                               #textInput("dimRedNameInput", "reducedDim Name:", ""),
-                               tags$br(),
-                               HTML('<button type="button"
-                            class="btn btn-default btn-block"
-                            data-toggle="collapse"
-                            data-target="#c-collapse-run-options">
-                              View More Options
-                          </button>'
-                               ),
-                               tags$div(
-                                 id = "c-collapse-run-options", class = "collapse",
-                                 conditionalPanel(
-                                   condition = "input.dimRedPlotMethod == 'PCA'",
-                                   HTML('<p style="color:rgb(255,0,0);">
-                                No parameters available for PCA
-                              </p>')
-                                 )
-                               )
-                             )
-                           )
-                         )
-                       ),
-                       column(
-                         4,
-                         wellPanel(
-                           h4("Available Reduced Dims:"),
-                           tableOutput("reducedDimsList"),
-                           tags$hr(),
-                           h4("Remove a reducedDim:"),
-                           fluidRow(
-                             column(
-                               8,
-                               selectInput("delRedDimType", label = NULL, currreddim)
-                             ),
-                             column(
-                               4,
-                               withBusyIndicatorUI(actionButton("delRedDim", "Delete"))
-                             )
-                           )
-                         )
-                       )
-                     )
-                   )
-                 )
+                            )
                  ),
         tabPanel("tSNE/UMAP",
                  fluidRow(

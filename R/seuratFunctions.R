@@ -206,7 +206,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL, externalReducti
     seuratObject <- ScaleData(seuratObject)
     seuratObject@reductions <- list(pca = externalReduction)
     seuratObject@reductions$pca@feature.loadings <- seuratObject@reductions$pca@feature.loadings[match(rownames(GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")), rownames(seuratObject@reductions$pca@feature.loadings)),]
-    seuratObject@commands$RunPCA.RNA <- seuratObject@commands$NormalizeData.RNA
+    seuratObject@commands$RunPCA.RNA <- seuratObject@commands$ScaleData.RNA
     seuratObject@commands$RunPCA.RNA@params$rev.pca <- FALSE
     seuratObject@commands$RunPCA.RNA@params$weight.by.var <- TRUE
     }
