@@ -418,6 +418,7 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param inSCE (sce) object from which to compute the elbow plot (pca should be computed)
 #' @param significantPC Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.
 #' @param reduction Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.
+#' @param externalReduction Pass an externally computed PCA reduction created by \code{CreateDimReducObject} method.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -429,8 +430,11 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' }
 #' @return plot object
 #' @export
-seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca") {
+seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+  }
   plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction)
   if(!is.null(significantPC)){
     plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))

@@ -2106,13 +2106,13 @@ shinyServer(function(input, output, session) {
     
     #extra code added by irzam starts here:
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
     
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
                                                             panel(heading = "PCA Plot",
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
     ), select = TRUE)
-    
     
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput)
@@ -2123,6 +2123,26 @@ shinyServer(function(input, output, session) {
         ))
       })
     })
+    
+      appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Elbow Plot",
+                                                          panel(heading = "Elbow Plot",
+                                                                plotlyOutput(outputId = "plotDimRed_elbow")
+                                                          )
+      ))
+      
+      redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+      withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+        new_pca <- CreateDimReducObject(
+          embeddings = redDim, 
+          assay = "RNA",
+          stdev = as.numeric(attr(redDim, "percentVar")), 
+          key = "PC_")
+        
+        output$plotDimRed_elbow <- renderPlotly({
+          seuratElbowPlot(inSCE = vals$counts,
+                          externalReduction = new_pca)
+        })
+      })
   })
   
   observeEvent(input$runDimred_tsneUmap, {
