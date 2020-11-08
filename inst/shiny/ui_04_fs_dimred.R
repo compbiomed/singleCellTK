@@ -89,6 +89,18 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       inputId = "dimRedNumberDims", 
                                                       label = "Number of Dimensions:",
                                                       value = 50),
+                                                    materialSwitch(
+                                                      inputId = "computeElbowPlot", 
+                                                      label = "Compute ElbowPlot?", 
+                                                      value = TRUE),
+                                                    materialSwitch(
+                                                      inputId = "computeHeatmapPlot", 
+                                                      label = "Compute HeatmapPlot?", 
+                                                      value = TRUE),
+                                                    materialSwitch(
+                                                      inputId = "computeJackstrawPlot", 
+                                                      label = "Compute JackstrawPlot?", 
+                                                      value = FALSE),
                                                     withBusyIndicatorUI(actionButton("runDimred", "Run"))
                                                     )
                                               )

@@ -2148,10 +2148,11 @@ shinyServer(function(input, output, session) {
       })
     })
     
+    if(input$computeElbowPlot){
       appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Elbow Plot",
-                                                          panel(heading = "Elbow Plot",
-                                                                plotlyOutput(outputId = "plotDimRed_elbow")
-                                                          )
+                                                              panel(heading = "Elbow Plot",
+                                                                    plotlyOutput(outputId = "plotDimRed_elbow")
+                                                              )
       ))
       
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
@@ -2161,60 +2162,64 @@ shinyServer(function(input, output, session) {
                           externalReduction = new_pca)
         })
       })
-      
-        appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Heatmap Plot",
-                                                            panel(heading = "Heatmap Plot",
-                                                                  panel(heading = "Plot Options",
-                                                                        fluidRow(
-                                                                          column(6,
-                                                                                 pickerInput(
-                                                                                   inputId = "picker_dimheatmap_components_dimRed", 
-                                                                                   label = "Select principal components to plot:", 
-                                                                                   choices = c(), 
-                                                                                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), 
-                                                                                   multiple = TRUE)
+    }
+    
+    if(input$computeHeatmapPlot){
+      appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Heatmap Plot",
+                                                              panel(heading = "Heatmap Plot",
+                                                                    panel(heading = "Plot Options",
+                                                                          fluidRow(
+                                                                            column(6,
+                                                                                   pickerInput(
+                                                                                     inputId = "picker_dimheatmap_components_dimRed", 
+                                                                                     label = "Select principal components to plot:", 
+                                                                                     choices = c(), 
+                                                                                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), 
+                                                                                     multiple = TRUE)
+                                                                            ),
+                                                                            column(6,
+                                                                                   sliderInput(
+                                                                                     inputId = "slider_dimheatmap_dimRed", 
+                                                                                     label = "Number of columns for the plot: ", 
+                                                                                     min = 1, 
+                                                                                     max = 4, 
+                                                                                     value = 2)
+                                                                            )
                                                                           ),
-                                                                          column(6,
-                                                                                 sliderInput(
-                                                                                   inputId = "slider_dimheatmap_dimRed", 
-                                                                                   label = "Number of columns for the plot: ", 
-                                                                                   min = 1, 
-                                                                                   max = 4, 
-                                                                                   value = 2)
-                                                                          )
-                                                                        ),
-                                                                        actionButton(inputId = "plot_heatmap_dimRed_button", "Plot")
-                                                                  ),
-                                                                  panel(heading = "Plot",
-                                                                        jqui_resizable(
-                                                                          plotOutput(
-                                                                            outputId = "plot_heatmap_dimRed"), 
-                                                                          options = list(maxWidth = 700))
-                                                                  )
-                                                            )
-        ))
-        
-        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                          useAssay = input$dimRedAssaySelect,
-                                                                          useReduction = "pca",
-                                                                          dims = 10,
-                                                                          nfeatures = 20,
-                                                                          combine = FALSE,
-                                                                          fast = FALSE,
-                                                                          externalReduction = new_pca)
-          output$plot_heatmap_dimRed <- renderPlot({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = 10,
-                              ncol = 2,
-                              labels = c("PC1", "PC2", "PC3", "PC4"))
-          })
-        })
-        
-          appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
-                                                              panel(heading = "JackStraw Plot",
-                                                                    plotlyOutput(outputId = "plot_jackstraw_dimRed")
+                                                                          actionButton(inputId = "plot_heatmap_dimRed_button", "Plot")
+                                                                    ),
+                                                                    panel(heading = "Plot",
+                                                                          jqui_resizable(
+                                                                            plotOutput(
+                                                                              outputId = "plot_heatmap_dimRed"), 
+                                                                            options = list(maxWidth = 700))
+                                                                    )
                                                               )
+      ))
+      
+      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                           useAssay = input$dimRedAssaySelect,
+                                                                           useReduction = "pca",
+                                                                           dims = 10,
+                                                                           nfeatures = 20,
+                                                                           combine = FALSE,
+                                                                           fast = FALSE,
+                                                                           externalReduction = new_pca)
+        output$plot_heatmap_dimRed <- renderPlot({
+          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+                            dims = 10,
+                            ncol = 2,
+                            labels = c("PC1", "PC2", "PC3", "PC4"))
+        })
+      })
+    }
+      
+        if(input$computeJackstrawPlot){
+          appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
+                                                                  panel(heading = "JackStraw Plot",
+                                                                        plotlyOutput(outputId = "plot_jackstraw_dimRed")
+                                                                  )
           ))
           
           withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
@@ -2227,6 +2232,8 @@ shinyServer(function(input, output, session) {
                                                    dims = 10))
             })
           })
+        }
+         
   })
   
   observeEvent(input$runDimred_tsneUmap, {
