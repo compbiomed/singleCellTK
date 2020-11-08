@@ -83,7 +83,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       uiOutput("dimRedAltExpAssayUI")
                                                     ),
                                                     selectInput("dimRedPlotMethod", "Select method:",
-                                                                c("Scran - PCA" = "PCA")),
+                                                                c("Scran - PCA" = "PCA",
+                                                                  "Seurat - PCA" = "PCASeurat")),
                                                     uiOutput("dimRedNameUI"),
                                                     textInput(
                                                       inputId = "dimRedNumberDims", 

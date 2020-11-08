@@ -2016,45 +2016,17 @@ shinyServer(function(input, output, session) {
                                           reducedDimName = dimrednamesave,
                                           ndim = input$dimRedNumberDims)
                   }
-                } else if (input$dimRedPlotMethod == "tSNE"){
-                  if (input$dimRedAssayType == 1) {
-                    vals$counts <- getTSNE(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = dimrednamesave,
-                                           perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
-                  } else if (input$dimRedAssayType == 2) {
-                    vals$counts <- getTSNE(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay,
-                                           useAltExp = input$dimRedAltExpSelect,
-                                           reducedDimName = dimrednamesave,
-                                           perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
-                  }
-                } else {
-                  if (is.na(input$alphaUMAP)) {
-                    stop("Learning rate (alpha) must be a numeric non-empty value!")
-                  }
-                  if (input$dimRedAssayType == 1) {
-                    vals$counts <- getUMAP(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = dimrednamesave,
-                                           nNeighbors = input$neighborsUMAP,
-                                           nIterations = input$iterUMAP,
-                                           minDist = input$mindistUMAP,
-                                           alpha = input$alphaUMAP)
-                  } else if (input$dimRedAssayType == 2) {
-                    vals$counts <- getUMAP(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay,
-                                           useAltExp = input$dimRedAltExpSelect,
-                                           reducedDimName = dimrednamesave,
-                                           nNeighbors = input$neighborsUMAP,
-                                           nIterations = input$iterUMAP,
-                                           minDist = input$mindistUMAP,
-                                           alpha = input$alphaUMAP)
-                  }
+                } else if (input$dimRedPlotMethod == "PCASeurat"){
+                  vals$counts <- seuratFindHVG(
+                    inSCE = vals$counts,
+                    useAssay = input$dimRedAssaySelect
+                  )
+                  vals$counts <- seuratPCA(
+                    inSCE = vals$counts, 
+                    useAssay = input$dimRedAssaySelect, 
+                    reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                    nPCs = input$dimRedNumberDims)
                 }
-                
                 updateReddimInputs()
               }}
             )
@@ -2071,43 +2043,16 @@ shinyServer(function(input, output, session) {
                                       useAltExp = input$dimRedAltExpSelect,
                                       reducedDimName = dimrednamesave)
               }
-            } else if (input$dimRedPlotMethod == "tSNE"){
-              if (input$dimRedAssayType == 1) {
-                vals$counts <- getTSNE(inSCE = vals$counts,
-                                       useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = dimrednamesave,
-                                       perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
-              } else if (input$dimRedAssayType == 2) {
-                vals$counts <- getTSNE(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay,
-                                       useAltExp = input$dimRedAltExpSelect,
-                                       reducedDimName = dimrednamesave,
-                                       perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
-              }
-            } else {
-              if (is.na(input$alphaUMAP)) {
-                stop("Learning rate (alpha) must be a numeric non-empty value!")
-              }
-              if (input$dimRedAssayType == 1) {
-                vals$counts <- getUMAP(inSCE = vals$counts,
-                                       useAssay = input$dimRedAssaySelect,
-                                       reducedDimName = dimrednamesave,
-                                       nNeighbors = input$neighborsUMAP,
-                                       nIterations = input$iterUMAP,
-                                       minDist = input$mindistUMAP,
-                                       alpha = input$alphaUMAP)
-              } else if (input$dimRedAssayType == 2) {
-                vals$counts <- getUMAP(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay,
-                                       useAltExp = input$dimRedAltExpSelect,
-                                       reducedDimName = dimrednamesave,
-                                       nNeighbors = input$neighborsUMAP,
-                                       nIterations = input$iterUMAP,
-                                       minDist = input$mindistUMAP,
-                                       alpha = input$alphaUMAP)
-              }
+            } else if (input$dimRedPlotMethod == "PCASeurat"){
+              vals$counts <- seuratFindHVG(
+                inSCE = vals$counts,
+                useAssay = input$dimRedAssaySelect
+              )
+              vals$counts <- seuratPCA(
+                inSCE = vals$counts, 
+                useAssay = input$dimRedAssaySelect, 
+                reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                nPCs = input$dimRedNumberDims)
             }
             updateReddimInputs()
           }
@@ -2115,17 +2060,16 @@ shinyServer(function(input, output, session) {
       })
     }
     
-    
-    
-    
     #extra code added by irzam starts here:
-    redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
-    new_pca <- CreateDimReducObject(
-      embeddings = redDim, 
-      assay = "RNA",
-      loadings = attr(redDim, "rotation"),
-      stdev = as.numeric(attr(redDim, "percentVar")), 
-      key = "PC_")
+    if(input$dimRedPlotMethod == "PCA"){
+      redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+      new_pca <- CreateDimReducObject(
+        embeddings = redDim, 
+        assay = "RNA",
+        loadings = attr(redDim, "rotation"),
+        stdev = as.numeric(attr(redDim, "percentVar")), 
+        key = "PC_")
+    }
     
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
@@ -2155,13 +2099,24 @@ shinyServer(function(input, output, session) {
                                                               )
       ))
       
-      withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-        
-        output$plotDimRed_elbow <- renderPlotly({
-          seuratElbowPlot(inSCE = vals$counts,
-                          externalReduction = new_pca)
+      if (input$dimRedPlotMethod == "PCASeurat"){
+        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          
+          output$plotDimRed_elbow <- renderPlotly({
+            seuratElbowPlot(inSCE = vals$counts)
+          })
         })
-      })
+      }
+      else{
+        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          
+          output$plotDimRed_elbow <- renderPlotly({
+            seuratElbowPlot(inSCE = vals$counts,
+                            externalReduction = new_pca)
+          })
+        })
+      }
+
     }
     
     if(input$computeHeatmapPlot){
@@ -2196,23 +2151,42 @@ shinyServer(function(input, output, session) {
                                                                     )
                                                               )
       ))
-      
-      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-        vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                           useAssay = input$dimRedAssaySelect,
-                                                                           useReduction = "pca",
-                                                                           dims = 10,
-                                                                           nfeatures = 20,
-                                                                           combine = FALSE,
-                                                                           fast = FALSE,
-                                                                           externalReduction = new_pca)
-        output$plot_heatmap_dimRed <- renderPlot({
-          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                            dims = 10,
-                            ncol = 2,
-                            labels = c("PC1", "PC2", "PC3", "PC4"))
+      if (input$dimRedPlotMethod == "PCASeurat")
+      {
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                             useAssay = input$dimRedAssaySelect,
+                                                                             useReduction = "pca",
+                                                                             dims = 10,
+                                                                             nfeatures = 20,
+                                                                             combine = FALSE,
+                                                                             fast = FALSE)
+          output$plot_heatmap_dimRed <- renderPlot({
+            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+                              dims = 10,
+                              ncol = 2,
+                              labels = c("PC1", "PC2", "PC3", "PC4"))
+          })
         })
-      })
+      }
+      else{
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                             useAssay = input$dimRedAssaySelect,
+                                                                             useReduction = "pca",
+                                                                             dims = 10,
+                                                                             nfeatures = 20,
+                                                                             combine = FALSE,
+                                                                             fast = FALSE,
+                                                                             externalReduction = new_pca)
+          output$plot_heatmap_dimRed <- renderPlot({
+            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+                              dims = 10,
+                              ncol = 2,
+                              labels = c("PC1", "PC2", "PC3", "PC4"))
+          })
+        })
+      }
     }
       
         if(input$computeJackstrawPlot){
@@ -2222,16 +2196,29 @@ shinyServer(function(input, output, session) {
                                                                   )
           ))
           
-          withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-            vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
-                                                  useAssay = input$dimRedAssaySelect,
-                                                  dims = 10,
-                                                  externalReduction = new_pca)
-            output$plot_jackstraw_dimRed <- renderPlotly({
-              plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
-                                                   dims = 10))
+          if (input$dimRedPlotMethod == "PCASeurat"){
+            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                    useAssay = input$dimRedAssaySelect,
+                                                    dims = 10)
+              output$plot_jackstraw_dimRed <- renderPlotly({
+                plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                                                     dims = 10))
+              })
             })
-          })
+          }
+          else{
+            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                    useAssay = input$dimRedAssaySelect,
+                                                    dims = 10,
+                                                    externalReduction = new_pca)
+              output$plot_jackstraw_dimRed <- renderPlotly({
+                plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                                                     dims = 10))
+              })
+            })
+          }
         }
          
   })
