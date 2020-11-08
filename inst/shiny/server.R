@@ -2027,6 +2027,17 @@ shinyServer(function(input, output, session) {
                     reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
                     nPCs = input$dimRedNumberDims)
                 }
+                else{
+                  vals$counts <- seuratFindHVG(
+                    inSCE = vals$counts,
+                    useAssay = input$dimRedAssaySelect
+                  )
+                  vals$counts <- seuratICA(
+                    inSCE = vals$counts, 
+                    useAssay = input$dimRedAssaySelect, 
+                    reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                    nics = input$dimRedNumberDims)
+                }
                 updateReddimInputs()
               }}
             )
@@ -2053,6 +2064,17 @@ shinyServer(function(input, output, session) {
                 useAssay = input$dimRedAssaySelect, 
                 reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
                 nPCs = input$dimRedNumberDims)
+            }
+            else{
+              vals$counts <- seuratFindHVG(
+                inSCE = vals$counts,
+                useAssay = input$dimRedAssaySelect
+              )
+              vals$counts <- seuratICA(
+                inSCE = vals$counts, 
+                useAssay = input$dimRedAssaySelect, 
+                reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                nics = input$dimRedNumberDims)
             }
             updateReddimInputs()
           }
@@ -2166,6 +2188,23 @@ shinyServer(function(input, output, session) {
                               dims = 10,
                               ncol = 2,
                               labels = c("PC1", "PC2", "PC3", "PC4"))
+          })
+        })
+      }
+      else if(input$dimRedPlotMethod == "ICASeurat"){
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
+                                                                             useAssay = input$dimRedAssaySelect,
+                                                                             useReduction = "ica",
+                                                                             dims = 10,
+                                                                             nfeatures = 20,
+                                                                             combine = FALSE,
+                                                                             fast = FALSE)
+          output$plot_heatmap_dimRed <- renderPlot({
+            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+                              dims = 10,
+                              ncol = 2,
+                              labels = c("IC1", "IC2", "IC3", "IC4"))
           })
         })
       }
