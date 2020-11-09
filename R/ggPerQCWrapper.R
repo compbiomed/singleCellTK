@@ -136,7 +136,7 @@ plotRunPerCellQCResults <- function(inSCE,
     )
     combined.toppercent <- plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="percent_top_50",
+      coldata="percent.top_50",
       groupBy=sampleVector,
       xlab="",
       ylab="Gene expression percentage (%)",

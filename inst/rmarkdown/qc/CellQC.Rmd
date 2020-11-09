@@ -101,7 +101,7 @@ i="General quality control metrics"
 cat(paste0('# ', i, ' \n'))
 cat("\n")
 
-perCellData <- c("sum", "detected", "percent_top_50")
+perCellData <- c("sum", "detected", "percent.top_50")
 skipCellData <- any(!perCellData %in% names(colData(sce.qc)))
 
 if (skipCellData) {
