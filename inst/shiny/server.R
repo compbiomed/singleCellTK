@@ -19,7 +19,7 @@ source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several sma
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
-  #load modules
+  #call modules server part
   callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
   
   # library(fs)
@@ -851,7 +851,13 @@ shinyServer(function(input, output, session) {
 
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
-
+        
+        #store assayType information in the metadata
+        vals$counts <- singleCellTK:::.sctkTag(
+          inSCE = vals$counts,
+          assayType = "raw", 
+          newAssay = assayNames(vals$counts))
+        
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()

@@ -361,3 +361,8 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   return(df)
 }
+
+.sctkTag <- function(inSCE, assayType, newAssay){
+  metadata(inSCE)$assayType[[assayType]] <- newAssay
+  return(inSCE)
+}

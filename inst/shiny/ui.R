@@ -45,7 +45,7 @@ source("helpers.R")
 source("colourGroupInput.R")
 data("c2BroadSets")
 
-#load modules
+#source modules
 source("module_nonLinearWorkflow.R")
 
 #test internet connection for enrichR connectivity
