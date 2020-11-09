@@ -250,7 +250,7 @@ plotRunPerCellQCResults <- function(inSCE,
 
       violin.toppercent <- list(toppercent = plotSCEViolinColData(
         inSCE=inSCESub,
-        coldata="percent_top_50",
+        coldata="percent.top_50",
         sample=sampleSub,
         xlab="",
         ylab="Gene expression percentage (%)",
