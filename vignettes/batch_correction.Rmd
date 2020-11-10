@@ -100,7 +100,7 @@ due to potential subsetting steps in the calculation.
 - The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. 
 - For using method "BBKNN", "Scanorama" and "scGen", the corresponding Python3 modules has to be installed
 ```{bash install, eval=FALSE}
-pip install scanpy bbknn scanorama scgen
+pip install scanpy bbknn scanorama
 ```
 
 ## Installation
@@ -136,17 +136,11 @@ print(paste(dim(pbmc8k), c('genes', 'cells')))
 ```
 There is a function called `combineSCE()`, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. `rowData`) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.
 ```{r combine, eval=doEval, message=FALSE, warning=FALSE}
-## The strategy here is to only use the genes presented in both datasets.
-## Get the intersection of both gene lists.
-isecGene <- intersect(rownames(pbmc6k), rownames(pbmc8k))
-## Subset each dataset by the intersection.
-pbmc6k.isec <- pbmc6k[isecGene,]
-pbmc8k.isec <- pbmc8k[isecGene,]
-## Overwrite the mismatches in rowData, a special case in this example.
-rowData(pbmc8k.isec) <- rowData(pbmc6k.isec)
-## Apply combination function
-sce.combine <- combineSCE(list(pbmc6k = pbmc6k.isec,
-                               pbmc8k = pbmc8k.isec))
+## Combine the two SCE objects
+sce.combine <- combineSCE(sceList = list(pbmc6k = pbmc6k, pbmc8k = pbmc8k), 
+                          by.r = names(rowData(pbmc6k)), 
+                          by.c = names(colData(pbmc6k)), 
+                          combined = TRUE)
 ## Simply filter out the genes that are expressed in less than 1% of all cells.
 sce.filter <- sce.combine[rowSums(assay(sce.combine) > 0) >= 0.01 * ncol(sce.combine),]
 sce.filter
@@ -209,8 +203,8 @@ There is no function special for batch correction, but this can be achieved simp
 
 ```{r umapBefore, message=FALSE, warning=FALSE, eval=doEval}
 sce.small <- getPCA(inSCE = sce.small,
-                     useAssay = 'logcounts', 
-                     reducedDimName = 'PCA')
+                    useAssay = 'logcounts', 
+                    reducedDimName = 'PCA')
 plotSCEDimReduceColData(inSCE = sce.small,
                         colorBy = 'sample',
                         reducedDimName = 'PCA', 
@@ -227,10 +221,3 @@ plotSCEDimReduceColData(inSCE = sce.small,
                         title = 'PCA After Correction')
 ```
 
-### UI usage
-
-The batch correction functionality is implemented under the tab "Normalization & Batch Correction", as shown in figure below, which is a sidebar layout.  
-The correction is done with the settings in the sidebar on the left side. Users have to choose the assay to correct, the annotation for the batches, and the method to invoke. Below the method selection, users will be given alternative parameters specific to the method selected. The last text input is always for the name of the result, and its label indicates whether the result is updated as `reducedDim`, `assay`, or `altExp`. Duplicated names will automatically be overwritten without warning. After confirming all parameters, press "Run" to run the correction.  
-The visualization check is implemented in the main panel on the right, with four plotting region and a list of settings. The plots are done in the exactly same way as Method 2 and 3 described above. After choosing the original assay used, batch annotation used, and the name of the result to check, press "Plot" to update the visualization. 
-
-![](./batchCorrectionPanel.png)
