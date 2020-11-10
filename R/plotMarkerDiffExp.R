@@ -16,6 +16,14 @@
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.
 #' Default \code{0.05}
+#' @param minClustExprPerc A numeric scalar. The minimum cutoff of the
+#' percentage of cells in the cluster of interests that expressed the marker
+#' gene. Default \code{0.7}.
+#' @param maxCtrlExprPerc A numeric scalar. The maximum cutoff of the
+#' percentage of cells out of the cluster (control group) that expressed the
+#' marker gene. Default \code{0.4}.
+#' @param minMeanExpr A numeric scalar. The minimum cutoff of the mean
+#' expression value of the marker in the cluster of interests. Default \code{1}.
 #' @param topN An integer. Only to plot this number of top markers for each
 #' cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
 #' top N subscription. Default \code{10}.
@@ -56,7 +64,8 @@
 #' @author Yichen Wang
 #' @export
 plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
-    log2fcThreshold = 1, fdrThreshold = 0.05, topN = 10, decreasing = TRUE,
+    log2fcThreshold = 1, fdrThreshold = 0.05, minClustExprPerc = 0.7,
+    maxCtrlExprPerc = 0.4, minMeanExpr = 1, topN = 10, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
     cellAnnotations = NULL, featureAnnotationColor = NULL,
     cellAnnotationColor = NULL,
@@ -100,6 +109,15 @@ plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
     }
     if(!is.null(fdrThreshold)){
         degFull <- degFull[degFull$FDR < fdrThreshold,]
+    }
+    if (!is.null(minClustExprPerc)) {
+      degFull <- degFull[degFull$clusterExprPerc >= minClustExprPerc,]
+    }
+    if (!is.null(maxCtrlExprPerc)) {
+      degFull <- degFull[degFull$ControlExprPerc <= maxCtrlExprPerc,]
+    }
+    if (!is.null(minMeanExpr)) {
+      degFull <- degFull[degFull$clusterAveExpr >= minMeanExpr,]
     }
     # Remove duplicate by assigning the duplicated genes to the cluster where
     # their log2FC is the highest.

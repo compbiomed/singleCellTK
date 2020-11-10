@@ -457,8 +457,8 @@ plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts", doPlot = TRUE,
     data_log = isLogged)))
   # plotting
   plotNRow <- ceiling(length(thres$valleys) / 4)
-  thres.grob <- as.grob(function(){
-    par(mfrow = c(plotNRow, 4), mar = c(3, 3, 2, 1),
+  thres.grob <- ggplotify::as.grob(function(){
+    graphics::par(mfrow = c(plotNRow, 4), mar = c(3, 3, 2, 1),
         mgp = c(2, 0.7, 0), tck = -0.01, new = TRUE)
     plot(thres)
   })

@@ -19,6 +19,14 @@
 #' larger than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value smaller than this
 #' value. Default \code{1}
+#' @param minClustExprPerc A numeric scalar. The minimum cutoff of the
+#' percentage of cells in the cluster of interests that expressed the marker
+#' gene. Default \code{0.7}.
+#' @param maxCtrlExprPerc A numeric scalar. The maximum cutoff of the
+#' percentage of cells out of the cluster (control group) that expressed the
+#' marker gene. Default \code{0.4}.
+#' @param minMeanExpr A numeric scalar. The minimum cutoff of the mean
+#' expression value of the marker in the cluster of interests. Default \code{1}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
@@ -27,7 +35,9 @@
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
                               method = c('MAST', "DESeq2", "Limma"),
                               cluster = 'cluster', covariates = NULL,
-                              log2fcThreshold = 0.25, fdrThreshold = 0.05){
+                              log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                              minClustExprPerc = 0.6, maxCtrlExprPerc = 0.4,
+                              minMeanExpr = 0.5){
     # Input checks
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
@@ -92,6 +102,50 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     }
     degFull <- degFull[stats::complete.cases(degFull),]
     attr(degFull, "useAssay") <- useAssay
+    degFull <- .calcMarkerExpr(degFull, inSCE, clusterName,
+                               c(minClustExprPerc, maxCtrlExprPerc,
+                                 minMeanExpr))
     S4Vectors::metadata(inSCE)$findMarker <- degFull
     return(inSCE)
+}
+
+.calcMarkerExpr <- function(markerTable, inSCE, clusterName, params) {
+    genes <- markerTable$Gene
+    cellLabels <- SummarizedExperiment::colData(inSCE)[[clusterName]]
+    useAssay <- attr(markerTable, "useAssay")
+    cells.in.col <- c()
+    cells.out.col <- c()
+    exprs.avg <- c()
+    toRemove <- integer()
+    for (i in seq_len(nrow(markerTable))) {
+        gene <- genes[i]
+        cluster <- markerTable[[clusterName]][i]
+        if (gene %in% rownames(inSCE)) {
+            # Logical indices
+            cells.in <- cellLabels == cluster
+            cells.out <- cellLabels != cluster
+            # cells.in expressed percentage
+            cells.in.expr <- SummarizedExperiment::assay(inSCE, useAssay)[gene, cells.in]
+            cells.in.perc <- sum(cells.in.expr > 0) / length(which(cells.in))
+            # cells.out expressed percentage
+            cells.out.expr <- SummarizedExperiment::assay(inSCE, useAssay)[gene, cells.out]
+            cells.out.perc <- sum(cells.out.expr > 0) / length(which(cells.out))
+            # Average Expression in the cluster
+            cells.in.mean <- mean(cells.in.expr)
+            if (cells.in.perc >= params[1] &&
+                cells.out.perc <= params[2] &&
+                cells.in.mean >= params[3]) {
+                cells.in.col <- c(cells.in.col, cells.in.perc)
+                cells.out.col <- c(cells.out.col, cells.out.perc)
+                exprs.avg <- c(exprs.avg, cells.in.mean)
+            } else {
+                toRemove <- c(toRemove, i)
+            }
+        }
+    }
+    markerTable <- markerTable[-toRemove,]
+    markerTable$clusterExprPerc <- cells.in.col
+    markerTable$ControlExprPerc <- cells.out.col
+    markerTable$clusterAveExpr <- exprs.avg
+    return(markerTable)
 }
