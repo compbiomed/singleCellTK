@@ -5956,6 +5956,9 @@ shinyServer(function(input, output, session) {
       shinyjs::show(
         selector = "div[value='Downstream Analysis']")
       updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "success"))
+      
+      #update colData names
+      updateColDataNames()
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
