@@ -1993,6 +1993,17 @@ shinyServer(function(input, output, session) {
     }
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
+  
+  observeEvent(input$plot_heatmap_dimRed_button, {
+    if (!is.null(input$picker_dimheatmap_components_dimRed)) {
+      output$plot_heatmap_dimRed <- renderPlot({
+        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+                          dims = length(input$picker_dimheatmap_components_dimRed),
+                          ncol = input$slider_dimheatmap_dimRed,
+                          labels = input$picker_dimheatmap_components_dimRed)
+      })
+    }
+  })
 
   observeEvent(input$runDimred, {
     if (!is.null(vals$counts)){
@@ -2120,7 +2131,8 @@ shinyServer(function(input, output, session) {
       })
     })
     
-    if(input$computeElbowPlot){
+    if(input$computeElbowPlot
+       && input$dimRedPlotMethod != "ICASeurat"){
       appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Elbow Plot",
                                                               panel(heading = "Elbow Plot",
                                                                     plotlyOutput(outputId = "plotDimRed_elbow")
@@ -2185,13 +2197,13 @@ shinyServer(function(input, output, session) {
           vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                              useAssay = input$dimRedAssaySelect,
                                                                              useReduction = "pca",
-                                                                             dims = 10,
+                                                                             dims = input$dimRedNumberDims,
                                                                              nfeatures = 20,
                                                                              combine = FALSE,
                                                                              fast = FALSE)
           output$plot_heatmap_dimRed <- renderPlot({
             seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = 10,
+                              dims = input$dimRedNumberDims,
                               ncol = 2,
                               labels = c("PC1", "PC2", "PC3", "PC4"))
           })
@@ -2202,13 +2214,13 @@ shinyServer(function(input, output, session) {
           vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                              useAssay = input$dimRedAssaySelect,
                                                                              useReduction = "ica",
-                                                                             dims = 10,
+                                                                             dims = input$dimRedNumberDims,
                                                                              nfeatures = 20,
                                                                              combine = FALSE,
                                                                              fast = FALSE)
           output$plot_heatmap_dimRed <- renderPlot({
             seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = 10,
+                              dims = input$dimRedNumberDims,
                               ncol = 2,
                               labels = c("IC1", "IC2", "IC3", "IC4"))
           })
@@ -2219,25 +2231,33 @@ shinyServer(function(input, output, session) {
           vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                              useAssay = input$dimRedAssaySelect,
                                                                              useReduction = "pca",
-                                                                             dims = 10,
+                                                                             dims = input$dimRedNumberDims,
                                                                              nfeatures = 20,
                                                                              combine = FALSE,
                                                                              fast = FALSE,
                                                                              externalReduction = new_pca)
           output$plot_heatmap_dimRed <- renderPlot({
             seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = 10,
+                              dims = input$dimRedNumberDims,
                               ncol = 2,
                               labels = c("PC1", "PC2", "PC3", "PC4"))
           })
         })
       }
-    }
       
-        if(input$computeJackstrawPlot){
+      if(input$dimRedPlotMethod == "ICASeurat"){
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
+      }
+      else{
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
+      }
+    }
+
+        if(input$computeJackstrawPlot
+           && input$dimRedPlotMethod != "ICASeurat"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
                                                                   panel(heading = "JackStraw Plot",
-                                                                        plotlyOutput(outputId = "plot_jackstraw_dimRed")
+                                                                        plotOutput(outputId = "plot_jackstraw_dimRed")
                                                                   )
           ))
           
@@ -2246,9 +2266,8 @@ shinyServer(function(input, output, session) {
               vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                     useAssay = input$dimRedAssaySelect,
                                                     dims = 10)
-              output$plot_jackstraw_dimRed <- renderPlotly({
-                plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
-                                                     dims = 10))
+              output$plot_jackstraw_dimRed <- renderPlot({
+                seuratJackStrawPlot(inSCE = vals$counts, dims = 10)
               })
             })
           }
@@ -2258,14 +2277,13 @@ shinyServer(function(input, output, session) {
                                                     useAssay = input$dimRedAssaySelect,
                                                     dims = 10,
                                                     externalReduction = new_pca)
-              output$plot_jackstraw_dimRed <- renderPlotly({
-                plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
-                                                     dims = 10))
+              output$plot_jackstraw_dimRed <- renderPlot({
+                seuratJackStrawPlot(inSCE = vals$counts,
+                                    dims = 10)
               })
             })
           }
         }
-         
   })
   
   observeEvent(input$runDimred_tsneUmap, {
