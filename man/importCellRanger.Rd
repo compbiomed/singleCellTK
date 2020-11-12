@@ -50,7 +50,7 @@ argument.}
 \itemize{
   \item \code{NULL}. All samples within \code{cellRangerDirs} will be
    imported. The order of samples will be first determined by the order of
-   \code{cellRangerDirs} and then by \link[base]{list.dirs}. This is only
+   \code{cellRangerDirs} and then by \link{list.dirs}. This is only
    for the case where \code{cellRangerDirs} is specified.
   \item A list of vectors containing the folder names for samples to import.
    Each vector in
@@ -134,11 +134,11 @@ order match the output of
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
-\link[Matrix]{readMM} function), or "matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{TRUE}.}
 
 \item{dataTypeV2}{Character. The type of output to import for
 Cellranger version below 3.0.0. Whether to import the filtered or the 

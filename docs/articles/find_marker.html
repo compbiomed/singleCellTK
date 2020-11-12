@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Find Markers by Differential Expression • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a>
     </li>
     <li>
       <a href="../articles/run_qcConsole.html">Quality Control</a>
@@ -79,6 +79,9 @@
     </li>
     <li>
       <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -139,7 +142,9 @@
 
       
 
-      </header><script src="find_marker_files/header-attrs-2.3/header-attrs.js"></script><script src="find_marker_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="find_marker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="find_marker_files/anchor-sections-1.0/anchor-sections.js"></script><script src="find_marker_files/kePrint-0.0.1/kePrint.js"></script><link href="find_marker_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Markers by Differential Expression</h1>
@@ -186,13 +191,14 @@
 <h3 class="hasAnchor">
 <a href="#parameters" class="anchor"></a>Parameters</h3>
 <p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">sce</span>,
-                         <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                         <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
-                         <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"cluster"</span>,
-                         <span class="kw">covariates</span> <span class="kw">=</span> <span class="kw">NULL</span>,
-                         <span class="kw">log2fcThreshold</span> <span class="kw">=</span> <span class="fl">0.25</span>,
-                         <span class="kw">fdrThreshold</span> <span class="kw">=</span> <span class="fl">0.05</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
+                         useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
+                         method <span class="op">=</span> <span class="st">"MAST"</span>,
+                         cluster <span class="op">=</span> <span class="st">"cluster"</span>,
+                         covariates <span class="op">=</span> <span class="cn">NULL</span>,
+                         log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>,
+                         fdrThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 <p>Here all arguments execpt the input SCE object (<code>inSCE</code>) are set by default. <code>method</code> can only be chosen from the table above. <code>cluster</code> and <code>covariates</code> should be given a single string which is present in <code><a href="https://rdrr.io/r/base/names.html">names(colData(inSCE))</a></code>. <code>cluster</code> is required for grouping cells, while <code>covariates</code> is optional for DE detection. <code>log2fcThreshold</code> and <code>fdrThreshold</code> are numeric and has to be set in plausible range. <code>log2fcThrshold</code> has to be positive and <code>fdrThreshold</code> has to be greater than zero and less than one.</p>
 <p>The returned SCE object will contain the updated information of the markers identified in its <code>metadata</code> slot.</p>
 </div>
@@ -203,36 +209,41 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"logcounts"</span><span class="op">)</span>
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span>(<span class="no">pbmc3k</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="find_marker_files/figure-html/de_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="get-markers" class="section level4">
 <h4 class="hasAnchor">
 <a href="#get-markers" class="anchor"></a>Get Markers</h4>
 <p>Then we call <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code> on the clustered data, with the cluster annotation just attached, which by default named with <code>"Seurat_louvain_Resolution0.8"</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                            <span class="kw">method</span> <span class="kw">=</span> <span class="st">"Limma"</span>, <span class="co"># Runs fastest</span>
-                            <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>, <span class="co"># Recommanded for Limma, "logcounts" for the others</span>
-                            <span class="kw">cluster</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                            method <span class="op">=</span> <span class="st">"Limma"</span>, <span class="co"># Runs fastest</span>
+                            useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
+                            cluster <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></code></pre></div>
 <p>After this, the marker genes, together with their statistics, of each cluster will be concatenated in one table. This table can be extracted with:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">markerTable</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">findMarker</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">markerTable</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">markerTable</span> <span class="op">&lt;-</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">$</span><span class="va">findMarker</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">markerTable</span><span class="op">)</span></code></pre></div>
 <table class="table table table-striped table-hover">
 <thead><tr>
+<th style="text-align:left;">
+</th>
 <th style="text-align:left;">
 Gene
 </th>
@@ -248,14 +259,26 @@ FDR
 <th style="text-align:left;">
 Seurat_louvain_Resolution0.8
 </th>
+<th style="text-align:right;">
+clusterExprPerc
+</th>
+<th style="text-align:right;">
+ControlExprPerc
+</th>
+<th style="text-align:right;">
+clusterAveExpr
+</th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-LTB
+5
+</td>
+<td style="text-align:left;">
+IL7R
 </td>
 <td style="text-align:right;">
-5.971586
+0.7243084
 </td>
 <td style="text-align:right;">
 0
@@ -265,14 +288,26 @@ LTB
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.7363636
+</td>
+<td style="text-align:right;">
+0.3162791
+</td>
+<td style="text-align:right;">
+1.1959683
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-RPS27
+9
+</td>
+<td style="text-align:left;">
+CD3E
 </td>
 <td style="text-align:right;">
-8.339028
+0.6925999
 </td>
 <td style="text-align:right;">
 0
@@ -282,14 +317,26 @@ RPS27
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.8272727
+</td>
+<td style="text-align:right;">
+0.3930233
+</td>
+<td style="text-align:right;">
+1.2985727
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-RPS25
+14
+</td>
+<td style="text-align:left;">
+CD2
 </td>
 <td style="text-align:right;">
-4.592431
+0.5177898
 </td>
 <td style="text-align:right;">
 0
@@ -299,14 +346,26 @@ RPS25
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.6309091
+</td>
+<td style="text-align:right;">
+0.2367442
+</td>
+<td style="text-align:right;">
+0.8349347
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-LDHB
+57
+</td>
+<td style="text-align:left;">
+LCK
 </td>
 <td style="text-align:right;">
-2.444228
+0.3700685
 </td>
 <td style="text-align:right;">
 0
@@ -316,14 +375,26 @@ LDHB
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.6109091
+</td>
+<td style="text-align:right;">
+0.2948837
+</td>
+<td style="text-align:right;">
+0.7614846
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-IL32
+63
+</td>
+<td style="text-align:left;">
+NOSIP
 </td>
 <td style="text-align:right;">
-2.936913
+0.4170043
 </td>
 <td style="text-align:right;">
 0
@@ -333,14 +404,26 @@ IL32
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.6709091
+</td>
+<td style="text-align:right;">
+0.3641860
+</td>
+<td style="text-align:right;">
+0.9249822
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-RPS29
+197
+</td>
+<td style="text-align:left;">
+TMEM123
 </td>
 <td style="text-align:right;">
-2.545835
+0.2520777
 </td>
 <td style="text-align:right;">
 0
@@ -350,12 +433,22 @@ RPS29
 </td>
 <td style="text-align:left;">
 0
+</td>
+<td style="text-align:right;">
+0.6018182
+</td>
+<td style="text-align:right;">
+0.3795349
+</td>
+<td style="text-align:right;">
+0.7281577
 </td>
 </tr>
 </tbody>
 </table>
 <p>Similarly to the Differential Expression section, we also provide a automated and organized heatmap plotting for the markers:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span>(<span class="no">pbmc3k</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span></code></pre></div>
 <p><img src="find_marker_files/figure-html/plotMarkers-1.png" width="864" style="display: block; margin: auto;"></p>
 <p>Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in <code>metadata</code>.</p>
 </div>
@@ -374,11 +467,11 @@ RPS29
 
 
       <footer><div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -99,10 +99,10 @@
 #'  \code{samples}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link[DelayedArray]{DelayedArray-class} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples

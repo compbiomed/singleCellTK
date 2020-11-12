@@ -6,20 +6,20 @@
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param useAssay A single \code{character}, specifying which
-#' \code{\link[SummarizedExperiment]{assay}} to perform the clustering algorithm
+#' \code{\link{assay}} to perform the clustering algorithm
 #' on. Default \code{NULL}.
 #' @param useReducedDim A single \code{character}, specifying which
-#' low-dimension representation (\code{\link[SingleCellExperiment]{reducedDim}})
+#' low-dimension representation (\code{\link{reducedDim}})
 #' to perform the clustering algorithm on. Default \code{NULL}.
 #' @param useAltExp A single \code{character}, specifying the assay which
-#' \code{\link[SingleCellExperiment]{altExp}} to perform the clustering
+#' \code{\link{altExp}} to perform the clustering
 #' algorithm on. Default \code{NULL}.
 #' @param altExpAssay A single \code{character}, specifying which
-#' \code{\link[SummarizedExperiment]{assay}} in the chosen
-#' \code{\link[SingleCellExperiment]{altExp}} to work on. Only used when
+#' \code{\link{assay}} in the chosen
+#' \code{\link{altExp}} to work on. Only used when
 #' \code{useAltExp} is set. Default \code{"counts"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+#' the cluster label in \code{\link{colData}}. Default
 #' \code{"scranSNN_cluster"}.
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
@@ -59,19 +59,15 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
     stop("Scran SNN clustering requires one and only one of 'useAssay', ",
          "'useReducedDim', and 'useAltExp'.")
   }
+  weightType <- match.arg(weightType)
+  algorithm <- match.arg(algorithm)
+
   graphClustAlgoList = list(walktrap = igraph::cluster_walktrap,
                             louvain = igraph::cluster_louvain,
                             infomap = igraph::cluster_infomap,
                             fastGreedy = igraph::cluster_fast_greedy,
                             labelProp = igraph::cluster_label_prop,
                             leadingEigen = igraph::cluster_leading_eigen)
-  if (all(algorithm == c("walktrap", "louvain", "infomap", "fastGreedy",
-                         "labelProp", "leadingEigen"))) {
-    algorithm = "walktrap"
-  } else if (!algorithm %in% names(graphClustAlgoList)){
-    stop("Specified algorithm '", algorithm, "' not supported")
-  }
-
   message(paste0(date(), " ... Running 'scran SNN clustering'"))
   if (!is.null(useAssay)){
     if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
@@ -84,7 +80,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified reducedDim '", useReducedDim, "' not found.")
     }
     g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
-                              type = weightType, assay.type = NULL)
+                              type = weightType)
   } else if (!is.null(useAltExp)) {
     if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
       stop("Specified altExp '", useAltExp, "' not found.")
@@ -113,7 +109,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
 #' low-dimension representation to perform the clustering algorithm on. Default
 #' \code{"PCA"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+#' the cluster label in \code{\link{colData}}. Default
 #' \code{"scranSNN_cluster"}.
 #' @param nCenters An \code{integer}, the number of centroids (clusters).
 #' @param nIter An \code{integer}, the maximum number of iterations allowed.
@@ -147,14 +143,14 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
   if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
     stop("Specified reducedDim '", useReducedDim, "' not found.")
   }
-  if(all(algorithm == c("Hartigan-Wong", "Lloyd", "MacQueen"))){
-    algorithm = "Hartigan-Wong"
-  }
-  set.seed(seed)
+  algorithm <- match.arg(algorithm)
   message(paste0(date(), " ... Running 'KMeans clustering'"))
   mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
-  clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
-                                nstart = nStart, algorithm = algorithm)
+
+  clust.kmeans <- withr::with_seed(seed = seed,
+                {stats::kmeans(mat, centers = nCenters, iter.max = nIter,
+                        nstart = nStart, algorithm = algorithm)})
+
   clust.kmeans <- factor(clust.kmeans$cluster)
   SummarizedExperiment::colData(inSCE)[[clusterName]] <- clust.kmeans
   return(inSCE)

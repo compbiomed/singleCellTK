@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Differential Expression • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a>
     </li>
     <li>
       <a href="../articles/run_qcConsole.html">Quality Control</a>
@@ -79,6 +79,9 @@
     </li>
     <li>
       <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -139,7 +142,9 @@
 
       
 
-      </header><script src="differential_expression_files/header-attrs-2.3/header-attrs.js"></script><script src="differential_expression_files/kePrint-0.0.1/kePrint.js"></script><div class="row">
+      </header><script src="differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="differential_expression_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="differential_expression_files/anchor-sections-1.0/anchor-sections.js"></script><script src="differential_expression_files/kePrint-0.0.1/kePrint.js"></script><link href="differential_expression_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Differential Expression</h1>
@@ -233,34 +238,36 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"logcounts"</span><span class="op">)</span>
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span>(<span class="no">pbmc3k</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/de_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="run-differential-expression-analysis" class="section level4">
 <h4 class="hasAnchor">
 <a href="#run-differential-expression-analysis" class="anchor"></a>Run Differential Expression Analysis</h4>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Condition chosen basing on the UMAP</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">method</span> <span class="kw">=</span> <span class="st">"MAST"</span>,
-                        <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                        <span class="kw">class</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">classGroup1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>), <span class="kw">classGroup2</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">4</span>, <span class="fl">5</span>),
-                        <span class="kw">groupName1</span> <span class="kw">=</span> <span class="st">"c2"</span>, <span class="kw">groupName2</span> <span class="kw">=</span> <span class="st">"c4_c5"</span>,
-                        <span class="kw">analysisName</span> <span class="kw">=</span> <span class="st">"c2_VS_c4_c5"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Condition chosen basing on the UMAP</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        method <span class="op">=</span> <span class="st">"MAST"</span>, 
+                        useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
+                        class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
+                        classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,
+                        groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, 
+                        analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="results" class="section level4">
 <h4 class="hasAnchor">
@@ -288,8 +295,9 @@
                              |-$result      = (the `data.frame` of top DEG table, shown below)
                              |-$method      = "MAST"</code></pre>
 <p>To fetch the result as a table of the Top differential expressed genes and the statistics:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">DEG</span> <span class="kw">&lt;-</span> <span class="fu">metadata</span>(<span class="no">pbmc3k</span>)$<span class="no">diffExp</span>$<span class="no">c2_VS_c4_c5</span>$<span class="no">result</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">DEG</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">$</span><span class="va">diffExp</span><span class="op">$</span><span class="va">c2_VS_c4_c5</span><span class="op">$</span><span class="va">result</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></code></pre></div>
 <table class="table table table-striped table-hover">
 <thead><tr>
 <th style="text-align:left;">
@@ -393,7 +401,8 @@ CST3
 </tbody>
 </table>
 <p>To visualize the result in a heatmap:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span>(<span class="no">pbmc3k</span>, <span class="kw">useResult</span> <span class="kw">=</span> <span class="st">"c2_VS_c4_c5"</span>, <span class="kw">log2fcThreshold</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">pbmc3k</span>, useResult <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/plotDE-1.png" width="864" style="display: block; margin: auto;"></p>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
 </div>
@@ -412,11 +421,11 @@ CST3
 
 
       <footer><div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

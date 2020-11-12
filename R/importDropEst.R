@@ -56,7 +56,7 @@
 
   if (isTRUE(delayedArray)) {
     counts_matrix <- DelayedArray::DelayedArray(counts_matrix)
-    }
+  }
   ## Create SingleCellExperiment object
   ## Add SCE ColData. If using filtered counts matrix, colData is subset to include filtered cells.
   ## append sample name to cells in SCE
@@ -74,23 +74,24 @@
   ## Add SCE metadata
   sce_metadata <- .extractMetadata(dropEst_rds)
   sce@metadata$dropEst <- sce_metadata
-  
+
   return(sce)
 }
 
 #' @name importDropEst
 #' @rdname importDropEst
-#' @title Create a SCE Object from DropEst output
-#' @description imports the RDS file created by DropEst and
-#' creates a \link[SingleCellExperiment]{SingleCellExperiment} object from either the raw or filtered counts matrix.
-#' @param sampleDirs  a vector of paths to the sample directories containing the cell.counts.rds file. 
-#' Default is current working directory. 
-#' @param sampleNames a vector of  sample names corresponding to the sample directories.
-#' Default "sample". The sample name will be prepended to cell barcode IDs. 
+#' @title Create a SingleCellExperiment Object from DropEst output
+#' @description imports the RDS file created by DropEst (https://github.com/hms-dbmi/dropEst) and
+#' create a SingleCellExperiment object from either the raw or filtered counts matrix.
+#' Additionally parse through the RDS to obtain appropriate feature annotations as
+#' SCE coldata, in addition to any metadata.
+#' @param sampleDirs  A path to the directory containing the data files. Default "./".
+#' @param sampleNames A User-defined sample name. This will be prepended to all cell barcode IDs.
+#'  Default "sample".
 #' @param dataType can be "filtered" or "raw". Default \code{"filtered"}.
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @details
 #' \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
 #' counts matrix stored as "cm" in the DropEst rds output.
@@ -124,16 +125,15 @@ importDropEst <- function(sampleDirs = NULL,
 
   for (i in seq_along(sampleDirs)){
     scei <- .importDropEstSample(sampleDir = sampleDirs[[i]],
-                         sampleName = sampleNames[[i]],
-                         dataType = dataType,
-                         rdsFileName = rdsFileName,
-                         delayedArray = delayedArray)
+                                 sampleName = sampleNames[[i]],
+                                 dataType = dataType,
+                                 rdsFileName = rdsFileName,
+                                 delayedArray = delayedArray)
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
   return(sce)
 }
-
 
 
 

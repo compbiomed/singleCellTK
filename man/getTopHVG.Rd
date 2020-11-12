@@ -10,8 +10,9 @@ getTopHVG(inSCE, method, n = 2000)
 \arguments{
 \item{inSCE}{an input singleCellExperiment object}
 
-\item{method}{represents which method to use for variable gene extraction from
-either Seurat "vst", "mean.var.plot", "dispersion" or Scran "modelGeneVar"}
+\item{method}{represents which method to use for variable gene extraction
+from either Seurat "vst", "mean.var.plot", "dispersion" or Scran
+"modelGeneVar"}
 
 \item{n}{number of top variable genes to extract}
 }
@@ -25,7 +26,8 @@ Extracts the top variable genes from an input singleCellExperiment object
 \examples{
 data(sce_chcl, package = "scds")
 sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10) #return top 10 variable genes
+# return top 10 variable genes
+topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10)
 }
 \author{
 Irzam Sarfraz

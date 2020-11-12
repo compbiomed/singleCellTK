@@ -85,13 +85,13 @@ In this tab, there will be a table with all the genes that are thought to be dif
 
 <img src="de_ui_res2.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-**TODO: description**
+In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions. 
 
 #### Linear Modeling Plot
 
 <img src="de_ui_res3.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-**TODO: description**
+In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions.
 
 #### Heatmap
 

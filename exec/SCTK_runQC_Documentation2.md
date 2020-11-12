@@ -40,7 +40,7 @@ This pipeline can currently import data from the following tools:
 * [STARsolo](https://github.com/alexdobin/STAR/releases)
 * [Human Cell Atlas (HCA) Optimus pipeline](https://data.humancellatlas.org/pipelines/optimus-workflow)
 * [BUStools](https://github.com/BUStools/bustools)
-* [SEQC](https://github.com/ambrosejcarr/seqc)
+* [SEQC](https://github.com/dpeerlab/seqc)
 * [SingleCellExperiment object](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) saved in RDS file
 * SingleCellExperiment object saved in [AnnData](https://github.com/theislab/anndata) hdf5 file
 * Droplet / Cell matrix saved in txt/mtx files
@@ -48,7 +48,7 @@ This pipeline can currently import data from the following tools:
 For each tool, the pipeline expect the data in a certain format within a specific directory structure. For example, data generated with CellRanger V3 is expected to be under a sample folder (specified with the "-s" flag) and a base folder (specified with the "-b" flag).
 Some tools prepend the sample name onto the output files instead of making a separate subdirectory (e.g. BUStools and SEQC). The combination of --base_path ("-b") and --sample ("-s") should specify the location of the data files:
 
-![](/exec/SCTK_QC.png)
+![](/exec/png/SCTK_QC.png)
 
 ## Arguments
 
@@ -97,6 +97,10 @@ The optional arguments are as follows. Their usage depend on type of data and us
 -n, --numCores. Number of cores used to run the pipeline. By default is 1. Parallel computing is enabled if -n is greater than 1. <br> <br>
 
 -T, --parallelType. Type of parallel computing used for parallel computing. Parallel computing used in this pipeline depends on "BiocParallel" package. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1. <br> <br>
+
+-i, --studyDesign. The txt file containing the desrciption of the study design. Default is NULL. This would be shown at the begining the html report of cell and droplet QC. <br> <br>
+
+-L, --subTitle. The subtitle used in the cell and droplet QC HTML report. Default is None. The subtitle can contain information of the sample, like sample name, etc. If -S is set as TRUE, the length of subsitle should be the same as the length of samples. If -S is set as FALSE, the length of subtitle should be one or NULL. <br> <br>
 </p>
 </details>
 
@@ -220,11 +224,11 @@ If -d argument is set as "Droplet", the QC pipeline will only take droplet count
 
 If -d argument is set as "Cell", the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:
 
-![](/exec/Single_Input.png)
+![](/exec/png/Single_Input.png)
 
 ### Specify parameters for QC algorithms
 User can specify parameters for QC algorithms in this pipeline with a yaml file (supplied with -y/--yamlFile argument). The current supported QC algorithms including doublet dection (bcds, cxds, cxds_bcds_hybrid, doubletFinder, doubletCells and scrublet), decontamination (decontX), emptyDrop detection (emptyDrops) and barcodeRankDrops (barcodeRanks). A summary of each function is shown below:
-![](/exec/QC_yaml.png)
+![](/exec/png/QC_yaml.png)
 
 An example of QC parameters yaml file is shown below:
 ```
@@ -309,7 +313,7 @@ The usage of each argument is the same as running command line analysis. Here is
 
 ```
 docker run --rm -v /path/to/data:/SCTK_docker \
--it campbio/sctk_qc:1.7.5 \
+-it campbio/sctk_qc:1.7.6 \
 -b /SCTK_docker/cellranger \
 -P CellRangerV3 \
 -s pbmc_100x100 \
@@ -324,21 +328,46 @@ docker run --rm -v /path/to/data:/SCTK_docker \
 The Singulatiry image can easily be built using Docker Hub as a source:
 
 ```
-singularity pull docker://campbio/sctk_qc:1.7.5
+singularity pull docker://campbio/sctk_qc:1.7.6
 ```
 
-The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). However, you can use argument --bind/-B to specify your own mount volume. The example is shown as below:
+The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). 
+ 
+It's recommended to re-set the home directory when you run singularity. Singularity will mount \$HOME path on your machine by default, which might contain your personal R/Python library folder. If we don't re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from \$HOME path on your machine, using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Besides, you can use argument --bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:
 
 ```
-singularity run sctk_qc_1.7.5.sif \
--b ./cellranger \
+singularity run --home=/PathToSanitizedHome \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
 -P CellRangerV3 \
--s pbmc_100x100 \
--o ./result/tenx_v3_pbmc \
--g ./mitochondrial_human_symbol.gmt
+-s gencodev34_pbmc_1k_v3 \
+-b /data/gencodev34_pbmc_1k_v3
+-o /data/result/gencodev34_pbmc_1k_v3 \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-n 15 \
+-T MulticoreParam
 ```
 
-The code above assumed that the dataset is in your current directory, which is automatically mounted by Singularity. If you run Singularity image on BU SCC，it's recommended to re-set the home directory to mount. Otherwise, the container will load libraries in the SCC shared libraries, which might cause some conflicts. You can point to some "sanitized home" using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Also, you might want to specify cpu architecture when run the docker on BU SCC using #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake. Because the python packages are compiled by SIMD instructions that are only available on these two cpu architectures. 
+Also, you might want to specify cpu architecture when run the Singularity image on BU SCC using '#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake' command. Because the python packages are compiled by SIMD instructions that are only compatible on these cpu architectures. If you are runnning singularity on other cluster, please contact IT helps about how to specify cpu architecture when you run the singularity image. One of the example is shown below: 
+
+```
+#!/bin/bash
+#$ -cwd
+#$ -j y
+#$ -P camplab
+#$ -pe omp 16
+#$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
+singularity run --home=/PathToSanitizedHome \
+--bind /PathToData:/data sctk_qc_1.7.6.sif \
+-P CellRangerV3 \
+-s gencodev34_pbmc_1k_v3 \
+-b /data/gencodev34_pbmc_1k_v3
+-o /data/result/gencodev34_pbmc_1k_v3 \
+-S TRUE \
+-F R,Python,FlatFile,HTAN \
+-n 15 \
+-T MulticoreParam
+```
 
 ## Documentation of tools that are currently available within the pipeline:
 #### Empty droplet detection:

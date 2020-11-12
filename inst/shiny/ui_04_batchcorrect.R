@@ -1,5 +1,8 @@
 shinyPanelBatchcorrect <- fluidPage(
   includeCSS('styles.CSS'),
+  h1("Normalization & Batch Correction"),
+  h5(tags$a(href = "https://www.sctk.science/articles/tab04_batch-correction",
+            "(help)", target = "_blank")),
   tabsetPanel(
   tabPanel(
     "Normalization", fluid = TRUE,
@@ -12,34 +15,31 @@ shinyPanelBatchcorrect <- fluidPage(
                         panel(
                             heading = "Normalization Options",
                             selectInput(
-                                inputId = "normalizeLibrarySelect",
-                                label = "Select normalization:",
-                                choices = c(
-                                    "Seurat" = "seurat",
-                                    "CPM" = "cpm")
-                                ),
+                              inputId = "normalizeAssayMethodSelect",
+                              label = "Select normalization method: ",
+                              choices = c("Seurat - LogNormalize" = "LogNormalize",
+                                          "Seurat - CLR" = "CLR",
+                                          "Seurat - RC" = "RC",
+                                          "Seurat - SCTransform" = "SCT",
+                                          "Scater - LogNormCounts" = "LNC",
+                                          "Scater - CPM" = "CPM")
+                            ),
                             selectInput("normalizeAssaySelect", "Select Assay:", currassays),
                             conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'seurat'",
-                                selectInput(
-                                    inputId = "normalizeAssayMethodSelect",
-                                    label = "Select normalization method: ",
-                                    choices = c("LogNormalize", "CLR", "RC")
-                                    ),
-                                textInput(
+                              condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
+                              || input.normalizeAssayMethodSelect == 'CLR'
+                              || input.normalizeAssayMethodSelect == 'RC'",
+                              textInput(
                                 inputId = "normalizationScaleFactor",
                                 label = "Set scaling factor: ",
                                 value = "10000"
-                                    )
+                              )
                             ),
-                            conditionalPanel(
-                                condition = "input.normalizeLibrarySelect == 'cpm'",
-                                conditionalPanel(
-                                    condition = "input.assayModifyAction != 'delete'",
-                                    textInput("normalizeAssayOutname", "Assay Name", "",
-                                    placeholder = "What should the assay be called?")
-                                    ),
-                                ),
+                            textInput(
+                              inputId = "normalizeAssayOutname",
+                              label = "Assay Name:",
+                              value = "SeuratLogNormalize"
+                            ),
                             withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
                         )
                     )
@@ -59,35 +59,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                 )
                             ),
                             selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction != 'delete'
-                                    && input.assayModifyAction != 'seurat.scale'",
-                                textInput("modifyAssayOutname", "Assay Name", "",
-                                placeholder = "What should the assay be called?")
-                            ),
-                            conditionalPanel(
-                                condition = "input.assayModifyAction == 'seurat.scale'",
-                                selectInput(
-                                    inputId = "scaleSeuratModel",
-                                    label = "Select model for scaling: ",
-                                    choices = c("linear", "poisson", "negbinom")
-                                    ),
-                                materialSwitch(
-                                    inputId = "scaleSeuratDoScale",
-                                    label = "Scale data?",
-                                    value = TRUE
-                                    ),
-                                materialSwitch(
-                                    inputId = "scaleSeuratDoCenter",
-                                    label = "Center data?",
-                                    value = TRUE
-                                    ),
-                                textInput(
-                                    inputId = "scaleSeuratMaxValue",
-                                    label = "Max value for scaled data: ",
-                                    value = "10"
-                                    )
-                            ),
+                            textInput("modifyAssayOutname", "Assay Name",
+                                      value = "countsLog"),
                             materialSwitch(
                                 inputId = "trimAssayCheckbox",
                                 label = "Trim Assay",
@@ -127,15 +100,14 @@ shinyPanelBatchcorrect <- fluidPage(
     ),
   tabPanel(
     "Batch Correction",
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#ui-usage-1",
-              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
+        #uiOutput("batchCorrAssayUI"),
         selectInput("batchCorrAssay", "Select Assay:", currassays),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("BBKNN", "ComBat", "FastMNN", "Harmony", "LIGER", "Limma",
+                    c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
         # BBKNN ####
@@ -184,43 +156,43 @@ shinyPanelBatchcorrect <- fluidPage(
                     value = "FastMNN"),
           withBusyIndicatorUI(actionButton("FastMNNRun", "Run"))
         ),
-        # Harmony ####
-        conditionalPanel(
-          condition = "input.batchCorrMethods == 'Harmony'",
-          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runHarmony.html",
-                    "(help for Harmony)", target = "_blank")),
-          checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
-                        value = FALSE),
-          conditionalPanel(
-            condition = 'input.HarmonyPcInput == true',
-            selectInput('HarmonyReddim', "Select Reduced dimension:",
-                        currreddim)
-          ),
-          numericInput("HarmonyNComp", label = "Number of output dimension:",
-                       value = 50L, min = 2, max = 100000, step = 1),
-          textInput("HarmonyTheta", "Theta value", value = '5',
-                    placeholder = "Type a number"),
-          numericInput("HarmonyNIter", "Number of iteration",
-                       value = 10L, min = 1, step = 1),
-          textInput("HarmonySaveReddim", "ReducedDim Name to Use:",
-                    value = "Harmony"),
-          withBusyIndicatorUI(actionButton("HarmonyRun", "Run"))
-        ),
-        # LIGER ####
-        conditionalPanel(
-          condition = "input.batchCorrMethods == 'LIGER'",
-          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLIGER.html",
-                    "(help for LIGER)", target = "_blank")),
-          numericInput("ligerNComp", label = "Number of output dimension:",
-                       value = 20L, min = 2, max = 100000, step = 1),
-          numericInput("ligerLambda", label = "Lambda:",
-                       value = 5.0, min = 0, max = 100000, step = 0.1),
-          numericInput("ligerResolution", label = "Resolution:",
-                       value = 1.0, min = 0, max = 100000, step = 0.1),
-          textInput("ligerSaveReddim", "ReducedDim Name to Save:",
-                    value = "LIGER"),
-          withBusyIndicatorUI(actionButton("ligerRun", "Run"))
-        ),
+        # # Harmony ####
+        # conditionalPanel(
+        #   condition = "input.batchCorrMethods == 'Harmony'",
+        #   h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runHarmony.html",
+        #             "(help for Harmony)", target = "_blank")),
+        #   checkboxInput('HarmonyPcInput', "Use low-dimension input instead",
+        #                 value = FALSE),
+        #   conditionalPanel(
+        #     condition = 'input.HarmonyPcInput == true',
+        #     selectInput('HarmonyReddim', "Select Reduced dimension:",
+        #                 currreddim)
+        #   ),
+        #   numericInput("HarmonyNComp", label = "Number of output dimension:",
+        #                value = 50L, min = 2, max = 100000, step = 1),
+        #   textInput("HarmonyTheta", "Theta value", value = '5',
+        #             placeholder = "Type a number"),
+        #   numericInput("HarmonyNIter", "Number of iteration",
+        #                value = 10L, min = 1, step = 1),
+        #   textInput("HarmonySaveReddim", "ReducedDim Name to Use:",
+        #             value = "Harmony"),
+        #   withBusyIndicatorUI(actionButton("HarmonyRun", "Run"))
+        # ),
+        # # LIGER ####
+        # conditionalPanel(
+        #   condition = "input.batchCorrMethods == 'LIGER'",
+        #   h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runLIGER.html",
+        #             "(help for LIGER)", target = "_blank")),
+        #   numericInput("ligerNComp", label = "Number of output dimension:",
+        #                value = 20L, min = 2, max = 100000, step = 1),
+        #   numericInput("ligerLambda", label = "Lambda:",
+        #                value = 5.0, min = 0, max = 100000, step = 0.1),
+        #   numericInput("ligerResolution", label = "Resolution:",
+        #                value = 1.0, min = 0, max = 100000, step = 0.1),
+        #   textInput("ligerSaveReddim", "ReducedDim Name to Save:",
+        #             value = "LIGER"),
+        #   withBusyIndicatorUI(actionButton("ligerRun", "Run"))
+        # ),
         # Limma ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Limma'",
@@ -343,6 +315,8 @@ shinyPanelBatchcorrect <- fluidPage(
               selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
               selectInput("batchCheckCond", "Additional Condition (optional)",
                 clusterChoice),
+              p("Only result generated in the current session will be presented. ",
+                style = "color:grey;"),
               uiOutput("batchCheckResUI"),
               withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
             )
@@ -353,3 +327,4 @@ shinyPanelBatchcorrect <- fluidPage(
   )
   )
 )
+

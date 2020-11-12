@@ -2,7 +2,7 @@
 library(singleCellTK)
 context("Testing decontamination algorithms")
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 
 test_that(desc = "Testing runDecontX", {
         sceres <- runDecontX(sce)

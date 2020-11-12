@@ -6,9 +6,9 @@
 \usage{
 getSceParams(
   inSCE,
-  skip = c("scrublet", "runDecontX"),
+  skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"),
   ignore = c("algorithms", "estimates", "contamination", "z", "sample", "rank",
-    "BPPARAM", "batch", "geneSetCollection"),
+    "BPPARAM", "batch", "geneSetCollection", "barcodeArgs"),
   directory = "./",
   samplename = "",
   writeYAML = TRUE
@@ -25,8 +25,11 @@ getSceParams(
 
 \item{samplename}{The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.}
 
-\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE, 
+\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 return character object.}
+}
+\value{
+If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 }
 \description{
 Extract QC parameters from the SingleCellExperiment object

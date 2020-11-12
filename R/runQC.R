@@ -16,12 +16,12 @@
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' @examples
-#' \donttest{
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runCellQC(sce)
 #' }
 #' @export
@@ -45,27 +45,27 @@ runCellQC <- function(inSCE,
 
   if ("QCMetrics" %in% algorithms) {
     inSCE <- do.call(runPerCellQC,
-      c(list(inSCE = quote(inSCE), 
+      c(list(inSCE = quote(inSCE),
         useAssay = useAssay,
         collectionName = collectionName,
         geneSetList = geneSetList,
         geneSetListLocation = geneSetListLocation,
-        geneSetCollection = geneSetCollection), 
+        geneSetCollection = geneSetCollection),
         paramsList[["QCMetrics"]]))
   }
 
   if ("scrublet" %in% algorithms) {
 
-    inSCE <- do.call(runScrublet, 
-      c(list(inSCE = quote(inSCE), 
+    inSCE <- do.call(runScrublet,
+      c(list(inSCE = quote(inSCE),
         sample = sample,
         useAssay = useAssay,
-        seed = seed), 
+        seed = seed),
         paramsList[["scrublet"]]))
   }
 
   if ("doubletCells" %in% algorithms) {
-    inSCE <- do.call(runDoubletCells, 
+    inSCE <- do.call(runDoubletCells,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
@@ -74,7 +74,7 @@ runCellQC <- function(inSCE,
   }
 
   if ("doubletFinder" %in% algorithms) {
-    inSCE <- do.call(runDoubletFinder, 
+    inSCE <- do.call(runDoubletFinder,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed),
@@ -82,7 +82,7 @@ runCellQC <- function(inSCE,
   }
 
   if ("cxds" %in% algorithms) {
-    inSCE <- do.call(runCxds, 
+    inSCE <- do.call(runCxds,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
@@ -92,7 +92,7 @@ runCellQC <- function(inSCE,
   }
 
   if ("bcds" %in% algorithms) {
-    inSCE <- do.call(runBcds, 
+    inSCE <- do.call(runBcds,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
@@ -102,7 +102,7 @@ runCellQC <- function(inSCE,
   }
 
   if ("cxds_bcds_hybrid" %in% algorithms) {
-    inSCE <- do.call(runCxdsBcdsHybrid, 
+    inSCE <- do.call(runCxdsBcdsHybrid,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       seed = seed,
@@ -112,7 +112,7 @@ runCellQC <- function(inSCE,
   }
 
   if ("decontX" %in% algorithms) {
-    inSCE <- do.call(runDecontX, 
+    inSCE <- do.call(runDecontX,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
@@ -137,11 +137,11 @@ runCellQC <- function(inSCE,
 #'  matrix for droplets.
 #' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms in the \link[SummarizedExperiment]{colData}
+#'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' @examples
-#' \donttest{
 #' data(scExample, package = "singleCellTK")
+#' \dontrun{
 #' sce <- runDropletQC(sce)
 #' }
 #' @export
@@ -157,14 +157,14 @@ runDropletQC <- function(inSCE,
   }
 
   if ("QCMetrics" %in% algorithms) {
-    inSCE <- do.call(runPerCellQC, 
-      c(list(inSCE = quote(inSCE), 
+    inSCE <- do.call(runPerCellQC,
+      c(list(inSCE = quote(inSCE),
         useAssay = useAssay),
         paramsList[["QCMetrics"]]))
   }
 
   if (any("emptyDrops" %in% algorithms)) {
-    inSCE <- do.call(runEmptyDrops, 
+    inSCE <- do.call(runEmptyDrops,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay),

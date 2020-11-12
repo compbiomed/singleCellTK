@@ -96,3 +96,4 @@ shinyPanelRowAnnotation <- fluidPage(
                              uiOutput("outputColumnAnnotationTable_rowData")
              )
 )
+

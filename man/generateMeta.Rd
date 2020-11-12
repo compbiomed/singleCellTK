@@ -4,7 +4,14 @@
 \alias{generateMeta}
 \title{Generate manifest file for droplet and cell count data}
 \usage{
-generateMeta(dropletSCE, cellSCE, samplename, dir, HTAN = TRUE)
+generateMeta(
+  dropletSCE = NULL,
+  cellSCE = NULL,
+  samplename,
+  dir,
+  HTAN = TRUE,
+  dataType = c("Droplet", "Cell", "Both")
+)
 }
 \arguments{
 \item{dropletSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
@@ -18,11 +25,18 @@ cell count matrix data}
 \item{dir}{The output directory of the SCTK QC pipeline.}
 
 \item{HTAN}{Whether generate manifest file with the format required by HTAN. Default is TRUE.}
+
+\item{dataType}{Type of the input data. It can be one of "Droplet", "Cell" or "Both".}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 objects in sceList. The colData is merged.
 }
 \description{
 Generate manifest file for droplet and cell count data
+}
+\examples{
+data(scExample, package = "singleCellTK")
+generateMeta(sce, dir = ".", samplename = "Sample",
+ HTAN = TRUE)
 }

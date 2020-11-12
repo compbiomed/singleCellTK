@@ -2,8 +2,8 @@
 % Please edit documentation in R/plotDEAnalysis.R
 \name{.checkDiffExpResultExists}
 \alias{.checkDiffExpResultExists}
-\title{Check if the specified MAST result in SingleCellExperiment object is complete.
-But does not garantee the biological correctness.}
+\title{Check if the specified MAST result in SingleCellExperiment object is
+complete. But does not garantee the biological correctness.}
 \usage{
 .checkDiffExpResultExists(inSCE, useResult, labelBy = NULL)
 }
@@ -17,7 +17,10 @@ used when running a differential expression analysis function.}
 \item{labelBy}{A single character for a column of \code{rowData(inSCE)} as
 where to search for the labeling text. Default \code{NULL}.}
 }
+\value{
+Stop point if found
+}
 \description{
-Check if the specified MAST result in SingleCellExperiment object is complete.
-But does not garantee the biological correctness.
+Check if the specified MAST result in SingleCellExperiment object is
+complete. But does not garantee the biological correctness.
 }

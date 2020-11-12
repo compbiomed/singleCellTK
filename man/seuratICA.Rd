@@ -23,3 +23,12 @@ Updated \code{SingleCellExperiment} object which now contains the computed indep
 seuratICA
 Computes ICA on the input sce object and stores the calculated independent components within the sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratICA(sce, useAssay = "counts")
+}
+}

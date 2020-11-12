@@ -2,12 +2,39 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html#mast",
-              "(help)", target = "_blank")),
+    tags$a(href = "https://www.sctk.science/articles/tab05_differential-expression",
+           "(help)", target = "_blank"),
     fluidRow(
       panel(
         style = "margin:2px;",
-        selectInput("deAssay", "Select Assay:", currassays),
+        h3("Method and Matrix"),
+        p("For 'MAST', 'Limma' and 'ANOVA', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred.",
+          style = "color:grey;"),
+        fluidRow(
+          column(
+            4,
+            selectInput('deMethod', "Choose analysis method",
+                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
+          ),
+          column(
+            4,
+            selectInput("deAssay", "Select Assay:", currassays)
+          )
+        ),
+        useShinyjs(),
+        actionButton("deViewThresh", label = "View Thresholding"),
+        shinyjs::hidden(
+          wellPanel(
+            id = "deThreshpanel",
+            textOutput("deSanityWarnThresh"),
+            uiOutput("deThreshPlotDiv"),
+            #plotOutput("deThreshplot"),
+            actionButton("deHideThresh", label = "Hide")
+            )
+          ),
+        h3("Condition Setting"),
+        p("Three approaches of setting provided for flexibility. ",
+          style = "color:grey;"),
         radioButtons('deCondMethod', "Condition Selection:",
                      choiceNames = c("By annotations",
                                      "Manually select individual cells",
@@ -15,11 +42,11 @@ shinyPanelDiffex <- fluidPage(
                      choiceValues = c(1, 2, 3), inline = TRUE),
         fluidRow(
           column(width = 6,
-                 textInput("deG1Name", "Name of Condition1", "Condition1",
+                 textInput("deG1Name", "Name of Condition1", NULL,
                            placeholder = "Required")
           ),
           column(width = 6,
-                 textInput("deG2Name", "Name of Condition2", "Condition2",
+                 textInput("deG2Name", "Name of Condition2", NULL,
                            placeholder = "Required")
           )
         ),
@@ -103,38 +130,7 @@ shinyPanelDiffex <- fluidPage(
             )
           )
         ),
-        h4("Parameters:"),
-        fluidRow(
-          column(
-            width = 4,
-            selectInput('deMethod', "Choose analysis method",
-                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
-          ),
-          column(
-            width = 8,
-            style = 'margin-top: 32px;',
-            conditionalPanel(
-              condition = "input.deMethod == 'MAST'",
-              p("MAST requires 'logcounts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'DESeq2'",
-              p("DESeq2 requires integer 'counts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'Limma'",
-              p("Limma requires 'logcounts' input assay.",
-                style = 'color:red;')
-            ),
-            conditionalPanel(
-              condition = "input.deMethod == 'ANOVA'",
-              p("ANOVA does not produce Log2FC value.",
-                style = 'color:red;')
-            )
-          )
-        ),
+        h3("Parameters"),
         fluidRow(
           column(
             width = 3,
@@ -142,46 +138,69 @@ shinyPanelDiffex <- fluidPage(
                          min = 0.01, max = 1, step = 0.01, value = 0.05)
           ),
           column(
-            width = 6,
+            width = 3,
             numericInput("deFCThresh",
                          "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = 0)
-          )
-        ),
-        fluidRow(
-          column(
-            width = 4,
-            style = 'margin-top: 18px;',
-            checkboxInput("dePosOnly", "Only up-regulated genes",
-                          value = FALSE)
+                         min = 0, step = 0.05, value = 1)
           ),
           column(
             width = 3,
             selectInput("deCovar", "Select Covariates",
                         clusterChoice, multiple = TRUE)
+          ),
+          column(
+            width = 3,
+            style = 'margin-top: 18px;',
+            checkboxInput("dePosOnly", "Only up-regulated genes",
+                          value = FALSE)
           )
         ),
         fluidRow(
           column(
-            width = 6,
+            width = 3,
             textInput("deAnalysisName",
                       "Name of Differential Expression Analysis:",
                       placeholder = 'Required.')
           ),
           column(
-            width = 6,
+            width = 2,
             style = 'margin-top: 25px;',
-            withBusyIndicatorUI(
-              actionButton("runDE", "Run Differential Expression Analysis")
-            )
+            withBusyIndicatorUI(actionButton("runDE", "Run"))
           )
         )
       )
     ),
+    h3("Visualization"),
+    p("For preview and result presentation.", style = "color:grey;"),
     fluidRow(
       uiOutput("deResSelUI"),
       tabsetPanel(
-        tabPanel("Adaptive thresholding", plotOutput("deThreshplot")),
+        tabPanel(
+          "Heatmap",
+          panel(
+            sidebarLayout(
+              sidebarPanel(
+                checkboxInput('deHMDoLog', "Do log transformation", FALSE),
+                checkboxInput('deHMPosOnly', "Only up-regulated",
+                              value = FALSE),
+                numericInput("deHMFC", "Aboslute log2FC value greater than:",
+                             value = 1, min = 0, step = 0.05),
+                numericInput("deHMFDR", "FDR value less than", value = 0.05,
+                             max = 1, step = 0.01),
+                selectInput("deHMcolData", "Additional cell annotation",
+                            choices = clusterChoice, multiple = TRUE),
+                selectInput("deHMrowData", "Additional feature annotation",
+                            choices = featureChoice, multiple = TRUE),
+                uiOutput('deHMSplitColUI'),
+                uiOutput('deHMSplitRowUI'),
+                withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
+              ),
+              mainPanel(
+                plotOutput("deHeatmap", height = "600px")
+              )
+            )
+          )
+        ),
         tabPanel("Results Table",
                  DT::dataTableOutput("deResult"),
                  downloadButton("deDownload", "Download Result Table")),
@@ -206,19 +225,18 @@ shinyPanelDiffex <- fluidPage(
             ),
             fluidRow(
               column(
-                width = 5,
+                width = 3,
                 selectInput('deVioLabel', "Label features by",
                             c("Default ID", featureChoice))
               ),
               column(
-                width = 5,
-                style = 'margin-top: 15px;',
+                width = 2,
+                style = 'margin-top: 23px;',
                 withBusyIndicatorUI(actionButton('dePlotVio', 'Plot'))
               )
             )
-            #checkboxInput('deVioUseThresh', 'plot threshold values from adaptive thresholding',
-            #              value = FALSE, width = '800px')
           ),
+          textOutput("deSanityWarnViolin"),
           plotOutput("deViolinPlot", height = "800px")
         ),
         tabPanel(
@@ -242,45 +260,22 @@ shinyPanelDiffex <- fluidPage(
             ),
             fluidRow(
               column(
-                width = 5,
+                width = 3,
                 selectInput('deRegLabel', "Label features by",
                             c("Default ID", featureChoice))
               ),
               column(
-                width = 5,
-                style = 'margin-top: 15px;',
+                width = 2,
+                style = 'margin-top: 23px;',
                 withBusyIndicatorUI(actionButton('dePlotReg', 'Plot'))
               )
             ),
-            #checkboxInput('deRegUseThresh', 'plot threshold values from adaptive thresholding',
-            #              value = FALSE, width = '800px')
           ),
+          textOutput("deSanityWarnReg"),
           plotOutput("deRegPlot", height = "800px")
-        ),
-        tabPanel(
-          "Heatmap",
-          sidebarLayout(
-            sidebarPanel(
-              checkboxInput('deHMPosOnly', "Only up-regulated",
-                            value = FALSE),
-              numericInput("deHMFC", "Aboslute log2FC value greater than:",
-                           value = 1, min = 0, step = 0.05),
-              numericInput("deHMFDR", "FDR value less than", value = 0.05,
-                           max = 1, step = 0.01),
-              selectInput("deHMcolData", "Additional cell annotation",
-                          choices = clusterChoice, multiple = TRUE),
-              selectInput("deHMrowData", "Additional feature annotation",
-                          choices = featureChoice, multiple = TRUE),
-              uiOutput('deHMSplitColUI'),
-              uiOutput('deHMSplitRowUI'),
-              withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
-            ),
-            mainPanel(
-              plotOutput("deHeatmap", height = "600px")
-            )
-          )
         )
       )
     )
   )
 )
+

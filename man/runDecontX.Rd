@@ -87,7 +87,7 @@ a default value of 12345 is used. If NULL, no calls to
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  'decontX_Contamination' and 'decontX_Clusters' added to the
- \link[SummarizedExperiment]{colData} slot. Additionally, the
+ \link{colData} slot. Additionally, the
 decontaminated counts will be added as an assay called 'decontXCounts'.
 }
 \description{
@@ -96,6 +96,6 @@ A wrapper function for \link[celda]{decontX}. Identify
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDecontX(sce)
 }

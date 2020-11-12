@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clustering • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a>
     </li>
     <li>
       <a href="../articles/run_qcConsole.html">Quality Control</a>
@@ -79,6 +79,9 @@
     </li>
     <li>
       <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -139,7 +142,8 @@
 
       
 
-      </header><script src="clustering_files/header-attrs-2.3/header-attrs.js"></script><div class="row">
+      </header><script src="clustering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="clustering_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="clustering_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering</h1>
@@ -224,19 +228,20 @@
 <h4 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h4>
 <p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions. The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded).</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">singleCellTK</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span>(<span class="st">"pbmc3k"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span>(<span class="no">pbmc3k</span>, <span class="st">"logcounts"</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scater_logNormCounts.html">scater_logNormCounts</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"logcounts"</span><span class="op">)</span>
 <span class="co"># Go through the Seurat curated workflow to get basic scaled assay and dimension reduction</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"counts"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratNormData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>, <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span>(<span class="no">pbmc3k</span>)
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Sample"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"Sample"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scran-snn" class="section level4">
@@ -250,39 +255,42 @@
 <code>nComp</code>, the number of components to use when <code>useAssay</code> or <code>useAltExp</code> is specified. WON’T work with <code>useReducedDim</code>.</li>
 <li>For <code>weightType</code> and <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../reference/runScranSNN.html">?runScranSNN</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code> and <a href="https://rdrr.io/cran/igraph/"><code>igraph</code></a>.</li>
 </ul>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Directly use an assay</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                      <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                      <span class="kw">k</span> <span class="kw">=</span> <span class="fl">10</span>,
-                      <span class="kw">clusterName</span> <span class="kw">=</span> <span class="st">"scranSNN_logcounts"</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"scranSNN_logcounts"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Directly use an assay</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                      useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
+                      k <span class="op">=</span> <span class="fl">10</span>,
+                      clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>,
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Directly use a dimension reduction</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                      <span class="kw">useReducedDim</span> <span class="kw">=</span>  <span class="st">"seuratUMAP"</span>,
-                      <span class="kw">k</span> <span class="kw">=</span> <span class="fl">25</span>,
-                      <span class="kw">clusterName</span> <span class="kw">=</span> <span class="st">"scranSNN_seuratUMAP"</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"scranSNN_seuratUMAP"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Directly use a dimension reduction</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                      useReducedDim <span class="op">=</span>  <span class="st">"seuratUMAP"</span>,
+                      k <span class="op">=</span> <span class="fl">25</span>,
+                      clusterName <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span>,
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-2.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Use a subset of an assay</span>
-<span class="no">hvg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span>(<span class="no">pbmc3k</span>, <span class="st">"vst"</span>, <span class="kw">n</span> <span class="kw">=</span> <span class="fl">500</span>)
-<span class="no">ae</span> <span class="kw">&lt;-</span> <span class="fu">SingleCellExperiment</span>(<span class="kw">assays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">logcounts</span> <span class="kw">=</span> <span class="fu">logcounts</span>(<span class="no">pbmc3k</span>[<span class="no">hvg</span>,])))
-<span class="fu">altExp</span>(<span class="no">pbmc3k</span>, <span class="st">"subset"</span>) <span class="kw">&lt;-</span> <span class="no">ae</span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                      <span class="kw">useAltExp</span> <span class="kw">=</span> <span class="st">"subset"</span>,
-                      <span class="kw">altExpAssay</span> <span class="kw">=</span> <span class="st">"logcounts"</span>,
-                      <span class="kw">k</span> <span class="kw">=</span> <span class="fl">8</span>,
-                      <span class="kw">clusterName</span> <span class="kw">=</span> <span class="st">"scranSNN_altExp"</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"scranSNN_altExp"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Use a subset of an assay</span>
+<span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+<span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="op">(</span>assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>logcounts <span class="op">=</span> <span class="fu">logcounts</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">[</span><span class="va">hvg</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">altExp</span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"subset"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ae</span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>,
+                      useAltExp <span class="op">=</span> <span class="st">"subset"</span>,
+                      altExpAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
+                      k <span class="op">=</span> <span class="fl">8</span>,
+                      clusterName <span class="op">=</span> <span class="st">"scranSNN_altExp"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"scranSNN_altExp"</span>,
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-3.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="k-means" class="section level4">
@@ -300,54 +308,56 @@
 <code>seed</code>, The seed for the random number generator.</li>
 <li>For <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../reference/runKMeans.html">?runKMeans</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/r/stats/kmeans.html">?stats::kmeans</a></code>.</li>
 </ul>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                    <span class="kw">useReducedDim</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>,
-                    <span class="kw">nCenters</span> <span class="kw">=</span> <span class="fl">13</span>,
-                    <span class="kw">clusterName</span> <span class="kw">=</span> <span class="st">"kmeans_cluster"</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"kmeans_cluster"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                    useReducedDim <span class="op">=</span> <span class="st">"seuratUMAP"</span>, 
+                    nCenters <span class="op">=</span> <span class="fl">13</span>, 
+                    clusterName <span class="op">=</span> <span class="st">"kmeans_cluster"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"kmeans_cluster"</span>,
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_kmeans-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="seurat" class="section level4">
 <h4 class="hasAnchor">
 <a href="#seurat" class="anchor"></a>Seurat</h4>
-<p>Here we will only present the examples of using <code><a href="../reference/seuratFindClusters.html">seuratFindClusters()</a></code>. For the detail of this function or the curated workflow, please refer to <strong>WHERE?</strong></p>
-<p>When users preprocessed the dataset with the Seurat Curated Workflow. The clustering can be easily fulfilled, because Seurat specific metadata is already existing.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                             <span class="kw">useAssay</span> <span class="kw">=</span> <span class="st">"seuratScaledData"</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<p>Here we will only present the examples of using <code><a href="../reference/seuratFindClusters.html">seuratFindClusters()</a></code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                             useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_seurat1-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>When users preprocessed the dataset with other approaches. The clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># Let's get another totally independent dimension reduction for demonstration. </span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/getPCA.html">getPCA</a></span>(<span class="no">pbmc3k</span>, <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"PCA"</span>)
-<span class="no">pca</span> <span class="kw">&lt;-</span> <span class="fu">reducedDim</span>(<span class="no">pbmc3k</span>, <span class="st">"PCA"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pca</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">pca</span>))
-<span class="kw">if</span> (<span class="st">"percentVar"</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span>(<span class="no">pca</span>))) {
-    <span class="no">stdev</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">pca</span>, <span class="st">"percentVar"</span>))
-    <span class="no">new_pca</span> <span class="kw">&lt;-</span> <span class="kw pkg">Seurat</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/CreateDimReducObject.html">CreateDimReducObject</a></span>(<span class="kw">embeddings</span> <span class="kw">=</span> <span class="no">pca</span>,
-                                            <span class="kw">assay</span> <span class="kw">=</span> <span class="st">"RNA"</span>,
-                                            <span class="kw">stdev</span> <span class="kw">=</span> <span class="no">stdev</span>,
-                                            <span class="kw">key</span> <span class="kw">=</span> <span class="st">"PC_"</span>)
-} <span class="kw">else</span> {
-    <span class="no">new_pca</span> <span class="kw">&lt;-</span> <span class="kw pkg">Seurat</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/CreateDimReducObject.html">CreateDimReducObject</a></span>(<span class="kw">embeddings</span> <span class="kw">=</span> <span class="no">pca</span>,
-                                            <span class="kw">assay</span> <span class="kw">=</span> <span class="st">"RNA"</span>,
-                                            <span class="kw">key</span> <span class="kw">=</span> <span class="st">"PC_"</span>)
-}
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Let's get another totally independent dimension reduction for demonstration. </span>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getPCA.html">getPCA</a></span><span class="op">(</span><span class="va">pbmc3k</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>
+<span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu">reducedDim</span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="st">"PCA"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span>
+<span class="kw">if</span> <span class="op">(</span><span class="st">"percentVar"</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, 
+                                            assay <span class="op">=</span> <span class="st">"RNA"</span>,
+                                            stdev <span class="op">=</span> <span class="va">stdev</span>, 
+                                            key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, 
+                                            assay <span class="op">=</span> <span class="st">"RNA"</span>,
+                                            key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
+<span class="op">}</span>
 <span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span>
 <span class="co"># reduction as an input. </span>
-<span class="no">pbmc3k</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                             <span class="kw">useAssay</span> <span class="kw">=</span> <span class="fu">assayNames</span>(<span class="no">pbmc3k</span>)[<span class="fl">1</span>], <span class="co"># Need a placeholder</span>
-                             <span class="kw">externalReduction</span> <span class="kw">=</span> <span class="no">new_pca</span>,
-                             <span class="kw">resolution</span> <span class="kw">=</span> <span class="fl">0.8</span>)
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span>(<span class="kw">inSCE</span> <span class="kw">=</span> <span class="no">pbmc3k</span>,
-                        <span class="kw">colorBy</span> <span class="kw">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        <span class="kw">conditionClass</span> <span class="kw">=</span> <span class="st">"factor"</span>,
-                        <span class="kw">reducedDimName</span> <span class="kw">=</span> <span class="st">"seuratUMAP"</span>)</pre></body></html></div>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                             useAssay <span class="op">=</span> <span class="fu">assayNames</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="co"># Need a placeholder</span>
+                             externalReduction <span class="op">=</span> <span class="va">new_pca</span>,
+                             resolution <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc3k</span>, 
+                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
+                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_seurat2-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -365,11 +375,11 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

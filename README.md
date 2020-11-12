@@ -5,26 +5,18 @@
 [![BioC status](https://www.bioconductor.org/shields/build/release/bioc/singleCellTK.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/singleCellTK)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
-
-The Single Cell ToolKit (SCTK) is an analysis platform that provides an <b> R interface to 
-several popular scRNA-seq preprocessing, quality control, and visualization tools</b>. SCTK imports
-raw or filtered counts from various single cell sequencing technologies 
-and upstream tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R as well as Python, SCTK performs extensive quality control measures including doublet detection and batch effect correction. Additionally, SCTK summarizes results and related visualizations in a comprehensive R markdown and/or HTML report. SCTK provides a standardized single cell analysis workflow by representing the counts data and the results using the [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) R object. Furthermore, SCTK enables seamless downstream analysis by exporting data and results in flat .txt and Python Anndata formats.
-
-A comprehensive list of available functions is listed in the Reference section
-
 ## Installation
 
 ### System setup
 
 If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
 
-![](32bit-R.png)
+![](/exec/png/32bit-R.png)
 
 #### Window's user
 For window's users, please install [rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) based on your R version. Make sure to click 'Edit the system PATH' box when you see this window:
 
-![](rtools.png)
+![](/exec/png/rtools.png)
 
 After installing rtools, install 'devtools' package with the following command. If it asks whether install the package that requires compilation, type 'y'. 
 ```
@@ -44,7 +36,7 @@ install.packages('devtools')
 
 ### Release Version
 
-The current release version of SCTK can be downloaded from
+You can download the release version of the Single Cell Toolkit in
 [Bioconductor v3.10](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
 
 ```r
@@ -53,49 +45,28 @@ if (!requireNamespace("BiocManager", quietly=TRUE))
 BiocManager::install("singleCellTK")
 ```
 
-Load the package for analysis by running
+### Devel Version
 
-```r 
-library(singleCellTK)
-```
-
-### Development Version
-
-The development version is available at
+You can download the development version of the Single Cell Toolkit in
 [Bioconductor v3.11](https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html)
 or from this repository:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("compbiomed/singleCellTK",ref="devel")
+devtools::install_github("compbiomed/singleCellTK")
 ```
 
-### Install From Containerized Images
+### R 3.4 Version
 
-singleCellTK is available for use with both Docker and Singularity.
+If you are still running an earlier version of R than 3.5, you can install
+the following version from this repository:
 
-#### Docker
-
-Docker set up instructions are available at - [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux).
-
-SingleCellTK docker image is available at [Docker Hub](https://hub.docker.com/r/campbio/sctk_qc).
-
-The Docker image can be obtained by running:
-
-```
-docker pull campbio/sctk_qc
+```r
+# install.packages("devtools")
+devtools::install_github("compbiomed/singleCellTK", ref="r_3_4")
 ```
 
-
-#### Singularity
-
-The Singulatiry image sources the docker image and can be obtained as follows- 
-
-```
-singularity pull docker://campbio/sctk_qc:1.7.5
-```
-
-#### Troubleshooting R Installation
+#### Troubleshooting Installation
 
 For the majority of users, the commands above will install the latest version
 of the singleCellTK without any errors. Rarely, you may encounter an error due
@@ -138,14 +109,14 @@ Then, try to install the toolkit again:
 devtools::install_github("compbiomed/singleCellTK")
 ```
 
-If you still encounter an error, please [contact us](mailto:camp@bu.edu) and
+If you still encounter an error, please [contact us](mailto:dfj@bu.edu) and
 we'd be happy to help.
 
 ## Develop singleCellTK
 
 To contribute to singleCellTK, follow these steps:
 
-__Note__: Development of the singleCellTK is done using R version 3.6.
+__Note__: Development of the singleCellTK is done using the latest version of R.
 
 1. Fork the repo using the "Fork" button above.
 2. Download a local copy of your forked repository "```git clone https://github.com/{username}/singleCellTK.git```"
@@ -154,6 +125,9 @@ __Note__: Development of the singleCellTK is done using R version 3.6.
 
 You can then make your changes and test your code using the Rstudio build tools.
 There is a lot of information about building packages available here: http://r-pkgs.had.co.nz/.
+
+Information about building shiny packages is available here: http://shiny.rstudio.com/tutorial/.
+
 When you are ready to upload your changes, commit them locally, push them to your
 forked repo, and make a pull request to the compbiomed repository.
 

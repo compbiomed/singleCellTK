@@ -25,3 +25,8 @@ convertSeuratToSCE(
 convertSeuratToSCE
 Converts the input seurat object to a sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+seurat <- convertSCEToSeurat(sce)
+sce <- convertSeuratToSCE(seurat)
+}

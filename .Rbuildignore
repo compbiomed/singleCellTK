@@ -10,5 +10,7 @@ misc/
 .BBSoptions
 .Rprofile
 renv*
+Dockerfile
+exec/png
 
 ^pkgdown$

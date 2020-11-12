@@ -52,7 +52,15 @@
   float: right;
 }
 
+.btn {
+  white-space: normal;
+}
+
 label[for="Col"]
 {
     display:none;
+}
+
+.colourpicker .colourpicker-input {
+  max-height: 20px;
 }

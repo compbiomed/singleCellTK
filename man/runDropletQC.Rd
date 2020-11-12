@@ -29,7 +29,7 @@ matrix for droplets.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
- specified algorithms in the \link[SummarizedExperiment]{colData}
+ specified algorithms in the \link{colData}
 of \code{inSCE}.
 }
 \description{
@@ -37,8 +37,8 @@ A wrapper function to run several QC algorithms for determining
 empty droplets in single cell RNA-seq data
 }
 \examples{
-\donttest{
 data(scExample, package = "singleCellTK")
+\dontrun{
 sce <- runDropletQC(sce)
 }
 }
