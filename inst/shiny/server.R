@@ -2194,18 +2194,31 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCASeurat")
       {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                             useAssay = input$dimRedAssaySelect,
-                                                                             useReduction = "pca",
-                                                                             dims = input$dimRedNumberDims,
-                                                                             nfeatures = 20,
-                                                                             combine = FALSE,
-                                                                             fast = FALSE)
+          vals$counts@metadata$seurat$heatmap_dimRed <- plotHeatmap(
+            inSCE = vals$counts,
+            useAssay = input$dimRedAssaySelect,
+            dims = 1:input$dimRedNumberDims,
+            nfeatures = 20,
+            fast = FALSE
+          )
+          # vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
+          #                                                                    useAssay = input$dimRedAssaySelect,
+          #                                                                    useReduction = "pca",
+          #                                                                    dims = input$dimRedNumberDims,
+          #                                                                    nfeatures = 20,
+          #                                                                    combine = FALSE,
+          #                                                                    fast = FALSE)
           output$plot_heatmap_dimRed <- renderPlot({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = input$dimRedNumberDims,
-                              ncol = 2,
-                              labels = c("PC1", "PC2", "PC3", "PC4"))
+            heatmap3(vals$counts@metadata$seurat$heatmap_dimRed, 
+                     Rowv = NA,
+                     Colv = NA,
+                     scale = "none",
+                     margins = c(3,3),
+                     balanceColor = TRUE)
+            # seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
+            #                   dims = input$dimRedNumberDims,
+            #                   ncol = 2,
+            #                   labels = c("PC1", "PC2", "PC3", "PC4"))
           })
         })
       }

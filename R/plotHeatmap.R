@@ -21,7 +21,7 @@
 #' @export
 plotHeatmap <- function(inSCE,
                         useAssay,
-                        dims = 1:2,
+                        dims = 1:dims,
                         nfeatures = 30,
                         cells = NULL,
                         reduction = 'pca',
@@ -124,12 +124,13 @@ plotHeatmap <- function(inSCE,
         order = dim.cells
       )
     } else {
-      plots[[i]] <- heatmap3(t(as.matrix(data.plot)), 
-                             Rowv = NA, 
-                             Colv = NA, 
-                             scale = "none", 
-                             margins = c(3,3), 
-                             balanceColor = TRUE)
+      plots[[i]] <- t(as.matrix(data.plot))
+      # plots[[i]] <- heatmap3(t(as.matrix(data.plot)), 
+      #                        Rowv = NA, 
+      #                        Colv = NA, 
+      #                        scale = "none", 
+      #                        margins = c(3,3), 
+      #                        balanceColor = TRUE)
     }
   }
   return(plots[[1]])
