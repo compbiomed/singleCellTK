@@ -21,7 +21,7 @@
 #' @export
 plotHeatmap <- function(inSCE,
                         useAssay,
-                        dims = 1,
+                        dims = 1:2,
                         nfeatures = 30,
                         cells = NULL,
                         reduction = 'pca',
@@ -30,7 +30,7 @@ plotHeatmap <- function(inSCE,
                         balanced = TRUE,
                         projected = FALSE,
                         ncol = NULL,
-                        fast = TRUE,
+                        fast = FALSE,
                         raster = TRUE,
                         slot = 'scale.data',
                         assays = NULL,
@@ -124,15 +124,13 @@ plotHeatmap <- function(inSCE,
         order = dim.cells
       )
     } else {
-      plots[[i]] <- SingleRasterMap(
-        data = data.plot,
-        raster = raster,
-        limits = data.limits,
-        cell.order = dim.cells,
-        feature.order = dim.features
-      )
+      plots[[i]] <- heatmap3(t(as.matrix(data.plot)), 
+                             Rowv = NA, 
+                             Colv = NA, 
+                             scale = "none", 
+                             margins = c(3,3), 
+                             balanceColor = TRUE)
     }
   }
-  
-  plots[[2]]
+  return(plots[[1]])
 }

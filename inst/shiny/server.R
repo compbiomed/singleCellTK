@@ -2228,6 +2228,7 @@ shinyServer(function(input, output, session) {
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          
           vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
                                                                              useAssay = input$dimRedAssaySelect,
                                                                              useReduction = "pca",
