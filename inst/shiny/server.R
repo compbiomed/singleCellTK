@@ -2265,9 +2265,9 @@ shinyServer(function(input, output, session) {
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                     useAssay = input$dimRedAssaySelect,
-                                                    dims = 10)
+                                                    dims = input$dimRedNumberDims)
               output$plot_jackstraw_dimRed <- renderPlot({
-                seuratJackStrawPlot(inSCE = vals$counts, dims = 10)
+                seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
               })
             })
           }
@@ -2275,11 +2275,11 @@ shinyServer(function(input, output, session) {
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                     useAssay = input$dimRedAssaySelect,
-                                                    dims = 10,
+                                                    dims = input$dimRedNumberDims,
                                                     externalReduction = new_pca)
               output$plot_jackstraw_dimRed <- renderPlot({
                 seuratJackStrawPlot(inSCE = vals$counts,
-                                    dims = 10)
+                                    dims = input$dimRedNumberDims)
               })
             })
           }
