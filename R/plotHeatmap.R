@@ -124,14 +124,37 @@ plotHeatmap <- function(inSCE,
         order = dim.cells
       )
     } else {
-      plots[[i]] <- t(as.matrix(data.plot))
-      # plots[[i]] <- heatmap3(t(as.matrix(data.plot)), 
-      #                        Rowv = NA, 
-      #                        Colv = NA, 
-      #                        scale = "none", 
-      #                        margins = c(3,3), 
-      #                        balanceColor = TRUE)
+      #plots[[i]] <- t(as.matrix(data.plot))
+      
+      data <- data.plot
+
+      data$samples <- rownames(data)
+
+      #data for only for ggplot convert to tibble
+      exp.long <- pivot_longer(data = data,
+                               cols = -c(samples),
+                               names_to = "gene",
+                               values_to = "expression")
+      
+      #to reorder samples and features
+      exp.long$samples <- factor(x = exp.long$samples,
+                                     levels = dim.cells)
+      exp.long$gene <- factor(x = exp.long$gene,
+                                  levels = dim.features)
+      #plot
+      exp.heatmap <- ggplot(data = exp.long, mapping = aes(x = samples,
+                                                           y = gene,
+                                                           fill = expression)) +
+        geom_tile() +
+        xlab(label = "samples") + 
+        theme(axis.title.y = element_blank(), 
+              axis.text.x = element_text(angle = 90, size = 1))
+      
+      plots[[i]] <- exp.heatmap
     }
   }
-  return(plots[[1]])
+  nCol <- floor(sqrt(length(plots)))
+  plot <- do.call("grid.arrange", c(plots, ncol=nCol))
+  plot <- as_ggplot(plot)
+  return(plot)
 }

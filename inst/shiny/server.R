@@ -2194,7 +2194,7 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCASeurat")
       {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- plotHeatmap(
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
@@ -2209,12 +2209,7 @@ shinyServer(function(input, output, session) {
           #                                                                    combine = FALSE,
           #                                                                    fast = FALSE)
           output$plot_heatmap_dimRed <- renderPlot({
-            heatmap3(vals$counts@metadata$seurat$heatmap_dimRed, 
-                     Rowv = NA,
-                     Colv = NA,
-                     scale = "none",
-                     margins = c(3,3),
-                     balanceColor = TRUE)
+            vals$counts@metadata$seurat$heatmap_dimRed
             # seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
             #                   dims = input$dimRedNumberDims,
             #                   ncol = 2,
