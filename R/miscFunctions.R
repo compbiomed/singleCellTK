@@ -362,7 +362,28 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(df)
 }
 
-.sctkTag <- function(inSCE, assayType, newAssay){
-  metadata(inSCE)$assayType[[assayType]] <- newAssay
+.sctkSetTag <- function(inSCE, assayType, assays){
+  if(is.null(metadata(inSCE)$assayType[[assayType]])){
+    metadata(inSCE)$assayType[[assayType]] <- assays
+  }
+  else{
+    metadata(inSCE)$assayType[[assayType]] <- append(metadata(inSCE)$assayType[[assayType]], assays)
+  }
   return(inSCE)
+}
+
+.sctkGetTag <- function(inSCE, assayType){
+  retList <- list()
+  for(i in seq(assayType)){
+    if(!is.null(metadata(inSCE)$assayType[[assayType[i]]])){
+      if(length(metadata(inSCE)$assayType[[assayType[i]]]) == 1){
+        #doing this because of how selectInput named list works, otherwise not needed
+        retList[[assayType[i]]] <- list(metadata(inSCE)$assayType[[assayType[i]]])
+      }
+      else{
+        retList[[assayType[i]]] <- metadata(inSCE)$assayType[[assayType[i]]]
+      }
+    }
+  }
+  return(retList)
 }

@@ -170,7 +170,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "fmHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
-    updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
+    # updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInput(session, "normalizeAssaySelect", choices = 
+                        singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
@@ -851,10 +853,10 @@ shinyServer(function(input, output, session) {
         vals$counts <- vals$original
         
         #store assayType information in the metadata
-        vals$counts <- singleCellTK:::.sctkTag(
+        vals$counts <- singleCellTK:::.sctkSetTag(
           inSCE = vals$counts,
           assayType = "raw", 
-          newAssay = assayNames(vals$counts))
+          assays = assayNames(vals$counts))
         
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
@@ -1857,6 +1859,13 @@ shinyServer(function(input, output, session) {
           )
           # updateAssayInputs()
         }
+        #update tags
+        vals$counts <- singleCellTK:::.sctkSetTag(
+          inSCE = vals$counts, 
+          assayType = "normalized", 
+          input$normalizeAssayOutname
+          )
+        #updateAssayInputs()
       }
     })
   })
