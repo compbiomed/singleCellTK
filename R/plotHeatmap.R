@@ -104,6 +104,16 @@ plotHeatmap <- function(inSCE,
   #set default assay
   DefaultAssay(object = object) <- assays
   
+  #convert (_) to (-) as required by FetchData function below
+  cells <- lapply(
+    X = cells, 
+    FUN = function(t) gsub(
+      pattern = "_", 
+      replacement = "-", 
+      x = t, 
+      fixed = TRUE)
+    )
+  
   #get assay data with only selected features (all dims) and selected cells (all)
   data.all <- FetchData(
     object = object,
@@ -111,6 +121,8 @@ plotHeatmap <- function(inSCE,
     cells = unique(x = unlist(x = cells)),
     slot = slot
   )
+  
+  #
   
   #clip off values for heatmap
   data.all <- MinMax(data = data.all, min = disp.min, max = disp.max)

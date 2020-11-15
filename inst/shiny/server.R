@@ -2208,7 +2208,8 @@ shinyServer(function(input, output, session) {
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
             nfeatures = 20,
-            fast = FALSE
+            fast = FALSE,
+            reduction = "pca"
           )
           output$plot_heatmap_dimRed <- renderPlot({
             vals$counts@metadata$seurat$heatmap_dimRed
