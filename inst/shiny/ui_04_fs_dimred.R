@@ -106,6 +106,16 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       inputId = "computeHeatmapPlot", 
                                                       label = "Compute HeatmapPlot?", 
                                                       value = TRUE),
+                                                    conditionalPanel(
+                                                      condition = "input.computeHeatmapPlot == true",
+                                                      numericInput(
+                                                        inputId = "dimRedNFeaturesHeatmap",
+                                                        label = "Select number of features for heatmap plot:",
+                                                        value = 20,
+                                                        min = 2,
+                                                        step = 1
+                                                      )
+                                                    ),
                                                     withBusyIndicatorUI(actionButton("runDimred", "Run"))
                                                     )
                                               )

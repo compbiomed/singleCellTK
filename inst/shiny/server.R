@@ -2207,7 +2207,7 @@ shinyServer(function(input, output, session) {
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
-            nfeatures = 20,
+            nfeatures = input$dimRedNFeaturesHeatmap,
             fast = FALSE,
             reduction = "pca"
           )
@@ -2222,7 +2222,7 @@ shinyServer(function(input, output, session) {
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
-            nfeatures = 20,
+            nfeatures = input$dimRedNFeaturesHeatmap,
             fast = FALSE,
             reduction = "ica"
           )
@@ -2237,7 +2237,7 @@ shinyServer(function(input, output, session) {
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
-            nfeatures = 20,
+            nfeatures = input$dimRedNFeaturesHeatmap,
             fast = FALSE,
             externalReduction = new_pca
           )
