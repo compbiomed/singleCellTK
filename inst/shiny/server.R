@@ -2750,7 +2750,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
     showNotification("Number of Feature Modules Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Feature Modules" = "danger"))
+    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Feature Modules" = "success"))
     shinyjs::enable(selector = "div[value='Identify Number of Cell Clusters']")
   })
 
@@ -2801,7 +2801,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$celdaKbtn, {
     vals$counts <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
     showNotification("Number of Cell Clusters Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "danger"))
+    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "success"))
     shinyjs::enable(
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
@@ -5615,7 +5615,7 @@ shinyServer(function(input, output, session) {
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
     shinyjs::enable(selector = "div[value='Scale Data']")
     showNotification("Normalization Complete")
   })
@@ -5634,7 +5634,7 @@ shinyServer(function(input, output, session) {
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
     shinyjs::enable(selector = "div[value='Highly Variable Genes']")
     showNotification("Scale Complete")
   })
@@ -5654,7 +5654,7 @@ shinyServer(function(input, output, session) {
         plotly::ggplotly(seuratPlotHVG(vals$counts))
       })
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
     shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
     showNotification("Find HVG Complete")
   })
@@ -5775,7 +5775,7 @@ shinyServer(function(input, output, session) {
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
       })
     }
-    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
     #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
     shinyjs::enable(
@@ -5868,7 +5868,7 @@ shinyServer(function(input, output, session) {
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_ic, "IC"))
       })
     }
-    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
     #Enable/Disable ICA plot panels not selected for computation (Heatmap)
     shinyjs::enable(
@@ -5907,7 +5907,7 @@ shinyServer(function(input, output, session) {
                                           groupSingletons = input$group.singletons,
                                           resolution = input$resolution_clustering)
       })
-      updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
       showNotification("Find Clusters Complete")
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
@@ -5991,7 +5991,7 @@ shinyServer(function(input, output, session) {
       #enable downstream analysis
       shinyjs::show(
         selector = "div[value='Downstream Analysis']")
-      updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "success"))
+      updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
       
       #update colData names
       updateColDataNames()
@@ -6034,7 +6034,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
 
       showNotification("tSNE Complete")
@@ -6080,7 +6080,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
       showNotification("UMAP Complete")
     }
