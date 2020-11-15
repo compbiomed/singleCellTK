@@ -15,7 +15,8 @@
 #' @param raster 
 #' @param slot 
 #' @param assays 
-#' @param combine 
+#' @param combine
+#' @param externalReduction
 #'
 #' @return
 #' @export
@@ -34,13 +35,22 @@ plotHeatmap <- function(inSCE,
                         raster = TRUE,
                         slot = 'scale.data',
                         assays = NULL,
-                        combine = TRUE){
+                        combine = TRUE,
+                        externalReduction = NULL){
   object <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   
-  #ncol is 3 now
+  if(!is.null(externalReduction)){
+    if(reduction == "pca"){
+      object@reductions <- list(pca = externalReduction)
+    }
+    else{
+      object@reductions <- list(ica = externalReduction)
+    }
+  }
+  
   ncol <- ncol %||% ifelse(test = length(x = dims) > 2, yes = 3, no = length(x = dims))
   
-  #empty 4 list = number of dims
+  #empty list = number of dims
   plots <- vector(mode = 'list', length = length(x = dims))
   
   #set rna
@@ -53,7 +63,7 @@ plotHeatmap <- function(inSCE,
     no = 6
   )
   
-  #no. of cells = 2700
+  #no. of cells
   cells <- cells %||% ncol(x = object)
   
   #for each dim get top cells
@@ -94,7 +104,7 @@ plotHeatmap <- function(inSCE,
   #set default assay
   DefaultAssay(object = object) <- assays
   
-  #get assay data with only selected features (all dims) and selected cells(all)
+  #get assay data with only selected features (all dims) and selected cells (all)
   data.all <- FetchData(
     object = object,
     vars = features.keyed,
@@ -118,16 +128,16 @@ plotHeatmap <- function(inSCE,
     dim.cells <- cells[[i]]
     data.plot <- data.all[dim.cells, dim.features]
     if (fast) {
-      SingleImageMap(
-        data = data.plot,
-        title = paste0(Key(object = object[[reduction]]), dims[i]),
-        order = dim.cells
-      )
-    } else {
-      #plots[[i]] <- t(as.matrix(data.plot))
+      #need new ggplot fast method here = todo
       
+      # SingleImageMap(
+      #   data = data.plot,
+      #   title = paste0(Key(object = object[[reduction]]), dims[i]),
+      #   order = dim.cells
+      # )
+      
+    } else {
       data <- data.plot
-
       data$samples <- rownames(data)
 
       #data for only for ggplot convert to tibble

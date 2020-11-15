@@ -7,7 +7,7 @@
 plotHeatmap(
   inSCE,
   useAssay,
-  dims = 1,
+  dims = 1:dims,
   nfeatures = 30,
   cells = NULL,
   reduction = "pca",
@@ -16,11 +16,12 @@ plotHeatmap(
   balanced = TRUE,
   projected = FALSE,
   ncol = NULL,
-  fast = TRUE,
+  fast = FALSE,
   raster = TRUE,
   slot = "scale.data",
   assays = NULL,
-  combine = TRUE
+  combine = TRUE,
+  externalReduction = NULL
 )
 }
 \arguments{
@@ -54,7 +55,7 @@ plotHeatmap(
 
 \item{assays}{}
 
-\item{combine}{}
+\item{externalReduction}{}
 }
 \value{
 

@@ -2210,55 +2210,38 @@ shinyServer(function(input, output, session) {
             nfeatures = 20,
             fast = FALSE
           )
-          # vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-          #                                                                    useAssay = input$dimRedAssaySelect,
-          #                                                                    useReduction = "pca",
-          #                                                                    dims = input$dimRedNumberDims,
-          #                                                                    nfeatures = 20,
-          #                                                                    combine = FALSE,
-          #                                                                    fast = FALSE)
           output$plot_heatmap_dimRed <- renderPlot({
             vals$counts@metadata$seurat$heatmap_dimRed
-            # seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-            #                   dims = input$dimRedNumberDims,
-            #                   ncol = 2,
-            #                   labels = c("PC1", "PC2", "PC3", "PC4"))
           })
         })
       }
       else if(input$dimRedPlotMethod == "ICASeurat"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                             useAssay = input$dimRedAssaySelect,
-                                                                             useReduction = "ica",
-                                                                             dims = input$dimRedNumberDims,
-                                                                             nfeatures = 20,
-                                                                             combine = FALSE,
-                                                                             fast = FALSE)
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
+            inSCE = vals$counts,
+            useAssay = input$dimRedAssaySelect,
+            dims = 1:input$dimRedNumberDims,
+            nfeatures = 20,
+            fast = FALSE,
+            reduction = "ica"
+          )
           output$plot_heatmap_dimRed <- renderPlot({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = input$dimRedNumberDims,
-                              ncol = 2,
-                              labels = c("IC1", "IC2", "IC3", "IC4"))
+            vals$counts@metadata$seurat$heatmap_dimRed
           })
         })
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          
-          vals$counts@metadata$seurat$heatmap_dimRed <- seuratComputeHeatmap(inSCE = vals$counts,
-                                                                             useAssay = input$dimRedAssaySelect,
-                                                                             useReduction = "pca",
-                                                                             dims = input$dimRedNumberDims,
-                                                                             nfeatures = 20,
-                                                                             combine = FALSE,
-                                                                             fast = FALSE,
-                                                                             externalReduction = new_pca)
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
+            inSCE = vals$counts,
+            useAssay = input$dimRedAssaySelect,
+            dims = 1:input$dimRedNumberDims,
+            nfeatures = 20,
+            fast = FALSE,
+            externalReduction = new_pca
+          )
           output$plot_heatmap_dimRed <- renderPlot({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                              dims = input$dimRedNumberDims,
-                              ncol = 2,
-                              labels = c("PC1", "PC2", "PC3", "PC4"))
+            vals$counts@metadata$seurat$heatmap_dimRed
           })
         })
       }
