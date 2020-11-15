@@ -160,7 +160,6 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "delAssayType", choices = currassays)
     updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
     updateSelectInput(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
     updateSelectInput(session, "batchCorrAssay", choices = currassays)
@@ -214,7 +213,6 @@ shinyServer(function(input, output, session) {
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
-    updateSelectInput(session, "delRedDimType", choices = currreddim)
     updateSelectInput(session, "FastMNNReddim", choices = currreddim)
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
     updateSelectInput(session, "clustVisReddim", choices = currreddim)
@@ -1692,7 +1690,8 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$counts, file)
     })
-
+  
+  
   output$assayList <- renderTable({
     req(vals$counts)
     if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
@@ -1700,17 +1699,30 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$reducedDimsList <- renderTable({
+  output$reducedDimsList <- renderUI({
     req(vals$counts)
+    
     if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
-      data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
+      if(input$rmDataTypeSelect == "reducedDims"){
+        checkboxGroupInput(
+          inputId = "checkboxRedDimToRemove",
+          label = "Select reduced dimensions to remove:",
+          choices = names(reducedDims(vals$counts))
+        )
+      }
     }
   })
   
-  output$assaysList <- renderTable({
+  output$assaysList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts)){
-      data.table("Assays" = assayNames(vals$counts))
+      if(input$rmDataTypeSelect == "assays"){
+        checkboxGroupInput(
+          inputId = "checkboxAssaysToRemove",
+          label = "Select assays to remove:",
+          choices = assayNames(vals$counts)
+        )
+      }
     }
   })
 
@@ -1944,19 +1956,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$delRedDim, {
     req(vals$counts)
     if(input$rmDataTypeSelect == "assays"){
-      assay(vals$counts, input$delAssayType) <- NULL
+      for(i in seq(input$checkboxAssaysToRemove)){
+        assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+      }
       updateAssayInputs()
     }
     else{
-      if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-        shinyalert::shinyalert("Error!", "reducedDim does not exist!",
-                               type = "error")
-      } else {
-        withBusyIndicatorServer("delRedDim", {
-          reducedDim(vals$counts, input$delRedDimType) <- NULL
+          for(i in seq(input$checkboxRedDimToRemove)){
+            reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
+          }
           updateReddimInputs()
-        })
-      }
     }
   })
 

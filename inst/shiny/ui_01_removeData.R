@@ -21,20 +21,6 @@ shinyPanelRemove <- fluidPage(
                                        "scaled" = c("seuratScaledCounts", "scaledCounts")
                                        )
                                   ),
-                      conditionalPanel(
-                        condition = "input.rmDataTypeSelect == 'reducedDims'",
-                        selectInput(
-                          inputId = "delRedDimType", 
-                          label = NULL, 
-                          choices = currreddim) 
-                      ),
-                      conditionalPanel(
-                        condition = "input.rmDataTypeSelect == 'assays'",
-                        selectInput(
-                          inputId = "delAssayType", 
-                          label = NULL, 
-                          choices = currassays) 
-                      ),
                       withBusyIndicatorUI(
                         actionButton(
                           inputId = "delRedDim", 
@@ -49,10 +35,10 @@ shinyPanelRemove <- fluidPage(
              column(12,
                     panel(
                       heading = "Data Available",
-                      tableOutput(
+                      uiOutput(
                         outputId = "assaysList"
                       ),
-                      tableOutput(
+                      uiOutput(
                         outputId = "reducedDimsList"
                         )
                       )
