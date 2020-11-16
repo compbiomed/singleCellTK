@@ -13,14 +13,6 @@ shinyPanelRemove <- fluidPage(
                         choices = c("assays", "reducedDims"),
                         selected = "assays"
                       ),
-                      selectInput("assayType", "Select assay:",
-                                  list(
-                                       "raw" = c("counts", "fpkm_counts"),
-                                       "logCounts" = c("logCounts", "logSeuratCounts"),
-                                       "normalized" = c("normCounts","seuratNormCounts"),
-                                       "scaled" = c("seuratScaledCounts", "scaledCounts")
-                                       )
-                                  ),
                       withBusyIndicatorUI(
                         actionButton(
                           inputId = "delRedDim", 

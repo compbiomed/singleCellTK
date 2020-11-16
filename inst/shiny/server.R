@@ -170,9 +170,21 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "fmHMAssay", choices = currassays)
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
+    
     # updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
-    updateSelectInput(session, "normalizeAssaySelect", choices = 
-                        singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
+    # updateSelectInput(session, "normalizeAssaySelect", choices = 
+    #                     singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
+    
+    selectedChoicesForNormalizationTab <- singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized"))
+    names(selectedChoicesForNormalizationTab)[1] <- "raw (recommended)"
+    output$normalizeAssaySelect <- renderUI({
+      selectInput(
+        inputId = "normalizeAssaySelect",
+        label = "Select assay:",
+        choices = selectedChoicesForNormalizationTab
+      )
+    })
+    
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInput(session, "filterAssaySelect", choices = currassays)
@@ -1865,7 +1877,6 @@ shinyServer(function(input, output, session) {
           assayType = "normalized", 
           input$normalizeAssayOutname
           )
-        #updateAssayInputs()
       }
     })
   })
