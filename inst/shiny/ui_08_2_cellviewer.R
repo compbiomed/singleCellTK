@@ -280,7 +280,12 @@ shinyPanelCellViewer <- fluidPage(tags$div(
     9,
     wellPanel(
       plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-
+      tags$br(),
+      verbatimTextOutput("testprint"),
+      tags$br(),
+      actionButton("subsetCelda", "Add cells to new cluster"),
+      tags$br(),
+      actionButton("subsetCelda2", "Create new subset with selected cells"),
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.
