@@ -11,7 +11,7 @@ cran.package.check <- lapply(cran.packages, FUN = function(x) {
 })
 
 #Bioconductor packages
-bioc.packages <- c("singleCellTK", "celda")
+bioc.packages <- c("singleCellTK", "celda", "BiocParallel")
 
 bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
