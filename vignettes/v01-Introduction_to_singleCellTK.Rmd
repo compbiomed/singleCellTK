@@ -1,0 +1,176 @@
+---
+title: "Introduction to singleCellTK"
+author:
+- name: David Jenkins
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+  email: dfj@bu.edu
+- name: Tyler Faits
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: W. Evan Johnson
+  affiliation: 
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+package: singleCellTK
+output: 
+  BiocStyle::html_document:
+    toc_float: false
+vignette: >
+  %\VignetteIndexEntry{1. Introduction to singleCellTK}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The Single Cell Toolkit (SCTK) is an interactive scRNA-Seq analysis package that
+allows a user to upload raw scRNA-Seq count matrices and perform downstream
+scRNA-Seq analysis interactively through a web interface, or through a set of
+R functions through the command line. The package is written in R with a
+graphical user interface (GUI) written in Shiny. Users can perform analysis with
+modules for filtering raw results, clustering, batch correction, differential
+expression, pathway enrichment, and scRNA-Seq study design, all in a simple to
+use point and click interface. The toolkit also supports command line data
+processing, and results can be loaded into the GUI for additional exploration
+and downstream analysis.
+
+# Installation
+
+You can download the release version of the Single Cell Toolkit in
+[Bioconductor v3.7](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html):
+
+```r
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("singleCellTK")
+```
+
+## Troubleshooting Installation
+
+For the majority of users, the commands above will install the latest version of
+the singleCellTK without any errors. Rarely, you may encounter an error due to
+previously installed versions of some packages that are required for the
+singleCellTK. If you encounter an error during installation, use the commands
+below to check the version of Bioconductor that is installed:
+
+```{r eval=FALSE}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+  install.packages("BiocManager")
+BiocManager::version()
+```
+
+If the version number is not 3.7 or higher, you must upgrade Bioconductor to
+install the toolkit:
+
+```{r eval=FALSE}
+BiocManager::install()
+```
+
+After you install Bioconductor 3.7 or higher, you should be able to install the
+toolkit using ```BiocManager::install("singleCellTK")```. If you
+still encounter an error, ensure your Bioconductor packages are up to date by
+running the following command.
+
+```{r eval=FALSE}
+BiocManager::valid()
+```
+
+If the command above does not return ```TRUE```, run the following command to
+update your R packages:
+
+```{r eval=FALSE}
+BiocManager::install()
+```
+
+Then, try to install the toolkit again:
+
+```{r eval=FALSE}
+BiocManager::install("singleCellTK")
+```
+
+If you still encounter an error, please [contact us](mailto:dfj@bu.edu) and we'd be happy to help.
+
+# Data Structure
+
+The Single Cell Toolkit uses a [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html)
+object to store data matrices along with annotation information, metadata, and
+reduced dimensionality data
+(PCA, t-SNE, etc.).
+
+# Run the Shiny App
+
+## Example Data
+
+Example data is available within the app. To get started, simply run the
+singleCellTK function:
+
+```{r eval=FALSE}
+library(singleCellTK)
+singleCellTK()
+```
+
+## Upload data directly through the shiny app
+
+To upload count matrices and annotation information stored as text files, run
+the singleCellTK function:
+
+```{r eval=FALSE}
+library(singleCellTK)
+singleCellTK()
+```
+
+Then, follow data upload instructions in the "Upload Tab" vignette.
+
+## Load data from a SingleCellExperiment object
+
+### Creating a SingleCellExperiment object
+
+To create a SingleCellExperiment object, we have provided the ```createSCE()```
+function:
+
+```{r, message=FALSE}
+library(singleCellTK)
+data("mouseBrainSubsetSCE")
+counts_mat <- assay(mouseBrainSubsetSCE, "counts")
+sample_annot <- colData(mouseBrainSubsetSCE)
+row_annot <- rowData(mouseBrainSubsetSCE)
+newSCE <- createSCE(assayFile = counts_mat, annotFile = sample_annot, 
+                    featureFile = row_annot, assayName = "counts",
+                    inputDataFrames = TRUE, createLogCounts = TRUE)
+```
+
+### Loading data stored in a SingleCellExperiment object
+
+Once a SingleCellExperiment object is created, the object can be loaded directly
+from the R console:
+
+```{r eval=FALSE}
+singleCellTK(newSCE)
+```
+
+# Vignettes
+
+To help you get started with the SCTK, we have prepared several vignettes in two
+categories: interactive analysis and R console analysis.
+
+## Interactive Analysis
+
+* [Upload Tab](https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html)
+* [Data Summary and Filtering Tab](https://compbiomed.github.io/sctk_docs/articles/v04-tab02_Data-Summary-and-Filtering.html)
+* [Visualization and Clustering Tab](https://compbiomed.github.io/sctk_docs/articles/v05-tab03_Visualization-and-Clustering.html)
+* [Batch Correction Tab](https://compbiomed.github.io/sctk_docs/articles/v06-tab04_Batch-Correction.html)
+* [Differential Expression Tab](https://compbiomed.github.io/sctk_docs/articles/v07-tab05_Differential-Expression.html)
+* [Pathway Activity Analysis Tab](https://compbiomed.github.io/sctk_docs/articles/v08-tab06_Pathway-Activity-Analysis.html)
+* [Sample Size Tab](https://compbiomed.github.io/sctk_docs/articles/v09-tab07_Sample-Size.html)
+
+## R Console Analysis
+
+* [Processing and Visualizing Data in the Single Cell Toolkit](v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html)
+* [Aligning and Quantifying scRNA-Seq Data](https://compbiomed.github.io/sctk_docs/articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html)
+
+# Session info {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
