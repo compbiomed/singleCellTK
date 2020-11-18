@@ -52,6 +52,10 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type="character",
         default=".",
         help="Output directory"),
+    optparse::make_option(c("-O","--outputPrefix"),
+        type="character",
+        default="CombinedSamples",
+        help="Prefix of the name of output file when --splitSample=FALSE."),
     optparse::make_option(c("-g","--gmt"),
         type="character",
         default=NULL,
@@ -145,6 +149,7 @@ parallelType <- opt[["parallelType"]]
 cellCalling <- opt[["cellDetectMethod"]]
 studyDesign <- opt[["studyDesign"]]
 subTitles <- opt[["subTitle"]]
+CombinedSamplesName <- opt[["outputPrefix"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
 
@@ -581,7 +586,7 @@ for(i in seq_along(process)) {
 
 if (!isTRUE(split)) {
     if (length(sample) > 1) {
-        samplename <- paste(sample, collapse="-")
+        samplename <- CombinedSamplesName #paste(sample, collapse="-")
         subTitle <- paste("SCTK QC HTML report for sample", samplename)
     }
 

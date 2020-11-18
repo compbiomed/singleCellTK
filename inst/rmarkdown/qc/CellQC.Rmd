@@ -67,17 +67,19 @@ subTitle <- params$subTitle
 studyDesign <- params$studyDesign
 samples <- unique(colData(sce.qc)$sample)
 
-reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
-if (length(reduceDims) != 0) {
-  reduceDimUsed <- reduceDims[1]
-} else {
-  reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = TRUE)
-  if (length(reduceDims) == 0) {
-    stop("No reduced dimension are available for QC visualization!")
-  } else {
-    reduceDimUsed <- reduceDims[1]
-  }
-}
+# reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
+# if (length(reduceDims) != 0) {
+#   reduceDimUsed <- reduceDims[1]
+# } else {
+#   reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = TRUE)
+#   if (length(reduceDims) == 0) {
+#     stop("No reduced dimension are available for QC visualization!")
+#   } else {
+#     reduceDimUsed <- reduceDims[1]
+#   }
+# }
+
+sce.qc <- getUMAP(sce.qc, reducedDimName = "QC_UMAP")
 ```
 
 ---
@@ -193,7 +195,8 @@ if (skipScrublet) {
       {plotScrubletResults(sce.qc, 
                            reducedDimName=reduceDimUsed,
                            sample = colData(sce.qc)$sample,
-                           combinePlot = "none")},
+                           combinePlot = "none",
+                           reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
       skipScrublet <- TRUE
@@ -276,7 +279,8 @@ if (skipFinder) {
     {plotDoubletFinderResults(inSCE = sce.qc, 
                               reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
       skipFinder <- TRUE
@@ -373,7 +377,8 @@ if (skipDoubletCell) {
     {plotDoubletCellsResults(inSCE = sce.qc, 
                              reducedDimName=reduceDimUsed,
                              sample = colData(sce.qc)[['sample']],
-                             combinePlot = "none")},
+                             combinePlot = "none",
+                             reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runDoubletCells did not complete successfully. The section of DoubletCells is skipped")
       skipDoubletCell <- TRUE
@@ -451,7 +456,8 @@ if (skipCxds) {
     {plotCxdsResults(inSCE = sce.qc, 
                               reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runCxds did not complete successfully. The section of Cxds is skipped")
       skipCxds <- TRUE
@@ -540,7 +546,8 @@ if (skipBcds) {
     {plotBcdsResults(inSCE = sce.qc, 
                               reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runBcds did not complete successfully. The section of Bcds is skipped")
       skipBcds <- TRUE
@@ -629,7 +636,8 @@ if (skipScdsHybrid) {
     {plotScdsHybridResults(inSCE = sce.qc, 
                               reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
       skipScdsHybrid <- TRUE
@@ -713,7 +721,8 @@ if (skipDecontX) {
     {plotDecontXResults(inSCE = sce.qc, 
                               reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              reducedDimName = "QC_UMAP")},
     error = function(e) {
       cat("runDecontX did not complete successfully. The section of DecontX is skipped")
       skipDecontX <- TRUE
