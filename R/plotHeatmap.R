@@ -139,44 +139,59 @@ plotHeatmap <- function(inSCE,
     )))
     dim.cells <- cells[[i]]
     data.plot <- data.all[dim.cells, dim.features]
-    if (fast) {
-      #need new ggplot fast method here = todo
+    # if (fast) {
+    #   #need new ggplot fast method here = todo
+    #   
+    #   # SingleImageMap(
+    #   #   data = data.plot,
+    #   #   title = paste0(Key(object = object[[reduction]]), dims[i]),
+    #   #   order = dim.cells
+    #   # )
+    #   
+    # } else {
+    #   data <- data.plot
+    #   data$samples <- rownames(data)
+    # 
+    #   #data for only for ggplot convert to tibble
+    #   exp.long <- pivot_longer(data = data,
+    #                            cols = -c(samples),
+    #                            names_to = "gene",
+    #                            values_to = "expression")
+    #   
+    #   #to reorder samples and features
+    #   exp.long$samples <- factor(x = exp.long$samples,
+    #                                  levels = dim.cells)
+    #   exp.long$gene <- factor(x = exp.long$gene,
+    #                               levels = dim.features)
+    #   #plot
+    #   exp.heatmap <- ggplot(data = exp.long, mapping = aes(x = samples,
+    #                                                        y = gene,
+    #                                                        fill = expression)) +
+    #     geom_tile() +
+    #     xlab(label = "samples") + 
+    #     theme(axis.title.y = element_blank(), 
+    #           axis.text.x = element_text(angle = 90, size = 1))
+    
+    hm <- ComplexHeatmap::Heatmap(t(data.plot), 
+            show_row_dend = FALSE, 
+            show_column_dend = FALSE, 
+            cluster_rows = FALSE, 
+            cluster_columns = FALSE, 
+            show_column_names = FALSE, 
+            row_names_side = "left")
       
-      # SingleImageMap(
-      #   data = data.plot,
-      #   title = paste0(Key(object = object[[reduction]]), dims[i]),
-      #   order = dim.cells
-      # )
-      
-    } else {
-      data <- data.plot
-      data$samples <- rownames(data)
-
-      #data for only for ggplot convert to tibble
-      exp.long <- pivot_longer(data = data,
-                               cols = -c(samples),
-                               names_to = "gene",
-                               values_to = "expression")
-      
-      #to reorder samples and features
-      exp.long$samples <- factor(x = exp.long$samples,
-                                     levels = dim.cells)
-      exp.long$gene <- factor(x = exp.long$gene,
-                                  levels = dim.features)
-      #plot
-      exp.heatmap <- ggplot(data = exp.long, mapping = aes(x = samples,
-                                                           y = gene,
-                                                           fill = expression)) +
-        geom_tile() +
-        xlab(label = "samples") + 
-        theme(axis.title.y = element_blank(), 
-              axis.text.x = element_text(angle = 90, size = 1))
-      
-      plots[[i]] <- exp.heatmap
-    }
+      plots[[i]] <- hm
+    #}
   }
-  nCol <- floor(sqrt(length(plots)))
-  plot <- do.call("grid.arrange", c(plots, ncol=nCol))
-  plot <- as_ggplot(plot)
-  return(plot)
+  
+  ht_list = NULL
+  for(i in seq(plots)) {
+    ht_list = ht_list + plots[[i]]
+  }
+  
+  # nCol <- floor(sqrt(length(plots)))
+  # plot <- do.call("grid.arrange", c(plots, ncol=nCol))
+  # plot <- as_ggplot(plot)
+  ht_list <- ComplexHeatmap::draw(ht_list, auto_adjust = FALSE)
+  return(ht_list)
 }
