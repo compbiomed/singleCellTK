@@ -189,9 +189,19 @@ plotHeatmap <- function(inSCE,
     ht_list = ht_list + plots[[i]]
   }
   
-  # nCol <- floor(sqrt(length(plots)))
+  nCol <- floor(sqrt(length(plots)))
+  nRow <- ceiling(length(plots)/nCol)
+  figure <- multipanelfigure::multi_panel_figure(columns = nCol, rows = nRow)
+  
+  for (i in seq(length(plots))) {
+    figure <- suppressMessages(multipanelfigure::fill_panel(figure,
+                                                            plots[[i]], label = ""))
+  }
+  
   # plot <- do.call("grid.arrange", c(plots, ncol=nCol))
   # plot <- as_ggplot(plot)
-  ht_list <- ComplexHeatmap::draw(ht_list, auto_adjust = FALSE)
-  return(ht_list)
+  #ht_list <- ComplexHeatmap::draw(ht_list, auto_adjust = FALSE)
+  
+  
+  return(figure)
 }
