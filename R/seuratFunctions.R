@@ -457,6 +457,17 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
   plot$labels$x <- "PC"
   plot$labels$y <- "Standard Deviation"
   plot$labels$colour <- "Significant"
+  
+  hoverText <- paste("Dimension:", plot$data$dims, "\nStandard Deviation:", round(plot$data$stdev, 1), "\nIs Significant?", plot$data$Significant)
+  significant <- plot$data$Significant
+  if(length(unique(significant))>1){
+    plot <- style(plot, text = hoverText[1:which(significant == "No")[1]-1])
+    plot <- style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
+  }
+  else{
+    plot <- style(plot, text = hoverText)
+  }
+  
   return(plot)
 }
 
