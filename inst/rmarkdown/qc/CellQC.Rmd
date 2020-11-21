@@ -193,10 +193,9 @@ if (skipScrublet) {
 } else {
     plotsScrublet<- tryCatch(
       {plotScrubletResults(sce.qc, 
-                           reducedDimName=reduceDimUsed,
+                           reducedDimName="QC_UMAP",
                            sample = colData(sce.qc)$sample,
-                           combinePlot = "none",
-                           reducedDimName = "QC_UMAP")},
+                           combinePlot = "none")},
     error = function(e) {
       cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
       skipScrublet <- TRUE
@@ -277,10 +276,9 @@ if (skipFinder) {
 } else {
   plotDoubletFinder<- tryCatch(
     {plotDoubletFinderResults(inSCE = sce.qc, 
-                              reducedDimName=reduceDimUsed,
+                              reducedDimName = "QC_UMAP",
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                              combinePlot = "none")},
     error = function(e) {
       cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
       skipFinder <- TRUE
@@ -375,7 +373,6 @@ if (skipDoubletCell) {
 } else {
   plotDoubletCells<- tryCatch(
     {plotDoubletCellsResults(inSCE = sce.qc, 
-                             reducedDimName=reduceDimUsed,
                              sample = colData(sce.qc)[['sample']],
                              combinePlot = "none",
                              reducedDimName = "QC_UMAP")},
@@ -454,7 +451,6 @@ if (skipCxds) {
 } else {
   plotCxds<- tryCatch(
     {plotCxdsResults(inSCE = sce.qc, 
-                              reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
                               combinePlot = "none",
                               reducedDimName = "QC_UMAP")},
@@ -544,7 +540,6 @@ if (skipBcds) {
 } else {
   plotBcds<- tryCatch(
     {plotBcdsResults(inSCE = sce.qc, 
-                              reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
                               combinePlot = "none",
                               reducedDimName = "QC_UMAP")},
@@ -634,7 +629,6 @@ if (skipScdsHybrid) {
 } else {
   plotScdsHybrid<- tryCatch(
     {plotScdsHybridResults(inSCE = sce.qc, 
-                              reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
                               combinePlot = "none",
                               reducedDimName = "QC_UMAP")},
@@ -719,7 +713,6 @@ if (skipDecontX) {
 } else {
   plotDecontX<- tryCatch(
     {plotDecontXResults(inSCE = sce.qc, 
-                              reducedDimName=reduceDimUsed,
                               sample = colData(sce.qc)[['sample']],
                               combinePlot = "none",
                               reducedDimName = "QC_UMAP")},
