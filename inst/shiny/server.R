@@ -2382,7 +2382,32 @@ shinyServer(function(input, output, session) {
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
               }
-            } else {
+            } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
+              if (input$dimRedAssayType_tsneUmap == 1){
+                vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                             useAssay = input$dimRedAssaySelect_tsneUmap)
+                vals$counts <- seuratPCA(inSCE = vals$counts,
+                                         useAssay = input$dimRedAssaySelect_tsneUmap)
+                vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+                                             reducedDimName = dimrednamesave)
+              }
+              else{
+                stop("Support for subsets not currently available with Seurat tSNE")
+              }
+            } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
+              if (input$dimRedAssayType_tsneUmap == 1){
+                vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                             useAssay = input$dimRedAssaySelect_tsneUmap)
+                vals$counts <- seuratPCA(inSCE = vals$counts,
+                                         useAssay = input$dimRedAssaySelect_tsneUmap)
+                vals$counts <- seuratRunUMAP(inSCE = vals$counts,
+                                             reducedDimName = dimrednamesave)
+              }
+              else{
+                stop("Support for subsets not currently available with Seurat UMAP")
+              }
+            }
+            else {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
@@ -2411,18 +2436,24 @@ shinyServer(function(input, output, session) {
       })
     }
     
-    
-    
-    
-    #extra code added by irzam starts here:
     removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
-    
-    appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
-                                                            panel(heading = "tSNE Plot",
-                                                                  plotlyOutput(outputId = "plotDimRed_tsneUmap")
-                                                            )
-    ), select = TRUE)
-    
+    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
+    if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
+       || input$dimRedPlotMethod_tsneUmap == "tSNE"){
+      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
+                                                                panel(heading = "tSNE Plot",
+                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
+                                                                )
+      ), select = TRUE)
+    }
+    else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"
+            || input$dimRedPlotMethod_tsneUmap == "UMAP"){
+      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "UMAP Plot",
+                                                                panel(heading = "UMAP Plot",
+                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
+                                                                )
+      ), select = TRUE)
+    }
     
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)

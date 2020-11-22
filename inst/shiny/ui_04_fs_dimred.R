@@ -156,7 +156,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                            uiOutput("dimRedAltExpAssayUI_tsneUmap")
                                          ),
                                          selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
-                                                     c("tSNE", "UMAP")),
+                                                     c("tSNE", 
+                                                       "UMAP",
+                                                       "Seurat - tSNE" = "seuratTSNE",
+                                                       "Seurat - UMAP" = "seuratUMAP")),
                                          uiOutput("dimRedNameUI_tsneUmap"),
                                          textInput(
                                            inputId = "dimRedNumberDims_tsneUmap", 
