@@ -161,19 +161,19 @@ shinyPanelFS_DimRed <- fluidPage(
                                                        "Seurat - tSNE" = "seuratTSNE",
                                                        "Seurat - UMAP" = "seuratUMAP")),
                                          uiOutput("dimRedNameUI_tsneUmap"),
-                                         textInput(
+                                         numericInput(
                                            inputId = "dimRedNumberDims_tsneUmap", 
-                                           label = "Number of Dimensions:",
-                                           value = 50),
+                                           label = "Set number of dimensions:",
+                                           value = 10),
                                          conditionalPanel(
                                            condition = "input.dimRedPlotMethod_tsneUmap == 'UMAP'",
                                            checkboxInput("logNormUMAP", " Log Normalize the data",
                                                          TRUE),
-                                           sliderInput("iterUMAP", "# of iterations", min = 50,
+                                           numericInput("iterUMAP", "# of iterations", min = 50,
                                                        max = 500, value = 200),
-                                           sliderInput("neighborsUMAP", "# of nearest neighbors",
+                                           numericInput("neighborsUMAP", "# of nearest neighbors",
                                                        min = 2, max = 100, value = 5),
-                                           sliderInput("mindistUMAP",
+                                           numericInput("mindistUMAP",
                                                        "minimum distance between points",
                                                        min = 0.001, max = 0.1, value = 0.01),
                                            numericInput("alphaUMAP", "learning rate(alpha)",
@@ -181,10 +181,36 @@ shinyPanelFS_DimRed <- fluidPage(
                                          ),
                                          conditionalPanel(
                                            condition = "input.dimRedPlotMethod_tsneUmap == 'tSNE'",
-                                           sliderInput("iterTSNE", "# of iterations", min = 100,
+                                           numericInput("iterTSNE", "# of iterations", min = 100,
                                                        max = 2000, value = 1000),
-                                           sliderInput("perplexityTSNE", "Perplexity paramter",
+                                           numericInput("perplexityTSNE", "Perplexity paramter",
                                                        min = 5, max = 50, value = 5)
+                                         ),
+                                         conditionalPanel(
+                                           condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'
+                                           || input.dimRedPlotMethod_tsneUmap == 'seuratUMAP'",
+                                           selectInput(inputId = "reductionMethodUMAPTSNEDimRed", 
+                                                       label = "Select reduction method: ", 
+                                                       choices = c("pca", "ica"))
+                                         ),
+                                         conditionalPanel(
+                                           condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'",
+                                           numericInput(inputId = "perplexityTSNEDimRed",
+                                                        label = "Set perplexity:",
+                                                        value = 30)
+                                         ),
+                                         conditionalPanel(
+                                           condition = "input.dimRedPlotMethod_tsneUmap == 'seuratUMAP'",
+                                           numericInput(inputId = "minDistUMAPDimRed", 
+                                                        label = "Set min.dist:", 
+                                                        value = 0.3),
+                                           numericInput(inputId = "nNeighboursUMAPDimRed", 
+                                                        label = "Set n.neighbors:", 
+                                                        value = 30, 
+                                                        step = 1),
+                                           numericInput(inputId = "spreadUMAPDimRed", 
+                                                        label = "Set spread:", 
+                                                        value = 1),
                                          ),
                                          withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
                                    )

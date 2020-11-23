@@ -2386,10 +2386,19 @@ shinyServer(function(input, output, session) {
               if (input$dimRedAssayType_tsneUmap == 1){
                 vals$counts <- seuratFindHVG(inSCE = vals$counts,
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
-                vals$counts <- seuratPCA(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect_tsneUmap)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  vals$counts <- seuratPCA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                else{
+                  vals$counts <- seuratICA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
                 vals$counts <- seuratRunTSNE(inSCE = vals$counts,
-                                             reducedDimName = dimrednamesave)
+                                             reducedDimName = dimrednamesave,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             perplexity = input$perplexityTSNEDimRed,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
               else{
                 stop("Support for subsets not currently available with Seurat tSNE")
@@ -2398,10 +2407,21 @@ shinyServer(function(input, output, session) {
               if (input$dimRedAssayType_tsneUmap == 1){
                 vals$counts <- seuratFindHVG(inSCE = vals$counts,
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
-                vals$counts <- seuratPCA(inSCE = vals$counts,
-                                         useAssay = input$dimRedAssaySelect_tsneUmap)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  vals$counts <- seuratPCA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                else{
+                  vals$counts <- seuratICA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
                 vals$counts <- seuratRunUMAP(inSCE = vals$counts,
-                                             reducedDimName = dimrednamesave)
+                                             reducedDimName = dimrednamesave,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             minDist = input$minDistUMAPDimRed,
+                                             nNeighbors = input$nNeighboursUMAPDimRed,
+                                             spread = input$spreadUMAPDimRed)
               }
               else{
                 stop("Support for subsets not currently available with Seurat UMAP")
