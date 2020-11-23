@@ -2228,7 +2228,6 @@ shinyServer(function(input, output, session) {
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
             nfeatures = input$dimRedNFeaturesHeatmap,
-            fast = FALSE,
             reduction = "pca"
           )
           output$plot_heatmap_dimRed <- renderPlot({
@@ -2243,7 +2242,6 @@ shinyServer(function(input, output, session) {
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
             nfeatures = input$dimRedNFeaturesHeatmap,
-            fast = FALSE,
             reduction = "ica"
           )
           output$plot_heatmap_dimRed <- renderPlot({
@@ -2258,7 +2256,6 @@ shinyServer(function(input, output, session) {
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
             nfeatures = input$dimRedNFeaturesHeatmap,
-            fast = FALSE,
             externalReduction = new_pca
           )
           output$plot_heatmap_dimRed <- renderPlot({

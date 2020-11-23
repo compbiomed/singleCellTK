@@ -2,7 +2,11 @@
 % Please edit documentation in R/plotHeatmap.R
 \name{plotHeatmap}
 \alias{plotHeatmap}
-\title{plotHeatmap}
+\title{plotHeatmap
+The plotHeatmap method computes and plots the heatmap visualization for a set
+ of features against a set of dimensionality reduction components. This 
+ method uses the heatmap computation algorithm code from \code{Seurat} but 
+ plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.}
 \usage{
 plotHeatmap(
   inSCE,
@@ -14,52 +18,45 @@ plotHeatmap(
   disp.min = -2.5,
   disp.max = NULL,
   balanced = TRUE,
-  projected = FALSE,
-  ncol = NULL,
-  fast = FALSE,
-  raster = TRUE,
-  slot = "scale.data",
-  assays = NULL,
-  combine = TRUE,
   externalReduction = NULL
 )
 }
 \arguments{
-\item{inSCE}{}
+\item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{useAssay}{}
+\item{useAssay}{The assay to use for heatmap computation.}
 
-\item{dims}{}
+\item{dims}{Specify the number of dimensions to use for heatmap.}
 
-\item{nfeatures}{}
+\item{nfeatures}{Specify the number of features to use for heatmap. Default 
+is \code{30}.}
 
-\item{cells}{}
+\item{cells}{Specify the samples/cells to use for heatmap computation. 
+Default is \code{NULL} which will utilize all samples in the assay.}
 
-\item{reduction}{}
+\item{reduction}{Specify the reduction slot in the input object. Default 
+is \code{"pca"}.}
 
-\item{disp.min}{}
+\item{disp.min}{Specify the minimum dispersion value to use for floor 
+clipping of assay values.}
 
-\item{disp.max}{}
+\item{disp.max}{Specify the maximum dispersion value to use for ceiling 
+clipping of assay values.}
 
-\item{balanced}{}
+\item{balanced}{Specify if the number of of up-regulated and down-regulated 
+features should be balanced.}
 
-\item{projected}{}
-
-\item{ncol}{}
-
-\item{fast}{}
-
-\item{raster}{}
-
-\item{slot}{}
-
-\item{assays}{}
-
-\item{externalReduction}{}
+\item{externalReduction}{Specify an external reduction if not present in 
+the input object. This external reduction should be created 
+using \code{CreateDimReducObject} function.}
 }
 \value{
-
+Heatmap plot object.
 }
 \description{
 plotHeatmap
+The plotHeatmap method computes and plots the heatmap visualization for a set
+ of features against a set of dimensionality reduction components. This 
+ method uses the heatmap computation algorithm code from \code{Seurat} but 
+ plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 }

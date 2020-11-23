@@ -89,8 +89,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                                     uiOutput("dimRedNameUI"),
                                                     textInput(
                                                       inputId = "dimRedNumberDims", 
-                                                      label = "Number of Dimensions:",
-                                                      value = 50),
+                                                      label = "Number of dimensions:",
+                                                      value = 10),
                                                     conditionalPanel(
                                                       condition = "input.dimRedPlotMethod != 'ICASeurat'",
                                                       materialSwitch(

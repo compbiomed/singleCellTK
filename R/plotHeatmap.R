@@ -1,24 +1,28 @@
 #' plotHeatmap
+#' The plotHeatmap method computes and plots the heatmap visualization for a set
+#'  of features against a set of dimensionality reduction components. This 
+#'  method uses the heatmap computation algorithm code from \code{Seurat} but 
+#'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay The assay to use for heatmap computation.
+#' @param dims Specify the number of dimensions to use for heatmap.
+#' @param nfeatures Specify the number of features to use for heatmap. Default 
+#' is \code{30}.
+#' @param cells Specify the samples/cells to use for heatmap computation. 
+#' Default is \code{NULL} which will utilize all samples in the assay.
+#' @param reduction Specify the reduction slot in the input object. Default 
+#' is \code{"pca"}.
+#' @param disp.min Specify the minimum dispersion value to use for floor 
+#' clipping of assay values.
+#' @param disp.max Specify the maximum dispersion value to use for ceiling 
+#' clipping of assay values.
+#' @param balanced Specify if the number of of up-regulated and down-regulated 
+#' features should be balanced.
+#' @param externalReduction Specify an external reduction if not present in 
+#' the input object. This external reduction should be created 
+#' using \code{CreateDimReducObject} function.
 #'
-#' @param inSCE 
-#' @param useAssay 
-#' @param dims 
-#' @param nfeatures 
-#' @param cells 
-#' @param reduction 
-#' @param disp.min 
-#' @param disp.max 
-#' @param balanced 
-#' @param projected 
-#' @param ncol 
-#' @param fast 
-#' @param raster 
-#' @param slot 
-#' @param assays 
-#' @param combine
-#' @param externalReduction
-#'
-#' @return
+#' @return Heatmap plot object.
 #' @export
 plotHeatmap <- function(inSCE,
                         useAssay,
@@ -29,15 +33,12 @@ plotHeatmap <- function(inSCE,
                         disp.min = -2.5,
                         disp.max = NULL,
                         balanced = TRUE,
-                        projected = FALSE,
-                        ncol = NULL,
-                        fast = FALSE,
-                        raster = TRUE,
-                        slot = 'scale.data',
-                        assays = NULL,
-                        combine = TRUE,
                         externalReduction = NULL){
   object <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  slot <- "scale.data"
+  assays <- NULL
+  ncol <- NULL
+  projected <- FALSE
   
   if(!is.null(externalReduction)){
     if(reduction == "pca"){
