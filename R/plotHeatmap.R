@@ -13,11 +13,14 @@
 #' @param reduction Specify the reduction slot in the input object. Default 
 #' is \code{"pca"}.
 #' @param disp.min Specify the minimum dispersion value to use for floor 
-#' clipping of assay values.
+#' clipping of assay values. Default is \code{-2.5}.
 #' @param disp.max Specify the maximum dispersion value to use for ceiling 
-#' clipping of assay values.
+#' clipping of assay values. Default is \code{NULL} but internally set 
+#' to \code{2.5}.
 #' @param balanced Specify if the number of of up-regulated and down-regulated 
-#' features should be balanced.
+#' features should be balanced. Default is \code{TRUE}.
+#' @param nCol Specify the number of columns in the output plot. Default
+#' is \code{NULL} which will auto-compute the number of columns.
 #' @param externalReduction Specify an external reduction if not present in 
 #' the input object. This external reduction should be created 
 #' using \code{CreateDimReducObject} function.
@@ -33,6 +36,7 @@ plotHeatmap <- function(inSCE,
                         disp.min = -2.5,
                         disp.max = NULL,
                         balanced = TRUE,
+                        nCol = NULL,
                         externalReduction = NULL){
   object <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   slot <- "scale.data"
@@ -150,6 +154,10 @@ plotHeatmap <- function(inSCE,
       
       plots[[i]] <- grid.grabExpr(ComplexHeatmap::draw(hm))
   }
-  nCol <- floor(sqrt(length(plots)))
+  
+  if(is.null(nCol)){
+    nCol <- floor(sqrt(length(plots)))
+  }
+  
   return(cowplot::plot_grid(plotlist = plots, ncol = nCol))
 }

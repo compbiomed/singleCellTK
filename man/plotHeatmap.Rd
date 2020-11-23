@@ -38,13 +38,14 @@ Default is \code{NULL} which will utilize all samples in the assay.}
 is \code{"pca"}.}
 
 \item{disp.min}{Specify the minimum dispersion value to use for floor 
-clipping of assay values.}
+clipping of assay values. Default is \code{-2.5}.}
 
 \item{disp.max}{Specify the maximum dispersion value to use for ceiling 
-clipping of assay values.}
+clipping of assay values. Default is \code{NULL} but internall set 
+to \code{2.5}.}
 
 \item{balanced}{Specify if the number of of up-regulated and down-regulated 
-features should be balanced.}
+features should be balanced. Default is \code{TRUE}.}
 
 \item{externalReduction}{Specify an external reduction if not present in 
 the input object. This external reduction should be created 
