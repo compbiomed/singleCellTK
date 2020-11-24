@@ -66,7 +66,7 @@ Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annot
 ```{R runFM, eval=TRUE, message=FALSE, warning=FALSE, cache=TRUE}
 pbmc3k <- findMarkerDiffExp(inSCE = pbmc3k, 
                             method = "Limma", # Runs fastest
-                            useAssay = "counts", # Recommanded for Limma, "logcounts" for the others
+                            useAssay = "logcounts", 
                             cluster = "Seurat_louvain_Resolution0.8")
 ```
 

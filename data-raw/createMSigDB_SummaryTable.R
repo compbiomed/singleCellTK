@@ -46,3 +46,4 @@ msigdb_table <- tab[order(tab[,1]),]
 # Save to file, assuming this script is being run in the "data-raw" folder
 # within the singleCellTK package
 save(msigdb_table, file = "../data/msigdb_table.rda")
+

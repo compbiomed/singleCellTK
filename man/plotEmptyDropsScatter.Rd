@@ -19,11 +19,9 @@ plotEmptyDropsScatter(
   legendTitle = NULL,
   legendTitleSize = 12,
   legendSize = 10,
-  combinePlot = TRUE,
+  combinePlot = "none",
   relHeights = 1,
   relWidths = 1,
-  plotLabels = "default",
-  plotLabelSize = 20,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -71,11 +69,6 @@ Default TRUE.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
 
-\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
-as the labels. If set to "none", no label will be plotted.}
-
-\item{plotLabelSize}{size of labels}
-
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}
 
@@ -84,6 +77,9 @@ the relative heights for each plot.}
 
 \item{sampleRelWidths}{If there are multiple samples and combining by "all",
 the relative widths for each plot.}
+}
+\value{
+a ggplot object of the scatter plot.
 }
 \description{
 A plotting function which visualizes outputs from the

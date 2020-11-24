@@ -6,10 +6,9 @@
 \usage{
 plotSCEBarColData(
   inSCE,
+  sample = NULL,
   coldata,
-  groupby = NULL,
-  violin = TRUE,
-  boxplot = TRUE,
+  groupBy = NULL,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
@@ -18,25 +17,24 @@ plotSCEBarColData(
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
+  gridLine = FALSE,
+  summary = NULL,
   title = NULL,
-  titleSize = NULL
+  titleSize = NULL,
+  combinePlot = TRUE
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
 \item{coldata}{colData value that will be plotted.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
-
-\item{violin}{Boolean. Whether to plot the violon densities for each group.
-Default \code{TRUE}.}
-
-\item{boxplot}{Boolean. Whether to plot the boxes for each group.
-Default \code{TRUE}.}
 
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
@@ -56,17 +54,30 @@ Default TRUE.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
+\item{gridLine}{Adds a horizontal grid line if TRUE. Will still be
+drawn even if defaultTheme is TRUE. Default FALSE.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{combinePlot}{Boolean. If multiple plots are generated (multiple
+samples, etc.), will combined plots using `cowplot::plot_grid`.
+Default TRUE.}
+}
+\value{
+a ggplot of the barplot of coldata.
 }
 \description{
 Visualizes values stored in the colData slot of a
- SingleCellExperiment object via a violin plot.
+ SingleCellExperiment object via a bar plot.
 }
 \examples{
 plotSCEBarColData(
   inSCE = mouseBrainSubsetSCE,
-  coldata = "age", groupby = "sex"
+  coldata = "age", groupBy = "sex"
 )
 }

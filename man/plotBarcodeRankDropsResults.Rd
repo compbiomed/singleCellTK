@@ -36,6 +36,9 @@ when TRUE. Default TRUE.}
 
 \item{legendSize}{size of legend. Default 15.}
 }
+\value{
+list of .ggplot objects
+}
 \description{
 A wrapper function which visualizes outputs from the
  runEmptyDrops function stored in the colData slot of the SingleCellExperiment

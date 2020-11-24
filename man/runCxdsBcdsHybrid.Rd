@@ -46,7 +46,7 @@ and \code{bcds}. Default \code{500}.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \link[scds]{cxds_bcds_hybrid} output appended to the
- \link[SummarizedExperiment]{colData} slot. The columns include
+ \link{colData} slot. The columns include
  \emph{hybrid_score} and optionally \emph{hybrid_call}.
  Please refer to the documentation of \link[scds]{cxds_bcds_hybrid} for
  details.
@@ -59,6 +59,6 @@ A wrapper function for \link[scds]{cxds_bcds_hybrid}. Annotate
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runCxdsBcdsHybrid(sce)
 }

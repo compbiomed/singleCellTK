@@ -9,7 +9,7 @@ plotSCEViolinAssayData(
   sample = NULL,
   useAssay = "counts",
   feature,
-  groupby = NULL,
+  groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
@@ -24,7 +24,8 @@ plotSCEViolinAssayData(
   summary = NULL,
   title = NULL,
   titleSize = NULL,
-  combinePlot = TRUE
+  combinePlot = "none",
+  plotLabels = NULL
 )
 }
 \arguments{
@@ -38,7 +39,7 @@ dimension reduction components or a variable with saved results. Required.}
 \item{feature}{Name of feature stored in assay of SingleCellExperiment
 object.}
 
-\item{groupby}{Groupings for each numeric value. A user may input a vector
+\item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
 object, or can be retrieved from the colData slot. Default NULL.}
 
@@ -75,9 +76,14 @@ violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
 
-\item{combinePlot}{Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.
-Default TRUE.}
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
+}
+\value{
+a ggplot of the violin plot of assay data.
 }
 \description{
 Visualizes values stored in the assay slot of a
@@ -86,6 +92,6 @@ Visualizes values stored in the assay slot of a
 \examples{
 plotSCEViolinAssayData(
   inSCE = mouseBrainSubsetSCE,
-  feature = "Apoe", groupby = "sex"
+  feature = "Apoe", groupBy = "sex"
 )
 }

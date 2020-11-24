@@ -1,6 +1,7 @@
 template:
   params:
-    bootswatch: cosmo
+    bootswatch: yeti
+
 reference:
 - title: "Importing scRNA-seq data"
 - contents:
@@ -24,15 +25,13 @@ reference:
   - runBBKNN
   - runComBat
   - runFastMNN
-  - runHarmony
-  - runLIGER
   - runLimmaBC
   - runMNNCorrect
   - runSCANORAMA
-  - runSCGEN
   - runSCMerge
-  - runSeurat3Integration
+  - seuratIntegration
   - runZINBWaVE
+  - plotBatchVariance
 - title: "Decontamination"
 - contents:
   - runDecontX
@@ -51,6 +50,7 @@ reference:
   - plotDEGViolin
   - plotDEGRegression
   - plotDEGHeatmap
+  - plotMASTThresholdGenes
 - title: "Find Marker"
 - contents:
   - findMarkerDiffExp
@@ -86,6 +86,8 @@ navbar:
           href: articles/variability.html
         - text: "Feature Selection"
           href: articles/feature_selection.html
+        - text: "Clustering"
+          href: articles/clustering.html
         - text: "Differential Expression"
           href: articles/differential_expression.html
         - text: "Find Marker via DE"

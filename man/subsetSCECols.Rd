@@ -25,9 +25,13 @@ then \code{"x < 5"} will return all columns with x less than 5.
 Single quotes should be used for character strings. For example,
 \code{"y == 'yes'"} will return all columns where y is "yes".
 Multiple expressions can be evaluated by placing them in a vector.
-For example \code{c("x < 5", "y =='yes'")} will apply both operations for 
+For example \code{c("x < 5", "y =='yes'")} will apply both operations for
 subsetting. If \code{NULL}, this will not be used for subsetting.
 Default \code{NULL}.}
+}
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object that has
+been subsetted by colData.
 }
 \description{
 Used to peform subsetting of a
@@ -38,7 +42,7 @@ with one another.
 }
 \examples{
 data(scExample)
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")                          
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 }
 \author{
 Joshua D. Campbell

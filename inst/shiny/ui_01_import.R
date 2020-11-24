@@ -1,9 +1,4 @@
 exampleDatasets <- c() ## Need to add final small example data here
-if ("scRNAseq" %in% rownames(installed.packages())){
-  exampleDatasets <- c(exampleDatasets,
-                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
-}
 if ("TENxPBMCData" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "PBMC 3K (10X)" = "pbmc3k",
@@ -12,6 +7,12 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
                        "PBMC 8K (10X)" = "pbmc8k",
                        "PBMC 33K (10X)" = "pbmc33k",
                        "PBMC 68K (10X)" = "pbmc68k")
+}
+
+if ("scRNAseq" %in% rownames(installed.packages())){
+  exampleDatasets <- c(exampleDatasets,
+                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
 }
 
 shinyPanelImport <- fluidPage(
@@ -25,7 +26,7 @@ shinyPanelImport <- fluidPage(
       p("Filter, cluster, and analyze single cell RNA-Seq data"),
       p(
         "Need help?",
-        tags$a(href = "https://compbiomed.github.io/sctk_docs/",
+        tags$a(href = "https://www.sctk.science/index.html",
                "Read the docs.", target = "_blank")
       )
     )
@@ -34,12 +35,12 @@ shinyPanelImport <- fluidPage(
   tags$div(
     class = "container",
     h1("Upload"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
+    h5(tags$a(href = "https://www.sctk.science/articles/tab01_upload",
               "(help)", target = "_blank")),
     tags$hr(),
     hidden(wellPanel(id = "annotationData",
                      h3("Data summary"),
-                     tableOutput("summarycontents"))), 
+                     tableOutput("summarycontents"))),
 
     h3("Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Import from a preprocessing tool" = 'directory',
@@ -89,7 +90,7 @@ shinyPanelImport <- fluidPage(
         ),
         column(width = 4,
           wellPanel(
-            h4("Example sample annotation file:"),
+            h4("Example cell annotation file:"),
             HTML('<table class="table"><thead><tr class="header"><th>Cell</th>
                  <th>Annot1</th><th>&#x2026;</th></tr></thead><tbody><tr class="odd">
                  <td>Cell1</td><td>a</td><td>&#x2026;</td></tr><tr class="even">
@@ -102,7 +103,7 @@ shinyPanelImport <- fluidPage(
                                 tags$br(),
                                 tags$br(),
                                 fileInput(
-                                  "annotFile", "Sample annotations (optional):",
+                                  "annotFile", "Cell annotations (optional):",
                                   accept = c(
                                     "text/csv", "text/comma-separated-values",
                                     "text/tab-separated-values", "text/plain", ".csv", ".tsv"
@@ -224,38 +225,10 @@ shinyPanelImport <- fluidPage(
       tags$br(),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger2'", "algoChoice"),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample Directory")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove")),
-        #   ),
-        #   tags$div(id = "newSampleCR2"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addCR2Sample", "Add a Sample"),
-        #   actionButton("clearAllCR2", "Clear Samples")
-        # ),
         actionButton("addCR2Sample", "Add a Sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "algoChoice"),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample Directory")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove")),
-        #   ),
-        #   tags$div(id = "newSampleCR3"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addCR3Sample", "Add a Sample"),
-        #   actionButton("clearAllCR3", "Clear Samples")
-        # ),
         actionButton("addCR3Sample", "Add a Sample"),
       ),
       conditionalPanel(
@@ -263,20 +236,6 @@ shinyPanelImport <- fluidPage(
         wellPanel(
           h5("Please select the directory that contains your /Gene directory as your base directory. ")
         ),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample ID")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove"))
-        #   ),
-        #   tags$div(id = "newSampleSS"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addSSSample", "Add a Sample"),
-        #   actionButton("clearAllSS", "Clear Samples")
-        # ),
         actionButton("addSSSample", "Add a Sample"),
       ),
       conditionalPanel(
@@ -284,20 +243,6 @@ shinyPanelImport <- fluidPage(
         wellPanel(
           h5("Please select your /genecount directory as your base directory.")
         ),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample ID")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove"))
-        #   ),
-        #   tags$div(id = "newSampleBUS"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addBUSSample", "Add a Sample"),
-        #   actionButton("clearAllBUS", "Clear Samples")
-        # ),
         actionButton("addBUSSample", "Add a Sample"),
       ),
       conditionalPanel(
@@ -305,20 +250,6 @@ shinyPanelImport <- fluidPage(
         wellPanel(
           h5("Please select the directory that contains your sample files as your base directory.")
         ),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample ID")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove"))
-        #   ),
-        #   tags$div(id = "newSampleSEQ"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addSEQSample", "Add a Sample"),
-        #   actionButton("clearAllSEQ", "Clear Samples")
-        # ),
         actionButton("addSEQSample", "Add a Sample"),
       ),
       conditionalPanel(
@@ -326,33 +257,15 @@ shinyPanelImport <- fluidPage(
         wellPanel(
           h5("Please select the directory that contains the following four directories - call-MergeCountFiles, call-MergeCellMetrics, call-MergeGeneMetrics, call-RunEmptyDrops - as your base directory.")
         ),
-        # wellPanel(
-        #   h4("Current Samples:"),
-        #   fluidRow(
-        #     column(3, tags$b("Base Directory")),
-        #     column(3, tags$b("Sample ID")),
-        #     column(3, tags$b("Sample Name")),
-        #     column(3, tags$b("Remove"))
-        #   ),
-        #   tags$div(id = "newSampleOpt"),
-        #   tags$br(),
-        #   tags$br(),
-        #   actionButton("addOptSample", "Add a Sample"),
-        #   actionButton("clearAllOpt", "Clear Samples")
-        # ),
         actionButton("addOptSample", "Add a Sample"),
       ),
-      
-      # actionButton("addDirImport", "Add To Sample List"),
-      # tags$br(),
-      # tags$br(),
     ),
     tags$hr(),
     wellPanel(
-      h4("Current Samples:"),
+      h4("Samples to Import:"),
       fluidRow(
         column(3, tags$b("Type")),
-        column(3, tags$b("Path")),
+        column(3, tags$b("Location")),
         column(3, tags$b("Sample Name")),
         column(3, tags$b("Remove"))
       ),
@@ -361,10 +274,13 @@ shinyPanelImport <- fluidPage(
       tags$br(),
       actionButton("clearAllImport", "Clear Samples")
     ),
-    withBusyIndicatorUI(
-      actionButton("uploadData", "Upload")
+    radioButtons("combineSCEChoice", label = NULL, c("Add to existing SCE object" = 'addToExistingSCE',
+                                                 "Overwrite existing SCE object" = "overwriteSCE")
     ),
-    
+    withBusyIndicatorUI(
+      actionButton("uploadData", "Import")
+    ),
+
     tags$div(
       class = "container",
       p("")
@@ -372,3 +288,4 @@ shinyPanelImport <- fluidPage(
   )
   #includeHTML("www/footer.html")
 )
+

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generation of comprehensive quality control metrics with SCTK • singleCellTK</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.1</span>
       </span>
     </div>
 
@@ -79,6 +79,9 @@
     </li>
     <li>
       <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -139,7 +142,8 @@
 
       
 
-      </header><script src="run_qcCommandline_files/header-attrs-2.4/header-attrs.js"></script><script src="run_qcCommandline_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="run_qcCommandline_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="run_qcCommandline_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="run_qcCommandline_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Generation of comprehensive quality control metrics with SCTK</h1>
@@ -183,11 +187,11 @@
 <h3 class="hasAnchor">
 <a href="#install-r-packages-and-dependencies" class="anchor"></a>Install R packages and dependencies</h3>
 <p>The script will automatically try to install the “singleCellTK” package from Bioconductor if available.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
 
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></pre></div>
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="data-formats" class="section level2">
@@ -278,18 +282,29 @@
 <span id="cb6-7"><a href="#cb6-7"></a><span class="op">-</span>G hg19 \</span>
 <span id="cb6-8"><a href="#cb6-8"></a><span class="op">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
 <p>As shown in the <strong>Import data into SCTK</strong> section, -b specify the base path and usually it’s the folder where you ran 10x cellranger count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
-<p>├── BasePath └── SampleName ├── outs | ├── filtered_feature_bc_matrix | | ├── barcodes.tsv.gz | | ├── features.tsv.gz | | └── matrix.mtx.gz | ├── raw_feature_bc_matrix | | ├── barcodes.tsv.gz | | ├── features.tsv.gz | | └── matrix.mtx.gz …</p>
+<pre><code>├── BasePath
+└── SampleName 
+    ├── outs
+    |   ├── filtered_feature_bc_matrix
+    |   |   ├── barcodes.tsv.gz
+    |   |   ├── features.tsv.gz
+    |   |   └── matrix.mtx.gz
+    |   ├── raw_feature_bc_matrix
+    |   |   ├── barcodes.tsv.gz
+    |   |   ├── features.tsv.gz
+    |   |   └── matrix.mtx.gz
+        ...</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>If the cellranger count output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can specified input using -R and -C:</li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>Rscript SCTK_runQC.R \</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="op">-</span>P CellRangerV2 \</span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="op">-</span>C <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>cell<span class="op">/</span>matrix \</span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="op">-</span>R <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>droplet<span class="op">/</span>matrix \</span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="op">-</span>s SampleName \</span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="op">-</span>o Output_Directory \</span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="op">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="op">-</span>P CellRangerV2 \</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="op">-</span>C <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>cell<span class="op">/</span>matrix \</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="op">-</span>R <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>droplet<span class="op">/</span>matrix \</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="op">-</span>s SampleName \</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="op">-</span>o Output_Directory \</span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="op">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
 <p>In this case, you must skip -b arguments and you can also skip -G argument for CellRangerV2 data.</p>
 </div>
 <div id="methods-to-import-data-set-stored-in-rds-file-or-txt-file-matrix" class="section level3">
@@ -298,51 +313,51 @@
 <ol style="list-style-type: decimal">
 <li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>Rscript SCTK_runQC.R \</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="op">-</span>P SceRDS \</span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="op">-</span>s Samplename \</span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="op">-</span>o Output_Directory \</span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="op">-</span>F R,Python,FlatFile,HTAN \</span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>droplet.RDS \</span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="op">-</span>c <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>cell.RDS</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:</li>
-</ol>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>Rscript SCTK_runQC.R \</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="op">-</span>P CountMatrix \</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="op">-</span>P SceRDS \</span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="op">-</span>s Samplename \</span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="op">-</span>o Output_Directory \</span>
 <span id="cb9-5"><a href="#cb9-5"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>droplet.txt \</span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="op">-</span>c path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>cell.txt</span></code></pre></div>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="op">-</span>F R,Python,FlatFile,HTAN \</span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>droplet.RDS \</span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="op">-</span>c <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>cell.RDS</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="op">-</span>P CountMatrix \</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="op">-</span>s Samplename \</span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="op">-</span>o Output_Directory \</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>droplet.txt \</span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="op">-</span>c path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>cell.txt</span></code></pre></div>
 </div>
 <div id="methods-to-run-pipeline-on-data-set-generated-by-other-algorithms" class="section level3">
 <h3 class="hasAnchor">
 <a href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms" class="anchor"></a>Methods to run pipeline on data set generated by other algorithms</h3>
 <p>If your data is preprocessed by other algorithms, you can load the data as shown in the figure above. Basically, the templated is shown below:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>Rscript SCTK_runQC.R \</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="op">-</span>P Preprocessing_Algorithm \</span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="op">-</span>s SampleName \</span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="op">-</span>o Output_Directory \</span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="op">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
-</div>
-<div id="methods-to-run-pipeline-on-only-droplet-count-or-cell-count-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#methods-to-run-pipeline-on-only-droplet-count-or-cell-count-data" class="anchor"></a>Methods to run pipeline on only droplet count or cell count data</h3>
-<p>User can choose to run QC pipeline on only one of the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take single input and perform quality control on it. One of the example is shown below:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>Rscript SCTK_runQC.R \</span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</span>
 <span id="cb11-3"><a href="#cb11-3"></a><span class="op">-</span>P Preprocessing_Algorithm \</span>
 <span id="cb11-4"><a href="#cb11-4"></a><span class="op">-</span>s SampleName \</span>
 <span id="cb11-5"><a href="#cb11-5"></a><span class="op">-</span>o Output_Directory \</span>
 <span id="cb11-6"><a href="#cb11-6"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
-<span id="cb11-7"><a href="#cb11-7"></a><span class="op">-</span>F R,Python,FlatFile,HTAN \</span>
-<span id="cb11-8"><a href="#cb11-8"></a><span class="op">-</span>d Droplet \</span>
-<span id="cb11-9"><a href="#cb11-9"></a><span class="op">-</span>D <span class="ot">TRUE</span> \</span>
-<span id="cb11-10"><a href="#cb11-10"></a><span class="op">-</span>m EmptyDrops</span></code></pre></div>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="op">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
+</div>
+<div id="methods-to-run-pipeline-on-only-droplet-count-or-cell-count-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#methods-to-run-pipeline-on-only-droplet-count-or-cell-count-data" class="anchor"></a>Methods to run pipeline on only droplet count or cell count data</h3>
+<p>User can choose to run QC pipeline on only one of the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take single input and perform quality control on it. One of the example is shown below:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="op">-</span>P Preprocessing_Algorithm \</span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="op">-</span>s SampleName \</span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="op">-</span>o Output_Directory \</span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="op">-</span>S <span class="ot">TRUE</span> \</span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="op">-</span>F R,Python,FlatFile,HTAN \</span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="op">-</span>d Droplet \</span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="op">-</span>D <span class="ot">TRUE</span> \</span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="op">-</span>m EmptyDrops</span></code></pre></div>
 <p>-d argument is used to specify which count matrix to used in the QC pipeline. Default is “Both”, which means take both droplet and cell count data as input.</p>
 <p>If -d argument is set as “Droplet”, the QC pipeline will only take droplet count matrix as input and perform quality control. You can choose whether to detect cells from the droplet matrix by setting -D as TRUE. If yes, cell count matrix will be detected and the pipeline will also perform quality control on this matrix and output the result. You could further define the method used to detect cells from droplet matrix by setting -m argument. -m could be one of “EmptyDrops”, “Knee” or “Inflection”. “EmptyDrops” will keep cells that pass the “runEmptyDrops” function test. “Knee” and “Inflection” will keep cells that pass the knee or inflection point returned from “runBarcodeRankDrops” function.</p>
 <p>If -d argument is set as “Cell”, the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:</p>
@@ -548,7 +563,7 @@ singularity run --home=/PathToSanitizedHome \
 
 
       <footer><div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

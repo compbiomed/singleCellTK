@@ -433,7 +433,7 @@
 #' \itemize{
 #'   \item \code{NULL}. All samples within \code{cellRangerDirs} will be
 #'    imported. The order of samples will be first determined by the order of
-#'    \code{cellRangerDirs} and then by \link[base]{list.dirs}. This is only
+#'    \code{cellRangerDirs} and then by \link{list.dirs}. This is only
 #'    for the case where \code{cellRangerDirs} is specified.
 #'   \item A list of vectors containing the folder names for samples to import.
 #'    Each vector in
@@ -509,10 +509,10 @@
 #'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}.
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @param reference Character vector. The reference genome names. 
 #'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
 #'  \code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
@@ -653,10 +653,10 @@ importCellRangerV2 <- function(
 #'  Default "sample".
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
@@ -737,10 +737,10 @@ importCellRangerV3 <- function(
 #'  Default "sample".
 #' @param class Character. The class of the expression matrix stored in the SCE
 #'  object. Can be one of "Matrix" (as returned by
-#'  \link[Matrix]{readMM} function), or "matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples

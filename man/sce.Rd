@@ -3,15 +3,15 @@
 \docType{data}
 \name{sce}
 \alias{sce}
-\title{Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+\title{Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions.}
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions.}
 \format{
 A \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
@@ -19,15 +19,15 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object.
 sce
 }
 \description{
-Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions.
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions.
 }
 \examples{
 data("scExample")

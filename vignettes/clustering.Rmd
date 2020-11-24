@@ -121,9 +121,7 @@ plotSCEDimReduceColData(inSCE = pbmc3k,
 
 #### Seurat
 
-Here we will only present the examples of using `seuratFindClusters()`. For the detail of this function or the curated workflow, please refer to **WHERE?**  
-
-When users preprocessed the dataset with the Seurat Curated Workflow. The clustering can be easily fulfilled, because Seurat specific metadata is already existing.  
+Here we will only present the examples of using `seuratFindClusters()`. 
 
 ```{R clst_seurat1, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 pbmc3k <- seuratFindClusters(inSCE = pbmc3k, 
