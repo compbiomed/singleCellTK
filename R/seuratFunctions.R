@@ -765,3 +765,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   
   return(inSCE)
 }
+
+seuratVisualizeFeatures <- function(inSCE){
+  
+}

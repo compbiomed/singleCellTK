@@ -1715,28 +1715,36 @@ shinyServer(function(input, output, session) {
 
   output$reducedDimsList <- renderUI({
     req(vals$counts)
-    
     if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
-      if(input$rmDataTypeSelect == "reducedDims"){
-        checkboxGroupInput(
-          inputId = "checkboxRedDimToRemove",
-          label = "Select reduced dimensions to remove:",
-          choices = names(reducedDims(vals$counts))
-        )
-      }
+      panel(heading = "ReducedDims",
+            checkboxGroupInput(
+              inputId = "checkboxRedDimToRemove",
+              label = NULL,
+              choices = names(reducedDims(vals$counts))
+              )
+            )
     }
   })
   
   output$assaysList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts)){
-      if(input$rmDataTypeSelect == "assays"){
-        checkboxGroupInput(
-          inputId = "checkboxAssaysToRemove",
-          label = "Select assays to remove:",
-          choices = assayNames(vals$counts)
-        )
-      }
+      panel(heading = "Assays",
+            checkboxGroupInput(
+              inputId = "checkboxAssaysToRemove",
+              label = NULL,
+              choices = assayNames(vals$counts)
+              )
+            )
+    }
+  })
+  
+  output$removeDataWarningUI <- renderUI({
+    req(vals$counts)
+    if(length(input$checkboxRedDimToRemove) > 0
+       || length(input$checkboxAssaysToRemove) > 0){
+      totalItemsSelected <- length(input$checkboxRedDimToRemove) + length(input$checkboxAssaysToRemove)
+      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
     }
   })
 
@@ -1975,18 +1983,21 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$delRedDim, {
     req(vals$counts)
-    if(input$rmDataTypeSelect == "assays"){
+    if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
         assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
       }
       updateAssayInputs()
     }
-    else{
+    if(length(input$checkboxRedDimToRemove) > 0){
           for(i in seq(input$checkboxRedDimToRemove)){
             reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
           }
           updateReddimInputs()
     }
+    output$removeDataWarningUI <- renderUI({
+      h5("")
+    })
   })
 
   observeEvent(input$dimRedAltExpSelect, {

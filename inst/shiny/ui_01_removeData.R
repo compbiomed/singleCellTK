@@ -2,36 +2,24 @@ shinyPanelRemove <- fluidPage(
   includeCSS('styles.CSS'),
   
   fluidRow(
-    column(4,
+    column(12,
            fluidRow(
              column(12,
                     panel(
-                      heading = "Options",
-                      selectInput(
-                        inputId = "rmDataTypeSelect",
-                        label = "Select type of data:",
-                        choices = c("assays", "reducedDims"),
-                        selected = "assays"
-                      ),
-                      withBusyIndicatorUI(
-                        actionButton(
-                          inputId = "delRedDim", 
-                          label = "Delete")
-                        )
-                      )
-                    )
-           )
-           ),
-    column(8,
-           fluidRow(
-             column(12,
-                    panel(
-                      heading = "Data Available",
+                      heading = "Remove Data",
+                      h6("Select data to remove:"),
                       uiOutput(
                         outputId = "assaysList"
                       ),
                       uiOutput(
                         outputId = "reducedDimsList"
+                      ),
+                      hr(),
+                      uiOutput(outputId = "removeDataWarningUI"),
+                      withBusyIndicatorUI(
+                        actionButton(
+                          inputId = "delRedDim", 
+                          label = "Delete")
                         )
                       )
                     )
