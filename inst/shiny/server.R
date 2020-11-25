@@ -1746,6 +1746,9 @@ shinyServer(function(input, output, session) {
       totalItemsSelected <- length(input$checkboxRedDimToRemove) + length(input$checkboxAssaysToRemove)
       HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
     }
+    else{
+      return(NULL)
+    }
   })
 
   observeEvent(input$modifyAssaySelect,{
@@ -1986,18 +1989,16 @@ shinyServer(function(input, output, session) {
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
         assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+        vals$counts <- singleCellTK:::.updateTag(vals$counts, input$checkboxAssaysToRemove[i])
       }
-      updateAssayInputs()
     }
     if(length(input$checkboxRedDimToRemove) > 0){
           for(i in seq(input$checkboxRedDimToRemove)){
             reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
           }
-          updateReddimInputs()
     }
-    output$removeDataWarningUI <- renderUI({
-      h5("")
-    })
+    updateAssayInputs()
+    updateReddimInputs()
   })
 
   observeEvent(input$dimRedAltExpSelect, {

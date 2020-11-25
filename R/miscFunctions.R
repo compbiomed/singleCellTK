@@ -362,6 +362,17 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(df)
 }
 
+
+.updateTag <- function(inSCE, assay){
+  for(i in seq(length(metadata(inSCE)$assayType))){
+    matchedIndex <- match(assay, metadata(inSCE)$assayType[[i]])
+    if(is.numeric(matchedIndex)){
+      metadata(inSCE)$assayType[[i]] <- metadata(inSCE)$assayType[[i]][-matchedIndex]
+    }
+  }
+  return(inSCE)
+}
+
 .sctkSetTag <- function(inSCE, assayType, assays){
   if(is.null(metadata(inSCE)$assayType[[assayType]])){
     metadata(inSCE)$assayType[[assayType]] <- assays
