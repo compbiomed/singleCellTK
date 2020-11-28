@@ -2075,15 +2075,29 @@ shinyServer(function(input, output, session) {
                                           ndim = input$dimRedNumberDims)
                   }
                 } else if (input$dimRedPlotMethod == "PCASeurat"){
-                  vals$counts <- seuratFindHVG(
-                    inSCE = vals$counts,
-                    useAssay = input$dimRedAssaySelect
-                  )
-                  vals$counts <- seuratPCA(
-                    inSCE = vals$counts, 
-                    useAssay = input$dimRedAssaySelect, 
-                    reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
-                    nPCs = input$dimRedNumberDims)
+                  if(input$dimRedAssayType == 1){
+                    vals$counts <- seuratFindHVG(
+                      inSCE = vals$counts,
+                      useAssay = input$dimRedAssaySelect
+                    )
+                    vals$counts <- seuratPCA(
+                      inSCE = vals$counts, 
+                      useAssay = input$dimRedAssaySelect, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nPCs = input$dimRedNumberDims)
+                  }
+                  else if(input$dimRedAssayType == 2){
+                    altExp(vals$counts) <- seuratFindHVG(
+                      inSCE = altExp(vals$counts),
+                      useAssay = input$dimRedAltExpAssay,
+                      altExp = TRUE
+                    )
+                    altExp(vals$counts) <- seuratPCA(
+                      inSCE = altExp(vals$counts),
+                      useAssay = input$dimRedAltExpAssay, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nPCs = input$dimRedNumberDims)
+                  }
                 }
                 else{
                   vals$counts <- seuratFindHVG(
@@ -2113,15 +2127,29 @@ shinyServer(function(input, output, session) {
                                       reducedDimName = dimrednamesave)
               }
             } else if (input$dimRedPlotMethod == "PCASeurat"){
-              vals$counts <- seuratFindHVG(
-                inSCE = vals$counts,
-                useAssay = input$dimRedAssaySelect
-              )
-              vals$counts <- seuratPCA(
-                inSCE = vals$counts, 
-                useAssay = input$dimRedAssaySelect, 
-                reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
-                nPCs = input$dimRedNumberDims)
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratFindHVG(
+                  inSCE = vals$counts,
+                  useAssay = input$dimRedAssaySelect
+                )
+                vals$counts <- seuratPCA(
+                  inSCE = vals$counts, 
+                  useAssay = input$dimRedAssaySelect, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nPCs = input$dimRedNumberDims)
+              }
+              else if(input$dimRedAssayType == 2){
+                altExp(vals$counts) <- seuratFindHVG(
+                  inSCE = altExp(vals$counts),
+                  useAssay = input$dimRedAltExpAssay,
+                  altExp = TRUE
+                )
+                altExp(vals$counts) <- seuratPCA(
+                  inSCE = altExp(vals$counts), 
+                  useAssay = input$dimRedAltExpAssay, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nPCs = input$dimRedNumberDims)
+              }
             }
             else{
               vals$counts <- seuratFindHVG(
@@ -2164,12 +2192,24 @@ shinyServer(function(input, output, session) {
     
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput)
-      output$plotDimRed_pca <- renderPlotly({
-        plotly::ggplotly(plotDimRed(
-          inSCE = vals$counts,
-          useReduction = redDimName
-        ))
-      })
+      if(input$dimRedAssayType == 1){
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = redDimName)
+          )
+        })
+      }
+      else if(input$dimRedAssayType == 2){
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = altExp(vals$counts),
+              useReduction = redDimName)
+          )
+        })
+      }
     })
     
     if(input$computeElbowPlot

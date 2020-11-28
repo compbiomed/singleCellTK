@@ -96,7 +96,8 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @param inSCE (sce) object to compute highly variable genes from and to store back to it
 #' @param useAssay Normalized assay inside the SCE object to use for hvg computation.
 #' @param hvgMethod selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
-#' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}.
+#' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}
+#' @param altExp Logical value indicating if the input object is an altExperiment. Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -106,13 +107,21 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000) {
+seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE) {
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber, verbose = FALSE)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   if (hvgMethod == "vst") {
-    rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized
-    rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean
+    if(!altExp){
+      rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized
+      rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean
+    }
+    else{
+      #remove this part of code when updating to ExperimentSubset and add the above code in if clause as the complete code
+      altExpRows <- match(rownames(inSCE), rownames(methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features))
+      rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized[altExpRows]
+      rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean[altExpRows]
+    }
   } else if (hvgMethod == "dispersion") {
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
