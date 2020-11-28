@@ -2038,10 +2038,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$plot_heatmap_dimRed_button, {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       output$plot_heatmap_dimRed <- renderPlot({
-        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_dimRed,
-                          dims = length(input$picker_dimheatmap_components_dimRed),
-                          ncol = input$slider_dimheatmap_dimRed,
-                          labels = input$picker_dimheatmap_components_dimRed)
+        plotHeatmapMulti(
+          plots = vals$counts@metadata$seurat$heatmap_dimRed,
+          components = input$picker_dimheatmap_components_dimRed,
+          nCol = input$slider_dimheatmap_dimRed)
       })
     }
   })
@@ -2235,7 +2235,7 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCASeurat")
       {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
@@ -2243,13 +2243,13 @@ shinyServer(function(input, output, session) {
             reduction = "pca"
           )
           output$plot_heatmap_dimRed <- renderPlot({
-            vals$counts@metadata$seurat$heatmap_dimRed
+            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
           })
         })
       }
       else if(input$dimRedPlotMethod == "ICASeurat"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
@@ -2257,13 +2257,13 @@ shinyServer(function(input, output, session) {
             reduction = "ica"
           )
           output$plot_heatmap_dimRed <- renderPlot({
-            vals$counts@metadata$seurat$heatmap_dimRed
+            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
           })
         })
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::plotHeatmap(
+          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
             inSCE = vals$counts,
             useAssay = input$dimRedAssaySelect,
             dims = 1:input$dimRedNumberDims,
@@ -2271,7 +2271,7 @@ shinyServer(function(input, output, session) {
             externalReduction = new_pca
           )
           output$plot_heatmap_dimRed <- renderPlot({
-            vals$counts@metadata$seurat$heatmap_dimRed
+            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
           })
         })
       }

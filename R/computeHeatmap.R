@@ -1,5 +1,5 @@
-#' plotHeatmap
-#' The plotHeatmap method computes and plots the heatmap visualization for a set
+#' computeHeatmap
+#' The computeHeatmap method computes the heatmap visualization for a set
 #'  of features against a set of dimensionality reduction components. This 
 #'  method uses the heatmap computation algorithm code from \code{Seurat} but 
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
@@ -27,7 +27,7 @@
 #'
 #' @return Heatmap plot object.
 #' @export
-plotHeatmap <- function(inSCE,
+computeHeatmap <- function(inSCE,
                         useAssay,
                         dims = 1:dims,
                         nfeatures = 30,
@@ -155,9 +155,5 @@ plotHeatmap <- function(inSCE,
       plots[[i]] <- grid.grabExpr(ComplexHeatmap::draw(hm))
   }
   
-  if(is.null(nCol)){
-    nCol <- floor(sqrt(length(plots)))
-  }
-  
-  return(cowplot::plot_grid(plotlist = plots, ncol = nCol))
+  return(plots)
 }

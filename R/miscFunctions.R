@@ -180,7 +180,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
       # Efficient way to convert DelayedArray to dgCMatrix
-      Mat[[i]] <- methods::as(x[, start:end], "Matrix")
+      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
     } else {
       # Convert dgTMatrix to dgCMatrix
       Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
