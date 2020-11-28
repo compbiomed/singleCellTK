@@ -150,7 +150,8 @@ computeHeatmap <- function(inSCE,
             cluster_rows = FALSE, 
             cluster_columns = FALSE, 
             show_column_names = FALSE, 
-            row_names_side = "left")
+            row_names_side = "left",
+            show_heatmap_legend = FALSE)
       
       plots[[i]] <- grid.grabExpr(ComplexHeatmap::draw(hm))
   }

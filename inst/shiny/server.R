@@ -2214,7 +2214,7 @@ shinyServer(function(input, output, session) {
                                                                                      multiple = TRUE)
                                                                             ),
                                                                             column(6,
-                                                                                   sliderInput(
+                                                                                   numericInput(
                                                                                      inputId = "slider_dimheatmap_dimRed", 
                                                                                      label = "Number of columns for the plot: ", 
                                                                                      min = 1, 
