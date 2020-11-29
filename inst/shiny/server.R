@@ -1715,7 +1715,8 @@ shinyServer(function(input, output, session) {
 
   output$reducedDimsList <- renderUI({
     req(vals$counts)
-    if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
+    if (!is.null(vals$counts) && 
+        length(names(reducedDims(vals$counts))) > 0){
       panel(heading = "ReducedDims",
             checkboxGroupInput(
               inputId = "checkboxRedDimToRemove",
@@ -1739,11 +1740,60 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  output$rowDataList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(colnames(rowData(vals$counts))) > 0){
+      panel(heading = "Row Annotation",
+            checkboxGroupInput(
+              inputId = "checkboxRowDataToRemove",
+              label = NULL,
+              choices = colnames(rowData(vals$counts))
+            )
+      )
+    }
+  })
+  
+  output$colDataList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(colnames(colData(vals$counts))) > 0){
+      panel(heading = "Column Annotation",
+            checkboxGroupInput(
+              inputId = "checkboxColDataToRemove",
+              label = NULL,
+              choices = colnames(colData(vals$counts))
+            )
+      )
+    }
+  })
+  
+  output$altExpList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(altExpNames(vals$counts)) > 0){
+      panel(heading = "Subsets",
+            checkboxGroupInput(
+              inputId = "checkboxAltExpToRemove",
+              label = NULL,
+              choices = altExpNames(vals$counts)
+            )
+      )
+    }
+  })
+  
   output$removeDataWarningUI <- renderUI({
     req(vals$counts)
     if(length(input$checkboxRedDimToRemove) > 0
-       || length(input$checkboxAssaysToRemove) > 0){
-      totalItemsSelected <- length(input$checkboxRedDimToRemove) + length(input$checkboxAssaysToRemove)
+       || length(input$checkboxAssaysToRemove) > 0
+       || length(input$checkboxRowDataToRemove) > 0
+       || length(input$checkboxColDataToRemove) > 0
+       || length(input$checkboxAltExpToRemove) > 0){
+      totalItemsSelected <- length(input$checkboxRedDimToRemove) + 
+        length(input$checkboxAssaysToRemove) + 
+        length(input$checkboxRowDataToRemove) + 
+        length(input$checkboxColDataToRemove) +
+        length(input$checkboxAltExpToRemove)
       HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
     }
     else{
@@ -1997,8 +2047,25 @@ shinyServer(function(input, output, session) {
             reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
           }
     }
+    if(length(input$checkboxRowDataToRemove) > 0){
+      for(i in seq(input$checkboxRowDataToRemove)){
+        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxColDataToRemove) > 0){
+      for(i in seq(input$checkboxColDataToRemove)){
+        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxAltExpToRemove) > 0){
+      for(i in seq(input$checkboxAltExpToRemove)){
+        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+      }
+    }
     updateAssayInputs()
     updateReddimInputs()
+    updateColDataNames()
+    updateAltExpInputs()
   })
 
   observeEvent(input$dimRedAltExpSelect, {
