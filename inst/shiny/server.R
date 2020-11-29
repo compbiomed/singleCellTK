@@ -2037,12 +2037,22 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$plot_heatmap_dimRed_button, {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
-      output$plot_heatmap_dimRed <- renderPlot({
-        plotHeatmapMulti(
-          plots = vals$counts@metadata$seurat$heatmap_dimRed,
-          components = input$picker_dimheatmap_components_dimRed,
-          nCol = input$slider_dimheatmap_dimRed)
-      })
+      if(input$dimRedAssayType == 1){
+        output$plot_heatmap_dimRed <- renderPlot({
+          plotHeatmapMulti(
+            plots = vals$counts@metadata$seurat$heatmap_dimRed,
+            components = input$picker_dimheatmap_components_dimRed,
+            nCol = input$slider_dimheatmap_dimRed)
+        })
+      }
+      else if(input$dimRedAssayType == 2){
+        output$plot_heatmap_dimRed <- renderPlot({
+          plotHeatmapMulti(
+            plots = altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed,
+            components = input$picker_dimheatmap_components_dimRed,
+            nCol = input$slider_dimheatmap_dimRed)
+        })
+      }
     }
   })
 
@@ -2087,28 +2097,41 @@ shinyServer(function(input, output, session) {
                       nPCs = input$dimRedNumberDims)
                   }
                   else if(input$dimRedAssayType == 2){
-                    altExp(vals$counts) <- seuratFindHVG(
-                      inSCE = altExp(vals$counts),
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
                       useAssay = input$dimRedAltExpAssay,
                       altExp = TRUE
                     )
-                    altExp(vals$counts) <- seuratPCA(
-                      inSCE = altExp(vals$counts),
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
                       useAssay = input$dimRedAltExpAssay, 
                       reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
                       nPCs = input$dimRedNumberDims)
                   }
                 }
                 else{
-                  vals$counts <- seuratFindHVG(
-                    inSCE = vals$counts,
-                    useAssay = input$dimRedAssaySelect
-                  )
-                  vals$counts <- seuratICA(
-                    inSCE = vals$counts, 
-                    useAssay = input$dimRedAssaySelect, 
-                    reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
-                    nics = input$dimRedNumberDims)
+                  if(input$dimRedAssayType == 1){
+                    vals$counts <- seuratFindHVG(
+                      inSCE = vals$counts,
+                      useAssay = input$dimRedAssaySelect
+                    )
+                    vals$counts <- seuratICA(
+                      inSCE = vals$counts, 
+                      useAssay = input$dimRedAssaySelect, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nics = input$dimRedNumberDims)
+                  }
+                  else if(input$dimRedAssayType == 2){
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                      useAssay = input$dimRedAltExpAssay
+                    )
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
+                      useAssay = input$dimRedAltExpAssay, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nics = input$dimRedNumberDims)
+                  }
                 }
                 updateReddimInputs()
               }}
@@ -2139,28 +2162,41 @@ shinyServer(function(input, output, session) {
                   nPCs = input$dimRedNumberDims)
               }
               else if(input$dimRedAssayType == 2){
-                altExp(vals$counts) <- seuratFindHVG(
-                  inSCE = altExp(vals$counts),
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
                   useAssay = input$dimRedAltExpAssay,
                   altExp = TRUE
                 )
-                altExp(vals$counts) <- seuratPCA(
-                  inSCE = altExp(vals$counts), 
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
                   useAssay = input$dimRedAltExpAssay, 
                   reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
                   nPCs = input$dimRedNumberDims)
               }
             }
             else{
-              vals$counts <- seuratFindHVG(
-                inSCE = vals$counts,
-                useAssay = input$dimRedAssaySelect
-              )
-              vals$counts <- seuratICA(
-                inSCE = vals$counts, 
-                useAssay = input$dimRedAssaySelect, 
-                reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
-                nics = input$dimRedNumberDims)
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratFindHVG(
+                  inSCE = vals$counts,
+                  useAssay = input$dimRedAssaySelect
+                )
+                vals$counts <- seuratICA(
+                  inSCE = vals$counts, 
+                  useAssay = input$dimRedAssaySelect, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nics = input$dimRedNumberDims)
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                  useAssay = input$dimRedAltExpAssay
+                )
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
+                  useAssay = input$dimRedAltExpAssay, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nics = input$dimRedNumberDims)
+              }
             }
             updateReddimInputs()
           }
@@ -2170,7 +2206,12 @@ shinyServer(function(input, output, session) {
     
     #extra code added by irzam starts here:
     if(input$dimRedPlotMethod == "PCA"){
-      redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+      if(input$dimRedAssayType == 1){
+        redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+      }
+      else if(input$dimRedAssayType == 1){
+        redDim <- reducedDim(altExps(vals$counts)[[input$dimRedAltExpSelect]], gsub(" ", "_", input$dimRedNameInput))
+      }
       new_pca <- CreateDimReducObject(
         embeddings = redDim, 
         assay = "RNA",
@@ -2205,7 +2246,7 @@ shinyServer(function(input, output, session) {
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
-              inSCE = altExp(vals$counts),
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
               useReduction = redDimName)
           )
         })
@@ -2222,19 +2263,32 @@ shinyServer(function(input, output, session) {
       
       if (input$dimRedPlotMethod == "PCASeurat"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-          
-          output$plotDimRed_elbow <- renderPlotly({
-            seuratElbowPlot(inSCE = vals$counts)
-          })
+          if(input$dimRedAssayType == 1){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = vals$counts)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]])
+            })
+          }
         })
       }
       else{
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-          
-          output$plotDimRed_elbow <- renderPlotly({
-            seuratElbowPlot(inSCE = vals$counts,
-                            externalReduction = new_pca)
-          })
+          if(input$dimRedAssayType == 1){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = vals$counts,
+                              externalReduction = new_pca)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                              externalReduction = new_pca)
+            })
+          }
         })
       }
 
@@ -2275,44 +2329,86 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCASeurat")
       {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-            inSCE = vals$counts,
-            useAssay = input$dimRedAssaySelect,
-            dims = 1:input$dimRedNumberDims,
-            nfeatures = input$dimRedNFeaturesHeatmap,
-            reduction = "pca"
-          )
-          output$plot_heatmap_dimRed <- renderPlot({
-            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
-          })
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "pca"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "pca"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
         })
       }
       else if(input$dimRedPlotMethod == "ICASeurat"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-            inSCE = vals$counts,
-            useAssay = input$dimRedAssaySelect,
-            dims = 1:input$dimRedNumberDims,
-            nfeatures = input$dimRedNFeaturesHeatmap,
-            reduction = "ica"
-          )
-          output$plot_heatmap_dimRed <- renderPlot({
-            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
-          })
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "ica"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "ica"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
         })
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-            inSCE = vals$counts,
-            useAssay = input$dimRedAssaySelect,
-            dims = 1:input$dimRedNumberDims,
-            nfeatures = input$dimRedNFeaturesHeatmap,
-            externalReduction = new_pca
-          )
-          output$plot_heatmap_dimRed <- renderPlot({
-            plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
-          })
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              externalReduction = new_pca
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              externalReduction = new_pca
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
         })
       }
       
@@ -2334,24 +2430,46 @@ shinyServer(function(input, output, session) {
           
           if (input$dimRedPlotMethod == "PCASeurat"){
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-              vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
-                                                    useAssay = input$dimRedAssaySelect,
-                                                    dims = input$dimRedNumberDims)
-              output$plot_jackstraw_dimRed <- renderPlot({
-                seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
-              })
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                      useAssay = input$dimRedAssaySelect,
+                                                      dims = input$dimRedNumberDims)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
+                })
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                                      useAssay = input$dimRedAltExpAssay,
+                                                      dims = input$dimRedNumberDims)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], dims = input$dimRedNumberDims)
+                })
+              }
             })
           }
           else{
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-              vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
-                                                    useAssay = input$dimRedAssaySelect,
-                                                    dims = input$dimRedNumberDims,
-                                                    externalReduction = new_pca)
-              output$plot_jackstraw_dimRed <- renderPlot({
-                seuratJackStrawPlot(inSCE = vals$counts,
-                                    dims = input$dimRedNumberDims)
-              })
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                      useAssay = input$dimRedAssaySelect,
+                                                      dims = input$dimRedNumberDims,
+                                                      externalReduction = new_pca)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = vals$counts,
+                                      dims = input$dimRedNumberDims)
+                })
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                                      useAssay = input$dimRedAltExpAssay,
+                                                      dims = input$dimRedNumberDims,
+                                                      externalReduction = new_pca)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                      dims = input$dimRedNumberDims)
+                })
+              }
             })
           }
         }
