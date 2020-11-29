@@ -2012,6 +2012,18 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  
+  observeEvent(input$dimRedAltExpSelect_tsneUmap, {
+    if (!is.null(vals$counts) &&
+        !is.null(input$dimRedAltExpSelect_tsneUmap)) {
+      ae <- altExp(vals$counts, input$dimRedAltExpSelect_tsneUmap)
+      aeAssays <- assayNames(ae)
+      output$dimRedAltExpAssayUI_tsneUmap <- renderUI({
+        selectInput("dimRedAltExpAssay_tsneUmap", "Select the Assay in the subset",
+                    aeAssays)
+      })
+    }
+  })
 
   output$dimRedNameUI <- renderUI({
     if (input$dimRedAssayType == 1){
@@ -2570,7 +2582,22 @@ shinyServer(function(input, output, session) {
                                              useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
               else{
-                stop("Support for subsets not currently available with Seurat tSNE")
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                             useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                             altExp = TRUE)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                else{
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                             reducedDimName = dimrednamesave,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             perplexity = input$perplexityTSNEDimRed,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
               if (input$dimRedAssayType_tsneUmap == 1){
@@ -2593,7 +2620,25 @@ shinyServer(function(input, output, session) {
                                              spread = input$spreadUMAPDimRed)
               }
               else{
-                stop("Support for subsets not currently available with Seurat UMAP")
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                                                                           altExp = TRUE)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                else{
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunUMAP(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                           reducedDimName = dimrednamesave,
+                                                                                           useReduction = input$reductionMethodUMAPTSNEDimRed,
+                                                                                           dims = input$dimRedNumberDims_tsneUmap,
+                                                                                           minDist = input$minDistUMAPDimRed,
+                                                                                           nNeighbors = input$nNeighboursUMAPDimRed,
+                                                                                           spread = input$spreadUMAPDimRed)
+                
               }
             }
             else {
@@ -2646,12 +2691,33 @@ shinyServer(function(input, output, session) {
     
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
-      output$plotDimRed_tsneUmap <- renderPlotly({
-        plotly::ggplotly(plotDimRed(
-          inSCE = vals$counts,
-          useReduction = redDimName
-        ))
-      })
+      if(input$dimRedAssayType_tsneUmap == 1){
+        output$plotDimRed_tsneUmap <- renderPlotly({
+          plotly::ggplotly(plotDimRed(
+            inSCE = vals$counts,
+            useReduction = redDimName
+          ))
+        })
+      }
+      else if(input$dimRedAssayType_tsneUmap == 2){
+        if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
+           || input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
+          output$plotDimRed_tsneUmap <- renderPlotly({
+            plotly::ggplotly(plotDimRed(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+              useReduction = redDimName
+            ))
+          })
+        }
+        else{
+          output$plotDimRed_tsneUmap <- renderPlotly({
+            plotly::ggplotly(plotDimRed(
+              inSCE = vals$counts,
+              useReduction = redDimName
+            ))
+          })
+        }
+      }
     })
   })
 
