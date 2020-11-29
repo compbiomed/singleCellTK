@@ -2189,7 +2189,8 @@ shinyServer(function(input, output, session) {
               else if(input$dimRedAssayType == 2){
                 altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
                   inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                  useAssay = input$dimRedAltExpAssay
+                  useAssay = input$dimRedAltExpAssay,
+                  altExp = TRUE
                 )
                 altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
                   inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
@@ -2209,8 +2210,9 @@ shinyServer(function(input, output, session) {
       if(input$dimRedAssayType == 1){
         redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
       }
-      else if(input$dimRedAssayType == 1){
-        redDim <- reducedDim(altExps(vals$counts)[[input$dimRedAltExpSelect]], gsub(" ", "_", input$dimRedNameInput))
+      else if(input$dimRedAssayType == 2){
+        redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+        reducedDim(altExps(vals$counts)[[input$dimRedAltExpSelect]],  gsub(" ", "_", input$dimRedNameInput)) <- redDim
       }
       new_pca <- CreateDimReducObject(
         embeddings = redDim, 
