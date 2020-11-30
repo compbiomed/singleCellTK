@@ -2312,14 +2312,16 @@ shinyServer(function(input, output, session) {
                                                             )
     ), select = TRUE)
     
-    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput)
       if(input$dimRedAssayType == 1){
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
               inSCE = vals$counts,
-              useReduction = redDimName)
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
           )
         })
       }
@@ -2328,7 +2330,9 @@ shinyServer(function(input, output, session) {
           plotly::ggplotly(
             plotDimRed(
               inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-              useReduction = redDimName)
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
           )
         })
       }
@@ -2756,13 +2760,15 @@ shinyServer(function(input, output, session) {
       ), select = TRUE)
     }
     
-    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+    withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
       if(input$dimRedAssayType_tsneUmap == 1){
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
             inSCE = vals$counts,
-            useReduction = redDimName
+            useReduction = redDimName,
+            xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+            yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
           ))
         })
       }
@@ -2772,7 +2778,9 @@ shinyServer(function(input, output, session) {
           output$plotDimRed_tsneUmap <- renderPlotly({
             plotly::ggplotly(plotDimRed(
               inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-              useReduction = redDimName
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
             ))
           })
         }
@@ -2780,7 +2788,9 @@ shinyServer(function(input, output, session) {
           output$plotDimRed_tsneUmap <- renderPlotly({
             plotly::ggplotly(plotDimRed(
               inSCE = vals$counts,
-              useReduction = redDimName
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
             ))
           })
         }

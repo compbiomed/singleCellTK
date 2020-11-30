@@ -2,9 +2,16 @@
 % Please edit documentation in R/plotDimRed.R
 \name{plotDimRed}
 \alias{plotDimRed}
-\title{Plot dimensionality reduction}
+\title{Plot dimensionality reduction from computed metrics including PCA, ICA, tSNE
+and UMAP}
 \usage{
-plotDimRed(inSCE, useReduction, showLegend = FALSE)
+plotDimRed(
+  inSCE,
+  useReduction,
+  showLegend = FALSE,
+  xAxisLabel = NULL,
+  yAxisLabel = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input SCE object}
@@ -12,10 +19,17 @@ plotDimRed(inSCE, useReduction, showLegend = FALSE)
 \item{useReduction}{Reduction to plot}
 
 \item{showLegend}{If legends should be plotted or not}
+
+\item{xAxisLabel}{Specify the label for x-axis. Default is \code{NULL} which
+will specify the label as 'x'.}
+
+\item{yAxisLabel}{Specify the label for y-axis. Default is \code{NULL} which
+will specify the label as 'y'.}
 }
 \value{
 plot object
 }
 \description{
-Plot dimensionality reduction
+Plot dimensionality reduction from computed metrics including PCA, ICA, tSNE
+and UMAP
 }
