@@ -2306,6 +2306,7 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Heatmap Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
     
+    shinyjs::show(selector = ".dimRedPCAICA_plotTabset_class")
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
                                                             panel(heading = "PCA Plot",
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
@@ -2743,6 +2744,9 @@ shinyServer(function(input, output, session) {
     
     removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
     removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
+    
+    shinyjs::show(selector = ".dimRedTSNEUMAP_plotTabset_class")
+    
     if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
        || input$dimRedPlotMethod_tsneUmap == "tSNE"){
       appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",

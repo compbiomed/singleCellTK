@@ -123,13 +123,13 @@ shinyPanelFS_DimRed <- fluidPage(
                               column(8,
                                      fluidRow(
                                        column(12,
-                                              #hidden(
+                                              hidden(
                                                 tags$div(
-                                                  class = "seurat_pca_plots", 
+                                                  class = "dimRedPCAICA_plotTabset_class", 
                                                   tabsetPanel(id = "dimRedPCAICA_plotTabset", 
                                                               type = "tabs"
                                                               )
-                                                )#)
+                                                ))
                                               )
                                      )
                                      )
@@ -219,13 +219,13 @@ shinyPanelFS_DimRed <- fluidPage(
                    column(8,
                           fluidRow(
                             column(12,
-                                   #hidden(
+                                   hidden(
                                    tags$div(
-                                     class = "seurat_pca_plots", 
+                                     class = "dimRedTSNEUMAP_plotTabset_class", 
                                      tabsetPanel(id = "dimRedTSNEUMAP_plotTabset", 
                                                  type = "tabs"
                                      )
-                                   )#)
+                                   ))
                             )
                           )
                    )
