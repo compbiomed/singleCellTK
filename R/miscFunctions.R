@@ -180,7 +180,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
       # Efficient way to convert DelayedArray to dgCMatrix
-      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
+      Mat[[i]] <- methods::as(x[, start:end], "matrix")
     } else {
       # Convert dgTMatrix to dgCMatrix
       Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
@@ -362,23 +362,23 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(df)
 }
 
-
+#tag functions need refactoring and possible conversion to S4 method
 .updateTag <- function(inSCE, assay){
-  for(i in seq(length(metadata(inSCE)$assayType))){
-    matchedIndex <- match(assay, metadata(inSCE)$assayType[[i]])
+  for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
+    matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
     if(is.numeric(matchedIndex)){
-      metadata(inSCE)$assayType[[i]] <- metadata(inSCE)$assayType[[i]][-matchedIndex]
+      S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
     }
   }
   return(inSCE)
 }
 
 .sctkSetTag <- function(inSCE, assayType, assays){
-  if(is.null(metadata(inSCE)$assayType[[assayType]])){
-    metadata(inSCE)$assayType[[assayType]] <- assays
+  if(is.null(S4Vectors::metadata(inSCE)$assayType[[assayType]])){
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
   }
   else{
-    metadata(inSCE)$assayType[[assayType]] <- append(metadata(inSCE)$assayType[[assayType]], assays)
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
   }
   return(inSCE)
 }
@@ -386,13 +386,13 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 .sctkGetTag <- function(inSCE, assayType){
   retList <- list()
   for(i in seq(assayType)){
-    if(!is.null(metadata(inSCE)$assayType[[assayType[i]]])){
-      if(length(metadata(inSCE)$assayType[[assayType[i]]]) == 1){
+    if(!is.null(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])){
+      if(length(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]) == 1){
         #doing this because of how selectInput named list works, otherwise not needed
-        retList[[assayType[i]]] <- list(metadata(inSCE)$assayType[[assayType[i]]])
+        retList[[assayType[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])
       }
       else{
-        retList[[assayType[i]]] <- metadata(inSCE)$assayType[[assayType[i]]]
+        retList[[assayType[i]]] <- S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]
       }
     }
   }

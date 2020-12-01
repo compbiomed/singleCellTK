@@ -5,7 +5,7 @@
 #' dgCMatrix or a DelayedMatrix. Computations are performed using DelayedMatrixStats
 #' package to efficiently compute the Z-Score matrix.
 #'
-#' @param counts matrix (base matrix, dgCMatrix or DelaymedMatrix)
+#' @param counts matrix (base matrix, dgCMatrix or DelayedMatrix)
 #'
 #' @return z-score computed counts matrix (DelayedMatrix)
 #' @export
@@ -16,10 +16,12 @@
 #' assay(sce_chcl, "countsZScore") <- computeZScore(assay(sce_chcl, "counts"))
 #'
 computeZScore <- function(counts) {
+    #inputClass <- class(counts)[1]
     if (!methods::is(counts, "DelayedArray")) {
         counts <- DelayedArray::DelayedArray(counts)
     }
     counts <- (counts - DelayedMatrixStats::rowMeans2(counts)) / DelayedMatrixStats::rowSds(counts)
     counts[base::is.nan(counts)] <- 0
+    #counts <- as(counts, inputClass)
     return(counts)
 }

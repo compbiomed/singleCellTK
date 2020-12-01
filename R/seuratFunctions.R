@@ -211,10 +211,19 @@ seuratICA <- function(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20) 
 seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL, externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
-    seuratObject <- FindVariableFeatures(seuratObject)
-    seuratObject <- ScaleData(seuratObject)
+    #convert (_) to (-) as required by Seurat
+    rownames(externalReduction@cell.embeddings) <- lapply(
+      X = rownames(externalReduction@cell.embeddings), 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    seuratObject <- Seurat::FindVariableFeatures(seuratObject)
+    seuratObject <- Seurat::ScaleData(seuratObject)
     seuratObject@reductions <- list(pca = externalReduction)
-    seuratObject@reductions$pca@feature.loadings <- seuratObject@reductions$pca@feature.loadings[match(rownames(GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")), rownames(seuratObject@reductions$pca@feature.loadings)),]
+    seuratObject@reductions$pca@feature.loadings <- seuratObject@reductions$pca@feature.loadings[match(rownames(Seurat::GetAssayData(seuratObject, assay = "RNA", slot = "scale.data")), rownames(seuratObject@reductions$pca@feature.loadings)),]
     seuratObject@commands$RunPCA.RNA <- seuratObject@commands$ScaleData.RNA
     seuratObject@commands$RunPCA.RNA@params$rev.pca <- FALSE
     seuratObject@commands$RunPCA.RNA@params$weight.by.var <- TRUE
@@ -470,11 +479,11 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
   hoverText <- paste("Dimension:", plot$data$dims, "\nStandard Deviation:", round(plot$data$stdev, 1), "\nIs Significant?", plot$data$Significant)
   significant <- plot$data$Significant
   if(length(unique(significant))>1){
-    plot <- style(plot, text = hoverText[1:which(significant == "No")[1]-1])
-    plot <- style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
+    plot <- plotly::style(plot, text = hoverText[1:which(significant == "No")[1]-1])
+    plot <- plotly::style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
   }
   else{
-    plot <- style(plot, text = hoverText)
+    plot <- plotly::style(plot, text = hoverText)
   }
   
   return(plot)

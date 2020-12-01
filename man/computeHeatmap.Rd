@@ -16,7 +16,7 @@ computeHeatmap(
   cells = NULL,
   reduction = "pca",
   disp.min = -2.5,
-  disp.max = NULL,
+  disp.max = 2.5,
   balanced = TRUE,
   nCol = NULL,
   externalReduction = NULL
@@ -42,8 +42,7 @@ is \code{"pca"}.}
 clipping of assay values. Default is \code{-2.5}.}
 
 \item{disp.max}{Specify the maximum dispersion value to use for ceiling 
-clipping of assay values. Default is \code{NULL} but internally set 
-to \code{2.5}.}
+clipping of assay values. Default is \code{2.5}.}
 
 \item{balanced}{Specify if the number of of up-regulated and down-regulated 
 features should be balanced. Default is \code{TRUE}.}

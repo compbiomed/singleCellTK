@@ -15,8 +15,7 @@
 #' @param disp.min Specify the minimum dispersion value to use for floor 
 #' clipping of assay values. Default is \code{-2.5}.
 #' @param disp.max Specify the maximum dispersion value to use for ceiling 
-#' clipping of assay values. Default is \code{NULL} but internally set 
-#' to \code{2.5}.
+#' clipping of assay values. Default is \code{2.5}.
 #' @param balanced Specify if the number of of up-regulated and down-regulated 
 #' features should be balanced. Default is \code{TRUE}.
 #' @param nCol Specify the number of columns in the output plot. Default
@@ -34,7 +33,7 @@ computeHeatmap <- function(inSCE,
                         cells = NULL,
                         reduction = 'pca',
                         disp.min = -2.5,
-                        disp.max = NULL,
+                        disp.max = 2.5,
                         balanced = TRUE,
                         nCol = NULL,
                         externalReduction = NULL){
@@ -53,29 +52,37 @@ computeHeatmap <- function(inSCE,
     }
   }
   
-  ncol <- ncol %||% ifelse(test = length(x = dims) > 2, yes = 3, no = length(x = dims))
+  if(length(x = dims) > 2){
+    ncol <- 3
+  }
+  else{
+    ncol <- length(x = dims)
+  }
+  #ncol <- ncol %||% ifelse(test = length(x = dims) > 2, yes = 3, no = length(x = dims))
   
   #empty list = number of dims
   plots <- vector(mode = 'list', length = length(x = dims))
   
   #set rna
-  assays <- assays %||% DefaultAssay(object = object)
+  assays <- Seurat::DefaultAssay(object = object)
+  # assays <- assays %||% Seurat::DefaultAssay(object = object)
   
   #set disp.max
-  disp.max <- disp.max %||% ifelse(
-    test = slot == 'scale.data',
-    yes = 2.5,
-    no = 6
-  )
+  # disp.max <- disp.max %||% ifelse(
+  #   test = slot == 'scale.data',
+  #   yes = 2.5,
+  #   no = 6
+  # )
   
   #no. of cells
-  cells <- cells %||% ncol(x = object)
+  cells <- ncol(x = object)
+  # cells <- cells %||% ncol(x = object)
   
   #for each dim get top cells
   cells <- lapply(
     X = dims,
     FUN = function(x) {
-      cells <- TopCells(
+      cells <- Seurat::TopCells(
         object = object[[reduction]],
         dim = x,
         ncells = cells,
@@ -92,7 +99,7 @@ computeHeatmap <- function(inSCE,
   #get top features against each dim
   features <- lapply(
     X = dims,
-    FUN = TopFeatures,
+    FUN = Seurat::TopFeatures,
     object = object[[reduction]],
     nfeatures = nfeatures,
     balanced = balanced,
@@ -107,7 +114,7 @@ computeHeatmap <- function(inSCE,
   features.keyed <- features.all
   
   #set default assay
-  DefaultAssay(object = object) <- assays
+  Seurat::DefaultAssay(object = object) <- assays
   
   #convert (_) to (-) as required by FetchData function below
   cells <- lapply(
@@ -120,7 +127,7 @@ computeHeatmap <- function(inSCE,
     )
   
   #get assay data with only selected features (all dims) and selected cells (all)
-  data.all <- FetchData(
+  data.all <- Seurat::FetchData(
     object = object,
     vars = features.keyed,
     cells = unique(x = unlist(x = cells)),
@@ -130,7 +137,7 @@ computeHeatmap <- function(inSCE,
   #
   
   #clip off values for heatmap
-  data.all <- MinMax(data = data.all, min = disp.min, max = disp.max)
+  data.all <- Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
   data.limits <- c(min(data.all), max(data.all))
   
   #draw heatmap for each dim
@@ -144,16 +151,16 @@ computeHeatmap <- function(inSCE,
     )))
     dim.cells <- cells[[i]]
     data.plot <- data.all[dim.cells, dim.features]
-    hm <- ComplexHeatmap::Heatmap(t(data.plot), 
+    hm <- suppressMessages(ComplexHeatmap::Heatmap(t(data.plot), 
             show_row_dend = FALSE, 
             show_column_dend = FALSE, 
             cluster_rows = FALSE, 
             cluster_columns = FALSE, 
             show_column_names = FALSE, 
             row_names_side = "left",
-            show_heatmap_legend = FALSE)
+            show_heatmap_legend = FALSE))
       
-      plots[[i]] <- grid.grabExpr(ComplexHeatmap::draw(hm))
+      plots[[i]] <- grid::grid.grabExpr(suppressMessages(ComplexHeatmap::draw(hm)))
   }
   
   return(plots)

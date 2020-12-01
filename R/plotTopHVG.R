@@ -27,18 +27,18 @@ plotTopHVG <- function(inSCE,
     y <- rowData(inSCE)$scran_modelGeneVar_totalVariance
     labeling <- "Variance"
   }
-  vfplot <- ggplot() +
-    geom_point(aes(x = x, y = y)) +
-    geom_point(aes(x = subset(x, rownames(inSCE) %in% hvgList),
+  vfplot <- ggplot2::ggplot() +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_point(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList),
                    y = subset(y, rownames(inSCE) %in% hvgList)),
                colour = "red") +
-    geom_label(aes(x = subset(x, rownames(inSCE) %in% hvgList),
+    ggplot2::geom_label(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList),
                    y = subset(y, rownames(inSCE) %in% hvgList),
                    label = subset(rownames(inSCE),
                                   rownames(inSCE) %in% hvgList)),
                colour = "red",
                size = 2) +
-    labs(x = "Mean", y = labeling)
+    ggplot2::labs(x = "Mean", y = labeling)
   
   return(vfplot)
 }

@@ -1,6 +1,6 @@
 #' plotHeatmapMulti
 #' 
-#' @param inSCE Input list of plot objects.
+#' @param plots Input list of plot objects.
 #' @param components Specify the components against which the heatmaps should
 #' be plotted. Default is \code{NULL} which will include all available
 #' in input list of plots.

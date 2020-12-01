@@ -20,15 +20,15 @@ plotDimRed <- function(inSCE, useReduction,
   x <- dimRed[,1]
   y <- dimRed[,2]
   
-  dimRedPlot <- ggplot() +
-    geom_point(aes(x = x, y = y))
+  dimRedPlot <- ggplot2::ggplot() +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y))
   
   if(!is.null(xAxisLabel)){
-    dimRedPlot <- dimRedPlot + xlab(xAxisLabel)
+    dimRedPlot <- dimRedPlot + ggplot2::xlab(xAxisLabel)
   }
   
   if(!is.null(yAxisLabel)){
-    dimRedPlot <- dimRedPlot + ylab(yAxisLabel)
+    dimRedPlot <- dimRedPlot + ggplot2::ylab(yAxisLabel)
   }
   
   return(dimRedPlot)

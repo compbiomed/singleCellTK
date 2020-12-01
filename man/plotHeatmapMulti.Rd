@@ -7,14 +7,14 @@
 plotHeatmapMulti(plots, components = NULL, nCol = NULL)
 }
 \arguments{
+\item{plots}{Input list of plot objects.}
+
 \item{components}{Specify the components against which the heatmaps should
 be plotted. Default is \code{NULL} which will include all available
 in input list of plots.}
 
 \item{nCol}{Specify the number of columns in the output plot. Default
 is \code{NULL} which will auto-compute the number of columns.}
-
-\item{inSCE}{Input list of plot objects.}
 }
 \value{
 Heatmap plot object.
