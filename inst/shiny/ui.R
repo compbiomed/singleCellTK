@@ -188,7 +188,7 @@ shinyUI(
         tabPanel("Column Annotation", shinyPanelColumnAnnotation),
         tabPanel("Row Annotation", shinyPanelRowAnnotation),
         tabPanel("Export Single Cell Data", shinyPanelExport),
-        tabPanel("Remove Single Cell Data", shinyPanelRemove)
+        tabPanel("Delete Single Cell Data", shinyPanelRemove)
       ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),
