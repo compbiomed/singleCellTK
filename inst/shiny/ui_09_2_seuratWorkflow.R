@@ -248,8 +248,7 @@ shinyPanelSeurat <- fluidPage(
                                    nonLinearWorkflowUI(
                                        id = "id_1",
                                        de = TRUE,
-                                       ms = FALSE,
-                                       cv = TRUE),
+                                       pa = TRUE),
                             style = "primary")
         )
        )

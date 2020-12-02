@@ -16,12 +16,10 @@
 #' assay(sce_chcl, "countsZScore") <- computeZScore(assay(sce_chcl, "counts"))
 #'
 computeZScore <- function(counts) {
-    #inputClass <- class(counts)[1]
     if (!methods::is(counts, "DelayedArray")) {
         counts <- DelayedArray::DelayedArray(counts)
     }
     counts <- (counts - DelayedMatrixStats::rowMeans2(counts)) / DelayedMatrixStats::rowSds(counts)
     counts[base::is.nan(counts)] <- 0
-    #counts <- as(counts, inputClass)
     return(counts)
 }
