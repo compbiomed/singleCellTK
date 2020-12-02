@@ -24,7 +24,9 @@ shinyPanelBatchcorrect <- fluidPage(
                                           "Scater - LogNormCounts" = "LNC",
                                           "Scater - CPM" = "CPM")
                             ),
-                            selectInput("normalizeAssaySelect", "Select Assay:", currassays),
+                            uiOutput("normalizeAssaySelect"),
+                            #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
+                            #uiOutput("abcout"),
                             conditionalPanel(
                               condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'

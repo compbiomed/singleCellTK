@@ -180,7 +180,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     end <- min(i*chuS, dimN[2])
     if (methods::is(x, 'DelayedMatrix')) {
       # Efficient way to convert DelayedArray to dgCMatrix
-      Mat[[i]] <- methods::as(x[, start:end], "Matrix")
+      Mat[[i]] <- methods::as(x[, start:end], "matrix")
     } else {
       # Convert dgTMatrix to dgCMatrix
       Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
@@ -360,4 +360,41 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
     }
   }
   return(df)
+}
+
+#tag functions need refactoring and possible conversion to S4 method
+.updateTag <- function(inSCE, assay){
+  for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
+    matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
+    if(is.numeric(matchedIndex)){
+      S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
+    }
+  }
+  return(inSCE)
+}
+
+.sctkSetTag <- function(inSCE, assayType, assays){
+  if(is.null(S4Vectors::metadata(inSCE)$assayType[[assayType]])){
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  }
+  else{
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  }
+  return(inSCE)
+}
+
+.sctkGetTag <- function(inSCE, assayType){
+  retList <- list()
+  for(i in seq(assayType)){
+    if(!is.null(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])){
+      if(length(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]) == 1){
+        #doing this because of how selectInput named list works, otherwise not needed
+        retList[[assayType[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])
+      }
+      else{
+        retList[[assayType[i]]] <- S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]
+      }
+    }
+  }
+  return(retList)
 }
