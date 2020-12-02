@@ -629,7 +629,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   if (!is.null(normAssay) && normAssay %in% names(assays(inSCE))) {
     tempMatrix <- .convertToMatrix(assay(inSCE, normAssay))
     if(inherits(tempMatrix, "dgeMatrix")){
-      tempMatrix <- as(tempMatrix, "dgCMatrix")
+      tempMatrix <- methods::as(tempMatrix, "dgCMatrix")
     }
     seuratObject@assays$RNA@data <- tempMatrix
     rownames(seuratObject@assays$RNA@data) <- seuratRowNames
