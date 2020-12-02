@@ -5,12 +5,14 @@
 \title{seuratJackStrawPlot
 Computes the plot object for jackstraw plot from the pca slot in the input sce object}
 \usage{
-seuratJackStrawPlot(inSCE, dims = NULL)
+seuratJackStrawPlot(inSCE, dims = NULL, externalReduction = NULL)
 }
 \arguments{
 \item{inSCE}{(sce) object from which to compute the jackstraw plot (pca should be computed)}
 
 \item{dims}{Number of components to plot in Jackstraw. If \code{NULL}, then all components are plotted Default \code{NULL}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object
