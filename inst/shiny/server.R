@@ -6359,17 +6359,62 @@ shinyServer(function(input, output, session) {
 
       shinyjs::show(selector = ".seurat_clustering_plots")
       
-      #enable downstream analysis
-      shinyjs::show(
-        selector = "div[value='Downstream Analysis']")
-      updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+      #enable find marker selection
+      shinyjs::enable(
+        selector = "div[value='Find Markers']")
       
       #update colData names
       updateColDataNames()
+      
+      #populate updated colData items for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerSelectPhenotype", 
+                        choices = colnames(colData(vals$counts)))
+      
+      #populate reducDim objects from seuratObject for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerReductionMethod", 
+                        choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
     }
+  })
+  
+  observeEvent(input$seuratFindMarkerSelectPhenotype,{
+    if(!is.null(vals$counts)){
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup1",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup2",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerGroup1,{
+    if(!is.null(vals$counts)){
+      matchedIndex <- match(input$seuratFindMarkerGroup1,  unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]]))
+      if(!is.na(matchedIndex)){
+        updateSelectInput(
+          session = session,
+          inputId = "seuratFindMarkerGroup2",
+          choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])[-matchedIndex]
+        )
+      }
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerRun,{
+    
+    #enable downstream analysis
+    shinyjs::show(
+      selector = "div[value='Downstream Analysis']")
+    updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
   })
 
   #Update PCA/ICA message in clustering tab
@@ -6608,6 +6653,8 @@ shinyServer(function(input, output, session) {
         selector = "div[value='Clustering']")
       shinyjs::disable(
         selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Find Markers']")
 
       #Disable plots inside PCA subtab
       shinyjs::disable(

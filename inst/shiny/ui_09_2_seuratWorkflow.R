@@ -258,13 +258,18 @@ shinyPanelSeurat <- fluidPage(
                                                                       "markers conserved between groups")
                                                       ),
                                                       selectInput(
+                                                          inputId = "seuratFindMarkerSelectPhenotype",
+                                                          label = "Select biological phenotype:",
+                                                          choices = NULL
+                                                      ),
+                                                      selectInput(
                                                           inputId = "seuratFindMarkerGroup1",
-                                                          label = "Select group 1:",
+                                                          label = "Select first group of interest:",
                                                           choices = NULL
                                                       ),
                                                       selectInput(
                                                           inputId = "seuratFindMarkerGroup2",
-                                                          label = "Select group 2:",
+                                                          label = "Select second group of interest:",
                                                           choices = NULL
                                                       ),
                                                       selectInput(
@@ -312,8 +317,8 @@ shinyPanelSeurat <- fluidPage(
                                                               label = "Only return positive markers?",
                                                               value = FALSE
                                                           )
-                                                      )
-                                                      #actionButton(inputId = "find_clusters_button", "Find Clusters")
+                                                      ),
+                                                      actionButton(inputId = "seuratFindMarkerRun", "Find Markers")
                                                   )
                                            )
                                        )
