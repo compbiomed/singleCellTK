@@ -790,3 +790,22 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   
   return(inSCE)
 }
+
+#' seuratFindMarkers
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param cells1 A \code{list} of sample names included in group1.
+#' @param cells2 A \code{list} of sample names included in group2.
+#' @param group1 Name of group1.
+#' @param group2 Name of group2.
+#'
+#' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
+#' @export
+seuratFindMarkers <- function(inSCE, cells1, cells2, group1, group2){
+  seuratObject <- convertSCEToSeurat(inSCE)
+  Idents(seuratObject, cells = cells1) <- group1
+  Idents(seuratObject, cells = cells2) <- group2
+  markerGenes <- FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+  metadata(inSCE)$seuratMarkers <- markerGenes
+  return(inSCE)
+}

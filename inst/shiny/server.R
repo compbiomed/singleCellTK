@@ -6411,6 +6411,33 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$seuratFindMarkerRun,{
     
+    withProgress(message = "Finding markers", max = 1, value = 1,{
+      indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+      cells1 <- colnames(vals$counts)[indices]
+      cells2 <- colnames(vals$counts)[-indices]
+      vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                        cells1 = cells1,
+                        cells2 = cells2,
+                        group1 = input$seuratFindMarkerGroup1,
+                        group2 = input$seuratFindMarkerGroup2)
+    })
+
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Marker Genes",
+                                                               panel(heading = "Marker Genes",
+                                                                     dataTableOutput(
+                                                                       outputId = "seuratFindMarkerTable"
+                                                                     )
+                                                               )
+    ), select = TRUE)
+    
+    output$seuratFindMarkerTable <- renderDataTable({
+      cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+    }, options = list(pageLength = 6))
+    
+    shinyjs::show(selector = ".seurat_findmarker_plots")
+    
+    showNotification("Find Markers Complete")
+    
     #enable downstream analysis
     shinyjs::show(
       selector = "div[value='Downstream Analysis']")
