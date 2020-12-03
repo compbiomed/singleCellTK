@@ -8,7 +8,7 @@ shinyPanelSeurat <- fluidPage(
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
-                        panel(
+                        panel(heading = "Options",
                             selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
@@ -22,7 +22,7 @@ shinyPanelSeurat <- fluidPage(
             bsCollapsePanel("Scale Data",
                 fluidRow(
                     column(4,
-                        panel(
+                        panel(heading = "Options",
                             selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
                             materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
                             materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
@@ -217,7 +217,7 @@ shinyPanelSeurat <- fluidPage(
                     column(4,
                         fluidRow(
                             column(12,
-                                panel(
+                                panel(heading = "Options",
                                     selectInput(inputId = "reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                     #textInput(inputId = "reduction_clustering_count", label = "Select number of reduction components: ", value = "20"),
                                     selectInput(inputId = "algorithm.use", label = "Select clustering algorithm: ", choices = list("Original Louvain algorithm" = "louvain",
@@ -244,6 +244,93 @@ shinyPanelSeurat <- fluidPage(
                     )
                     ),
                     style = "primary"),
+            bsCollapsePanel("Find Markers",
+                            fluidRow(
+                                column(4,
+                                       fluidRow(
+                                           column(12,
+                                                  panel(heading = "Options",
+                                                        h6("Compute marker genes that are either differentially expressed or conserved between selected groups and visualize them from the selected plots on right panel."),
+                                                      radioButtons(
+                                                          inputId = "seuratFindMarkerType",
+                                                          label = "Select type of markers to identify:",
+                                                          choices = c("markers differentially expressed between groups",
+                                                                      "markers conserved between groups")
+                                                      ),
+                                                      selectInput(
+                                                          inputId = "seuratFindMarkerGroup1",
+                                                          label = "Select group 1:",
+                                                          choices = NULL
+                                                      ),
+                                                      selectInput(
+                                                          inputId = "seuratFindMarkerGroup2",
+                                                          label = "Select group 2:",
+                                                          choices = NULL
+                                                      ),
+                                                      selectInput(
+                                                          inputId = "seuratFindMarkerReductionMethod",
+                                                          label = "Select reduction to use:",
+                                                          choices = NULL
+                                                      ),
+                                                      checkboxInput(
+                                                          inputId = "seuratFindMarkerAdvancedOptions",
+                                                          label = "Show advanced options?",
+                                                          value = FALSE
+                                                      ),
+                                                      conditionalPanel(
+                                                          condition = "input.seuratFindMarkerAdvancedOptions == true",
+                                                          selectizeInput(
+                                                              inputId = "seuratFindMarkerSelectFeatures",
+                                                              label = "Select features:",
+                                                              choices = NULL
+                                                          ),
+                                                          numericInput(
+                                                              inputId = "seuratFindMarkerLogFC",
+                                                              label = "Set logFC threshold:",
+                                                              value = 0.25,
+                                                              step = 0.1
+                                                          ),
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerTest",
+                                                              label = "Select test:",
+                                                              choices = NULL
+                                                          ),
+                                                          numericInput(
+                                                              inputId = "seuratFindMarkerMinPCT",
+                                                              label = "Set min.pct value:",
+                                                              value = 0.1,
+                                                              step = 0.1
+                                                          ),
+                                                          numericInput(
+                                                              inputId = "seuratFindMarkerMinDiffPCT",
+                                                              label = "Set min.diff.pct value:",
+                                                              value = -Inf,
+                                                              step = 0.1
+                                                          ),
+                                                          materialSwitch(
+                                                              inputId = "seuratFindMarkerPosOnly",
+                                                              label = "Only return positive markers?",
+                                                              value = FALSE
+                                                          )
+                                                      )
+                                                      #actionButton(inputId = "find_clusters_button", "Find Clusters")
+                                                  )
+                                           )
+                                       )
+                                ),
+                                column(8,
+                                       fluidRow(
+                                           column(12,
+                                                  hidden(
+                                                      tags$div(class = "seurat_findmarker_plots", tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"
+                                                      ))
+                                                  )
+                                           )
+                                           
+                                       )
+                                )
+                            ),
+                            style = "primary"),
             hidden(bsCollapsePanel("Downstream Analysis",
                                    nonLinearWorkflowUI(
                                        id = "id_1",
