@@ -6411,6 +6411,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$seuratFindMarkerRun,{
     
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Marker Genes")
+    
     withProgress(message = "Finding markers", max = 1, value = 1,{
       indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
       cells1 <- colnames(vals$counts)[indices]
@@ -6424,6 +6426,12 @@ shinyServer(function(input, output, session) {
 
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Marker Genes",
                                                                panel(heading = "Marker Genes",
+                                                                     textInput(
+                                                                       inputId = "seuratFindMarkerPValue",
+                                                                       label = "Set max p-value (adjusted):",
+                                                                       value = 0.05
+                                                                     ),
+                                                                     hr(),
                                                                      dataTableOutput(
                                                                        outputId = "seuratFindMarkerTable"
                                                                      )
@@ -6431,7 +6439,8 @@ shinyServer(function(input, output, session) {
     ), select = TRUE)
     
     output$seuratFindMarkerTable <- renderDataTable({
-      cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+      #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+      apply(metadata(vals$counts)$seuratMarkers, c(1,2), round, 6)
     }, options = list(pageLength = 6))
     
     shinyjs::show(selector = ".seurat_findmarker_plots")
@@ -6442,6 +6451,79 @@ shinyServer(function(input, output, session) {
     shinyjs::show(
       selector = "div[value='Downstream Analysis']")
     updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+  })
+  
+  observeEvent(input$seuratFindMarkerPValue,{
+    output$seuratFindMarkerTable <- renderDataTable({
+     df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValue), arr.ind = TRUE),]
+     apply(df, c(1,2), round, 6)
+     }, options = list(pageLength = 6))
+  })
+  
+  observeEvent(input$seuratFindMarkerTable_rows_selected,{
+    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValue), arr.ind = TRUE),]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+    
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                               panel(heading = "Ridge Plot",
+                                                                     plotOutput(outputId = "findMarkerRidgePlot")
+                                                               )
+                                                               )
+              )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                               panel(heading = "Violin Plot",
+                                                                     plotOutput(outputId = "findMarkerViolinPlot")
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                               panel(heading = "Feature Plot",
+                                                                     plotOutput(outputId = "findMarkerFeaturePlot")
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                               panel(heading = "Ridge Plot",
+                                                                     plotOutput(outputId = "findMarkerDotPlot")
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                               panel(heading = "Ridge Plot",
+                                                                     plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                               )
+    )
+    )
+    
+    indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+    cells1 <- colnames(vals$counts)[indices]
+    cells2 <- colnames(vals$counts)[-indices]
+    
+    Idents(seuratObject, cells = cells1) <- input$seuratFindMarkerGroup1
+    Idents(seuratObject, cells = cells2) <- input$seuratFindMarkerGroup2
+    
+    output$findMarkerRidgePlot <- renderPlot({
+      RidgePlot(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected], ncol = 2)
+    })
+    output$findMarkerViolinPlot <- renderPlot({
+      VlnPlot(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected], ncol = 2)
+    })
+    output$findMarkerFeaturePlot <- renderPlot({
+      FeaturePlot(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected], ncol = 2)
+    })
+    output$findMarkerDotPlot <- renderPlot({
+      DotPlot(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected])
+    })
+    output$findMarkerHeatmapPlot <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected])
+    })
+    
   })
 
   #Update PCA/ICA message in clustering tab
