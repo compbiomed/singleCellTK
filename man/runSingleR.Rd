@@ -7,9 +7,12 @@
 runSingleR(
   inSCE,
   useAssay = "logcounts",
-  useRef = c("hpca", "be", "dice", "nh", "mi", "ig", "mrs"),
+  useSCERef = NULL,
+  labelColName = NULL,
+  useBltinRef = c("hpca", "bpe", "mp", "dice", "immgen", "mouse", "zeisel"),
   level = c("main", "fine", "ont"),
-  featureType = c("symbol", "ensembl")
+  featureType = c("symbol", "ensembl"),
+  labelByCluster = NULL
 )
 }
 \arguments{
@@ -17,11 +20,21 @@ runSingleR(
 
 \item{useAssay}{The assay to calculate}
 
-\item{useRef}{Specify an reference provided by SingleR}
+\item{useSCERef}{A customized reference dataset in SCE format}
 
-\item{level}{Cell type labeling level}
+\item{labelColName}{The colData column for cell type labeling, stored in
+useSCERef}
 
-\item{featureType}{Gene symbols or Ensembl IDs}
+\item{useBltinRef}{Specify an reference provided by SingleR}
+
+\item{level}{Cell type labeling level, only supported by a few SingleR
+references.}
+
+\item{featureType}{Use gene symbols or Ensembl IDs, only supported by SingleR
+references.}
+
+\item{labelByCluster}{Label inSCE clusters already identified, instead of
+labeling each cells.}
 }
 \value{
 An SCE object
