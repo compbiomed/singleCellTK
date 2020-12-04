@@ -6432,13 +6432,13 @@ shinyServer(function(input, output, session) {
                                                                        value = 0.05
                                                                      ),
                                                                      hr(),
-                                                                     dataTableOutput(
+                                                                     DT::dataTableOutput(
                                                                        outputId = "seuratFindMarkerTable"
                                                                      )
                                                                )
     ), select = TRUE)
     
-    output$seuratFindMarkerTable <- renderDataTable({
+    output$seuratFindMarkerTable <- DT::renderDataTable({
       #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
       apply(metadata(vals$counts)$seuratMarkers, c(1,2), round, 6)
     }, options = list(pageLength = 6))
@@ -6454,7 +6454,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$seuratFindMarkerPValue,{
-    output$seuratFindMarkerTable <- renderDataTable({
+    output$seuratFindMarkerTable <- DT::renderDataTable({
      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValue), arr.ind = TRUE),]
      apply(df, c(1,2), round, 6)
      }, options = list(pageLength = 6))
@@ -6472,31 +6472,41 @@ shinyServer(function(input, output, session) {
     
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                panel(heading = "Ridge Plot",
-                                                                     plotOutput(outputId = "findMarkerRidgePlot")
+                                                                     jqui_resizable(
+                                                                       plotOutput(outputId = "findMarkerRidgePlot")
+                                                                     )
                                                                )
                                                                )
               )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
                                                                panel(heading = "Violin Plot",
-                                                                     plotOutput(outputId = "findMarkerViolinPlot")
+                                                                     jqui_resizable(
+                                                                       plotOutput(outputId = "findMarkerViolinPlot")
+                                                                     )
                                                                )
     )
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
                                                                panel(heading = "Feature Plot",
-                                                                     plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                     jqui_resizable(
+                                                                       plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                     )
                                                                )
     )
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
                                                                panel(heading = "Ridge Plot",
-                                                                     plotOutput(outputId = "findMarkerDotPlot")
+                                                                     jqui_resizable(
+                                                                       plotOutput(outputId = "findMarkerDotPlot")
+                                                                     )
                                                                )
     )
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
                                                                panel(heading = "Ridge Plot",
-                                                                     plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                     jqui_resizable(
+                                                                       plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                     )
                                                                )
     )
     )
