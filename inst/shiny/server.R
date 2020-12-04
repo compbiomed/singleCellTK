@@ -6501,12 +6501,20 @@ shinyServer(function(input, output, session) {
     )
     )
     
-    indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-    cells1 <- colnames(vals$counts)[indices]
-    cells2 <- colnames(vals$counts)[-indices]
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    #indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+    #cells1 <- colnames(vals$counts)[indices]
+    #cells2 <- colnames(vals$counts)[-indices]
     
-    Idents(seuratObject, cells = cells1) <- input$seuratFindMarkerGroup1
-    Idents(seuratObject, cells = cells2) <- input$seuratFindMarkerGroup2
+    #Idents(seuratObject, cells = cells1) <- input$seuratFindMarkerGroup1
+    #Idents(seuratObject, cells = cells2) <- input$seuratFindMarkerGroup2
     
     output$findMarkerRidgePlot <- renderPlot({
       RidgePlot(seuratObject, features = rownames(df)[input$seuratFindMarkerTable_rows_selected], ncol = 2)
