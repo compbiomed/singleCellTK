@@ -327,6 +327,11 @@ shinyPanelSeurat <- fluidPage(
                                        fluidRow(
                                            column(12,
                                                   hidden(
+                                                      tags$div(class = "seurat_findmarker_table", tabsetPanel(id = "seuratFindMarkerTableTabset", type = "tabs"
+                                                      ))
+                                                  ),
+                                                  br(),
+                                                  hidden(
                                                       tags$div(class = "seurat_findmarker_plots", tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"
                                                       ))
                                                   )
