@@ -254,23 +254,28 @@ shinyPanelSeurat <- fluidPage(
                                                       radioButtons(
                                                           inputId = "seuratFindMarkerType",
                                                           label = "Select type of markers to identify:",
-                                                          choices = c("markers differentially expressed between groups",
-                                                                      "markers conserved between groups")
+                                                          choices = c("markers differentially expressed between two selected groups" = "markerDiffExp",
+                                                                      "markers conserved between two selected groups" = "markerConserved",
+                                                                      "markers between all groups" = "markerAll")
                                                       ),
                                                       selectInput(
                                                           inputId = "seuratFindMarkerSelectPhenotype",
                                                           label = "Select biological phenotype:",
                                                           choices = NULL
                                                       ),
-                                                      selectInput(
-                                                          inputId = "seuratFindMarkerGroup1",
-                                                          label = "Select first group of interest:",
-                                                          choices = NULL
-                                                      ),
-                                                      selectInput(
-                                                          inputId = "seuratFindMarkerGroup2",
-                                                          label = "Select second group of interest:",
-                                                          choices = NULL
+                                                      conditionalPanel(
+                                                          condition = "input.seuratFindMarkerType == 'markerDiffExp'
+                                                          || input.seuratFindMarkerType == 'markerConserved'",
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerGroup1",
+                                                              label = "Select first group of interest:",
+                                                              choices = NULL
+                                                          ),
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerGroup2",
+                                                              label = "Select second group of interest:",
+                                                              choices = NULL
+                                                          )
                                                       ),
                                                       selectInput(
                                                           inputId = "seuratFindMarkerReductionMethod",

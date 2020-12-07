@@ -6414,14 +6414,20 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
     
     withProgress(message = "Finding markers", max = 1, value = 1,{
-      indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-      cells1 <- colnames(vals$counts)[indices]
-      cells2 <- colnames(vals$counts)[-indices]
-      vals$counts <- seuratFindMarkers(inSCE = vals$counts,
-                        cells1 = cells1,
-                        cells2 = cells2,
-                        group1 = input$seuratFindMarkerGroup1,
-                        group2 = input$seuratFindMarkerGroup2)
+      if(input$seuratFindMarkerType == "markerAll"){
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         allGroup = input$seuratFindMarkerSelectPhenotype)
+      }
+      else{
+        indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        cells1 <- colnames(vals$counts)[indices]
+        cells2 <- colnames(vals$counts)[-indices]
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         cells1 = cells1,
+                                         cells2 = cells2,
+                                         group1 = input$seuratFindMarkerGroup1,
+                                         group2 = input$seuratFindMarkerGroup2)
+      }
     })
 
     appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
@@ -6434,7 +6440,9 @@ shinyServer(function(input, output, session) {
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
-      apply(metadata(vals$counts)$seuratMarkers, c(1,2), round, 6)
+      #apply(
+        metadata(vals$counts)$seuratMarkers
+        #, c(1,2), round, 6)
     }, filter = "top", options = list(pageLength = 6, stateSave = TRUE,
                                       searchCols = list(NULL, NULL, NULL, NULL, NULL,
                                                         list(search = '0 ... 0.05'))))
@@ -6450,7 +6458,9 @@ shinyServer(function(input, output, session) {
                                                                               ),
                                                                               panel(
                                                                                 jqui_resizable(
-                                                                                  plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                  
+                                                                                    plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                    
                                                                                 )
                                                                               )
                                                                        )
@@ -6619,7 +6629,9 @@ shinyServer(function(input, output, session) {
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
                                                                                                                       jqui_resizable(
-                                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                                       
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
                                                                                                                       )
                                                                                                                     )
                                                                                                              )
@@ -6734,8 +6746,10 @@ shinyServer(function(input, output, session) {
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
                                                                                                                       jqui_resizable(
-                                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                                      )
+                                                                                                                        
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
+                                                                                                                      ),
                                                                                                                     )
                                                                                                              )
                                                                                                            )

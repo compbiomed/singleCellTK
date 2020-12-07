@@ -798,31 +798,39 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @param cells2 A \code{list} of sample names included in group2.
 #' @param group1 Name of group1.
 #' @param group2 Name of group2.
+#' @param allGroup Name of all groups.
 #'
 #' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(inSCE, cells1, cells2, group1, group2){
+seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL){
   seuratObject <- convertSCEToSeurat(inSCE)
-  #convert (_) to (-) as required by Seurat
-  cells1 <- lapply(
-    X = cells1, 
-    FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
-      fixed = TRUE)
-  )
-  cells2 <- lapply(
-    X = cells2, 
-    FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
-      fixed = TRUE)
-  )
-  Idents(seuratObject, cells = cells1) <- group1
-  Idents(seuratObject, cells = cells2) <- group2
-  markerGenes <- FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+  markerGenes <- NULL
+  if(is.null(allGroup)){
+    #convert (_) to (-) as required by Seurat
+    cells1 <- lapply(
+      X = cells1, 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    cells2 <- lapply(
+      X = cells2, 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    Idents(seuratObject, cells = cells1) <- group1
+    Idents(seuratObject, cells = cells2) <- group2
+    markerGenes <- FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+  }
+  else{
+    Idents(seuratObject, cells = colnames(seuratObject)) <- Idents(metadata(inSCE)$seurat$obj)
+    markerGenes <- FindAllMarkers(seuratObject)
+  }
   metadata(inSCE)$seuratMarkers <- markerGenes
   return(inSCE)
 }
