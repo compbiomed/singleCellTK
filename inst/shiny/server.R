@@ -6539,7 +6539,8 @@ shinyServer(function(input, output, session) {
       h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
     })
     
-    showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+    #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
     shinyjs::show(selector = ".seurat_findmarker_plots")
     
     showNotification("Find Markers Complete")
@@ -6682,7 +6683,8 @@ shinyServer(function(input, output, session) {
                                             DoHeatmap(seuratObject, features = rownames(df))
                                           })
                                           
-                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                           shinyjs::show(selector = ".seurat_findmarker_plots")
                                         }
                                         else {
@@ -6777,8 +6779,8 @@ shinyServer(function(input, output, session) {
                                                                                                                 )
                                           )
                                           )
-                                          
-                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                         }
                                       })
                                     })
