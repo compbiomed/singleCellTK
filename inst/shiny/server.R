@@ -176,7 +176,6 @@ shinyServer(function(input, output, session) {
     #                     singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
     
     selectedChoicesForNormalizationTab <- singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized"))
-    names(selectedChoicesForNormalizationTab)[1] <- "raw (recommended)"
     output$normalizeAssaySelect <- renderUI({
       selectInput(
         inputId = "normalizeAssaySelect",

@@ -4,7 +4,14 @@
 \alias{seuratFindMarkers}
 \title{seuratFindMarkers}
 \usage{
-seuratFindMarkers(inSCE, cells1, cells2, group1, group2)
+seuratFindMarkers(
+  inSCE,
+  cells1 = NULL,
+  cells2 = NULL,
+  group1 = NULL,
+  group2 = NULL,
+  allGroup = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
@@ -16,9 +23,11 @@ seuratFindMarkers(inSCE, cells1, cells2, group1, group2)
 \item{group1}{Name of group1.}
 
 \item{group2}{Name of group2.}
+
+\item{allGroup}{Name of all groups.}
 }
 \value{
-Nothing yet.
+A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 }
 \description{
 seuratFindMarkers

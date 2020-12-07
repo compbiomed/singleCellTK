@@ -823,14 +823,14 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
         x = t, 
         fixed = TRUE)
     )
-    Idents(seuratObject, cells = cells1) <- group1
-    Idents(seuratObject, cells = cells2) <- group2
-    markerGenes <- FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+    Seurat::Idents(seuratObject, cells = cells1) <- group1
+    Seurat::Idents(seuratObject, cells = cells2) <- group2
+    markerGenes <- Seurat::FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
   }
   else{
-    Idents(seuratObject, cells = colnames(seuratObject)) <- Idents(metadata(inSCE)$seurat$obj)
-    markerGenes <- FindAllMarkers(seuratObject)
+    Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
+    markerGenes <- Seurat::FindAllMarkers(seuratObject)
   }
-  metadata(inSCE)$seuratMarkers <- markerGenes
+  S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes
   return(inSCE)
 }
