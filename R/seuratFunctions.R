@@ -803,6 +803,23 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @export
 seuratFindMarkers <- function(inSCE, cells1, cells2, group1, group2){
   seuratObject <- convertSCEToSeurat(inSCE)
+  #convert (_) to (-) as required by Seurat
+  cells1 <- lapply(
+    X = cells1, 
+    FUN = function(t) gsub(
+      pattern = "_", 
+      replacement = "-", 
+      x = t, 
+      fixed = TRUE)
+  )
+  cells2 <- lapply(
+    X = cells2, 
+    FUN = function(t) gsub(
+      pattern = "_", 
+      replacement = "-", 
+      x = t, 
+      fixed = TRUE)
+  )
   Idents(seuratObject, cells = cells1) <- group1
   Idents(seuratObject, cells = cells2) <- group2
   markerGenes <- FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)

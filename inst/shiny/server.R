@@ -6528,6 +6528,14 @@ shinyServer(function(input, output, session) {
     for(i in seq(length(groups))){
       indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
       cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
@@ -6560,6 +6568,14 @@ shinyServer(function(input, output, session) {
     for(i in seq(length(groups))){
       indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
       cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
@@ -6664,6 +6680,14 @@ shinyServer(function(input, output, session) {
                                           for(i in seq(length(groups))){
                                             indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
                                             cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+                                            cells[[i]] <- lapply(
+                                              X = cells[[i]], 
+                                              FUN = function(t) gsub(
+                                                pattern = "_", 
+                                                replacement = "-", 
+                                                x = t, 
+                                                fixed = TRUE)
+                                            )
                                             Idents(seuratObject, cells = cells[[i]]) <- groups[i]
                                           }
                                           
