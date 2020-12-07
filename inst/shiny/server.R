@@ -6441,6 +6441,24 @@ shinyServer(function(input, output, session) {
     
     shinyjs::show(selector = ".seurat_findmarker_table")
     
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              uiOutput(
+                                                                                outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                              ),
+                                                                              panel(
+                                                                                jqui_resizable(
+                                                                                  plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                )
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                panel(heading = "Ridge Plot",
                                                                      fluidRow(
@@ -6478,7 +6496,7 @@ shinyServer(function(input, output, session) {
     )
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
-                                                               panel(heading = "Ridge Plot",
+                                                               panel(heading = "Dot Plot",
                                                                      fluidRow(
                                                                        column(12, align = "center",
                                                                               panel(
@@ -6490,39 +6508,11 @@ shinyServer(function(input, output, session) {
     )
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
-                                                               panel(heading = "Ridge Plot",
+                                                               panel(heading = "Heatmap Plot",
                                                                      fluidRow(
                                                                        column(12, align = "center",
                                                                               panel(
-                                                                                tabsetPanel(
-                                                                                  tabPanel("Selected Genes",
-                                                                                           panel(heading = "Heatmap Plot",
-                                                                                                 fluidRow(
-                                                                                                   column(12, align = "center",
-                                                                                                          panel(
-                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                          )
-                                                                                                   )
-                                                                                                 )
-                                                                                           )
-                                                                                  ),
-                                                                                  tabPanel("All Genes",
-                                                                                           panel(heading = "Heatmap Plot",
-                                                                                                 fluidRow(
-                                                                                                   column(12, align = "center",
-                                                                                                          uiOutput(
-                                                                                                            outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                                          ),
-                                                                                                          panel(
-                                                                                                            jqui_resizable(
-                                                                                                              plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                            )
-                                                                                                          )
-                                                                                                   )
-                                                                                                 )
-                                                                                           )
-                                                                                  )
-                                                                                )
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
                                                                               )
                                                                        )
                                                                      )
@@ -6549,7 +6539,7 @@ shinyServer(function(input, output, session) {
       h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
     })
     
-    showTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+    showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
     shinyjs::show(selector = ".seurat_findmarker_plots")
     
     showNotification("Find Markers Complete")
@@ -6601,6 +6591,25 @@ shinyServer(function(input, output, session) {
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
                                           
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                                                      panel(heading = "Ridge Plot",
@@ -6635,8 +6644,6 @@ shinyServer(function(input, output, session) {
                                           )
                                           )
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
-                                                                                                     tabsetPanel(
-                                                                                                       tabPanel("Selected Genes",
                                                                                                                 panel(heading = "Heatmap Plot",
                                                                                                                       fluidRow(
                                                                                                                         column(12, align = "center",
@@ -6646,24 +6653,6 @@ shinyServer(function(input, output, session) {
                                                                                                                         )
                                                                                                                       )
                                                                                                                 )
-                                                                                                       ),
-                                                                                                       tabPanel("All Genes",
-                                                                                                                panel(heading = "Heatmap Plot",
-                                                                                                                      fluidRow(
-                                                                                                                        column(12, align = "center",
-                                                                                                                               panel(
-                                                                                                                                 uiOutput(
-                                                                                                                                   outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                                                                 ),
-                                                                                                                                 jqui_resizable(
-                                                                                                                                   plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                                                 )
-                                                                                                                               )
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                )
-                                                                                                       )
-                                                                                                     )
                                                                                                      )
                                           
                                           )
@@ -6693,7 +6682,7 @@ shinyServer(function(input, output, session) {
                                             DoHeatmap(seuratObject, features = rownames(df))
                                           })
                                           
-                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                           shinyjs::show(selector = ".seurat_findmarker_plots")
                                         }
                                         else {
@@ -6702,12 +6691,31 @@ shinyServer(function(input, output, session) {
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                           
                                           output$findMarkerRidgePlot <- NULL
                                           output$findMarkerViolinPlot <- NULL
                                           output$findMarkerFeaturePlot <- NULL
                                           output$findMarkerDotPlot <- NULL
                                           output$findMarkerHeatmapPlot <- NULL
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
                                           
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                                                      panel(heading = "Ridge Plot",
@@ -6758,8 +6766,6 @@ shinyServer(function(input, output, session) {
                                           )
                                           )
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
-                                                                                                     tabsetPanel(
-                                                                                                       tabPanel("Selected Genes",
                                                                                                                 panel(heading = "Heatmap Plot",
                                                                                                                       fluidRow(
                                                                                                                         column(12, align = "center",
@@ -6769,28 +6775,10 @@ shinyServer(function(input, output, session) {
                                                                                                                         )
                                                                                                                       )
                                                                                                                 )
-                                                                                                                ),
-                                                                                                       tabPanel("All Genes",
-                                                                                                                panel(heading = "Heatmap Plot",
-                                                                                                                      fluidRow(
-                                                                                                                        column(12, align = "center",
-                                                                                                                               panel(
-                                                                                                                                 uiOutput(
-                                                                                                                                   outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                                                                 ),
-                                                                                                                                 jqui_resizable(
-                                                                                                                                   plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                                                 )
-                                                                                                                               )
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                )
-                                                                                                                )
-                                                                                                     )
                                           )
                                           )
                                           
-                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                         }
                                       })
                                     })
