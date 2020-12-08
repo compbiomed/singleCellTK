@@ -404,3 +404,51 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   return(retList)
 }
+
+setClassUnion("CharacterOrNULL", c("character", "NULL"))
+setGeneric(name = "sctkAssay<-", 
+           function(inSCE, assayName, tag = NULL, value) 
+             SummarizedExperiment::`assay<-`(x = inSCE, 
+                                             i = assayName, 
+                                             value = value)
+           )
+
+#' sctkAssay
+#' Store assays using tags to identify the type of assay stored. To be used
+#' within the singleCellTK as a replacement for assay<- setter function.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param assayName Specify the name of the input assay.
+#' @param tag Specify the tag to store against the input assay. Default
+#'  is \code{NULL}, which will set the tag to 'uncategorized'.
+#' @param value Input matrix-type assay to store.
+#' @export
+setMethod(f = "sctkAssay<-", 
+          signature = signature(inSCE="ANY", assayName="ANY", tag = "CharacterOrNULL"),
+          definition = function(inSCE,  assayName, tag = NULL, value){
+            if(is.null(tag)){
+              callNextMethod()
+              .sctkSetTag(
+                inSCE = inSCE, 
+                assayType = "uncategorized", 
+                assays = assayName)
+            }
+            else{
+              callNextMethod()
+              .sctkSetTag(
+                inSCE = inSCE, 
+                assayType = tag, 
+                assays = assayName)
+            }
+          }
+)
+
+setMethod(f = "sctkAssay<-", 
+          signature = signature(inSCE="ANY", assayName="ANY", tag = "missing"),
+          definition = function(inSCE,  assayName, value){
+            callNextMethod()
+            .sctkSetTag(
+              inSCE = inSCE, 
+              assayType = "uncategorized", 
+              assays = assayName)
+          }
+)
