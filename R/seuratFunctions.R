@@ -791,6 +791,46 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   return(inSCE)
 }
 
-seuratVisualizeFeatures <- function(inSCE){
-  
+#' seuratFindMarkers
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param cells1 A \code{list} of sample names included in group1.
+#' @param cells2 A \code{list} of sample names included in group2.
+#' @param group1 Name of group1.
+#' @param group2 Name of group2.
+#' @param allGroup Name of all groups.
+#'
+#' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
+#' @export
+seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL){
+  seuratObject <- convertSCEToSeurat(inSCE)
+  markerGenes <- NULL
+  if(is.null(allGroup)){
+    #convert (_) to (-) as required by Seurat
+    cells1 <- lapply(
+      X = cells1, 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    cells2 <- lapply(
+      X = cells2, 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    Seurat::Idents(seuratObject, cells = cells1) <- group1
+    Seurat::Idents(seuratObject, cells = cells2) <- group2
+    markerGenes <- Seurat::FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+  }
+  else{
+    Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
+    markerGenes <- Seurat::FindAllMarkers(seuratObject)
+  }
+  S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes
+  return(inSCE)
 }

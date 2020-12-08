@@ -385,16 +385,22 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 
 .sctkGetTag <- function(inSCE, assayType){
   retList <- list()
-  for(i in seq(assayType)){
-    if(!is.null(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])){
-      if(length(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]) == 1){
-        #doing this because of how selectInput named list works, otherwise not needed
-        retList[[assayType[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])
-      }
-      else{
-        retList[[assayType[i]]] <- S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]
+  if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+    for(i in seq(assayType)){
+      if(!is.null(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])){
+        if(length(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]) == 1){
+          #doing this because of how selectInput named list works, otherwise not needed
+          retList[[assayType[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[assayType[i]]])
+        }
+        else{
+          retList[[assayType[i]]] <- S4Vectors::metadata(inSCE)$assayType[[assayType[i]]]
+        }
       }
     }
+  }
+  else{
+    S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
+    retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
   }
   return(retList)
 }
