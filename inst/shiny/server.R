@@ -202,7 +202,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
     
     updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
-    #updateSelectInputTag(session, "normalizeAssaySelect", tags = c("raw", "normalized"))
+    #updateSelectInputTag(session, "normalizeAssaySelect", tags = c("raw"))
     
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
@@ -1931,8 +1931,12 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
-          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          sctkAssay(vals$counts, input$normalizeAssayOutname, tag = "normalized") <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
+          
+          # assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          #   x = assay(vals$counts, input$normalizeAssaySelect))
+          
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
