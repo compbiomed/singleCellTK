@@ -157,49 +157,79 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
+  
+  updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL, 
+                                   label = "Select assay:", tags = NULL, recommended = NULL){
+    if(!is.null(choices)
+       && is.null(tags)){
+      choices <- singleCellTK:::.getAssays(vals$counts)
+    }
+    else{
+      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+    }
+    if(!is.null(recommended)){
+      namesChoices <- names(choices)
+      for(i in seq(length(namesChoices))){
+        if(recommended == namesChoices[i]){
+          namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+        }
+      }
+      names(choices) <- namesChoices
+    }
+    if(!is.null(selected)){
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices,
+          selected = selected
+        )
+      })
+    }
+    else{
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices
+        )
+      })
+    }
+
+  }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
-    updateSelectInput(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
-    updateSelectInput(session, "batchCorrAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
-    updateSelectInput(session, "deAssay", choices = currassays)
-    updateSelectInput(session, "fmAssay", choices = currassays)
-    updateSelectInput(session, "fmHMAssay", choices = currassays)
-    updateSelectInput(session, "pathwayAssay", choices = currassays)
-    updateSelectInput(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
+    updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
+    updateSelectInputTag(session, "deAssay", choices = currassays)
+    updateSelectInputTag(session, "fmAssay", choices = currassays)
+    updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
+    updateSelectInputTag(session, "pathwayAssay", choices = currassays)
+    updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
     
-    # updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
-    # updateSelectInput(session, "normalizeAssaySelect", choices = 
-    #                     singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
+    updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
+    #updateSelectInputTag(session, "normalizeAssaySelect", tags = c("raw", "normalized"))
     
-    selectedChoicesForNormalizationTab <- singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized"))
-    output$normalizeAssaySelect <- renderUI({
-      selectInput(
-        inputId = "normalizeAssaySelect",
-        label = "Select assay:",
-        choices = selectedChoicesForNormalizationTab
-      )
-    })
-    
-    updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
-    updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
-    updateSelectInput(session, "filterAssaySelect", choices = currassays)
-    updateSelectInput(session, "qcAssaySelect", choices = currassays)
-    updateSelectInput(session, "celdaAssay", choices = currassays)
-    updateSelectInput(session, "celdaAssayGS", choices = currassays)
-    updateSelectInput(session, "celdaAssaytSNE", choices = currassays)
-    updateSelectInput(session, "celdaAssayProbabilityMap",
+    updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays)
+    updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
+    updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "celdaAssay", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
+    updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayProbabilityMap",
                       choices = currassays)
-    updateSelectInput(session, "celdaAssayModuleHeatmap",
+    updateSelectInputTag(session, "celdaAssayModuleHeatmap",
                       choices = currassays)
-    updateSelectInput(session, "depthAssay", choices = currassays)
-    updateSelectInput(session, "cellsAssay", choices = currassays)
-    updateSelectInput(session, "snapshotAssay", choices = currassays)
-    updateSelectInput(session, "exportAssay", choices = currassays)
-    updateSelectInput(session, "hmAssay", choices = currassays)
+    updateSelectInputTag(session, "depthAssay", choices = currassays)
+    updateSelectInputTag(session, "cellsAssay", choices = currassays)
+    updateSelectInputTag(session, "snapshotAssay", choices = currassays)
+    updateSelectInputTag(session, "exportAssay", choices = currassays)
+    updateSelectInputTag(session, "hmAssay", choices = currassays)
   }
 
   observeEvent(vals$counts, {
@@ -1911,8 +1941,12 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
-          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          sctkAssay(vals$counts, input$normalizeAssayOutname, tag = "normalized") <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
+          
+          # assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          #   x = assay(vals$counts, input$normalizeAssaySelect))
+          
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
@@ -2037,8 +2071,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
-        assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
-        vals$counts <- singleCellTK:::.updateTag(vals$counts, input$checkboxAssaysToRemove[i])
+        sctkAssay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
@@ -5527,13 +5560,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$fmHMAssayUI <- renderUI({
-    if(!is.null(vals$counts)){
-      allAssay <- assayNames(vals$counts)
-      selectInput('fmHMAssay', "Assay to plot", allAssay,
-                  selected = input$fmAssay)
-    }
-  })
+  # output$fmHMAssayUI <- renderUI({
+  #   if(!is.null(vals$counts)){
+  #     allAssay <- assayNames(vals$counts)
+  #     selectInput('fmHMAssay', "Assay to plot", allAssay,
+  #                 selected = input$fmAssay)
+  #   }
+  # })
 
   observeEvent(input$plotFM, {
     if(!is.null(vals$counts) &&

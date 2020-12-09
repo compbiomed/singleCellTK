@@ -17,10 +17,11 @@ shinyPanelFS_DimRed <- fluidPage(
                        "Seurat - mean.var.plot" = "mean.var.plot",
                        "Seurat - dispersion" = "dispersion",
                        "Scran - modelGeneVar" = "modelGeneVar")),
-                   selectInput(
-                     inputId = "assaySelectFS_Norm",
-                     label = "Select normalized assay:",
-                     choices = currassays),
+                   uiOutput("assaySelectFS_Norm"),
+                   # selectInput(
+                   #   inputId = "assaySelectFS_Norm",
+                   #   label = "Select normalized assay:",
+                   #   choices = currassays),
                    withBusyIndicatorUI(actionButton("findHvgButtonFS",
                                                     "Compute Variability"))
                  ),
@@ -75,7 +76,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                                                  selected = 1, inline = TRUE),
                                                     conditionalPanel(
                                                       condition = "input.dimRedAssayType == 1",
-                                                      selectInput("dimRedAssaySelect", "Select assay:", currassays),
+                                                      uiOutput("dimRedAssaySelect")
+                                                      #selectInput("dimRedAssaySelect", "Select assay:", currassays),
                                                     ),
                                                     conditionalPanel(
                                                       condition = "input.dimRedAssayType == 2",
@@ -148,7 +150,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       selected = 1, inline = TRUE),
                                          conditionalPanel(
                                            condition = "input.dimRedAssayType_tsneUmap == 1",
-                                           selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
+                                           uiOutput("dimRedAssaySelect_tsneUmap")
+                                           #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
                                          ),
                                          conditionalPanel(
                                            condition = "input.dimRedAssayType_tsneUmap == 2",
