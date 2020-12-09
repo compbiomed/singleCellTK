@@ -8,7 +8,8 @@ shinyPanelfindMarker <- fluidPage(
       sidebarPanel(
         p("For 'MAST' and 'Limma', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred.",
           style = "color:grey;"),
-        selectInput('fmAssay', "Select Assay", currassays),
+        uiOutput('fmAssay'),
+        #selectInput('fmAssay', "Select Assay", currassays),
         selectInput('fmMethod', "Select Differential Expression Method",
                     c("MAST", "DESeq2", "Limma")),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
@@ -31,7 +32,7 @@ shinyPanelfindMarker <- fluidPage(
               position = 'right',
               sidebarPanel(
                 shinyjs::useShinyjs(),
-                uiOutput('fmHMAssayUI'),
+                uiOutput('fmHMAssay'),
                 radioButtons('fmHMOrder', "Order blocks by",
                              c("size", "name")),
                 checkboxInput("fmHMdec", "Decreasing", TRUE),

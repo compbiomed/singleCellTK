@@ -9,7 +9,8 @@ shinyPanelSeurat <- fluidPage(
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
-                            selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
+                            uiOutput("seuratSelectNormalizationAssay"),
+                            #selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
