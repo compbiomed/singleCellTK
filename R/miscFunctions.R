@@ -405,7 +405,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(retList)
 }
 
-setClassUnion("CharacterOrNULL", c("character", "NULL"))
+setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 setGeneric(name = "sctkAssay<-", 
            function(inSCE, assayName, tag = NULL, value) 
              SummarizedExperiment::`assay<-`(x = inSCE, 
@@ -423,9 +423,10 @@ setGeneric(name = "sctkAssay<-",
 #' @param value Input matrix-type assay to store.
 #' @export
 setMethod(f = "sctkAssay<-", 
-          signature = signature(inSCE="ANY", assayName="ANY", tag = "CharacterOrNULL"),
+          signature = signature(inSCE="ANY", assayName="ANY", tag = "CharacterOrNullOrMissing"),
           definition = function(inSCE,  assayName, tag = NULL, value){
-            if(is.null(tag)){
+            if(is.null(tag)
+               || missing(tag)){
               callNextMethod()
               .sctkSetTag(
                 inSCE = inSCE, 
@@ -439,16 +440,5 @@ setMethod(f = "sctkAssay<-",
                 assayType = tag, 
                 assays = assayName)
             }
-          }
-)
-
-setMethod(f = "sctkAssay<-", 
-          signature = signature(inSCE="ANY", assayName="ANY", tag = "missing"),
-          definition = function(inSCE,  assayName, value){
-            callNextMethod()
-            .sctkSetTag(
-              inSCE = inSCE, 
-              assayType = "uncategorized", 
-              assays = assayName)
           }
 )
