@@ -362,25 +362,47 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(df)
 }
 
-#tag functions need refactoring and possible conversion to S4 method
-.updateTag <- function(inSCE, assay){
+.sctkDeleteTag <- function(inSCE, assay){
   for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
     matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
-    if(is.numeric(matchedIndex)){
-      S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
+    if(!is.na(matchedIndex)){
+      if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
+        S4Vectors::metadata(inSCE)$assayType[[i]] <- NULL
+      }
+      else{
+        S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
+      }
     }
   }
   return(inSCE)
 }
 
 .sctkSetTag <- function(inSCE, assayType, assays){
-  if(is.null(S4Vectors::metadata(inSCE)$assayType[[assayType]])){
     S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  return(inSCE)
+}
+
+
+.getAssays <- function(inSCE){
+  retList <- list()
+  if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+    for(i in seq(S4Vectors::metadata(inSCE)$assayType)){
+      if(!is.null(S4Vectors::metadata(inSCE)$assayType[[i]])){
+        if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
+          #doing this because of how selectInput named list works, otherwise not needed
+          retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[i]])
+        }
+        else{
+          retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- S4Vectors::metadata(inSCE)$assayType[[i]]
+        }
+      }
+    }
   }
   else{
-    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+    S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
+    retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
   }
-  return(inSCE)
+  return(retList)
 }
 
 .sctkGetTag <- function(inSCE, assayType){
@@ -423,22 +445,31 @@ setGeneric(name = "sctkAssay<-",
 #' @param value Input matrix-type assay to store.
 #' @export
 setMethod(f = "sctkAssay<-", 
-          signature = signature(inSCE="ANY", assayName="ANY", tag = "CharacterOrNullOrMissing"),
+          signature = signature(inSCE = "ANY", assayName = "character", tag = "CharacterOrNullOrMissing"),
           definition = function(inSCE,  assayName, tag = NULL, value){
-            if(is.null(tag)
-               || missing(tag)){
-              callNextMethod()
-              .sctkSetTag(
-                inSCE = inSCE, 
-                assayType = "uncategorized", 
-                assays = assayName)
+            if(!is.null(value)){
+              if(is.null(tag)
+                 || missing(tag)){
+                inSCE <- .sctkSetTag(
+                  inSCE = inSCE, 
+                  assayType = "uncategorized", 
+                  assays = assayName
+                )
+              }
+              else{
+                inSCE <- .sctkSetTag(
+                  inSCE = inSCE, 
+                  assayType = tag, 
+                  assays = assayName
+                )
+              }
             }
             else{
-              callNextMethod()
-              .sctkSetTag(
-                inSCE = inSCE, 
-                assayType = tag, 
-                assays = assayName)
+              inSCE <- .sctkDeleteTag(
+                inSCE = inSCE,
+                assay = assayName
+              )
             }
+            callNextMethod()
           }
 )

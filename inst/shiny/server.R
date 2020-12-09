@@ -157,6 +157,23 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
+  
+  updateSelectInputTag <- function(session, inputId, choices = NULL, label = "Select assay:", tags = NULL){
+    if(!is.null(choices)
+       && is.null(tags)){
+      choices <- singleCellTK:::.getAssays(vals$counts)
+    }
+    else{
+      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+    }
+    output[[inputId]] <- renderUI({
+      selectInput(
+        inputId = inputId,
+        label = label,
+        choices = choices
+      )
+    })
+  }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
@@ -171,18 +188,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "pathwayAssay", choices = currassays)
     updateSelectInput(session, "modifyAssaySelect", choices = currassays)
     
-    # updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
-    # updateSelectInput(session, "normalizeAssaySelect", choices = 
-    #                     singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
-    
-    selectedChoicesForNormalizationTab <- singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized"))
-    output$normalizeAssaySelect <- renderUI({
-      selectInput(
-        inputId = "normalizeAssaySelect",
-        label = "Select assay:",
-        choices = selectedChoicesForNormalizationTab
-      )
-    })
+    updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
+    #updateSelectInputTag(session, "normalizeAssaySelect", tags = c("raw", "normalized"))
     
     updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
     updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
@@ -2037,8 +2044,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
-        assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
-        vals$counts <- singleCellTK:::.updateTag(vals$counts, input$checkboxAssaysToRemove[i])
+        sctkAssay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
