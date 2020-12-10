@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
   }
   
   updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL, 
-                                   label = "Select assay:", tags = NULL, recommended = NULL){
+                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE){
     if(!is.null(choices)
        && is.null(tags)){
       choices <- singleCellTK:::.getAssays(vals$counts)
@@ -167,14 +167,23 @@ shinyServer(function(input, output, session) {
     else{
       choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
     }
-    if(!is.null(recommended)){
-      namesChoices <- names(choices)
-      for(i in seq(length(namesChoices))){
-        if(recommended == namesChoices[i]){
-          namesChoices[i] <- paste(namesChoices[i], "(recommended)")
-        }
+    if(!showTags){
+      allChoices <- NULL
+      for(i in seq(length(choices))){
+        allChoices <- c(allChoices, choices[[i]])
       }
-      names(choices) <- namesChoices
+      choices <- allChoices
+    }
+    else{
+      if(!is.null(recommended)){
+        namesChoices <- names(choices)
+        for(i in seq(length(namesChoices))){
+          if(recommended == namesChoices[i]){
+            namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+          }
+        }
+        names(choices) <- namesChoices
+      }
     }
     if(!is.null(selected)){
       output[[inputId]] <- renderUI({
@@ -211,10 +220,10 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "pathwayAssay", choices = currassays)
     updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
     
-    updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
-    #updateSelectInputTag(session, "normalizeAssaySelect", tags = c("raw", "normalized"))
+    #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
     
-    updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays)
+    updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
