@@ -333,8 +333,13 @@ shinyPanelSeurat <- fluidPage(
                                        fluidRow(
                                            column(12,
                                                   hidden(
-                                                      tags$div(class = "seurat_findmarker_table", tabsetPanel(id = "seuratFindMarkerTableTabset", type = "tabs"
-                                                      ))
+                                                      tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
+                                                                                                        uiOutput("someValue"),
+                                                                                                        DT::dataTableOutput(
+                                                                                                            outputId = "seuratFindMarkerTable"
+                                                                                                        )
+                                                      )
+                                                      )
                                                   ),
                                                   br(),
                                                   hidden(

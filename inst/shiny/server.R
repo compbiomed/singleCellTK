@@ -6452,7 +6452,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$seuratFindMarkerRun,{
     
-    removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
+    # removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
     
     withProgress(message = "Finding markers", max = 1, value = 1,{
       if(input$seuratFindMarkerType == "markerAll"){
@@ -6471,31 +6471,28 @@ shinyServer(function(input, output, session) {
       }
     })
 
-    appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
-                                                               panel(heading = "Marker Genes",
-                                                                     uiOutput("someValue"),
-                                                                     DT::dataTableOutput(
-                                                                       outputId = "seuratFindMarkerTable"
-                                                                     )
-                                                               )
-    ), select = TRUE)
-    
+    # appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
+    #                                                            panel(heading = "Marker Genes",
+    #                                                                  uiOutput("someValue"),
+    #                                                                  DT::dataTableOutput(
+    #                                                                    outputId = "seuratFindMarkerTable"
+    #                                                                  )
+    #                                                            )
+    # ), select = TRUE)
+  
     output$seuratFindMarkerTable <- DT::renderDataTable({
       # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
         metadata(vals$counts)$seuratMarkers
         # , c(1,2), round, 6))
-    # }, options = list(pageLength = 6, stateSave = TRUE, dom = "t"))
-    }, filter = "top", options = list(pageLength = 6, stateSave = TRUE,
-                                      searchCols = list(NULL, NULL, NULL, NULL, NULL,
-                                                        list(search = '0 ... 0.05'))))
+    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE))
     
     output$someValue <- renderUI({
       fluidPage(
-        fluidRow(
-          column(12, offset = 0.1, style='padding:3px;', align = "center",
-                 HTML(paste("<span style='color:red'>You have selected 218 features!</span>"))  
-          )
-        ),
+        # fluidRow(
+        #   column(12, offset = 0.1, style='padding:3px;', align = "center",
+        #          HTML(paste("<span style='color:red'>You have selected 218 features!</span>"))  
+        #   )
+        # ),
         fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  selectInput(
@@ -6528,7 +6525,7 @@ shinyServer(function(input, output, session) {
                      
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue6", label = "gene.id",
+                                 inputId = "seuratFindMarkerGeneIDOption", label = "gene.id",
                                  choices = c("=", "!="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6536,7 +6533,7 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                selectizeInput(
-                                 inputId = "somevalue6n",
+                                 inputId = "seuratFindMarkerGeneIDInput",
                                  choices = NULL,
                                  label = NULL
                                )
@@ -6546,7 +6543,7 @@ shinyServer(function(input, output, session) {
                      offset = 0.1, style='padding:3px;',
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue1", label = "p_val",
+                                 inputId = "seuratFindMarkerPValOption", label = "p_val",
                                  choices = c("<", ">", " ="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6554,7 +6551,7 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                numericInput(
-                                 inputId = "somevalue1n",
+                                 inputId = "seuratFindMarkerPValInput",
                                  label = NULL,
                                  step = 0.001,
                                  value = 0
@@ -6565,7 +6562,7 @@ shinyServer(function(input, output, session) {
                      offset = 0.1, style='padding:3px;',
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue2", label = "avg_logFC",
+                                 inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
                                  choices = c("<", ">", " ="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6573,7 +6570,7 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                numericInput(
-                                 inputId = "somevalue2n",
+                                 inputId = "seuratFindMarkerLFCInput",
                                  label = NULL,
                                  step = 0.001,
                                  value = 0
@@ -6584,7 +6581,7 @@ shinyServer(function(input, output, session) {
                      offset = 0.1, style='padding:3px;',
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue3", label = "pct.1",
+                                 inputId = "seuratFindMarkerPct1Option", label = "pct.1",
                                  choices = c("<", ">", " ="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6592,7 +6589,7 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                numericInput(
-                                 inputId = "somevalue3n",
+                                 inputId = "seuratFindMarkerPct1Input",
                                  label = NULL,
                                  step = 0.001,
                                  value = 0
@@ -6603,7 +6600,7 @@ shinyServer(function(input, output, session) {
                      offset = 0.1, style='padding:3px;',
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue4", label = "pct.2",
+                                 inputId = "seuratFindMarkerPct2Option", label = "pct.2",
                                  choices = c("<", ">", " ="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6611,7 +6608,7 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                numericInput(
-                                 inputId = "somevalue4n",
+                                 inputId = "seuratFindMarkerPct2Input",
                                  label = NULL,
                                  step = 0.001,
                                  value = 0
@@ -6622,7 +6619,7 @@ shinyServer(function(input, output, session) {
                      offset = 0.1, style='padding:3px;',
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
-                                 inputId = "somevalue5", label = "p_val_adj",
+                                 inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
                                  choices = c("<", ">", " ="),
                                  justified = TRUE,
                                  individual = TRUE,
@@ -6630,32 +6627,18 @@ shinyServer(function(input, output, session) {
                                  status = "primary"
                                ),
                                numericInput(
-                                 inputId = "somevalue5n",
+                                 inputId = "seuratFindMarkerPValAdjInput",
                                  label = NULL,
                                  step = 0.001,
-                                 value = 0
+                                 value = 0.05
                                )
                      )
               )
-              # ,
-              # cellWidths = "16.66%",
-              # style = "border: 1px solid silver;"
             )
           
         )
       )
     })
-    
-    # output$seuratFindMarkerTable <- DT::renderDataTable({
-    #   #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
-    #   #apply(
-    #   metadata(vals$counts)$seuratMarkers
-    #   #, c(1,2), round, 6)
-    # }, options = list(dom = 'Pfrtip', columnDefs = list(list(
-    #   searchPanes = list(show = FALSE), targets = 1:4
-    # ))),
-    # extensions = c('Select', 'SearchPanes'),
-    # selection = 'none', server = FALSE)
     
     shinyjs::show(selector = ".seurat_findmarker_table")
     
@@ -6757,14 +6740,6 @@ shinyServer(function(input, output, session) {
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
-    # output$findMarkerHeatmapPlotFull <- renderPlot({
-    #   DoHeatmap(seuratObject, features = rownames(df))
-    # })
-    # 
-    # output$findMarkerHeatmapPlotFullTopText <- renderUI({
-    #   h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
-    # })
-    
     #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
     updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
     shinyjs::show(selector = ".seurat_findmarker_plots")
@@ -6786,8 +6761,8 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  observeEvent(input$seuratFindMarkerTable_search_columns,{
-    df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_all,]
+  observeEvent(input$seuratFindMarkerPValAdjInput,{
+    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
     cells <- list()
@@ -6796,32 +6771,25 @@ shinyServer(function(input, output, session) {
       indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
       cells[[i]] <- colnames(vals$counts)[indices[[i]]]
       cells[[i]] <- lapply(
-        X = cells[[i]], 
+        X = cells[[i]],
         FUN = function(t) gsub(
-          pattern = "_", 
-          replacement = "-", 
-          x = t, 
+          pattern = "_",
+          replacement = "-",
+          x = t,
           fixed = TRUE)
       )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
-    
+
     output$findMarkerHeatmapPlotFull <- renderPlot({
       DoHeatmap(seuratObject, features = rownames(df))
     })
-    
+
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
-      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values between", input$seuratFindMarkerTable_search_columns[5]))
+      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
     })
-    
+
   })
-  
-  # observeEvent(input$seuratFindMarkerPValueAdj,{
-  #   output$seuratFindMarkerTable <- DT::renderDataTable({
-  #    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValueAdj), arr.ind = TRUE),]
-  #    apply(df, c(1,2), round, 6)
-  #    }, filter = "top", options = list(pageLength = 6))
-  # })
   
   seuratfindMarkerTableObserve <- observe(suspended = F,
                                     {
