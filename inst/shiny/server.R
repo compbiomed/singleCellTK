@@ -6505,9 +6505,12 @@ shinyServer(function(input, output, session) {
                  )
                  ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                 actionBttn(
-                   inputId = "xyz3",
-                   label = "Show Filters"
+                 radioGroupButtons(
+                   inputId = "seuratFindMarkerFilterShowHide", label = NULL,
+                   choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
+                   justified = TRUE, status = "primary",
+                   selected = "Hide",
+                   size = "sm"
                  )
           ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
@@ -6518,124 +6521,127 @@ shinyServer(function(input, output, session) {
                  )
                  )
         ),
-        fluidRow(
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue6", label = "gene.id",
-                             choices = c("=", "!="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           selectizeInput(
-                             inputId = "somevalue6n",
-                             choices = NULL,
-                             label = NULL
-                           )
-                 )
-          ),
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue1", label = "p_val",
-                             choices = c("<", ">", " ="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           numericInput(
-                             inputId = "somevalue1n",
-                             label = NULL,
-                             step = 0.001,
-                             value = 0
-                           )
-                 )
-          ),
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue2", label = "avg_logFC",
-                             choices = c("<", ">", " ="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           numericInput(
-                             inputId = "somevalue2n",
-                             label = NULL,
-                             step = 0.001,
-                             value = 0
-                           )
-                 )
-          ),
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue3", label = "pct.1",
-                             choices = c("<", ">", " ="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           numericInput(
-                             inputId = "somevalue3n",
-                             label = NULL,
-                             step = 0.001,
-                             value = 0
-                           )
-                 )
-          ),
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue4", label = "pct.2",
-                             choices = c("<", ">", " ="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           numericInput(
-                             inputId = "somevalue4n",
-                             label = NULL,
-                             step = 0.001,
-                             value = 0
-                           )
-                 )
-          ),
-          column(2,
-                 offset = 0.1, style='padding:3px;',
-                 wellPanel(style='border:0;',
-                           checkboxGroupButtons(
-                             inputId = "somevalue5", label = "p_val_adj",
-                             choices = c("<", ">", " ="),
-                             justified = TRUE,
-                             individual = TRUE,
-                             size = "xs",
-                             status = "primary"
-                           ),
-                           numericInput(
-                             inputId = "somevalue5n",
-                             label = NULL,
-                             step = 0.001,
-                             value = 0
-                           )
-                 )
-          )
-          # ,
-          # cellWidths = "16.66%",
-          # style = "border: 1px solid silver;"
+        div(class = "seuratFindMarkerShowHideDiv",
+            fluidRow(
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue6", label = "gene.id",
+                                 choices = c("=", "!="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               selectizeInput(
+                                 inputId = "somevalue6n",
+                                 choices = NULL,
+                                 label = NULL
+                               )
+                     )
+              ),
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue1", label = "p_val",
+                                 choices = c("<", ">", " ="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               numericInput(
+                                 inputId = "somevalue1n",
+                                 label = NULL,
+                                 step = 0.001,
+                                 value = 0
+                               )
+                     )
+              ),
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue2", label = "avg_logFC",
+                                 choices = c("<", ">", " ="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               numericInput(
+                                 inputId = "somevalue2n",
+                                 label = NULL,
+                                 step = 0.001,
+                                 value = 0
+                               )
+                     )
+              ),
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue3", label = "pct.1",
+                                 choices = c("<", ">", " ="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               numericInput(
+                                 inputId = "somevalue3n",
+                                 label = NULL,
+                                 step = 0.001,
+                                 value = 0
+                               )
+                     )
+              ),
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue4", label = "pct.2",
+                                 choices = c("<", ">", " ="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               numericInput(
+                                 inputId = "somevalue4n",
+                                 label = NULL,
+                                 step = 0.001,
+                                 value = 0
+                               )
+                     )
+              ),
+              column(2,
+                     offset = 0.1, style='padding:3px;',
+                     wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "somevalue5", label = "p_val_adj",
+                                 choices = c("<", ">", " ="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               numericInput(
+                                 inputId = "somevalue5n",
+                                 label = NULL,
+                                 step = 0.001,
+                                 value = 0
+                               )
+                     )
+              )
+              # ,
+              # cellWidths = "16.66%",
+              # style = "border: 1px solid silver;"
+            )
+          
         )
       )
     })
@@ -6769,6 +6775,15 @@ shinyServer(function(input, output, session) {
     shinyjs::show(
       selector = "div[value='Downstream Analysis']")
     updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+  })
+  
+  observeEvent(input$seuratFindMarkerFilterShowHide,{
+    if(input$seuratFindMarkerFilterShowHide == "Show"){
+      shinyjs::show(selector = ".seuratFindMarkerShowHideDiv")
+    }
+    else{
+      shinyjs::hide(selector = ".seuratFindMarkerShowHideDiv")
+    }
   })
   
   observeEvent(input$seuratFindMarkerTable_search_columns,{
