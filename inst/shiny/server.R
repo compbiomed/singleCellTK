@@ -6473,6 +6473,7 @@ shinyServer(function(input, output, session) {
 
     appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
                                                                panel(heading = "Marker Genes",
+                                                                     uiOutput("someValue"),
                                                                      DT::dataTableOutput(
                                                                        outputId = "seuratFindMarkerTable"
                                                                      )
@@ -6488,21 +6489,40 @@ shinyServer(function(input, output, session) {
                                       searchCols = list(NULL, NULL, NULL, NULL, NULL,
                                                         list(search = '0 ... 0.05'))))
     
+    output$someValue <- renderUI({
+      checkboxGroupButtons(
+        inputId = "somevalue1", label = "Make a choice :",
+        choices = c(">", "<", " ="),
+        justified = TRUE,
+        size = "xs",
+        direction = "vertical"
+      )
+    })
+    
+    # output$seuratFindMarkerTable <- DT::renderDataTable({
+    #   #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+    #   #apply(
+    #   metadata(vals$counts)$seuratMarkers
+    #   #, c(1,2), round, 6)
+    # }, options = list(dom = 'Pfrtip', columnDefs = list(list(
+    #   searchPanes = list(show = FALSE), targets = 1:4
+    # ))),
+    # extensions = c('Select', 'SearchPanes'),
+    # selection = 'none', server = FALSE)
+    
     shinyjs::show(selector = ".seurat_findmarker_table")
     
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
                                                                panel(heading = "Heatmap Plot",
                                                                      fluidRow(
                                                                        column(12, align = "center",
+                                                                             
                                                                               uiOutput(
                                                                                 outputId = "findMarkerHeatmapPlotFullTopText"
                                                                               ),
                                                                               panel(
-                                                                                jqui_resizable(
-                                                                                  
-                                                                                    plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
-                                                                                    
-                                                                                )
+                                                                                
+                                                                                plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
                                                                               )
                                                                        )
                                                                      )
@@ -6590,13 +6610,13 @@ shinyServer(function(input, output, session) {
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = rownames(df))
-    })
-    
-    output$findMarkerHeatmapPlotFullTopText <- renderUI({
-      h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
-    })
+    # output$findMarkerHeatmapPlotFull <- renderPlot({
+    #   DoHeatmap(seuratObject, features = rownames(df))
+    # })
+    # 
+    # output$findMarkerHeatmapPlotFullTopText <- renderUI({
+    #   h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
+    # })
     
     #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
     updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
@@ -6637,6 +6657,7 @@ shinyServer(function(input, output, session) {
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values between", input$seuratFindMarkerTable_search_columns[5]))
     })
+    
   })
   
   # observeEvent(input$seuratFindMarkerPValueAdj,{
@@ -6666,6 +6687,7 @@ shinyServer(function(input, output, session) {
                                                                                                            fluidRow(
                                                                                                              column(12, align = "center",
                                                                                                                     panel(
+                                                                                                                      
                                                                                                                       uiOutput(
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
@@ -6783,6 +6805,7 @@ shinyServer(function(input, output, session) {
                                                                                                            fluidRow(
                                                                                                              column(12, align = "center",
                                                                                                                     panel(
+                                                                                                                      
                                                                                                                       uiOutput(
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
