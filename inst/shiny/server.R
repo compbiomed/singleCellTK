@@ -6481,21 +6481,162 @@ shinyServer(function(input, output, session) {
     ), select = TRUE)
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
-      #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
-      #apply(
+      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
         metadata(vals$counts)$seuratMarkers
-        #, c(1,2), round, 6)
+        # , c(1,2), round, 6))
+    # }, options = list(pageLength = 6, stateSave = TRUE, dom = "t"))
     }, filter = "top", options = list(pageLength = 6, stateSave = TRUE,
                                       searchCols = list(NULL, NULL, NULL, NULL, NULL,
                                                         list(search = '0 ... 0.05'))))
     
     output$someValue <- renderUI({
-      checkboxGroupButtons(
-        inputId = "somevalue1", label = "Make a choice :",
-        choices = c(">", "<", " ="),
-        justified = TRUE,
-        size = "xs",
-        direction = "vertical"
+      fluidPage(
+        fluidRow(
+          column(12, offset = 0.1, style='padding:3px;', align = "center",
+                 HTML(paste("<span style='color:red'>You have selected 218 features!</span>"))  
+          )
+        ),
+        fluidRow(
+          column(4,offset = 0.1, style='padding:3px;', align = "center",
+                 selectInput(
+                   inputId = "xyz",
+                   label = "Number of features to display:",
+                   choices = c("5", "10", "20", "50")
+                 )
+                 ),
+          column(4,offset = 0.1, style='padding:3px;', align = "center",
+                 actionBttn(
+                   inputId = "xyz3",
+                   label = "Show Filters"
+                 )
+          ),
+          column(4,offset = 0.1, style='padding:3px;', align = "center",
+                 textInput(
+                   inputId = "xyz2",
+                   label = "Search:",
+                   placeholder = "feature to search"
+                 )
+                 )
+        ),
+        fluidRow(
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue6", label = "gene.id",
+                             choices = c("=", "!="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           selectizeInput(
+                             inputId = "somevalue6n",
+                             choices = NULL,
+                             label = NULL
+                           )
+                 )
+          ),
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue1", label = "p_val",
+                             choices = c("<", ">", " ="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           numericInput(
+                             inputId = "somevalue1n",
+                             label = NULL,
+                             step = 0.001,
+                             value = 0
+                           )
+                 )
+          ),
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue2", label = "avg_logFC",
+                             choices = c("<", ">", " ="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           numericInput(
+                             inputId = "somevalue2n",
+                             label = NULL,
+                             step = 0.001,
+                             value = 0
+                           )
+                 )
+          ),
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue3", label = "pct.1",
+                             choices = c("<", ">", " ="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           numericInput(
+                             inputId = "somevalue3n",
+                             label = NULL,
+                             step = 0.001,
+                             value = 0
+                           )
+                 )
+          ),
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue4", label = "pct.2",
+                             choices = c("<", ">", " ="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           numericInput(
+                             inputId = "somevalue4n",
+                             label = NULL,
+                             step = 0.001,
+                             value = 0
+                           )
+                 )
+          ),
+          column(2,
+                 offset = 0.1, style='padding:3px;',
+                 wellPanel(style='border:0;',
+                           checkboxGroupButtons(
+                             inputId = "somevalue5", label = "p_val_adj",
+                             choices = c("<", ">", " ="),
+                             justified = TRUE,
+                             individual = TRUE,
+                             size = "xs",
+                             status = "primary"
+                           ),
+                           numericInput(
+                             inputId = "somevalue5n",
+                             label = NULL,
+                             step = 0.001,
+                             value = 0
+                           )
+                 )
+          )
+          # ,
+          # cellWidths = "16.66%",
+          # style = "border: 1px solid silver;"
+        )
       )
     })
     
