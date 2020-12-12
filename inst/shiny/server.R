@@ -6554,7 +6554,7 @@ shinyServer(function(input, output, session) {
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPValOption", label = "p_val",
-                                 choices = c("<", ">", " ="),
+                                 choices = c("<", ">", "="),
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
@@ -6573,7 +6573,7 @@ shinyServer(function(input, output, session) {
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
-                                 choices = c("<", ">", " ="),
+                                 choices = c("<", ">", "="),
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
@@ -6592,7 +6592,7 @@ shinyServer(function(input, output, session) {
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPct1Option", label = "pct.1",
-                                 choices = c("<", ">", " ="),
+                                 choices = c("<", ">", "="),
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
@@ -6611,7 +6611,7 @@ shinyServer(function(input, output, session) {
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPct2Option", label = "pct.2",
-                                 choices = c("<", ">", " ="),
+                                 choices = c("<", ">", "="),
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
@@ -6630,7 +6630,7 @@ shinyServer(function(input, output, session) {
                      wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
-                                 choices = c("<", ">", " ="),
+                                 choices = c("<", ">", "="),
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
@@ -6773,92 +6773,95 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$seuratFindMarkerPValAdjOption,{
-    
-    df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
-                                  operators = c("<", "<"),
-                                  cols = c("p_val", "p_val_adj"),
-                                  values = c(0.05, 0.05))
-      
-    # if("<" %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(">" %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else{
-    #   df <- metadata(vals$counts)$seuratMarkers
-    # }
-    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
-    indices <- list()
-    cells <- list()
-    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
-    for(i in seq(length(groups))){
-      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
-      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
-      cells[[i]] <- lapply(
-        X = cells[[i]],
-        FUN = function(t) gsub(
-          pattern = "_",
-          replacement = "-",
-          x = t,
-          fixed = TRUE)
-      )
-      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
-    }
-    
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = rownames(df))
-    })
-    
-    output$findMarkerHeatmapPlotFullTopText <- renderUI({
-      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
-    })
-    
-    output$seuratFindMarkerTable <- DT::renderDataTable({
-      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
-      # df <- metadata(vals$counts)$seuratMarkers
-      gene.id <- rownames(df)
-      df <- cbind(gene.id, df)
-      rownames(df) <- NULL
-      df$p_val <- format(df$p_val, nsmall = 7)
-      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-      df$pct.1 <- format(df$pct.1, nsmall = 7)
-      df$pct.2 <- format(df$pct.2, nsmall = 7)
-      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-      df
-      # , c(1,2), round, 6))
-    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
-    ))
+    updateSeuratFindMarkerTable()
   })
   
   observeEvent(input$seuratFindMarkerPValAdjInput,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPValOption,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPValInput,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPct1Option,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPct1Input,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPct2Option,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerPct2Input,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerLFCOption,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  observeEvent(input$seuratFindMarkerLFCInput,{
+    updateSeuratFindMarkerTable()
+  })
+  
+  updateSeuratFindMarkerTable <- function(){
+    p_val_operators <- ""
+    if(!is.null(input$seuratFindMarkerPValOption)){
+      p_val_operators <- paste0(input$seuratFindMarkerPValOption, collapse = "")
+    }
+    lfc_operators <- ""
+    if(!is.null(input$seuratFindMarkerLFCOption)){
+      lfc_operators <- paste0(input$seuratFindMarkerLFCOption, collapse = "")
+    }
+    pct1_operators <- ""
+    if(!is.null(input$seuratFindMarkerPct1Option)){
+      pct1_operators <- paste0(input$seuratFindMarkerPct1Option, collapse = "")
+    }
+    pct2_operators <- ""
+    if(!is.null(input$seuratFindMarkerPct2Option)){
+      pct2_operators <- paste0(input$seuratFindMarkerPct2Option, collapse = "")
+    }
+    p_val_adj_operators <- ""
+    if(!is.null(input$seuratFindMarkerPValAdjOption)){
+      p_val_adj_operators <- paste0(input$seuratFindMarkerPValAdjOption, collapse = "")
+    }
+    
+    allOperators <- c(p_val_operators,
+                      lfc_operators,
+                      pct1_operators,
+                      pct2_operators,
+                      p_val_adj_operators)
+    
+    allValues <- c(input$seuratFindMarkerPValInput,
+                   input$seuratFindMarkerLFCInput,
+                   input$seuratFindMarkerPct1Input,
+                   input$seuratFindMarkerPct2Input,
+                   input$seuratFindMarkerPValAdjInput)
+    
+    parameters <- list()
+    for(i in seq(length(1:5))){
+      if(allOperators[i] != ""){
+        parameters$operators <- c(parameters$operators, allOperators[i])
+        parameters$values <- c(parameters$values, allValues[i])
+        parameters$cols <- c(parameters$cols, colnames(metadata(vals$counts)$seuratMarkers)[i])
+      }
+    }
+    parameters$operators <- na.omit(parameters$operators)
+    parameters$values <- na.omit(parameters$values)
+    parameters$cols <- na.omit(parameters$cols)
     
     df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
-                                  operators = c("<", "<"),
-                                  cols = c("p_val", "p_val_adj"),
-                                  values = c(0.05, 0.05))
-    
-    # if("<" %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(">" %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
-    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    # }
-    # else{
-    #   df <- metadata(vals$counts)$seuratMarkers
-    # }
+                                   operators = parameters$operators,
+                                   cols = parameters$cols,
+                                   values = parameters$values)
     
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
@@ -6901,7 +6904,7 @@ shinyServer(function(input, output, session) {
       # , c(1,2), round, 6))
     }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
     ))
-  })
+  }
   
   seuratfindMarkerTableObserve <- observe(suspended = F,
                                     {
