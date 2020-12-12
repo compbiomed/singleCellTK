@@ -6482,9 +6482,19 @@ shinyServer(function(input, output, session) {
   
     output$seuratFindMarkerTable <- DT::renderDataTable({
       # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
-        metadata(vals$counts)$seuratMarkers
+      df <- metadata(vals$counts)$seuratMarkers
+      gene.id <- rownames(df)
+      df <- cbind(gene.id, df)
+      rownames(df) <- NULL
+       df$p_val <- format(df$p_val, nsmall = 7)
+       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+       df$pct.1 <- format(df$pct.1, nsmall = 7)
+       df$pct.2 <- format(df$pct.2, nsmall = 7)
+       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+      df
         # , c(1,2), round, 6))
-    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE))
+    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+                      ))
     
     output$someValue <- renderUI({
       fluidPage(
@@ -6624,7 +6634,8 @@ shinyServer(function(input, output, session) {
                                  justified = TRUE,
                                  individual = TRUE,
                                  size = "xs",
-                                 status = "primary"
+                                 status = "primary",
+                                 selected = "<"
                                ),
                                numericInput(
                                  inputId = "seuratFindMarkerPValAdjInput",
@@ -6761,8 +6772,22 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  observeEvent(input$seuratFindMarkerPValAdjInput,{
-    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+  observeEvent(input$seuratFindMarkerPValAdjOption,{
+    if("<" %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(">" %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else{
+      df <- metadata(vals$counts)$seuratMarkers
+    }
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
     cells <- list()
@@ -6780,15 +6805,89 @@ shinyServer(function(input, output, session) {
       )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
-
+    
     output$findMarkerHeatmapPlotFull <- renderPlot({
       DoHeatmap(seuratObject, features = rownames(df))
     })
-
+    
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
     })
-
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
+      # df <- metadata(vals$counts)$seuratMarkers
+      gene.id <- rownames(df)
+      df <- cbind(gene.id, df)
+      rownames(df) <- NULL
+      df$p_val <- format(df$p_val, nsmall = 7)
+      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+      df$pct.1 <- format(df$pct.1, nsmall = 7)
+      df$pct.2 <- format(df$pct.2, nsmall = 7)
+      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+      df
+      # , c(1,2), round, 6))
+    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    ))
+  })
+  
+  observeEvent(input$seuratFindMarkerPValAdjInput,{
+    if("<" %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(">" %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
+      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    }
+    else{
+      df <- metadata(vals$counts)$seuratMarkers
+    }
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]],
+        FUN = function(t) gsub(
+          pattern = "_",
+          replacement = "-",
+          x = t,
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+    })
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
+      # df <- metadata(vals$counts)$seuratMarkers
+      gene.id <- rownames(df)
+      df <- cbind(gene.id, df)
+      rownames(df) <- NULL
+      df$p_val <- format(df$p_val, nsmall = 7)
+      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+      df$pct.1 <- format(df$pct.1, nsmall = 7)
+      df$pct.2 <- format(df$pct.2, nsmall = 7)
+      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+      df
+      # , c(1,2), round, 6))
+    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    ))
   })
   
   seuratfindMarkerTableObserve <- observe(suspended = F,
