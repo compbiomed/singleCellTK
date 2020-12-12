@@ -6773,21 +6773,27 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$seuratFindMarkerPValAdjOption,{
-    if("<" %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(">" %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else{
-      df <- metadata(vals$counts)$seuratMarkers
-    }
+    
+    df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
+                                  operators = c("<", "<"),
+                                  cols = c("p_val", "p_val_adj"),
+                                  values = c(0.05, 0.05))
+      
+    # if("<" %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(">" %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else{
+    #   df <- metadata(vals$counts)$seuratMarkers
+    # }
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
     cells <- list()
@@ -6832,21 +6838,28 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$seuratFindMarkerPValAdjInput,{
-    if("<" %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(">" %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
-      df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
-    }
-    else{
-      df <- metadata(vals$counts)$seuratMarkers
-    }
+    
+    df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
+                                  operators = c("<", "<"),
+                                  cols = c("p_val", "p_val_adj"),
+                                  values = c(0.05, 0.05))
+    
+    # if("<" %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(c("<", "=") %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj <= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(">" %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj > input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else if(c(">", "=") %in% input$seuratFindMarkerPValAdjOption){
+    #   df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj >= input$seuratFindMarkerPValAdjInput, arr.ind = TRUE),]
+    # }
+    # else{
+    #   df <- metadata(vals$counts)$seuratMarkers
+    # }
+    
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
     cells <- list()
