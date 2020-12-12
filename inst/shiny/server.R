@@ -6451,9 +6451,6 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$seuratFindMarkerRun,{
-    
-    # removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
-    
     withProgress(message = "Finding markers", max = 1, value = 1,{
       if(input$seuratFindMarkerType == "markerAll"){
         vals$counts <- seuratFindMarkers(inSCE = vals$counts,
@@ -6470,39 +6467,23 @@ shinyServer(function(input, output, session) {
                                          group2 = input$seuratFindMarkerGroup2)
       }
     })
-
-    # appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
-    #                                                            panel(heading = "Marker Genes",
-    #                                                                  uiOutput("someValue"),
-    #                                                                  DT::dataTableOutput(
-    #                                                                    outputId = "seuratFindMarkerTable"
-    #                                                                  )
-    #                                                            )
-    # ), select = TRUE)
   
     output$seuratFindMarkerTable <- DT::renderDataTable({
-      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
       df <- metadata(vals$counts)$seuratMarkers
       gene.id <- rownames(df)
       df <- cbind(gene.id, df)
       rownames(df) <- NULL
-       df$p_val <- format(df$p_val, nsmall = 7)
-       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-       df$pct.1 <- format(df$pct.1, nsmall = 7)
-       df$pct.2 <- format(df$pct.2, nsmall = 7)
-       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+      df$p_val <- format(df$p_val, nsmall = 7)
+      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+      df$pct.1 <- format(df$pct.1, nsmall = 7)
+      df$pct.2 <- format(df$pct.2, nsmall = 7)
+      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
-        # , c(1,2), round, 6))
     }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
                       ))
     
     output$someValue <- renderUI({
       fluidPage(
-        # fluidRow(
-        #   column(12, offset = 0.1, style='padding:3px;', align = "center",
-        #          HTML(paste("<span style='color:red'>You have selected 218 features!</span>"))  
-        #   )
-        # ),
         fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  selectInput(
@@ -6771,48 +6752,34 @@ shinyServer(function(input, output, session) {
       shinyjs::hide(selector = ".seuratFindMarkerShowHideDiv")
     }
   })
-  
-  observeEvent(input$seuratFindMarkerPValAdjOption,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPValAdjInput,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPValOption,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPValInput,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPct1Option,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPct1Input,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPct2Option,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerPct2Input,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerLFCOption,{
-    updateSeuratFindMarkerTable()
-  })
-  
-  observeEvent(input$seuratFindMarkerLFCInput,{
-    updateSeuratFindMarkerTable()
-  })
+
+  updateSeuratFindMarkerTableObserver <- observe(suspended = F,
+                                                 {
+                                                   req(input$seuratFindMarkerPValAdjInput)
+                                                   req(input$seuratFindMarkerPValAdjInput)
+                                                   req(input$seuratFindMarkerPValInput)
+                                                   req(input$seuratFindMarkerPct1Input)
+                                                   req(input$seuratFindMarkerPct2Input)
+                                                   req(input$seuratFindMarkerLFCInput)
+                                                   
+                                                   input$seuratFindMarkerPValAdjOption
+                                                   input$seuratFindMarkerPValAdjInput
+                                                   input$seuratFindMarkerPValOption
+                                                   input$seuratFindMarkerPValInput
+                                                   input$seuratFindMarkerPct1Option
+                                                   input$seuratFindMarkerPct1Input
+                                                   input$seuratFindMarkerPct2Option
+                                                   input$seuratFindMarkerPct2Input
+                                                   input$seuratFindMarkerLFCOption
+                                                   input$seuratFindMarkerLFCInput
+                                                   isolate({
+                                                     updateSeuratFindMarkerTable()
+                                                   })
+                                                 })
   
   updateSeuratFindMarkerTable <- function(){
+    df <- NULL 
+    
     p_val_operators <- ""
     if(!is.null(input$seuratFindMarkerPValOption)){
       p_val_operators <- paste0(input$seuratFindMarkerPValOption, collapse = "")
@@ -6834,34 +6801,43 @@ shinyServer(function(input, output, session) {
       p_val_adj_operators <- paste0(input$seuratFindMarkerPValAdjOption, collapse = "")
     }
     
-    allOperators <- c(p_val_operators,
-                      lfc_operators,
-                      pct1_operators,
-                      pct2_operators,
-                      p_val_adj_operators)
-    
-    allValues <- c(input$seuratFindMarkerPValInput,
-                   input$seuratFindMarkerLFCInput,
-                   input$seuratFindMarkerPct1Input,
-                   input$seuratFindMarkerPct2Input,
-                   input$seuratFindMarkerPValAdjInput)
-    
-    parameters <- list()
-    for(i in seq(length(1:5))){
-      if(allOperators[i] != ""){
-        parameters$operators <- c(parameters$operators, allOperators[i])
-        parameters$values <- c(parameters$values, allValues[i])
-        parameters$cols <- c(parameters$cols, colnames(metadata(vals$counts)$seuratMarkers)[i])
-      }
+    if(p_val_operators == ""
+       && lfc_operators == ""
+       && pct1_operators == ""
+       && pct2_operators == ""
+       && p_val_adj_operators == ""){
+      df <- metadata(vals$counts)$seuratMarkers
     }
-    parameters$operators <- na.omit(parameters$operators)
-    parameters$values <- na.omit(parameters$values)
-    parameters$cols <- na.omit(parameters$cols)
-    
-    df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
-                                   operators = parameters$operators,
-                                   cols = parameters$cols,
-                                   values = parameters$values)
+    else{
+      allOperators <- c(p_val_operators,
+                        lfc_operators,
+                        pct1_operators,
+                        pct2_operators,
+                        p_val_adj_operators)
+      
+      allValues <- c(input$seuratFindMarkerPValInput,
+                     input$seuratFindMarkerLFCInput,
+                     input$seuratFindMarkerPct1Input,
+                     input$seuratFindMarkerPct2Input,
+                     input$seuratFindMarkerPValAdjInput)
+      
+      parameters <- list()
+      for(i in seq(length(1:5))){
+        if(allOperators[i] != ""){
+          parameters$operators <- c(parameters$operators, allOperators[i])
+          parameters$values <- c(parameters$values, allValues[i])
+          parameters$cols <- c(parameters$cols, colnames(metadata(vals$counts)$seuratMarkers)[i])
+        }
+      }
+      parameters$operators <- na.omit(parameters$operators)
+      parameters$values <- na.omit(parameters$values)
+      parameters$cols <- na.omit(parameters$cols)
+      
+      df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
+                                     operators = parameters$operators,
+                                     cols = parameters$cols,
+                                     values = parameters$values)
+    }
     
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
@@ -6890,8 +6866,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
-      # cbind(id = rownames(metadata(vals$counts)$seuratMarkers), apply(
-      # df <- metadata(vals$counts)$seuratMarkers
+      metadata(vals$counts)$seuratMarkersSubset <- df
       gene.id <- rownames(df)
       df <- cbind(gene.id, df)
       rownames(df) <- NULL
@@ -6901,7 +6876,6 @@ shinyServer(function(input, output, session) {
       df$pct.2 <- format(df$pct.2, nsmall = 7)
       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
-      # , c(1,2), round, 6))
     }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
     ))
   }
@@ -6911,7 +6885,7 @@ shinyServer(function(input, output, session) {
                                       input$seuratFindMarkerTable_rows_selected
                                       isolate({
                                         if(!is.null(input$seuratFindMarkerTable_rows_selected)){
-                                          df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_selected,]
+                                          df <- metadata(vals$counts)$seuratMarkersSubset[input$seuratFindMarkerTable_rows_selected,]
                                           seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
                                           
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
