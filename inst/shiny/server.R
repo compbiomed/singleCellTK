@@ -6511,6 +6511,12 @@ shinyServer(function(input, output, session) {
         ),
         div(class = "seuratFindMarkerShowHideDiv",
             fluidRow(
+              actionGroupButtons(
+                inputIds = "seuratFindMarkerFilterRun",
+                labels = "Apply Filter",
+                fullwidth = TRUE
+              ),
+            fluidRow(
               column(2,
                      offset = 0.1, style='padding:3px;',
                      
@@ -6628,6 +6634,7 @@ shinyServer(function(input, output, session) {
                      )
               )
             )
+            )
           
         )
       )
@@ -6737,6 +6744,35 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
     shinyjs::show(selector = ".seurat_findmarker_plots")
     
+    #table
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+    })
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      metadata(vals$counts)$seuratMarkersSubset <- df
+      selectedGeneId <- input$seuratFindMarkerGeneIDInput
+      updateSelectizeInput(session = session,
+                           inputId = "seuratFindMarkerGeneIDInput",
+                           selected = selectedGeneId,
+                           choices = rownames(df))
+      gene.id <- rownames(df)
+      df <- cbind(gene.id, df)
+      rownames(df) <- NULL
+      df$p_val <- format(df$p_val, nsmall = 7)
+      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+      df$pct.1 <- format(df$pct.1, nsmall = 7)
+      df$pct.2 <- format(df$pct.2, nsmall = 7)
+      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+      df
+    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    ))
+    
+    
     showNotification("Find Markers Complete")
     
     #enable downstream analysis
@@ -6754,31 +6790,36 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  updateSeuratFindMarkerTableObserver <- observe(suspended = F,
-                                                 {
-                                                   req(input$seuratFindMarkerPValAdjInput)
-                                                   req(input$seuratFindMarkerPValAdjInput)
-                                                   req(input$seuratFindMarkerPValInput)
-                                                   req(input$seuratFindMarkerPct1Input)
-                                                   req(input$seuratFindMarkerPct2Input)
-                                                   req(input$seuratFindMarkerLFCInput)
-                                                   
-                                                   input$seuratFindMarkerPValAdjOption
-                                                   input$seuratFindMarkerPValAdjInput
-                                                   input$seuratFindMarkerPValOption
-                                                   input$seuratFindMarkerPValInput
-                                                   input$seuratFindMarkerPct1Option
-                                                   input$seuratFindMarkerPct1Input
-                                                   input$seuratFindMarkerPct2Option
-                                                   input$seuratFindMarkerPct2Input
-                                                   input$seuratFindMarkerLFCOption
-                                                   input$seuratFindMarkerLFCInput
-                                                   input$seuratFindMarkerGeneIDOption
-                                                   
-                                                   isolate({
-                                                     updateSeuratFindMarkerTable()
-                                                   })
-                                                 })
+  observeEvent(input$seuratFindMarkerFilterRun,{
+    selected <- input$seuratFindMarkerGeneIDInput
+    updateSeuratFindMarkerTable()
+  })
+  
+  # updateSeuratFindMarkerTableObserver <- observe(suspended = F,
+  #                                                {
+  #                                                  req(input$seuratFindMarkerPValAdjInput)
+  #                                                  req(input$seuratFindMarkerPValAdjInput)
+  #                                                  req(input$seuratFindMarkerPValInput)
+  #                                                  req(input$seuratFindMarkerPct1Input)
+  #                                                  req(input$seuratFindMarkerPct2Input)
+  #                                                  req(input$seuratFindMarkerLFCInput)
+  #                                                  
+  #                                                  input$seuratFindMarkerPValAdjOption
+  #                                                  input$seuratFindMarkerPValAdjInput
+  #                                                  input$seuratFindMarkerPValOption
+  #                                                  input$seuratFindMarkerPValInput
+  #                                                  input$seuratFindMarkerPct1Option
+  #                                                  input$seuratFindMarkerPct1Input
+  #                                                  input$seuratFindMarkerPct2Option
+  #                                                  input$seuratFindMarkerPct2Input
+  #                                                  input$seuratFindMarkerLFCOption
+  #                                                  input$seuratFindMarkerLFCInput
+  #                                                  input$seuratFindMarkerGeneIDOption
+  #                                                  
+  #                                                  isolate({
+  #                                                    updateSeuratFindMarkerTable()
+  #                                                  })
+  #                                                })
   
   updateSeuratFindMarkerTable <- function(){
     df <- NULL 
@@ -6887,11 +6928,6 @@ shinyServer(function(input, output, session) {
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       metadata(vals$counts)$seuratMarkersSubset <- df
-      selectedGeneId <- input$seuratFindMarkerGeneIDInput
-      updateSelectizeInput(session = session,
-                           inputId = "seuratFindMarkerGeneIDInput",
-                           selected = selectedGeneId,
-                           choices = rownames(df))
       gene.id <- rownames(df)
       df <- cbind(gene.id, df)
       rownames(df) <- NULL
