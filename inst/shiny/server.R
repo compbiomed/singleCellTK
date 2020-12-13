@@ -6487,7 +6487,7 @@ shinyServer(function(input, output, session) {
         fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  selectInput(
-                   inputId = "xyz",
+                   inputId = "seuratFindMarkerNoFeaturesDiplay",
                    label = "Number of features to display:",
                    choices = c("5", "10", "20", "50")
                  )
@@ -6503,7 +6503,7 @@ shinyServer(function(input, output, session) {
           ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  textInput(
-                   inputId = "xyz2",
+                   inputId = "seuratFindMarkerSearch",
                    label = "Search:",
                    placeholder = "feature to search"
                  )
@@ -6526,7 +6526,8 @@ shinyServer(function(input, output, session) {
                                selectizeInput(
                                  inputId = "seuratFindMarkerGeneIDInput",
                                  choices = NULL,
-                                 label = NULL
+                                 label = NULL,
+                                 multiple = TRUE
                                )
                      )
               ),
@@ -6772,6 +6773,8 @@ shinyServer(function(input, output, session) {
                                                    input$seuratFindMarkerPct2Input
                                                    input$seuratFindMarkerLFCOption
                                                    input$seuratFindMarkerLFCInput
+                                                   input$seuratFindMarkerGeneIDOption
+                                                   
                                                    isolate({
                                                      updateSeuratFindMarkerTable()
                                                    })
@@ -6807,6 +6810,14 @@ shinyServer(function(input, output, session) {
        && pct2_operators == ""
        && p_val_adj_operators == ""){
       df <- metadata(vals$counts)$seuratMarkers
+      if(!is.null(input$seuratFindMarkerGeneIDOption)){
+        if(input$seuratFindMarkerGeneIDOption == "="){
+          df <- df[input$seuratFindMarkerGeneIDInput,]
+        }
+        else if(input$seuratFindMarkerGeneIDOption == "!="){
+          df <- df[-which(input$seuratFindMarkerGeneIDInput %in% rownames(df), arr.ind = TRUE),]
+        }
+      }
     }
     else{
       allOperators <- c(p_val_operators,
@@ -6833,7 +6844,16 @@ shinyServer(function(input, output, session) {
       parameters$values <- na.omit(parameters$values)
       parameters$cols <- na.omit(parameters$cols)
       
-      df <- singleCellTK:::.filterDF(df = metadata(vals$counts)$seuratMarkers,
+      df <- metadata(vals$counts)$seuratMarkers
+      if(!is.null(input$seuratFindMarkerGeneIDOption)){
+        if(input$seuratFindMarkerGeneIDOption == "="){
+          df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerGeneIDInput,]
+        }
+        else if(input$seuratFindMarkerGeneIDOption == "!="){
+          df <- metadata(vals$counts)$seuratMarkers[-which(input$seuratFindMarkerGeneIDInput %in% rownames(metadata(vals$counts)$seuratMarkers), arr.ind = TRUE),]
+        }
+      }
+      df <- singleCellTK:::.filterDF(df = df,
                                      operators = parameters$operators,
                                      cols = parameters$cols,
                                      values = parameters$values)
@@ -6867,6 +6887,11 @@ shinyServer(function(input, output, session) {
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       metadata(vals$counts)$seuratMarkersSubset <- df
+      selectedGeneId <- input$seuratFindMarkerGeneIDInput
+      updateSelectizeInput(session = session,
+                           inputId = "seuratFindMarkerGeneIDInput",
+                           selected = selectedGeneId,
+                           choices = rownames(df))
       gene.id <- rownames(df)
       df <- cbind(gene.id, df)
       rownames(df) <- NULL
