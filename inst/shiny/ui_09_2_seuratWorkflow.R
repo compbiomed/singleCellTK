@@ -334,7 +334,7 @@ shinyPanelSeurat <- fluidPage(
                                            column(12,
                                                   hidden(
                                                       tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
-                                                                                                        uiOutput("someValue"),
+                                                                                                        uiOutput("seuratFindMarkerFilter"),
                                                                                                         DT::dataTableOutput(
                                                                                                             outputId = "seuratFindMarkerTable"
                                                                                                         )

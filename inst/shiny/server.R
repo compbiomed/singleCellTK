@@ -6450,6 +6450,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  
   observeEvent(input$seuratFindMarkerRun,{
     withProgress(message = "Finding markers", max = 1, value = 1,{
       if(input$seuratFindMarkerType == "markerAll"){
@@ -6479,18 +6480,18 @@ shinyServer(function(input, output, session) {
       df$pct.2 <- format(df$pct.2, nsmall = 7)
       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
-    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
                       ))
     
-    output$someValue <- renderUI({
+    output$seuratFindMarkerFilter <- renderUI({
       fluidPage(
         fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                 selectInput(
-                   inputId = "seuratFindMarkerNoFeaturesDiplay",
-                   label = "Number of features to display:",
-                   choices = c("5", "10", "20", "50")
-                 )
+                 # selectInput(
+                 #   inputId = "seuratFindMarkerNoFeaturesDiplay",
+                 #   label = "Number of features to display:",
+                 #   choices = c("5", "10", "20", "50")
+                 # )
                  ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  radioGroupButtons(
@@ -6502,11 +6503,11 @@ shinyServer(function(input, output, session) {
                  )
           ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                 textInput(
-                   inputId = "seuratFindMarkerSearch",
-                   label = "Search:",
-                   placeholder = "feature to search"
-                 )
+                 # textInput(
+                 #   inputId = "seuratFindMarkerSearch",
+                 #   label = "Search:",
+                 #   placeholder = "feature to search"
+                 # )
                  )
         ),
         div(class = "seuratFindMarkerShowHideDiv",
@@ -6769,7 +6770,7 @@ shinyServer(function(input, output, session) {
       df$pct.2 <- format(df$pct.2, nsmall = 7)
       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
-    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
     ))
     
     
@@ -6937,7 +6938,7 @@ shinyServer(function(input, output, session) {
       df$pct.2 <- format(df$pct.2, nsmall = 7)
       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
-    }, options = list(pageLength = 6, dom = "t<'bottom'ip>", stateSave = TRUE
+    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
     ))
   }
   
