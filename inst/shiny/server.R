@@ -6578,148 +6578,148 @@ shinyServer(function(input, output, session) {
                  )
         ),
         div(class = "seuratFindMarkerShowHideDiv",
-            fluidRow(
-              actionGroupButtons(
-                inputIds = "seuratFindMarkerFilterRun",
-                labels = "Apply Filter",
-                fullwidth = TRUE
-              ),
-            fluidRow(
-              column(4,
-                     panel(heading = "Column",
-                           selectInput(
-                             inputId = "seuratFindMarkerSelectFilter",
-                             label = "Select filter:",
-                             choices = c("gene.id",
-                                         "p_val",
-                                         "avg_logFC",
-                                         "pct.1",
-                                         "pct.2",
-                                         "p_val_adj",
-                                         "cluster")
-                           )
-                     )
-                     ),
-              column(8,
-                   panel(heading = "Options",
-                     hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerGeneIDOption", label = "gene.id",
-                                 choices = c("=", "!="),
-                                 justified = TRUE,
-                                 individual = TRUE,
-                                 size = "xs",
-                                 status = "primary"
-                               ),
-                               selectizeInput(
-                                 inputId = "seuratFindMarkerGeneIDInput",
-                                 choices = NULL,
-                                 label = NULL,
-                                 multiple = TRUE
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerPValOption", label = "p_val",
-                                 choices = c("<", ">", "="),
-                                 justified = TRUE,
-                                 individual = TRUE,
-                                 size = "xs",
-                                 status = "primary"
-                               ),
-                               numericInput(
-                                 inputId = "seuratFindMarkerPValInput",
-                                 label = NULL,
-                                 step = 0.001,
-                                 value = 0
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
-                                 choices = c("<", ">", "="),
-                                 justified = TRUE,
-                                 individual = TRUE,
-                                 size = "xs",
-                                 status = "primary"
-                               ),
-                               numericInput(
-                                 inputId = "seuratFindMarkerLFCInput",
-                                 label = NULL,
-                                 step = 0.001,
-                                 value = 0
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerPct1Option", label = "pct.1",
-                                 choices = c("<", ">", "="),
-                                 justified = FALSE,
-                                 individual = TRUE,
-                                 size = "s",
-                                 status = "primary"
-                               ),
-                               numericInput(
-                                 inputId = "seuratFindMarkerPct1Input",
-                                 label = NULL,
-                                 step = 0.001,
-                                 value = 0
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerPct2Option", label = "pct.2",
-                                 choices = c("<", ">", "="),
-                                 justified = FALSE,
-                                 individual = TRUE,
-                                 size = "s",
-                                 status = "primary"
-                               ),
-                               numericInput(
-                                 inputId = "seuratFindMarkerPct2Input",
-                                 label = NULL,
-                                 step = 0.001,
-                                 value = 0
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
-                                 choices = c("<", ">", "="),
-                                 justified = TRUE,
-                                 individual = TRUE,
-                                 size = "xs",
-                                 status = "primary",
-                                 selected = "<"
-                               ),
-                               numericInput(
-                                 inputId = "seuratFindMarkerPValAdjInput",
-                                 label = NULL,
-                                 step = 0.001,
-                                 value = 0.05
-                               )
-                     ))),
-                     hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
-                               checkboxGroupButtons(
-                                 inputId = "seuratFindMarkerClusterOption", label = "cluster",
-                                 choices = c("=", "!="),
-                                 justified = TRUE,
-                                 individual = TRUE,
-                                 size = "xs",
-                                 status = "primary"
-                               ),
-                               selectizeInput(
-                                 inputId = "seuratFindMarkerClusterInput",
-                                 choices = NULL,
-                                 label = NULL,
-                                 multiple = TRUE
-                               )
-                     )))
-                   )
-                     )
-            )
-            )
-          
+            panel(
+              fluidRow(
+                column(4,
+                       panel(heading = "Options",
+                             selectInput(
+                               inputId = "seuratFindMarkerSelectFilter",
+                               label = "Select column to filter:",
+                               choices = c("gene.id",
+                                           "p_val",
+                                           "avg_logFC",
+                                           "pct.1",
+                                           "pct.2",
+                                           "p_val_adj",
+                                           "cluster")
+                             ),
+                             hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
+                                                                                       checkboxGroupButtons(
+                                                                                         inputId = "seuratFindMarkerGeneIDOption", label = "gene.id",
+                                                                                         choices = c("=", "!="),
+                                                                                         justified = TRUE,
+                                                                                         individual = TRUE,
+                                                                                         size = "xs",
+                                                                                         status = "primary"
+                                                                                       ),
+                                                                                       selectizeInput(
+                                                                                         inputId = "seuratFindMarkerGeneIDInput",
+                                                                                         choices = NULL,
+                                                                                         label = NULL,
+                                                                                         multiple = TRUE
+                                                                                       )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
+                                                                                     checkboxGroupButtons(
+                                                                                       inputId = "seuratFindMarkerPValOption", label = "p_val",
+                                                                                       choices = c("<", ">", "="),
+                                                                                       justified = TRUE,
+                                                                                       individual = TRUE,
+                                                                                       size = "xs",
+                                                                                       status = "primary"
+                                                                                     ),
+                                                                                     numericInput(
+                                                                                       inputId = "seuratFindMarkerPValInput",
+                                                                                       label = NULL,
+                                                                                       step = 0.001,
+                                                                                       value = 0
+                                                                                     )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
+                                                                                    checkboxGroupButtons(
+                                                                                      inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
+                                                                                      choices = c("<", ">", "="),
+                                                                                      justified = TRUE,
+                                                                                      individual = TRUE,
+                                                                                      size = "xs",
+                                                                                      status = "primary"
+                                                                                    ),
+                                                                                    numericInput(
+                                                                                      inputId = "seuratFindMarkerLFCInput",
+                                                                                      label = NULL,
+                                                                                      step = 0.001,
+                                                                                      value = 0
+                                                                                    )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
+                                                                                     checkboxGroupButtons(
+                                                                                       inputId = "seuratFindMarkerPct1Option", label = "pct.1",
+                                                                                       choices = c("<", ">", "="),
+                                                                                       justified = TRUE,
+                                                                                       individual = TRUE,
+                                                                                       size = "s",
+                                                                                       status = "primary"
+                                                                                     ),
+                                                                                     numericInput(
+                                                                                       inputId = "seuratFindMarkerPct1Input",
+                                                                                       label = NULL,
+                                                                                       step = 0.001,
+                                                                                       value = 0
+                                                                                     )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
+                                                                                     checkboxGroupButtons(
+                                                                                       inputId = "seuratFindMarkerPct2Option", label = "pct.2",
+                                                                                       choices = c("<", ">", "="),
+                                                                                       justified = TRUE,
+                                                                                       individual = TRUE,
+                                                                                       size = "s",
+                                                                                       status = "primary"
+                                                                                     ),
+                                                                                     numericInput(
+                                                                                       inputId = "seuratFindMarkerPct2Input",
+                                                                                       label = NULL,
+                                                                                       step = 0.001,
+                                                                                       value = 0
+                                                                                     )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
+                                                                                        checkboxGroupButtons(
+                                                                                          inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
+                                                                                          choices = c("<", ">", "="),
+                                                                                          justified = TRUE,
+                                                                                          individual = TRUE,
+                                                                                          size = "xs",
+                                                                                          status = "primary",
+                                                                                          selected = "<"
+                                                                                        ),
+                                                                                        numericInput(
+                                                                                          inputId = "seuratFindMarkerPValAdjInput",
+                                                                                          label = NULL,
+                                                                                          step = 0.001,
+                                                                                          value = 0.05
+                                                                                        )
+                             ))),
+                             hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
+                                                                                        checkboxGroupButtons(
+                                                                                          inputId = "seuratFindMarkerClusterOption", label = "cluster",
+                                                                                          choices = c("=", "!="),
+                                                                                          justified = TRUE,
+                                                                                          individual = TRUE,
+                                                                                          size = "xs",
+                                                                                          status = "primary"
+                                                                                        ),
+                                                                                        selectizeInput(
+                                                                                          inputId = "seuratFindMarkerClusterInput",
+                                                                                          choices = NULL,
+                                                                                          label = NULL,
+                                                                                          multiple = TRUE
+                                                                                        )
+                             ))),
+                             actionButton(
+                               inputId = "seuratFindMarkerFilterRun",
+                               label = "Apply Filter"
+                             )
+                       )
+                ),
+                column(8,
+                       panel(heading = "Active Filters",
+                             uiOutput("seuratFindMarkerActiveFilters")
+                       )
+                )
+              )
+            ),
+            br()
         )
       )
     })
@@ -6735,8 +6735,9 @@ shinyServer(function(input, output, session) {
                                                                                 outputId = "findMarkerHeatmapPlotFullTopText"
                                                                               ),
                                                                               panel(
-                                                                                
-                                                                                plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                jqui_resizable(
+                                                                                  plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                )
                                                                               )
                                                                        )
                                                                      )
@@ -6866,6 +6867,12 @@ shinyServer(function(input, output, session) {
     updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
     
     updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+    
+    output$seuratFindMarkerActiveFilters <- renderUI({
+      panel(
+        h6("p_val_adj < 0.05")
+      )
+    })
   })
   
   observeEvent(input$seuratFindMarkerFilterShowHide,{
@@ -7003,6 +7010,17 @@ shinyServer(function(input, output, session) {
       df
     }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
     ))
+    
+    activeFilterString <- NULL
+    for(i in seq(length(parameters$cols))){
+      activeFilterString <- paste(activeFilterString, "<h6>", parameters$cols[i], parameters$operators[i], parameters$values[i], "</h6>")
+    }
+    
+      output$seuratFindMarkerActiveFilters <- renderUI({
+        panel(
+          HTML(activeFilterString)
+        )
+      })
   }
   
   seuratfindMarkerTableObserve <- observe(suspended = F,
@@ -7030,9 +7048,7 @@ shinyServer(function(input, output, session) {
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
                                                                                                                       jqui_resizable(
-                                                                                                                       
-                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
-                                                                                                                       
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                                       )
                                                                                                                     )
                                                                                                              )
@@ -7148,9 +7164,7 @@ shinyServer(function(input, output, session) {
                                                                                                                         outputId = "findMarkerHeatmapPlotFullTopText"
                                                                                                                       ),
                                                                                                                       jqui_resizable(
-                                                                                                                        
-                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
-                                                                                                                       
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                                       ),
                                                                                                                     )
                                                                                                              )
