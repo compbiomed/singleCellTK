@@ -6450,6 +6450,50 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  observeEvent(input$seuratFindMarkerSelectFilter,{
+    if(input$seuratFindMarkerSelectFilter == "gene.id"){
+      shinyjs::show(selector = ".seuratFindMarkerGeneIDDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter != "gene.id"){
+      shinyjs::hide(selector = ".seuratFindMarkerGeneIDDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter == "p_val"){
+      shinyjs::show(selector = ".seuratFindMarkerPValDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter != "p_val"){
+      shinyjs::hide(selector = ".seuratFindMarkerPValDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter == "avg_logFC"){
+      shinyjs::show(selector = ".seuratFindMarkerLFCDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter != "avg_logFC"){
+      shinyjs::hide(selector = ".seuratFindMarkerLFCDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter == "pct.1"){
+      shinyjs::show(selector = ".seuratFindMarkerPct1Div")
+    }
+    if(input$seuratFindMarkerSelectFilter != "pct.1"){
+      shinyjs::hide(selector = ".seuratFindMarkerPct1Div")
+    }
+    if(input$seuratFindMarkerSelectFilter == "pct.2"){
+      shinyjs::show(selector = ".seuratFindMarkerPct2Div")
+    }
+    if(input$seuratFindMarkerSelectFilter != "pct.2"){
+      shinyjs::hide(selector = ".seuratFindMarkerPct2Div")
+    }
+    if(input$seuratFindMarkerSelectFilter == "p_val_adj"){
+      shinyjs::show(selector = ".seuratFindMarkerPValAdjDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter != "p_val_adj"){
+      shinyjs::hide(selector = ".seuratFindMarkerPValAdjDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter == "cluster"){
+      shinyjs::show(selector = ".seuratFindMarkerClusterDiv")
+    }
+    if(input$seuratFindMarkerSelectFilter != "cluster"){
+      shinyjs::hide(selector = ".seuratFindMarkerClusterDiv")
+    }
+  })
   
   observeEvent(input$seuratFindMarkerRun,{
     withProgress(message = "Finding markers", max = 1, value = 1,{
@@ -6487,11 +6531,6 @@ shinyServer(function(input, output, session) {
       fluidPage(
         fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                 # selectInput(
-                 #   inputId = "seuratFindMarkerNoFeaturesDiplay",
-                 #   label = "Number of features to display:",
-                 #   choices = c("5", "10", "20", "50")
-                 # )
                  ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  radioGroupButtons(
@@ -6503,11 +6542,6 @@ shinyServer(function(input, output, session) {
                  )
           ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                 # textInput(
-                 #   inputId = "seuratFindMarkerSearch",
-                 #   label = "Search:",
-                 #   placeholder = "feature to search"
-                 # )
                  )
         ),
         div(class = "seuratFindMarkerShowHideDiv",
@@ -6518,10 +6552,24 @@ shinyServer(function(input, output, session) {
                 fullwidth = TRUE
               ),
             fluidRow(
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     
-                     wellPanel(style='border:0;',
+              column(4,
+                     panel(heading = "Column",
+                           selectInput(
+                             inputId = "seuratFindMarkerSelectFilter",
+                             label = "Select filter:",
+                             choices = c("gene.id",
+                                         "p_val",
+                                         "avg_logFC",
+                                         "pct.1",
+                                         "pct.2",
+                                         "p_val_adj",
+                                         "cluster")
+                           )
+                     )
+                     ),
+              column(8,
+                   panel(heading = "Options",
+                     hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerGeneIDOption", label = "gene.id",
                                  choices = c("=", "!="),
@@ -6536,11 +6584,8 @@ shinyServer(function(input, output, session) {
                                  label = NULL,
                                  multiple = TRUE
                                )
-                     )
-              ),
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     wellPanel(style='border:0;',
+                     ))),
+                     hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPValOption", label = "p_val",
                                  choices = c("<", ">", "="),
@@ -6555,11 +6600,8 @@ shinyServer(function(input, output, session) {
                                  step = 0.001,
                                  value = 0
                                )
-                     )
-              ),
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     wellPanel(style='border:0;',
+                     ))),
+                     hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
                                  choices = c("<", ">", "="),
@@ -6574,17 +6616,14 @@ shinyServer(function(input, output, session) {
                                  step = 0.001,
                                  value = 0
                                )
-                     )
-              ),
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     wellPanel(style='border:0;',
+                     ))),
+                     hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPct1Option", label = "pct.1",
                                  choices = c("<", ">", "="),
-                                 justified = TRUE,
+                                 justified = FALSE,
                                  individual = TRUE,
-                                 size = "xs",
+                                 size = "s",
                                  status = "primary"
                                ),
                                numericInput(
@@ -6593,17 +6632,14 @@ shinyServer(function(input, output, session) {
                                  step = 0.001,
                                  value = 0
                                )
-                     )
-              ),
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     wellPanel(style='border:0;',
+                     ))),
+                     hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPct2Option", label = "pct.2",
                                  choices = c("<", ">", "="),
-                                 justified = TRUE,
+                                 justified = FALSE,
                                  individual = TRUE,
-                                 size = "xs",
+                                 size = "s",
                                  status = "primary"
                                ),
                                numericInput(
@@ -6612,11 +6648,8 @@ shinyServer(function(input, output, session) {
                                  step = 0.001,
                                  value = 0
                                )
-                     )
-              ),
-              column(2,
-                     offset = 0.1, style='padding:3px;',
-                     wellPanel(style='border:0;',
+                     ))),
+                     hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
                                checkboxGroupButtons(
                                  inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
                                  choices = c("<", ">", "="),
@@ -6632,8 +6665,53 @@ shinyServer(function(input, output, session) {
                                  step = 0.001,
                                  value = 0.05
                                )
+                     ))),
+                     hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
+                               checkboxGroupButtons(
+                                 inputId = "seuratFindMarkerClusterOption", label = "cluster",
+                                 choices = c("=", "!="),
+                                 justified = TRUE,
+                                 individual = TRUE,
+                                 size = "xs",
+                                 status = "primary"
+                               ),
+                               selectizeInput(
+                                 inputId = "seuratFindMarkerClusterInput",
+                                 choices = NULL,
+                                 label = NULL,
+                                 multiple = TRUE
+                               )
+                     )))
+                   )
                      )
-              )
+              # column(2,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(2,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(2,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(1,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(1,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(2,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # ),
+              # column(2,
+              #        offset = 0.1, style='padding:3px;',
+              # 
+              # )
             )
             )
           
@@ -6795,32 +6873,6 @@ shinyServer(function(input, output, session) {
     selected <- input$seuratFindMarkerGeneIDInput
     updateSeuratFindMarkerTable()
   })
-  
-  # updateSeuratFindMarkerTableObserver <- observe(suspended = F,
-  #                                                {
-  #                                                  req(input$seuratFindMarkerPValAdjInput)
-  #                                                  req(input$seuratFindMarkerPValAdjInput)
-  #                                                  req(input$seuratFindMarkerPValInput)
-  #                                                  req(input$seuratFindMarkerPct1Input)
-  #                                                  req(input$seuratFindMarkerPct2Input)
-  #                                                  req(input$seuratFindMarkerLFCInput)
-  #                                                  
-  #                                                  input$seuratFindMarkerPValAdjOption
-  #                                                  input$seuratFindMarkerPValAdjInput
-  #                                                  input$seuratFindMarkerPValOption
-  #                                                  input$seuratFindMarkerPValInput
-  #                                                  input$seuratFindMarkerPct1Option
-  #                                                  input$seuratFindMarkerPct1Input
-  #                                                  input$seuratFindMarkerPct2Option
-  #                                                  input$seuratFindMarkerPct2Input
-  #                                                  input$seuratFindMarkerLFCOption
-  #                                                  input$seuratFindMarkerLFCInput
-  #                                                  input$seuratFindMarkerGeneIDOption
-  #                                                  
-  #                                                  isolate({
-  #                                                    updateSeuratFindMarkerTable()
-  #                                                  })
-  #                                                })
   
   updateSeuratFindMarkerTable <- function(){
     df <- NULL 

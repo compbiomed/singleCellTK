@@ -826,6 +826,7 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     Seurat::Idents(seuratObject, cells = cells1) <- group1
     Seurat::Idents(seuratObject, cells = cells2) <- group2
     markerGenes <- Seurat::FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+    markerGenes$cluster <- paste0(group1, " vs ", group2)
   }
   else{
     Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
