@@ -854,7 +854,7 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
     grp <- unique(colData(inSCE)[[allGroup]])
-    clust <- as.integer(unique(Idents(seuratObject)))
+    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
     for(i in seq(length(clust))){
       levels(markerGenes$cluster)[clust[i]] <- grp[i]
     }
