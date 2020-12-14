@@ -8,6 +8,8 @@ plotSCEDimReduceFeatures(
   inSCE,
   sample = NULL,
   feature,
+  featureLocation = NULL,
+  featureDisplay = NULL,
   shape = NULL,
   reducedDimName,
   useAssay = "logcounts",

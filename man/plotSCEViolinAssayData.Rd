@@ -8,6 +8,7 @@ plotSCEViolinAssayData(
   inSCE,
   sample = NULL,
   useAssay = "counts",
+  useRowData = NULL,
   feature,
   groupBy = NULL,
   violin = TRUE,

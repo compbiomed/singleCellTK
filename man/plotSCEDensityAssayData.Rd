@@ -9,6 +9,8 @@ plotSCEDensityAssayData(
   sample = NULL,
   useAssay = "counts",
   feature,
+  featureLocation = NULL,
+  featureDisplay = NULL,
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
