@@ -5,7 +5,12 @@
 \title{seuratElbowPlot
 Computes the plot object for elbow plot from the pca slot in the input sce object}
 \usage{
-seuratElbowPlot(inSCE, significantPC = NULL, reduction = "pca")
+seuratElbowPlot(
+  inSCE,
+  significantPC = NULL,
+  reduction = "pca",
+  externalReduction = NULL
+)
 }
 \arguments{
 \item{inSCE}{(sce) object from which to compute the elbow plot (pca should be computed)}
@@ -13,6 +18,8 @@ seuratElbowPlot(inSCE, significantPC = NULL, reduction = "pca")
 \item{significantPC}{Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.}
 
 \item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object

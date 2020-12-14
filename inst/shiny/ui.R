@@ -45,6 +45,9 @@ source("helpers.R")
 source("colourGroupInput.R")
 data("c2BroadSets")
 
+#source modules
+source("module_nonLinearWorkflow.R")
+
 #test internet connection for enrichR connectivity
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 
@@ -123,6 +126,7 @@ source("ui_01_import.R", local = TRUE) #creates shinyPanelImport variable
 source("ui_01_gene_sets.R", local = TRUE) #creates shinyPanelGeneSets variable
 source("ui_01_columnAnnotation.R", local = TRUE) #creates shinyPanelColumnAnnotation variable
 source("ui_01_rowAnnotation.R", local = TRUE) #creates shinyPanelRowAnnotation variable
+source("ui_01_removeData.R", local = TRUE) #creates shinyPanelRemove variable
 source("ui_export.R", local = TRUE) #creates shinyPanelExport variable
 source("ui_02_qc_filter.R", local = TRUE) #creates shinyPanelQCFilter variable
 source("ui_03_2_cluster.R", local = TRUE) #creates shinyPanelCluster variable
@@ -183,7 +187,8 @@ shinyUI(
         tabPanel("Import Gene Sets", shinyPanelGeneSets),
         tabPanel("Column Annotation", shinyPanelColumnAnnotation),
         tabPanel("Row Annotation", shinyPanelRowAnnotation),
-        tabPanel("Export Single Cell Data", shinyPanelExport)
+        tabPanel("Export Single Cell Data", shinyPanelExport),
+        tabPanel("Delete Single Cell Data", shinyPanelRemove)
       ),
       tabPanel("QC & Filtering", shinyPanelQCFilter),
       tabPanel("Normalization & Batch Correction", shinyPanelBatchcorrect),

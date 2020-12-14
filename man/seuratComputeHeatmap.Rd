@@ -13,7 +13,8 @@ seuratComputeHeatmap(
   nfeatures = 30,
   fast = TRUE,
   combine = TRUE,
-  raster = TRUE
+  raster = TRUE,
+  externalReduction = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ seuratComputeHeatmap(
 \item{combine}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
 
 \item{raster}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object

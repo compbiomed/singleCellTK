@@ -24,7 +24,9 @@ shinyPanelBatchcorrect <- fluidPage(
                                           "Scater - LogNormCounts" = "LNC",
                                           "Scater - CPM" = "CPM")
                             ),
-                            selectInput("normalizeAssaySelect", "Select Assay:", currassays),
+                            uiOutput("normalizeAssaySelect"),
+                            #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
+                            #uiOutput("about"),
                             conditionalPanel(
                               condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'
@@ -58,7 +60,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                 "Z-Score" = "z.score"
                                 )
                             ),
-                            selectInput("modifyAssaySelect", "Select Assay:", currassays),
+                            uiOutput("modifyAssaySelect"),
+                            #selectInput("modifyAssaySelect", "Select Assay:", currassays),
                             textInput("modifyAssayOutname", "Assay Name",
                                       value = "countsLog"),
                             materialSwitch(
@@ -104,7 +107,8 @@ shinyPanelBatchcorrect <- fluidPage(
       sidebarPanel(
         h3("Parameters"),
         #uiOutput("batchCorrAssayUI"),
-        selectInput("batchCorrAssay", "Select Assay:", currassays),
+        uiOutput("batchCorrAssay"),
+        #selectInput("batchCorrAssay", "Select Assay:", currassays),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
                     c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
@@ -311,7 +315,8 @@ shinyPanelBatchcorrect <- fluidPage(
               h3("Visualization Setting"),
               h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
                         "(What are plotted?)", target = "_blank")),
-              selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
+              uiOutput("batchCheckOrigAssay"),
+              #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
               selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
               selectInput("batchCheckCond", "Additional Condition (optional)",
                 clusterChoice),

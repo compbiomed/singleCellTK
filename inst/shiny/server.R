@@ -18,6 +18,10 @@ source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several sma
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  
+  #call modules server part
+  callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
+  
   # library(fs)
   # library(shinyFiles)
 
@@ -153,35 +157,88 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
+  
+  updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL, 
+                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE){
+    if(!is.null(choices)
+       && is.null(tags)){
+      choices <- singleCellTK:::.getAssays(vals$counts)
+    }
+    else{
+      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+    }
+    if(!showTags){
+      allChoices <- NULL
+      for(i in seq(length(choices))){
+        allChoices <- c(allChoices, choices[[i]])
+      }
+      choices <- allChoices
+    }
+    else{
+      if(!is.null(recommended)){
+        namesChoices <- names(choices)
+        for(i in seq(length(namesChoices))){
+          if(recommended == namesChoices[i]){
+            namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+          }
+        }
+        names(choices) <- namesChoices
+      }
+    }
+    if(!is.null(selected)){
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices,
+          selected = selected
+        )
+      })
+    }
+    else{
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices
+        )
+      })
+    }
+
+  }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
-    updateSelectInput(session, "batchCorrAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
-    updateSelectInput(session, "deAssay", choices = currassays)
-    updateSelectInput(session, "fmAssay", choices = currassays)
-    updateSelectInput(session, "fmHMAssay", choices = currassays)
-    updateSelectInput(session, "pathwayAssay", choices = currassays)
-    updateSelectInput(session, "modifyAssaySelect", choices = currassays)
-    updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
-    updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
-    updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
-    updateSelectInput(session, "filterAssaySelect", choices = currassays)
-    updateSelectInput(session, "qcAssaySelect", choices = currassays)
-    updateSelectInput(session, "celdaAssay", choices = currassays)
-    updateSelectInput(session, "celdaAssayGS", choices = currassays)
-    updateSelectInput(session, "celdaAssaytSNE", choices = currassays)
-    updateSelectInput(session, "celdaAssayProbabilityMap",
+    updateSelectInputTag(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
+    updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
+    updateSelectInputTag(session, "deAssay", choices = currassays)
+    updateSelectInputTag(session, "fmAssay", choices = currassays)
+    updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
+    updateSelectInputTag(session, "pathwayAssay", choices = currassays)
+    updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
+    
+    #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
+    
+    updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
+    updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
+    updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "celdaAssay", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
+    updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayProbabilityMap",
                       choices = currassays)
-    updateSelectInput(session, "celdaAssayModuleHeatmap",
+    updateSelectInputTag(session, "celdaAssayModuleHeatmap",
                       choices = currassays)
-    updateSelectInput(session, "depthAssay", choices = currassays)
-    updateSelectInput(session, "cellsAssay", choices = currassays)
-    updateSelectInput(session, "snapshotAssay", choices = currassays)
-    updateSelectInput(session, "exportAssay", choices = currassays)
-    updateSelectInput(session, "hmAssay", choices = currassays)
+    updateSelectInputTag(session, "depthAssay", choices = currassays)
+    updateSelectInputTag(session, "cellsAssay", choices = currassays)
+    updateSelectInputTag(session, "snapshotAssay", choices = currassays)
+    updateSelectInputTag(session, "exportAssay", choices = currassays)
+    updateSelectInputTag(session, "hmAssay", choices = currassays)
   }
 
   observeEvent(vals$counts, {
@@ -208,7 +265,6 @@ shinyServer(function(input, output, session) {
 
   updateReddimInputs <- function(){
     currreddim <- names(reducedDims(vals$counts))
-    updateSelectInput(session, "delRedDimType", choices = currreddim)
     updateSelectInput(session, "FastMNNReddim", choices = currreddim)
     updateSelectInput(session, "HarmonyReddim", choices = currreddim)
     updateSelectInput(session, "clustVisReddim", choices = currreddim)
@@ -220,6 +276,7 @@ shinyServer(function(input, output, session) {
     options <- altExpNames(vals$counts)
     updateSelectInput(session, "clustScranSNNAltExp", choices = options)
     updateSelectInput(session, "dimRedAltExpSelect", choices = options)
+    updateSelectInput(session, "dimRedAltExpSelect_tsneUmap", choices = options)
   }
   updateEnrichDB <- function(){
     if (internetConnection){
@@ -844,7 +901,13 @@ shinyServer(function(input, output, session) {
 
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
-
+        
+        #store assayType information in the metadata
+        vals$counts <- singleCellTK:::.sctkSetTag(
+          inSCE = vals$counts,
+          assayType = "raw", 
+          assays = assayNames(vals$counts))
+        
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
@@ -1679,7 +1742,8 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       saveRDS(vals$counts, file)
     })
-
+  
+  
   output$assayList <- renderTable({
     req(vals$counts)
     if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
@@ -1687,10 +1751,91 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$reducedDimsList <- renderTable({
+  output$reducedDimsList <- renderUI({
     req(vals$counts)
-    if (!is.null(vals$counts) & length(names(reducedDims(vals$counts))) > 0){
-      data.table("Reduced Dimension" = names(reducedDims(vals$counts)))
+    if (!is.null(vals$counts) && 
+        length(names(reducedDims(vals$counts))) > 0){
+      panel(heading = "ReducedDims",
+            checkboxGroupInput(
+              inputId = "checkboxRedDimToRemove",
+              label = NULL,
+              choices = names(reducedDims(vals$counts))
+              )
+            )
+    }
+  })
+  
+  output$assaysList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)){
+      panel(heading = "Assays",
+            checkboxGroupInput(
+              inputId = "checkboxAssaysToRemove",
+              label = NULL,
+              choices = assayNames(vals$counts)
+              )
+            )
+    }
+  })
+  
+  output$rowDataList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(colnames(rowData(vals$counts))) > 0){
+      panel(heading = "Row Annotation",
+            checkboxGroupInput(
+              inputId = "checkboxRowDataToRemove",
+              label = NULL,
+              choices = colnames(rowData(vals$counts))
+            )
+      )
+    }
+  })
+  
+  output$colDataList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(colnames(colData(vals$counts))) > 0){
+      panel(heading = "Column Annotation",
+            checkboxGroupInput(
+              inputId = "checkboxColDataToRemove",
+              label = NULL,
+              choices = colnames(colData(vals$counts))
+            )
+      )
+    }
+  })
+  
+  output$altExpList <- renderUI({
+    req(vals$counts)
+    if (!is.null(vals$counts)
+        && length(altExpNames(vals$counts)) > 0){
+      panel(heading = "Subsets",
+            checkboxGroupInput(
+              inputId = "checkboxAltExpToRemove",
+              label = NULL,
+              choices = altExpNames(vals$counts)
+            )
+      )
+    }
+  })
+  
+  output$removeDataWarningUI <- renderUI({
+    req(vals$counts)
+    if(length(input$checkboxRedDimToRemove) > 0
+       || length(input$checkboxAssaysToRemove) > 0
+       || length(input$checkboxRowDataToRemove) > 0
+       || length(input$checkboxColDataToRemove) > 0
+       || length(input$checkboxAltExpToRemove) > 0){
+      totalItemsSelected <- length(input$checkboxRedDimToRemove) + 
+        length(input$checkboxAssaysToRemove) + 
+        length(input$checkboxRowDataToRemove) + 
+        length(input$checkboxColDataToRemove) +
+        length(input$checkboxAltExpToRemove)
+      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
+    }
+    else{
+      return(NULL)
     }
   })
 
@@ -1805,8 +1950,12 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
-          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          sctkAssay(vals$counts, input$normalizeAssayOutname, tag = "normalized") <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
+          
+          # assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          #   x = assay(vals$counts, input$normalizeAssaySelect))
+          
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
@@ -1825,6 +1974,12 @@ shinyServer(function(input, output, session) {
           )
           # updateAssayInputs()
         }
+        #update tags
+        vals$counts <- singleCellTK:::.sctkSetTag(
+          inSCE = vals$counts, 
+          assayType = "normalized", 
+          input$normalizeAssayOutname
+          )
       }
     })
   })
@@ -1923,15 +2078,35 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$delRedDim, {
     req(vals$counts)
-    if (!(input$delRedDimType %in% names(reducedDims(vals$counts)))){
-      shinyalert::shinyalert("Error!", "reducedDim does not exist!",
-                             type = "error")
-    } else {
-      withBusyIndicatorServer("delRedDim", {
-        reducedDim(vals$counts, input$delRedDimType) <- NULL
-        updateReddimInputs()
-      })
+    if(length(input$checkboxAssaysToRemove) > 0){
+      for(i in seq(input$checkboxAssaysToRemove)){
+        sctkAssay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+      }
     }
+    if(length(input$checkboxRedDimToRemove) > 0){
+          for(i in seq(input$checkboxRedDimToRemove)){
+            reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
+          }
+    }
+    if(length(input$checkboxRowDataToRemove) > 0){
+      for(i in seq(input$checkboxRowDataToRemove)){
+        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxColDataToRemove) > 0){
+      for(i in seq(input$checkboxColDataToRemove)){
+        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxAltExpToRemove) > 0){
+      for(i in seq(input$checkboxAltExpToRemove)){
+        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+      }
+    }
+    updateAssayInputs()
+    updateReddimInputs()
+    updateColDataNames()
+    updateAltExpInputs()
   })
 
   observeEvent(input$dimRedAltExpSelect, {
@@ -1941,6 +2116,18 @@ shinyServer(function(input, output, session) {
       aeAssays <- assayNames(ae)
       output$dimRedAltExpAssayUI <- renderUI({
         selectInput("dimRedAltExpAssay", "Select the Assay in the subset",
+                    aeAssays)
+      })
+    }
+  })
+  
+  observeEvent(input$dimRedAltExpSelect_tsneUmap, {
+    if (!is.null(vals$counts) &&
+        !is.null(input$dimRedAltExpSelect_tsneUmap)) {
+      ae <- altExp(vals$counts, input$dimRedAltExpSelect_tsneUmap)
+      aeAssays <- assayNames(ae)
+      output$dimRedAltExpAssayUI_tsneUmap <- renderUI({
+        selectInput("dimRedAltExpAssay_tsneUmap", "Select the Assay in the subset",
                     aeAssays)
       })
     }
@@ -1955,6 +2142,38 @@ shinyServer(function(input, output, session) {
                            sep = '_')
     }
     textInput('dimRedNameInput', "reducedDim Name:", defaultText)
+  })
+  
+  output$dimRedNameUI_tsneUmap <- renderUI({
+    if (input$dimRedAssayType_tsneUmap == 1){
+      defaultText <- paste(input$dimRedAssaySelect_tsneUmap, input$dimRedPlotMethod_tsneUmap,
+                           sep = '_')
+    } else if (input$dimRedAssayType_tsneUmap == 2){
+      defaultText <- paste(input$dimRedAltExpAssay_tsneUmap, input$dimRedPlotMethod_tsneUmap,
+                           sep = '_')
+    }
+    textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
+  })
+  
+  observeEvent(input$plot_heatmap_dimRed_button, {
+    if (!is.null(input$picker_dimheatmap_components_dimRed)) {
+      if(input$dimRedAssayType == 1){
+        output$plot_heatmap_dimRed <- renderPlot({
+          plotHeatmapMulti(
+            plots = vals$counts@metadata$seurat$heatmap_dimRed,
+            components = input$picker_dimheatmap_components_dimRed,
+            nCol = input$slider_dimheatmap_dimRed)
+        })
+      }
+      else if(input$dimRedAssayType == 2){
+        output$plot_heatmap_dimRed <- renderPlot({
+          plotHeatmapMulti(
+            plots = altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed,
+            components = input$picker_dimheatmap_components_dimRed,
+            nCol = input$slider_dimheatmap_dimRed)
+        })
+      }
+    }
   })
 
   observeEvent(input$runDimred, {
@@ -1976,49 +2195,62 @@ shinyServer(function(input, output, session) {
                   if (input$dimRedAssayType == 1) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
-                                          reducedDimName = dimrednamesave)
+                                          reducedDimName = dimrednamesave,
+                                          ndim = input$dimRedNumberDims)
                   } else if (input$dimRedAssayType == 2) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAltExpAssay,
                                           useAltExp = input$dimRedAltExpSelect,
-                                          reducedDimName = dimrednamesave)
+                                          reducedDimName = dimrednamesave,
+                                          ndim = input$dimRedNumberDims)
                   }
-                } else if (input$dimRedPlotMethod == "tSNE"){
-                  if (input$dimRedAssayType == 1) {
-                    vals$counts <- getTSNE(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = dimrednamesave,
-                                           perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
-                  } else if (input$dimRedAssayType == 2) {
-                    vals$counts <- getTSNE(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay,
-                                           useAltExp = input$dimRedAltExpSelect,
-                                           reducedDimName = dimrednamesave,
-                                           perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
+                } else if (input$dimRedPlotMethod == "PCASeurat"){
+                  if(input$dimRedAssayType == 1){
+                    vals$counts <- seuratFindHVG(
+                      inSCE = vals$counts,
+                      useAssay = input$dimRedAssaySelect
+                    )
+                    vals$counts <- seuratPCA(
+                      inSCE = vals$counts, 
+                      useAssay = input$dimRedAssaySelect, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nPCs = input$dimRedNumberDims)
                   }
-                } else {
-                  if (is.na(input$alphaUMAP)) {
-                    stop("Learning rate (alpha) must be a numeric non-empty value!")
+                  else if(input$dimRedAssayType == 2){
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                      useAssay = input$dimRedAltExpAssay,
+                      altExp = TRUE
+                    )
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                      useAssay = input$dimRedAltExpAssay, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nPCs = input$dimRedNumberDims)
                   }
-                  if (input$dimRedAssayType == 1) {
-                    vals$counts <- getUMAP(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect,
-                                           reducedDimName = dimrednamesave,
-                                           nNeighbors = input$neighborsUMAP,
-                                           nIterations = input$iterUMAP,
-                                           minDist = input$mindistUMAP,
-                                           alpha = input$alphaUMAP)
-                  } else if (input$dimRedAssayType == 2) {
-                    vals$counts <- getUMAP(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay,
-                                           useAltExp = input$dimRedAltExpSelect,
-                                           reducedDimName = dimrednamesave,
-                                           nNeighbors = input$neighborsUMAP,
-                                           nIterations = input$iterUMAP,
-                                           minDist = input$mindistUMAP,
-                                           alpha = input$alphaUMAP)
+                }
+                else{
+                  if(input$dimRedAssayType == 1){
+                    vals$counts <- seuratFindHVG(
+                      inSCE = vals$counts,
+                      useAssay = input$dimRedAssaySelect
+                    )
+                    vals$counts <- seuratICA(
+                      inSCE = vals$counts, 
+                      useAssay = input$dimRedAssaySelect, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nics = input$dimRedNumberDims)
+                  }
+                  else if(input$dimRedAssayType == 2){
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                      useAssay = input$dimRedAltExpAssay
+                    )
+                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
+                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
+                      useAssay = input$dimRedAltExpAssay, 
+                      reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                      nics = input$dimRedNumberDims)
                   }
                 }
                 updateReddimInputs()
@@ -2037,37 +2269,507 @@ shinyServer(function(input, output, session) {
                                       useAltExp = input$dimRedAltExpSelect,
                                       reducedDimName = dimrednamesave)
               }
-            } else if (input$dimRedPlotMethod == "tSNE"){
-              if (input$dimRedAssayType == 1) {
+            } else if (input$dimRedPlotMethod == "PCASeurat"){
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratFindHVG(
+                  inSCE = vals$counts,
+                  useAssay = input$dimRedAssaySelect
+                )
+                vals$counts <- seuratPCA(
+                  inSCE = vals$counts, 
+                  useAssay = input$dimRedAssaySelect, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nPCs = input$dimRedNumberDims)
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                  useAssay = input$dimRedAltExpAssay,
+                  altExp = TRUE
+                )
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
+                  useAssay = input$dimRedAltExpAssay, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nPCs = input$dimRedNumberDims)
+              }
+            }
+            else{
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratFindHVG(
+                  inSCE = vals$counts,
+                  useAssay = input$dimRedAssaySelect
+                )
+                vals$counts <- seuratICA(
+                  inSCE = vals$counts, 
+                  useAssay = input$dimRedAssaySelect, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nics = input$dimRedNumberDims)
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                  useAssay = input$dimRedAltExpAssay,
+                  altExp = TRUE
+                )
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
+                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], 
+                  useAssay = input$dimRedAltExpAssay, 
+                  reducedDimName = gsub(" ", "_", input$dimRedNameInput), 
+                  nics = input$dimRedNumberDims)
+              }
+            }
+            updateReddimInputs()
+          }
+        }
+      })
+    }
+    
+    #extra code added by irzam starts here:
+    if(input$dimRedPlotMethod == "PCA"){
+      if(input$dimRedAssayType == 1){
+        redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+      }
+      else if(input$dimRedAssayType == 2){
+        redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
+        reducedDim(altExps(vals$counts)[[input$dimRedAltExpSelect]],  gsub(" ", "_", input$dimRedNameInput)) <- redDim
+      }
+      new_pca <- CreateDimReducObject(
+        embeddings = redDim, 
+        assay = "RNA",
+        loadings = attr(redDim, "rotation"),
+        stdev = as.numeric(attr(redDim, "percentVar")), 
+        key = "PC_")
+    }
+    
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Heatmap Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
+    
+    shinyjs::show(selector = ".dimRedPCAICA_plotTabset_class")
+    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
+                                                            panel(heading = "PCA Plot",
+                                                                  plotlyOutput(outputId = "plotDimRed_pca")
+                                                            )
+    ), select = TRUE)
+    
+    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
+      redDimName <- gsub(" ", "_", input$dimRedNameInput)
+      if(input$dimRedAssayType == 1){
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
+          )
+        })
+      }
+      else if(input$dimRedAssayType == 2){
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
+          )
+        })
+      }
+    })
+    
+    if(input$computeElbowPlot
+       && input$dimRedPlotMethod != "ICASeurat"){
+      appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Elbow Plot",
+                                                              panel(heading = "Elbow Plot",
+                                                                    plotlyOutput(outputId = "plotDimRed_elbow")
+                                                              )
+      ))
+      
+      if (input$dimRedPlotMethod == "PCASeurat"){
+        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          if(input$dimRedAssayType == 1){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = vals$counts)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]])
+            })
+          }
+        })
+      }
+      else{
+        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          if(input$dimRedAssayType == 1){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = vals$counts,
+                              externalReduction = new_pca)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            output$plotDimRed_elbow <- renderPlotly({
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                              externalReduction = new_pca)
+            })
+          }
+        })
+      }
+
+    }
+    
+    if(input$computeHeatmapPlot){
+      appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Heatmap Plot",
+                                                              panel(heading = "Heatmap Plot",
+                                                                    panel(heading = "Plot Options",
+                                                                          fluidRow(
+                                                                            column(6,
+                                                                                   pickerInput(
+                                                                                     inputId = "picker_dimheatmap_components_dimRed", 
+                                                                                     label = "Select principal components to plot:", 
+                                                                                     choices = c(), 
+                                                                                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), 
+                                                                                     multiple = TRUE)
+                                                                            ),
+                                                                            column(6,
+                                                                                   numericInput(
+                                                                                     inputId = "slider_dimheatmap_dimRed", 
+                                                                                     label = "Number of columns for the plot: ", 
+                                                                                     min = 1, 
+                                                                                     max = 4, 
+                                                                                     value = 2)
+                                                                            )
+                                                                          ),
+                                                                          actionButton(inputId = "plot_heatmap_dimRed_button", "Plot")
+                                                                    ),
+                                                                    panel(heading = "Plot",
+                                                                          jqui_resizable(
+                                                                            plotOutput(
+                                                                              outputId = "plot_heatmap_dimRed"), 
+                                                                            options = list(maxWidth = 700))
+                                                                    )
+                                                              )
+      ))
+      if (input$dimRedPlotMethod == "PCASeurat")
+      {
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "pca"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "pca"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
+        })
+      }
+      else if(input$dimRedPlotMethod == "ICASeurat"){
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "ica"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              reduction = "ica"
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
+        })
+      }
+      else{
+        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          if(input$dimRedAssayType == 1){
+            vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = vals$counts,
+              useAssay = input$dimRedAssaySelect,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              externalReduction = new_pca
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+            })
+          }
+          else if(input$dimRedAssayType == 2){
+            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              useAssay = input$dimRedAltExpAssay,
+              dims = 1:input$dimRedNumberDims,
+              nfeatures = input$dimRedNFeaturesHeatmap,
+              externalReduction = new_pca
+            )
+            output$plot_heatmap_dimRed <- renderPlot({
+              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+            })
+          }
+        })
+      }
+      
+      if(input$dimRedPlotMethod == "ICASeurat"){
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
+      }
+      else{
+        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
+      }
+    }
+
+        if(input$computeJackstrawPlot
+           && input$dimRedPlotMethod != "ICASeurat"){
+          appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
+                                                                  panel(heading = "JackStraw Plot",
+                                                                        plotOutput(outputId = "plot_jackstraw_dimRed")
+                                                                  )
+          ))
+          
+          if (input$dimRedPlotMethod == "PCASeurat"){
+            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                      useAssay = input$dimRedAssaySelect,
+                                                      dims = input$dimRedNumberDims)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
+                })
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                                      useAssay = input$dimRedAltExpAssay,
+                                                      dims = input$dimRedNumberDims)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], dims = input$dimRedNumberDims)
+                })
+              }
+            })
+          }
+          else{
+            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              if(input$dimRedAssayType == 1){
+                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                                                      useAssay = input$dimRedAssaySelect,
+                                                      dims = input$dimRedNumberDims,
+                                                      externalReduction = new_pca)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = vals$counts,
+                                      dims = input$dimRedNumberDims)
+                })
+              }
+              else if(input$dimRedAssayType == 2){
+                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                                      useAssay = input$dimRedAltExpAssay,
+                                                      dims = input$dimRedNumberDims,
+                                                      externalReduction = new_pca)
+                output$plot_jackstraw_dimRed <- renderPlot({
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                                      dims = input$dimRedNumberDims)
+                })
+              }
+            })
+          }
+        }
+  })
+  
+  observeEvent(input$runDimred_tsneUmap, {
+    if (!is.null(vals$counts)){
+      withBusyIndicatorServer("runDimred_tsneUmap", {
+        if (input$dimRedNameInput_tsneUmap == ""){
+          shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
+        } #check for named entered and if its a duplicate
+        else if (!is.null(input$dimRedNameInput_tsneUmap)){
+          if (input$dimRedNameInput_tsneUmap %in% names(reducedDims(vals$counts))){
+            shinyalert(
+              "Warning",
+              "Name already exits. Overwrite?",
+              "warning", showCancelButton = TRUE,
+              confirmButtonText = "Overwrite",
+              callbackR = function(x){if(isTRUE(x)){
+                dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+                if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
+                  if (input$dimRedAssayType_tsneUmap == 1) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                    vals$counts <- getTSNE(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           perplexity = input$perplexityTSNE,
+                                           n_iterations = input$iterTSNE)
+                  }
+                } else {
+                  if (is.na(input$alphaUMAP)) {
+                    stop("Learning rate (alpha) must be a numeric non-empty value!")
+                  }
+                  if (input$dimRedAssayType_tsneUmap == 1) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                    vals$counts <- getUMAP(inSCE = vals$counts,
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           reducedDimName = dimrednamesave,
+                                           nNeighbors = input$neighborsUMAP,
+                                           nIterations = input$iterUMAP,
+                                           minDist = input$mindistUMAP,
+                                           alpha = input$alphaUMAP)
+                  }
+                }
+                
+                updateReddimInputs()
+              }}
+            )
+          } else {
+            dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+            if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
+              if (input$dimRedAssayType_tsneUmap == 1) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
-                                       useAssay = input$dimRedAssaySelect,
+                                       useAssay = input$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
-              } else if (input$dimRedAssayType == 2) {
+              } else if (input$dimRedAssayType_tsneUmap == 2) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay,
-                                       useAltExp = input$dimRedAltExpSelect,
+                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
               }
-            } else {
+            } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
+              if (input$dimRedAssayType_tsneUmap == 1){
+                vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                             useAssay = input$dimRedAssaySelect_tsneUmap)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  vals$counts <- seuratPCA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                else{
+                  vals$counts <- seuratICA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+                                             reducedDimName = dimrednamesave,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             perplexity = input$perplexityTSNEDimRed,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed)
+              }
+              else{
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                             useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                             altExp = TRUE)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                else{
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                             reducedDimName = dimrednamesave,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             perplexity = input$perplexityTSNEDimRed,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed)
+              }
+            } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
+              if (input$dimRedAssayType_tsneUmap == 1){
+                vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                             useAssay = input$dimRedAssaySelect_tsneUmap)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  vals$counts <- seuratPCA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                else{
+                  vals$counts <- seuratICA(inSCE = vals$counts,
+                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                }
+                vals$counts <- seuratRunUMAP(inSCE = vals$counts,
+                                             reducedDimName = dimrednamesave,
+                                             useReduction = input$reductionMethodUMAPTSNEDimRed,
+                                             dims = input$dimRedNumberDims_tsneUmap,
+                                             minDist = input$minDistUMAPDimRed,
+                                             nNeighbors = input$nNeighboursUMAPDimRed,
+                                             spread = input$spreadUMAPDimRed)
+              }
+              else{
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                                                                           altExp = TRUE)
+                if(input$reductionMethodUMAPTSNEDimRed == "pca"){
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                else{
+                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                }
+                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunUMAP(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                                                                                           reducedDimName = dimrednamesave,
+                                                                                           useReduction = input$reductionMethodUMAPTSNEDimRed,
+                                                                                           dims = input$dimRedNumberDims_tsneUmap,
+                                                                                           minDist = input$minDistUMAPDimRed,
+                                                                                           nNeighbors = input$nNeighboursUMAPDimRed,
+                                                                                           spread = input$spreadUMAPDimRed)
+                
+              }
+            }
+            else {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              if (input$dimRedAssayType == 1) {
+              if (input$dimRedAssayType_tsneUmap == 1) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
-                                       useAssay = input$dimRedAssaySelect,
+                                       useAssay = input$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        nNeighbors = input$neighborsUMAP,
                                        nIterations = input$iterUMAP,
                                        minDist = input$mindistUMAP,
                                        alpha = input$alphaUMAP)
-              } else if (input$dimRedAssayType == 2) {
+              } else if (input$dimRedAssayType_tsneUmap == 2) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay,
-                                       useAltExp = input$dimRedAltExpSelect,
+                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
+                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        nNeighbors = input$neighborsUMAP,
                                        nIterations = input$iterUMAP,
@@ -2080,6 +2782,65 @@ shinyServer(function(input, output, session) {
         }
       })
     }
+    
+    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
+    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
+    
+    shinyjs::show(selector = ".dimRedTSNEUMAP_plotTabset_class")
+    
+    if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
+       || input$dimRedPlotMethod_tsneUmap == "tSNE"){
+      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
+                                                                panel(heading = "tSNE Plot",
+                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
+                                                                )
+      ), select = TRUE)
+    }
+    else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"
+            || input$dimRedPlotMethod_tsneUmap == "UMAP"){
+      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "UMAP Plot",
+                                                                panel(heading = "UMAP Plot",
+                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
+                                                                )
+      ), select = TRUE)
+    }
+    
+    withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
+      redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+      if(input$dimRedAssayType_tsneUmap == 1){
+        output$plotDimRed_tsneUmap <- renderPlotly({
+          plotly::ggplotly(plotDimRed(
+            inSCE = vals$counts,
+            useReduction = redDimName,
+            xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+            yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
+          ))
+        })
+      }
+      else if(input$dimRedAssayType_tsneUmap == 2){
+        if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
+           || input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
+          output$plotDimRed_tsneUmap <- renderPlotly({
+            plotly::ggplotly(plotDimRed(
+              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
+            ))
+          })
+        }
+        else{
+          output$plotDimRed_tsneUmap <- renderPlotly({
+            plotly::ggplotly(plotDimRed(
+              inSCE = vals$counts,
+              useReduction = redDimName,
+              xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
+            ))
+          })
+        }
+      }
+    })
   })
 
   #-----------------------------------------------------------------------------
@@ -2401,7 +3162,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
     showNotification("Number of Feature Modules Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Feature Modules" = "danger"))
+    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Feature Modules" = "success"))
     shinyjs::enable(selector = "div[value='Identify Number of Cell Clusters']")
   })
 
@@ -2452,7 +3213,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$celdaKbtn, {
     vals$counts <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
     showNotification("Number of Cell Clusters Selected.")
-    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "danger"))
+    updateCollapse(session = session, "CeldaUI", style = list("Identify Number of Cell Clusters" = "success"))
     shinyjs::enable(
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
@@ -4203,35 +4964,11 @@ shinyServer(function(input, output, session) {
         HVGs <- getTopHVG(inSCE = vals$counts,
                           method = input$hvgMethodFS,
                           n = input$hvgNoFeaturesViewFS)
-        if (input$hvgMethodFS == "vst") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_vst_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_vst_varianceStandardized
-          labeling <- "Standardized Variance"
-        } else if (input$hvgMethodFS == "mean.var.plot") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_mvp_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_mvp_dispersionScaled
-          labeling <- "Dispersion"
-        } else if (input$hvgMethodFS == "dispersion") {
-          x <- rowData(vals$counts)$seurat_variableFeatures_dispersion_mean
-          y <- rowData(vals$counts)$seurat_variableFeatures_dispersion_dispersionScaled
-          labeling <- "Dispersion"
-        } else if (input$hvgMethodFS == "modelGeneVar") {
-          x <- rowData(vals$counts)$scran_modelGeneVar_mean
-          y <- rowData(vals$counts)$scran_modelGeneVar_totalVariance
-          labeling <- "Variance"
-        }
-        vals$vfplot <- ggplot() +
-          geom_point(aes(x = x, y = y)) +
-          geom_point(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                         y = subset(y, rownames(vals$counts) %in% HVGs)),
-                     colour = "red") +
-          geom_label(aes(x = subset(x, rownames(vals$counts) %in% HVGs),
-                         y = subset(y, rownames(vals$counts) %in% HVGs),
-                         label = subset(rownames(vals$counts),
-                                        rownames(vals$counts) %in% HVGs)),
-                     colour = "red",
-                     size = 2) +
-          labs(x = "Mean", y = labeling)
+        vals$vfplot <- plotTopHVG(
+          inSCE =  vals$counts,
+          method = input$hvgMethodFS,
+          hvgList = HVGs
+        )
         output$plotFS <- renderPlot({
           if (!is.null(vals$vfplot)) {
             vals$vfplot
@@ -4832,13 +5569,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$fmHMAssayUI <- renderUI({
-    if(!is.null(vals$counts)){
-      allAssay <- assayNames(vals$counts)
-      selectInput('fmHMAssay', "Assay to plot", allAssay,
-                  selected = input$fmAssay)
-    }
-  })
+  # output$fmHMAssayUI <- renderUI({
+  #   if(!is.null(vals$counts)){
+  #     allAssay <- assayNames(vals$counts)
+  #     selectInput('fmHMAssay', "Assay to plot", allAssay,
+  #                 selected = input$fmAssay)
+  #   }
+  # })
 
   observeEvent(input$plotFM, {
     if(!is.null(vals$counts) &&
@@ -5290,7 +6027,7 @@ shinyServer(function(input, output, session) {
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
     shinyjs::enable(selector = "div[value='Scale Data']")
     showNotification("Normalization Complete")
   })
@@ -5309,7 +6046,7 @@ shinyServer(function(input, output, session) {
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
     shinyjs::enable(selector = "div[value='Highly Variable Genes']")
     showNotification("Scale Complete")
   })
@@ -5329,7 +6066,7 @@ shinyServer(function(input, output, session) {
         plotly::ggplotly(seuratPlotHVG(vals$counts))
       })
     })
-    updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
     shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
     showNotification("Find HVG Complete")
   })
@@ -5450,7 +6187,7 @@ shinyServer(function(input, output, session) {
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
       })
     }
-    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
     #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
     shinyjs::enable(
@@ -5543,7 +6280,7 @@ shinyServer(function(input, output, session) {
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_ic, "IC"))
       })
     }
-    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "danger"))
+    updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
     #Enable/Disable ICA plot panels not selected for computation (Heatmap)
     shinyjs::enable(
@@ -5582,7 +6319,7 @@ shinyServer(function(input, output, session) {
                                           groupSingletons = input$group.singletons,
                                           resolution = input$resolution_clustering)
       })
-      updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
       showNotification("Find Clusters Complete")
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
@@ -5662,11 +6399,473 @@ shinyServer(function(input, output, session) {
       }
 
       shinyjs::show(selector = ".seurat_clustering_plots")
+      
+      #enable find marker selection
+      shinyjs::enable(
+        selector = "div[value='Find Markers']")
+      
+      #update colData names
+      updateColDataNames()
+      
+      #populate updated colData items for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerSelectPhenotype", 
+                        choices = colnames(colData(vals$counts)))
+      
+      #populate reducDim objects from seuratObject for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerReductionMethod", 
+                        choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
     }
   })
+  
+  observeEvent(input$seuratFindMarkerSelectPhenotype,{
+    if(!is.null(vals$counts)){
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup1",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup2",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerGroup1,{
+    if(!is.null(vals$counts)){
+      matchedIndex <- match(input$seuratFindMarkerGroup1,  unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]]))
+      if(!is.na(matchedIndex)){
+        updateSelectInput(
+          session = session,
+          inputId = "seuratFindMarkerGroup2",
+          choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])[-matchedIndex]
+        )
+      }
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerRun,{
+    
+    removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
+    
+    withProgress(message = "Finding markers", max = 1, value = 1,{
+      if(input$seuratFindMarkerType == "markerAll"){
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         allGroup = input$seuratFindMarkerSelectPhenotype)
+      }
+      else{
+        indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        cells1 <- colnames(vals$counts)[indices]
+        cells2 <- colnames(vals$counts)[-indices]
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         cells1 = cells1,
+                                         cells2 = cells2,
+                                         group1 = input$seuratFindMarkerGroup1,
+                                         group2 = input$seuratFindMarkerGroup2)
+      }
+    })
+
+    appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
+                                                               panel(heading = "Marker Genes",
+                                                                     DT::dataTableOutput(
+                                                                       outputId = "seuratFindMarkerTable"
+                                                                     )
+                                                               )
+    ), select = TRUE)
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+      #apply(
+        metadata(vals$counts)$seuratMarkers
+        #, c(1,2), round, 6)
+    }, filter = "top", options = list(pageLength = 6, stateSave = TRUE,
+                                      searchCols = list(NULL, NULL, NULL, NULL, NULL,
+                                                        list(search = '0 ... 0.05'))))
+    
+    shinyjs::show(selector = ".seurat_findmarker_table")
+    
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              uiOutput(
+                                                                                outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                              ),
+                                                                              panel(
+                                                                                jqui_resizable(
+                                                                                  
+                                                                                    plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                    
+                                                                                )
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                               panel(heading = "Ridge Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                              )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                               panel(heading = "Violin Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                               panel(heading = "Feature Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                               panel(heading = "Dot Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    
+    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
+    })
+    
+    #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
+    shinyjs::show(selector = ".seurat_findmarker_plots")
+    
+    showNotification("Find Markers Complete")
+    
+    #enable downstream analysis
+    shinyjs::show(
+      selector = "div[value='Downstream Analysis']")
+    updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+  })
+  
+  observeEvent(input$seuratFindMarkerTable_search_columns,{
+    df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_all,]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values between", input$seuratFindMarkerTable_search_columns[5]))
+    })
+  })
+  
+  # observeEvent(input$seuratFindMarkerPValueAdj,{
+  #   output$seuratFindMarkerTable <- DT::renderDataTable({
+  #    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValueAdj), arr.ind = TRUE),]
+  #    apply(df, c(1,2), round, 6)
+  #    }, filter = "top", options = list(pageLength = 6))
+  # })
+  
+  seuratfindMarkerTableObserve <- observe(suspended = F,
+                                    {
+                                      input$seuratFindMarkerTable_rows_selected
+                                      isolate({
+                                        if(!is.null(input$seuratFindMarkerTable_rows_selected)){
+                                          df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_selected,]
+                                          seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+                                          
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                       
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                                                     panel(heading = "Ridge Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerRidgePlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                                                     panel(heading = "Violin Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerViolinPlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                                                     panel(heading = "Feature Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                                                     panel(heading = "Dot Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerDotPlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                                                                panel(heading = "Heatmap Plot",
+                                                                                                                      fluidRow(
+                                                                                                                        column(12, align = "center",
+                                                                                                                               panel(
+                                                                                                                                 plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                                                                               )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                )
+                                                                                                     )
+                                          
+                                          )
+                                          
+                                          indices <- list()
+                                          cells <- list()
+                                          groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+                                          for(i in seq(length(groups))){
+                                            indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+                                            cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+                                            cells[[i]] <- lapply(
+                                              X = cells[[i]], 
+                                              FUN = function(t) gsub(
+                                                pattern = "_", 
+                                                replacement = "-", 
+                                                x = t, 
+                                                fixed = TRUE)
+                                            )
+                                            Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+                                          }
+                                          
+                                          output$findMarkerRidgePlot <- renderPlot({
+                                            RidgePlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerViolinPlot <- renderPlot({
+                                            VlnPlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerFeaturePlot <- renderPlot({
+                                            FeaturePlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerDotPlot <- renderPlot({
+                                            DotPlot(seuratObject, features = rownames(df))
+                                          })
+                                          output$findMarkerHeatmapPlot <- renderPlot({
+                                            DoHeatmap(seuratObject, features = rownames(df))
+                                          })
+                                          
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          shinyjs::show(selector = ".seurat_findmarker_plots")
+                                        }
+                                        else {
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          
+                                          output$findMarkerRidgePlot <- NULL
+                                          output$findMarkerViolinPlot <- NULL
+                                          output$findMarkerFeaturePlot <- NULL
+                                          output$findMarkerDotPlot <- NULL
+                                          output$findMarkerHeatmapPlot <- NULL
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                        
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
+                                                                                                                      ),
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                                                     panel(heading = "Ridge Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                                                     panel(heading = "Violin Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                                                     panel(heading = "Feature Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                                                     panel(heading = "Dot Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                                                                panel(heading = "Heatmap Plot",
+                                                                                                                      fluidRow(
+                                                                                                                        column(12, align = "center",
+                                                                                                                               panel(
+                                                                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                               )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                )
+                                          )
+                                          )
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                        }
+                                      })
+                                    })
+  
+  
+
 
   #Update PCA/ICA message in clustering tab
   output$display_message_clustering <- renderText({
@@ -5701,7 +6900,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
 
       showNotification("tSNE Complete")
@@ -5747,7 +6946,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "danger"))
+      updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
       showNotification("UMAP Complete")
     }
@@ -5904,6 +7103,8 @@ shinyServer(function(input, output, session) {
         selector = "div[value='Clustering']")
       shinyjs::disable(
         selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Find Markers']")
 
       #Disable plots inside PCA subtab
       shinyjs::disable(
@@ -5932,7 +7133,6 @@ shinyServer(function(input, output, session) {
         selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
     }
   })
-
 
   #-----------------------------------------------------------------------------
   # Page: Column Annotation (colData)
@@ -6264,7 +7464,6 @@ shinyServer(function(input, output, session) {
     output$changesWarning_colData <- NULL
     showNotification("Changes saved successfully.")
   })
-
 
   #-----------------------------------------------------------------------------
   # Page: Row Annotation (rowData)
