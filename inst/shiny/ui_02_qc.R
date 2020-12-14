@@ -157,8 +157,9 @@ shinyPanelQC <- fluidPage(
             )
           ),
           tags$hr(),
-          h4("General Paramters"),
-          selectInput("qcAssaySelect", "Select an Assay", list()),
+          h4("General Parameters"),
+          uiOutput("qcAssaySelect"),
+          #selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select variable containing sample labels", list()),
 
           tags$hr(), # UMAP params

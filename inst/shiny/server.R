@@ -157,50 +157,88 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "downsampleNum", value = numsamples,
                        max = numsamples)
   }
+  
+  updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL, 
+                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE){
+    if(!is.null(choices)
+       && is.null(tags)){
+      choices <- singleCellTK:::.getAssays(vals$counts)
+    }
+    else{
+      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+    }
+    if(!showTags){
+      allChoices <- NULL
+      for(i in seq(length(choices))){
+        allChoices <- c(allChoices, choices[[i]])
+      }
+      choices <- allChoices
+    }
+    else{
+      if(!is.null(recommended)){
+        namesChoices <- names(choices)
+        for(i in seq(length(namesChoices))){
+          if(recommended == namesChoices[i]){
+            namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+          }
+        }
+        names(choices) <- namesChoices
+      }
+    }
+    if(!is.null(selected)){
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices,
+          selected = selected
+        )
+      })
+    }
+    else{
+      output[[inputId]] <- renderUI({
+        selectInput(
+          inputId = inputId,
+          label = label,
+          choices = choices
+        )
+      })
+    }
+
+  }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInput(session, "dimRedAssaySelect", choices = currassays)
-    updateSelectInput(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
-    updateSelectInput(session, "batchCorrAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckAssay", choices = currassays)
-    updateSelectInput(session, "batchCheckOrigAssay", choices = currassays)
-    updateSelectInput(session, "deAssay", choices = currassays)
-    updateSelectInput(session, "fmAssay", choices = currassays)
-    updateSelectInput(session, "fmHMAssay", choices = currassays)
-    updateSelectInput(session, "pathwayAssay", choices = currassays)
-    updateSelectInput(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
+    updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
+    updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
+    updateSelectInputTag(session, "deAssay", choices = currassays)
+    updateSelectInputTag(session, "fmAssay", choices = currassays)
+    updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
+    updateSelectInputTag(session, "pathwayAssay", choices = currassays)
+    updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
     
-    # updateSelectInput(session, "normalizeAssaySelect", choices = currassays)
-    # updateSelectInput(session, "normalizeAssaySelect", choices = 
-    #                     singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized")))
+    #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
     
-    selectedChoicesForNormalizationTab <- singleCellTK:::.sctkGetTag(vals$counts, c("raw", "normalized"))
-    names(selectedChoicesForNormalizationTab)[1] <- "raw (recommended)"
-    output$normalizeAssaySelect <- renderUI({
-      selectInput(
-        inputId = "normalizeAssaySelect",
-        label = "Select assay:",
-        choices = selectedChoicesForNormalizationTab
-      )
-    })
-    
-    updateSelectInput(session, "seuratSelectNormalizationAssay", choices = currassays)
-    updateSelectInput(session, "assaySelectFS_Norm", choices = currassays)
-    updateSelectInput(session, "filterAssaySelect", choices = currassays)
-    updateSelectInput(session, "qcAssaySelect", choices = currassays)
-    updateSelectInput(session, "celdaAssay", choices = currassays)
-    updateSelectInput(session, "celdaAssayGS", choices = currassays)
-    updateSelectInput(session, "celdaAssaytSNE", choices = currassays)
-    updateSelectInput(session, "celdaAssayProbabilityMap",
+    updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
+    updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
+    updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "celdaAssay", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
+    updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
+    updateSelectInputTag(session, "celdaAssayProbabilityMap",
                       choices = currassays)
-    updateSelectInput(session, "celdaAssayModuleHeatmap",
+    updateSelectInputTag(session, "celdaAssayModuleHeatmap",
                       choices = currassays)
-    updateSelectInput(session, "depthAssay", choices = currassays)
-    updateSelectInput(session, "cellsAssay", choices = currassays)
-    updateSelectInput(session, "snapshotAssay", choices = currassays)
-    updateSelectInput(session, "exportAssay", choices = currassays)
-    updateSelectInput(session, "hmAssay", choices = currassays)
+    updateSelectInputTag(session, "depthAssay", choices = currassays)
+    updateSelectInputTag(session, "cellsAssay", choices = currassays)
+    updateSelectInputTag(session, "snapshotAssay", choices = currassays)
+    updateSelectInputTag(session, "exportAssay", choices = currassays)
+    updateSelectInputTag(session, "hmAssay", choices = currassays)
   }
 
   observeEvent(vals$counts, {
@@ -1962,8 +2000,12 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
-          assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          sctkAssay(vals$counts, input$normalizeAssayOutname, tag = "normalized") <- scater::calculateCPM(
             x = assay(vals$counts, input$normalizeAssaySelect))
+          
+          # assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
+          #   x = assay(vals$counts, input$normalizeAssaySelect))
+          
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
@@ -2088,8 +2130,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
-        assay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
-        vals$counts <- singleCellTK:::.updateTag(vals$counts, input$checkboxAssaysToRemove[i])
+        sctkAssay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
@@ -5578,13 +5619,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$fmHMAssayUI <- renderUI({
-    if(!is.null(vals$counts)){
-      allAssay <- assayNames(vals$counts)
-      selectInput('fmHMAssay', "Assay to plot", allAssay,
-                  selected = input$fmAssay)
-    }
-  })
+  # output$fmHMAssayUI <- renderUI({
+  #   if(!is.null(vals$counts)){
+  #     allAssay <- assayNames(vals$counts)
+  #     selectInput('fmHMAssay', "Assay to plot", allAssay,
+  #                 selected = input$fmAssay)
+  #   }
+  # })
 
   observeEvent(input$plotFM, {
     if(!is.null(vals$counts) &&
@@ -6409,18 +6450,472 @@ shinyServer(function(input, output, session) {
 
       shinyjs::show(selector = ".seurat_clustering_plots")
       
-      #enable downstream analysis
-      shinyjs::show(
-        selector = "div[value='Downstream Analysis']")
-      updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+      #enable find marker selection
+      shinyjs::enable(
+        selector = "div[value='Find Markers']")
       
       #update colData names
       updateColDataNames()
+      
+      #populate updated colData items for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerSelectPhenotype", 
+                        choices = colnames(colData(vals$counts)))
+      
+      #populate reducDim objects from seuratObject for findMarkers tab
+      updateSelectInput(session = session, 
+                        inputId = "seuratFindMarkerReductionMethod", 
+                        choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
     }
   })
+  
+  observeEvent(input$seuratFindMarkerSelectPhenotype,{
+    if(!is.null(vals$counts)){
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup1",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "seuratFindMarkerGroup2",
+        choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      )
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerGroup1,{
+    if(!is.null(vals$counts)){
+      matchedIndex <- match(input$seuratFindMarkerGroup1,  unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]]))
+      if(!is.na(matchedIndex)){
+        updateSelectInput(
+          session = session,
+          inputId = "seuratFindMarkerGroup2",
+          choices = unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])[-matchedIndex]
+        )
+      }
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerRun,{
+    
+    removeTab(inputId = "seuratFindMarkerTableTabset", target = "Marker Genes")
+    
+    withProgress(message = "Finding markers", max = 1, value = 1,{
+      if(input$seuratFindMarkerType == "markerAll"){
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         allGroup = input$seuratFindMarkerSelectPhenotype)
+      }
+      else{
+        indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        cells1 <- colnames(vals$counts)[indices]
+        cells2 <- colnames(vals$counts)[-indices]
+        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                         cells1 = cells1,
+                                         cells2 = cells2,
+                                         group1 = input$seuratFindMarkerGroup1,
+                                         group2 = input$seuratFindMarkerGroup2)
+      }
+    })
+
+    appendTab(inputId = "seuratFindMarkerTableTabset", tabPanel(title = "Marker Genes",
+                                                               panel(heading = "Marker Genes",
+                                                                     DT::dataTableOutput(
+                                                                       outputId = "seuratFindMarkerTable"
+                                                                     )
+                                                               )
+    ), select = TRUE)
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      #cbind(id = rownames(metadata(vals$counts)$seuratMarkers), metadata(vals$counts)$seuratMarkers)
+      #apply(
+        metadata(vals$counts)$seuratMarkers
+        #, c(1,2), round, 6)
+    }, filter = "top", options = list(pageLength = 6, stateSave = TRUE,
+                                      searchCols = list(NULL, NULL, NULL, NULL, NULL,
+                                                        list(search = '0 ... 0.05'))))
+    
+    shinyjs::show(selector = ".seurat_findmarker_table")
+    
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              uiOutput(
+                                                                                outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                              ),
+                                                                              panel(
+                                                                                jqui_resizable(
+                                                                                  
+                                                                                    plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                    
+                                                                                )
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                               panel(heading = "Ridge Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                              )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                               panel(heading = "Violin Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                               panel(heading = "Feature Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                               panel(heading = "Dot Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                       column(12, align = "center",
+                                                                              panel(
+                                                                                HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                              )
+                                                                       )
+                                                                     )
+                                                               )
+    )
+    )
+    
+    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6("Heatmap plotted across all groups against genes with adjusted p-values < 0.05")
+    })
+    
+    #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
+    shinyjs::show(selector = ".seurat_findmarker_plots")
+    
+    showNotification("Find Markers Complete")
+    
+    #enable downstream analysis
+    shinyjs::show(
+      selector = "div[value='Downstream Analysis']")
+    updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+  })
+  
+  observeEvent(input$seuratFindMarkerTable_search_columns,{
+    df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_all,]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = rownames(df))
+    })
+    
+    output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      h6(paste("Heatmap plotted across all groups against genes with adjusted p-values between", input$seuratFindMarkerTable_search_columns[5]))
+    })
+  })
+  
+  # observeEvent(input$seuratFindMarkerPValueAdj,{
+  #   output$seuratFindMarkerTable <- DT::renderDataTable({
+  #    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < as.numeric(input$seuratFindMarkerPValueAdj), arr.ind = TRUE),]
+  #    apply(df, c(1,2), round, 6)
+  #    }, filter = "top", options = list(pageLength = 6))
+  # })
+  
+  seuratfindMarkerTableObserve <- observe(suspended = F,
+                                    {
+                                      input$seuratFindMarkerTable_rows_selected
+                                      isolate({
+                                        if(!is.null(input$seuratFindMarkerTable_rows_selected)){
+                                          df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerTable_rows_selected,]
+                                          seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+                                          
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                       
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                                                     panel(heading = "Ridge Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerRidgePlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                                                     panel(heading = "Violin Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerViolinPlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                                                     panel(heading = "Feature Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                                                     panel(heading = "Dot Plot",
+                                                                                                           jqui_resizable(
+                                                                                                             plotOutput(outputId = "findMarkerDotPlot")
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                                                                panel(heading = "Heatmap Plot",
+                                                                                                                      fluidRow(
+                                                                                                                        column(12, align = "center",
+                                                                                                                               panel(
+                                                                                                                                 plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                                                                               )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                )
+                                                                                                     )
+                                          
+                                          )
+                                          
+                                          indices <- list()
+                                          cells <- list()
+                                          groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+                                          for(i in seq(length(groups))){
+                                            indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+                                            cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+                                            cells[[i]] <- lapply(
+                                              X = cells[[i]], 
+                                              FUN = function(t) gsub(
+                                                pattern = "_", 
+                                                replacement = "-", 
+                                                x = t, 
+                                                fixed = TRUE)
+                                            )
+                                            Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+                                          }
+                                          
+                                          output$findMarkerRidgePlot <- renderPlot({
+                                            RidgePlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerViolinPlot <- renderPlot({
+                                            VlnPlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerFeaturePlot <- renderPlot({
+                                            FeaturePlot(seuratObject, features = rownames(df), ncol = 2)
+                                          })
+                                          output$findMarkerDotPlot <- renderPlot({
+                                            DotPlot(seuratObject, features = rownames(df))
+                                          })
+                                          output$findMarkerHeatmapPlot <- renderPlot({
+                                            DoHeatmap(seuratObject, features = rownames(df))
+                                          })
+                                          
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          shinyjs::show(selector = ".seurat_findmarker_plots")
+                                        }
+                                        else {
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          
+                                          output$findMarkerRidgePlot <- NULL
+                                          output$findMarkerViolinPlot <- NULL
+                                          output$findMarkerFeaturePlot <- NULL
+                                          output$findMarkerDotPlot <- NULL
+                                          output$findMarkerHeatmapPlot <- NULL
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                                                                                     panel(heading = "Heatmap Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      uiOutput(
+                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                                                      ),
+                                                                                                                      jqui_resizable(
+                                                                                                                        
+                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull") %>% withSpinner(color = "#858585", type = 5),
+                                                                                                                       
+                                                                                                                      ),
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                                                     panel(heading = "Ridge Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                                                     panel(heading = "Violin Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                                                     panel(heading = "Feature Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                                                     panel(heading = "Dot Plot",
+                                                                                                           fluidRow(
+                                                                                                             column(12, align = "center",
+                                                                                                                    panel(
+                                                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                    )
+                                                                                                             )
+                                                                                                           )
+                                                                                                     )
+                                          )
+                                          )
+                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                                                                panel(heading = "Heatmap Plot",
+                                                                                                                      fluidRow(
+                                                                                                                        column(12, align = "center",
+                                                                                                                               panel(
+                                                                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                                                               )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                )
+                                          )
+                                          )
+                                          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                          #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                        }
+                                      })
+                                    })
+  
+  
+
 
   #Update PCA/ICA message in clustering tab
   output$display_message_clustering <- renderText({
@@ -6658,6 +7153,8 @@ shinyServer(function(input, output, session) {
         selector = "div[value='Clustering']")
       shinyjs::disable(
         selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Find Markers']")
 
       #Disable plots inside PCA subtab
       shinyjs::disable(

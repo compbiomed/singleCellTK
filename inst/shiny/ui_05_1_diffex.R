@@ -18,7 +18,8 @@ shinyPanelDiffex <- fluidPage(
           ),
           column(
             4,
-            selectInput("deAssay", "Select Assay:", currassays)
+            uiOutput("deAssay")
+            #selectInput("deAssay", "Select Assay:", currassays)
           )
         ),
         h3("Condition Setting"),
