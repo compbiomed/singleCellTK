@@ -799,10 +799,12 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @param group1 Name of group1.
 #' @param group2 Name of group2.
 #' @param allGroup Name of all groups.
+#' @param conserved Logical value indicating if markers conserved between two
+#' groups should be identified. Default is \code{FALSE}.
 #'
 #' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL){
+seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL, conserved = FALSE){
   seuratObject <- convertSCEToSeurat(inSCE)
   markerGenes <- NULL
   if(is.null(allGroup)){
@@ -825,13 +827,39 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     )
     Seurat::Idents(seuratObject, cells = cells1) <- group1
     Seurat::Idents(seuratObject, cells = cells2) <- group2
-    markerGenes <- Seurat::FindMarkers(object = seuratObject, ident.1 = group1, ident.2 = group2)
+    markerGenes <- NULL
+    if(!conserved){
+      markerGenes <- Seurat::FindMarkers(
+        object = seuratObject, 
+        ident.1 = group1, 
+        ident.2 = group2
+        )
+    }
+    else{
+      seuratObject[["groups"]] <- Seurat::Idents(seuratObject)
+      markerGenes <- Seurat::FindConservedMarkers(
+        object = seuratObject, 
+        ident.1 = group1, 
+        ident.2 = group2, 
+        grouping.var = "groups")
+    }
     markerGenes$cluster <- paste0(group1, " vs ", group2)
+    gene.id <- rownames(markerGenes)
+    markerGenes <- cbind(gene.id, markerGenes)
   }
   else{
     Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
     markerGenes <- Seurat::FindAllMarkers(seuratObject)
+    gene.id <- markerGenes$gene
+    markerGenes <- cbind(gene.id, markerGenes)
+    markerGenes$gene <- NULL
+    grp <- unique(colData(inSCE)[[allGroup]])
+    clust <- as.integer(unique(Idents(seuratObject)))
+    for(i in seq(length(clust))){
+      levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    }
   }
+  rownames(markerGenes) <- NULL
   S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes
   return(inSCE)
 }

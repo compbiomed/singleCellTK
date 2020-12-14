@@ -6502,22 +6502,33 @@ shinyServer(function(input, output, session) {
                                          allGroup = input$seuratFindMarkerSelectPhenotype)
       }
       else{
-        indices <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-        cells1 <- colnames(vals$counts)[indices]
-        cells2 <- colnames(vals$counts)[-indices]
-        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
-                                         cells1 = cells1,
-                                         cells2 = cells2,
-                                         group1 = input$seuratFindMarkerGroup1,
-                                         group2 = input$seuratFindMarkerGroup2)
+        indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
+        cells1 <- colnames(vals$counts)[indices1]
+        cells2 <- colnames(vals$counts)[indices2]
+        if(input$seuratFindMarkerType == "markerConserved"){
+          vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                           cells1 = cells1,
+                                           cells2 = cells2,
+                                           group1 = input$seuratFindMarkerGroup1,
+                                           group2 = input$seuratFindMarkerGroup2,
+                                           conserved = TRUE)
+        }
+        else{
+          vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+                                           cells1 = cells1,
+                                           cells2 = cells2,
+                                           group1 = input$seuratFindMarkerGroup1,
+                                           group2 = input$seuratFindMarkerGroup2)
+        }
       }
     })
   
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- metadata(vals$counts)$seuratMarkers
-      gene.id <- rownames(df)
-      df <- cbind(gene.id, df)
-      rownames(df) <- NULL
+      #gene.id <- rownames(df)
+      #df <- cbind(gene.id, df)
+      #rownames(df) <- NULL
       df$p_val <- format(df$p_val, nsmall = 7)
       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
       df$pct.1 <- format(df$pct.1, nsmall = 7)
@@ -6684,34 +6695,6 @@ shinyServer(function(input, output, session) {
                      )))
                    )
                      )
-              # column(2,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(2,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(2,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(1,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(1,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(2,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # ),
-              # column(2,
-              #        offset = 0.1, style='padding:3px;',
-              # 
-              # )
             )
             )
           
@@ -6825,7 +6808,7 @@ shinyServer(function(input, output, session) {
     
     #table
     output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = rownames(df))
+      DoHeatmap(seuratObject, features = df$gene.id)
     })
     
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -6838,10 +6821,10 @@ shinyServer(function(input, output, session) {
       updateSelectizeInput(session = session,
                            inputId = "seuratFindMarkerGeneIDInput",
                            selected = selectedGeneId,
-                           choices = rownames(df))
-      gene.id <- rownames(df)
-      df <- cbind(gene.id, df)
-      rownames(df) <- NULL
+                           choices = df$gene.id)
+      #gene.id <- rownames(df)
+      #df <- cbind(gene.id, df)
+      #rownames(df) <- NULL
       df$p_val <- format(df$p_val, nsmall = 7)
       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
       df$pct.1 <- format(df$pct.1, nsmall = 7)
@@ -6909,25 +6892,31 @@ shinyServer(function(input, output, session) {
           df <- df[input$seuratFindMarkerGeneIDInput,]
         }
         else if(input$seuratFindMarkerGeneIDOption == "!="){
-          df <- df[-which(input$seuratFindMarkerGeneIDInput %in% rownames(df), arr.ind = TRUE),]
+          df <- df[-which(input$seuratFindMarkerGeneIDInput %in% df$gene.id, arr.ind = TRUE),]
         }
       }
     }
     else{
-      allOperators <- c(p_val_operators,
-                        lfc_operators,
-                        pct1_operators,
-                        pct2_operators,
-                        p_val_adj_operators)
+      allOperators <- c(
+        "",
+        p_val_operators,
+        lfc_operators,
+        pct1_operators,
+        pct2_operators,
+        p_val_adj_operators
+        )
       
-      allValues <- c(input$seuratFindMarkerPValInput,
-                     input$seuratFindMarkerLFCInput,
-                     input$seuratFindMarkerPct1Input,
-                     input$seuratFindMarkerPct2Input,
-                     input$seuratFindMarkerPValAdjInput)
+      allValues <- c(
+        "",
+        input$seuratFindMarkerPValInput,
+        input$seuratFindMarkerLFCInput,
+        input$seuratFindMarkerPct1Input,
+        input$seuratFindMarkerPct2Input,
+        input$seuratFindMarkerPValAdjInput
+        )
       
       parameters <- list()
-      for(i in seq(length(1:5))){
+      for(i in seq(length(1:6))){
         if(allOperators[i] != ""){
           parameters$operators <- c(parameters$operators, allOperators[i])
           parameters$values <- c(parameters$values, allValues[i])
@@ -6972,7 +6961,7 @@ shinyServer(function(input, output, session) {
     }
     
     output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = rownames(df))
+      DoHeatmap(seuratObject, features = df$gene.id)
     })
     
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -6981,9 +6970,6 @@ shinyServer(function(input, output, session) {
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       metadata(vals$counts)$seuratMarkersSubset <- df
-      gene.id <- rownames(df)
-      df <- cbind(gene.id, df)
-      rownames(df) <- NULL
       df$p_val <- format(df$p_val, nsmall = 7)
       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
       df$pct.1 <- format(df$pct.1, nsmall = 7)
@@ -7094,19 +7080,19 @@ shinyServer(function(input, output, session) {
                                           }
                                           
                                           output$findMarkerRidgePlot <- renderPlot({
-                                            RidgePlot(seuratObject, features = rownames(df), ncol = 2)
+                                            RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
                                           })
                                           output$findMarkerViolinPlot <- renderPlot({
-                                            VlnPlot(seuratObject, features = rownames(df), ncol = 2)
+                                            VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
                                           })
                                           output$findMarkerFeaturePlot <- renderPlot({
-                                            FeaturePlot(seuratObject, features = rownames(df), ncol = 2)
+                                            FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
                                           })
                                           output$findMarkerDotPlot <- renderPlot({
-                                            DotPlot(seuratObject, features = rownames(df))
+                                            DotPlot(seuratObject, features = df$gene.id)
                                           })
                                           output$findMarkerHeatmapPlot <- renderPlot({
-                                            DoHeatmap(seuratObject, features = rownames(df))
+                                            DoHeatmap(seuratObject, features = df$gene.id)
                                           })
                                           
                                           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)

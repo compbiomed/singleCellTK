@@ -484,7 +484,6 @@ setMethod(f = "sctkAssay<-",
 )
 
 .filterDF <- function(df, operators, cols, values){
-  #operators cols values should have same length
   filters <- NULL
   for(i in seq(length(cols))){
     filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))

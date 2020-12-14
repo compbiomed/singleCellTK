@@ -10,7 +10,8 @@ seuratFindMarkers(
   cells2 = NULL,
   group1 = NULL,
   group2 = NULL,
-  allGroup = NULL
+  allGroup = NULL,
+  conserved = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ seuratFindMarkers(
 \item{group2}{Name of group2.}
 
 \item{allGroup}{Name of all groups.}
+
+\item{conserved}{Logical value indicating if markers conserved between two
+groups should be identified. Default is \code{FALSE}.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.

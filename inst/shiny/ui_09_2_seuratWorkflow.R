@@ -255,9 +255,11 @@ shinyPanelSeurat <- fluidPage(
                                                       radioButtons(
                                                           inputId = "seuratFindMarkerType",
                                                           label = "Select type of markers to identify:",
-                                                          choices = c("markers differentially expressed between two selected groups" = "markerDiffExp",
-                                                                      "markers conserved between two selected groups" = "markerConserved",
-                                                                      "markers between all groups" = "markerAll")
+                                                          choices = c(
+                                                              "markers between all groups" = "markerAll",
+                                                              "markers differentially expressed between two selected groups" = "markerDiffExp",
+                                                              "markers conserved between two selected groups" = "markerConserved"
+                                                                      )
                                                       ),
                                                       selectInput(
                                                           inputId = "seuratFindMarkerSelectPhenotype",
