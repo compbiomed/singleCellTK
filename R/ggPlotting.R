@@ -494,6 +494,8 @@ plotSCEDimReduceColData <- function(inSCE,
 plotSCEDimReduceFeatures <- function(inSCE,
                                      sample = NULL,
                                      feature,
+                                     featureLocation = NULL,
+                                     featureDisplay = NULL,
                                      shape = NULL,
                                      reducedDimName,
                                      useAssay = "logcounts",
@@ -527,9 +529,15 @@ plotSCEDimReduceFeatures <- function(inSCE,
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = tail(colnames(mat),1)
+  }
 
   g <- .ggScatter(
     inSCE = inSCE,
@@ -1071,6 +1079,7 @@ plotSCEViolinColData <- function(inSCE,
 plotSCEViolinAssayData <- function(inSCE,
                                    sample = NULL,
                                    useAssay = "counts",
+                                   useRowData = NULL,
                                    feature,
                                    groupBy = NULL,
                                    violin = TRUE,
@@ -1096,6 +1105,7 @@ plotSCEViolinAssayData <- function(inSCE,
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
+    useRowData = useRowData,
     gene = feature,
     binary = "Continuous"
   )
@@ -1602,6 +1612,8 @@ plotSCEDensityAssayData <- function(inSCE,
                                     sample = NULL,
                                     useAssay = "counts",
                                     feature,
+                                    featureLocation = NULL,
+                                    featureDisplay = NULL,
                                     groupBy = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
@@ -1621,9 +1633,18 @@ plotSCEDensityAssayData <- function(inSCE,
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    xlab = "Expression"
+  }
 
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
