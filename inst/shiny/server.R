@@ -6029,6 +6029,9 @@ shinyServer(function(input, output, session) {
     })
     updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
     shinyjs::enable(selector = "div[value='Scale Data']")
+    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+    shinyjs::hide(
+      selector = "div[value='Downstream Analysis']")
     showNotification("Normalization Complete")
   })
 
@@ -6048,6 +6051,9 @@ shinyServer(function(input, output, session) {
     })
     updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
     shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+    shinyjs::hide(
+      selector = "div[value='Downstream Analysis']")
     showNotification("Scale Complete")
   })
 
@@ -6068,6 +6074,9 @@ shinyServer(function(input, output, session) {
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
     shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+    shinyjs::hide(
+      selector = "div[value='Downstream Analysis']")
     showNotification("Find HVG Complete")
   })
 
@@ -6209,7 +6218,11 @@ shinyServer(function(input, output, session) {
       selector = "div[value='tSNE/UMAP']")
 
     shinyjs::show(selector = ".seurat_pca_plots")
-
+    
+    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+    shinyjs::hide(
+      selector = "div[value='Downstream Analysis']")
+    
     showNotification("PCA Complete")
   })
 
@@ -6294,7 +6307,11 @@ shinyServer(function(input, output, session) {
       selector = "div[value='tSNE/UMAP']")
 
     shinyjs::show(selector = ".seurat_ica_plots")
-
+    
+    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+    shinyjs::hide(
+      selector = "div[value='Downstream Analysis']")
+    
     showNotification("ICA Complete")
   })
 
@@ -6407,6 +6424,10 @@ shinyServer(function(input, output, session) {
       #update colData names
       updateColDataNames()
       
+      S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      shinyjs::hide(
+        selector = "div[value='Downstream Analysis']")
+      
       #populate updated colData items for findMarkers tab
       updateSelectInput(session = session, 
                         inputId = "seuratFindMarkerSelectPhenotype", 
@@ -6416,6 +6437,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session = session, 
                         inputId = "seuratFindMarkerReductionMethod", 
                         choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
+      
     }
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
@@ -6840,6 +6862,9 @@ shinyServer(function(input, output, session) {
     #enable downstream analysis
     shinyjs::show(
       selector = "div[value='Downstream Analysis']")
+    
+    updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
+    
     updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
   })
   
@@ -7238,7 +7263,9 @@ shinyServer(function(input, output, session) {
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
-
+      S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      shinyjs::hide(
+        selector = "div[value='Downstream Analysis']")
       showNotification("tSNE Complete")
     }
     else{
@@ -7284,6 +7311,9 @@ shinyServer(function(input, output, session) {
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
+      S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      shinyjs::hide(
+        selector = "div[value='Downstream Analysis']")
       showNotification("UMAP Complete")
     }
     else{
@@ -7416,9 +7446,13 @@ shinyServer(function(input, output, session) {
             #If seurat cluster information removed from sce object, reset Clustering tab
             if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "primary"))
+              shinyjs::disable(selector = "div[value='Find Markers']")
             }
           }
+          
         }
+        
       }
     }
     else{
