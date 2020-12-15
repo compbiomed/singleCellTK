@@ -248,9 +248,13 @@ plotRunPerCellQCResults <- function(inSCE,
       ))
       res.list <- c(res.list, violin.detected)
 
+      topPattern <- grep(
+        pattern="percent.top_50$",
+        names(colData(inSCESub)), value=TRUE
+      )
       violin.toppercent <- list(toppercent = plotSCEViolinColData(
         inSCE=inSCESub,
-        coldata="percent_top_50",
+        coldata=topPattern,
         sample=sampleSub,
         xlab="",
         ylab="Gene expression percentage (%)",

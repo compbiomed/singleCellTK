@@ -107,3 +107,4 @@ test_that(desc = "Testing plotResults functions", {
   r9 <- plotEmptyDropsResults(inSCE = sceDroplet, sample = c(rep("Sample1", 100), rep("Sample2", 290)))
     expect_is(r9, "list")
 })
+

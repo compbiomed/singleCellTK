@@ -141,7 +141,7 @@ if (!skipCellData) {
 
 
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", eavl=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Sum
@@ -300,7 +300,7 @@ if (!skipFinder) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eavl=!(skipFinder), results="asis", fig.align="center"}
+```{r echo=FALSE, eval=!(skipFinder), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
