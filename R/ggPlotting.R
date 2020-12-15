@@ -439,8 +439,11 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param feature name of feature stored in assay of singleCellExperiment
-#'  object. Plot will be colored based on feature value.
+#' @param feature Name of feature stored in assay of SingleCellExperiment
+#'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param shape add shapes to each condition. Default NULL.
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
@@ -536,7 +539,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
   counts <- mat[, 2]
 
   if(!is.null(featureDisplay)){
-    title = tail(colnames(mat),1)
+    title = utils::tail(colnames(mat),1)
   }
 
   g <- .ggScatter(
@@ -1043,6 +1046,9 @@ plotSCEViolinColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1079,8 +1085,9 @@ plotSCEViolinColData <- function(inSCE,
 plotSCEViolinAssayData <- function(inSCE,
                                    sample = NULL,
                                    useAssay = "counts",
-                                   useRowData = NULL,
                                    feature,
+                                   featureLocation = NULL,
+                                   featureDisplay = NULL,
                                    groupBy = NULL,
                                    violin = TRUE,
                                    boxplot = TRUE,
@@ -1105,7 +1112,8 @@ plotSCEViolinAssayData <- function(inSCE,
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
-    useRowData = useRowData,
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay,
     gene = feature,
     binary = "Continuous"
   )
@@ -1584,6 +1592,9 @@ plotSCEDensityColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1640,7 +1651,7 @@ plotSCEDensityAssayData <- function(inSCE,
   counts <- mat[, 2]
 
   if(!is.null(featureDisplay)){
-    title = tail(colnames(mat),1)
+    title = utils::tail(colnames(mat),1)
   }
   if(is.null(xlab)){
     xlab = "Expression"
@@ -2400,6 +2411,9 @@ plotSCEBarColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -2431,6 +2445,8 @@ plotSCEBarAssayData <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts",
                                 feature,
+                                featureLocation = NULL,
+                                featureDisplay = NULL,
                                 groupBy = NULL,
                                 xlab = NULL,
                                 ylab = NULL,
@@ -2448,7 +2464,9 @@ plotSCEBarAssayData <- function(inSCE,
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
 

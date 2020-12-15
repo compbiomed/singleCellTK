@@ -104,8 +104,8 @@ runBarcodeRankDrops <- function(inSCE,
                                        dropletUtils_barcodeRank_total = integer(ncol(sceSample)),
                                        dropletUtils_barcodeRank_fitted = integer(ncol(sceSample)),
                                        dropletUtils_barcodeRank_knee = integer(ncol(sceSample)),
-                                       dropletUtils_barcodeRank_inflection = integer(ncol(sceSample)),
-                                       sample = colData(sceSample)[["Sample"]])
+                                       dropletUtils_barcodeRank_inflection = integer(ncol(sceSample)))
+    metaOutput$sample <- colData(sceSample)[["Sample"]]
 
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
     result <- .runBarcodeRankDrops(barcode.matrix = mat, lower=lower,
