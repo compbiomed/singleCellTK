@@ -42,6 +42,14 @@ shinyPanelFilter <- fluidPage(
   ),
   withBusyIndicatorUI(
     actionButton("filterSCE", "Filter")
-  )
+  ),
+  tags$br(),
+  tags$br(),
+  hidden(wellPanel(id = "filteringSummary",
+                   h3("Before Filtering:"),
+                   tableOutput("beforeFiltering"),
+                   h3("After Filtering:"),
+                   tableOutput("afterFiltering"))),
+  
 )
 

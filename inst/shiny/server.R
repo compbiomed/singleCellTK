@@ -260,6 +260,11 @@ shinyServer(function(input, output, session) {
         updateSelectInput(session, "gsExisting", choices = c("None"), selected = "None")
         updateSelectInput(session, "QCMgeneSets", choices =c("None"), selected = "None")
       }
+      shinyjs::show(id="combineOptions")
+      gsByChoices <- c("None", "rownames", names(rowData(vals$original)))
+      updateSelectInput(session, "gsByParam", choices = gsByChoices, selected = "rownames")
+    } else {
+      shinyjs::hide(id="combineOptions")
     }
   })
 
@@ -945,7 +950,23 @@ shinyServer(function(input, output, session) {
   #-----------#
   # Gene Sets #
   #-----------#
-  handleGSPasteOption <- function() {
+  numGS <- reactiveValues(id_count = 0)
+  
+  addToGSTable <- function(nameCol, locCol) {
+    id <- paste0("geneSet", numGS$id_count)
+    fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
+    insertUI(
+      selector = "#newGSImport",
+      ui = fluidRow(
+        id = id,
+        tags$style(HTML(fluidRowStyle)),
+        column(3, nameCol),
+        column(9, locCol),
+      )
+    )
+  }
+  
+  handleGSPasteOption <- function(byParam) {
     if (!nzchar(input$geneSetText)) {
       shinyjs::show(id = "gsUploadError", anim = FALSE)
     } else if ((!nzchar(input$gsCollectionNameText)) && (input$gsExisting == "None")) {
@@ -954,15 +975,21 @@ shinyServer(function(input, output, session) {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
       if (nzchar(input$gsCollectionNameText)) {
-        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsCollectionNameText)
+        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsCollectionNameText)
+        addToGSTable(input$gsCollectionNameText, "Paste-In")
       } else if (input$gsExisting != "None") {
-        vals$original <- importGeneSetsFromList(vals$original, setList, collectionName = input$gsExisting)
+        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsExisting)
+        addToGSTable(input$gsExisting, "Paste-In")
       }
     }
   }
 
   observeEvent(input$uploadGS, {
     withBusyIndicatorServer("uploadGS", {
+      byParam = NULL
+      if (input$gsByParam != "None") {
+        byParam <- input$gsByParam
+      }
       if (input$geneSetSourceChoice == "gsGMTUpload") {
         if (is.null(input$geneSetGMT)) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
@@ -970,20 +997,23 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, collectionName = input$gsCollectionNameGMT)
+          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, by = byParam, collectionName = input$gsCollectionNameGMT)
+          addToGSTable(input$gsCollectionNameGMT, input$geneSetGMT$datapath)
         }
-
+        
       } else if (input$geneSetSourceChoice == "gsDBUpload") {
         if (is.null(input$geneSetDB)) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB)
+          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB, by = byParam)
+          addToGSTable(input$geneSetDB, "Database")
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
-        handleGSPasteOption()
+        handleGSPasteOption(byParam)
       }
+      
     })
   })
 
@@ -1504,8 +1534,28 @@ shinyServer(function(input, output, session) {
           vals$counts <- temp
         }
       }
+      shinyjs::show(id="filteringSummary")
     })
   })
+  
+  #Render summary table
+  output$beforeFiltering <- renderTable({
+    req(vals$original)
+    
+    # Setting 'useAssay=NULL' assumes that the first assay is the one to count
+    singleCellTK::summarizeSCE(inSCE = vals$original,
+                               useAssay = NULL,
+                               sampleVariableName = "sample")
+  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
+
+  output$afterFiltering <- renderTable({
+    req(vals$counts)
+    
+    # Setting 'useAssay=NULL' assumes that the first assay is the one to count
+    singleCellTK::summarizeSCE(inSCE = vals$counts,
+                               useAssay = NULL,
+                               sampleVariableName = "sample")
+  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
   #Render data table if there are fewer than 50 samples
   output$contents <- DT::renderDataTable({
