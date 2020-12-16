@@ -4,18 +4,31 @@ shinyPanelGeneSets <- fluidPage(
     style = "margin-bottom: 10px",
     h1("Import Gene Sets"),
     tags$hr(),
-    
+    tags$style(HTML("
+      div {
+        word-wrap: break-word;
+      }
+      ")
+    ),
+    wellPanel(
+      h4("Existing Gene Sets:"),
+      fluidRow(
+        column(3, tags$b("Collection Name")),
+        column(9, tags$b("Location")),
+      ),
+      tags$div(id = "newGSImport"),
+      tags$br(),
+      tags$br(),
+    ),
     radioButtons("geneSetSourceChoice", label = NULL, c("Upload a GMT file" = 'gsGMTUpload',
                                                  "Select from a database" = "gsDBUpload",
                                                  "Paste in your gene set" = "gsPasteUpload")
     ),
-    
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsGMTUpload'", "geneSetSourceChoice"),
       h3("Upload a GMT file:"),
+      fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt"),
       textInput('gsCollectionNameGMT', label='Collection Name'),
-      fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt")
-      # shinyFilesButton('geneSetGMT', 'Choose File', 'Select a .gmt file', FALSE)
     ),
 
     conditionalPanel(
@@ -34,17 +47,12 @@ shinyPanelGeneSets <- fluidPage(
         tags$div(id = "gsAddToExisting",
                  h4("-OR-"),
                  selectInput("gsExisting", "Add to an existing collection", c("None")),
-                 textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
         )
       ),
-      # shinyjs::hidden(
-      #   tags$div(id = "gsAddToExisting",
-      #            h4("-OR-"),
-                 # selectInput("gsExisting", "Add to an existing collection", c("None")),
-                 # textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
-      #   ),
-      # )
+      textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
     ),
+    
+    selectInput("gsByParam", "Location within SCE object where the gene identifiers in should be mapped.", list()),
     
     withBusyIndicatorUI(
       actionButton("uploadGS", "Upload")

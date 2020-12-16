@@ -6,7 +6,8 @@ shinyPanelPathway <- fluidPage(
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        selectInput("pathwayAssay", "Select Assay:", currassays),
+        uiOutput("pathwayAssay"),
+        #selectInput("pathwayAssay", "Select Assay:", currassays),
         selectInput("pathwayMethod", "Select Method:", "GSVA"),
         uiOutput("selectPathwayGeneLists"),
         uiOutput("selectNumTopPaths"),

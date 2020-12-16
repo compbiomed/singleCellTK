@@ -5,7 +5,7 @@
 #' dgCMatrix or a DelayedMatrix. Computations are performed using DelayedMatrixStats
 #' package to efficiently compute the Z-Score matrix.
 #'
-#' @param counts matrix (base matrix, dgCMatrix or DelaymedMatrix)
+#' @param counts matrix (base matrix, dgCMatrix or DelayedMatrix)
 #'
 #' @return z-score computed counts matrix (DelayedMatrix)
 #' @export
