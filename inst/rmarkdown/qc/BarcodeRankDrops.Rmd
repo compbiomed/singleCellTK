@@ -12,7 +12,6 @@ output:
 ---
 
 ```{r "BarcodeRank-lib", include=FALSE, warning=FALSE}
-require(umap)
 require(ggplot2)
 require(SingleCellExperiment)
 require(singleCellTK)

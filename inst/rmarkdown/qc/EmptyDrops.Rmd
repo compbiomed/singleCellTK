@@ -12,7 +12,6 @@ output:
 ```{r, "EmtyDrops-lib", include=FALSE}
 require(singleCellTK)
 require(ggplot2)
-require(umap)
 ```
 
 ```{r "EmtyDrops-import", include=FALSE}

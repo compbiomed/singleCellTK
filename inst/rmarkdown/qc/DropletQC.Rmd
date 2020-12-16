@@ -15,7 +15,6 @@ output:
 ---
 
 ```{r "DropletQC-lib", include=FALSE, warning=FALSE}
-require(umap)
 require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)

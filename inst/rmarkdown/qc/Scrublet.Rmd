@@ -12,7 +12,6 @@ output:
 
 ```{r, "scrublet-lib", message = F, include=FALSE}
 require(singleCellTK)
-require(umap)
 require(ggplot2)
 ```
 

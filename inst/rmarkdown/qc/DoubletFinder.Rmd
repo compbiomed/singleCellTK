@@ -12,7 +12,7 @@ output:
 
 ```{r, "DoubletFinder-lib", message = F, include=FALSE}
 require(singleCellTK)
-require(umap)
+require(uwot)
 require(ggplot2)
 ```
 

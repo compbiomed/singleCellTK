@@ -23,7 +23,6 @@ text-align: justify}
 ```{r "CellQC-lib", warning=FALSE, include=FALSE}
 require(singleCellTK)
 require(ggplot2)
-require(umap)
 require(dplyr)
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
