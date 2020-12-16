@@ -39,7 +39,7 @@ sce.qc<- params$object
     sce.qc@metadata$runScrublet
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Scrublet-description", include=FALSE, warning=FALSE, message=FALSE}
 description_Scrublet <- descriptionScrublet()
 ```
 # {.unlisted .unnumbered .toc-ignore}

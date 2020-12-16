@@ -41,7 +41,7 @@ sce.qc<- params$object
 ```
 
 
-```{r, "DoubletFinder-desc", warning=FALSE, message=FALSE}
+```{r, "DoubletFinder-description", warning=FALSE, message=FALSE}
 description_DoubletFinder <- descriptionDoubletFinder()
 ```
 

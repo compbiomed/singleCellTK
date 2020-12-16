@@ -28,7 +28,7 @@ sce<- params$object
     sce@metadata$runEmptyDrops
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "EmptyDrops-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runEmptyDrops <- descriptionEmptyDrops()
 ```
 # {.unlisted .unnumbered .toc-ignore}
