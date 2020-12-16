@@ -2,7 +2,7 @@
 % Please edit documentation in R/labelCellType.R
 \name{runSingleR}
 \alias{runSingleR}
-\title{label cell types with SingleR}
+\title{Label cell types with SingleR}
 \usage{
 runSingleR(
   inSCE,
@@ -16,29 +16,43 @@ runSingleR(
 )
 }
 \arguments{
-\item{inSCE}{In put SCE object}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
-\item{useAssay}{The assay to calculate}
+\item{useAssay}{character. A string specifying which assay to use for
+expression profile identification. Required.}
 
-\item{useSCERef}{A customized reference dataset in SCE format}
+\item{useSCERef}{\linkS4class{SingleCellExperiment} inherited object. An
+optional customized reference dataset. Default \code{NULL}.}
 
-\item{labelColName}{The colData column for cell type labeling, stored in
-useSCERef}
+\item{labelColName}{A single character. A string specifying the column in
+\code{colData(useSCERef)} that stores the cell type labeling. Default
+\code{NULL}.}
 
-\item{useBltinRef}{Specify an reference provided by SingleR}
+\item{useBltinRef}{A single character. A string that specifies a reference
+provided by SingleR. Choose from \code{"hpca", "bpe", "mp", "dice", "immgen",
+"mouse", "zeisel"}. See detail. Default \code{"hpca"}.}
 
-\item{level}{Cell type labeling level, only supported by a few SingleR
-references.}
+\item{level}{A string for cell type labeling level. Used only when using
+some of the SingleR built-in references. Choose from \code{"main", "fine",
+"ont"}. Default \code{"main"}.}
 
-\item{featureType}{Use gene symbols or Ensembl IDs, only supported by SingleR
-references.}
+\item{featureType}{A string for whether to use gene symbols or Ensembl IDs
+when using a SingleR built-in reference. Should be set based on the type of
+\code{rownames} of \code{inSCE}. Choose from \code{"symbol", "ensembl"}.
+Default \code{"symbol"}.}
 
-\item{labelByCluster}{Label inSCE clusters already identified, instead of
-labeling each cells.}
+\item{labelByCluster}{A single character. A string specifying the column name
+in \code{colData(inSCE)} that stores clustering labels. Use this when users
+want to only label cells on cluster level, instead of performing calculation
+on each cell. Default \code{NULL}.}
 }
 \value{
-An SCE object
+Input SCE object with cell type labeling updated in
+\code{colData(inSCE)}, together with scoring metrics.
 }
 \description{
-to be filled in
+SingleR works with a reference dataset where the cell type
+labeling is given. Given a reference dataset of samples (single-cell or bulk)
+with known labels, it assigns those labels to new cells from a test dataset
+based on similarities in their expression profiles.
 }
