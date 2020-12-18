@@ -908,7 +908,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- vals$original
         
         #store assayType information in the metadata
-        vals$counts <- singleCellTK:::.sctkSetTag(
+        vals$counts <- singleCellTK:::.sctkSetTagExternal(
           inSCE = vals$counts,
           assayType = "raw", 
           assays = assayNames(vals$counts))
@@ -2025,11 +2025,11 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         #update tags
-        vals$counts <- singleCellTK:::.sctkSetTag(
-          inSCE = vals$counts, 
-          assayType = "normalized", 
-          input$normalizeAssayOutname
-          )
+        # vals$counts <- singleCellTK:::.sctkSetTag(
+        #   inSCE = vals$counts, 
+        #   assayType = "normalized", 
+        #   input$normalizeAssayOutname
+        #   )
       }
     })
   })

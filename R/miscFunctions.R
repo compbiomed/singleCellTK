@@ -378,7 +378,16 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 .sctkSetTag <- function(inSCE, assayType, assays){
-    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  }
+    #S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  return(inSCE)
+}
+
+.sctkSetTagExternal <- function(inSCE, assayType, assays){
+  # S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
   return(inSCE)
 }
 
