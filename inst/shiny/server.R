@@ -6612,7 +6612,7 @@ shinyServer(function(input, output, session) {
                              hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
                                                                                      checkboxGroupButtons(
                                                                                        inputId = "seuratFindMarkerPValOption", label = "p_val",
-                                                                                       choices = c("<", ">", "="),
+                                                                                       choices = c("<", ">", "=", "<=", ">="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
                                                                                        size = "xs",
@@ -6628,7 +6628,7 @@ shinyServer(function(input, output, session) {
                              hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
                                                                                     checkboxGroupButtons(
                                                                                       inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
-                                                                                      choices = c("<", ">", "="),
+                                                                                      choices = c("<", ">", "=", "<=", ">="),
                                                                                       justified = TRUE,
                                                                                       individual = TRUE,
                                                                                       size = "xs",
@@ -6644,11 +6644,12 @@ shinyServer(function(input, output, session) {
                              hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
                                                                                      checkboxGroupButtons(
                                                                                        inputId = "seuratFindMarkerPct1Option", label = "pct.1",
-                                                                                       choices = c("<", ">", "="),
+                                                                                       choices = c("<", ">", "=", "<=", ">="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
                                                                                        size = "s",
-                                                                                       status = "primary"
+                                                                                       status = "primary",
+                                                                                       selected = NULL
                                                                                      ),
                                                                                      numericInput(
                                                                                        inputId = "seuratFindMarkerPct1Input",
@@ -6660,7 +6661,7 @@ shinyServer(function(input, output, session) {
                              hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
                                                                                      checkboxGroupButtons(
                                                                                        inputId = "seuratFindMarkerPct2Option", label = "pct.2",
-                                                                                       choices = c("<", ">", "="),
+                                                                                       choices = c("<", ">", "=", "<=", ">="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
                                                                                        size = "s",
@@ -6676,7 +6677,7 @@ shinyServer(function(input, output, session) {
                              hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
                                                                                         checkboxGroupButtons(
                                                                                           inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
-                                                                                          choices = c("<", ">", "="),
+                                                                                          choices = c("<", ">", "=", "<=", ">="),
                                                                                           justified = TRUE,
                                                                                           individual = TRUE,
                                                                                           size = "xs",
@@ -6873,6 +6874,72 @@ shinyServer(function(input, output, session) {
         h6("p_val_adj < 0.05")
       )
     })
+  })
+  
+  
+  observeEvent(input$seuratFindMarkerPValOption, {
+    if(length(input$seuratFindMarkerPValOption) > 1){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPValOption",
+        selected = input$seuratFindMarkerPValOption[-which(vals$seuratFindMarkerPValOption == input$seuratFindMarkerPValOption, arr.ind = TRUE)]
+      )
+    }
+    else{
+      vals$seuratFindMarkerPValOption <- input$seuratFindMarkerPValOption
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerPValAdjOption, {
+    if(length(input$seuratFindMarkerPValAdjOption) > 1){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPValAdjOption",
+        selected = input$seuratFindMarkerPValAdjOption[-which(vals$seuratFindMarkerPValAdjOption == input$seuratFindMarkerPValAdjOption, arr.ind = TRUE)]
+      )
+    }
+    else{
+      vals$seuratFindMarkerPValAdjOption <- input$seuratFindMarkerPValAdjOption
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerPct1Option, {
+    if(length(input$seuratFindMarkerPct1Option) > 1){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPct1Option",
+        selected = input$seuratFindMarkerPct1Option[-which(vals$seuratFindMarkerPct1Option == input$seuratFindMarkerPct1Option, arr.ind = TRUE)]
+      )
+    }
+    else{
+      vals$seuratFindMarkerPct1Option <- input$seuratFindMarkerPct1Option
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerPct2Option, {
+    if(length(input$seuratFindMarkerPct2Option) > 1){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPct2Option",
+        selected = input$seuratFindMarkerPct2Option[-which(vals$seuratFindMarkerPct2Option == input$seuratFindMarkerPct2Option, arr.ind = TRUE)]
+      )
+    }
+    else{
+      vals$seuratFindMarkerPct2Option <- input$seuratFindMarkerPct2Option
+    }
+  })
+  
+  observeEvent(input$seuratFindMarkerLFCOption, {
+    if(length(input$seuratFindMarkerLFCOption) > 1){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerLFCOption",
+        selected = input$seuratFindMarkerLFCOption[-which(vals$seuratFindMarkerLFCOption == input$seuratFindMarkerLFCOption, arr.ind = TRUE)]
+      )
+    }
+    else{
+      vals$seuratFindMarkerLFCOption <- input$seuratFindMarkerLFCOption
+    }
   })
   
   observeEvent(input$seuratFindMarkerFilterShowHide,{
