@@ -345,6 +345,26 @@ shinyPanelSeurat <- fluidPage(
                                                   ),
                                                   br(),
                                                   hidden(
+                                                      tags$div(class = "seurat_findmarker_jointHeatmap", 
+                                                               panel(heading = "Heatmap Plot",
+                                                                     fluidRow(
+                                                                         column(12, align = "center",
+                                                                                
+                                                                                uiOutput(
+                                                                                    outputId = "findMarkerHeatmapPlotFullTopText"
+                                                                                ),
+                                                                                panel(
+                                                                                    jqui_resizable(
+                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                    )
+                                                                                )
+                                                                         )
+                                                                     )
+                                                               )
+                                                      )
+                                                  ),
+                                                  br(),
+                                                  hidden(
                                                       tags$div(class = "seurat_findmarker_plots", tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"
                                                       ))
                                                   )

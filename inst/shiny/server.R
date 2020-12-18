@@ -6726,25 +6726,26 @@ shinyServer(function(input, output, session) {
     })
     
     shinyjs::show(selector = ".seurat_findmarker_table")
+    shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
     
-    appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
-                                                               panel(heading = "Heatmap Plot",
-                                                                     fluidRow(
-                                                                       column(12, align = "center",
-                                                                             
-                                                                              uiOutput(
-                                                                                outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                              ),
-                                                                              panel(
-                                                                                jqui_resizable(
-                                                                                  plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                )
-                                                                              )
-                                                                       )
-                                                                     )
-                                                               )
-    )
-    )
+    # appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+    #                                                            panel(heading = "Heatmap Plot",
+    #                                                                  fluidRow(
+    #                                                                    column(12, align = "center",
+    #                                                                          
+    #                                                                           uiOutput(
+    #                                                                             outputId = "findMarkerHeatmapPlotFullTopText"
+    #                                                                           ),
+    #                                                                           panel(
+    #                                                                             jqui_resizable(
+    #                                                                               plotOutput(outputId = "findMarkerHeatmapPlotFull")
+    #                                                                             )
+    #                                                                           )
+    #                                                                    )
+    #                                                                  )
+    #                                                            )
+    # )
+    # )
     
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                panel(heading = "Ridge Plot",
@@ -6827,7 +6828,7 @@ shinyServer(function(input, output, session) {
     }
     
     #showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Joint Heatmap Plot")
+    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
     shinyjs::show(selector = ".seurat_findmarker_plots")
     
     #table
@@ -7103,26 +7104,26 @@ shinyServer(function(input, output, session) {
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
-                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          #removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                           
-                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
-                                                                                                     panel(heading = "Heatmap Plot",
-                                                                                                           fluidRow(
-                                                                                                             column(12, align = "center",
-                                                                                                                    panel(
-                                                                                                                      
-                                                                                                                      uiOutput(
-                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                                                      ),
-                                                                                                                      jqui_resizable(
-                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                             )
-                                                                                                           )
-                                                                                                     )
-                                          )
-                                          )
+                                          # appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                          #                                                            panel(heading = "Heatmap Plot",
+                                          #                                                                  fluidRow(
+                                          #                                                                    column(12, align = "center",
+                                          #                                                                           panel(
+                                          #                                                                             
+                                          #                                                                             uiOutput(
+                                          #                                                                               outputId = "findMarkerHeatmapPlotFullTopText"
+                                          #                                                                             ),
+                                          #                                                                             jqui_resizable(
+                                          #                                                                                 plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                          #                                                                             )
+                                          #                                                                           )
+                                          #                                                                    )
+                                          #                                                                  )
+                                          #                                                            )
+                                          # )
+                                          # )
                                           
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                                                      panel(heading = "Ridge Plot",
@@ -7213,7 +7214,7 @@ shinyServer(function(input, output, session) {
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
                                           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
-                                          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+                                          #removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
                                           
                                           output$findMarkerRidgePlot <- NULL
                                           output$findMarkerViolinPlot <- NULL
@@ -7221,24 +7222,24 @@ shinyServer(function(input, output, session) {
                                           output$findMarkerDotPlot <- NULL
                                           output$findMarkerHeatmapPlot <- NULL
                                           
-                                          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
-                                                                                                     panel(heading = "Heatmap Plot",
-                                                                                                           fluidRow(
-                                                                                                             column(12, align = "center",
-                                                                                                                    panel(
-                                                                                                                      
-                                                                                                                      uiOutput(
-                                                                                                                        outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                                                      ),
-                                                                                                                      jqui_resizable(
-                                                                                                                          plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                                                      ),
-                                                                                                                    )
-                                                                                                             )
-                                                                                                           )
-                                                                                                     )
-                                          )
-                                          )
+                                          # appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
+                                          #                                                            panel(heading = "Heatmap Plot",
+                                          #                                                                  fluidRow(
+                                          #                                                                    column(12, align = "center",
+                                          #                                                                           panel(
+                                          #                                                                             
+                                          #                                                                             uiOutput(
+                                          #                                                                               outputId = "findMarkerHeatmapPlotFullTopText"
+                                          #                                                                             ),
+                                          #                                                                             jqui_resizable(
+                                          #                                                                                 plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                          #                                                                             ),
+                                          #                                                                           )
+                                          #                                                                    )
+                                          #                                                                  )
+                                          #                                                            )
+                                          # )
+                                          # )
                                           
                                           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                                                      panel(heading = "Ridge Plot",
