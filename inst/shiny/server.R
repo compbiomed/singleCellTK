@@ -6845,13 +6845,19 @@ shinyServer(function(input, output, session) {
       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
     })
     
+    #this is running
     output$seuratFindMarkerTable <- DT::renderDataTable({
       metadata(vals$counts)$seuratMarkersSubset <- df
       selectedGeneId <- input$seuratFindMarkerGeneIDInput
+      selectedCluster <- input$seuratFindMarkerClusterInput
       updateSelectizeInput(session = session,
                            inputId = "seuratFindMarkerGeneIDInput",
                            selected = selectedGeneId,
                            choices = df$gene.id)
+      updateSelectizeInput(session = session,
+                           inputId = "seuratFindMarkerClusterInput",
+                           selected = selectedCluster,
+                           choices = df$cluster)
       #gene.id <- rownames(df)
       #df <- cbind(gene.id, df)
       #rownames(df) <- NULL
@@ -6913,6 +6919,11 @@ shinyServer(function(input, output, session) {
     updateCheckboxGroupButtons(
       session = session,
       inputId = "seuratFindMarkerGeneIDOption",
+      selected = character(0)
+    )
+    updateCheckboxGroupButtons(
+      session = session,
+      inputId = "seuratFindMarkerClusterOption",
       selected = character(0)
     )
     
@@ -7070,12 +7081,23 @@ shinyServer(function(input, output, session) {
        && pct2_operators == ""
        && p_val_adj_operators == ""){
       df <- metadata(vals$counts)$seuratMarkers
-      if(!is.null(input$seuratFindMarkerGeneIDOption)){
-        if(input$seuratFindMarkerGeneIDOption == "="){
-          df <- df[input$seuratFindMarkerGeneIDInput,]
+      if(!is.null(input$seuratFindMarkerGeneIDOption)
+         || !is.null(input$seuratFindMarkerClusterOption)){
+        if(!is.null(input$seuratFindMarkerGeneIDOption)){
+          if(input$seuratFindMarkerGeneIDOption == "="){
+            df <- df[input$seuratFindMarkerGeneIDInput,]
+          }
+          else if(input$seuratFindMarkerGeneIDOption == "!="){
+            df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
+          }
         }
-        else if(input$seuratFindMarkerGeneIDOption == "!="){
-          df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
+        if(!is.null(input$seuratFindMarkerClusterOption)){
+          if(input$seuratFindMarkerClusterOption == "="){
+            df <- df[which(input$seuratFindMarkerClusterInput == df$cluster),]
+          }
+          else if(input$seuratFindMarkerClusterOption == "!="){
+            df <- df[-which(input$seuratFindMarkerClusterInput == df$cluster),]
+          }
         }
       }
     }
@@ -7111,12 +7133,23 @@ shinyServer(function(input, output, session) {
       parameters$cols <- na.omit(parameters$cols)
       
       df <- metadata(vals$counts)$seuratMarkers
-      if(!is.null(input$seuratFindMarkerGeneIDOption)){
-        if(input$seuratFindMarkerGeneIDOption == "="){
-          df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerGeneIDInput,]
+      if(!is.null(input$seuratFindMarkerGeneIDOption)
+         || !is.null(input$seuratFindMarkerClusterOption)){
+        if(!is.null(input$seuratFindMarkerGeneIDOption)){
+          if(input$seuratFindMarkerGeneIDOption == "="){
+            df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerGeneIDInput,]
+          }
+          else if(input$seuratFindMarkerGeneIDOption == "!="){
+            df <- metadata(vals$counts)$seuratMarkers[-match(input$seuratFindMarkerGeneIDInput, metadata(vals$counts)$seuratMarkers$gene.id),]
+          }
         }
-        else if(input$seuratFindMarkerGeneIDOption == "!="){
-          df <- metadata(vals$counts)$seuratMarkers[-match(input$seuratFindMarkerGeneIDInput, metadata(vals$counts)$seuratMarkers$gene.id),]
+        if(!is.null(input$seuratFindMarkerClusterOption)){
+          if(input$seuratFindMarkerClusterOption == "="){
+            df <- metadata(vals$counts)$seuratMarkers[which(input$seuratFindMarkerClusterInput == metadata(vals$counts)$seuratMarkers$cluster),]
+          }
+          else if(input$seuratFindMarkerClusterOption == "!="){
+            df <- metadata(vals$counts)$seuratMarkers[-which(input$seuratFindMarkerClusterInput == metadata(vals$counts)$seuratMarkers$cluster),]
+          }
         }
       }
       df <- singleCellTK:::.filterDF(df = df,
@@ -7169,6 +7202,10 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(input$seuratFindMarkerGeneIDOption)){
       activeFilterString <- paste(activeFilterString, "<h6> gene.id", input$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", "), "</h6>")
+    }
+    
+    if(!is.null(input$seuratFindMarkerClusterOption)){
+      activeFilterString <- paste(activeFilterString, "<h6> cluster", input$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", "), "</h6>")
     }
     
       output$seuratFindMarkerActiveFilters <- renderUI({
