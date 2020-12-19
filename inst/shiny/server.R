@@ -6717,9 +6717,9 @@ shinyServer(function(input, output, session) {
                        panel(heading = "Active Filters",
                              uiOutput("seuratFindMarkerActiveFilters"),
                              br(),
-                             actionLink(
+                             actionButton(
                                inputId = "seuratFindMarkerRemoveAllFilters",
-                               label = "Remove all active filters"
+                               label = "Remove Filter"
                              )
                        )
                 )
@@ -6883,49 +6883,67 @@ shinyServer(function(input, output, session) {
     
     output$seuratFindMarkerActiveFilters <- renderUI({
       panel(
-        h6("p_val_adj < 0.05")
+        #h6("p_val_adj < 0.05"),
+        checkboxGroupInput(
+          inputId = "checkboxFiltersToRemove",
+          label = NULL,
+          choices = "p_val_adj < 0.05"
+        )
       )
     })
   })
   
   
   observeEvent(input$seuratFindMarkerRemoveAllFilters,{
-    
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerPValOption",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerPValAdjOption",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerPct1Option",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerPct2Option",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerLFCOption",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerGeneIDOption",
-      selected = character(0)
-    )
-    updateCheckboxGroupButtons(
-      session = session,
-      inputId = "seuratFindMarkerClusterOption",
-      selected = character(0)
-    )
+    if("p_val" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPValOption",
+        selected = character(0)
+      )
+    }
+    if("p_val_adj" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPValAdjOption",
+        selected = character(0)
+      )
+    }
+    if("pct.1" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPct1Option",
+        selected = character(0)
+      )
+    }
+    if("pct.2" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerPct2Option",
+        selected = character(0)
+      )
+    }
+    if("avg_logFC" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerLFCOption",
+        selected = character(0)
+      )
+    }
+    if("gene.id" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerGeneIDOption",
+        selected = character(0)
+      )
+    }
+    if("cluster" %in% input$seuratFindMarkerRemoveAllFilters){
+      updateCheckboxGroupButtons(
+        session = session,
+        inputId = "seuratFindMarkerClusterOption",
+        selected = character(0)
+      )
+    }
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- metadata(vals$counts)$seuratMarkers
@@ -6970,6 +6988,7 @@ shinyServer(function(input, output, session) {
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
       h6(paste("Heatmap plotted across all groups against all genes"))
     })
+    
   })
   
   observeEvent(input$seuratFindMarkerPValOption, {
@@ -7195,22 +7214,32 @@ shinyServer(function(input, output, session) {
     }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
     ))
     
-    activeFilterString <- NULL
+    activeFilterString <- list()
+    choiceValuesFilter <- list()
     for(i in seq(length(parameters$cols))){
-      activeFilterString <- paste(activeFilterString, "<h6>", parameters$cols[i], parameters$operators[i], parameters$values[i], "</h6>")
+      activeFilterString[i] <- paste(parameters$cols[i], parameters$operators[i], parameters$values[i])
+      choiceValuesFilter[i] <- paste(parameters$cols[i])
     }
     
     if(!is.null(input$seuratFindMarkerGeneIDOption)){
-      activeFilterString <- paste(activeFilterString, "<h6> gene.id", input$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", "), "</h6>")
+      activeFilterString <- append(activeFilterString, paste("gene.id", input$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
+      choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
     }
     
     if(!is.null(input$seuratFindMarkerClusterOption)){
-      activeFilterString <- paste(activeFilterString, "<h6> cluster", input$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", "), "</h6>")
+      activeFilterString <- append(activeFilterString, paste("cluster", input$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
+      choiceValuesFilter <- append(choiceValuesFilter, "cluster")
     }
     
       output$seuratFindMarkerActiveFilters <- renderUI({
         panel(
-          HTML(activeFilterString)
+          # HTML(activeFilterString),
+          checkboxGroupInput(
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = as.character(activeFilterString),
+            choiceValues = as.character(choiceValuesFilter)
+          )
         )
       })
   }

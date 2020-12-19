@@ -339,7 +339,7 @@ shinyPanelSeurat <- fluidPage(
                                                                                                         uiOutput("seuratFindMarkerFilter"),
                                                                                                         DT::dataTableOutput(
                                                                                                             outputId = "seuratFindMarkerTable"
-                                                                                                        )
+                                                                                                        ) %>% withSpinner(type = 5, color = "#b2b2b2")
                                                       )
                                                       )
                                                   ),
