@@ -6910,6 +6910,11 @@ shinyServer(function(input, output, session) {
       inputId = "seuratFindMarkerLFCOption",
       selected = character(0)
     )
+    updateCheckboxGroupButtons(
+      session = session,
+      inputId = "seuratFindMarkerGeneIDOption",
+      selected = character(0)
+    )
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- metadata(vals$counts)$seuratMarkers
@@ -7070,7 +7075,7 @@ shinyServer(function(input, output, session) {
           df <- df[input$seuratFindMarkerGeneIDInput,]
         }
         else if(input$seuratFindMarkerGeneIDOption == "!="){
-          df <- df[-which(input$seuratFindMarkerGeneIDInput %in% df$gene.id, arr.ind = TRUE),]
+          df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
         }
       }
     }
@@ -7111,7 +7116,7 @@ shinyServer(function(input, output, session) {
           df <- metadata(vals$counts)$seuratMarkers[input$seuratFindMarkerGeneIDInput,]
         }
         else if(input$seuratFindMarkerGeneIDOption == "!="){
-          df <- metadata(vals$counts)$seuratMarkers[-which(input$seuratFindMarkerGeneIDInput %in% rownames(metadata(vals$counts)$seuratMarkers), arr.ind = TRUE),]
+          df <- metadata(vals$counts)$seuratMarkers[-match(input$seuratFindMarkerGeneIDInput, metadata(vals$counts)$seuratMarkers$gene.id),]
         }
       }
       df <- singleCellTK:::.filterDF(df = df,
@@ -7160,6 +7165,10 @@ shinyServer(function(input, output, session) {
     activeFilterString <- NULL
     for(i in seq(length(parameters$cols))){
       activeFilterString <- paste(activeFilterString, "<h6>", parameters$cols[i], parameters$operators[i], parameters$values[i], "</h6>")
+    }
+    
+    if(!is.null(input$seuratFindMarkerGeneIDOption)){
+      activeFilterString <- paste(activeFilterString, "<h6> gene.id", input$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", "), "</h6>")
     }
     
       output$seuratFindMarkerActiveFilters <- renderUI({
