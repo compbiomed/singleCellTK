@@ -335,6 +335,11 @@ shinyPanelSeurat <- fluidPage(
                                        fluidRow(
                                            column(12,
                                                   hidden(
+                                                      tags$script("
+    Shiny.addCustomMessageHandler('resetValue', function(variableName) {
+      Shiny.onInputChange(variableName, null);
+    });
+  "),
                                                       tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
                                                                                                         uiOutput("seuratFindMarkerFilter"),
                                                                                                         DT::dataTableOutput(

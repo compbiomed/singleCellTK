@@ -6894,101 +6894,120 @@ shinyServer(function(input, output, session) {
   })
   
   
-  observeEvent(input$seuratFindMarkerRemoveAllFilters,{
-    if("p_val" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerPValOption",
-        selected = character(0)
-      )
-    }
-    if("p_val_adj" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerPValAdjOption",
-        selected = character(0)
-      )
-    }
-    if("pct.1" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerPct1Option",
-        selected = character(0)
-      )
-    }
-    if("pct.2" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerPct2Option",
-        selected = character(0)
-      )
-    }
-    if("avg_logFC" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerLFCOption",
-        selected = character(0)
-      )
-    }
-    if("gene.id" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerGeneIDOption",
-        selected = character(0)
-      )
-    }
-    if("cluster" %in% input$seuratFindMarkerRemoveAllFilters){
-      updateCheckboxGroupButtons(
-        session = session,
-        inputId = "seuratFindMarkerClusterOption",
-        selected = character(0)
-      )
-    }
-    
-    output$seuratFindMarkerTable <- DT::renderDataTable({
-      df <- metadata(vals$counts)$seuratMarkers
-      df$p_val <- format(df$p_val, nsmall = 7)
-      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-      df$pct.1 <- format(df$pct.1, nsmall = 7)
-      df$pct.2 <- format(df$pct.2, nsmall = 7)
-      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-      df
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
-    ))
-    
-    output$seuratFindMarkerActiveFilters <- renderUI({
-      panel(
-        HTML(paste("<span style='color:red'>No active filter</span>"))
-      )
+  observe({
+    input$seuratFindMarkerRemoveAllFilters
+    isolate({
+      if(!is.null(input$seuratFindMarkerRemoveAllFilters)){
+        if("p_val" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerPValOption",
+            selected = character(0),
+            
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("p_val_adj" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerPValAdjOption",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("pct.1" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerPct1Option",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("pct.2" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerPct2Option",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("avg_logFC" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerLFCOption",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("gene.id" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerGeneIDOption",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        if("cluster" %in% input$checkboxFiltersToRemove){
+          updateCheckboxGroupButtons(
+            session = session,
+            inputId = "seuratFindMarkerClusterOption",
+            selected = character(0)
+          )
+          index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
+          updateCheckboxGroupInput(
+            session = session,
+            inputId = "checkboxFiltersToRemove",
+            label = NULL,
+            choiceNames = vals$activeFilterString[-index],
+            choiceValues = vals$choiceValuesFilter[-index]
+          )
+        }
+        
+        updateSeuratFindMarkerTable()
+      }
     })
-    
-    df <- metadata(vals$counts)$seuratMarkers
-    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
-    indices <- list()
-    cells <- list()
-    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
-    for(i in seq(length(groups))){
-      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
-      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
-      cells[[i]] <- lapply(
-        X = cells[[i]], 
-        FUN = function(t) gsub(
-          pattern = "_", 
-          replacement = "-", 
-          x = t, 
-          fixed = TRUE)
-      )
-      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
-    }
-    
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = df$gene.id)
-    })
-    
-    output$findMarkerHeatmapPlotFullTopText <- renderUI({
-      h6(paste("Heatmap plotted across all groups against all genes"))
-    })
-    
   })
   
   observeEvent(input$seuratFindMarkerPValOption, {
@@ -7066,11 +7085,12 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$seuratFindMarkerFilterRun,{
-    selected <- input$seuratFindMarkerGeneIDInput
+    #selected <- input$seuratFindMarkerGeneIDInput
     updateSeuratFindMarkerTable()
   })
   
   updateSeuratFindMarkerTable <- function(){
+    
     df <- NULL 
     
     p_val_operators <- ""
@@ -7231,14 +7251,16 @@ shinyServer(function(input, output, session) {
       choiceValuesFilter <- append(choiceValuesFilter, "cluster")
     }
     
+    vals$activeFilterString <- as.character(activeFilterString)
+    vals$choiceValuesFilter <- as.character(choiceValuesFilter)
       output$seuratFindMarkerActiveFilters <- renderUI({
         panel(
           # HTML(activeFilterString),
           checkboxGroupInput(
             inputId = "checkboxFiltersToRemove",
             label = NULL,
-            choiceNames = as.character(activeFilterString),
-            choiceValues = as.character(choiceValuesFilter)
+            choiceNames = vals$activeFilterString,
+            choiceValues = vals$choiceValuesFilter
           )
         )
       })
