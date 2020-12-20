@@ -280,52 +280,19 @@ shinyPanelSeurat <- fluidPage(
                                                               choices = NULL
                                                           )
                                                       ),
-                                                      selectInput(
-                                                          inputId = "seuratFindMarkerReductionMethod",
-                                                          label = "Select reduction to use:",
-                                                          choices = NULL
-                                                      ),
-                                                      checkboxInput(
-                                                          inputId = "seuratFindMarkerAdvancedOptions",
-                                                          label = "Show advanced options?",
-                                                          value = FALSE
-                                                      ),
-                                                      conditionalPanel(
-                                                          condition = "input.seuratFindMarkerAdvancedOptions == true",
-                                                          selectizeInput(
-                                                              inputId = "seuratFindMarkerSelectFeatures",
-                                                              label = "Select features:",
-                                                              choices = NULL
-                                                          ),
-                                                          numericInput(
-                                                              inputId = "seuratFindMarkerLogFC",
-                                                              label = "Set logFC threshold:",
-                                                              value = 0.25,
-                                                              step = 0.1
-                                                          ),
                                                           selectInput(
                                                               inputId = "seuratFindMarkerTest",
                                                               label = "Select test:",
-                                                              choices = NULL
-                                                          ),
-                                                          numericInput(
-                                                              inputId = "seuratFindMarkerMinPCT",
-                                                              label = "Set min.pct value:",
-                                                              value = 0.1,
-                                                              step = 0.1
-                                                          ),
-                                                          numericInput(
-                                                              inputId = "seuratFindMarkerMinDiffPCT",
-                                                              label = "Set min.diff.pct value:",
-                                                              value = -Inf,
-                                                              step = 0.1
+                                                              choices = c("wilcox", "bimod",
+                                                                          "t", "negbinom", 
+                                                                          "poisson", "LR",
+                                                                          "DESeq2")
                                                           ),
                                                           materialSwitch(
                                                               inputId = "seuratFindMarkerPosOnly",
                                                               label = "Only return positive markers?",
                                                               value = FALSE
-                                                          )
-                                                      ),
+                                                          ),
                                                       actionButton(inputId = "seuratFindMarkerRun", "Find Markers")
                                                   )
                                            )

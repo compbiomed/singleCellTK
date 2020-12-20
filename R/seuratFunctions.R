@@ -801,10 +801,13 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @param allGroup Name of all groups.
 #' @param conserved Logical value indicating if markers conserved between two
 #' groups should be identified. Default is \code{FALSE}.
+#' @param test Test to use for DE. Default \code{"wilcox"}.
+#' @param onlyPos Logical value indicating if only positive markers should be
+#' returned.
 #'
 #' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL, conserved = FALSE){
+seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE){
   seuratObject <- convertSCEToSeurat(inSCE)
   markerGenes <- NULL
   if(is.null(allGroup)){
@@ -832,7 +835,9 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
       markerGenes <- Seurat::FindMarkers(
         object = seuratObject, 
         ident.1 = group1, 
-        ident.2 = group2
+        ident.2 = group2,
+        test.use = test,
+        only.pos = onlyPos
         )
     }
     else{
@@ -841,7 +846,9 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
         object = seuratObject, 
         ident.1 = group1, 
         ident.2 = group2, 
-        grouping.var = "groups")
+        grouping.var = "groups",
+        test.use = test,
+        only.pos = onlyPos)
     }
     markerGenes$cluster <- paste0(group1, " vs ", group2)
     gene.id <- rownames(markerGenes)
@@ -849,7 +856,7 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
   }
   else{
     Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
-    markerGenes <- Seurat::FindAllMarkers(seuratObject)
+    markerGenes <- Seurat::FindAllMarkers(seuratObject, test.use = test, only.pos = onlyPos)
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL

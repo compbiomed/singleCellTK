@@ -6521,7 +6521,9 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Finding markers", max = 1, value = 1,{
       if(input$seuratFindMarkerType == "markerAll"){
         vals$counts <- seuratFindMarkers(inSCE = vals$counts,
-                                         allGroup = input$seuratFindMarkerSelectPhenotype)
+                                         allGroup = input$seuratFindMarkerSelectPhenotype,
+                                         test = input$seuratFindMarkerTest,
+                                         onlyPos = input$seuratFindMarkerPosOnly)
       }
       else{
         indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
@@ -6534,14 +6536,18 @@ shinyServer(function(input, output, session) {
                                            cells2 = cells2,
                                            group1 = input$seuratFindMarkerGroup1,
                                            group2 = input$seuratFindMarkerGroup2,
-                                           conserved = TRUE)
+                                           conserved = TRUE,
+                                           test = input$seuratFindMarkerTest,
+                                           onlyPos = input$seuratFindMarkerPosOnly)
         }
         else{
           vals$counts <- seuratFindMarkers(inSCE = vals$counts,
                                            cells1 = cells1,
                                            cells2 = cells2,
                                            group1 = input$seuratFindMarkerGroup1,
-                                           group2 = input$seuratFindMarkerGroup2)
+                                           group2 = input$seuratFindMarkerGroup2,
+                                           test = input$seuratFindMarkerTest,
+                                           onlyPos = input$seuratFindMarkerPosOnly)
         }
       }
     })
@@ -6751,6 +6757,12 @@ shinyServer(function(input, output, session) {
     #                                                            )
     # )
     # )
+    
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+    removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
     
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                panel(heading = "Ridge Plot",
