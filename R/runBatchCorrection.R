@@ -128,8 +128,8 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                 batch = SummarizedExperiment::colData(inSCE)[[batch]],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
-
-  SummarizedExperiment::assay(inSCE, assayName) <- resassay
+  sctkAssay(inSCE, assayName, tag = "batchCorrected") <- resassay
+  #SummarizedExperiment::assay(inSCE, assayName) <- resassay
   return(inSCE)
 }
 
@@ -394,7 +394,8 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   mat <- SummarizedExperiment::assay(inSCE, useAssay)
   newMat <- limma::removeBatchEffect(mat, batch = batchCol)
-  SummarizedExperiment::assay(inSCE, assayName) <- newMat
+  sctkAssay(inSCE, assayName, "batchCorrected") <- newMat
+  #SummarizedExperiment::assay(inSCE, assayName) <- newMat
   return(inSCE)
 }
 
