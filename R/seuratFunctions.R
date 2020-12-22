@@ -887,11 +887,11 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
   assay <- "RNA"
   marker.test <- list()
   
-  object.var <- FetchData(object = object, vars = grouping.var)
+  object.var <- Seurat::FetchData(object = object, vars = grouping.var)
   levels.split <- names(x = sort(x = table(object.var[, 1])))
   num.groups <- length(levels.split)
   
-  marker.test[[1]] <- FindMarkers(
+  marker.test[[1]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
     slot = slot,
@@ -899,7 +899,7 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     ident.2 = levels.split[2],
   )
   
-  marker.test[[2]] <- FindMarkers(
+  marker.test[[2]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
     slot = slot,
@@ -907,7 +907,7 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     ident.2 = levels.split[3],
   )
   
-  marker.test[[3]] <- FindMarkers(
+  marker.test[[3]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
     slot = slot,
