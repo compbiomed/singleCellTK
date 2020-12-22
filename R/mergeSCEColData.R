@@ -34,9 +34,7 @@ mergeSCEColData <- function(inSCE1, inSCE2, id1 = "column_name", id2 = "column_n
 
   if (id2 == "column_name" && "column_name" %in%
     names(SummarizedExperiment::colData(inSCE2))) {
-    columnNameColExist2 <- TRUE
   } else {
-    columnNameColExist2 <- FALSE
     SummarizedExperiment::colData(inSCE2)$column_name <- colnames(inSCE2)
   }
   not.in.sce1 <- c(setdiff(
@@ -86,6 +84,9 @@ mergeSCEColData <- function(inSCE1, inSCE2, id1 = "column_name", id2 = "column_n
     coldata.merge[, id1] <- NULL
   }
 
+  if(!columnNameColExist1){
+    coldata.merge$column_name <- NULL
+  }
   SummarizedExperiment::colData(inSCE1) <- S4Vectors::DataFrame(coldata.merge)
   return(inSCE1)
 }
