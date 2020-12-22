@@ -302,11 +302,6 @@ shinyPanelSeurat <- fluidPage(
                                        fluidRow(
                                            column(12,
                                                   hidden(
-                                                      tags$script("
-    Shiny.addCustomMessageHandler('resetValue', function(variableName) {
-      Shiny.onInputChange(variableName, null);
-    });
-  "),
                                                       tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
                                                                                                         uiOutput("seuratFindMarkerFilter"),
                                                                                                         DT::dataTableOutput(
@@ -317,21 +312,26 @@ shinyPanelSeurat <- fluidPage(
                                                   ),
                                                   br(),
                                                   hidden(
-                                                      tags$div(class = "seurat_findmarker_jointHeatmap", 
-                                                               panel(heading = "Heatmap Plot",
-                                                                     fluidRow(
-                                                                         column(12, align = "center",
-                                                                                
-                                                                                uiOutput(
+                                                      tags$div(class = "seurat_findmarker_jointHeatmap",
+                                                               bsCollapse(
+                                                                 bsCollapsePanel(
+                                                                   title = "Heatmap Plot",
+                                                                  # panel(heading = "Heatmap Plot",
+                                                                         fluidRow(
+                                                                           column(12, align = "center",
+                                                                                  
+                                                                                  uiOutput(
                                                                                     outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                ),
-                                                                                panel(
+                                                                                  ),
+                                                                                  panel(
                                                                                     jqui_resizable(
-                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                      plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                     )
-                                                                                )
+                                                                                  )
+                                                                           )
                                                                          )
-                                                                     )
+                                                                  # )
+                                                                 )
                                                                )
                                                       )
                                                   ),

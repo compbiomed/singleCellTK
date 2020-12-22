@@ -6569,6 +6569,10 @@ shinyServer(function(input, output, session) {
     output$seuratFindMarkerFilter <- renderUI({
       fluidPage(
         fluidRow(
+          h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
+        ),
+        br(),
+        fluidRow(
           column(4,offset = 0.1, style='padding:3px;', align = "center",
                  ),
           column(4,offset = 0.1, style='padding:3px;', align = "center",
@@ -6605,7 +6609,7 @@ shinyServer(function(input, output, session) {
                                                                                          choices = c("=", "!="),
                                                                                          justified = TRUE,
                                                                                          individual = TRUE,
-                                                                                         size = "xs",
+                                                                                         size = "s",
                                                                                          status = "primary"
                                                                                        ),
                                                                                        selectizeInput(
@@ -6621,7 +6625,7 @@ shinyServer(function(input, output, session) {
                                                                                        choices = c("<", ">", "=", "<=", ">="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
-                                                                                       size = "xs",
+                                                                                       size = "s",
                                                                                        status = "primary"
                                                                                      ),
                                                                                      numericInput(
@@ -6637,7 +6641,7 @@ shinyServer(function(input, output, session) {
                                                                                       choices = c("<", ">", "=", "<=", ">="),
                                                                                       justified = TRUE,
                                                                                       individual = TRUE,
-                                                                                      size = "xs",
+                                                                                      size = "s",
                                                                                       status = "primary"
                                                                                     ),
                                                                                     numericInput(
@@ -6686,7 +6690,7 @@ shinyServer(function(input, output, session) {
                                                                                           choices = c("<", ">", "=", "<=", ">="),
                                                                                           justified = TRUE,
                                                                                           individual = TRUE,
-                                                                                          size = "xs",
+                                                                                          size = "s",
                                                                                           status = "primary",
                                                                                           selected = "<"
                                                                                         ),
@@ -6703,7 +6707,7 @@ shinyServer(function(input, output, session) {
                                                                                           choices = c("=", "!="),
                                                                                           justified = TRUE,
                                                                                           individual = TRUE,
-                                                                                          size = "xs",
+                                                                                          size = "s",
                                                                                           status = "primary"
                                                                                         ),
                                                                                         selectizeInput(
@@ -6738,25 +6742,6 @@ shinyServer(function(input, output, session) {
     
     shinyjs::show(selector = ".seurat_findmarker_table")
     shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
-    
-    # appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Joint Heatmap Plot",
-    #                                                            panel(heading = "Heatmap Plot",
-    #                                                                  fluidRow(
-    #                                                                    column(12, align = "center",
-    #                                                                          
-    #                                                                           uiOutput(
-    #                                                                             outputId = "findMarkerHeatmapPlotFullTopText"
-    #                                                                           ),
-    #                                                                           panel(
-    #                                                                             jqui_resizable(
-    #                                                                               plotOutput(outputId = "findMarkerHeatmapPlotFull")
-    #                                                                             )
-    #                                                                           )
-    #                                                                    )
-    #                                                                  )
-    #                                                            )
-    # )
-    # )
     
     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
@@ -6899,7 +6884,8 @@ shinyServer(function(input, output, session) {
         checkboxGroupInput(
           inputId = "checkboxFiltersToRemove",
           label = NULL,
-          choices = "p_val_adj < 0.05"
+          choiceNames = "p_val_adj < 0.05",
+          choiceValues = "p_val_adj"
         )
       )
     })
@@ -7114,7 +7100,7 @@ shinyServer(function(input, output, session) {
   updateSeuratFindMarkerTable <- function(){
     
     df <- NULL 
-    
+    parameters <- NULL
     p_val_operators <- ""
     if(!is.null(vals$seuratFindMarkerPValOption)){
       p_val_operators <- paste0(vals$seuratFindMarkerPValOption, collapse = "")
@@ -7258,23 +7244,24 @@ shinyServer(function(input, output, session) {
     
     activeFilterString <- list()
     choiceValuesFilter <- list()
-    for(i in seq(length(parameters$cols))){
-      activeFilterString[i] <- paste(parameters$cols[i], parameters$operators[i], parameters$values[i])
-      choiceValuesFilter[i] <- paste(parameters$cols[i])
-    }
-    
-    if(!is.null(vals$seuratFindMarkerGeneIDOption)){
-      activeFilterString <- append(activeFilterString, paste("gene.id", vals$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
-      choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
-    }
-    
-    if(!is.null(vals$seuratFindMarkerClusterOption)){
-      activeFilterString <- append(activeFilterString, paste("cluster", vals$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
-      choiceValuesFilter <- append(choiceValuesFilter, "cluster")
-    }
-    
-    vals$activeFilterString <- as.character(activeFilterString)
-    vals$choiceValuesFilter <- as.character(choiceValuesFilter)
+    if(!is.null(parameters)){
+      for(i in seq(length(parameters$cols))){
+        activeFilterString[i] <- paste(parameters$cols[i], parameters$operators[i], parameters$values[i])
+        choiceValuesFilter[i] <- paste(parameters$cols[i])
+      }
+      
+      if(!is.null(vals$seuratFindMarkerGeneIDOption)){
+        activeFilterString <- append(activeFilterString, paste("gene.id", vals$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
+        choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
+      }
+      
+      if(!is.null(vals$seuratFindMarkerClusterOption)){
+        activeFilterString <- append(activeFilterString, paste("cluster", vals$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
+        choiceValuesFilter <- append(choiceValuesFilter, "cluster")
+      }
+      
+      vals$activeFilterString <- as.character(activeFilterString)
+      vals$choiceValuesFilter <- as.character(choiceValuesFilter)
       output$seuratFindMarkerActiveFilters <- renderUI({
         panel(
           # HTML(activeFilterString),
@@ -7286,6 +7273,15 @@ shinyServer(function(input, output, session) {
           )
         )
       })
+    }
+    else{
+      output$seuratFindMarkerActiveFilters <- renderUI({
+        panel(
+          HTML(paste("<span style='color:red'>No active filters!</span>")),
+        )
+      })
+    }
+
   }
   
   seuratfindMarkerTableObserve <- observe(suspended = F,
