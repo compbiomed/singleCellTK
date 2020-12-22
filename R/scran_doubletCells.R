@@ -13,9 +13,9 @@
 #                               BSPARAM=BSPARAM,
 #                               BPPARAM=BPPARAM
 #                               ) {
-# 
+#
 #   cell.matrix <- .convertToMatrix(cell.matrix)
-# 
+#
 #   scores <- matrix(scran::doubletCells(cell.matrix, k = k,
 #                                        niters = nIters,
 #                                        size.factors.norm = NULL,
@@ -32,11 +32,11 @@
 #                                        ), ncol=1)
 #   scores <- cbind(scores,log10(scores[,1]+1))
 #   colnames(scores) <- c("scran_doubletCells_score", "scran_doubletCells_score_log10")
-# 
-# 
+#
+#
 #   return(scores)
 # }
-# 
+#
 
 #' @title Detect doublet cells using \link[scDblFinder]{scDblFinder}.
 #' @description A wrapper function for \link[scDblFinder]{scDblFinder}. Identify
@@ -109,7 +109,13 @@ runDoubletCells <- function(inSCE,
 
   ## Loop through each sample and run barcodeRank
   #samples <- unique(sample)
-  
+
+  rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
+  if(length(rm.ix) > 0){
+    inSCEOrig <- inSCE
+    inSCE <- inSCE[,-rm.ix]
+    sample <- sample[-rm.ix]
+  }
   inSCE <- withr::with_seed(seed,
                             scDblFinder::scDblFinder(sce = inSCE,
                             samples = sample,
@@ -117,16 +123,19 @@ runDoubletCells <- function(inSCE,
                             k = nNeighbors,
                             verbose = FALSE
                             ))
+  if(length(rm.ix) > 0){
+    inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
+  }
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder\\.",
                                                       "scran_doubletCells_",
                                                       names(SummarizedExperiment::colData(inSCE)))
-  
+
   # for (i in seq_len(length(samples))) {
   #   sceSampleInd <- sample == samples[i]
   #   sceSample <- inSCE[, sceSampleInd]
-  # 
+  #
   #   mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
-  # 
+  #
   #   result <- withr::with_seed(seed,
   #             .runDoubletCells(cell.matrix = mat,
   #                              k = nNeighbors,
@@ -143,7 +152,7 @@ runDoubletCells <- function(inSCE,
   #                              BSPARAM=BSPARAM,
   #                              BPPARAM=BPPARAM
   #                              ))
-  # 
+  #
   #   output[sceSampleInd, ] <- result
   # }
 
