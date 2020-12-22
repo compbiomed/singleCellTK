@@ -842,13 +842,15 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     }
     else{
       seuratObject[["groups"]] <- Seurat::Idents(seuratObject)
-      markerGenes <- Seurat::FindConservedMarkers(
+      markerGenes <- .findConservedMarkers(
         object = seuratObject, 
         ident.1 = group1, 
         ident.2 = group2, 
         grouping.var = "groups",
         test.use = test,
-        only.pos = onlyPos)
+        only.pos = onlyPos,
+        cells1 = cells1,
+        cells2 = cells2)
     }
     markerGenes$cluster <- paste0(group1, " vs ", group2)
     gene.id <- rownames(markerGenes)
@@ -869,4 +871,103 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
   rownames(markerGenes) <- NULL
   S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes
   return(inSCE)
+}
+
+.findConservedMarkers <- function(object,
+                                  ident.1, 
+                                  ident.2, 
+                                  grouping.var = "groups",
+                                  test.use,
+                                  only.pos,
+                                  cells1,
+                                  cells2){
+  meta.method <- metap::minimump
+  verbose <- TRUE
+  slot <- "data"
+  assay <- "RNA"
+  marker.test <- list()
+  
+  object.var <- FetchData(object = object, vars = grouping.var)
+  levels.split <- names(x = sort(x = table(object.var[, 1])))
+  num.groups <- length(levels.split)
+  
+  marker.test[[1]] <- FindMarkers(
+    object = object,
+    assay = assay,
+    slot = slot,
+    ident.1 = levels.split[1],
+    ident.2 = levels.split[2],
+  )
+  
+  marker.test[[2]] <- FindMarkers(
+    object = object,
+    assay = assay,
+    slot = slot,
+    ident.1 = levels.split[2],
+    ident.2 = levels.split[3],
+  )
+  
+  marker.test[[3]] <- FindMarkers(
+    object = object,
+    assay = assay,
+    slot = slot,
+    ident.1 = levels.split[3],
+    ident.2 = levels.split[1],
+  )
+  
+  names(x = marker.test)[1] <- levels.split[1]
+  names(x = marker.test)[2] <- levels.split[2]
+  names(x = marker.test)[3] <- levels.split[3]
+  
+  marker.test <- Filter(f = Negate(f = is.null), x = marker.test)
+  genes.conserved <- Reduce(
+    f = intersect,
+    x = lapply(
+      X = marker.test,
+      FUN = function(x) {
+        return(rownames(x = x))
+      }
+    )
+  )
+  markers.conserved <- list()
+  for (i in 1:length(x = marker.test)) {
+    markers.conserved[[i]] <- marker.test[[i]][genes.conserved, ]
+    colnames(x = markers.conserved[[i]]) <- paste(
+      names(x = marker.test)[i],
+      colnames(x = markers.conserved[[i]]),
+      sep = "_"
+    )
+  }
+  markers.combined <- Reduce(cbind, markers.conserved)
+  pval.codes <- colnames(x = markers.combined)[grepl(pattern = "*_p_val$", x = colnames(x = markers.combined))]
+  if (length(x = pval.codes) > 1) {
+    markers.combined$max_pval <- apply(
+      X = markers.combined[, pval.codes, drop = FALSE],
+      MARGIN = 1,
+      FUN = max
+    )
+    combined.pval <- data.frame(cp = apply(
+      X = markers.combined[, pval.codes, drop = FALSE],
+      MARGIN = 1,
+      FUN = function(x) {
+        return(meta.method(x)$p)
+      }
+    ))
+    meta.method.name <- as.character(x = formals()$meta.method)
+    if (length(x = meta.method.name) == 3) {
+      meta.method.name <- meta.method.name[3]
+    }
+    colnames(x = combined.pval) <- paste0(meta.method.name, "_p_val")
+    markers.combined <- cbind(markers.combined, combined.pval)
+    markers.combined <- markers.combined[order(markers.combined[, paste0(meta.method.name, "_p_val")]), ]
+  }
+  markers.combined <- markers.combined[, c(
+    paste0(ident.1, "_p_val"), 
+    paste0(ident.1, "_avg_logFC"), 
+    paste0(ident.1, "_pct.1"), 
+    paste0(ident.1, "_pct.2"), 
+    paste0("_p_val"))]
+  colnames(markers.combined) <- gsub(pattern = paste0(ident.1, "_"), replacement = "", x = colnames(markers.combined))
+  colnames(markers.combined) <- c(colnames(markers.combined)[-length(colnames(markers.combined))], "p_val_adj")
+  return(markers.combined)
 }
