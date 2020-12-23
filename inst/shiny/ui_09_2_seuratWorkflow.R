@@ -301,15 +301,16 @@ shinyPanelSeurat <- fluidPage(
                                 column(8,
                                        fluidRow(
                                            column(12,
-                                                  hidden(
-                                                      tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
-                                                                                                        uiOutput("seuratFindMarkerFilter"),
-                                                                                                        DT::dataTableOutput(
-                                                                                                            outputId = "seuratFindMarkerTable"
-                                                                                                        ) %>% withSpinner(type = 5, color = "#b2b2b2")
-                                                      )
-                                                      )
-                                                  ),
+                                                  # hidden(
+                                                  #     tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
+                                                  #                                                       uiOutput("seuratFindMarkerFilter"),
+                                                  #                                                       DT::dataTableOutput(
+                                                  #                                                           outputId = "seuratFindMarkerTable"
+                                                  #                                                       ) %>% withSpinner(type = 5, color = "#b2b2b2")
+                                                  #     )
+                                                  #     )
+                                                  # ),
+                                                  filterTableUI(id = "filter1"),
                                                   br(),
                                                   hidden(
                                                       tags$div(class = "seurat_findmarker_jointHeatmap",
