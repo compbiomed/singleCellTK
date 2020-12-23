@@ -108,7 +108,8 @@ Imports:
     rmarkdown,
     magrittr,
     kableExtra,
-    scDblFinder
+    scDblFinder,
+    metap
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
