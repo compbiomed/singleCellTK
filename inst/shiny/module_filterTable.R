@@ -28,6 +28,8 @@ filterTableUI <- function(id){
 #server
 filterTableServer <- function(input, output, session, vals, selectPhenotype){
   
+  ns <- session$ns
+  
   observeEvent(input$runTable,{
      output$seuratFindMarkerTable <- DT::renderDataTable({
        df <- metadata(vals$counts)$seuratMarkers
@@ -51,7 +53,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                   ),
            column(4,offset = 0.1, style='padding:3px;', align = "center",
                   radioGroupButtons(
-                    inputId = "seuratFindMarkerFilterShowHide", label = NULL,
+                    inputId = ns("seuratFindMarkerFilterShowHide"), label = NULL,
                     choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
                     justified = TRUE, status = "primary",
                     selected = "Hide",
@@ -67,7 +69,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                  column(4,
                         panel(heading = "Options",
                               selectInput(
-                                inputId = "seuratFindMarkerSelectFilter",
+                                inputId = ns("seuratFindMarkerSelectFilter"),
                                 label = "Select column to filter:",
                                 choices = c("gene.id",
                                             "p_val",
@@ -79,7 +81,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ),
                               hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
                                                                                         checkboxGroupButtons(
-                                                                                          inputId = "seuratFindMarkerGeneIDOption", label = "gene.id",
+                                                                                          inputId = ns("seuratFindMarkerGeneIDOption"), label = "gene.id",
                                                                                           choices = c("=", "!="),
                                                                                           justified = TRUE,
                                                                                           individual = TRUE,
@@ -87,7 +89,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                           status = "primary"
                                                                                         ),
                                                                                         selectizeInput(
-                                                                                          inputId = "seuratFindMarkerGeneIDInput",
+                                                                                          inputId = ns("seuratFindMarkerGeneIDInput"),
                                                                                           choices = NULL,
                                                                                           label = NULL,
                                                                                           multiple = TRUE
@@ -95,7 +97,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
                                                                                       checkboxGroupButtons(
-                                                                                        inputId = "seuratFindMarkerPValOption", label = "p_val",
+                                                                                        inputId = ns("seuratFindMarkerPValOption"), label = "p_val",
                                                                                         choices = c("<", ">", "=", "<=", ">="),
                                                                                         justified = TRUE,
                                                                                         individual = TRUE,
@@ -103,7 +105,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                         status = "primary"
                                                                                       ),
                                                                                       numericInput(
-                                                                                        inputId = "seuratFindMarkerPValInput",
+                                                                                        inputId = ns("seuratFindMarkerPValInput"),
                                                                                         label = NULL,
                                                                                         step = 0.001,
                                                                                         value = 0
@@ -111,7 +113,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
                                                                                      checkboxGroupButtons(
-                                                                                       inputId = "seuratFindMarkerLFCOption", label = "avg_logFC",
+                                                                                       inputId = ns("seuratFindMarkerLFCOption"), label = "avg_logFC",
                                                                                        choices = c("<", ">", "=", "<=", ">="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
@@ -119,7 +121,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                        status = "primary"
                                                                                      ),
                                                                                      numericInput(
-                                                                                       inputId = "seuratFindMarkerLFCInput",
+                                                                                       inputId = ns("seuratFindMarkerLFCInput"),
                                                                                        label = NULL,
                                                                                        step = 0.001,
                                                                                        value = 0
@@ -127,7 +129,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
                                                                                       checkboxGroupButtons(
-                                                                                        inputId = "seuratFindMarkerPct1Option", label = "pct.1",
+                                                                                        inputId = ns("seuratFindMarkerPct1Option"), label = "pct.1",
                                                                                         choices = c("<", ">", "=", "<=", ">="),
                                                                                         justified = TRUE,
                                                                                         individual = TRUE,
@@ -136,7 +138,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                         selected = NULL
                                                                                       ),
                                                                                       numericInput(
-                                                                                        inputId = "seuratFindMarkerPct1Input",
+                                                                                        inputId = ns("seuratFindMarkerPct1Input"),
                                                                                         label = NULL,
                                                                                         step = 0.001,
                                                                                         value = 0
@@ -144,7 +146,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
                                                                                       checkboxGroupButtons(
-                                                                                        inputId = "seuratFindMarkerPct2Option", label = "pct.2",
+                                                                                        inputId = ns("seuratFindMarkerPct2Option"), label = "pct.2",
                                                                                         choices = c("<", ">", "=", "<=", ">="),
                                                                                         justified = TRUE,
                                                                                         individual = TRUE,
@@ -152,7 +154,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                         status = "primary"
                                                                                       ),
                                                                                       numericInput(
-                                                                                        inputId = "seuratFindMarkerPct2Input",
+                                                                                        inputId = ns("seuratFindMarkerPct2Input"),
                                                                                         label = NULL,
                                                                                         step = 0.001,
                                                                                         value = 0
@@ -160,7 +162,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
                                                                                          checkboxGroupButtons(
-                                                                                           inputId = "seuratFindMarkerPValAdjOption", label = "p_val_adj",
+                                                                                           inputId = ns("seuratFindMarkerPValAdjOption"), label = "p_val_adj",
                                                                                            choices = c("<", ">", "=", "<=", ">="),
                                                                                            justified = TRUE,
                                                                                            individual = TRUE,
@@ -169,7 +171,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                            selected = "<"
                                                                                          ),
                                                                                          numericInput(
-                                                                                           inputId = "seuratFindMarkerPValAdjInput",
+                                                                                           inputId = ns("seuratFindMarkerPValAdjInput"),
                                                                                            label = NULL,
                                                                                            step = 0.001,
                                                                                            value = 0.05
@@ -177,7 +179,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                               ))),
                               hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
                                                                                          checkboxGroupButtons(
-                                                                                           inputId = "seuratFindMarkerClusterOption", label = "cluster",
+                                                                                           inputId = ns("seuratFindMarkerClusterOption"), label = "cluster",
                                                                                            choices = c("=", "!="),
                                                                                            justified = TRUE,
                                                                                            individual = TRUE,
@@ -185,24 +187,24 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                            status = "primary"
                                                                                          ),
                                                                                          selectizeInput(
-                                                                                           inputId = "seuratFindMarkerClusterInput",
+                                                                                           inputId = ns("seuratFindMarkerClusterInput"),
                                                                                            choices = NULL,
                                                                                            label = NULL,
                                                                                            multiple = TRUE
                                                                                          )
                               ))),
                               actionButton(
-                                inputId = "seuratFindMarkerFilterRun",
+                                inputId = ns("seuratFindMarkerFilterRun"),
                                 label = "Apply Filter"
                               )
                         )
                  ),
                  column(8,
                         panel(heading = "Active Filters",
-                              uiOutput("seuratFindMarkerActiveFilters"),
+                              uiOutput(ns("seuratFindMarkerActiveFilters")),
                               br(),
                               actionButton(
-                                inputId = "seuratFindMarkerRemoveAllFilters",
+                                inputId = ns("seuratFindMarkerRemoveAllFilters"),
                                 label = "Remove Filter"
                               )
                         )
@@ -217,13 +219,13 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
      shinyjs::show(selector = ".seurat_findmarker_table")
      shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
     
-     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
-     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
-     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
-     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
-     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
     
-     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
                                                                 panel(heading = "Ridge Plot",
                                                                       fluidRow(
                                                                         column(12, align = "center",
@@ -235,7 +237,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                 )
      )
      )
-     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
                                                                 panel(heading = "Violin Plot",
                                                                       fluidRow(
                                                                         column(12, align = "center",
@@ -247,7 +249,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                 )
      )
      )
-     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
                                                                 panel(heading = "Feature Plot",
                                                                       fluidRow(
                                                                         column(12, align = "center",
@@ -259,7 +261,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                 )
      )
      )
-     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
                                                                 panel(heading = "Dot Plot",
                                                                       fluidRow(
                                                                         column(12, align = "center",
@@ -271,7 +273,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                 )
      )
      )
-     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
                                                                 panel(heading = "Heatmap Plot",
                                                                       fluidRow(
                                                                         column(12, align = "center",
@@ -304,8 +306,8 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
        Idents(seuratObject, cells = cells[[i]]) <- groups[i]
      }
 
-    showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-     updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+    showTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Joint Heatmap Plot")
+     updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = "Ridge Plot")
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
     #table
@@ -323,11 +325,11 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
        selectedGeneId <- input$seuratFindMarkerGeneIDInput
        selectedCluster <- input$seuratFindMarkerClusterInput
        updateSelectizeInput(session = session,
-                            inputId = "seuratFindMarkerGeneIDInput",
+                            inputId = ns("seuratFindMarkerGeneIDInput"),
                             selected = selectedGeneId,
                             choices = df$gene.id)
        updateSelectizeInput(session = session,
-                            inputId = "seuratFindMarkerClusterInput",
+                            inputId = ns("seuratFindMarkerClusterInput"),
                             selected = selectedCluster,
                             choices = df$cluster)
        df$p_val <- format(df$p_val, nsmall = 7)
@@ -343,7 +345,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     output$seuratFindMarkerActiveFilters <- renderUI({
       panel(
         checkboxGroupInput(
-          inputId = "checkboxFiltersToRemove",
+          inputId = ns("checkboxFiltersToRemove"),
           label = NULL,
           choiceNames = "p_val_adj < 0.05",
           choiceValues = "p_val_adj"
@@ -531,7 +533,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
         panel(
           # HTML(activeFilterString),
           checkboxGroupInput(
-            inputId = "checkboxFiltersToRemove",
+            inputId = ns("checkboxFiltersToRemove"),
             label = NULL,
             choiceNames = vals$activeFilterString,
             choiceValues = vals$choiceValuesFilter
@@ -556,50 +558,50 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                 df <- metadata(vals$counts)$seuratMarkersSubset[input$seuratFindMarkerTable_rows_selected,]
                                                 seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
                                                 
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
                                                 
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
                                                                                                            panel(heading = "Ridge Plot",
                                                                                                                  jqui_resizable(
-                                                                                                                   plotOutput(outputId = "findMarkerRidgePlot")
+                                                                                                                   plotOutput(outputId = ns("findMarkerRidgePlot"))
                                                                                                                  )
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
                                                                                                            panel(heading = "Violin Plot",
                                                                                                                  jqui_resizable(
-                                                                                                                   plotOutput(outputId = "findMarkerViolinPlot")
+                                                                                                                   plotOutput(outputId = ns("findMarkerViolinPlot"))
                                                                                                                  )
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
                                                                                                            panel(heading = "Feature Plot",
                                                                                                                  jqui_resizable(
-                                                                                                                   plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                                                                   plotOutput(outputId = ns("findMarkerFeaturePlot"))
                                                                                                                  )
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
                                                                                                            panel(heading = "Dot Plot",
                                                                                                                  jqui_resizable(
-                                                                                                                   plotOutput(outputId = "findMarkerDotPlot")
+                                                                                                                   plotOutput(outputId = ns("findMarkerDotPlot"))
                                                                                                                  )
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
                                                                                                            panel(heading = "Heatmap Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
                                                                                                                           panel(
-                                                                                                                            plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                                                                            plotOutput(outputId = ns("findMarkerHeatmapPlot"))
                                                                                                                           )
                                                                                                                    )
                                                                                                                  )
@@ -641,15 +643,15 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                   DoHeatmap(seuratObject, features = df$gene.id)
                                                 })
                                                 
-                                                updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                                updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = input$seuratFindMarkerPlotTabset)
                                                 shinyjs::show(selector = ".seurat_findmarker_plots")
                                               }
                                               else {
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
-                                                removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
 
                                                 output$findMarkerRidgePlot <- NULL
                                                 output$findMarkerViolinPlot <- NULL
@@ -657,7 +659,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                 output$findMarkerDotPlot <- NULL
                                                 output$findMarkerHeatmapPlot <- NULL
                                                 
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
                                                                                                            panel(heading = "Ridge Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
@@ -669,7 +671,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
                                                                                                            panel(heading = "Violin Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
@@ -681,7 +683,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
                                                                                                            panel(heading = "Feature Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
@@ -693,7 +695,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
                                                                                                            panel(heading = "Dot Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
@@ -705,7 +707,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                                            )
                                                 )
                                                 )
-                                                appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
                                                                                                            panel(heading = "Heatmap Plot",
                                                                                                                  fluidRow(
                                                                                                                    column(12, align = "center",
@@ -717,7 +719,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                                                                            )
                                                 )
                                                 )
-                                                updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = input$seuratFindMarkerPlotTabset)
+                                                updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = input$seuratFindMarkerPlotTabset)
                                               }
                                             })
                                           })
@@ -735,7 +737,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if(length(input$seuratFindMarkerLFCOption) > 1){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerLFCOption",
+        inputId = ns("seuratFindMarkerLFCOption"),
         selected = input$seuratFindMarkerLFCOption[-which(vals$seuratFindMarkerLFCOption == input$seuratFindMarkerLFCOption, arr.ind = TRUE)]
       )
     }
@@ -748,7 +750,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if(length(input$seuratFindMarkerPValOption) > 1){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPValOption",
+        inputId = ns("seuratFindMarkerPValOption"),
         selected = input$seuratFindMarkerPValOption[-which(vals$seuratFindMarkerPValOption == input$seuratFindMarkerPValOption, arr.ind = TRUE)]
       )
     }
@@ -761,7 +763,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if(length(input$seuratFindMarkerPValAdjOption) > 1){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPValAdjOption",
+        inputId = ns("seuratFindMarkerPValAdjOption"),
         selected = input$seuratFindMarkerPValAdjOption[-which(vals$seuratFindMarkerPValAdjOption == input$seuratFindMarkerPValAdjOption, arr.ind = TRUE)]
       )
     }
@@ -774,7 +776,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if(length(input$seuratFindMarkerPct1Option) > 1){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPct1Option",
+        inputId = ns("seuratFindMarkerPct1Option"),
         selected = input$seuratFindMarkerPct1Option[-which(vals$seuratFindMarkerPct1Option == input$seuratFindMarkerPct1Option, arr.ind = TRUE)]
       )
     }
@@ -787,7 +789,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if(length(input$seuratFindMarkerPct2Option) > 1){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPct2Option",
+        inputId = ns("seuratFindMarkerPct2Option"),
         selected = input$seuratFindMarkerPct2Option[-which(vals$seuratFindMarkerPct2Option == input$seuratFindMarkerPct2Option, arr.ind = TRUE)]
       )
     }
@@ -800,7 +802,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("p_val" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPValOption",
+        inputId = ns("seuratFindMarkerPValOption"),
         selected = character(0),
         
       )
@@ -808,7 +810,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -817,14 +819,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("p_val_adj" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPValAdjOption",
+        inputId = ns("seuratFindMarkerPValAdjOption"),
         selected = character(0)
       )
       vals$seuratFindMarkerPValAdjOption <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -833,14 +835,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("pct.1" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPct1Option",
+        inputId = ns("seuratFindMarkerPct1Option"),
         selected = character(0)
       )
       vals$seuratFindMarkerPct1Option <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -849,14 +851,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("pct.2" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerPct2Option",
+        inputId = ns("seuratFindMarkerPct2Option"),
         selected = character(0)
       )
       vals$seuratFindMarkerPct2Option <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -865,14 +867,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("avg_logFC" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerLFCOption",
+        inputId = ns("seuratFindMarkerLFCOption"),
         selected = character(0)
       )
       vals$seuratFindMarkerLFCOption <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -881,14 +883,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("gene.id" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerGeneIDOption",
+        inputId = ns("seuratFindMarkerGeneIDOption"),
         selected = character(0)
       )
       vals$seuratFindMarkerGeneIDOption <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
@@ -897,14 +899,14 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
     if("cluster" %in% input$checkboxFiltersToRemove){
       updateCheckboxGroupButtons(
         session = session,
-        inputId = "seuratFindMarkerClusterOption",
+        inputId = ns("seuratFindMarkerClusterOption"),
         selected = character(0)
       )
       vals$seuratFindMarkerClusterOption <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
-        inputId = "checkboxFiltersToRemove",
+        inputId = ns("checkboxFiltersToRemove"),
         label = NULL,
         choiceNames = vals$activeFilterString[-index],
         choiceValues = vals$choiceValuesFilter[-index]
